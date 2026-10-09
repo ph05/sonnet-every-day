@@ -1,0 +1,100 @@
+/* Sample Toy styles. */
+:root { --bg: #0b1020; --fg: #f4f1ea; --accent: #ff3d6e; --gold: #ffd166; color-scheme: dark light; }
+@media (prefers-color-scheme: light) { :root { --bg: #f7f3ea; --fg: #151515; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.5 system-ui, sans-serif; }
+.sed-back { position: fixed; top: 8px; left: 16px; color: var(--gold); }
+main { max-width: 720px; margin: 0 auto; padding: 64px 16px 32px; }
+canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; background: #000; }
+@font-face { font-family: Local; src: url("data:font/woff2;base64,d09GMgABAAAAAAA=") format("woff2"); }
+.swatch-0 { background: hsl(0 70% 30%); border: 1px solid rgb(0 0 0 / .4); padding: 0px; }
+.swatch-1 { background: hsl(4 70% 38%); border: 1px solid rgb(1 1 1 / .4); padding: 1px; }
+.swatch-2 { background: hsl(8 70% 46%); border: 1px solid rgb(2 2 2 / .4); padding: 2px; }
+.swatch-3 { background: hsl(12 70% 54%); border: 1px solid rgb(3 3 3 / .4); padding: 3px; }
+.swatch-4 { background: hsl(16 70% 62%); border: 1px solid rgb(4 4 4 / .4); padding: 0px; }
+.swatch-5 { background: hsl(20 70% 30%); border: 1px solid rgb(5 5 5 / .4); padding: 1px; }
+.swatch-6 { background: hsl(24 70% 38%); border: 1px solid rgb(6 6 6 / .4); padding: 2px; }
+.swatch-7 { background: hsl(28 70% 46%); border: 1px solid rgb(7 7 7 / .4); padding: 3px; }
+.swatch-8 { background: hsl(32 70% 54%); border: 1px solid rgb(8 8 8 / .4); padding: 0px; }
+.swatch-9 { background: hsl(36 70% 62%); border: 1px solid rgb(9 9 9 / .4); padding: 1px; }
+.swatch-10 { background: hsl(40 70% 30%); border: 1px solid rgb(10 10 10 / .4); padding: 2px; }
+.swatch-11 { background: hsl(44 70% 38%); border: 1px solid rgb(11 11 11 / .4); padding: 3px; }
+.swatch-12 { background: hsl(48 70% 46%); border: 1px solid rgb(12 12 12 / .4); padding: 0px; }
+.swatch-13 { background: hsl(52 70% 54%); border: 1px solid rgb(13 13 13 / .4); padding: 1px; }
+.swatch-14 { background: hsl(56 70% 62%); border: 1px solid rgb(14 14 14 / .4); padding: 2px; }
+.swatch-15 { background: hsl(60 70% 30%); border: 1px solid rgb(15 15 15 / .4); padding: 3px; }
+.swatch-16 { background: hsl(64 70% 38%); border: 1px solid rgb(16 16 16 / .4); padding: 0px; }
+.swatch-17 { background: hsl(68 70% 46%); border: 1px solid rgb(17 17 17 / .4); padding: 1px; }
+.swatch-18 { background: hsl(72 70% 54%); border: 1px solid rgb(18 18 18 / .4); padding: 2px; }
+.swatch-19 { background: hsl(76 70% 62%); border: 1px solid rgb(19 19 19 / .4); padding: 3px; }
+.swatch-20 { background: hsl(80 70% 30%); border: 1px solid rgb(20 20 20 / .4); padding: 0px; }
+.swatch-21 { background: hsl(84 70% 38%); border: 1px solid rgb(21 21 21 / .4); padding: 1px; }
+.swatch-22 { background: hsl(88 70% 46%); border: 1px solid rgb(22 22 22 / .4); padding: 2px; }
+.swatch-23 { background: hsl(92 70% 54%); border: 1px solid rgb(23 23 23 / .4); padding: 3px; }
+.swatch-24 { background: hsl(96 70% 62%); border: 1px solid rgb(24 24 24 / .4); padding: 0px; }
+.swatch-25 { background: hsl(100 70% 30%); border: 1px solid rgb(25 25 25 / .4); padding: 1px; }
+.swatch-26 { background: hsl(104 70% 38%); border: 1px solid rgb(26 26 26 / .4); padding: 2px; }
+.swatch-27 { background: hsl(108 70% 46%); border: 1px solid rgb(27 27 27 / .4); padding: 3px; }
+.swatch-28 { background: hsl(112 70% 54%); border: 1px solid rgb(28 28 28 / .4); padding: 0px; }
+.swatch-29 { background: hsl(116 70% 62%); border: 1px solid rgb(29 29 29 / .4); padding: 1px; }
+.swatch-30 { background: hsl(120 70% 30%); border: 1px solid rgb(30 30 30 / .4); padding: 2px; }
+.swatch-31 { background: hsl(124 70% 38%); border: 1px solid rgb(31 31 31 / .4); padding: 3px; }
+.swatch-32 { background: hsl(128 70% 46%); border: 1px solid rgb(32 32 32 / .4); padding: 0px; }
+.swatch-33 { background: hsl(132 70% 54%); border: 1px solid rgb(33 33 33 / .4); padding: 1px; }
+.swatch-34 { background: hsl(136 70% 62%); border: 1px solid rgb(34 34 34 / .4); padding: 2px; }
+.swatch-35 { background: hsl(140 70% 30%); border: 1px solid rgb(35 35 35 / .4); padding: 3px; }
+.swatch-36 { background: hsl(144 70% 38%); border: 1px solid rgb(36 36 36 / .4); padding: 0px; }
+.swatch-37 { background: hsl(148 70% 46%); border: 1px solid rgb(37 37 37 / .4); padding: 1px; }
+.swatch-38 { background: hsl(152 70% 54%); border: 1px solid rgb(38 38 38 / .4); padding: 2px; }
+.swatch-39 { background: hsl(156 70% 62%); border: 1px solid rgb(39 39 39 / .4); padding: 3px; }
+.swatch-40 { background: hsl(160 70% 30%); border: 1px solid rgb(40 40 40 / .4); padding: 0px; }
+.swatch-41 { background: hsl(164 70% 38%); border: 1px solid rgb(41 41 41 / .4); padding: 1px; }
+.swatch-42 { background: hsl(168 70% 46%); border: 1px solid rgb(42 42 42 / .4); padding: 2px; }
+.swatch-43 { background: hsl(172 70% 54%); border: 1px solid rgb(43 43 43 / .4); padding: 3px; }
+.swatch-44 { background: hsl(176 70% 62%); border: 1px solid rgb(44 44 44 / .4); padding: 0px; }
+.swatch-45 { background: hsl(180 70% 30%); border: 1px solid rgb(45 45 45 / .4); padding: 1px; }
+.swatch-46 { background: hsl(184 70% 38%); border: 1px solid rgb(46 46 46 / .4); padding: 2px; }
+.swatch-47 { background: hsl(188 70% 46%); border: 1px solid rgb(47 47 47 / .4); padding: 3px; }
+.swatch-48 { background: hsl(192 70% 54%); border: 1px solid rgb(48 48 48 / .4); padding: 0px; }
+.swatch-49 { background: hsl(196 70% 62%); border: 1px solid rgb(49 49 49 / .4); padding: 1px; }
+.swatch-50 { background: hsl(200 70% 30%); border: 1px solid rgb(50 50 50 / .4); padding: 2px; }
+.swatch-51 { background: hsl(204 70% 38%); border: 1px solid rgb(51 51 51 / .4); padding: 3px; }
+.swatch-52 { background: hsl(208 70% 46%); border: 1px solid rgb(52 52 52 / .4); padding: 0px; }
+.swatch-53 { background: hsl(212 70% 54%); border: 1px solid rgb(53 53 53 / .4); padding: 1px; }
+.swatch-54 { background: hsl(216 70% 62%); border: 1px solid rgb(54 54 54 / .4); padding: 2px; }
+.swatch-55 { background: hsl(220 70% 30%); border: 1px solid rgb(55 55 55 / .4); padding: 3px; }
+.swatch-56 { background: hsl(224 70% 38%); border: 1px solid rgb(56 56 56 / .4); padding: 0px; }
+.swatch-57 { background: hsl(228 70% 46%); border: 1px solid rgb(57 57 57 / .4); padding: 1px; }
+.swatch-58 { background: hsl(232 70% 54%); border: 1px solid rgb(58 58 58 / .4); padding: 2px; }
+.swatch-59 { background: hsl(236 70% 62%); border: 1px solid rgb(59 59 59 / .4); padding: 3px; }
+.swatch-60 { background: hsl(240 70% 30%); border: 1px solid rgb(60 60 60 / .4); padding: 0px; }
+.swatch-61 { background: hsl(244 70% 38%); border: 1px solid rgb(61 61 61 / .4); padding: 1px; }
+.swatch-62 { background: hsl(248 70% 46%); border: 1px solid rgb(62 62 62 / .4); padding: 2px; }
+.swatch-63 { background: hsl(252 70% 54%); border: 1px solid rgb(63 63 63 / .4); padding: 3px; }
+.swatch-64 { background: hsl(256 70% 62%); border: 1px solid rgb(64 64 64 / .4); padding: 0px; }
+.swatch-65 { background: hsl(260 70% 30%); border: 1px solid rgb(65 65 65 / .4); padding: 1px; }
+.swatch-66 { background: hsl(264 70% 38%); border: 1px solid rgb(66 66 66 / .4); padding: 2px; }
+.swatch-67 { background: hsl(268 70% 46%); border: 1px solid rgb(67 67 67 / .4); padding: 3px; }
+.swatch-68 { background: hsl(272 70% 54%); border: 1px solid rgb(68 68 68 / .4); padding: 0px; }
+.swatch-69 { background: hsl(276 70% 62%); border: 1px solid rgb(69 69 69 / .4); padding: 1px; }
+.swatch-70 { background: hsl(280 70% 30%); border: 1px solid rgb(70 70 70 / .4); padding: 2px; }
+.swatch-71 { background: hsl(284 70% 38%); border: 1px solid rgb(71 71 71 / .4); padding: 3px; }
+.swatch-72 { background: hsl(288 70% 46%); border: 1px solid rgb(72 72 72 / .4); padding: 0px; }
+.swatch-73 { background: hsl(292 70% 54%); border: 1px solid rgb(73 73 73 / .4); padding: 1px; }
+.swatch-74 { background: hsl(296 70% 62%); border: 1px solid rgb(74 74 74 / .4); padding: 2px; }
+.swatch-75 { background: hsl(300 70% 30%); border: 1px solid rgb(75 75 75 / .4); padding: 3px; }
+.swatch-76 { background: hsl(304 70% 38%); border: 1px solid rgb(76 76 76 / .4); padding: 0px; }
+.swatch-77 { background: hsl(308 70% 46%); border: 1px solid rgb(77 77 77 / .4); padding: 1px; }
+.swatch-78 { background: hsl(312 70% 54%); border: 1px solid rgb(78 78 78 / .4); padding: 2px; }
+.swatch-79 { background: hsl(316 70% 62%); border: 1px solid rgb(79 79 79 / .4); padding: 3px; }
+.swatch-80 { background: hsl(320 70% 30%); border: 1px solid rgb(80 80 80 / .4); padding: 0px; }
+.swatch-81 { background: hsl(324 70% 38%); border: 1px solid rgb(81 81 81 / .4); padding: 1px; }
+.swatch-82 { background: hsl(328 70% 46%); border: 1px solid rgb(82 82 82 / .4); padding: 2px; }
+.swatch-83 { background: hsl(332 70% 54%); border: 1px solid rgb(83 83 83 / .4); padding: 3px; }
+.swatch-84 { background: hsl(336 70% 62%); border: 1px solid rgb(84 84 84 / .4); padding: 0px; }
+.swatch-85 { background: hsl(340 70% 30%); border: 1px solid rgb(85 85 85 / .4); padding: 1px; }
+.swatch-86 { background: hsl(344 70% 38%); border: 1px solid rgb(86 86 86 / .4); padding: 2px; }
+.swatch-87 { background: hsl(348 70% 46%); border: 1px solid rgb(87 87 87 / .4); padding: 3px; }
+.swatch-88 { background: hsl(352 70% 54%); border: 1px solid rgb(88 88 88 / .4); padding: 0px; }
+.swatch-89 { background: hsl(356 70% 62%); border: 1px solid rgb(89 89 89 / .4); padding: 1px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

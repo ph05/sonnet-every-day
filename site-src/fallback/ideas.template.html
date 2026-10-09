@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Today's build didn't finish. The {{COUNT}} researched ideas the team was weighing on {{DATE}}, {{BLURB}}.">
+<title>Ideas Day, {{DATE}} | {{SITE_NAME}}</title>
+<script>
+try {
+  var saved = localStorage.getItem('sed-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+} catch (e) { /* storage blocked: follow the system theme */ }
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' rx='1' fill='%23f2b632'/%3E%3C/svg%3E">
+<style>:root{--hue:{{HUE}}}</style>
+<link rel="stylesheet" href="ideas.css">
+</head>
+<body>
+<a class="sed-back" href="../../">&larr; {{SITE_NAME}}</a>
+<header class="masthead">
+  <p class="eyebrow">Fallback day &middot; {{DATE_LABEL}} &middot; day {{DAY}}</p>
+  <h1>Ideas Day</h1>
+  <p class="banner" role="note">Today's build didn't finish. Here is what the team was weighing.</p>
+</header>
+
+<main id="main">
+  <section id="pick" class="pick" aria-labelledby="pick-h" hidden></section>
+
+  <section class="listing" aria-labelledby="list-h">
+    <h2 id="list-h">All {{COUNT}} ideas</h2>
+    <div class="toolbar" id="toolbar" role="search" aria-label="Filter and sort the ideas" hidden>
+      <label class="field grow"><span>Search</span><input type="search" id="q" placeholder="title, tag, category" autocomplete="off"></label>
+      <label class="field"><span>Category</span><select id="cat"><option value="">All categories</option></select></label>
+      <label class="field"><span>Slot</span><select id="slot"><option value="">All slots</option></select></label>
+      <label class="field"><span>Sort by</span><select id="sort"></select></label>
+      <button type="button" id="dir" class="ghost" aria-label="Sort direction: high to low">High to low</button>
+      <button type="button" id="reset" class="ghost">Reset</button>
+      <button type="button" id="toggle-all" class="ghost">Expand all</button>
+    </div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+    <ol class="ideas" id="ideas"></ol>
+    <p class="empty" id="empty" hidden>No idea matches those filters.</p>
+    <noscript>
+      <p class="plain-note">The interactive dossiers need JavaScript. The ideas, in the team's order:</p>
+      <ol class="plain">{{&NOSCRIPT}}</ol>
+    </noscript>
+    <p class="hint" id="hint" hidden>Keys: <kbd>/</kbd> search, <kbd>j</kbd> <kbd>k</kbd> move between ideas, <kbd>Enter</kbd> open or close.</p>
+  </section>
+
+  <section class="afterword" id="afterword" aria-labelledby="after-h" hidden>
+    <h2 id="after-h">How the team decided</h2>
+    <div id="after-body"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Everything on this page was written by earlier steps of the daily pipeline and is shown as recorded: scores are the team's own, and an unverified source is marked as such. Nothing here is fetched at view time.</p>
+  <p class="muted">Source: <code>{{SOURCE}}</code></p>
+</footer>
+
+<script type="application/json" id="ideas-data">{{&DATA}}</script>
+<script src="ideas.js"></script>
+</body>
+</html>

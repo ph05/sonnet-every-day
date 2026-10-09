@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Console Errors</title>
+</head>
+<body>
+<main><h1>Console errors</h1><p>This page misbehaves on purpose.</p>
+<img alt="missing picture" src="missing.png" width="20" height="20">
+<button type="button" id="boom">Explode</button></main>
+<script>
+console.error('deliberate console error');
+document.getElementById('boom').addEventListener('click', () => { throw new Error('boom from click'); });
+setTimeout(() => { throw new TypeError('deliberate uncaught error'); }, 50);
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+:root { color-scheme: light dark; --bg: #f6f5f1; --fg: #16181d; --accent: #4b32d6; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0e1016; --fg: #eceef4; --accent: #a99cff; } }
+body { margin: 0; padding: 1rem; background: var(--bg); color: var(--fg); font: 1rem/1.5 system-ui, sans-serif; }
+a { color: var(--accent); }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 1rem; top: 1rem; }
+.panel { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin: 1rem 0; }
+button { min-height: 44px; padding: .4rem 1rem; border: 1px solid var(--accent); border-radius: 10px; background: transparent; color: var(--fg); font: inherit; }
+button:focus-visible, input:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px solid #1f6feb; outline-offset: 2px; }
+canvas { display: block; max-width: 100%; border: 1px solid var(--accent); border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

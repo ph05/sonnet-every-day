@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Today's full build did not finish. A generative postcard stands in: {{FAMILY}}, drawn from the date {{DATE}} alone.">
+<title>{{TITLE}} | {{SITE_NAME}}</title>
+<script>
+try {
+  var saved = localStorage.getItem('sed-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+} catch (e) { /* storage blocked: follow the system theme */ }
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Crect width='8' height='8' rx='1' fill='%23f2b632'/%3E%3C/svg%3E">
+<style>:root{--hue:{{HUE}};--accent-art:{{ACCENT}};--art-bg:{{ART_BG}}}</style>
+<link rel="stylesheet" href="postcard.css">
+</head>
+<body>
+<a class="sed-back" href="../../">&larr; {{SITE_NAME}}</a>
+<main id="postcard" data-date="{{DATE}}">
+  <header class="hero">
+    <p class="eyebrow">Fallback day &middot; {{DATE_LABEL}}</p>
+    <h1>Postcard from day {{DAY}}</h1>
+  </header>
+
+  <figure class="card">
+    <div class="stage" id="stage">{{&SVG}}</div>
+    <svg class="stamp" viewBox="0 0 96 116" aria-hidden="true" focusable="false">
+      <rect x="3" y="3" width="90" height="110" rx="3" class="stamp-paper"/>
+      <rect x="3" y="3" width="90" height="110" rx="3" class="stamp-perf"/>
+      <rect x="12" y="12" width="72" height="72" rx="2" class="stamp-art"/>
+      <circle cx="48" cy="48" r="22" class="stamp-sun"/>
+      <circle cx="48" cy="48" r="30" class="stamp-ring"/>
+      <text x="48" y="100" text-anchor="middle" class="stamp-text">DAY {{DAY}}</text>
+    </svg>
+    <figcaption class="caption"><strong>{{FAMILY}}</strong> &middot; {{BLURB}}</figcaption>
+  </figure>
+
+  <div class="controls" id="controls" role="group" aria-label="Postcard controls" hidden>
+    <button type="button" id="play" aria-pressed="true">Pause</button>
+    <label class="speed" for="speed">Speed <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1"></label>
+    <button type="button" id="save">Save this frame (PNG)</button>
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+  </div>
+
+  <section class="note" aria-labelledby="note-h">
+    <h2 id="note-h" class="sr">The note on the back</h2>
+    <p class="hand">{{NOTE}}</p>
+    <p class="sig">&mdash; the {{SITE_NAME}} team</p>
+  </section>
+
+  <details class="why">
+    <summary>Why a postcard?</summary>
+    <p>This site publishes one new, sophisticated page every morning. Today's did not finish in time, so the safety net published this page instead rather than leave the day empty. It involved no research: a short script drew the picture from today's date.</p>
+    <p>The same date always draws the same picture, so you can come back to it. The composition and palette are different every day; the full builds resume tomorrow.</p>
+    <p><a href="../../">See the gallery</a></p>
+  </details>
+
+  <footer class="seed">
+    <span>Seed <code>{{SEED_HEX}}</code> from <time datetime="{{DATE}}">{{DATE}}</time></span>
+    <ul class="swatches" aria-label="Palette">{{&SWATCHES}}</ul>
+    <span class="keys" id="keys" hidden>Space pauses, S saves</span>
+  </footer>
+</main>
+<script src="postcard-scene.js"></script>
+<script src="postcard.js"></script>
+</body>
+</html>

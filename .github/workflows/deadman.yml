@@ -1,0 +1,92 @@
+# Model-free safety net. If the day still has no published page at 07:40 New York
+# time, scripts/deadman.mjs publishes the best fallback it can (Ideas Day if the
+# researched ideas exist, otherwise a Postcard), rebuilds the site and pushes.
+# It needs no Claude session, so it still works when the subscription is exhausted.
+#
+# IMPORTANT: GitHub only runs `schedule` triggers from the repository's DEFAULT
+# branch. The daily build lives on the work branch (config.json "workBranch"), so
+# this workflow is dormant until it has been merged to `main`. Manual dispatch
+# ("Run workflow" in the Actions tab) always works, whatever branch holds the file.
+#
+# Two cron lines because GitHub cron is UTC: 11:40 is 07:40 in EDT, 12:40 is 07:40
+# in EST. The script ignores a run that is too early (before 07:30 local) and never
+# touches a day that is already published, so the extra run is harmless.
+name: deadman
+
+on:
+  schedule:
+    - cron: '40 11 * * *'
+    - cron: '40 12 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Publish a fallback now even if it is before 07:30 New York time'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: deadman
+  cancel-in-progress: false
+
+jobs:
+  deadman:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GIT_AUTHOR_NAME: github-actions[bot]
+      GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+      GIT_COMMITTER_NAME: github-actions[bot]
+      GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+    steps:
+      # Checked out twice: the first checkout (the default branch) only supplies
+      # config.json, which names the branch the daily build publishes to.
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: config.json
+          sparse-checkout-cone-mode: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Read the work branch from config.json
+        id: cfg
+        run: |
+          set -euo pipefail
+          branch="$(node -e "process.stdout.write(JSON.parse(require('fs').readFileSync('config.json','utf8')).workBranch)")"
+          if [ -z "$branch" ]; then
+            echo "config.json has no workBranch" >&2
+            exit 1
+          fi
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "work branch: $branch"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.cfg.outputs.branch }}
+          fetch-depth: 50
+
+      - name: Publish a fallback if the day is unpublished
+        id: deadman
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "$FORCE" = "true" ]; then args+=(--force); fi
+          node scripts/deadman.mjs "${args[@]}" | tee "$RUNNER_TEMP/deadman.json"
+          action="$(node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).action))" "$RUNNER_TEMP/deadman.json")"
+          echo "action=$action" >> "$GITHUB_OUTPUT"
+
+      # A push made with GITHUB_TOKEN does not start the Pages build by itself in
+      # every configuration, so ask for one. Best effort: the push already happened.
+      - name: Request a Pages build
+        if: steps.deadman.outputs.action == 'published'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"

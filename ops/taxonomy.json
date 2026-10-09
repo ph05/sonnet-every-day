@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "categories": {
+    "cards-odds": "Poker, probability, card games, Balatro-like deckbuilders, odds and ranges",
+    "hockey-sports": "Hockey first, then any sport: stats, simulators, fandom toys",
+    "pop-culture": "Music, film, TV, memes, internet culture, celebrity-free trends",
+    "news-politics": "Current events and politics (RARE: satirical or playful, never partisan advocacy)",
+    "humor-satire": "Absurdist or satirical interactives, jokes with mechanics",
+    "science-sim": "Physics, biology, chemistry, space, climate, simulations",
+    "math-puzzle": "Math visualizers, logic puzzles, combinatorics, solvers",
+    "data-viz": "Data-driven explorers and visual essays",
+    "music-audio": "Instruments, sequencers, generative music, audio toys (WebAudio)",
+    "generative-art": "Procedural art, shaders, fractals, creative coding",
+    "language-text": "Word games, text transformers, linguistics, rebranders",
+    "tools-utility": "Genuinely useful single-purpose tools",
+    "games-arcade": "Playable games with a complete loop",
+    "retro-tech": "Emulation-flavored, old-computer, pixel and terminal nostalgia",
+    "education-explainer": "Interactive explainers that teach one thing deeply",
+    "modding-games": "Mod concepts, mod tools, game-design experiments (Balatro and beyond)",
+    "finance-economics": "Markets, economics toys, probability of ruin (simulated money only)",
+    "life-food-craft": "Cooking, home, gardening, crafts, travel, everyday life",
+    "weird-experimental": "Genuinely strange, form-breaking, art-adjacent web experiments"
+  },
+  "mechanics": [
+    "simulator", "solver", "generator", "game", "toy", "visualizer", "tool",
+    "quiz", "instrument", "editor", "story", "explorer", "puzzle", "calculator"
+  ],
+  "tones": [
+    "playful", "analytical", "absurd", "cozy", "dramatic", "nerdy",
+    "satirical", "serene", "chaotic", "competitive"
+  ],
+  "techSuggestions": [
+    "canvas2d", "webgl", "webgpu", "svg", "css-art", "webaudio", "wasm", "worker",
+    "dom-ui", "speech", "midi", "localstorage", "pointer-events", "gamepad",
+    "offscreen-canvas", "web-animations", "shaders", "procedural-audio"
+  ],
+  "slots": {
+    "interest": ["cards-odds", "hockey-sports", "modding-games"],
+    "currentEvents": ["pop-culture", "news-politics", "hockey-sports", "data-viz"],
+    "humor": ["humor-satire", "weird-experimental", "language-text"],
+    "wildcard": ["science-sim", "math-puzzle", "music-audio", "generative-art", "tools-utility", "games-arcade", "retro-tech", "education-explainer", "finance-economics", "life-food-craft", "weird-experimental"]
+  }
+}

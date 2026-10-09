@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA External Request</title>
+</head>
+<body>
+<main><h1>External request</h1><p>This page phones home and has no CSP.</p>
+<img alt="tracker" src="https://tracker.qa-external.invalid/pixel.gif" width="1" height="1"></main>
+<script>
+fetch('https://api.qa-external.invalid/collect').catch(() => {});
+</script>
+</body>
+</html>

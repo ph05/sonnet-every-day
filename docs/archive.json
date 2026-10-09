@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-09T21:35:32.862Z",
+  "site": {
+    "name": "Sonnet Every Day",
+    "tagline": "A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
+    "url": "https://ph05.github.io/sonnet-every-day/",
+    "startDate": "2026-10-09"
+  },
+  "stats": {
+    "days": 1,
+    "projects": 0,
+    "streak": 0,
+    "categories": {},
+    "tiers": {},
+    "firstDate": null,
+    "lastDate": null,
+    "missingDates": [
+      "2026-10-09"
+    ]
+  },
+  "days": []
+}

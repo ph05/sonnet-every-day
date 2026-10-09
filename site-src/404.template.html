@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="light dark">
+<title>Page not found | {{SITE_NAME}}</title>
+<base href="{{SITE_URL}}">
+<script>
+try {
+  var saved = localStorage.getItem('sed-theme');
+  if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+} catch (e) { /* storage blocked: follow the system theme */ }
+</script>
+<link rel="stylesheet" href="assets/gallery.css">
+</head>
+<body>
+<header class="masthead" role="banner">
+  <div class="wrap">
+    <div class="masthead-bar mono"><p class="dateline">Error 404 · Page not found</p></div>
+  </div>
+</header>
+<main id="main">
+  <div class="wrap">
+    <section class="lost" aria-labelledby="lost-title">
+      <p class="lost-code" aria-hidden="true">404</p>
+      <h1 id="lost-title">This page wandered off.</h1>
+      <p>Whatever lived at this address is not here: it moved, never existed, or was a build that did not make the cut. The gallery, at least, is exactly where we left it.</p>
+      <a class="btn btn-primary btn-lg" href="./">Back to {{SITE_NAME}}</a>
+      <p class="lost-suggest" id="suggest" hidden></p>
+    </section>
+  </div>
+</main>
+<script>
+(function () {
+  // Optional nicety: suggest a random past build. Same-origin, silent on any failure.
+  fetch('archive.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (a) {
+    var days = a && Array.isArray(a.days) ? a.days.filter(function (d) { return d && typeof d.path === 'string' && !/^[a-z][a-z0-9+.-]*:/i.test(d.path) && typeof d.title === 'string'; }) : [];
+    if (!days.length) return;
+    var d = days[Math.floor(Math.random() * days.length)];
+    var box = document.getElementById('suggest');
+    var link = document.createElement('a');
+    link.href = d.path;
+    link.textContent = d.title;
+    box.append('Or try today’s random pick: ', link, '.');
+    box.hidden = false;
+  }).catch(function () {});
+})();
+</script>
+</body>
+</html>
