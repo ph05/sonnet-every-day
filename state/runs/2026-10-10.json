@@ -102,8 +102,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 2115887,
-    "agentCalls": 98,
+    "outputTokens": 2121509,
+    "agentCalls": 102,
     "byPhase": {
       "ideate": {
         "outputTokens": 799455,
@@ -128,6 +128,10 @@
       "package": {
         "outputTokens": 27500,
         "agentCalls": 0
+      },
+      "kaizen": {
+        "outputTokens": 5622,
+        "agentCalls": 4
       }
     }
   },
@@ -176,6 +180,12 @@
       "by": "manual",
       "kind": "note",
       "msg": "published at tier 2"
+    },
+    {
+      "at": "2026-10-10T11:51:22.482Z",
+      "by": "manual",
+      "kind": "error",
+      "msg": "kaizen blocked: suites red at HEAD (1 failing test of 1393 in the tests suite); full npm test passes afterwards (1587 pass), so likely transient; retrying the round once without the heartbeat loop"
     }
   ]
 }

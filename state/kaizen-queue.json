@@ -1,4 +1,14 @@
 {
   "schema": 1,
-  "skipped": []
+  "skipped": [
+    "cards",
+    "lab",
+    "jester",
+    "architect",
+    "artisan",
+    "engineer",
+    "critic",
+    "clerk",
+    "pulse"
+  ]
 }
