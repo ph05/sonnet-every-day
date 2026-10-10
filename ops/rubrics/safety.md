@@ -30,7 +30,7 @@ Agents that read the web also hold Bash and file tools, and the harness has no t
 * Facts shown on the page match `research.facts` with `verified:true` sources. A claim from an unverified source is either removed or shown as "reported, unconfirmed".
 * Numbers carry their date ("as of 2026-10-09") and the page says where they came from.
 * Generated or simulated data is labelled as such.
-* The making-of panel lists only sources that were really opened.
+* The making-of panel lists only `verified:true` sources (a page really opened, or a claim two independent search results agree on, as `ops/rubrics/research.md` defines it); a source seen only in one search result is not listed as verified.
 
 ## Scoring anchors for the `safety` criterion in selection
 

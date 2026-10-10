@@ -174,6 +174,17 @@
     return day;
   }
 
+  // archive.json `kaizen` is optional (older archives have none): {latest: {date, agent, title}, count}.
+  function normKaizen(raw) {
+    const latest = raw && typeof raw === 'object' && raw.latest && typeof raw.latest === 'object' ? raw.latest : null;
+    if (!latest) return null;
+    const agent = text(latest.agent, 32);
+    const title = text(latest.title, 200);
+    if (!agent || !title || !validDate(latest.date)) return null;
+    const count = Number.isFinite(raw.count) && raw.count > 0 ? Math.trunc(raw.count) : 1;
+    return { agent: agent.charAt(0).toUpperCase() + agent.slice(1), title: title, date: latest.date, count: count };
+  }
+
   function normalize(raw) {
     const site = raw && typeof raw.site === 'object' && raw.site ? raw.site : {};
     const stats = raw && typeof raw.stats === 'object' && raw.stats ? raw.stats : {};
@@ -217,6 +228,7 @@
 
     return {
       site: { name: text(site.name, 80), startDate: start },
+      kaizen: normKaizen(raw && raw.kaizen),
       days: days,
       missing: missing,
       byDate: new Map(days.map((d) => [d.date, d])),
@@ -575,6 +587,21 @@
       cell(data.first ? fmtShort.format(utcDate(data.first)) : '—', 'Since', data.missing.size ? plural(data.missing.size, 'missed day') : 'no missed days')
     );
     box.hidden = !data.days.length;
+  }
+
+  /* ---------- swarm diary teaser ---------- */
+
+  function renderTeaser() {
+    const box = $('#kaizen-teaser');
+    const k = data.kaizen;
+    if (!box || !k) return;
+    box.textContent = '';
+    box.append(
+      h('span', { class: 'teaser-kicker mono', text: 'Swarm diary · ' + fmtShort.format(utcDate(k.date)) }),
+      h('span', { class: 'teaser-text' }, h('strong', { text: k.agent }), ' improved the machine: ' + k.title),
+      h('a', { class: 'teaser-link mono', href: 'kaizen/' }, 'Read the diary (' + plural(k.count, 'kaizen') + ') ', h('span', { 'aria-hidden': 'true', text: '→' }))
+    );
+    box.hidden = false;
   }
 
   /* ---------- the run (calendar ribbon) ---------- */
@@ -964,6 +991,7 @@
     localGenerated();
     renderLead();
     renderStats();
+    renderTeaser();
     renderRun();
     renderFilters();
     const hasDays = data.days.length > 0;

@@ -39,6 +39,14 @@
    "2026-10-23"
   ]
  },
+ "kaizen": {
+  "latest": {
+   "date": "2026-10-31",
+   "agent": "cards",
+   "title": "Explain \"GTO\" in the first screen of any poker page"
+  },
+  "count": 16
+ },
  "days": [
   {
    "n": 23,

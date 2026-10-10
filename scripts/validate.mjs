@@ -9,7 +9,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
-import { execFile } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
 import { pathToFileURL, domainToASCII } from 'node:url';
 import {
   repoRoot, rp, loadConfig, loadTaxonomy, parseArgs, resolveNow, localParts, dayNumber, print, die,
@@ -2192,6 +2192,223 @@ function walkAll(root, onFile) {
 const HM = /^([01]\d|2[0-3]):[0-5]\d$/;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+/* ------------------------------------------------------------------------------------------------
+ * Culture layer (CONTRACT 12.11): kaizen config, ledger, queue, protected-block markers, doc caps
+ * ---------------------------------------------------------------------------------------------- */
+
+const KAIZEN_STATUSES = new Set(['applied', 'rejected', 'proposed', 'reverted']);
+const KAIZEN_REQUIRED_PROTECTED = ['config.json', '.github/', 'ops/prompts/', 'scripts/validate.mjs', 'scripts/kaizen.mjs'];
+// Same line grammar as scripts/kaizen.mjs: a marker is a whole line, so prose that mentions one inline is not a marker.
+const MARKER_BEGIN = /^\s*(?:<!--\s*protected:begin\b.*?-->|\/\/\s*protected:begin\b.*)\s*$/;
+const MARKER_END = /^\s*(?:<!--\s*protected:end\b.*?-->|\/\/\s*protected:end\b.*)\s*$/;
+const MARKER_EXT = new Set(['.md', '.js', '.mjs', '.cjs', '.html', '.htm', '.css', '.json', '.yml', '.yaml', '.txt']);
+const MARKER_SKIP_TOP = new Set(['docs', 'work', 'state']);
+const MARKER_MAX_BYTES = 2 * 1024 * 1024;
+
+const isStringList = (v) => Array.isArray(v) && v.every((x) => typeof x === 'string' && x.trim() !== '');
+const isPositiveInt = (v) => Number.isInteger(v) && v > 0;
+
+/** A configured repo-relative path: no absolute forms, backslashes, control characters or `..` segments. */
+function badRepoPath(p) {
+  if (/[\\\0-\x1f]/.test(p)) return 'contains a backslash or control character';
+  if (p.startsWith('/') || /^[A-Za-z]:/.test(p) || p.startsWith('~')) return 'is absolute';
+  if (p.split('/').includes('..')) return 'contains ".."';
+  return null;
+}
+
+function checkKaizenConfig(report, cfg) {
+  const f = 'config.json';
+  const k = cfg.kaizen;
+  const bad = (msg) => report.error('config-kaizen', msg, f);
+  if (!k || typeof k !== 'object' || Array.isArray(k)) {
+    bad('kaizen must be an object');
+    return null;
+  }
+  if (typeof k.enabled !== 'boolean') bad('kaizen.enabled must be a boolean');
+  if (!isStringList(k.members) || k.members.length === 0) bad('kaizen.members must be a non-empty array of names');
+  else {
+    if (new Set(k.members).size !== k.members.length) bad('kaizen.members has duplicates');
+    for (const m of k.members) if (cfg.roster && !Object.hasOwn(cfg.roster, m)) report.warn('config-kaizen', `kaizen member "${m}" is not in the roster`, f);
+  }
+  for (const key of ['maxChangedLines', 'maxFiles', 'minTokensToStart', 'revertWindowDays']) {
+    if (!isPositiveInt(k[key])) bad(`kaizen.${key} must be a positive integer`);
+  }
+  for (const key of ['allowedPaths', 'protectedPaths']) {
+    if (!isStringList(k[key]) || (key === 'allowedPaths' && k[key].length === 0)) {
+      bad(`kaizen.${key} must be ${key === 'allowedPaths' ? 'a non-empty ' : 'an '}array of path strings`);
+      continue;
+    }
+    for (const p of k[key]) {
+      const why = badRepoPath(p);
+      if (why) bad(`kaizen.${key} entry ${JSON.stringify(p)} ${why}`);
+    }
+  }
+  if (isStringList(k.protectedPaths)) {
+    for (const need of KAIZEN_REQUIRED_PROTECTED) {
+      if (!k.protectedPaths.includes(need)) bad(`kaizen.protectedPaths must include ${need}`);
+    }
+  }
+  if (isStringList(k.allowedPaths) && isStringList(k.protectedPaths)) {
+    const covers = (outer, inner) => outer === inner || (outer.endsWith('/') && inner.startsWith(outer));
+    for (const a of k.allowedPaths) {
+      if (k.protectedPaths.some((p) => covers(p, a))) report.warn('config-kaizen', `kaizen.allowedPaths entry ${JSON.stringify(a)} lies inside a protected path and can never be used`, f);
+    }
+  }
+  const caps = k.docLineCaps;
+  if (caps === undefined) return k;
+  if (!caps || typeof caps !== 'object' || Array.isArray(caps)) {
+    bad('kaizen.docLineCaps must map file paths to positive integers');
+    return k;
+  }
+  for (const [p, n] of Object.entries(caps)) {
+    const why = badRepoPath(p);
+    if (why) bad(`kaizen.docLineCaps key ${JSON.stringify(p)} ${why}`);
+    if (!isPositiveInt(n)) bad(`kaizen.docLineCaps[${JSON.stringify(p)}] must be a positive integer`);
+  }
+  return k;
+}
+
+function checkDocLineCaps(report, k) {
+  const caps = k?.docLineCaps;
+  if (!caps || typeof caps !== 'object' || Array.isArray(caps)) return;
+  for (const [rel, cap] of Object.entries(caps)) {
+    if (!isPositiveInt(cap) || badRepoPath(rel)) continue;
+    let buf;
+    try {
+      buf = fs.readFileSync(rp(...rel.split('/')));
+    } catch {
+      report.warn('doc-line-cap', `${rel} is capped at ${cap} lines but cannot be read`, rel);
+      continue;
+    }
+    let lines = 0;
+    for (const b of buf) if (b === 10) lines++;
+    if (buf.length > 0 && buf[buf.length - 1] !== 10) lines++;
+    if (lines > cap) report.error('doc-line-cap', `${rel} has ${lines} lines, over its ${cap}-line cap (condense it)`, rel);
+  }
+}
+
+function checkKaizenLedger(report, members) {
+  const idxRel = 'ops/kaizen/INDEX.json';
+  const logRel = 'ops/kaizen/LOG.md';
+  const index = tryParse(rp('ops', 'kaizen', 'INDEX.json'), report, 'kaizen-index');
+  let log = null;
+  try {
+    log = fs.readFileSync(rp('ops', 'kaizen', 'LOG.md'), 'utf8');
+  } catch {
+    report.error('kaizen-log', `${logRel} is missing`, logRel);
+  }
+  if (!index) return;
+  if (index.schema !== 1) report.error('kaizen-index', 'schema must be 1', idxRel);
+  if (!Array.isArray(index.entries)) {
+    report.error('kaizen-index', 'entries must be an array', idxRel);
+    return;
+  }
+  const ids = new Set();
+  index.entries.forEach((e, i) => {
+    const bad = (msg) => report.error('kaizen-index', `entry ${i}${e && e.id ? ` (${e.id})` : ''}: ${msg}`, idxRel);
+    if (!e || typeof e !== 'object' || Array.isArray(e)) {
+      bad('is not an object');
+      return;
+    }
+    if (typeof e.id !== 'string' || !e.id) bad('id must be a non-empty string');
+    else if (ids.has(e.id)) bad('duplicate id');
+    else ids.add(e.id);
+    if (!DATE.test(String(e.date))) bad('date must be YYYY-MM-DD');
+    if (typeof e.agent !== 'string' || !e.agent) bad('agent must be a non-empty string');
+    else if (members && !members.includes(e.agent)) report.warn('kaizen-index', `entry ${e.id}: agent "${e.agent}" is not a current kaizen member`, idxRel);
+    if (typeof e.id === 'string' && e.id && DATE.test(String(e.date)) && typeof e.agent === 'string' && e.id !== `${e.date}-${e.agent}`) {
+      report.warn('kaizen-index', `entry ${e.id}: id should be ${e.date}-${e.agent}`, idxRel);
+    }
+    for (const key of ['title', 'observation', 'category']) if (typeof e[key] !== 'string' || !e[key].trim()) bad(`${key} must be a non-empty string`);
+    if (!KAIZEN_STATUSES.has(e.status)) bad(`status must be one of ${[...KAIZEN_STATUSES].join('|')}`);
+    if (!isStringList(e.files)) bad('files must be an array of paths');
+    else for (const p of e.files) if (badRepoPath(p)) bad(`file ${JSON.stringify(p)} ${badRepoPath(p)}`);
+    if (!Number.isInteger(e.linesChanged) || e.linesChanged < 0) bad('linesChanged must be a non-negative integer');
+    if (e.sha !== null && e.sha !== undefined && !(typeof e.sha === 'string' && /^[0-9a-f]{7,64}$/i.test(e.sha))) bad('sha must be a commit hash or null');
+    if (e.question !== null && e.question !== undefined && typeof e.question !== 'string') bad('question must be a string or null');
+    if (e.reason !== null && e.reason !== undefined && typeof e.reason !== 'string') bad('reason must be a string or null');
+    if (e.status === 'applied' && Array.isArray(e.files) && e.files.length === 0) report.warn('kaizen-index', `entry ${e.id}: applied but lists no files`, idxRel);
+  });
+  if (log === null) return;
+  const headings = log.split('\n').filter((l) => l.startsWith('## '));
+  for (const e of index.entries) {
+    if (!e || e.status !== 'applied' || typeof e.title !== 'string') continue;
+    if (!headings.some((h) => h.includes(String(e.date)) && h.includes(String(e.agent)) && h.includes(e.title))) {
+      report.error('kaizen-log', `applied kaizen ${e.id} ("${e.title}") is missing from ${logRel}; the log is written only by scripts/kaizen.mjs`, logRel);
+    }
+  }
+}
+
+function checkKaizenQueue(report, members) {
+  const rel = 'state/kaizen-queue.json';
+  if (!fs.existsSync(rp('state', 'kaizen-queue.json'))) {
+    report.warn('kaizen-queue', `${rel} is missing (it is created the first time a member is skipped)`, rel);
+    return;
+  }
+  const q = tryParse(rp('state', 'kaizen-queue.json'), report, 'kaizen-queue');
+  if (!q) return;
+  if (q.schema !== 1) report.error('kaizen-queue', 'schema must be 1', rel);
+  if (!isStringList(q.skipped)) {
+    report.error('kaizen-queue', 'skipped must be an array of member names', rel);
+    return;
+  }
+  if (new Set(q.skipped).size !== q.skipped.length) report.warn('kaizen-queue', 'skipped has duplicates', rel);
+  if (members) for (const m of q.skipped) if (!members.includes(m)) report.warn('kaizen-queue', `skipped member "${m}" is not a current kaizen member`, rel);
+}
+
+/** Tracked (and not-yet-committed) files when `root` is a git work tree, else a plain walk. Runtime output dirs are excluded. */
+function markerCandidates(root) {
+  let rels = null;
+  try {
+    const run = (...args) => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', timeout: 20000, maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] });
+    if (fs.realpathSync(run('rev-parse', '--show-toplevel').trim()) === fs.realpathSync(root)) {
+      rels = run('ls-files', '-z', '--cached', '--others', '--exclude-standard').split('\0').filter(Boolean);
+    }
+  } catch { /* not a repo, or git is unavailable */ }
+  if (!rels) {
+    rels = [];
+    walkAll(root, (p) => rels.push(path.relative(root, p).split(path.sep).join('/')));
+  }
+  return rels.filter((rel) => !MARKER_SKIP_TOP.has(rel.split('/')[0]) && MARKER_EXT.has(path.extname(rel).toLowerCase()));
+}
+
+function checkProtectedMarkers(report, root) {
+  for (const rel of markerCandidates(root)) {
+    let text;
+    try {
+      const abs = path.join(root, ...rel.split('/'));
+      const st = fs.lstatSync(abs);
+      if (!st.isFile() || st.size > MARKER_MAX_BYTES) continue;
+      text = fs.readFileSync(abs, 'utf8');
+    } catch {
+      continue;
+    }
+    if (!text.includes('protected:')) continue;
+    let open = 0;
+    text.split('\n').forEach((line, i) => {
+      if (MARKER_BEGIN.test(line)) {
+        if (open) report.error('protected-markers', 'nested protected:begin (blocks cannot nest)', rel, i + 1);
+        else open = i + 1;
+      } else if (MARKER_END.test(line)) {
+        if (!open) report.error('protected-markers', 'protected:end without a matching protected:begin', rel, i + 1);
+        else open = 0;
+      }
+    });
+    if (open) report.error('protected-markers', 'protected:begin is never closed', rel, open);
+  }
+}
+
+function checkCulture(report, cfg, root) {
+  const k = cfg ? checkKaizenConfig(report, cfg) : null;
+  const members = isStringList(k?.members) ? k.members : null;
+  if (k?.enabled !== false) {
+    checkKaizenLedger(report, members);
+    checkKaizenQueue(report, members);
+  }
+  checkDocLineCaps(report, k);
+  checkProtectedMarkers(report, root);
+}
+
 /** Run async jobs with a small concurrency cap; results keep input order. */
 async function mapPool(items, limit, fn) {
   const results = new Array(items.length);
@@ -2351,6 +2568,8 @@ export async function validateRepo({ projects = true } = {}) {
       }
     }
   }
+
+  checkCulture(report, cfg, root);
 
   // docs/archive.json
   if (fs.existsSync(rp('docs', 'archive.json'))) tryParse(rp('docs', 'archive.json'), report, 'archive');

@@ -1,26 +1,28 @@
-# Model-free safety net. If the day still has no published page at 07:40 New York
-# time, scripts/deadman.mjs publishes the best fallback it can (Ideas Day if the
-# researched ideas exist, otherwise a Postcard), rebuilds the site and pushes.
-# It needs no Claude session, so it still works when the subscription is exhausted.
+# Model-free safety net. If the day still has no published page at 09:40 New York
+# time (after the 09:30 grace period, config.json schedule.graceUntil), scripts/
+# deadman.mjs publishes the best fallback it can (Ideas Day if the researched
+# ideas exist, otherwise a Postcard), rebuilds the site and pushes. It needs no
+# Claude session, so it still works when the subscription is exhausted.
 #
 # IMPORTANT: GitHub only runs `schedule` triggers from the repository's DEFAULT
 # branch. The daily build lives on the work branch (config.json "workBranch"), so
 # this workflow is dormant until it has been merged to `main`. Manual dispatch
 # ("Run workflow" in the Actions tab) always works, whatever branch holds the file.
 #
-# Two cron lines because GitHub cron is UTC: 11:40 is 07:40 in EDT, 12:40 is 07:40
-# in EST. The script ignores a run that is too early (before 07:30 local) and never
-# touches a day that is already published, so the extra run is harmless.
+# Two cron lines because GitHub cron is UTC: 13:40 is 09:40 in EDT, 14:40 is 09:40
+# in EST. The script ignores a run that is too early (before the grace period plus
+# a few minutes) or whose lease is still alive (until the 10:30 hard stop), and it
+# never touches a day that is already published, so the extra run is harmless.
 name: deadman
 
 on:
   schedule:
-    - cron: '40 11 * * *'
-    - cron: '40 12 * * *'
+    - cron: '40 13 * * *'
+    - cron: '40 14 * * *'
   workflow_dispatch:
     inputs:
       force:
-        description: 'Publish a fallback now even if it is before 07:30 New York time'
+        description: 'Publish a fallback now even if it is too early or the run looks alive'
         type: boolean
         default: false
 

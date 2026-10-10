@@ -669,6 +669,261 @@ test('validateRepo looks inside docs/d, including directories nobody listed', as
   });
 });
 
+/* ---- culture layer (CONTRACT 12.11) ---------------------------------------------------------- */
+
+const MB = '<!-- protected:begin -->';
+const ME = '<!-- protected:end -->';
+const JB = '// protected:begin';
+const JE = '// protected:end';
+
+function ledgerEntry(over = {}) {
+  const date = over.date ?? '2026-10-10';
+  const agent = over.agent ?? 'pulse';
+  return {
+    id: `${date}-${agent}`, date, agent, title: 'Shorter preflight note', observation: 'The note was long.', category: 'clarity',
+    files: ['ops/roles/pulse.md'], sha: 'abcdef1234', status: 'applied', linesChanged: 4, question: null, reason: null, ...over,
+  };
+}
+
+const logFor = (entries) => `# Kaizen log\n\n${entries.map((e) => `## ${e.date} · ${e.agent} · ${e.status} · ${e.title}\n\n- observation: ${e.observation}`).join('\n\n')}\n`;
+
+test('validateRepo: culture layer', async (t) => {
+  const check = async (mutate) => {
+    const box = repoBox([]);
+    try {
+      mutate(box);
+      const res = await validateRepo();
+      return { e: codesOf(res.errors), w: codesOf(res.warnings), res };
+    } finally {
+      box.cleanup();
+    }
+  };
+  const withConfig = (fn) => (b) => {
+    const c = b.readJson('config.json');
+    fn(c.kaizen, c);
+    b.write('config.json', c);
+  };
+  const ledger = (entries) => (b) => {
+    b.write('ops/kaizen/INDEX.json', { schema: 1, entries });
+    b.write('ops/kaizen/LOG.md', logFor(entries.filter((e) => e && typeof e === 'object')));
+  };
+
+  await t.test('the real repo ledger, queue, markers and doc caps are clean', async () => {
+    const prior = process.env.SED_ROOT;
+    process.env.SED_ROOT = REAL_ROOT;
+    try {
+      const res = await validateRepo({ projects: false });
+      assert.deepEqual(res.errors, []);
+      assert.deepEqual(res.warnings.filter((x) => /^(config-kaizen|kaizen-|protected-markers|doc-line-cap)/.test(x)), []);
+    } finally {
+      if (prior === undefined) delete process.env.SED_ROOT;
+      else process.env.SED_ROOT = prior;
+    }
+  });
+
+  await t.test('a consistent ledger with several statuses passes', async () => {
+    const entries = [
+      ledgerEntry(),
+      ledgerEntry({ agent: 'cards', status: 'rejected', files: [], linesChanged: 0, sha: null, reason: 'too many lines', title: 'Big idea' }),
+      ledgerEntry({ agent: 'lab', status: 'proposed', question: 'Why?', title: 'Needs a protected path' }),
+      ledgerEntry({ agent: 'jester', status: 'reverted', title: 'Joke header', reason: 'broke the parser' }),
+    ];
+    const { res } = await check(ledger(entries));
+    assert.deepEqual(res.errors, []);
+    assert.deepEqual(res.warnings.filter((x) => x.startsWith('kaizen-')), []);
+  });
+
+  await t.test('INDEX.json and LOG.md must exist', async () => {
+    assert.ok((await check((b) => fs.rmSync(path.join(b.root, 'ops', 'kaizen', 'INDEX.json')))).e.includes('kaizen-index'));
+    assert.ok((await check((b) => fs.rmSync(path.join(b.root, 'ops', 'kaizen', 'LOG.md')))).e.includes('kaizen-log'));
+    assert.ok((await check((b) => b.write('ops/kaizen/INDEX.json', '{nope'))).e.includes('kaizen-index'));
+  });
+
+  await t.test('INDEX shape errors', async () => {
+    const bad = {
+      'wrong schema': (b) => b.write('ops/kaizen/INDEX.json', { schema: 2, entries: [] }),
+      'entries not an array': (b) => b.write('ops/kaizen/INDEX.json', { schema: 1, entries: {} }),
+      'entry not an object': ledger(['x']),
+      'duplicate ids': ledger([ledgerEntry(), ledgerEntry({ title: 'Other' })]),
+      'missing id': ledger([ledgerEntry({ id: '' })]),
+      'bad date': ledger([ledgerEntry({ date: 'tomorrow', id: 'tomorrow-pulse' })]),
+      'bad status': ledger([ledgerEntry({ status: 'merged' })]),
+      'empty title': ledger([ledgerEntry({ title: ' ' })]),
+      'files not a list': ledger([ledgerEntry({ files: 'ops/x.md' })]),
+      'file with ..': ledger([ledgerEntry({ files: ['../x'] })]),
+      'negative lines': ledger([ledgerEntry({ linesChanged: -1 })]),
+      'non-integer lines': ledger([ledgerEntry({ linesChanged: '4' })]),
+      'bad sha': ledger([ledgerEntry({ sha: 'not a sha' })]),
+      'question of the wrong type': ledger([ledgerEntry({ question: 5 })]),
+    };
+    for (const [label, mutate] of Object.entries(bad)) {
+      const { e } = await check(mutate);
+      assert.ok(e.includes('kaizen-index'), `${label}: ${JSON.stringify(e)}`);
+    }
+  });
+
+  await t.test('a sha-less applied entry (the commit is stamped afterwards) is fine; odd agents and ids only warn', async () => {
+    const { res, w } = await check(ledger([ledgerEntry({ sha: null }), ledgerEntry({ agent: 'ghost', id: 'custom-id' })]));
+    assert.deepEqual(res.errors, []);
+    assert.ok(w.includes('kaizen-index'));
+  });
+
+  await t.test('every applied entry must appear in LOG.md; other statuses need not', async () => {
+    const entries = [ledgerEntry(), ledgerEntry({ agent: 'cards', status: 'rejected', title: 'Missing but rejected' })];
+    const missing = await check((b) => {
+      b.write('ops/kaizen/INDEX.json', { schema: 1, entries });
+      b.write('ops/kaizen/LOG.md', '# Kaizen log\n\n## 2026-10-10 · pulse · applied · Something else\n');
+    });
+    assert.ok(missing.res.errors.some((x) => x.startsWith('kaizen-log:') && x.includes('2026-10-10-pulse')), JSON.stringify(missing.res.errors));
+    const ok = await check((b) => {
+      b.write('ops/kaizen/INDEX.json', { schema: 1, entries });
+      b.write('ops/kaizen/LOG.md', logFor([entries[0]]));
+    });
+    assert.deepEqual(ok.res.errors, []);
+  });
+
+  await t.test('the queue: shape errors and tolerated absence', async () => {
+    assert.ok((await check((b) => b.write('state/kaizen-queue.json', '{nope'))).e.includes('kaizen-queue'));
+    assert.ok((await check((b) => b.write('state/kaizen-queue.json', { schema: 2, skipped: [] }))).e.includes('kaizen-queue'));
+    assert.ok((await check((b) => b.write('state/kaizen-queue.json', { schema: 1, skipped: 'pulse' }))).e.includes('kaizen-queue'));
+    assert.ok((await check((b) => b.write('state/kaizen-queue.json', { schema: 1, skipped: [{ agent: 'pulse' }] }))).e.includes('kaizen-queue'));
+    const fine = await check((b) => b.write('state/kaizen-queue.json', { schema: 1, skipped: ['pulse', 'clerk'] }));
+    assert.deepEqual(fine.res.errors, []);
+    const odd = await check((b) => b.write('state/kaizen-queue.json', { schema: 1, skipped: ['pulse', 'pulse', 'ghost'] }));
+    assert.deepEqual(odd.e, []);
+    assert.ok(odd.w.includes('kaizen-queue'));
+    const absent = await check((b) => fs.rmSync(path.join(b.root, 'state', 'kaizen-queue.json')));
+    assert.deepEqual(absent.e, []);
+    assert.ok(absent.w.includes('kaizen-queue'));
+  });
+
+  await t.test('config.kaizen: numbers, lists and paths', async () => {
+    const cases = {
+      'missing block': (k, c) => delete c.kaizen,
+      'not an object': (k, c) => { c.kaizen = []; },
+      'enabled not a boolean': (k) => { k.enabled = 'yes'; },
+      'no members': (k) => { k.members = []; },
+      'member not a string': (k) => { k.members = ['pulse', 7]; },
+      'duplicate members': (k) => { k.members = ['pulse', 'pulse']; },
+      'maxChangedLines zero': (k) => { k.maxChangedLines = 0; },
+      'maxFiles a string': (k) => { k.maxFiles = '4'; },
+      'minTokensToStart fractional': (k) => { k.minTokensToStart = 1.5; },
+      'revertWindowDays missing': (k) => { delete k.revertWindowDays; },
+      'allowedPaths empty': (k) => { k.allowedPaths = []; },
+      'allowedPaths not strings': (k) => { k.allowedPaths = [1]; },
+      'allowedPaths with ..': (k) => { k.allowedPaths.push('ops/../config.json'); },
+      'allowedPaths absolute': (k) => { k.allowedPaths.push('/etc/'); },
+      'allowedPaths drive letter': (k) => { k.allowedPaths.push('C:/x'); },
+      'allowedPaths backslash': (k) => { k.allowedPaths.push('ops\\roles'); },
+      'protectedPaths with ..': (k) => { k.protectedPaths.push('../x'); },
+      'protectedPaths not an array': (k) => { k.protectedPaths = 'config.json'; },
+      'docLineCaps not an object': (k) => { k.docLineCaps = []; },
+      'docLineCaps zero': (k) => { k.docLineCaps['README.md'] = 0; },
+      'docLineCaps escaping path': (k) => { k.docLineCaps['../outside.md'] = 10; },
+    };
+    for (const [label, fn] of Object.entries(cases)) {
+      const { e } = await check(withConfig(fn));
+      assert.ok(e.includes('config-kaizen'), `${label}: ${JSON.stringify(e)}`);
+    }
+  });
+
+  await t.test('protectedPaths must keep the five load-bearing entries', async () => {
+    for (const need of ['config.json', '.github/', 'ops/prompts/', 'scripts/validate.mjs', 'scripts/kaizen.mjs']) {
+      const { res } = await check(withConfig((k) => { k.protectedPaths = k.protectedPaths.filter((p) => p !== need); }));
+      assert.ok(res.errors.some((x) => x.startsWith('config-kaizen:') && x.includes(`include ${need}`)), `${need}: ${JSON.stringify(res.errors)}`);
+    }
+  });
+
+  await t.test('an allowed path inside a protected one is only a warning', async () => {
+    const { e, w } = await check(withConfig((k) => { k.allowedPaths.push('ops/prompts/'); }));
+    assert.deepEqual(e, []);
+    assert.ok(w.includes('config-kaizen'));
+  });
+
+  await t.test('a disabled kaizen block does not demand a ledger', async () => {
+    const { e } = await check((b) => {
+      withConfig((k) => { k.enabled = false; })(b);
+      fs.rmSync(path.join(b.root, 'ops', 'kaizen'), { recursive: true });
+    });
+    assert.deepEqual(e, []);
+  });
+
+  await t.test('docLineCaps: at the cap passes, one over is an error, a missing file warns', async () => {
+    const capped = (lines, cap) => (b) => {
+      withConfig((k) => { k.docLineCaps = { 'ops/NOTES.md': cap }; })(b);
+      b.write('ops/NOTES.md', 'line\n'.repeat(lines));
+    };
+    assert.deepEqual((await check(capped(10, 10))).res.errors, []);
+    const over = await check(capped(11, 10));
+    assert.ok(over.res.errors.some((x) => x.startsWith('doc-line-cap:') && x.includes('11 lines')), JSON.stringify(over.res.errors));
+    const noNewline = await check((b) => {
+      withConfig((k) => { k.docLineCaps = { 'ops/NOTES.md': 3 }; })(b);
+      b.write('ops/NOTES.md', 'a\nb\nc\nd');
+    });
+    assert.ok(noNewline.e.includes('doc-line-cap'));
+    const gone = await check(withConfig((k) => { k.docLineCaps = { 'ops/GONE.md': 3 }; }));
+    assert.deepEqual(gone.e, []);
+    assert.ok(gone.w.includes('doc-line-cap'));
+  });
+
+  await t.test('balanced protected blocks in markdown and JS pass; inline mentions are not markers', async () => {
+    const { res } = await check((b) => {
+      b.write('ops/roles/x.md', `Free text\n${MB}\n* rule\n${ME}\nmore\n${MB}\n* another\n${ME}\n`);
+      b.write('scripts/x.mjs', `const a = 1;\n${JB}\nconst SAFE = true;\n${JE}\n`);
+      b.write('ops/OPERATING.md', `Wrap rules in \`${MB}\` and \`${ME}\` lines; in JS use \`${JB}\`.\n`);
+      b.write('ops/kaizen/README.md', `| marker | ${MB} |\n`);
+    });
+    assert.deepEqual(res.errors, []);
+  });
+
+  await t.test('unbalanced protected markers are errors with a file and line', async () => {
+    const cases = {
+      'unclosed md': ['ops/roles/x.md', `a\n${MB}\nrule\n`, /x\.md:2/],
+      'end without begin': ['ops/roles/x.md', `a\n${ME}\n`, /x\.md:2/],
+      nested: ['ops/roles/x.md', `${MB}\n${MB}\n${ME}\n`, /nested/],
+      'double end': ['ops/roles/x.md', `${MB}\nr\n${ME}\n${ME}\n`, /without a matching/],
+      'unclosed js': ['scripts/x.mjs', `${JB}\nconst a = 1;\n`, /x\.mjs:1/],
+      'js end only': ['scripts/x.mjs', `const a = 1;\n${JE}\n`, /x\.mjs:2/],
+      'html file': ['site-src/x.html', `<p>x</p>\n${MB}\n`, /x\.html:2/],
+      'indented marker': ['tests/x.test.mjs', `  ${JB}\n  x\n`, /x\.test\.mjs:1/],
+    };
+    for (const [label, [rel, body, re]] of Object.entries(cases)) {
+      const { res } = await check((b) => b.write(rel, body));
+      assert.ok(res.errors.some((x) => x.startsWith('protected-markers:') && re.test(x)), `${label}: ${JSON.stringify(res.errors)}`);
+    }
+  });
+
+  await t.test('generated output (docs, work, state) is not scanned for markers', async () => {
+    const { res } = await check((b) => {
+      b.write('docs/kaizen/index.html', `<pre>\n${MB}\n</pre>\n`);
+      b.write('work/2026-10-10/notes.md', `${MB}\n`);
+      b.write('state/handoff.md', `${ME}\n`);
+    });
+    assert.deepEqual(res.errors, []);
+  });
+
+  await t.test('in a git work tree, uncommitted files are scanned too and ignored ones are not', async () => {
+    const box = repoBox([]);
+    try {
+      const git = (...args) => spawnSync('git', ['-C', box.root, ...args], { encoding: 'utf8', env: { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' } });
+      assert.equal(git('init', '-q').status, 0);
+      box.write('.gitignore', 'ignored.md\n');
+      box.write('ignored.md', `${MB}\n`);
+      box.write('ops/roles/tracked.md', 'fine\n');
+      git('add', '-A');
+      git('commit', '-q', '-m', 'seed');
+      assert.deepEqual((await validateRepo()).errors, []);
+      box.write('ops/roles/fresh.md', `${MB}\nnever closed\n`);
+      const res = await validateRepo();
+      assert.ok(res.errors.some((x) => /protected-markers:.*fresh\.md:1/.test(x)), JSON.stringify(res.errors));
+      box.write('ops/roles/tracked.md', `${ME}\n`);
+      assert.ok((await validateRepo()).errors.some((x) => /protected-markers:.*tracked\.md:1/.test(x)));
+    } finally {
+      box.cleanup();
+    }
+  });
+});
+
 test('content guardrails gate tiers 1 and 2 and only report on the fallback tiers', async (t) => {
   const box = makeSandbox();
   t.after(() => box.cleanup());

@@ -293,6 +293,23 @@ select { appearance: none; padding-right: 2.2em;
 .stat-label { margin-top: 4px; font-size: 0.78rem; text-transform: uppercase; font-weight: 700; }
 .stat-sub { font-size: 0.85rem; color: var(--muted); }
 
+/* ---------- swarm diary teaser ---------- */
+
+a.tool { color: inherit; text-decoration: none; }
+a.tool:hover { color: inherit; }
+.teaser {
+  display: flex; align-items: baseline; gap: 6px 14px; margin-top: 18px; padding: 10px 14px;
+  border: 1.5px dashed var(--ink); border-radius: 4px; background: var(--card); font-size: 0.92rem;
+}
+.teaser-kicker { flex: none; font-size: 0.74rem; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+.teaser-text { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.teaser-link { flex: none; font-weight: 700; color: var(--accent); }
+.teaser-link:hover { color: var(--ink); }
+@media (max-width: 520px) {
+  .teaser { flex-wrap: wrap; }
+  .teaser-text { flex-basis: 100%; order: 3; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+}
+
 /* ---------- sections ---------- */
 
 .run, .archive { padding-top: clamp(30px, 5vw, 56px); }

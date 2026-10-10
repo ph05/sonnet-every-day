@@ -4,7 +4,7 @@ export const meta = {
   whenToUse: 'One-off check of the scheduled-run plumbing (ops/prompts/smoke.md).',
   phases: [
     { title: 'Probe', detail: 'a Haiku environment check and a Sonnet (high) repo check run in parallel' },
-    { title: 'Report', detail: 'summarize what both saw, including budget.total' },
+    { title: 'Report', detail: 'summarize what both saw, including budget.total and the self-imposed cap' },
   ],
 };
 
@@ -25,6 +25,11 @@ const REPO = (typeof A.repoDir === 'string' && A.repoDir.trim() ? A.repoDir.trim
 const ROLE = typeof A.role === 'string' && A.role ? A.role : 'smoke';
 const OUT = `${REPO}/work/smoke`;
 
+// A "+N" prompt directive does not reach the Workflow tool (field-verified): budget.total is null and budget.remaining() is null.
+// Budgets are self-imposed from args.capTokens and budget.spent(); left() below is the one reader of budget.remaining(), as in the real workflows.
+const CAP = typeof A.capTokens === 'number' && Number.isFinite(A.capTokens) && A.capTokens >= 0 ? A.capTokens : null;
+const left = () => (budget.total ? budget.remaining() : (CAP !== null ? Math.max(0, CAP - budget.spent()) : Infinity));
+
 const snapshot = () => {
   const read = (fn) => {
     try {
@@ -34,12 +39,12 @@ const snapshot = () => {
       return null;
     }
   };
-  return { total: budget && budget.total ? budget.total : null, spent: read(() => budget.spent()), remaining: read(() => budget.remaining()) };
+  return { total: budget && budget.total ? budget.total : null, spent: read(() => budget.spent()), left: read(left) };
 };
 
 phase('Probe');
 const before = snapshot();
-log(`budget.total=${before.total} spent=${before.spent} remaining=${before.remaining}`);
+log(`budget.total=${before.total} spent=${before.spent} left=${before.left} (cap ${CAP === null ? 'none' : CAP})`);
 
 const HAIKU_SCHEMA = {
   type: 'object',
@@ -109,16 +114,16 @@ const [haiku, sonnet] = await Promise.all([
 
 phase('Report');
 const after = snapshot();
-log(`budget after probes: spent=${after.spent} remaining=${after.remaining} (total=${after.total})`);
+log(`budget after probes: spent=${after.spent} left=${after.left} (total=${after.total})`);
 const observations = [
-  `budget.total=${after.total === null ? 'null (no +NNNk directive reached the workflow)' : after.total}`,
+  `budget.total=${after.total === null ? 'null (expected: a +N prompt directive does not reach the Workflow tool; budgets are self-imposed from args.capTokens and budget.spent())' : after.total}`,
   `haiku agent: ${haiku && !haiku.__error ? 'ran' : `FAILED ${haiku ? haiku.__error : 'no result'}`}`,
   `sonnet (high) agent: ${sonnet && !sonnet.__error ? 'ran' : `FAILED ${sonnet ? sonnet.__error : 'no result'}`}`,
   `args seen: repoDir=${REPO} role=${ROLE}`,
 ];
 return {
   ok: Boolean(haiku && !haiku.__error && sonnet && !sonnet.__error && sonnet.canReadRepo === true && sonnet.stateTodayRan === true),
-  budget: { total: after.total, spentBefore: before.spent, spentAfter: after.spent, remainingBefore: before.remaining, remainingAfter: after.remaining },
+  budget: { total: after.total, cap: CAP, spentBefore: before.spent, spentAfter: after.spent, leftBefore: before.left, leftAfter: after.left },
   args: { repoDir: REPO, role: ROLE, keys: Object.keys(A).sort() },
   haiku: haiku || null,
   sonnet: sonnet || null,

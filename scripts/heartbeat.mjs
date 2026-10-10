@@ -1,7 +1,13 @@
 #!/usr/bin/env node
-// Out-of-process liveness (CONTRACT 6.1b). A long workflow keeps this running (via a Haiku "pulse"
+// Out-of-process liveness (CONTRACT 6.1b, 14). A long workflow keeps this running (via a Haiku "pulse"
 // agent) so a hung orchestrator is detectable even while it is busy: the beat is a real foreground
 // wait followed by one tiny commit to state/heartbeats/<date>/<session>.json.
+//
+// The commit goes to config.heartbeatBranch, never to the work branch: every push to the Pages source
+// branch can trigger a Pages build (soft limit about 10 an hour), and a beat every few minutes would eat
+// that budget. Pushing to a branch that does not exist yet creates it as an orphan holding only .gitkeep:
+// the single place where an unattended run creates a remote branch. Heartbeat files older than three days
+// are removed in the same commit.
 //
 // One file per session: a hung old session's pulse and its replacement's pulse never share a path, so
 // neither can overwrite the other's proof of life (a shared file made a healthy replacement look dead).
@@ -9,20 +15,30 @@
 // It works in its OWN cached clone (default <tmp>/sed-hb-clone, override with SED_HB_DIR) so it can
 // never race the orchestrator's working tree, and it never takes the repo lockfile. The clone is partial
 // and sparse (only state/heartbeats is checked out), and a beat that changes nothing but the timestamp is
-// pushed at most every 10 minutes: the work branch also serves GitHub Pages, and every push may rebuild it.
+// pushed at most every 10 minutes.
 // It never throws: every failure comes back as { ok:false, reason }.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { parseArgs, resolveNow, loadConfig, localParts, repoRoot, writeJsonAtomic, print } from './lib/common.mjs';
-import { createGit, commitStaged, remoteHead, firstLine, clearStaleIndexLock, BACKOFF_SECONDS } from './lib/gitsync.mjs';
+import { parseArgs, resolveNow, loadConfig, localParts, addDays, repoRoot, writeJsonAtomic, print } from './lib/common.mjs';
+import { createGit, commitStaged, remoteHead, resolveHeartbeatBranch, firstLine, clearStaleIndexLock, BACKOFF_SECONDS } from './lib/gitsync.mjs';
 import { acquireLock, releaseLock, heartbeatRel, ROLES, PHASES, UsageError, assertDate } from './lib/runstate.mjs';
 
 export const MAX_WAIT_SECONDS = 540;
 const DEPTH = '20';
 const SPARSE_DIR = 'state/heartbeats';
 export const MIN_PUSH_SECONDS = 600;
+export const RETAIN_DAYS = 3;
+const MISSING_REF = /couldn't find remote ref/i;
+// A server or proxy that cannot do partial or sparse clones must not cost the heartbeat: each attempt asks for less.
+const CLONE_ATTEMPTS = [
+  ['--filter=blob:none', '--sparse'],
+  ['--sparse'],
+  [],
+];
+// What a git proxy that only lets a session write its own branch says; the beat then reports it instead of retrying blindly.
+const REFUSED_PUSH = /denied|forbidden|not allowed|permission|protected|unauthori[sz]ed|\b40[13]\b|refus/i;
 // A beat holding the clone must finish well inside this; a crashed one is broken after it.
 const CLONE_LOCK = { waitMs: 30_000, staleMs: 15 * 60_000 };
 
@@ -40,7 +56,30 @@ export function defaultCloneDir() {
 const defaultSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const noSleepEnv = () => !['', '0', 'false', undefined].includes(process.env.SED_NO_SLEEP);
 
-/** Brings the cached clone to origin/<branch>, cloning (or re-cloning a broken cache) when needed. */
+/**
+ * A brand-new local repo whose only commit is an empty .gitkeep on an orphan <branch>: what the heartbeat
+ * branch looks like before its first beat. Nothing is pushed here; the first beat pushes it with its record.
+ */
+function initOrphan(cloneDir, url, branch) {
+  fs.rmSync(cloneDir, { recursive: true, force: true });
+  fs.mkdirSync(cloneDir, { recursive: true });
+  const g = createGit(cloneDir);
+  for (const args of [['init', '-q'], ['symbolic-ref', 'HEAD', `refs/heads/${branch}`], ['remote', 'add', 'origin', url]]) {
+    const r = g.run(args);
+    if (!r.ok) return { ok: false, reason: `git ${args[0]} failed: ${firstLine(r.stderr)}` };
+  }
+  fs.writeFileSync(path.join(cloneDir, '.gitkeep'), '');
+  const added = g.run(['add', '--', '.gitkeep']);
+  if (!added.ok) return { ok: false, reason: `git add failed: ${firstLine(added.stderr)}` };
+  const commit = commitStaged(g, `create the ${branch} branch for liveness heartbeats`);
+  if (commit.error) return { ok: false, reason: commit.error };
+  return { ok: true, g, created: true };
+}
+
+/**
+ * Brings the cached clone to origin/<branch>, cloning (or re-cloning a broken cache) when needed. A remote
+ * without the branch gets a fresh orphan one (`created:true`), see initOrphan.
+ */
 function prepareClone(cloneDir, url, branch) {
   if (fs.existsSync(path.join(cloneDir, '.git'))) {
     const g = createGit(cloneDir);
@@ -52,25 +91,45 @@ function prepareClone(cloneDir, url, branch) {
       g.run(['clean', '-fdq']);
       return { ok: true, g };
     }
-    // Probe the URL itself: asking through a damaged cache would blame the network for a broken clone.
-    const remote = remoteHead(createGit(os.tmpdir()), branch, url);
-    if (remote.state === 'missing') return { ok: false, reason: `remote branch ${branch} does not exist` };
-    if (remote.state === 'error') return { ok: false, reason: `remote unreachable: ${remote.message}` };
-    // The remote is fine but the cache is not: rebuild it from scratch.
   }
-  fs.rmSync(cloneDir, { recursive: true, force: true });
+  // Probe the URL itself: asking through a damaged cache would blame the network for a broken clone.
+  const remote = remoteHead(createGit(os.tmpdir()), branch, url);
+  if (remote.state === 'error') return { ok: false, reason: `remote unreachable: ${remote.message}` };
+  if (remote.state === 'missing') return initOrphan(cloneDir, url, branch);
+  // The remote has the branch but the cache is missing or broken: rebuild it from scratch.
   fs.mkdirSync(path.dirname(cloneDir), { recursive: true });
-  const cloned = createGit(path.dirname(cloneDir)).run(
-    ['clone', '--quiet', '--depth', DEPTH, '--filter=blob:none', '--sparse', '--branch', branch, url, cloneDir],
-    { network: true },
-  );
-  if (!cloned.ok) {
-    const text = `${cloned.stderr}${cloned.stdout}`;
-    return { ok: false, reason: /not found in upstream|Remote branch/i.test(text) ? `remote branch ${branch} does not exist` : `clone failed: ${firstLine(text)}` };
+  let cloned;
+  for (const extra of CLONE_ATTEMPTS) {
+    fs.rmSync(cloneDir, { recursive: true, force: true });
+    cloned = createGit(path.dirname(cloneDir)).run(['clone', '--quiet', '--depth', DEPTH, ...extra, '--branch', branch, url, cloneDir], { network: true });
+    if (cloned.ok) break;
   }
+  if (!cloned.ok) return { ok: false, reason: `clone failed: ${firstLine(`${cloned.stderr}${cloned.stdout}`)}` };
   const g = createGit(cloneDir);
-  g.run(['sparse-checkout', 'set', SPARSE_DIR]);
+  g.run(['sparse-checkout', 'set', SPARSE_DIR]); // a no-op error on a full clone: the branch holds nothing but heartbeats anyway
   return { ok: true, g };
+}
+
+/**
+ * Deletes state/heartbeats entries (a <date> directory, or a file named after a date) dated before `cutoff`,
+ * except the day being recorded right now; returns how many.
+ */
+function pruneOld(cloneDir, cutoff, keepDay) {
+  const dir = path.join(cloneDir, SPARSE_DIR);
+  let removed = 0;
+  let names = [];
+  try {
+    names = fs.readdirSync(dir);
+  } catch {
+    return 0;
+  }
+  for (const name of names) {
+    const day = name.match(/^(\d{4}-\d{2}-\d{2})(?:[./]|$)/)?.[1];
+    if (!day || day >= cutoff || day === keepDay) continue;
+    fs.rmSync(path.join(dir, name), { recursive: true, force: true });
+    removed++;
+  }
+  return removed;
 }
 
 /** Seconds a beat that only advances the timestamp may wait before being pushed (0 = push every beat). */
@@ -91,7 +150,7 @@ function readPrevious(file, session) {
 
 /**
  * heartbeat({ role, session, phase?, wait?, note?, date?, now?, push?, minPushSeconds?, cloneDir?, sleep?, root? })
- * -> { ok, pushed, at, date, reason? }.
+ * -> { ok, pushed, at, date, branch?, pruned?, reason? }.
  * `now` is an ISO instant (tests); when absent the instant is taken AFTER the wait.
  */
 export async function heartbeat(opts) {
@@ -110,12 +169,17 @@ export async function heartbeat(opts) {
     const config = loadConfig();
     const now = resolveNow({ now: opts.now });
     at = now.toISOString();
-    date ??= localParts(now, config.timezone).date;
+    const today = localParts(now, config.timezone).date;
+    date ??= today;
     const fail = (reason, extra = {}) => ({ ok: false, pushed: false, at, date, reason, ...extra });
 
-    const url = createGit(opts.root ?? repoRoot()).out(['remote', 'get-url', 'origin']);
+    const mainGit = createGit(opts.root ?? repoRoot());
+    const url = mainGit.out(['remote', 'get-url', 'origin']);
     if (!url) return fail('the repo has no origin remote to push heartbeats to');
+    const { branch, problem } = resolveHeartbeatBranch(mainGit, config);
+    if (problem) return fail(problem);
     const cloneDir = opts.cloneDir ?? defaultCloneDir();
+    const cutoff = addDays(today, -RETAIN_DAYS);
 
     let lock;
     try {
@@ -124,7 +188,7 @@ export async function heartbeat(opts) {
       return fail(`heartbeat clone is busy: ${err.message}`);
     }
     try {
-      const prepared = prepareClone(cloneDir, url, config.workBranch);
+      const prepared = prepareClone(cloneDir, url, branch);
       if (!prepared.ok) return fail(prepared.reason);
       const { g } = prepared;
       const rel = heartbeatRel(date, opts.session);
@@ -138,44 +202,52 @@ export async function heartbeat(opts) {
         Date.parse(at) - Date.parse(previous.at) < minPushSeconds(opts) * 1000 &&
         Date.parse(at) >= Date.parse(previous.at)
       ) {
-        return { ok: true, pushed: false, at, date, reason: 'throttled', lastPushedAt: previous.at };
+        return { ok: true, pushed: false, at, date, branch, reason: 'throttled', lastPushedAt: previous.at };
       }
       const message = `heartbeat ${date} ${opts.role} ${opts.phase ?? '-'}`;
 
+      let pruned = 0;
       const writeAndCommit = () => {
         writeJsonAtomic(path.join(g.cwd, rel), record);
-        const added = g.run(['add', '--', rel]);
+        pruned = pruneOld(g.cwd, cutoff, date);
+        const added = g.run(['add', '-A', '--', SPARSE_DIR]); // the record, and the deletions of expired days
         if (!added.ok) return { error: `git add failed: ${firstLine(added.stderr)}` };
         return commitStaged(g, message);
       };
+      const result = (extra) => ({ ok: true, at, date, branch, ...(pruned ? { pruned } : {}), ...extra });
 
       let commit = writeAndCommit();
       if (commit.error) return fail(commit.error);
-      if (opts.push === false) return { ok: true, pushed: false, at, date, reason: 'no-push', committed: commit.committed };
+      if (opts.push === false) return result({ pushed: false, reason: 'no-push', committed: commit.committed });
 
       let lastError = 'unknown failure';
+      let refused = false;
       for (let attempt = 0; attempt <= BACKOFF_SECONDS.length; attempt++) {
         if (attempt > 0) {
           await retrySleep(BACKOFF_SECONDS[attempt - 1] * 1000);
           // The file is a single record that this beat overwrites, so instead of rebasing: take the
-          // remote state as it is now and lay our record on top (cannot conflict).
-          const fetched = g.run(['fetch', '--depth', DEPTH, 'origin', `+refs/heads/${config.workBranch}:refs/remotes/origin/${config.workBranch}`], { network: true });
-          if (!fetched.ok) {
+          // remote state as it is now and lay our record on top (cannot conflict). A branch that still does
+          // not exist remotely (our orphan was never accepted) is simply pushed again as it is.
+          const fetched = g.run(['fetch', '--depth', DEPTH, 'origin', `+refs/heads/${branch}:refs/remotes/origin/${branch}`], { network: true });
+          if (fetched.ok) {
+            g.run(['reset', '--hard', '-q', `origin/${branch}`]);
+            commit = writeAndCommit();
+            if (commit.error) return fail(commit.error);
+          } else if (!MISSING_REF.test(fetched.stderr)) {
             lastError = `fetch failed: ${fetched.timedOut ? 'timed out' : firstLine(fetched.stderr)}`;
             continue;
           }
-          g.run(['reset', '--hard', '-q', `origin/${config.workBranch}`]);
-          commit = writeAndCommit();
-          if (commit.error) return fail(commit.error);
         }
-        if (!commit.committed && g.out(['rev-parse', 'HEAD']) === g.out(['rev-parse', `origin/${config.workBranch}`])) {
-          return { ok: true, pushed: false, at, date, reason: 'unchanged' };
+        if (!commit.committed && g.out(['rev-parse', 'HEAD']) === g.out(['rev-parse', `origin/${branch}`])) {
+          return result({ pushed: false, reason: 'unchanged' });
         }
-        const pushed = g.run(['push', 'origin', `HEAD:refs/heads/${config.workBranch}`], { network: true });
-        if (pushed.ok) return { ok: true, pushed: true, at, date, sha: g.out(['rev-parse', 'HEAD']) };
+        const pushed = g.run(['push', 'origin', `HEAD:refs/heads/${branch}`], { network: true });
+        if (pushed.ok) return result({ pushed: true, sha: g.out(['rev-parse', 'HEAD']) });
         lastError = `push failed: ${pushed.timedOut ? 'timed out' : firstLine(pushed.stderr)}`;
+        refused = !pushed.timedOut && REFUSED_PUSH.test(pushed.stderr);
+        if (refused) break; // a policy refusal does not heal in 30 seconds
       }
-      return fail(lastError);
+      return fail(lastError, refused ? { refused: true, hint: `the remote refuses pushes to ${branch}; \`begin\` will report heartbeatAvailable:false and leases are judged by their own checkpoint age` } : {});
     } finally {
       releaseLock(lock);
     }

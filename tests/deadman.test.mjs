@@ -8,7 +8,7 @@ import path from 'node:path';
 import { etIso } from './helpers/env.mjs';
 import { DATE, REPO_ROOT, makeRepoSandbox, makeSandbox } from './helpers/sandbox.mjs';
 import { installPushHook, pushCount, remoteFile, remoteHas, removePushHook } from './helpers/git.mjs';
-import { deadman, DEADMAN_FROM } from '../scripts/deadman.mjs';
+import { deadman, deadmanThresholds, DEADMAN_GRACE_EXTRA_MINUTES } from '../scripts/deadman.mjs';
 
 const DEADMAN = path.join(REPO_ROOT, 'scripts', 'deadman.mjs');
 const iso = (hhmm, date = DATE) => etIso(date, hhmm);
@@ -67,35 +67,173 @@ function snapshot(root) {
 }
 
 describe('deadman: time gate and no-op cases', () => {
-  test('exports its threshold and does nothing before 07:30 local', () => {
-    assert.equal(DEADMAN_FROM, '07:30');
+  test('thresholds come from config.schedule: graceUntil + 5 minutes for a dead run, hardStop for any run', () => {
+    const cfg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'config.json'), 'utf8'));
+    assert.equal(DEADMAN_GRACE_EXTRA_MINUTES, 5);
+    assert.deepEqual(deadmanThresholds(cfg), { staleAfter: 9 * 60 + 35, hardStop: 10 * 60 + 30 });
+    const moved = { ...cfg, schedule: { ...cfg.schedule, graceUntil: '09:00', hardStop: '11:15' } };
+    assert.deepEqual(deadmanThresholds(moved), { staleAfter: 9 * 60 + 5, hardStop: 11 * 60 + 15 });
+    const squeezed = { ...cfg, schedule: { ...cfg.schedule, graceUntil: '10:28', hardStop: '10:30' } };
+    assert.equal(deadmanThresholds(squeezed).staleAfter, 10 * 60 + 30, 'never later than the hard stop');
+    const legacy = { ...cfg, schedule: { deadline: '08:00' } };
+    assert.deepEqual(deadmanThresholds(legacy), { staleAfter: 8 * 60, hardStop: 8 * 60 });
+  });
+
+  test('no run at all (lease absent): nothing happens until 09:35, then it publishes', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
-      const before = snapshot(box.root);
-      const r = run(box, ['--no-git', '--now', iso('07:29')]);
-      assert.equal(r.code, 0, r.stderr);
-      assert.equal(r.json.ok, true);
-      assert.equal(r.json.action, 'none');
-      assert.equal(r.json.reason, 'too-early');
-      assert.deepEqual(snapshot(box.root), before, 'nothing was written');
+      for (const hhmm of ['04:00', '07:30', '08:00', '09:34']) {
+        const before = snapshot(box.root);
+        const r = run(box, ['--no-git', '--now', iso(hhmm)]);
+        assert.equal(r.code, 0, r.stderr);
+        assert.equal(r.json.ok, true);
+        assert.equal(r.json.action, 'none', hhmm);
+        assert.equal(r.json.reason, 'too-early', hhmm);
+        assert.equal(r.json.notBefore, '09:35');
+        assert.deepEqual(snapshot(box.root), before, `${hhmm}: nothing was written`);
+      }
+      const r = run(box, ['--no-git', '--now', iso('09:35')]);
+      assert.equal(r.code, 0, r.stderr + r.stdout);
+      assert.equal(r.json.action, 'published');
+      assert.equal(r.json.tier, 3);
     } finally {
       box.cleanup();
     }
   });
 
-  test('acts at exactly 07:30 (DST-aware: EDT in October, EST in January)', () => {
+  test('DST-aware boundary: 09:35 local in EDT (October) and in EST (January)', () => {
     for (const date of [DATE, '2027-01-12']) {
       const box = prepare(makeSandbox(), { ideas: false });
       try {
-        const early = run(box, ['--no-git', '--date', date, '--now', etIso(date, '07:29')]);
+        const early = run(box, ['--no-git', '--date', date, '--now', etIso(date, '09:34')]);
         assert.equal(early.json.reason, 'too-early', date);
-        const r = run(box, ['--no-git', '--date', date, '--now', etIso(date, '07:30')]);
+        const r = run(box, ['--no-git', '--date', date, '--now', etIso(date, '09:35')]);
         assert.equal(r.code, 0, r.stderr);
         assert.equal(r.json.action, 'published', date);
       } finally {
         box.cleanup();
       }
     }
+  });
+
+  describe('with a live run (the lease decides until the hard stop)', () => {
+    /** A primary that began at 03:55, is now in `phase` and last beat at `lastBeat`. */
+    function livePrimary(box, { phase = 'qa', phaseStart = '09:00', lastBeat = '09:25' } = {}) {
+      const begin = box.state(['begin', '--role', 'primary', '--session', 'sess-p', '--now', iso('03:55')]);
+      assert.equal(begin.json.action, 'proceed', begin.stdout);
+      const start = box.state(['phase-start', '--phase', phase, '--session', 'sess-p', '--now', iso(phaseStart)]);
+      assert.equal(start.code, 0, start.stdout + start.stderr);
+      const beat = box.state(['beat', '--role', 'primary', '--session', 'sess-p', '--phase', phase, '--now', iso(lastBeat)]);
+      assert.equal(beat.json.leaseHeld, true, beat.stdout);
+    }
+
+    test('a fresh lease is left alone through 10:29 and force-resolved at exactly 10:30', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '10:20' });
+        for (const hhmm of ['09:34', '09:35', '09:59', '10:29']) {
+          const before = snapshot(box.root);
+          const r = run(box, ['--no-git', '--now', iso(hhmm)]);
+          assert.equal(r.code, 0, r.stderr);
+          assert.equal(r.json.action, 'none', hhmm);
+          assert.equal(r.json.reason, hhmm === '09:34' ? 'too-early' : 'lease-alive', hhmm);
+          if (hhmm !== '09:34') {
+            assert.equal(r.json.notBefore, '10:30');
+            assert.equal(r.json.lease.alive, true);
+            assert.equal(r.json.lease.holder, 'primary');
+          }
+          assert.deepEqual(snapshot(box.root), before, `${hhmm}: a healthy run is not touched`);
+        }
+        // the lease stays fresh at 10:30 (last beat 10:20) but the hard stop overrides health
+        const r = run(box, ['--no-git', '--now', iso('10:30')]);
+        assert.equal(r.code, 0, r.stderr + r.stdout);
+        assert.equal(r.json.action, 'published');
+        assert.equal(r.json.tier, 3);
+        assert.equal(r.json.runAction, 'force-degrade');
+        const state = box.run();
+        assert.equal(state.status, 'published');
+        assert.ok(state.directives.some((d) => d.kind === 'ship-now'), 'the live primary is told to stop');
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('a stale lease is taken over at 09:35, not before', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '08:50' }); // 45 minutes of silence at 09:35, limit 35
+        const early = run(box, ['--no-git', '--now', iso('09:34')]);
+        assert.equal(early.json.action, 'none');
+        assert.equal(early.json.reason, 'too-early');
+        const r = run(box, ['--no-git', '--now', iso('09:35')]);
+        assert.equal(r.code, 0, r.stderr + r.stdout);
+        assert.equal(r.json.action, 'published');
+        assert.equal(r.json.runAction, 'takeover');
+        assert.equal(box.run().status, 'published');
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('a lease that is just inside the stale limit still protects the run', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '09:01' }); // 34 minutes at 09:35
+        const r = run(box, ['--no-git', '--now', iso('09:35')]);
+        assert.equal(r.json.action, 'none');
+        assert.equal(r.json.reason, 'lease-alive');
+        // one minute later the silence is 35 minutes: still not stale (> limit), two minutes later it is
+        assert.equal(run(box, ['--no-git', '--now', iso('09:36')]).json.reason, 'lease-alive');
+        assert.equal(run(box, ['--no-git', '--now', iso('09:37')]).json.action, 'published');
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('the session\'s heartbeat file counts as a sign of life', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '08:50' });
+        box.write(`state/heartbeats/${DATE}/sess-p.json`, { holder: 'primary', session: 'sess-p', phase: 'qa', at: iso('09:30'), note: '' });
+        const r = run(box, ['--no-git', '--now', iso('09:40')]);
+        assert.equal(r.json.reason, 'lease-alive', r.stdout);
+        assert.equal(r.json.lease.alive, true);
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('a run that already failed is dead whatever its lease says', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '09:30' });
+        box.state(['fail', '--reason', 'boom', '--session', 'sess-p', '--now', iso('09:31')]);
+        const r = run(box, ['--no-git', '--now', iso('09:35')]);
+        assert.equal(r.json.action, 'published');
+        assert.equal(box.run().status, 'published');
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('--force bypasses the lease and the clock; --dry-run reports without writing', () => {
+      const box = prepare(makeSandbox(), { ideas: true });
+      try {
+        livePrimary(box, { lastBeat: '09:30' });
+        const before = snapshot(box.root);
+        const dry = run(box, ['--dry-run', '--no-git', '--now', iso('09:40')]);
+        assert.equal(dry.json.action, 'none');
+        assert.equal(dry.json.reason, 'lease-alive');
+        const dryForced = run(box, ['--dry-run', '--force', '--no-git', '--now', iso('09:40')]);
+        assert.equal(dryForced.json.action, 'dry-run');
+        assert.deepEqual(snapshot(box.root), before);
+        const forced = run(box, ['--force', '--no-git', '--now', iso('09:40')]);
+        assert.equal(forced.json.action, 'published');
+        assert.equal(forced.json.forced, true);
+      } finally {
+        box.cleanup();
+      }
+    });
   });
 
   test('a day that is already in history is left alone, at any tier', () => {
@@ -105,7 +243,7 @@ describe('deadman: time gate and no-op cases', () => {
         box.write('state/history.json', { schema: 1, startDate: DATE, entries: [{ n: 1, date: DATE, slug: 'thing', title: 'T', tagline: 't', tier, fingerprint: {}, path: `d/${DATE}-thing/`, publishedAt: iso('04:30'), countsForNovelty: tier < 3 }] });
         box.write(`docs/d/${DATE}-thing/index.html`, 'original');
         const before = snapshot(box.root);
-        const r = run(box, ['--no-git', '--now', iso('07:45')]);
+        const r = run(box, ['--no-git', '--now', iso('09:45')]);
         assert.equal(r.code, 0);
         assert.equal(r.json.action, 'none');
         assert.equal(r.json.reason, 'already-published');
@@ -138,7 +276,7 @@ describe('deadman: publishing', () => {
   test('with ideas it publishes Tier 3, rebuilds the site, marks the run published, and writes a notice', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
-      const r = run(box, ['--no-git', '--now', iso('07:31')]);
+      const r = run(box, ['--no-git', '--now', iso('09:40')]);
       assert.equal(r.code, 0, r.stderr + r.stdout);
       assert.equal(r.json.ok, true);
       assert.equal(r.json.action, 'published');
@@ -177,7 +315,7 @@ describe('deadman: publishing', () => {
   test('without ideas it publishes the Postcard (Tier 4)', () => {
     const box = prepare(makeSandbox(), { ideas: false });
     try {
-      const r = run(box, ['--no-git', '--now', iso('07:30')]);
+      const r = run(box, ['--no-git', '--now', iso('09:35')]);
       assert.equal(r.code, 0, r.stderr + r.stdout);
       assert.equal(r.json.tier, 4);
       assert.equal(r.json.slug, 'postcard');
@@ -193,7 +331,7 @@ describe('deadman: publishing', () => {
     const box = prepare(makeSandbox(), { ideas: false });
     try {
       box.write(`work/${DATE}/ideas/shortlist.json`, { ideas: ideasFile().ideas });
-      const r = run(box, ['--no-git', '--now', iso('07:40')]);
+      const r = run(box, ['--no-git', '--now', iso('09:45')]);
       assert.equal(r.json.tier, 3);
     } finally {
       box.cleanup();
@@ -204,14 +342,14 @@ describe('deadman: publishing', () => {
     const box = prepare(makeSandbox(), { ideas: false });
     try {
       box.write(`state/ideas/${DATE}.json`, '{ truncated');
-      const r = run(box, ['--no-git', '--now', iso('07:40')]);
+      const r = run(box, ['--no-git', '--now', iso('09:45')]);
       assert.equal(r.code, 0, r.stderr);
       assert.equal(r.json.tier, 4);
 
       const other = prepare(makeSandbox(), { ideas: false });
       try {
         other.write(`state/ideas/${DATE}.json`, { ideas: [{ pitch: 'no titles anywhere' }] });
-        const o = run(other, ['--no-git', '--now', iso('07:40')]);
+        const o = run(other, ['--no-git', '--now', iso('09:45')]);
         assert.equal(o.json.tier, 4);
         assert.equal(o.json.action, 'published');
       } finally {
@@ -225,9 +363,9 @@ describe('deadman: publishing', () => {
   test('is idempotent: a second run changes nothing', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
-      assert.equal(run(box, ['--no-git', '--now', iso('07:31')]).json.action, 'published');
+      assert.equal(run(box, ['--no-git', '--now', iso('09:40')]).json.action, 'published');
       const before = snapshot(box.root);
-      const again = run(box, ['--no-git', '--now', iso('07:50')]);
+      const again = run(box, ['--no-git', '--now', iso('09:55')]);
       assert.equal(again.code, 0);
       assert.equal(again.json.action, 'none');
       assert.equal(again.json.reason, 'already-published');
@@ -238,11 +376,11 @@ describe('deadman: publishing', () => {
     }
   });
 
-  test('--force publishes before 07:30; --dry-run reports the plan and writes nothing', () => {
+  test('--force publishes before the thresholds; --dry-run reports the plan and writes nothing', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
       const before = snapshot(box.root);
-      const dry = run(box, ['--dry-run', '--no-git', '--now', iso('07:45')]);
+      const dry = run(box, ['--dry-run', '--no-git', '--now', iso('09:45')]);
       assert.equal(dry.code, 0);
       assert.equal(dry.json.action, 'dry-run');
       assert.deepEqual(dry.json.wouldPublish, { tier: 3, slug: 'ideas-day', path: `docs/d/${DATE}-ideas-day/` });
@@ -278,13 +416,14 @@ describe('deadman: publishing', () => {
     }
   });
 
-  test('takes the lease from a primary that is still "alive" and leaves a ship-now directive', () => {
+  test('--force takes the lease from a primary that is still "alive" and leaves a ship-now directive', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
       const begin = box.state(['begin', '--role', 'primary', '--session', 'sess-p', '--now', iso('03:55')]);
       assert.equal(begin.json.action, 'proceed');
-      box.state(['beat', '--role', 'primary', '--session', 'sess-p', '--phase', 'build', '--now', iso('07:29')]);
-      const r = run(box, ['--no-git', '--now', iso('07:30')]);
+      box.state(['phase-start', '--phase', 'qa', '--session', 'sess-p', '--now', iso('09:00')]);
+      box.state(['beat', '--role', 'primary', '--session', 'sess-p', '--phase', 'qa', '--now', iso('09:29')]);
+      const r = run(box, ['--force', '--no-git', '--now', iso('09:31')]);
       assert.equal(r.code, 0, r.stderr + r.stdout);
       assert.equal(r.json.action, 'published');
       assert.equal(r.json.runAction, 'force-degrade');
@@ -294,7 +433,7 @@ describe('deadman: publishing', () => {
       assert.equal(state.lease.holder, 'closer');
       assert.ok(state.directives.some((d) => d.kind === 'ship-now'));
       // the primary finds out on its next beat
-      const beat = box.state(['beat', '--role', 'primary', '--session', 'sess-p', '--phase', 'build', '--now', iso('07:35')]);
+      const beat = box.state(['beat', '--role', 'primary', '--session', 'sess-p', '--phase', 'qa', '--now', iso('09:35')]);
       assert.equal(beat.json.leaseHeld, false);
     } finally {
       box.cleanup();
@@ -304,7 +443,7 @@ describe('deadman: publishing', () => {
   test('a late primary can still upgrade the published fallback', () => {
     const box = prepare(makeSandbox(), { ideas: false });
     try {
-      assert.equal(run(box, ['--no-git', '--now', iso('07:31')]).json.tier, 4);
+      assert.equal(run(box, ['--no-git', '--now', iso('09:40')]).json.tier, 4);
       // the late primary packages its real build (page + history entry) before it can finish at tier 1
       publishRealBuild(box, { hhmm: '08:19' });
       const up = box.state(['finish', '--status', 'published', '--tier', '1', '--url', 'https://example.test/', '--now', iso('08:20')]);
@@ -321,7 +460,7 @@ describe('deadman: publishing', () => {
   test('without site templates the page is still published and the problem is reported, not fatal', () => {
     const box = prepare(makeSandbox(), { ideas: true, templates: false });
     try {
-      const r = run(box, ['--no-git', '--now', iso('07:31')]);
+      const r = run(box, ['--no-git', '--now', iso('09:40')]);
       assert.equal(r.code, 0, r.stderr);
       assert.equal(r.json.action, 'published');
       assert.equal(r.json.siteBuilt, false);
@@ -337,7 +476,7 @@ describe('deadman: publishing', () => {
     const corrupt = prepare(makeSandbox(), { ideas: false });
     try {
       corrupt.write(`state/runs/${DATE}.json`, '{"half": ');
-      const r = run(corrupt, ['--no-git', '--now', iso('07:31')]);
+      const r = run(corrupt, ['--no-git', '--now', iso('09:40')]);
       assert.equal(r.code, 0, r.stderr);
       assert.equal(r.json.action, 'published');
       assert.equal(corrupt.run().status, 'published');
@@ -349,7 +488,7 @@ describe('deadman: publishing', () => {
     try {
       failed.state(['begin', '--role', 'primary', '--session', 's1', '--now', iso('03:55')]);
       failed.state(['fail', '--reason', 'boom', '--session', 's1', '--now', iso('05:00')]);
-      const r = run(failed, ['--no-git', '--now', iso('07:31')]);
+      const r = run(failed, ['--no-git', '--now', iso('09:40')]);
       assert.equal(r.json.action, 'published');
       assert.equal(failed.run().status, 'published');
     } finally {
@@ -362,19 +501,19 @@ describe('deadman: publishing', () => {
     const box = prepare(makeSandbox(), { ideas: true });
     try {
       box.write('state/history.json', marker);
-      const dry = run(box, ['--dry-run', '--force', '--no-git', '--now', iso('07:40')]);
+      const dry = run(box, ['--dry-run', '--force', '--no-git', '--now', iso('09:45')]);
       assert.equal(dry.code, 0, dry.stderr);
       assert.ok(dry.json.warnings.some((w) => /history\.json is unreadable/.test(w)));
       assert.equal(box.read('state/history.json'), marker, 'a dry run never repairs');
 
-      const r = run(box, ['--force', '--no-git', '--now', iso('07:40')]);
+      const r = run(box, ['--force', '--no-git', '--now', iso('09:45')]);
       assert.equal(r.code, 0, r.stderr + r.stdout);
       assert.equal(r.json.action, 'published');
       assert.equal(r.json.tier, 3);
       assert.ok(r.json.warnings.some((w) => /history\.json was unreadable/.test(w)));
       assert.equal(box.read('state/history.json.corrupt-1'), marker);
       assert.deepEqual(history(box).entries.map((e) => [e.date, e.tier]), [[DATE, 3]]);
-      assert.equal(run(box, ['--no-git', '--now', iso('07:50')]).json.action, 'none');
+      assert.equal(run(box, ['--no-git', '--now', iso('09:55')]).json.action, 'none');
     } finally {
       box.cleanup();
     }
@@ -395,11 +534,11 @@ describe('deadman: publishing', () => {
     const prior = process.env.SED_ROOT;
     process.env.SED_ROOT = box.root;
     try {
-      const early = await deadman({ now: new Date(iso('07:00')), git: false });
+      const early = await deadman({ now: new Date(iso('09:00')), git: false });
       assert.equal(early.reason, 'too-early');
-      const r = await deadman({ now: new Date(iso('07:31')), git: false });
+      const r = await deadman({ now: new Date(iso('09:40')), git: false });
       assert.equal(r.action, 'published');
-      assert.equal((await deadman({ now: new Date(iso('07:32')), git: false })).action, 'none');
+      assert.equal((await deadman({ now: new Date(iso('09:41')), git: false })).action, 'none');
     } finally {
       if (prior === undefined) delete process.env.SED_ROOT;
       else process.env.SED_ROOT = prior;
@@ -412,7 +551,7 @@ describe('deadman: git', () => {
   test('commits and pushes the page, history, run file and site to the work branch', () => {
     const box = prepare(makeRepoSandbox(), { ideas: true });
     try {
-      const r = run(box, ['--now', iso('07:31'), '--no-sleep']);
+      const r = run(box, ['--now', iso('09:40'), '--no-sleep']);
       assert.equal(r.code, 0, r.stderr + r.stdout);
       assert.equal(r.json.action, 'published');
       assert.equal(r.json.sync.ok, true);
@@ -432,7 +571,7 @@ describe('deadman: git', () => {
     const box = prepare(makeRepoSandbox(), { ideas: false });
     try {
       installPushHook(box.remote, { always: true });
-      const bad = run(box, ['--now', iso('07:31'), '--no-sleep']);
+      const bad = run(box, ['--now', iso('09:40'), '--no-sleep']);
       assert.equal(bad.code, 1);
       assert.equal(bad.json.ok, false);
       assert.equal(bad.json.action, 'published');
@@ -442,14 +581,14 @@ describe('deadman: git', () => {
       assert.equal(box.exists(`docs/d/${DATE}-postcard/index.html`), true, 'the page is still there locally');
 
       removePushHook(box.remote);
-      const again = run(box, ['--now', iso('07:40'), '--no-sleep']);
+      const again = run(box, ['--now', iso('09:45'), '--no-sleep']);
       assert.equal(again.code, 0, again.stderr + again.stdout);
       assert.equal(again.json.action, 'none');
       assert.equal(again.json.reason, 'already-published');
       assert.equal(again.json.recovered.pushed, true);
       assert.match(remoteFile(box.remote, `docs/d/${DATE}-postcard/project.json`), /"tier": 4/);
 
-      const third = run(box, ['--now', iso('07:50'), '--no-sleep']);
+      const third = run(box, ['--now', iso('09:55'), '--no-sleep']);
       assert.equal(third.json.action, 'none');
       assert.equal(third.json.recovered, undefined, 'nothing pending any more');
     } finally {
@@ -465,13 +604,14 @@ describe('deadman: git', () => {
       const box = prepare(makeRepoSandbox(), { ideas });
       const primary = box.cloneB('primary');
       primary.state(['begin', '--role', 'primary', '--session', 'p-1', '--now', iso('03:55')]);
-      primary.state(['beat', '--role', 'primary', '--session', 'p-1', '--phase', 'build', '--now', iso('07:20')]);
+      primary.state(['phase-start', '--phase', 'qa', '--session', 'p-1', '--now', iso('09:00')]);
+      primary.state(['beat', '--role', 'primary', '--session', 'p-1', '--phase', 'qa', '--now', iso('09:20')]);
       primary.state(['sync', '-m', 'primary checkpoint 1', '--no-sleep']);
       box.git('pull', '-q', '--rebase', 'origin', 'claude/sonnet-every-day');
-      primary.state(['beat', '--role', 'primary', '--session', 'p-1', '--phase', 'build', '--note', 'still going', '--now', iso('07:28')]);
+      primary.state(['beat', '--role', 'primary', '--session', 'p-1', '--phase', 'qa', '--note', 'still going', '--now', iso('09:28')]);
       const pushed = primary.state(['sync', '-m', 'primary checkpoint 2', '--no-sleep']);
       assert.equal(pushed.json.pushed, true, pushed.stdout);
-      const begin = closerBegin(box, '07:29');
+      const begin = closerBegin(box, '09:40');
       assert.equal(begin.json.action, 'force-degrade', begin.stdout);
       return { box, primary };
     }
@@ -479,7 +619,7 @@ describe('deadman: git', () => {
     test('a closer whose checkout is behind the primary refreshes, publishes the fallback and pushes it', () => {
       const { box } = racedCloser();
       try {
-        const r = run(box, ['--force', '--now', iso('07:29')]);
+        const r = run(box, ['--force', '--now', iso('09:40')]);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.action, 'published');
         assert.equal(r.json.sync.pushed, true);
@@ -501,7 +641,7 @@ describe('deadman: git', () => {
       try {
         // The primary lands another checkpoint just before the closer's first push attempt (pre-receive "race lost").
         installPushHook(box.remote, { sneakFirst: true });
-        const r = run(box, ['--force', '--now', iso('07:29')]);
+        const r = run(box, ['--force', '--now', iso('09:40')]);
         removePushHook(box.remote);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.action, 'published');
@@ -538,7 +678,7 @@ if [ "$n" -eq 1 ]; then
 fi
 exit 0
 `, { mode: 0o755 });
-        const r = run(box, ['--force', '--now', iso('07:29')]);
+        const r = run(box, ['--force', '--now', iso('09:40')]);
         removePushHook(box.remote);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.sync.pushed, true, r.stdout);
@@ -561,7 +701,7 @@ exit 0
       try {
         // First run: the remote refuses, so the fallback commit stays local and unpushed.
         installPushHook(box.remote, { always: true });
-        const bad = run(box, ['--force', '--now', iso('07:29')]);
+        const bad = run(box, ['--force', '--now', iso('09:40')]);
         removePushHook(box.remote);
         assert.equal(bad.json.ok, false);
         assert.equal(box.exists(`docs/d/${DATE}-postcard/index.html`), true);
@@ -575,7 +715,7 @@ exit 0
         assert.equal(box.exists(`docs/d/${DATE}-postcard`), false, 'the closer\'s page is gone, the real build stays');
         assert.deepEqual(JSON.parse(remoteFile(box.remote, 'state/history.json')).entries.map((e) => e.tier), [1]);
 
-        const r = run(box, ['--force', '--now', iso('07:32')]);
+        const r = run(box, ['--force', '--now', iso('09:41')]);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.action, 'none');
         assert.equal(r.json.reason, 'already-published');
@@ -591,7 +731,7 @@ exit 0
       try {
         publishRealBuild(primary, { hhmm: '07:30' });
         assert.equal(primary.state(['sync', '-m', 'primary publishes', '--no-sleep']).json.pushed, true);
-        const r = run(box, ['--force', '--now', iso('07:31')]);
+        const r = run(box, ['--force', '--now', iso('09:40')]);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.action, 'none');
         assert.equal(r.json.reason, 'already-published');
@@ -615,7 +755,7 @@ exit 0
         box.write(`work/${DATE}/ideas/shortlist.json`, { ideas: ideasFile().ideas });
         box.git('add', '-A');
         box.git('commit', '-q', '-m', 'ideate output');
-        const r = run(box, ['--force', '--now', iso('07:31')]);
+        const r = run(box, ['--force', '--now', iso('09:40')]);
         assert.equal(r.code, 0, r.stderr + r.stdout);
         assert.equal(r.json.tier, 3, 'the shortlist was still there to use');
         assert.equal(r.json.sync.pushed, true);
@@ -629,10 +769,10 @@ exit 0
   test('a corrupt history does not hide a day that is already published: the committed copy restores it', () => {
     const box = prepare(makeRepoSandbox(), { ideas: false });
     try {
-      assert.equal(run(box, ['--now', iso('07:31'), '--no-sleep']).json.sync.pushed, true);
+      assert.equal(run(box, ['--now', iso('09:40'), '--no-sleep']).json.sync.pushed, true);
       const good = box.read('state/history.json');
       box.write('state/history.json', '{"schema":1,"entries":[{"n":1,\n<<<<<<<');
-      const again = run(box, ['--now', iso('07:40'), '--no-sleep']);
+      const again = run(box, ['--now', iso('09:45'), '--no-sleep']);
       assert.equal(again.code, 0, again.stderr + again.stdout);
       assert.equal(again.json.action, 'none');
       assert.equal(again.json.reason, 'already-published');
@@ -648,7 +788,7 @@ exit 0
     const box = prepare(makeRepoSandbox(), { ideas: false });
     try {
       const head = box.git('rev-parse', 'HEAD');
-      const r = run(box, ['--no-git', '--now', iso('07:31')]);
+      const r = run(box, ['--no-git', '--now', iso('09:40')]);
       assert.equal(r.code, 0);
       assert.equal(r.json.sync, undefined);
       assert.equal(box.git('rev-parse', 'HEAD'), head);

@@ -12,7 +12,7 @@ The bar is CONTRACT section 11. A tier-1 project feels like something a person w
 * Responsive down to 360px; follows `prefers-color-scheme`; honors `prefers-reduced-motion`.
 * Deterministic where it should be (seeded randomness; same seed, same result). Shareable state in the URL hash where it makes sense, and the hash is validated defensively.
 * Empty, loading and error states exist and read well. Nothing says "TODO", "lorem", "placeholder", "example.com", "Project Title".
-* An "About & making of" panel with the day's research sources (only sources really opened), honest about what is simulated or unverified.
+* An "About & making of" panel with the day's research sources (only `verified:true` ones: a page really opened, or a claim two independent search results agree on), honest about what is simulated or unverified. A fact whose source is unverified appears as "as of <date>, per <source>" or not at all, never as plain fact.
 * A great first frame: the thumbnail (1200x630 desktop-light screenshot, taken at packaging) must show the product at its best. `window.__sedThumbReady` is used when the first frame needs time.
 * Copy has voice. Labels are specific. Numbers carry units and dates. No typos.
 

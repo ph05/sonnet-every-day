@@ -3,29 +3,32 @@
 // Every command prints exactly one JSON document on stdout; logs go to stderr.
 // Exit codes: 0 ok, 1 checked-and-failed (ok:false), 2 usage error.
 import { pathToFileURL } from 'node:url';
-import { parseArgs, resolveNow, loadConfig, localParts, dayNumber, hm, readJson, rp, print } from './lib/common.mjs';
+import { parseArgs, resolveNow, loadConfig, localParts, dayNumber, readJson, rp, print } from './lib/common.mjs';
 import * as rs from './lib/runstate.mjs';
 import * as th from './lib/throttle.mjs';
-import { sync, freshenRun, readRemoteHeartbeat } from './lib/gitsync.mjs';
+import { sync, freshenRun, fetchRemoteHeartbeat } from './lib/gitsync.mjs';
 
 const COMMANDS = [
-  'today', 'begin', 'beat', 'phase-start', 'phase-done', 'directive', 'ack-directive', 'event',
+  'today', 'begin', 'beat', 'phase-start', 'phase-done', 'skip-phase', 'directive', 'ack-directive', 'event',
   'spend', 'choose', 'finish', 'fail', 'status', 'throttle', 'sync',
 ];
 const USAGE = `usage: state.mjs <${COMMANDS.join('|')}> [options]
   today [--date D] [--now ISO]
   begin --role <primary|wdA|wdB|closer|manual> --session ID [--target-tier T] [--force]
+                  (prints heartbeatAvailable: false when the heartbeat branch could not be read; a silent lease is then not declared dead before phaseStuckMinutes)
   beat --role R --session S [--phase P] [--note N]
   phase-start --phase P [--session S]      phase-done --phase P [--note N] [--session S] [--role R]
+  skip-phase --phase P --reason R [--session S] [--role R]      (kaizen stays pending after finish until phase-done or skip-phase)
   directive --kind scope-cut|ship-now --tier T --by R      ack-directive [--kind K] [--tier T]
   event --kind note|error|takeover|degrade|rate-limit|budget --msg M --by R
   spend --tokens N --calls M --phase P     choose --idea-id I --slug S --title T
   finish --status published --tier T --url U      fail --reason R
   status [--date D]
   throttle get|down|up|set|day-clean [--reason R] [--level L] [--force]
-  sync -m "<message>" [--paths a,b,c] [--branch B] [--no-sleep] [--allow-config]
+  sync -m "<message>" [--paths a,b,c] [--branch B] [--no-sleep]      (default paths: state,docs,work; config.json only when --paths names it)
 common: --date YYYY-MM-DD, --now <ISO instant> (or env SED_NOW), env SED_ROOT redirects the repo root,
-        --no-fetch (or env SED_NO_FETCH=1) skips the bounded git fetch that run-state commands do to see other containers`;
+        --no-fetch (or env SED_NO_FETCH=1) skips the bounded git fetches that run-state commands do to see other containers
+        (the work branch, and the heartbeat branch for the lease holder's liveness)`;
 
 const { UsageError } = rs;
 
@@ -56,14 +59,26 @@ function context(flags) {
 
 const envOn = (v) => v !== undefined && v !== '' && v !== '0' && v !== 'false';
 
+const noFetch = (flags) => Boolean(flags['no-fetch']) || envOn(process.env.SED_NO_FETCH);
+
 /**
  * Every run-state command first looks at what other containers pushed (a bounded, fail-soft `git fetch` plus a
  * semantic merge of the remote run file into the local one), because the local file alone can neither show a lost
  * lease nor a watchdog's directive. `adopt` replaces a displaced local run with the remote one.
  */
 function remoteView(flags, date, { adopt = false } = {}) {
-  if (flags['no-fetch'] || envOn(process.env.SED_NO_FETCH)) return null;
+  if (noFetch(flags)) return null;
   return freshenRun({ date, adoptOnDisplaced: adopt });
+}
+
+/**
+ * The lease holder's liveness record from the heartbeat branch (CONTRACT 14), fetched after remoteView so the
+ * holder is the one the freshest run file names. Null when fetching is off or the run has no lease.
+ */
+function remoteBeat(flags, date, config) {
+  if (noFetch(flags)) return null;
+  const session = rs.loadRun(date)?.lease?.session;
+  return session ? fetchRemoteHeartbeat({ date, session, config }) : null;
 }
 
 /** The remote lease that displaced the local holder `session` (or the local holder when no session is given), else null. */
@@ -83,7 +98,19 @@ function assertNotDisplaced(view, date, session) {
   );
 }
 
-const remoteSummary = (view) => (view ? { fetched: view.fetched, adopted: view.adopted, displaced: view.displaced, ...(view.reason ? { reason: view.reason } : {}) } : null);
+/** Could the heartbeat branch be read? null when it was not looked at (--no-fetch, no lease, no origin): "unknown" is reported as false. */
+const heartbeatAvailable = (beatView) => (!beatView || (!beatView.fetched && !beatView.unknown) ? null : beatView.fetched);
+
+const remoteSummary = (view, beatView) =>
+  view
+    ? {
+        fetched: view.fetched,
+        adopted: view.adopted,
+        displaced: view.displaced,
+        ...(view.reason ? { reason: view.reason } : {}),
+        ...(beatView ? { heartbeat: { fetched: beatView.fetched, unknown: beatView.unknown === true, found: beatView.heartbeat !== null, ...(beatView.branch ? { branch: beatView.branch } : {}), ...(beatView.reason ? { reason: beatView.reason } : {}) } } : {}),
+      }
+    : null;
 
 function historyTail(limit = 5) {
   const h = readJson(rp('state', 'history.json'), { entries: [] });
@@ -104,13 +131,18 @@ const handlers = {
     const { config, now, date } = context(flags);
     const lp = localParts(now, config.timezone);
     const minutes = rs.effectiveMinutes(config, now, date);
+    const sched = rs.scheduleMinutes(config);
+    const run = rs.loadRun(date);
     return {
       ok: true,
       date,
       tz: config.timezone,
       time: lp.time,
       minutes: lp.minutes,
-      minutesToDeadline: hm(config.schedule.deadline) - minutes,
+      minutesToDeadline: sched.deadline - minutes, // informational: 08:00 is a guideline (CONTRACT 13)
+      minutesToGraceUntil: sched.graceUntil - minutes,
+      minutesToHardStop: sched.hardStop - minutes,
+      phaseIsLate: run ? rs.isLatePhase(run.phase) : false,
       targetTierIfStartedNow: rs.tierByMinutes(config, minutes),
       dayNumber: dayNumber(date, config.startDate),
     };
@@ -126,15 +158,15 @@ const handlers = {
     }
     const throttle = th.getThrottle(config);
     const view = remoteView(flags, date, { adopt: true });
-    const leaseSession = rs.loadRun(date)?.lease?.session;
-    const remoteBeat = view?.fetched && leaseSession ? readRemoteHeartbeat({ branch: view.branch, date, session: leaseSession }) : null;
+    const beatView = remoteBeat(flags, date, config);
     const r = rs.beginRun({
       role,
       session,
       date,
       now,
       config,
-      heartbeat: remoteBeat,
+      heartbeat: beatView?.heartbeat ?? null,
+      hbUnknown: beatView?.unknown === true,
       throttleLevel: throttle.level,
       flags: { targetTier: targetFlag === undefined ? undefined : rs.clampTier(targetFlag, '--target-tier'), force: Boolean(flags.force) },
     });
@@ -149,8 +181,14 @@ const handlers = {
       wrote: r.wrote,
       directiveAdded: r.directiveAdded,
       builtSiteAvailable: r.builtSiteAvailable,
+      grace: r.grace,
+      heartbeatAvailable: heartbeatAvailable(beatView),
+      hbUnreadable: r.hbUnreadable,
+      salvageSite: r.salvageSite,
+      kept: r.kept,
+      kaizenPending: r.kaizenPending,
       ...(r.publicationBacked === false ? { publicationBacked: false, publicationProblem: r.publicationProblem } : {}),
-      remote: remoteSummary(view),
+      remote: remoteSummary(view, beatView),
       run: r.run,
       lease: r.lease,
       recovered: r.recovered,
@@ -198,6 +236,27 @@ const handlers = {
       date,
       now,
       config,
+    });
+    return { ok: true, ...r };
+  },
+
+  'skip-phase'({ flags }) {
+    const { config, now, date } = context(flags);
+    const session = opt(flags, 'session');
+    const phase = req(flags, 'phase');
+    const role = opt(flags, 'role');
+    assertNotDisplaced(remoteView(flags, date), date, session);
+    // The closer may close the kaizen of a dead owner; whether the owner is dead also depends on its heartbeat branch record.
+    const beatView = phase === 'kaizen' && role === 'closer' ? remoteBeat(flags, date, config) : null;
+    const r = rs.skipPhase({
+      phase,
+      reason: req(flags, 'reason'),
+      role,
+      session,
+      date,
+      now,
+      config,
+      heartbeat: beatView?.heartbeat ?? null,
     });
     return { ok: true, ...r };
   },
@@ -271,8 +330,9 @@ const handlers = {
     const { config, now, date } = context(flags);
     const throttle = th.getThrottle(config);
     const view = remoteView(flags, date, { adopt: true });
-    const summary = rs.statusSummary({ date, now, config, history: historyTail() });
-    return { ok: true, dayNumber: dayNumber(date, config.startDate), ...summary, throttle: throttleView(throttle), levelConfig: throttle.levelConfig, remote: remoteSummary(view) };
+    const beatView = remoteBeat(flags, date, config);
+    const summary = rs.statusSummary({ date, now, config, history: historyTail(), heartbeat: beatView?.heartbeat ?? null, hbUnknown: beatView?.unknown === true });
+    return { ok: true, dayNumber: dayNumber(date, config.startDate), ...summary, heartbeatAvailable: heartbeatAvailable(beatView), throttle: throttleView(throttle), levelConfig: throttle.levelConfig, remote: remoteSummary(view, beatView) };
   },
 
   throttle({ flags, positional }) {
@@ -312,7 +372,6 @@ const handlers = {
       paths: paths ? paths.split(',').map((p) => p.trim()).filter(Boolean) : undefined,
       branch: opt(flags, 'branch'),
       noSleep: flags['no-sleep'] ? true : undefined,
-      allowConfig: Boolean(flags['allow-config']),
     });
     return result;
   },

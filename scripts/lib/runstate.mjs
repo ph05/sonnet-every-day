@@ -13,21 +13,27 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { rp, readJson, writeJsonAtomic, loadConfig, localParts, hm } from './common.mjs';
 
-export const PHASES = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish', 'done'];
+export const PHASES = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish', 'kaizen', 'done'];
 export const ROLES = ['primary', 'wdA', 'wdB', 'closer', 'manual'];
 export const STATUSES = ['in_progress', 'published', 'failed'];
+// Machine-readable tags ride on these kinds as `code`: corrupt-run (error), grace (note).
 export const EVENT_KINDS = ['note', 'error', 'takeover', 'degrade', 'rate-limit', 'budget'];
 export const DIRECTIVE_KINDS = ['scope-cut', 'ship-now'];
 export const MAX_EVENTS = 200;
 
 // Phases a run walks through per target tier. Tier 3 (Ideas Day) needs the ideas but
-// nothing built; tier 4 (Postcard) needs nothing at all.
+// nothing built; tier 4 (Postcard) needs nothing at all. `kaizen` (CONTRACT 12) runs after the day is
+// published, on every tier, so it can never endanger the page.
 const TIER_PHASES = {
   1: PHASES,
   2: PHASES,
-  3: ['preflight', 'ideate', 'package', 'publish', 'done'],
-  4: ['package', 'publish', 'done'],
+  3: ['preflight', 'ideate', 'package', 'publish', 'kaizen', 'done'],
+  4: ['package', 'publish', 'kaizen', 'done'],
 };
+// Phases in which a healthy run keeps its grace period past the 08:00 guideline (CONTRACT 13).
+const LATE_PHASES = ['qa', 'revise', 'package', 'publish'];
+// No kaizen is resumed after this local time: a retrospective that wakes up at lunch time is a zombie.
+const KAIZEN_CUTOFF_MINUTES = 12 * 60;
 // Phases whose work lands in work/<date>/<dir>/ and is wiped when a takeover restarts them.
 const STAGING_DIRS = {
   ideate: ['ideate', 'ideas'],
@@ -43,7 +49,7 @@ const WD_B_SCOPE_PHASES = ['preflight', 'ideate', 'select', 'spec'];
 const HEARTBEAT_FUTURE_SLACK_MS = 10 * 60 * 1000; // ignore heartbeat stamps from a badly skewed clock
 const UPGRADE_CUTOFF_MINUTES = 23 * 60 + 59;
 const MANUAL_STUCK_FACTOR = 2;
-// A validated package of a finished build takes about 12 minutes (planner TYPICAL); keep slack before the deadline.
+// A validated package of a finished build takes about 12 minutes (planner TYPICAL); keep slack before the hard stop.
 const RESCUE_PACKAGE_MARGIN_MINUTES = 20;
 
 export class UsageError extends Error {
@@ -332,8 +338,8 @@ export function updateRun(date, mutate) {
   });
 }
 
-export function pushEvent(run, kind, msg, by, at) {
-  run.events.push({ at, by, kind, msg });
+export function pushEvent(run, kind, msg, by, at, code) {
+  run.events.push({ at, by, kind, ...(code ? { code } : {}), msg });
   if (run.events.length > MAX_EVENTS) run.events = run.events.slice(-MAX_EVENTS);
 }
 
@@ -361,6 +367,29 @@ export function tierByMinutes(config, minutes) {
 
 export const relevantPhases = (tier) => TIER_PHASES[tier] ?? PHASES;
 export const doneNames = (run) => (run?.phasesDone ?? []).map((e) => e.phase);
+
+/**
+ * The marks of the day that the decision table compares the clock with, in minutes after local midnight
+ * (CONTRACT 13). Configs written before the grace period existed fall back to the 08:00 guideline for both.
+ */
+export function scheduleMinutes(config) {
+  const s = config.schedule ?? {};
+  const deadline = hm(s.deadline);
+  const graceUntil = s.graceUntil ? hm(s.graceUntil) : deadline;
+  const hardStop = s.hardStop ? hm(s.hardStop) : graceUntil;
+  return { deadline, graceUntil, hardStop };
+}
+
+/** qa, revise, package, publish: a healthy run here is not degraded before graceUntil. */
+export const isLatePhase = (phase) => LATE_PHASES.includes(phase);
+
+/** kaizen is off only when the owner says so; a config without the block gets the contract's default. */
+export const kaizenEnabled = (config) => config.kaizen?.enabled !== false;
+
+/** The page is live but the day's kaizen (CONTRACT 12) has not run or been skipped yet. */
+export function kaizenPending(run) {
+  return run?.status === 'published' && run.phase === 'kaizen' && !doneNames(run).includes('kaizen');
+}
 
 /** First phase of the tier's path that is not done yet. */
 export function firstPending(tier, done) {
@@ -398,11 +427,15 @@ function phaseStartMs(run) {
  * heartbeat file (when it belongs to the same session). `stale` = silent for leaseStaleMinutes;
  * `stuck` = the current phase has run longer than phaseStuckMinutes (a hung orchestrator with a
  * live heartbeat is still dead).
+ * `hbUnknown` = the heartbeat channel could not be read at all (fetch failed after retries, branch missing). The
+ * lease's own heartbeatAt only moves at checkpoint syncs and routinely ages past leaseStaleMinutes inside a healthy
+ * build phase, so silence alone proves nothing then: such a lease keeps the benefit of the doubt (`hbUnreadable`)
+ * until it is silent for phaseStuckMinutes, and `stuck` stays the backstop.
  */
-export function leaseInfo(config, run, heartbeat, nowMs) {
+export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } = {}) {
   const lease = run?.lease ?? null;
   if (!lease) {
-    return { present: false, holder: null, session: null, stale: true, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
+    return { present: false, holder: null, session: null, stale: true, hbUnreadable: false, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
   }
   const own = Date.parse(lease.heartbeatAt ?? lease.acquiredAt);
   let last = Number.isFinite(own) ? own : 0;
@@ -415,17 +448,20 @@ export function leaseInfo(config, run, heartbeat, nowMs) {
     }
   }
   const ageMinutes = last > 0 ? Math.max(0, (nowMs - last) / 60000) : Infinity;
-  const stale = !(ageMinutes <= config.leaseStaleMinutes);
+  const silent = !(ageMinutes <= config.leaseStaleMinutes);
+  const hbUnreadable = silent && hbUnknown && ageMinutes <= config.phaseStuckMinutes;
+  const stale = silent && !hbUnreadable;
   const start = phaseStartMs(run);
   const phaseMinutes = start === null ? null : Math.max(0, (nowMs - start) / 60000);
   // A human-supervised manual run has no deadline pressure and legitimately spends long in one phase.
   const stuckLimit = config.phaseStuckMinutes * (lease.holder === 'manual' ? MANUAL_STUCK_FACTOR : 1);
-  const stuck = run.status === 'in_progress' && run.phase !== 'done' && phaseMinutes !== null && phaseMinutes > stuckLimit;
+  const stuck = (run.status === 'in_progress' || kaizenPending(run)) && run.phase !== 'done' && phaseMinutes !== null && phaseMinutes > stuckLimit;
   return {
     present: true,
     holder: lease.holder,
     session: lease.session,
     stale,
+    hbUnreadable,
     stuck,
     stuckLimitMinutes: stuckLimit,
     ageMinutes: Number.isFinite(ageMinutes) ? round1(ageMinutes) : null,
@@ -450,15 +486,38 @@ function nextTierDown(phase, tier, hasIdeate) {
 }
 
 /**
+ * Why the QA report forbids shipping the build of `date`, or null (no report yet, or it allows shipping). A report that
+ * blocks (S1 defects, verdict "block"), that nobody reviewed (`unreviewed`: never to be read as "ship") or that cannot
+ * be read at all counts. Rescue, salvage and the late-phase shortcuts of the playbook all consult it.
+ */
+export function qaBlock(date) {
+  const file = rp('work', date, 'qa', 'report.json');
+  if (!fs.existsSync(file)) return null;
+  let report;
+  try {
+    report = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (err) {
+    return { reason: `work/${date}/qa/report.json is unreadable (${err.message})`, verdict: null, S1: null, unreviewed: false };
+  }
+  const S1 = Number(report?.counts?.S1) || 0;
+  const verdict = typeof report?.verdict === 'string' ? report.verdict : null;
+  const unreviewed = report?.unreviewed === true;
+  const why = [S1 > 0 && `${S1} S1 defect(s)`, verdict === 'block' && 'verdict block', unreviewed && 'unreviewed by the critic'].filter(Boolean);
+  return why.length ? { reason: `QA does not allow shipping this build: ${why.join(', ')}`, verdict, S1, unreviewed } : null;
+}
+
+/**
  * A finished build (`build` done) can still be packaged as a Tier-2 page, skipping QA and revise, while there is
- * time left and the package step has not already failed. Throwing a built site away because QA flaked or the
- * clock passed 06:45 would waste the day's real work; the Ideas Day is the fallback for a failed package.
+ * time left before the hard stop and the package step has not already failed. Throwing a built site away because
+ * QA flaked or the clock passed 08:00 would waste the day's real work; the Ideas Day is the fallback for a
+ * failed package.
  */
 export function rescuePackageAvailable(config, run, minutes) {
   if (!run || run.targetTier > 2) return false;
   if (!doneNames(run).includes('build')) return false;
+  if (run.date && qaBlock(run.date)) return false; // QA already judged this build not shippable: salvaging it would ship exactly that
   if ((run.attempts?.package ?? 0) >= config.maxAttemptsPerPhase) return false;
-  return minutes <= hm(config.schedule.deadline) - RESCUE_PACKAGE_MARGIN_MINUTES;
+  return minutes <= scheduleMinutes(config).hardStop - RESCUE_PACKAGE_MARGIN_MINUTES;
 }
 
 /** QA / revise phases that a package-now resume leaves undone: they are recorded as skipped so `next` never walks back to them. */
@@ -473,22 +532,36 @@ function skippedBefore(resume, tier, done) {
  * `rescue` (not for manual runs, which choose their own tier) lets a finished build be packaged at Tier 2 even
  * when the clock alone would say Tier 3 or 4.
  */
-function settle(config, run, baseTier, { minutes, rescue = true }) {
+function settle(config, run, baseIn, { minutes, rescue = true }) {
   const done = doneNames(run);
+  // A package that is already done carries the tier it was made at; only publish/finish remain, and the clock must
+  // not re-tier it (a QA'd Tier 1 page would be re-staged and recorded as a Tier 2 salvage).
+  const packaged = rescue && done.includes('package');
+  const baseTier = packaged ? run.targetTier : baseIn;
   const hasIdeate = done.includes('ideate');
+  // A run that is not published yet is never "waiting for kaizen": `finish` is part of publish.
+  const pendingFor = (t) => {
+    const p = firstPending(t, done);
+    return p === 'kaizen' ? 'publish' : p;
+  };
   let tier = baseTier;
   let resume;
   let degrade = null;
   const notes = [];
-  if (rescue && tier >= 3 && rescuePackageAvailable(config, run, minutes)) {
-    notes.push(`build is done and ${hm(config.schedule.deadline) - minutes} min remain: packaging it as tier 2 (QA/revise skipped) instead of tier ${tier}`);
+  const info = [];
+  if (packaged) {
+    resume = pendingFor(tier);
+    info.push(`package is already done: keeping tier ${tier} and resuming at ${resume} (confirm the staged page on the remote, then finish at tier ${tier})`);
+  } else if (rescue && tier >= 3 && rescuePackageAvailable(config, run, minutes)) {
+    notes.push(`build is done and ${scheduleMinutes(config).hardStop - minutes} min remain before the hard stop: packaging it as tier 2 (QA/revise skipped) instead of tier ${tier}`);
     tier = 2;
     resume = 'package';
   } else {
-    resume = firstPending(tier, done);
+    resume = pendingFor(tier);
   }
   const attempts = run.attempts?.[resume] ?? 0;
-  if (resume !== 'done' && attempts >= config.maxAttemptsPerPhase) {
+  // A packaged page is only waiting to be published: retrying that beats replacing it by a fallback.
+  if (resume !== 'done' && !packaged && attempts >= config.maxAttemptsPerPhase) {
     const stuckPhase = resume;
     if ((resume === 'qa' || resume === 'revise') && done.includes('build')) {
       // ship what exists rather than loop on QA: a real build is packaged as (at best) a compact Tier-2 page, never discarded
@@ -502,13 +575,13 @@ function settle(config, run, baseTier, { minutes, rescue = true }) {
     } else {
       const from = tier;
       tier = nextTierDown(resume, tier, hasIdeate);
-      if (tier >= 3) resume = firstPending(tier, done);
+      if (tier >= 3) resume = pendingFor(tier);
       else if (resume === 'qa' || resume === 'revise') resume = 'package';
       degrade = `${stuckPhase} already attempted ${attempts}x (max ${config.maxAttemptsPerPhase}): degrading tier ${from} -> ${tier}, continuing at ${resume}`;
     }
   }
   const skipPhases = resume === 'package' && tier <= 2 ? skippedBefore('package', tier, done) : [];
-  return { tier, resume, degrade, notes, skipPhases };
+  return { tier, resume, degrade, notes, info, skipPhases };
 }
 
 const sameDirective = (a, kind, tier) => a.kind === kind && a.tier === tier;
@@ -523,15 +596,69 @@ const plan = (p) => ({
   cleanPhase: null,
   skipPhases: [],
   builtSiteAvailable: false,
+  kaizenPending: false,
+  grace: false,
+  hbUnreadable: false,
+  closeKaizen: null,
   events: [],
   directives: [],
   changed: false,
   ...p,
 });
 
+/** Why a lease no longer counts as alive: the lease half of a takeover reason. */
+function leaseProblem(config, run, info) {
+  if (!info.present) return 'no lease';
+  if (info.stuck && !info.stale) {
+    return `phase ${run.phase} has run ${info.phaseMinutes} min (> ${info.stuckLimitMinutes}) although the heartbeat is fresh`;
+  }
+  return `lease of ${info.holder}/${info.session} is stale (${info.ageMinutes === null ? 'never beat' : `${info.ageMinutes} min`} > ${config.leaseStaleMinutes})`;
+}
+
+/**
+ * Row 1 of the table. A published page is never redone; the only thing a published run can still owe is its
+ * kaizen (CONTRACT 12), which any operator role except the closer resumes when its owner is gone, until 12:00.
+ */
+function decidePublished({ config, run, role, session, heartbeat, hbUnknown, nowMs, minutes, base }) {
+  const head = `already published (tier ${run.tier ?? '?'}) at ${run.publishedAt ?? '?'}; only \`finish\` may upgrade it`;
+  const exit = (suffix = '', extra = {}) =>
+    plan({ ...base, action: 'exit-published', targetTier: run.targetTier, resumePhase: null, reason: `${head}${suffix}`, ...extra });
+  if (!base.kaizenPending) return exit();
+  if (role === 'closer') return exit('; its kaizen is pending but the closer never runs it');
+  if (minutes >= KAIZEN_CUTOFF_MINUTES) return exit('; its kaizen is pending but the 12:00 window for resuming it has closed');
+
+  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown });
+  const self = isSelf(run.lease, role, session);
+  if (!self && info.present && !info.stale && !info.stuck) {
+    return exit(`; its kaizen is running (${info.holder}/${info.session}, last sign ${info.ageMinutes} min ago)`);
+  }
+  const attempts = run.attempts?.kaizen ?? 0;
+  if (attempts >= config.maxAttemptsPerPhase) {
+    const note = `skipped: attempted ${attempts}x (max ${config.maxAttemptsPerPhase})`;
+    return exit(`; its kaizen is closed (${note})`, { changed: true, kaizenPending: false, closeKaizen: note, events: [{ kind: 'note', msg: `kaizen ${note}` }] });
+  }
+  const problem = leaseProblem(config, run, info);
+  return plan({
+    ...base,
+    action: 'resume-kaizen',
+    takeLease: true,
+    setPhase: true,
+    ackDirectives: true,
+    changed: true,
+    targetTier: run.targetTier,
+    resumePhase: 'kaizen',
+    reason: `${head}; kaizen is pending and ${self ? 'this is its own session' : problem}: ${self ? 'resuming' : 'taking it over'} at kaizen`,
+    events: [
+      self
+        ? { kind: 'note', msg: `${role} (${session}) resumed its own kaizen` }
+        : { kind: 'takeover', msg: `${role} (${session}) took over the kaizen from ${run.lease ? `${run.lease.holder}/${run.lease.session}` : 'nobody'}: ${problem}` },
+    ],
+  });
+}
+
 /**
  * Pure. Decides what an unattended session in `role` should do right now.
- * input: { role, session, now, date, config?, run?, heartbeat?, throttleLevel?, flags?: { targetTier, force } }
+ * input: { role, session, now, date, config?, run?, heartbeat?, hbUnknown?, throttleLevel?, flags?: { targetTier, force } }
  * When config / run / heartbeat are omitted they are read from disk (CONTRACT 6 signature), pass
  * `run: null` to mean "no run file". Returns the action plus the mutations begin must apply.
  */
@@ -544,6 +671,7 @@ export function decide(input) {
   const run = input.run === undefined ? loadRun(date) : input.run;
   const heartbeat = input.heartbeat === undefined ? loadHeartbeat(date, run?.lease?.session) : input.heartbeat;
   const flags = input.flags ?? {};
+  const hbUnknown = input.hbUnknown === true;
   const nowMs = now.getTime();
   const clock = localParts(now, config.timezone).time;
   const minutes = effectiveMinutes(config, now, date);
@@ -552,18 +680,11 @@ export function decide(input) {
   const forcedByLevel = config.budget.levels?.[level]?.forceTier ?? 1;
   const manual = role === 'manual';
   const startTier = Math.max(manual ? clampTier(flags.targetTier ?? 1, '--target-tier') : byTime, forcedByLevel);
-  const base = { role, date, minutes, builtSiteAvailable: doneNames(run).includes('build') };
+  const sched = scheduleMinutes(config);
+  const base = { role, date, minutes, builtSiteAvailable: doneNames(run).includes('build'), kaizenPending: kaizenPending(run) };
 
-  // 1. published: never redo.
-  if (run?.status === 'published') {
-    return plan({
-      ...base,
-      action: 'exit-published',
-      targetTier: run.targetTier,
-      resumePhase: null,
-      reason: `already published (tier ${run.tier ?? '?'}) at ${run.publishedAt ?? '?'}; only \`finish\` may upgrade it`,
-    });
-  }
+  // 1. published: never redo the page (a kaizen still owed is the one thing that may resume).
+  if (run?.status === 'published') return decidePublished({ config, run, role, session, heartbeat, hbUnknown, nowMs, minutes, base });
 
   // 2. no run file: start one.
   if (!run) {
@@ -583,66 +704,90 @@ export function decide(input) {
     });
   }
 
-  const info = leaseInfo(config, run, heartbeat, nowMs);
+  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown });
   const self = isSelf(run.lease, role, session);
+  const leaseGone = run.status === 'failed' || !info.present || info.stale;
+  const leaseDead = leaseGone || (!self && info.stuck);
 
-  // 3. closer at/after the tier-3 cutoff: force the best fallback that is still possible.
+  // 3. closer at/after the tier-3 cutoff (CONTRACT 13). A healthy run (fresh lease, phase advancing) in
+  // qa/revise/package/publish keeps its grace period until graceUntil: the closer waits instead of discarding
+  // good work. Everything else with a live lease is forced to the best fallback that is still possible (a hung
+  // phase with a live heartbeat included); hardStop overrides health. A lease that is gone before the hard stop
+  // is an ordinary takeover (row 4).
   if (role === 'closer' && minutes >= hm(config.tierCutoffs.t3Until)) {
-    // A finished build is packaged (Tier 2, QA skipped) while there is time; only otherwise fall back to Tier 3/4.
-    const rescue = rescuePackageAvailable(config, run, minutes);
-    const forced = rescue ? 2 : Math.max(doneNames(run).includes('ideate') ? 3 : 4, run.targetTier);
-    if (self && run.status === 'in_progress' && run.targetTier >= forced) {
+    const hardStop = minutes >= sched.hardStop;
+    if (!hardStop && !leaseGone && !self && !info.stuck && isLatePhase(run.phase) && minutes < sched.graceUntil) {
+      const first = !run.events.some((e) => e.code === 'grace' && e.by === role);
       return plan({
         ...base,
-        action: 'resume',
-        takeLease: true,
-        changed: true,
+        action: 'exit-alive',
+        grace: true,
         targetTier: run.targetTier,
-        resumePhase: run.phase,
-        reason: 'closer resuming its own forced degrade',
+        resumePhase: null,
+        reason: `grace: ${info.holder}/${info.session} is alive in ${run.phase} (last sign ${info.ageMinutes} min ago, ${info.phaseMinutes ?? '?'} min in the phase); ${config.schedule.deadline} is a guideline, so the closer waits until ${config.schedule.graceUntil} (babysit: wait up to 9 min, re-run begin, repeat)`,
+        events: first ? [{ kind: 'note', code: 'grace', msg: `grace granted to ${info.holder}/${info.session} in ${run.phase} until ${config.schedule.graceUntil}` }] : [],
       });
     }
-    const resumePhase = rescue ? 'package' : firstPending(forced, doneNames(run));
-    const forcedWhat = rescue
-      ? 'package the finished build as a compact page, QA skipped'
-      : forced === 3
-        ? 'Ideas Day from the researched ideas'
-        : 'Postcard, no ideas exist';
-    return plan({
-      ...base,
-      action: 'force-degrade',
-      takeLease: true,
-      setPhase: true,
-      clearFailed: true,
-      changed: true,
-      targetTier: forced,
-      resumePhase,
-      skipPhases: rescue ? skippedBefore('package', 2, doneNames(run)) : [],
-      reason: `closer at ${clock} (past ${config.tierCutoffs.t3Until}): forcing tier ${forced} (${forcedWhat})`,
-      events: [
-        {
-          kind: 'degrade',
-          msg: `closer forced tier ${forced} at ${clock}; took the lease from ${run.lease ? `${run.lease.holder}/${run.lease.session}` : 'nobody'}`,
-        },
-      ],
-      directives: newDirectives(run, [{ kind: 'ship-now', tier: forced }]),
-    });
+    if (hardStop || !leaseGone) {
+      // A finished build is packaged (Tier 2, QA skipped) while there is time; only otherwise fall back to Tier 3/4.
+      const rescue = rescuePackageAvailable(config, run, minutes);
+      const forced = rescue ? 2 : Math.max(doneNames(run).includes('ideate') ? 3 : 4, run.targetTier);
+      if (self && run.status === 'in_progress' && run.targetTier >= forced) {
+        return plan({
+          ...base,
+          action: 'resume',
+          takeLease: true,
+          changed: true,
+          targetTier: run.targetTier,
+          resumePhase: run.phase,
+          reason: 'closer resuming its own forced degrade',
+        });
+      }
+      const resumePhase = rescue ? 'package' : firstPending(forced, doneNames(run));
+      const forcedWhat = rescue
+        ? 'package the finished build as a compact page, QA skipped'
+        : forced === 3
+          ? 'Ideas Day from the researched ideas'
+          : 'Postcard, no ideas exist';
+      const why = hardStop
+        ? `past the hard stop ${config.schedule.hardStop}`
+        : minutes >= sched.graceUntil
+          ? `past ${config.schedule.graceUntil}, the end of the grace period`
+          : !isLatePhase(run.phase)
+            ? `${info.holder}'s phase ${run.phase} is too early for grace (only ${LATE_PHASES.join('/')} qualify)`
+            : `${info.holder}'s phase ${run.phase} has run ${info.phaseMinutes} min (> ${info.stuckLimitMinutes}): not advancing, so no grace`;
+      return plan({
+        ...base,
+        action: 'force-degrade',
+        takeLease: true,
+        setPhase: true,
+        clearFailed: true,
+        changed: true,
+        targetTier: forced,
+        resumePhase,
+        skipPhases: rescue ? skippedBefore('package', 2, doneNames(run)) : [],
+        reason: `closer at ${clock}, ${why}: forcing tier ${forced} (${forcedWhat})`,
+        events: [
+          {
+            kind: 'degrade',
+            msg: `closer forced tier ${forced} at ${clock} (${why}); took the lease from ${run.lease ? `${run.lease.holder}/${run.lease.session}` : 'nobody'}`,
+          },
+        ],
+        directives: newDirectives(run, [{ kind: 'ship-now', tier: forced }]),
+      });
+    }
   }
 
   // 4. failed run, or nobody alive behind the lease: take over (or resume if it is me).
-  const otherStuck = info.present && !self && info.stuck;
-  if (run.status === 'failed' || !info.present || info.stale || otherStuck) {
+  if (leaseDead) {
+    // Once the ideas exist an Ideas Day needs no time, so the clock alone never pushes such a run down to the Postcard.
+    const timeTier = byTime === 4 && doneNames(run).includes('ideate') ? 3 : byTime;
     // manual ignores the clock and uses its explicit target; everyone else never improves on the previous target
-    const baseTier = manual ? startTier : Math.max(run.targetTier, byTime, forcedByLevel);
-    const { tier, resume, degrade, notes, skipPhases } = settle(config, run, baseTier, { minutes, rescue: !manual });
-    const why =
-      run.status === 'failed'
-        ? 'run was marked failed'
-        : !info.present
-          ? 'no lease'
-          : otherStuck && !info.stale
-            ? `phase ${run.phase} has run ${info.phaseMinutes} min (> ${info.stuckLimitMinutes}) although the heartbeat is fresh`
-            : `lease of ${info.holder}/${info.session} is stale (${info.ageMinutes === null ? 'never beat' : `${info.ageMinutes} min`} > ${config.leaseStaleMinutes})`;
+    const baseTier = manual ? startTier : Math.max(run.targetTier, timeTier, forcedByLevel);
+    const { tier, resume, degrade, notes, info: infoNotes, skipPhases } = settle(config, run, baseTier, { minutes, rescue: !manual });
+    const why = run.status === 'failed' ? 'run was marked failed' : leaseProblem(config, run, info);
+    // The phase the dead holder was in is what has half-written staging, even when the new tier skips past it.
+    const interrupted = doneNames(run).includes(run.phase) ? resume : run.phase;
     const events = [];
     events.push(
       self
@@ -653,6 +798,7 @@ export function decide(input) {
           },
     );
     for (const n of notes) events.push({ kind: 'degrade', msg: n });
+    for (const n of infoNotes) events.push({ kind: 'note', msg: n });
     if (degrade) events.push({ kind: 'degrade', msg: degrade });
     return plan({
       ...base,
@@ -665,7 +811,7 @@ export function decide(input) {
       targetTier: tier,
       resumePhase: resume,
       skipPhases,
-      cleanPhase: self ? null : resume,
+      cleanPhase: self ? null : interrupted,
       reason: `${why}; ${self ? 'resuming' : 'taking over'} at ${resume} with tier ${tier}`,
       events,
     });
@@ -692,20 +838,31 @@ export function decide(input) {
         targetTier: tier,
         resumePhase: resume,
         skipPhases,
-        cleanPhase: resume,
+        cleanPhase: doneNames(run).includes(run.phase) ? resume : run.phase,
         reason: `forced over a fresh lease held by ${info.holder}/${info.session}`,
         events,
       });
     }
+    // wdB (06:47) cuts the scope of any run that has not reached build yet; wdA (05:32) only of one still in ideate.
     const wanted = [];
-    if (role === 'wdB' && WD_B_SCOPE_PHASES.includes(run.phase) && minutes >= hm(config.tierCutoffs.t2Until)) {
-      wanted.push({ kind: 'scope-cut', tier: 2 });
-    }
-    if (role === 'wdA' && WD_A_BEHIND_PHASES.includes(run.phase) && minutes >= hm(WD_A_BEHIND_FROM)) {
-      wanted.push({ kind: 'scope-cut', tier: 2 });
-    }
+    if (role === 'wdB' && WD_B_SCOPE_PHASES.includes(run.phase)) wanted.push({ kind: 'scope-cut', tier: 2 });
+    if (role === 'wdA' && WD_A_BEHIND_PHASES.includes(run.phase) && minutes >= hm(WD_A_BEHIND_FROM)) wanted.push({ kind: 'scope-cut', tier: 2 });
     const directives = newDirectives(run, wanted);
     const note = directives.length ? '; scope-cut directive left for it' : wanted.length ? '; scope-cut directive already pending' : '';
+    if (info.hbUnreadable) {
+      // Silent by the lease's own clock but the heartbeat channel is unreadable: not evidence of death. Say so once per role.
+      const first = !run.events.some((e) => e.code === 'hb-unreadable' && e.by === role);
+      return plan({
+        ...base,
+        action: 'exit-alive',
+        hbUnreadable: true,
+        targetTier: run.targetTier,
+        resumePhase: null,
+        reason: `hb-unreadable: ${info.holder}/${info.session} last checkpointed ${info.ageMinutes} min ago (phase ${run.phase}${info.phaseMinutes === null ? '' : `, ${info.phaseMinutes} min in it`}) and the heartbeat branch could not be read, so it is not declared dead before ${config.phaseStuckMinutes} min of silence${note}`,
+        directives,
+        events: first ? [{ kind: 'note', code: 'hb-unreadable', msg: `heartbeat branch unreadable: ${info.holder}/${info.session} is silent ${info.ageMinutes} min on the lease but is not taken over before ${config.phaseStuckMinutes} min` }] : [],
+      });
+    }
     return plan({
       ...base,
       action: 'exit-alive',
@@ -781,10 +938,11 @@ export function applyDecision(run, p, ctx) {
     r.phaseStartedAt[p.resumePhase] = nowIso;
   }
   for (const phase of p.skipPhases) {
-    if (!r.phasesDone.some((e) => e.phase === phase)) r.phasesDone.push({ phase, at: nowIso, by: role, note: 'skipped: finished build is packaged without it' });
+    if (!r.phasesDone.some((e) => e.phase === phase)) r.phasesDone.push({ phase, at: nowIso, by: role, note: 'skipped: finished build is packaged without it', skipped: true });
   }
   if (throttleLevel && p.changed) r.throttle = throttleLevel;
-  for (const e of p.events) pushEvent(r, e.kind, e.msg, role, nowIso);
+  for (const e of p.events) pushEvent(r, e.kind, e.msg, role, nowIso, e.code);
+  if (p.closeKaizen) closeKaizen(r, { by: role, at: nowIso, note: p.closeKaizen, skipped: true });
   for (const d of p.directives) {
     if (addDirective(r, d, role, nowIso)) {
       pushEvent(r, 'note', `${d.kind} directive (tier ${d.tier}) issued by ${role}`, role, nowIso);
@@ -901,7 +1059,14 @@ export function mergeRuns(base, remote, local) {
       publishedUrl: pub.publishedUrl,
       phase: pub.phase,
     });
-    if (!out.phasesDone.some((e) => e.phase === 'done')) out.phasesDone.push(...pub.phasesDone.filter((e) => e.phase === 'done'));
+    // The kaizen runs after the publish: once either side finished or skipped it, the day is done and stays done.
+    for (const side of [remote, local]) {
+      if (side.status !== 'published') continue;
+      for (const e of side.phasesDone) {
+        if ((e.phase === 'kaizen' || e.phase === 'done') && !out.phasesDone.some((x) => x.phase === e.phase)) out.phasesDone.push(e);
+      }
+    }
+    if (doneNames(out).includes('done')) out.phase = 'done';
   }
   return { displaced: false, run: out };
 }
@@ -929,11 +1094,12 @@ function removeDoneMarker(date, phase) {
   fs.rmSync(doneMarker(date, phase), { force: true });
 }
 
-/** Deletes work/<date>/<dir> for the phase being restarted; returns the dirs that existed. */
-function cleanStaging(date, phase) {
+/** Deletes work/<date>/<dir> for the phase being restarted (except `keep`); returns the dirs that existed. */
+function cleanStaging(date, phase, { keep = [] } = {}) {
   const removed = [];
   const root = stagingRoot(date);
   for (const dir of stagingDirs(phase)) {
+    if (keep.includes(dir)) continue;
     const target = path.join(root, dir);
     if (path.dirname(target) !== root) continue; // never leave work/<date>/
     if (!fs.existsSync(target)) continue;
@@ -943,11 +1109,19 @@ function cleanStaging(date, phase) {
   return removed;
 }
 
-function withPhaseDone(run, phase, { by, note = '', at }) {
+function withPhaseDone(run, phase, { by, note = '', at, skipped = false }) {
   const r = structuredClone(run);
-  if (!r.phasesDone.some((e) => e.phase === phase)) r.phasesDone.push({ phase, at, by, note });
+  if (!r.phasesDone.some((e) => e.phase === phase)) r.phasesDone.push({ phase, at, by, note, ...(skipped ? { skipped: true } : {}) });
   r.attempts[phase] = Math.max(1, r.attempts[phase] ?? 0);
   return r;
+}
+
+/** The kaizen phase is over, done or skipped (mutates `run`): with it the whole day is done. */
+function closeKaizen(run, { by, at, note, skipped = false }) {
+  if (!doneNames(run).includes('kaizen')) run.phasesDone.push({ phase: 'kaizen', at, by, note, ...(skipped ? { skipped: true } : {}) });
+  run.phase = 'done';
+  run.phaseStartedAt.done = at;
+  if (!doneNames(run).includes('done')) run.phasesDone.push({ phase: 'done', at, by, note: 'kaizen closed the day' });
 }
 
 // ---------------------------------------------------------------------------------------
@@ -955,6 +1129,13 @@ function withPhaseDone(run, phase, { by, note = '', at }) {
 // ---------------------------------------------------------------------------------------
 
 const hasIndex = (dir) => fs.existsSync(path.join(dir, 'index.html'));
+
+/** The dead builder's site, finished or not (repo-relative dir), for the closer's salvage; null when there is none. */
+export function unfinishedSite(date) {
+  const root = stagingRoot(date);
+  const dir = [path.join(root, 'build', 'site'), path.join(root, 'build')].find(hasIndex);
+  return dir ? path.relative(rp(), dir) : null;
+}
 
 function historyEntryFor(date) {
   const history = readJson(rp('state', 'history.json'), null);
@@ -1003,6 +1184,8 @@ export function levelConfigFor(config, level) {
     level: config.budget.levels?.[level] ? level : config.budget.level,
     ...lv,
     reserveForPublishTokens: reserve,
+    reserveForKaizenTokens: lv.reserveForKaizenTokens ?? config.budget.reserveForKaizenTokens ?? 0,
+    kaizenMinTokensToStart: config.kaizen?.minTokensToStart ?? 0,
     capTokens: Math.max(0, (lv.outputTokens ?? 0) - reserve),
   };
 }
@@ -1039,7 +1222,8 @@ function touchLease(run, session, nowIso) {
 
 /**
  * begin: apply the decision table. opts: { role, session, date, now, config, flags, throttleLevel }.
- * Returns { action, date, role, targetTier, resumePhase, reason, wrote, run, recovered, cleaned, corrupt }.
+ * Returns { action, date, role, targetTier, resumePhase, reason, wrote, grace, hbUnreadable, salvageSite, kept, kaizenPending, run, recovered, cleaned, corrupt }
+ * where action is proceed | resume | takeover | force-degrade | exit-published | exit-alive | resume-kaizen.
  */
 export function beginRun(opts) {
   assertIdentity(opts.role, opts.session); // reject bad input before a corrupt file gets quarantined for nothing
@@ -1075,27 +1259,35 @@ export function beginRun(opts) {
       }
     }
     const heartbeat = latestHeartbeat(loadHeartbeat(date, run?.lease?.session), opts.heartbeat ?? null);
-    const input = { ...opts, config, now, date, heartbeat, run };
+    const input = { ...opts, config, now, date, heartbeat, run, hbUnknown: opts.hbUnknown === true };
     let p = decide(input);
 
     // A phase that finished (DONE.json) just before its session died must not be redone or wiped.
+    // The interrupted phase counts too: a takeover that degrades past it would otherwise wipe a finished build.
     const recovered = [];
     let working = run;
     while (working && p.setPhase && !p.create && p.action !== 'force-degrade' && recovered.length < PHASES.length) {
-      const phase = p.resumePhase;
-      if (!hasDoneMarker(date, phase)) break;
+      const phase = [p.cleanPhase, p.resumePhase].find((ph) => ph && !doneNames(working).includes(ph) && hasDoneMarker(date, ph));
+      if (!phase) break;
       working = withPhaseDone(working, phase, { by: 'recovery', note: 'DONE.json marker found; phase had completed before the session died', at: nowIso });
       recovered.push(phase);
       p = decide({ ...input, run: working });
     }
 
-    // exit-published / exit-alive without a directive must not touch the file at all (watchdogs commit nothing).
-    const mustWrite = p.changed || p.directives.length > 0 || corrupt !== null || recovered.length > 0 || reopened;
+    // exit-published / exit-alive without a directive or an event must not touch the file at all (watchdogs commit nothing).
+    const mustWrite = p.changed || p.directives.length > 0 || p.events.length > 0 || corrupt !== null || recovered.length > 0 || reopened;
     let result = working;
     let cleaned = [];
+    let kept = null;
     let wrote = false;
     if (mustWrite) {
-      if (p.cleanPhase) cleaned = cleanStaging(date, p.cleanPhase);
+      if (p.cleanPhase) {
+        // A dead build that left a site behind is the closer's salvage material: when the plan moves past `build`
+        // (fallback tier or rescue) nothing restarts it, so wiping it would only destroy the day's best chance.
+        const site = p.cleanPhase === 'build' && p.resumePhase !== 'build' ? unfinishedSite(date) : null;
+        if (site) kept = path.join('work', date, 'build');
+        cleaned = cleanStaging(date, p.cleanPhase, { keep: site ? ['build'] : [] });
+      }
       const next = applyDecision(working, p, { role: opts.role, session: opts.session, nowIso, date, throttleLevel: opts.throttleLevel });
       if (corrupt) {
         const msg = `corrupt-run: ${corrupt.error}${corrupt.preservedAs ? `; bad file preserved as ${corrupt.preservedAs}` : ''}`;
@@ -1104,6 +1296,7 @@ export function beginRun(opts) {
       for (const phase of recovered) {
         pushEvent(next, 'note', `phase ${phase} recovered from its DONE.json marker`, opts.role, nowIso);
       }
+      if (kept) pushEvent(next, 'note', `kept ${kept}: the interrupted build left a site (${unfinishedSite(date)}) that the closer may salvage`, opts.role, nowIso);
       if (next.events.length > MAX_EVENTS) next.events = next.events.slice(-MAX_EVENTS);
       saveRun(next);
       result = next;
@@ -1119,12 +1312,17 @@ export function beginRun(opts) {
       wrote,
       directiveAdded: p.directives.length > 0 && wrote,
       builtSiteAvailable: p.builtSiteAvailable,
+      grace: p.grace,
+      hbUnreadable: p.hbUnreadable,
+      salvageSite: result.status === 'published' ? null : unfinishedSite(date),
+      kept,
+      kaizenPending: kaizenPending(result),
       ...(unbacked ? { publicationBacked: false, publicationProblem: unbacked } : {}),
       run: result,
       recovered,
       cleaned,
       corrupt,
-      lease: leaseInfo(config, result, heartbeat, now.getTime()),
+      lease: leaseInfo(config, result, heartbeat, now.getTime(), { hbUnknown: opts.hbUnknown === true }),
     };
   });
 }
@@ -1137,7 +1335,7 @@ export function beatRun({ role, session, phase, note, date, now, displacedBy, co
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   return updateRun(day, (run) => {
     const pending = run.directives.filter((d) => !d.ack);
-    const common = { directives: pending, targetTier: run.targetTier, status: run.status, spend: spendSummary(config, run) };
+    const common = { directives: pending, targetTier: run.targetTier, status: run.status, spend: spendSummary(config, run), kaizenPending: kaizenPending(run) };
     if (displacedBy) {
       // another container's newer lease reached the shared branch: this writer lost and must not refresh anything
       return {
@@ -1161,7 +1359,7 @@ export function beatRun({ role, session, phase, note, date, now, displacedBy, co
           : `lease is held by ${info.holder}/${info.session} (fresh); stop writing`;
       return { result: { ...common, leaseHeld: false, holder: info.holder, holderSession: info.session, reason } };
     }
-    if (run.status !== 'in_progress') {
+    if (run.status !== 'in_progress' && !kaizenPending(run)) {
       return { result: { ...common, leaseHeld: true, holder: role, reason: `run is ${run.status}; heartbeat not recorded` } };
     }
     run.lease.heartbeatAt = at.toISOString();
@@ -1177,7 +1375,12 @@ export function phaseStart({ phase, session, date, now, config = loadConfig() })
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   const nowIso = at.toISOString();
   return updateRun(day, (run) => {
-    if (run.status !== 'in_progress') throw new StateError(`run for ${day} is ${run.status}; cannot start phase ${phase}`);
+    if (phase === 'kaizen') {
+      // kaizen belongs to the already published day; before that it could only steal time from the page
+      if (!kaizenPending(run)) throw new StateError(`phase kaizen starts only after the day is published (run is ${run.status}, phase ${run.phase})`);
+    } else if (run.status !== 'in_progress') {
+      throw new StateError(`run for ${day} is ${run.status}; cannot start phase ${phase}`);
+    }
     guardHolder(run, session);
     run.phase = phase;
     run.phaseStartedAt[phase] = nowIso;
@@ -1198,27 +1401,64 @@ export function phaseStart({ phase, session, date, now, config = loadConfig() })
   });
 }
 
-export function phaseDone({ phase, note, role, session, date, now, config = loadConfig() }) {
+function completePhase({ phase, note, role, session, date, now, config = loadConfig(), skipped = false, heartbeat = null }) {
   assertPhase(phase);
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   const nowIso = at.toISOString();
   return updateRun(day, (run) => {
-    if (run.status !== 'in_progress') throw new StateError(`run for ${day} is ${run.status}; cannot finish phase ${phase}`);
-    guardHolder(run, session);
+    if (phase === 'kaizen') {
+      if (!kaizenEnabled(config)) throw new StateError('kaizen is disabled (config.kaizen.enabled is false)');
+      if (!kaizenPending(run) && !doneNames(run).includes('kaizen')) {
+        throw new StateError(`phase kaizen can only be closed after the day is published (run is ${run.status}, phase ${run.phase})`);
+      }
+    } else if (run.status !== 'in_progress') {
+      throw new StateError(`run for ${day} is ${run.status}; cannot ${skipped ? 'skip' : 'finish'} phase ${phase}`);
+    }
+    // The closer never runs the kaizen round (CONTRACT 12.2) but closes it on purpose. A primary that died after it
+    // published leaves a stale lease behind, and the holder guard would refuse that close for ever: a dead owner must not
+    // keep the day open. A live owner (fresh lease or heartbeat, phase not stuck) is still protected.
+    const orphan =
+      phase === 'kaizen' && skipped && role === 'closer' && run.lease && run.lease.session !== session
+        ? leaseInfo(config, run, latestHeartbeat(loadHeartbeat(day, run.lease.session), heartbeat), at.getTime())
+        : null;
+    const orphaned = orphan !== null && (orphan.stale || orphan.stuck);
+    if (!orphaned) guardHolder(run, session);
+    const by = role ?? run.lease?.holder ?? 'unknown';
     const already = doneNames(run).includes(phase);
-    const r = withPhaseDone(run, phase, { by: role ?? run.lease?.holder ?? 'unknown', note: note ?? '', at: nowIso });
-    const next = firstPending(r.targetTier, doneNames(r));
-    if (r.phase !== next) {
-      r.phase = next;
-      r.phaseStartedAt[next] = nowIso;
+    const r = withPhaseDone(run, phase, { by, note: note ?? '', at: nowIso, skipped });
+    if (skipped && !already) pushEvent(r, 'note', `phase ${phase} ${note}`, by, nowIso);
+    if (orphaned && !already) {
+      pushEvent(r, 'note', `kaizen closed by the closer: its owner ${orphan.holder}/${orphan.session} is gone (${orphan.stale ? `silent ${orphan.ageMinutes} min` : `phase ${orphan.phaseMinutes} min old`})`, by, nowIso);
+    }
+    let next;
+    if (phase === 'kaizen') {
+      closeKaizen(r, { by, at: nowIso, note: note ?? '', skipped });
+      next = 'done';
+    } else {
+      next = firstPending(r.targetTier, doneNames(r));
+      // publish is only over when `finish` has marked the day published, so kaizen cannot follow it yet
+      if (next === 'kaizen') next = kaizenEnabled(config) ? 'publish' : 'done';
+      if (r.phase !== next) {
+        r.phase = next;
+        r.phaseStartedAt[next] = nowIso;
+      }
     }
     touchLease(r, session, nowIso);
     return {
       run: r,
-      result: { phase, alreadyDone: already, next, attempts: r.attempts, phasesDone: doneNames(r), targetTier: r.targetTier },
+      result: { phase, alreadyDone: already, next, attempts: r.attempts, phasesDone: doneNames(r), targetTier: r.targetTier, kaizenPending: kaizenPending(r) },
     };
   });
+}
+
+export const phaseDone = completePhase;
+
+/** Records a phase as skipped on purpose (it counts as done, so a takeover never walks back to it). */
+export function skipPhase({ reason, ...rest }) {
+  if (typeof reason !== 'string' || !reason.trim()) throw new UsageError('--reason is required');
+  const why = reason.trim();
+  return { ...completePhase({ ...rest, note: `skipped: ${why}`, skipped: true }), skipped: true, reason: why };
 }
 
 export function directiveRun({ kind, tier, by, date, now, config = loadConfig() }) {
@@ -1286,7 +1526,7 @@ export function spendRun({ tokens = 0, calls = 0, phase, session, date, now, con
     const cur = run.spend.byPhase[bucket] ?? { outputTokens: 0, agentCalls: 0 };
     run.spend.byPhase[bucket] = { outputTokens: (cur.outputTokens ?? 0) + t, agentCalls: (cur.agentCalls ?? 0) + c };
     const after = spendSummary(config, run);
-    if (after.overCap && !before.overCap) {
+    if (after.overCap && !before.overCap && run.status !== 'published') {
       pushEvent(
         run,
         'budget',
@@ -1341,6 +1581,7 @@ export function finishRun({ status = 'published', tier, url, by, date, now, conf
   const lp = localParts(at, config.timezone);
   return updateRun(day, (run) => {
     const who = by ?? run.lease?.holder ?? 'unknown';
+    const firstPublication = run.status !== 'published';
     let removedDirs = [];
     let action = 'published';
     if (run.status === 'published') {
@@ -1376,12 +1617,29 @@ export function finishRun({ status = 'published', tier, url, by, date, now, conf
     run.tier = newTier;
     run.publishedAt = nowIso;
     run.publishedUrl = url ?? config.siteUrl ?? null;
-    run.phase = 'done';
-    run.phaseStartedAt.done = nowIso;
-    if (!doneNames(run).includes('done')) run.phasesDone.push({ phase: 'done', at: nowIso, by: who, note: `published tier ${newTier}` });
+    // Publishing does not end the day: the kaizen (CONTRACT 12) is still owed, and an upgrade never reopens or closes it.
+    if (firstPublication) {
+      if (kaizenEnabled(config)) {
+        run.phase = 'kaizen';
+        run.phaseStartedAt.kaizen = nowIso;
+      } else {
+        run.phase = 'done';
+        run.phaseStartedAt.done = nowIso;
+        if (!doneNames(run).includes('done')) run.phasesDone.push({ phase: 'done', at: nowIso, by: who, note: `published tier ${newTier}` });
+      }
+    }
     return {
       run,
-      result: { ok: true, action, tier: newTier, publishedAt: nowIso, publishedUrl: run.publishedUrl, removedDirs, replaced: run.replaced ?? [] },
+      result: {
+        ok: true,
+        action,
+        tier: newTier,
+        publishedAt: nowIso,
+        publishedUrl: run.publishedUrl,
+        removedDirs,
+        replaced: run.replaced ?? [],
+        kaizenPending: kaizenPending(run),
+      },
     };
   });
 }
@@ -1428,23 +1686,30 @@ export function syncThrottleToRun({ date, now, level, reason, kind = 'note', by 
 // ---------------------------------------------------------------------------------------
 
 function nextActionHint({ run, info, config, minutes, spend }) {
-  const deadline = hm(config.schedule.deadline);
+  const sched = scheduleMinutes(config);
   // A manual run (genesis, rerun, repair) has no deadline pressure: clock-based advice would abandon a good run.
   const manual = info.present && info.holder === 'manual';
-  const late = !manual && minutes >= deadline;
   if (!run) {
-    return late
-      ? `No run for this date and the ${config.schedule.deadline} deadline has passed: \`state.mjs begin --role manual --target-tier 4\` then publish a Postcard (deadman.mjs --force does this model-free).`
+    return minutes >= hm(config.tierCutoffs.t3Until)
+      ? `No run for this date and the tier-3 cutoff (${config.tierCutoffs.t3Until}) has passed: only a Postcard fits. \`state.mjs begin --role manual --target-tier 4\` then publish it (deadman.mjs --force does this model-free).`
       : 'No run yet: the primary runs `state.mjs begin --role primary --session <id>`; any other role will start the day at the tier its clock allows.';
   }
   if (run.status === 'published') {
-    return `Published at tier ${run.tier} (${run.publishedUrl ?? 'no url'}). Nothing to do${run.tier > 1 ? '; a better tier may still replace it via `finish` until 23:59 local' : ''}.`;
+    const upgrade = run.tier > 1 ? '; a better tier may still replace it via `finish` until 23:59 local' : '';
+    const kaizen = kaizenPending(run)
+      ? info.stale || info.stuck || !info.present
+        ? ' Kaizen is pending and its owner is gone: `begin` (primary, wdA, wdB or manual) resumes it until 12:00 local, the closer never does.'
+        : ` Kaizen is pending: ${info.holder} is running it.`
+      : '';
+    return `Published at tier ${run.tier} (${run.publishedUrl ?? 'no url'}). Nothing to do for the page${upgrade}.${kaizen}`;
   }
   const parts = [];
   if (run.status === 'failed') {
     parts.push('Run is marked failed: any role can `begin` to take it over and continue at ' + firstPending(run.targetTier, doneNames(run)) + '.');
   } else if (!info.present) {
     parts.push('Run has no lease: `begin` takes it over.');
+  } else if (info.hbUnreadable) {
+    parts.push(`${info.holder} last checkpointed ${info.ageMinutes} min ago but the heartbeat branch cannot be read (hb-unreadable): its silence is not proof of death, so \`begin\` leaves it alone until ${config.phaseStuckMinutes} min of silence or a phase stuck past ${info.stuckLimitMinutes} min.`);
   } else if (info.stale) {
     parts.push(`Lease of ${info.holder} is STALE (${info.ageMinutes} min silent, limit ${config.leaseStaleMinutes}): \`begin\` takes over at ${firstPending(run.targetTier, doneNames(run))}.`);
   } else if (info.stuck) {
@@ -1455,28 +1720,43 @@ function nextActionHint({ run, info, config, minutes, spend }) {
   const pending = run.directives.filter((d) => !d.ack);
   if (pending.length) parts.push(`Pending directives for the holder: ${pending.map((d) => `${d.kind}(tier ${d.tier})`).join(', ')}.`);
   if (spend.overCap) parts.push(`Output tokens ${spend.outputTokens} are over the ${spend.capTokens} cap: no new agent work, go to package or a fallback.`);
-  if (manual) parts.push('This is a manual run: clock-based advice (deadline, tier cutoffs) does not apply to it; ignore clock hints.');
-  else if (late) parts.push(`The ${config.schedule.deadline} deadline has passed without a publish: ship the best fallback now.`);
-  else if (minutes >= hm(config.tierCutoffs.t3Until)) parts.push('Past the tier-3 cutoff: the closer force-degrades to Ideas Day or Postcard.');
+  if (manual) {
+    parts.push('This is a manual run: clock-based advice (deadline, tier cutoffs) does not apply to it; ignore clock hints.');
+  } else if (minutes >= sched.hardStop) {
+    parts.push(`The hard stop (${config.schedule.hardStop}) has passed without a publish: force-resolve now (salvage a finished build as tier 2, else the Ideas Day, else the Postcard; deadman.mjs --force does it model-free).`);
+  } else if (minutes >= sched.graceUntil) {
+    parts.push(`The grace period ended at ${config.schedule.graceUntil} without a publish: the closer force-degrades; ship the best fallback now.`);
+  } else if (minutes >= sched.deadline) {
+    parts.push(
+      isLatePhase(run.phase) && info.present && !info.stale && !info.stuck
+        ? `The ${config.schedule.deadline} deadline is a guideline and the run is in ${run.phase} with a live lease: it keeps going until ${config.schedule.graceUntil} (quality beats punctuality).`
+        : `The ${config.schedule.deadline} deadline (a guideline) has passed and phase ${run.phase} is not one of ${LATE_PHASES.join('/')}: the closer force-degrades a run that is not in a late phase, so ship the best fallback now.`,
+    );
+  }
   return parts.join(' ');
 }
 
-export function statusSummary({ date, now, config = loadConfig(), history = [] }) {
+export function statusSummary({ date, now, config = loadConfig(), history = [], heartbeat = null, hbUnknown = false }) {
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   const read = readRunFile(day);
   const minutes = effectiveMinutes(config, at, day);
   const run = read.run;
-  const heartbeat = loadHeartbeat(day, run?.lease?.session);
-  const info = leaseInfo(config, run, heartbeat, at.getTime());
+  const info = leaseInfo(config, run, latestHeartbeat(loadHeartbeat(day, run?.lease?.session), validHeartbeat(heartbeat, run?.lease?.session)), at.getTime(), { hbUnknown });
+  const sched = scheduleMinutes(config);
   const base = {
     date: day,
     now: at.toISOString(),
     time: localParts(at, config.timezone).time,
-    minutesToDeadline: hm(config.schedule.deadline) - minutes,
+    minutesToDeadline: sched.deadline - minutes,
+    minutesToGraceUntil: sched.graceUntil - minutes,
+    minutesToHardStop: sched.hardStop - minutes,
+    phaseIsLate: run ? isLatePhase(run.phase) : false,
     targetTierIfStartedNow: tierByMinutes(config, minutes),
     exists: read.status === 'ok',
     runFile: read.status,
+    kaizenPending: kaizenPending(run),
+    qaBlock: qaBlock(day),
     ...(read.status === 'corrupt' ? { corruptError: read.error } : {}),
   };
   if (!run) {
@@ -1505,7 +1785,7 @@ export function statusSummary({ date, now, config = loadConfig(), history = [] }
     phasesDone: doneNames(run),
     attempts: run.attempts,
     lease: run.lease
-      ? { ...run.lease, ageMinutes: info.ageMinutes, lastSignOfLifeAt: info.lastBeatAt, source: info.source, stale: info.stale, stuck: info.stuck, alive: !info.stale && !info.stuck }
+      ? { ...run.lease, ageMinutes: info.ageMinutes, lastSignOfLifeAt: info.lastBeatAt, source: info.source, stale: info.stale, stuck: info.stuck, hbUnreadable: info.hbUnreadable, alive: !info.stale && !info.stuck }
       : null,
     directives: run.directives.filter((d) => !d.ack),
     directivesAcked: run.directives.filter((d) => d.ack).length,

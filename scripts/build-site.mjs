@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Regenerates the static site (everything in docs/ except docs/d/**) from state/history.json and each
-// docs/d/<date>-<slug>/project.json. Projects that fail validation are left out of the site, never fatal.
+// docs/d/<date>-<slug>/project.json, plus the swarm's diary (docs/kaizen/) from ops/kaizen/INDEX.json.
+// Projects that fail validation are left out of the site, never fatal.
 //   build-site.mjs [--now ISO]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,6 +9,7 @@ import { pathToFileURL } from 'node:url';
 import { rp, readJson, loadConfig, localParts, addDays, hm, parseArgs, resolveNow, print, die } from './lib/common.mjs';
 import {
   buildArchive, normalizeSiteUrl, renderTemplate, renderFeed, renderSitemap, renderRobots,
+  normalizeKaizen, kaizenTeaser, renderKaizenPage, renderKaizenJson, summarizeKaizen, KAIZEN_PATH,
 } from './lib/archive.mjs';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -98,6 +100,42 @@ function missingThrough({ now, config, publishedDates }) {
   const { date: today, minutes } = localParts(now, config.timezone);
   const deadline = hm(config.schedule?.deadline ?? '08:00');
   return !publishedDates.has(today) && minutes < deadline ? addDays(today, -1) : today;
+}
+
+/**
+ * The diary's inputs: the ledger plus its three optional site-src files. Nothing here is ever fatal: without the
+ * files or with a ledger that cannot be read, the diary is simply not (re)written and the page already in docs/kaizen/
+ * stays as it was.
+ */
+function loadDiary(config, warnings) {
+  const read = (rel) => {
+    try {
+      return fs.readFileSync(rp(rel));
+    } catch {
+      return null;
+    }
+  };
+  const template = read('site-src/kaizen.template.html');
+  const css = read('site-src/kaizen.css');
+  const js = read('site-src/kaizen.js');
+  const missing = [['kaizen.template.html', template], ['kaizen.css', css], ['kaizen.js', js]].filter(([, v]) => v === null).map(([n]) => `site-src/${n}`);
+  const ledgerFile = rp('ops', 'kaizen', 'INDEX.json');
+  let raw;
+  let readError = null;
+  if (fs.existsSync(ledgerFile)) {
+    try {
+      raw = readJson(ledgerFile);
+    } catch (e) {
+      readError = errMsg(e).split('\n')[0];
+    }
+  }
+  const model = readError ? { ok: false, error: readError, entries: [], warnings: [] } : normalizeKaizen(raw, { repo: config.repo, workBranch: config.workBranch, members: config.kaizen?.members });
+  warnings.push(...model.warnings);
+  const present = fs.existsSync(rp('docs', 'kaizen', 'index.html'));
+  if (!model.ok) warnings.push(`the swarm's diary was not rebuilt: ${model.error}${present ? '; keeping the published page' : ''}`);
+  else if (missing.length) warnings.push(`the swarm's diary was not built: ${missing.join(', ')} ${missing.length === 1 ? 'is' : 'are'} missing${present ? '; keeping the published page' : ''}`);
+  const render = model.ok && missing.length === 0;
+  return { render, present: render || present, entries: model.entries, template: template?.toString('utf8'), css, js };
 }
 
 async function validateOne({ entry, validate, now }) {
@@ -201,8 +239,12 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
       // docs/d does not exist yet
     }
 
+    const diary = loadDiary(config, warnings);
     const publishedDates = new Set(projects.map((p) => p.project.date));
-    const archive = buildArchive({ projects, config, siteUrl, now: instant, through: missingThrough({ now: instant, config, publishedDates }) });
+    const archive = buildArchive({
+      projects, config, siteUrl, now: instant, through: missingThrough({ now: instant, config, publishedDates }),
+      kaizen: diary.render ? kaizenTeaser(diary.entries) : null,
+    });
 
     const index = renderTemplate(indexTemplate, archive);
     const notFound = renderTemplate(notFoundTemplate, archive);
@@ -211,16 +253,30 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
       if (r.unknown.length) warnings.push(`site-src/${name} has unknown placeholders left untouched: ${r.unknown.join(', ')}`);
     }
 
+    const diaryOutputs = [];
+    if (diary.render) {
+      const page = renderKaizenPage(diary.template, { archive, entries: diary.entries });
+      if (page.unknown.length) warnings.push(`site-src/kaizen.template.html has unknown placeholders left untouched: ${page.unknown.join(', ')}`);
+      diaryOutputs.push(
+        ['assets/kaizen.css', diary.css],
+        ['assets/kaizen.js', diary.js],
+        ['kaizen/kaizen.json', renderKaizenJson({ archive, entries: diary.entries, repo: config.repo, workBranch: config.workBranch })],
+        ['kaizen/index.html', page.html],
+      );
+    }
+
     const publishedAtByDate = Object.fromEntries(projects.map((p) => [p.entry.date, p.entry.publishedAt]));
+    const diaryPage = diary.present ? [{ path: KAIZEN_PATH, lastmod: summarizeKaizen(diary.entries).lastDate }] : [];
     const outputs = [
       ['assets/gallery.css', css],
       ['assets/gallery.js', js],
       ['archive.json', `${JSON.stringify(archive, null, 2)}\n`],
-      ['feed.xml', renderFeed({ archive, publishedAtByDate })],
-      ['sitemap.xml', renderSitemap(archive)],
+      ['feed.xml', renderFeed({ archive, publishedAtByDate, diary: diary.present })],
+      ['sitemap.xml', renderSitemap(archive, diaryPage)],
       ['robots.txt', renderRobots(siteUrl)],
       ['404.html', notFound.html],
       ['.nojekyll', ''],
+      ...diaryOutputs,
       // The entry point goes last: it is what visitors load, so it only changes once everything it references is in place.
       ['index.html', index.html],
     ];
@@ -229,7 +285,7 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
       if (writeAtomic(rp('docs', rel), content)) changed.push(rel);
     }
 
-    return { ok: true, projects: projects.length, omitted, warnings, generatedAt: archive.generatedAt, changed };
+    return { ok: true, projects: projects.length, omitted, warnings, generatedAt: archive.generatedAt, changed, diary: { entries: diary.entries.length, rendered: diary.render } };
   } catch (e) {
     return { ok: false, projects: 0, omitted, warnings, error: errMsg(e) };
   }

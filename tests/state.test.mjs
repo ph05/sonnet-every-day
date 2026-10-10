@@ -1,5 +1,7 @@
 // Tests for scripts/state.mjs, scripts/lib/runstate.mjs, scripts/lib/throttle.mjs, scripts/lib/gitsync.mjs.
 // Everything runs against SED_ROOT sandboxes in temp dirs and temp BARE git remotes.
+// Clock facts of the frozen test config (same as the real one): t1Until 04:45, t2Until 07:00, t3Until 08:45;
+// deadline 08:00 (a guideline), graceUntil 09:30, hardStop 10:30, closer 08:47, lease stale after 35 min.
 import './helpers/env.mjs';
 import test, { describe } from 'node:test';
 import assert from 'node:assert/strict';
@@ -10,7 +12,7 @@ import { etInstant, etIso, plusMinutes, tmpDir, GIT_GLOBAL_CONFIG } from './help
 import { DATE, REPO_ROOT, TEST_CONFIG, makeRepoSandbox, makeSandbox } from './helpers/sandbox.mjs';
 import { BRANCH, git, gitTry, installPushHook, pushCount, remoteFile, remoteHas, remoteSha, removePushHook } from './helpers/git.mjs';
 import * as rs from '../scripts/lib/runstate.mjs';
-import { sync, BACKOFF_SECONDS } from '../scripts/lib/gitsync.mjs';
+import { sync, fetchRemoteHeartbeat, BACKOFF_SECONDS, DEFAULT_PATHS } from '../scripts/lib/gitsync.mjs';
 import { readJson } from '../scripts/lib/common.mjs';
 
 const cfg = TEST_CONFIG;
@@ -79,16 +81,22 @@ describe('decide(): CONTRACT 7 table, row 1 (published)', () => {
   });
   test('published beats the closer rule and a forced manual run', () => {
     const run = mkRun({ status: 'published', tier: 1, phase: 'done' });
-    assert.equal(dec('closer', 'c', '07:27', run).action, 'exit-published');
-    assert.equal(dec('manual', 'm', '07:27', run, { flags: { force: true } }).action, 'exit-published');
+    assert.equal(dec('closer', 'c', '08:47', run).action, 'exit-published');
+    assert.equal(dec('manual', 'm', '08:47', run, { flags: { force: true } }).action, 'exit-published');
+  });
+  test('a published run that is DONE (kaizen finished, or published before kaizen existed) never reports kaizenPending', () => {
+    for (const phasesDone of [done('preflight', 'kaizen', 'done'), done('preflight', 'done')]) {
+      const d = dec('wdA', 'w', '05:32', mkRun({ status: 'published', tier: 1, phase: 'done', phasesDone, lease: lease('primary', 'p1', '04:00') }));
+      assert.deepEqual([d.action, d.kaizenPending, d.changed], ['exit-published', false, false]);
+    }
   });
 });
 
 describe('decide(): row 2 (no run file) and tier-by-time', () => {
   const cases = [
-    ['primary', '03:55', 1], ['primary', '04:44', 1], ['primary', '04:45', 2], ['primary', '06:44', 2],
-    ['primary', '06:45', 3], ['primary', '07:24', 3], ['primary', '07:25', 4], ['primary', '07:59', 4],
-    ['wdA', '05:32', 2], ['wdB', '06:47', 3], ['closer', '07:27', 4],
+    ['primary', '03:55', 1], ['primary', '04:44', 1], ['primary', '04:45', 2], ['primary', '06:59', 2],
+    ['primary', '07:00', 3], ['primary', '08:44', 3], ['primary', '08:45', 4], ['primary', '09:59', 4],
+    ['wdA', '05:32', 2], ['wdB', '06:47', 2], ['wdB', '07:00', 3], ['closer', '08:47', 4],
   ];
   for (const [role, hhmm, tier] of cases) {
     test(`${role} at ${hhmm} with no run => proceed at tier ${tier}`, () => {
@@ -102,8 +110,9 @@ describe('decide(): row 2 (no run file) and tier-by-time', () => {
   test('resume point of a new run follows the tier path', () => {
     assert.equal(dec('primary', 's', '03:55', null).resumePhase, 'preflight');
     assert.equal(dec('wdA', 's', '05:32', null).resumePhase, 'preflight');
-    assert.equal(dec('wdB', 's', '06:47', null).resumePhase, 'preflight'); // tier 3 still needs ideate first
-    assert.equal(dec('closer', 's', '07:27', null).resumePhase, 'package'); // tier 4 needs nothing
+    assert.equal(dec('wdB', 's', '06:47', null).resumePhase, 'preflight'); // tier 2 walks the whole path
+    assert.equal(dec('wdB', 's', '07:00', null).resumePhase, 'preflight'); // tier 3 still needs ideate first
+    assert.equal(dec('closer', 's', '08:47', null).resumePhase, 'package'); // tier 4 needs nothing
   });
   test('a different date than "today" is treated as end of day (past) or start of day (future)', () => {
     const past = rs.decide({ config: cfg, role: 'primary', session: 's', now: at('04:00'), date: '2026-10-08', run: null, heartbeat: null });
@@ -114,57 +123,178 @@ describe('decide(): row 2 (no run file) and tier-by-time', () => {
   test('the throttle level minimal forces at least tier 2 (levels.minimal.forceTier)', () => {
     assert.equal(dec('primary', 's', '03:55', null, { throttleLevel: 'minimal' }).targetTier, 2);
     assert.equal(dec('primary', 's', '03:55', null, { throttleLevel: 'lean' }).targetTier, 1);
-    assert.equal(dec('wdB', 's', '06:47', null, { throttleLevel: 'minimal' }).targetTier, 3);
+    assert.equal(dec('wdB', 's', '06:47', null, { throttleLevel: 'minimal' }).targetTier, 2);
+    assert.equal(dec('wdB', 's', '07:05', null, { throttleLevel: 'minimal' }).targetTier, 3);
   });
 });
 
-describe('decide(): row 3 (closer past the tier-3 cutoff)', () => {
-  test('ideate done => force-degrade to tier 3 even over a FRESH primary lease, leaving ship-now', () => {
-    const run = mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select', 'spec'), lease: lease('primary', 'p1', '07:20') });
-    const d = dec('closer', 'c1', '07:27', run);
-    assert.equal(d.action, 'force-degrade');
-    assert.equal(d.targetTier, 3);
-    assert.equal(d.resumePhase, 'package');
+describe('decide(): row 3 (closer: grace, force-degrade and the hard stop, CONTRACT 13)', () => {
+  const before = (phase) => rs.PHASES.slice(0, rs.PHASES.indexOf(phase));
+  /** A primary that beat at `beatAt` and is working in `phase`, everything before it done. */
+  const primaryIn = (phase, beatAt, extra = {}) =>
+    mkRun({ phase, phasesDone: done(...before(phase)), lease: lease('primary', 'p1', beatAt), phaseStartedAt: { [phase]: iso(beatAt) }, ...extra });
+  const apply = (run, d, hhmm) => rs.applyDecision(run, d, { role: 'closer', session: 'c1', nowIso: iso(hhmm), date: DATE, throttleLevel: 'balanced' });
+  const LATE = ['qa', 'revise', 'package', 'publish'];
+
+  describe('grace for a healthy run in qa, revise, package or publish', () => {
+    for (const phase of LATE) {
+      test(`${phase}: exit-alive with a grace flag and ONE grace event; nothing else changes`, () => {
+        const run = primaryIn(phase, '08:40');
+        const d = dec('closer', 'c1', '08:47', run);
+        assert.deepEqual([d.action, d.grace, d.changed, d.takeLease, d.setPhase, d.targetTier, d.resumePhase], ['exit-alive', true, false, false, false, 1, null]);
+        assert.deepEqual(d.directives, []);
+        assert.deepEqual(d.events.map((e) => [e.kind, e.code]), [['note', 'grace']]);
+        assert.match(d.reason, /grace/);
+        assert.match(d.reason, /09:30/);
+        const next = apply(run, d, '08:47');
+        assert.deepEqual(next.events.at(-1), { at: iso('08:47'), by: 'closer', kind: 'note', code: 'grace', msg: `grace granted to primary/p1 in ${phase} until 09:30` });
+        assert.deepEqual([next.lease.holder, next.phase, next.targetTier, next.directives], ['primary', phase, 1, []]);
+        // babysitting: asking again grants the grace again but does not pile up events
+        const again = dec('closer', 'c1', '08:55', { ...next, lease: lease('primary', 'p1', '08:50') });
+        assert.deepEqual([again.action, again.grace, again.events], ['exit-alive', true, []]);
+      });
+    }
+    test('boundaries: the closer is quiet before 08:45, graces at 08:45/08:46/08:47 and at 09:29, and force-degrades at 09:30', () => {
+      for (const [now, beatAt, expected] of [
+        ['08:44', '08:40', ['exit-alive', false]],
+        ['08:45', '08:40', ['exit-alive', true]],
+        ['08:46', '08:40', ['exit-alive', true]],
+        ['08:47', '08:40', ['exit-alive', true]],
+        ['09:29', '09:25', ['exit-alive', true]],
+        ['09:30', '09:25', ['force-degrade', false]],
+        ['09:31', '09:25', ['force-degrade', false]],
+      ]) {
+        const d = dec('closer', 'c1', now, primaryIn('qa', beatAt));
+        assert.deepEqual([d.action, d.grace], expected, now);
+      }
+    });
+    test('at 09:30 the closer rescues the finished build as tier 2 (QA skipped) rather than discarding it', () => {
+      const d = dec('closer', 'c1', '09:30', primaryIn('qa', '09:25', { targetTier: 2 }));
+      assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.skipPhases], ['force-degrade', 2, 'package', ['qa', 'revise']]);
+      assert.match(d.reason, /past 09:30, the end of the grace period/);
+    });
+  });
+
+  test('a fresh lease in any EARLIER phase gets no grace: ideate done => tier 3 (leaving ship-now), else tier 4', () => {
+    for (const phase of ['preflight', 'ideate', 'select', 'spec', 'build']) {
+      const run = primaryIn(phase, '08:40');
+      const d = dec('closer', 'c1', '08:47', run);
+      assert.equal(d.action, 'force-degrade', phase);
+      assert.equal(d.grace, false, phase);
+      assert.equal(d.targetTier, ['select', 'spec', 'build'].includes(phase) ? 3 : 4, phase);
+      assert.equal(d.resumePhase, 'package', phase);
+      assert.match(d.reason, /too early for grace/, phase);
+      assert.deepEqual(d.directives, [{ kind: 'ship-now', tier: d.targetTier }], phase);
+    }
+    const run = primaryIn('build', '08:40');
+    const d = dec('closer', 'c1', '08:47', run);
     assert.equal(d.takeLease, true);
     assert.equal(d.events[0].kind, 'degrade');
-    assert.deepEqual(d.directives, [{ kind: 'ship-now', tier: 3 }]);
+    assert.match(d.events[0].msg, /took the lease from primary\/p1/);
   });
-  test('nothing done => tier 4 postcard', () => {
-    const run = mkRun({ phase: 'preflight', phasesDone: [], lease: lease('primary', 'p1', '07:10') });
-    const d = dec('closer', 'c1', '07:27', run);
-    assert.equal(d.action, 'force-degrade');
-    assert.equal(d.targetTier, 4);
-    assert.equal(d.resumePhase, 'package');
-  });
-  test('also applies to a failed run, and never improves an already worse target', () => {
-    const failed = mkRun({ status: 'failed', phasesDone: done('preflight', 'ideate') });
-    assert.equal(dec('closer', 'c', '07:27', failed).action, 'force-degrade');
-    const worse = mkRun({ phasesDone: done('preflight', 'ideate'), targetTier: 4 });
-    assert.equal(dec('closer', 'c', '07:27', worse).targetTier, 4);
-  });
-  test('before the cutoff the closer follows the normal rules', () => {
-    const run = mkRun({ phase: 'build', lease: lease('primary', 'p1', '07:10') });
-    assert.equal(dec('closer', 'c', '07:20', run).action, 'exit-alive');
-  });
-  test('re-running the closer in the same session resumes instead of degrading twice', () => {
-    const run = mkRun({ phasesDone: done('preflight', 'ideate'), lease: lease('primary', 'p1', '07:20') });
-    const first = dec('closer', 'c1', '07:27', run);
-    const afterFirst = rs.applyDecision(run, first, { role: 'closer', session: 'c1', nowIso: iso('07:27'), date: DATE, throttleLevel: 'balanced' });
-    const second = dec('closer', 'c1', '07:29', afterFirst);
-    assert.equal(second.action, 'resume');
-    assert.equal(second.resumePhase, 'package');
-    assert.deepEqual(second.directives, []);
-    const afterSecond = rs.applyDecision(afterFirst, second, { role: 'closer', session: 'c1', nowIso: iso('07:29'), date: DATE, throttleLevel: 'balanced' });
-    assert.equal(afterSecond.directives.length, 1);
-    assert.equal(afterSecond.events.filter((e) => e.kind === 'degrade').length, 1);
-  });
-  test('applying force-degrade moves the lease and leaves the ship-now directive un-acked', () => {
-    const run = mkRun({ phasesDone: done('preflight', 'ideate'), lease: lease('primary', 'p1', '07:20') });
-    const next = rs.applyDecision(run, dec('closer', 'c1', '07:27', run), { role: 'closer', session: 'c1', nowIso: iso('07:27'), date: DATE, throttleLevel: 'balanced' });
+
+  test('applying a force-degrade moves the lease and leaves the ship-now directive un-acked', () => {
+    const run = primaryIn('build', '08:40');
+    const next = apply(run, dec('closer', 'c1', '08:47', run), '08:47');
     assert.equal(next.lease.holder, 'closer');
     assert.equal(next.targetTier, 3);
     assert.equal(next.phase, 'package');
     assert.deepEqual(next.directives.map((d) => [d.kind, d.tier, d.ack]), [['ship-now', 3, false]]);
+  });
+
+  test('re-running the closer in the same session resumes instead of degrading twice', () => {
+    const run = primaryIn('build', '08:40');
+    const first = dec('closer', 'c1', '08:47', run);
+    const afterFirst = apply(run, first, '08:47');
+    const second = dec('closer', 'c1', '08:49', afterFirst);
+    assert.equal(second.action, 'resume');
+    assert.equal(second.resumePhase, 'package');
+    assert.deepEqual(second.directives, []);
+    const afterSecond = apply(afterFirst, second, '08:49');
+    assert.equal(afterSecond.directives.length, 1);
+    assert.equal(afterSecond.events.filter((e) => e.kind === 'degrade').length, 1);
+  });
+
+  test('a stale or missing lease before the hard stop is an ordinary takeover (row 4), with the finished build rescued', () => {
+    const stale = primaryIn('qa', '07:00', { targetTier: 2 });
+    const d = dec('closer', 'c1', '08:47', stale);
+    assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.grace], ['takeover', 2, 'package', false]);
+    assert.equal(d.events[0].kind, 'takeover');
+    assert.deepEqual(d.directives, []);
+    const noBuild = primaryIn('build', '07:00');
+    const t = dec('closer', 'c1', '08:47', noBuild);
+    assert.deepEqual([t.action, t.targetTier, t.resumePhase], ['takeover', 3, 'package']);
+    assert.equal(dec('closer', 'c1', '08:47', primaryIn('qa', '08:40', { lease: null })).action, 'takeover');
+  });
+
+  test('once the ideas exist the clock alone never degrades a takeover to the Postcard (an Ideas Day needs no time)', () => {
+    const withIdeas = mkRun({ phase: 'select', phasesDone: done('preflight', 'ideate'), lease: lease('primary', 'p1', '07:00') });
+    assert.equal(dec('closer', 'c1', '08:47', withIdeas).targetTier, 3);
+    assert.equal(dec('wdB', 'b1', '08:50', withIdeas).targetTier, 3);
+    const noIdeas = mkRun({ phase: 'ideate', phasesDone: done('preflight'), lease: lease('primary', 'p1', '07:00') });
+    assert.equal(dec('closer', 'c1', '08:47', noIdeas).targetTier, 4);
+  });
+
+  test('a failed run is taken over, never graced, and its target never improves', () => {
+    const failed = mkRun({ status: 'failed', phase: 'qa', phasesDone: done(...before('qa')), lease: lease('primary', 'p1', '08:44') });
+    const d = dec('closer', 'c', '08:47', failed);
+    assert.deepEqual([d.action, d.grace, d.clearFailed], ['takeover', false, true]);
+    assert.equal(dec('closer', 'c', '08:47', mkRun({ phasesDone: done('preflight', 'ideate'), targetTier: 4, lease: null })).targetTier, 4);
+  });
+
+  test('a phase stuck past phaseStuckMinutes is not "healthy" even with a fresh heartbeat: no grace, force-degrade', () => {
+    const run = primaryIn('qa', '08:45', { phaseStartedAt: { qa: iso('07:00') } });
+    const d = dec('closer', 'c1', '08:47', run);
+    assert.deepEqual([d.action, d.grace, d.targetTier, d.resumePhase], ['force-degrade', false, 2, 'package']); // the finished build is still rescued
+    assert.match(d.reason, /has run 107 min \(> 90\): not advancing, so no grace/);
+    assert.deepEqual(d.directives, [{ kind: 'ship-now', tier: 2 }]);
+    const edge = primaryIn('qa', '08:45', { phaseStartedAt: { qa: iso('07:17') } }); // 90 minutes exactly: still healthy
+    assert.equal(dec('closer', 'c1', '08:47', edge).grace, true);
+  });
+
+  test('before 08:45 the closer follows the normal rules', () => {
+    const run = primaryIn('build', '08:30');
+    const d = dec('closer', 'c', '08:44', run);
+    assert.deepEqual([d.action, d.grace, d.directives], ['exit-alive', false, []]);
+    assert.equal(dec('closer', 'c', '08:44', mkRun({ phase: 'build', lease: lease('primary', 'p1', '07:00') })).action, 'takeover');
+  });
+
+  test('the hard stop (10:30) overrides everything: a stale lease that was a takeover at 10:29 is a force-degrade at 10:30', () => {
+    const stale = mkRun({ phase: 'select', phasesDone: done('preflight', 'ideate'), lease: lease('primary', 'p1', '09:00') });
+    const at1029 = dec('closer', 'c1', '10:29', stale);
+    assert.deepEqual([at1029.action, at1029.targetTier], ['takeover', 3]);
+    const at1030 = dec('closer', 'c1', '10:30', stale);
+    assert.deepEqual([at1030.action, at1030.targetTier, at1030.resumePhase, at1030.takeLease], ['force-degrade', 3, 'package', true]);
+    assert.match(at1030.reason, /past the hard stop 10:30/);
+    assert.deepEqual(at1030.directives, [{ kind: 'ship-now', tier: 3 }]);
+    // a failed run and a run without a lease alike
+    assert.equal(dec('closer', 'c1', '10:30', mkRun({ status: 'failed' })).action, 'force-degrade');
+    assert.equal(dec('closer', 'c1', '10:30', mkRun({ lease: null })).action, 'force-degrade');
+    // and a healthy-looking one is long past its grace
+    const healthy = primaryIn('package', '10:25');
+    assert.equal(dec('closer', 'c1', '10:29', healthy).action, 'force-degrade');
+    assert.equal(dec('closer', 'c1', '10:30', healthy).action, 'force-degrade');
+  });
+
+  test('the rescue of a finished build needs ~20 minutes before the hard stop: tier 2 at 10:10, tier 3 (Ideas Day) at 10:11 and at the stop', () => {
+    const run = (hhmm) => primaryIn('qa', hhmm, { targetTier: 2 });
+    const rescued = dec('closer', 'c1', '10:10', run('10:05'));
+    assert.deepEqual([rescued.action, rescued.targetTier, rescued.resumePhase], ['force-degrade', 2, 'package']);
+    assert.match(rescued.reason, /package the finished build/);
+    assert.deepEqual(rescued.directives, [{ kind: 'ship-now', tier: 2 }]);
+    const late = dec('closer', 'c1', '10:11', run('10:05'));
+    assert.deepEqual([late.targetTier, late.resumePhase], [3, 'package']);
+    const stop = dec('closer', 'c1', '10:30', primaryIn('qa', '09:00', { targetTier: 2 }));
+    assert.deepEqual([stop.action, stop.targetTier], ['force-degrade', 3]);
+    // a package that already failed twice is not tried again
+    assert.equal(dec('closer', 'c1', '09:31', primaryIn('package', '09:25', { targetTier: 2, attempts: { package: 2 } })).targetTier, 3);
+  });
+
+  test('the backup closer (09:37) takes over from a first closer that is still alive but past its grace', () => {
+    const run = primaryIn('package', '09:30', { targetTier: 2, lease: lease('closer', 'c1', '09:30', '08:47') });
+    const d = dec('closer', 'c2', '09:37', run);
+    assert.deepEqual([d.action, d.takeLease], ['force-degrade', true]);
+    assert.equal(dec('closer', 'c1', '09:37', run).action, 'resume'); // the first closer itself just carries on
   });
 });
 
@@ -184,12 +314,28 @@ describe('decide(): row 4 (failed / stale / no lease => takeover or resume)', ()
     const run = mkRun({ lease: lease('primary', 'p1', '04:10'), targetTier: 3 });
     assert.equal(dec('wdA', 'w1', '05:32', run).targetTier, 3);
   });
-  test('wdB at 06:47 with ideate done lands on the Ideas Day path (tier 3, resume at package)', () => {
+  test('wdB at 06:47 is still inside tier 2: it resumes the compact build path; from 07:00 the clock says Ideas Day (tier 3, resume at package)', () => {
     const run = mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select'), lease: lease('primary', 'p1', '05:50') });
     const d = dec('wdB', 'w2', '06:47', run);
     assert.equal(d.action, 'takeover');
-    assert.equal(d.targetTier, 3);
-    assert.equal(d.resumePhase, 'package');
+    assert.equal(d.targetTier, 2);
+    assert.equal(d.resumePhase, 'spec');
+    const late = dec('wdB', 'w2', '07:00', run);
+    assert.equal(late.targetTier, 3);
+    assert.equal(late.resumePhase, 'package');
+    assert.equal(dec('wdB', 'w2', '06:59', run).targetTier, 2);
+  });
+  test('a takeover that degrades PAST the interrupted phase still cleans the interrupted phase (the dead build\'s half-written staging)', () => {
+    const run = mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select', 'spec'), lease: lease('primary', 'p1', '06:00') });
+    const d = dec('wdB', 'w2', '07:05', run);
+    assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.cleanPhase], ['takeover', 3, 'package', 'build']);
+    // the same session coming back cleans nothing; a phase that is already done is never the interrupted one
+    assert.equal(dec('primary', 'p1', '07:05', run).cleanPhase, null);
+    const finished = mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select', 'spec', 'build'), lease: lease('primary', 'p1', '06:00') });
+    assert.equal(dec('wdB', 'w2', '06:47', finished).cleanPhase, 'qa');
+    // a forced manual takeover cleans the interrupted phase as well
+    const fresh = mkRun({ phase: 'spec', phasesDone: done('preflight', 'ideate', 'select'), lease: lease('primary', 'p1', '04:20') });
+    assert.equal(dec('manual', 'm', '04:25', fresh, { flags: { force: true, targetTier: 4 } }).cleanPhase, 'spec');
   });
   test('a tier-1/2 takeover resumes at the first phase that is not done', () => {
     const run = mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select', 'spec'), lease: lease('primary', 'p1', '04:10') });
@@ -327,9 +473,17 @@ describe('decide(): row 5 (fresh lease held by someone else => exit-alive)', () 
       assert.deepEqual(d.directives, [{ kind: 'scope-cut', tier: 2 }], phase);
     }
   });
-  test('wdB does not cut scope for a primary that is already building, or before t2Until', () => {
-    assert.deepEqual(dec('wdB', 'w2', '06:47', mkRun({ phase: 'build', lease: lease('primary', 'p1', '06:40') })).directives, []);
-    assert.deepEqual(dec('wdB', 'w2', '06:44', mkRun({ phase: 'spec', lease: lease('primary', 'p1', '06:40') })).directives, []);
+  test('wdB cuts scope for anything before build whatever the minute (no time threshold), and leaves a primary that is building alone', () => {
+    for (const hhmm of ['05:50', '06:44', '06:47', '07:10']) {
+      assert.deepEqual(dec('wdB', 'w2', hhmm, mkRun({ phase: 'spec', lease: lease('primary', 'p1', hhmm === '05:50' ? '05:45' : '06:40') })).directives, [{ kind: 'scope-cut', tier: 2 }], hhmm);
+    }
+    for (const phase of ['build', 'qa', 'revise', 'package', 'publish']) {
+      assert.deepEqual(dec('wdB', 'w2', '06:47', mkRun({ phase, lease: lease('primary', 'p1', '06:40') })).directives, [], phase);
+    }
+  });
+  test('the closer and primaries never leave scope-cut directives', () => {
+    assert.deepEqual(dec('closer', 'c', '08:44', mkRun({ phase: 'ideate', lease: lease('primary', 'p1', '08:40') })).directives, []);
+    assert.deepEqual(dec('primary', 'p2', '06:47', mkRun({ phase: 'ideate', lease: lease('primary', 'p1', '06:40') })).directives, []);
   });
   test('an identical directive is not issued twice (acked or not)', () => {
     const existing = [{ kind: 'scope-cut', tier: 2, by: 'wdA', at: iso('05:32'), ack: true }];
@@ -401,6 +555,121 @@ describe('decide(): manual role', () => {
   });
 });
 
+describe('decide(): the kaizen phase after the page is published (CONTRACT 12)', () => {
+  const upToPublish = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish'];
+  /** A published run whose owner last beat at `beatAt`; kaizen still owed unless `extra` says otherwise. */
+  const published = (beatAt, extra = {}) =>
+    mkRun({
+      status: 'published',
+      tier: 1,
+      publishedAt: iso('05:00'),
+      publishedUrl: 'https://example.test/',
+      phase: 'kaizen',
+      phasesDone: done(...upToPublish),
+      attempts: { kaizen: 1 },
+      lease: lease('primary', 'p1', beatAt),
+      phaseStartedAt: { kaizen: iso('05:00') },
+      ...extra,
+    });
+  const applyK = (run, d, role, session, hhmm) => rs.applyDecision(run, d, { role, session, nowIso: iso(hhmm), date: DATE, throttleLevel: 'balanced' });
+
+  test('phase order: kaizen sits between publish and done, on every tier path', () => {
+    assert.deepEqual(rs.PHASES.slice(-3), ['publish', 'kaizen', 'done']);
+    assert.equal(rs.firstPending(1, upToPublish), 'kaizen');
+    assert.equal(rs.firstPending(1, [...upToPublish, 'kaizen']), 'done');
+    assert.equal(rs.firstPending(3, ['preflight', 'ideate', 'package', 'publish']), 'kaizen');
+    assert.equal(rs.firstPending(4, ['package', 'publish']), 'kaizen');
+    assert.equal(rs.firstPending(4, ['package', 'publish', 'kaizen']), 'done');
+  });
+
+  test('kaizenPending: published, phase kaizen, not yet done', () => {
+    assert.equal(rs.kaizenPending(published('05:00')), true);
+    assert.equal(rs.kaizenPending(published('05:00', { phase: 'done', phasesDone: done(...upToPublish, 'kaizen', 'done') })), false);
+    assert.equal(rs.kaizenPending(mkRun()), false);
+    assert.equal(rs.kaizenPending(null), false);
+    assert.equal(rs.kaizenPending(published('05:00', { status: 'in_progress' })), false);
+  });
+
+  test('a page that is up is never redone, but the kaizen is exposed: exit-published carries kaizenPending while its owner is alive', () => {
+    const run = published('05:20');
+    for (const role of ['primary', 'wdA', 'wdB', 'manual']) {
+      const d = dec(role, role === 'primary' ? 'p2' : 's', '05:32', run);
+      assert.deepEqual([d.action, d.kaizenPending, d.changed, d.takeLease, d.directives], ['exit-published', true, false, false, []], role);
+      assert.match(d.reason, /kaizen is running \(primary\/p1/);
+    }
+  });
+
+  test('a stale kaizen owner: primary, wdA, wdB and manual resume it (resume-kaizen at the kaizen phase), the closer never does', () => {
+    const run = published('05:00');
+    for (const [role, hhmm] of [['primary', '06:00'], ['wdA', '06:00'], ['wdB', '06:47'], ['manual', '09:10']]) {
+      const d = dec(role, 'new-session', hhmm, run);
+      assert.deepEqual([d.action, d.resumePhase, d.targetTier, d.kaizenPending, d.takeLease, d.setPhase, d.ackDirectives, d.cleanPhase], ['resume-kaizen', 'kaizen', 1, true, true, true, true, null], role);
+      assert.equal(d.events[0].kind, 'takeover', role);
+      assert.match(d.reason, /kaizen is pending and lease of primary\/p1 is stale/, role);
+    }
+    const closer = dec('closer', 'c1', '08:47', run);
+    assert.deepEqual([closer.action, closer.kaizenPending, closer.changed], ['exit-published', true, false]);
+    assert.match(closer.reason, /the closer never runs it/);
+  });
+
+  test('applying resume-kaizen: the lease moves, the phase restarts, the run stays PUBLISHED at its tier and kaizen stays staging-safe', () => {
+    const run = published('05:00', { directives: [{ kind: 'scope-cut', tier: 2, by: 'wdA', at: iso('04:30'), ack: false }] });
+    const d = dec('wdB', 'b1', '06:47', run);
+    const next = applyK(run, d, 'wdB', 'b1', '06:47');
+    assert.deepEqual([next.status, next.tier, next.phase, next.lease.holder, next.lease.session, next.phaseStartedAt.kaizen, next.publishedUrl], ['published', 1, 'kaizen', 'wdB', 'b1', iso('06:47'), 'https://example.test/']);
+    assert.ok(next.directives.every((x) => x.ack));
+    assert.equal(next.events.at(-1).kind, 'takeover');
+    assert.equal(rs.kaizenPending(next), true);
+  });
+
+  test('the owner\'s own session resumes (fresh or stale) with a note, not a takeover', () => {
+    for (const beatAt of ['05:20', '04:00']) {
+      const d = dec('primary', 'p1', '05:32', published(beatAt));
+      assert.deepEqual([d.action, d.events[0].kind], ['resume-kaizen', 'note'], beatAt);
+      assert.match(d.events[0].msg, /resumed its own kaizen/);
+    }
+  });
+
+  test('a kaizen that hangs with a live heartbeat (phase longer than phaseStuckMinutes) is taken over like any hung phase; exactly 90 minutes is not hung', () => {
+    const stuck = published('06:40', { phaseStartedAt: { kaizen: iso('05:00') } });
+    const d = dec('wdB', 'b1', '06:47', stuck);
+    assert.equal(d.action, 'resume-kaizen');
+    assert.match(d.reason, /although the heartbeat is fresh/);
+    const edge = published('06:40', { phaseStartedAt: { kaizen: iso('05:17') } });
+    assert.equal(dec('wdB', 'b1', '06:47', edge).action, 'exit-published');
+  });
+
+  test('the 12:00 cutoff: no zombie retros. 11:59 still resumes, 12:00 and later exit; so does a kaizen of an earlier date', () => {
+    const run = published('09:00');
+    assert.equal(dec('wdA', 'w', '11:59', run).action, 'resume-kaizen');
+    const noon = dec('wdA', 'w', '12:00', run);
+    assert.deepEqual([noon.action, noon.kaizenPending, noon.changed], ['exit-published', true, false]);
+    assert.match(noon.reason, /12:00 window/);
+    const yesterday = rs.decide({ config: cfg, role: 'manual', session: 'm', now: at('04:00', '2026-10-10'), date: DATE, run, heartbeat: null });
+    assert.equal(yesterday.action, 'exit-published');
+  });
+
+  test('the attempts cap applies: after maxAttemptsPerPhase tries the kaizen is closed as skipped instead of resumed again', () => {
+    const run = published('05:00', { attempts: { kaizen: 2 } });
+    const d = dec('wdA', 'w', '06:00', run);
+    assert.deepEqual([d.action, d.kaizenPending, d.changed, d.takeLease], ['exit-published', false, true, false]);
+    assert.equal(d.closeKaizen, 'skipped: attempted 2x (max 2)');
+    const next = applyK(run, d, 'wdA', 'w', '06:00');
+    assert.deepEqual([next.phase, next.status, next.lease.holder], ['done', 'published', 'primary']);
+    assert.deepEqual(next.phasesDone.slice(-2).map((e) => [e.phase, e.by, e.skipped ?? null]), [['kaizen', 'wdA', true], ['done', 'wdA', null]]);
+    assert.equal(rs.kaizenPending(next), false);
+    // one attempt is not enough to give up, and a live owner is never judged by its attempts
+    assert.equal(dec('wdA', 'w', '06:00', published('05:00', { attempts: { kaizen: 1 } })).action, 'resume-kaizen');
+    assert.equal(dec('wdA', 'w', '05:32', published('05:20', { attempts: { kaizen: 5 } })).changed, false);
+  });
+
+  test('applyDecision on a kaizen decision never mutates its input', () => {
+    const run = deepFreeze(published('05:00'));
+    const d = dec('wdA', 'w', '06:00', run);
+    assert.doesNotThrow(() => applyK(run, d, 'wdA', 'w', '06:00'));
+  });
+});
+
 describe('decide(): input validation and purity', () => {
   test('unknown role and empty session are usage errors', () => {
     assert.throws(() => dec('boss', 's', '04:00', null), rs.UsageError);
@@ -434,6 +703,7 @@ describe('decide(): input validation and purity', () => {
     assert.equal(rs.firstPending(4, []), 'package');
     assert.equal(rs.firstPending(1, ['ideate']), 'select'); // preflight is implied by later work
     assert.equal(rs.firstPending(1, rs.PHASES), 'done');
+    assert.equal(rs.firstPending(1, rs.PHASES.slice(0, -2)), 'kaizen'); // everything up to publish done
   });
 });
 
@@ -485,10 +755,38 @@ describe('CLI: today', () => {
       { date: DATE, tz: 'America/New_York', time: '03:55', minutes: 235, minutesToDeadline: 245, targetTierIfStartedNow: 1, dayNumber: 1 },
     );
   });
-  test('tier by time and a negative countdown after the deadline', () => {
-    assert.equal(good(box.state(['today', ...NOW('07:27')])).targetTierIfStartedNow, 4);
+  test('tier by time and a negative countdown after the (informational) deadline', () => {
+    assert.equal(good(box.state(['today', ...NOW('07:27')])).targetTierIfStartedNow, 3);
     assert.equal(good(box.state(['today', ...NOW('07:27')])).minutesToDeadline, 33);
+    assert.equal(good(box.state(['today', ...NOW('08:44')])).targetTierIfStartedNow, 3);
+    assert.equal(good(box.state(['today', ...NOW('08:45')])).targetTierIfStartedNow, 4);
     assert.equal(good(box.state(['today', ...NOW('09:00')])).minutesToDeadline, -60);
+  });
+  test('the grace period and hard stop countdowns, at the minutes that matter (CONTRACT 13)', () => {
+    // [time, minutesToDeadline, minutesToGraceUntil, minutesToHardStop]
+    for (const [hhmm, deadline, grace, hard] of [
+      ['08:46', -46, 44, 104],
+      ['08:47', -47, 43, 103],
+      ['09:29', -89, 1, 61],
+      ['09:30', -90, 0, 60],
+      ['10:29', -149, -59, 1],
+      ['10:30', -150, -60, 0],
+    ]) {
+      const j = good(box.state(['today', ...NOW(hhmm)]));
+      assert.deepEqual([j.minutesToDeadline, j.minutesToGraceUntil, j.minutesToHardStop], [deadline, grace, hard], hhmm);
+    }
+  });
+  test('phaseIsLate follows the run\'s phase: true in qa/revise/package/publish only, false with no run', () => {
+    const late = sandbox();
+    assert.equal(good(late.state(['today', ...NOW('03:50')])).phaseIsLate, false);
+    begin(late, 'primary', 's1', '03:55');
+    const run = late.run();
+    const phaseIsLate = (phase) => {
+      late.write(late.runFile(), { ...run, phase });
+      return good(late.state(['today', ...NOW('08:50')])).phaseIsLate;
+    };
+    for (const phase of ['preflight', 'ideate', 'select', 'spec', 'build', 'kaizen', 'done']) assert.equal(phaseIsLate(phase), false, phase);
+    for (const phase of ['qa', 'revise', 'package', 'publish']) assert.equal(phaseIsLate(phase), true, phase);
   });
   test('the local date comes from the timezone, not from UTC', () => {
     // 22:30 EST on Nov 1 is already Nov 2 in UTC
@@ -510,8 +808,8 @@ describe('CLI: today', () => {
     assert.equal(j.time, '03:55');
   });
   test('SED_NOW works like --now; --date overrides the date', () => {
-    const j = good(box.cli('state', ['today'], { SED_NOW: iso('06:50') }));
-    assert.equal(j.time, '06:50');
+    const j = good(box.cli('state', ['today'], { SED_NOW: iso('07:05') }));
+    assert.equal(j.time, '07:05');
     assert.equal(j.targetTierIfStartedNow, 3);
     assert.equal(good(box.state(['today', ...NOW('04:00'), '--date', '2026-10-12'])).dayNumber, 4);
   });
@@ -591,25 +889,28 @@ describe('CLI: begin', () => {
     assert.deepEqual(b.directives.map((d) => d.kind), ['scope-cut']);
     assert.equal(b.targetTier, 2);
   });
-  test('a published day exits and never writes', () => {
+  test('a published day exits and never writes (its kaizen is exposed, not resumed by the closer)', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     seedPage(box, 1);
     good(st(box, ['finish', '--status', 'published', '--tier', '1', '--url', 'https://example.test/'], '05:00'));
     const before = bytes(box, box.runFile());
-    const j = good(begin(box, 'closer', 'c1', '07:27'));
+    const j = good(begin(box, 'closer', 'c1', '08:47'));
     assert.equal(j.action, 'exit-published');
+    assert.equal(j.kaizenPending, true);
     assert.equal(j.wrote, false);
     assert.deepEqual(bytes(box, box.runFile()), before);
   });
-  test('closer at 07:27 forces tier 3 when ideate is done, over a live primary, leaving ship-now', () => {
+  test('closer at 08:47 forces tier 3 when ideate is done, over a live primary that is not yet in a late phase, leaving ship-now', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     good(st(box, ['phase-done', '--phase', 'preflight', '--session', 's1'], '04:00'));
     good(st(box, ['phase-done', '--phase', 'ideate', '--session', 's1'], '04:30'));
-    beat(box, 'primary', 's1', '07:20');
-    const j = good(begin(box, 'closer', 'c1', '07:27'));
+    good(st(box, ['phase-start', '--phase', 'select', '--session', 's1'], '08:30')); // a slow day: select only just started
+    beat(box, 'primary', 's1', '08:40');
+    const j = good(begin(box, 'closer', 'c1', '08:47'));
     assert.equal(j.action, 'force-degrade');
+    assert.equal(j.grace, false);
     assert.equal(j.targetTier, 3);
     assert.equal(j.resumePhase, 'package');
     const run = box.run();
@@ -617,23 +918,78 @@ describe('CLI: begin', () => {
     assert.deepEqual(run.directives.map((d) => [d.kind, d.tier, d.ack]), [['ship-now', 3, false]]);
     assert.ok(run.events.some((e) => e.kind === 'degrade'));
     // the primary's next beat tells it to stop
-    const b = good(beat(box, 'primary', 's1', '07:28'));
+    const b = good(beat(box, 'primary', 's1', '08:48'));
     assert.equal(b.leaseHeld, false);
     assert.equal(b.holder, 'closer');
   });
   test('closer with nothing at all => proceed at tier 4 (no run file)', () => {
     const box = sandbox();
-    const j = good(begin(box, 'closer', 'c1', '07:27'));
+    const j = good(begin(box, 'closer', 'c1', '08:47'));
     assert.equal(j.action, 'proceed');
     assert.equal(j.targetTier, 4);
     assert.equal(j.resumePhase, 'package');
   });
-  test('closer with a started-but-empty run => force-degrade to tier 4', () => {
+  test('closer with a started-but-empty run: a fresh lease is force-degraded to tier 4, a dead one is simply taken over', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
-    const j = good(begin(box, 'closer', 'c1', '07:27'));
+    const dead = good(begin(box, 'closer', 'c1', '08:47')); // the primary never beat again: stale
+    assert.equal(dead.action, 'takeover');
+    assert.equal(dead.targetTier, 4);
+    const live = sandbox();
+    begin(live, 'primary', 's1', '03:55');
+    good(st(live, ['phase-start', '--phase', 'preflight', '--session', 's1'], '08:30')); // restarted: not "stuck" for 5 hours
+    beat(live, 'primary', 's1', '08:40');
+    const j = good(begin(live, 'closer', 'c1', '08:47'));
     assert.equal(j.action, 'force-degrade');
     assert.equal(j.targetTier, 4);
+  });
+  describe('grace for a healthy late run (CONTRACT 13)', () => {
+    function primaryInQa() {
+      const box = sandbox();
+      begin(box, 'primary', 's1', '03:55');
+      for (const p of ['preflight', 'ideate', 'select', 'spec', 'build']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '07:00'));
+      good(st(box, ['phase-start', '--phase', 'qa', '--session', 's1'], '08:30'));
+      beat(box, 'primary', 's1', '08:40');
+      return box;
+    }
+    test('the closer at 08:47 exits alive with grace:true, records ONE grace event, and leaves lease, phase and tier alone', () => {
+      const box = primaryInQa();
+      const first = good(begin(box, 'closer', 'c1', '08:47'));
+      assert.deepEqual([first.action, first.grace, first.wrote, first.directiveAdded, first.targetTier], ['exit-alive', true, true, false, 1]);
+      assert.match(first.reason, /grace/);
+      const run = box.run();
+      assert.deepEqual([run.lease.holder, run.lease.session, run.phase, run.status], ['primary', 's1', 'qa', 'in_progress']);
+      const graceEvents = run.events.filter((e) => e.code === 'grace');
+      assert.deepEqual(graceEvents.map((e) => [e.kind, e.by]), [['note', 'closer']]);
+      // babysitting: the same question again is answered the same way without writing anything
+      const frozen = bytes(box, box.runFile());
+      beat(box, 'primary', 's1', '08:50');
+      const afterBeat = bytes(box, box.runFile());
+      const again = good(begin(box, 'closer', 'c2', '08:56'));
+      assert.deepEqual([again.action, again.grace, again.wrote], ['exit-alive', true, false]);
+      assert.deepEqual(bytes(box, box.runFile()), afterBeat);
+      assert.notDeepEqual(frozen, afterBeat);
+    });
+    test('grace ends at 09:30: the same live primary is force-degraded, and the finished build is rescued as tier 2', () => {
+      const box = primaryInQa();
+      beat(box, 'primary', 's1', '09:25');
+      const at929 = good(begin(box, 'closer', 'c1', '09:29'));
+      assert.deepEqual([at929.action, at929.grace], ['exit-alive', true]);
+      beat(box, 'primary', 's1', '09:29');
+      const at930 = good(begin(box, 'closer', 'c1', '09:30'));
+      assert.deepEqual([at930.action, at930.grace, at930.targetTier, at930.resumePhase], ['force-degrade', false, 2, 'package']);
+      assert.equal(box.run().lease.holder, 'closer');
+    });
+    test('a primary that died in qa is not graced: the closer takes over and rescues the build', () => {
+      const box = primaryInQa();
+      const j = good(begin(box, 'closer', 'c1', '09:20')); // lease last beat 08:40: 40 minutes silent
+      assert.deepEqual([j.action, j.grace, j.targetTier, j.resumePhase, j.builtSiteAvailable], ['takeover', false, 2, 'package', true]);
+    });
+    test('wdA/wdB never get grace flags', () => {
+      const box = primaryInQa();
+      beat(box, 'primary', 's1', '08:44');
+      assert.equal(good(begin(box, 'wdB', 'b1', '08:46')).grace, false);
+    });
   });
   test('manual: --target-tier / --force only with manual; manual ignores the clock', () => {
     const box = sandbox();
@@ -727,6 +1083,36 @@ describe('CLI: takeover mechanics', () => {
     const run = box.run();
     assert.deepEqual(run.phasesDone.map((e) => e.phase), ['preflight', 'ideate', 'select', 'spec', 'build']);
     assert.equal(run.phasesDone.find((e) => e.phase === 'spec').by, 'recovery');
+  });
+  test('a takeover that degrades PAST a dead build with nothing salvageable (no index.html) still wipes its staging (and only that)', () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    for (const p of ['preflight', 'ideate', 'select', 'spec']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '04:30'));
+    good(st(box, ['phase-start', '--phase', 'build', '--session', 's1'], '04:31'));
+    box.write(`work/${DATE}/build/site/app.js`, 'half a site: no index.html yet');
+    box.write(`work/${DATE}/spec/SPEC.md`, 'the spec');
+    box.write(`work/${DATE}/ideas/shortlist.json`, '[]');
+    const j = good(begin(box, 'wdB', 'b1', '07:05')); // 07:05 is past t2Until: tier 3, straight to package
+    assert.deepEqual([j.action, j.targetTier, j.resumePhase], ['takeover', 3, 'package']);
+    assert.deepEqual(j.cleaned, [`work/${DATE}/build`]);
+    assert.equal(box.exists(`work/${DATE}/build`), false);
+    assert.equal(box.exists(`work/${DATE}/spec/SPEC.md`), true);
+    assert.equal(box.exists(`work/${DATE}/ideas/shortlist.json`), true);
+    assert.equal(j.builtSiteAvailable, false);
+  });
+  test('...unless the dead build had actually finished (DONE.json): it is recovered and then rescued instead of wiped', () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    for (const p of ['preflight', 'ideate', 'select', 'spec']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '04:30'));
+    good(st(box, ['phase-start', '--phase', 'build', '--session', 's1'], '04:31'));
+    box.write(`work/${DATE}/build/site/index.html`, '<html>a whole site');
+    box.write(`work/${DATE}/build/DONE.json`, { ok: true });
+    const j = good(begin(box, 'wdB', 'b1', '07:05'));
+    assert.deepEqual(j.recovered, ['build']);
+    assert.deepEqual([j.action, j.targetTier, j.resumePhase, j.builtSiteAvailable], ['takeover', 2, 'package', true]);
+    assert.deepEqual(j.cleaned, []);
+    assert.equal(box.exists(`work/${DATE}/build/site/index.html`), true);
+    assert.equal(box.run().phasesDone.find((e) => e.phase === 'build').by, 'recovery');
   });
   test('a DONE.json that says ok:false is not trusted; phase-start removes a stale marker', () => {
     const box = sandbox();
@@ -858,14 +1244,19 @@ describe('CLI: beat', () => {
     assert.equal(beat(box, 'ghost', 's1', '04:01').code, 2);
     assert.equal(beat(box, 'primary', 's1', '04:01', ['--phase', 'nap']).code, 2);
   });
-  test('does not record a heartbeat on a published run', () => {
+  test('records a heartbeat on a published run while its kaizen is pending, and stops once the day is done', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     seedPage(box, 2);
     good(st(box, ['finish', '--status', 'published', '--tier', '2'], '05:00'));
-    const j = good(beat(box, 'primary', 's1', '05:10'));
-    assert.equal(j.leaseHeld, true);
-    assert.equal(box.run().lease.heartbeatAt, iso('03:55'));
+    const j = good(beat(box, 'primary', 's1', '05:10', ['--phase', 'kaizen', '--note', 'pulse picking a kaizen']));
+    assert.deepEqual([j.leaseHeld, j.kaizenPending, j.status], [true, true, 'published']);
+    assert.equal(box.run().lease.heartbeatAt, iso('05:10'));
+    assert.equal(box.run().lease.note, 'pulse picking a kaizen');
+    good(st(box, ['phase-done', '--phase', 'kaizen', '--session', 's1'], '05:20'));
+    const done = good(beat(box, 'primary', 's1', '05:30'));
+    assert.deepEqual([done.leaseHeld, done.kaizenPending], [true, false]);
+    assert.equal(box.run().lease.heartbeatAt, iso('05:20'), 'a finished day records no more heartbeats');
   });
 });
 
@@ -904,13 +1295,23 @@ describe('CLI: phases', () => {
   });
   test('tier 3/4 skip straight to package after ideate / preflight', () => {
     const box = sandbox();
-    begin(box, 'wdB', 'w', '06:47'); // tier 3
-    good(st(box, ['phase-done', '--phase', 'preflight'], '06:50'));
-    assert.equal(good(st(box, ['phase-done', '--phase', 'ideate'], '07:05')).next, 'package');
-    assert.equal(good(st(box, ['phase-done', '--phase', 'package'], '07:10')).next, 'publish');
+    begin(box, 'wdB', 'w', '07:05'); // tier 3
+    good(st(box, ['phase-done', '--phase', 'preflight'], '07:06'));
+    assert.equal(good(st(box, ['phase-done', '--phase', 'ideate'], '07:20')).next, 'package');
+    assert.equal(good(st(box, ['phase-done', '--phase', 'package'], '07:30')).next, 'publish');
     const box4 = sandbox();
-    begin(box4, 'closer', 'c', '07:27'); // tier 4 starts at package
+    begin(box4, 'closer', 'c', '08:47'); // tier 4 starts at package
     assert.equal(box4.run().phase, 'package');
+  });
+  test('phase-done publish on an unpublished run stays at publish (only `finish` publishes, and kaizen needs a published day)', () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    for (const p of ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '04:50'));
+    const pd = good(st(box, ['phase-done', '--phase', 'publish', '--session', 's1'], '04:55'));
+    assert.deepEqual([pd.next, pd.kaizenPending], ['publish', false]);
+    assert.equal(box.run().phase, 'publish');
+    // a takeover of such a run resumes at publish, never at "kaizen"
+    assert.equal(good(begin(box, 'wdA', 'w1', '05:40')).resumePhase, 'publish');
   });
   test('the --session guard stops a zombie from writing', () => {
     const box = sandbox();
@@ -924,13 +1325,164 @@ describe('CLI: phases', () => {
     }
     assert.deepEqual(bytes(box, box.runFile()), before);
   });
-  test('phases cannot be started or finished on a published or failed run', () => {
+  test('phases other than kaizen cannot be started, finished or skipped on a published run', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     seedPage(box, 1);
     good(st(box, ['finish', '--status', 'published', '--tier', '1'], '05:00'));
     assert.equal(st(box, ['phase-start', '--phase', 'ideate'], '05:05').code, 1);
     assert.equal(st(box, ['phase-done', '--phase', 'ideate'], '05:05').code, 1);
+    const skip = st(box, ['skip-phase', '--phase', 'revise', '--reason', 'nope'], '05:05');
+    assert.equal(skip.code, 1);
+    assert.match(skip.json.error, /published/);
+  });
+  describe('the kaizen phase (CONTRACT 12)', () => {
+    function publishedRun({ config } = {}) {
+      const box = sandbox({ config });
+      begin(box, 'primary', 's1', '03:55');
+      seedPage(box, 1);
+      good(st(box, ['finish', '--status', 'published', '--tier', '1', '--url', 'https://example.test/'], '05:00'));
+      return box;
+    }
+    test('kaizen cannot start (or be finished or skipped) before the day is published: it must never steal time from the page', () => {
+      const box = sandbox();
+      begin(box, 'primary', 's1', '03:55');
+      for (const args of [['phase-start', '--phase', 'kaizen'], ['phase-done', '--phase', 'kaizen'], ['skip-phase', '--phase', 'kaizen', '--reason', 'x']]) {
+        const r = st(box, [...args, '--session', 's1'], '04:00');
+        assert.equal(r.code, 1, args[0]);
+        assert.match(r.json.error, /only after the day is published|after the day is published/, args[0]);
+      }
+      assert.equal(box.run().phase, 'preflight');
+    });
+    test('phase-start counts attempts like any phase and refreshes the lease; phase-done closes the whole day', () => {
+      const box = publishedRun();
+      const s = good(st(box, ['phase-start', '--phase', 'kaizen', '--session', 's1'], '05:05'));
+      assert.deepEqual([s.phase, s.attempt, s.overLimit], ['kaizen', 1, false]);
+      assert.equal(box.run().lease.heartbeatAt, iso('05:05'));
+      assert.equal(good(st(box, ['status'], '05:06')).kaizenPending, true);
+      const d = good(st(box, ['phase-done', '--phase', 'kaizen', '--note', '9 kaizens, 1 skipped', '--session', 's1', '--role', 'primary'], '05:40'));
+      assert.deepEqual([d.next, d.alreadyDone, d.kaizenPending], ['done', false, false]);
+      const run = box.run();
+      assert.equal(run.status, 'published');
+      assert.equal(run.phase, 'done');
+      assert.deepEqual(run.phasesDone.slice(-2).map((e) => [e.phase, e.by, e.note]), [['kaizen', 'primary', '9 kaizens, 1 skipped'], ['done', 'primary', 'kaizen closed the day']]);
+      assert.equal(run.phaseStartedAt.done, iso('05:40'));
+      // idempotent
+      const again = good(st(box, ['phase-done', '--phase', 'kaizen', '--session', 's1'], '05:41'));
+      assert.deepEqual([again.alreadyDone, again.next], [true, 'done']);
+      assert.equal(box.run().phasesDone.filter((e) => e.phase === 'done').length, 1);
+    });
+    test('skip-phase kaizen --reason records the skip (done, flagged skipped, with an event) and ends the day just the same', () => {
+      const box = publishedRun();
+      const r = good(st(box, ['skip-phase', '--phase', 'kaizen', '--reason', 'budget below kaizen.minTokensToStart', '--session', 's1', '--role', 'primary'], '05:10'));
+      assert.deepEqual([r.skipped, r.next, r.reason, r.kaizenPending], [true, 'done', 'budget below kaizen.minTokensToStart', false]);
+      const run = box.run();
+      assert.deepEqual(run.phasesDone.find((e) => e.phase === 'kaizen'), { phase: 'kaizen', at: iso('05:10'), by: 'primary', note: 'skipped: budget below kaizen.minTokensToStart', skipped: true });
+      assert.equal(run.phase, 'done');
+      assert.deepEqual(run.events.at(-1), { at: iso('05:10'), by: 'primary', kind: 'note', msg: 'phase kaizen skipped: budget below kaizen.minTokensToStart' });
+      assert.equal(good(begin(box, 'wdA', 'w', '05:32')).kaizenPending, false);
+    });
+    test('skip-phase needs --phase and --reason (exit 2), and works for ordinary phases of a live run too', () => {
+      const box = sandbox();
+      begin(box, 'primary', 's1', '03:55');
+      assert.equal(st(box, ['skip-phase', '--phase', 'revise'], '04:00').code, 2);
+      assert.equal(st(box, ['skip-phase', '--reason', 'x'], '04:00').code, 2);
+      assert.equal(st(box, ['skip-phase', '--phase', 'dessert', '--reason', 'x'], '04:00').code, 2);
+      assert.equal(st(box, ['skip-phase', '--phase', 'revise', '--reason', '   '], '04:00').code, 2);
+      const r = good(st(box, ['skip-phase', '--phase', 'revise', '--reason', 'scope-cut', '--session', 's1'], '04:10'));
+      assert.deepEqual([r.skipped, r.alreadyDone], [true, false]);
+      const entry = box.run().phasesDone.find((e) => e.phase === 'revise');
+      assert.deepEqual([entry.note, entry.skipped], ['skipped: scope-cut', true]);
+      assert.equal(good(st(box, ['skip-phase', '--phase', 'revise', '--reason', 'again', '--session', 's1'], '04:11')).alreadyDone, true);
+      assert.equal(box.run().events.filter((e) => /revise skipped/.test(e.msg)).length, 1);
+    });
+    test('the zombie guard covers kaizen too: only the lease holder may start, finish or skip it', () => {
+      const box = publishedRun();
+      const before = bytes(box, box.runFile());
+      for (const args of [['phase-start', '--phase', 'kaizen'], ['phase-done', '--phase', 'kaizen'], ['skip-phase', '--phase', 'kaizen', '--reason', 'x']]) {
+        const r = st(box, [...args, '--session', 'someone-else'], '05:10');
+        assert.equal(r.code, 1, args[0]);
+        assert.equal(r.json.leaseHeld, false, args[0]);
+      }
+      assert.deepEqual(bytes(box, box.runFile()), before);
+    });
+    test('the closer may close the kaizen of a dead owner (it never runs one itself), never of a live one; no other role may', () => {
+      const box = publishedRun();
+      good(st(box, ['beat', '--role', 'primary', '--session', 's1'], '05:05'));
+      const closer = ['skip-phase', '--phase', 'kaizen', '--reason', 'closer never runs the kaizen round', '--session', 'c1', '--role', 'closer'];
+      const live = st(box, closer, '05:10');
+      assert.equal(live.code, 1);
+      assert.equal(live.json.leaseHeld, false);
+      assert.equal(box.run().phase, 'kaizen', 'a fresh owner keeps its round');
+      const stranger = st(box, ['skip-phase', '--phase', 'kaizen', '--reason', 'x', '--session', 'w1', '--role', 'wdA'], '06:00');
+      assert.equal(stranger.code, 1, 'only the closer has this exception');
+      const closed = good(st(box, closer, '06:00')); // 55 minutes after the owner's last sign of life
+      assert.deepEqual([closed.skipped, closed.next, closed.kaizenPending], [true, 'done', false]);
+      const run = box.run();
+      assert.equal(run.phase, 'done');
+      assert.equal(run.lease.session, 's1', 'the dead owner\'s lease record is left as it was');
+      assert.ok(run.events.some((e) => /kaizen closed by the closer: its owner primary\/s1 is gone/.test(e.msg)), JSON.stringify(run.events.slice(-3)));
+      assert.equal(good(st(box, closer, '06:01')).alreadyDone, true);
+    });
+    test('with config.kaizen.enabled=false the day ends at finish as it always did, and kaizen cannot be started', () => {
+      const box = publishedRun({ config: { ...TEST_CONFIG, kaizen: { enabled: false } } });
+      const run = box.run();
+      assert.deepEqual([run.phase, run.phasesDone.at(-1).phase], ['done', 'done']);
+      assert.equal(good(st(box, ['status'], '05:10')).kaizenPending, false);
+      const r = st(box, ['phase-start', '--phase', 'kaizen', '--session', 's1'], '05:10');
+      assert.equal(r.code, 1);
+      // and phase-done publish on a live run moves on to done
+      const live = sandbox({ config: { ...TEST_CONFIG, kaizen: { enabled: false } } });
+      begin(live, 'primary', 's1', '03:55');
+      for (const p of ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package']) good(st(live, ['phase-done', '--phase', p, '--session', 's1'], '04:50'));
+      assert.equal(good(st(live, ['phase-done', '--phase', 'publish', '--session', 's1'], '04:55')).next, 'done');
+    });
+    test('begin: a stale owner is replaced by resume-kaizen (not after noon, not by the closer); a live one is left alone; attempts are capped', () => {
+      const box = publishedRun();
+      good(st(box, ['phase-start', '--phase', 'kaizen', '--session', 's1'], '05:05'));
+      // live owner: exit-published, kaizenPending exposed, nothing written
+      const before = bytes(box, box.runFile());
+      const live = good(begin(box, 'wdA', 'w1', '05:32'));
+      assert.deepEqual([live.action, live.kaizenPending, live.wrote], ['exit-published', true, false]);
+      assert.deepEqual(bytes(box, box.runFile()), before);
+      // the owner dies; the closer still never touches it
+      const closer = good(begin(box, 'closer', 'c1', '08:47'));
+      assert.deepEqual([closer.action, closer.kaizenPending, closer.wrote], ['exit-published', true, false]);
+      // wdB at 06:47 takes it over
+      const took = good(begin(box, 'wdB', 'b1', '06:47'));
+      assert.deepEqual([took.action, took.resumePhase, took.kaizenPending, took.wrote], ['resume-kaizen', 'kaizen', true, true]);
+      const run = box.run();
+      assert.deepEqual([run.status, run.phase, run.lease.holder, run.lease.session, run.tier], ['published', 'kaizen', 'wdB', 'b1', 1]);
+      assert.equal(run.events.at(-1).kind, 'takeover');
+      assert.equal(box.exists(`work/${DATE}`), false, 'resume-kaizen has no staging to wipe');
+      // the new owner's attempt is the 2nd; when it dies as well nobody resumes a third time: the kaizen is closed as skipped
+      assert.equal(good(st(box, ['phase-start', '--phase', 'kaizen', '--session', 'b1'], '06:48')).attempt, 2);
+      const capped = good(begin(box, 'manual', 'm1', '10:00'));
+      assert.deepEqual([capped.action, capped.kaizenPending, capped.wrote], ['exit-published', false, true]);
+      assert.deepEqual(box.run().phasesDone.slice(-2).map((e) => [e.phase, e.skipped ?? null]), [['kaizen', true], ['done', null]]);
+      assert.match(box.run().phasesDone.find((e) => e.phase === 'kaizen').note, /attempted 2x/);
+    });
+    test('begin after 12:00 never resumes a kaizen, however stale', () => {
+      const box = publishedRun();
+      const j = good(begin(box, 'wdB', 'b1', '12:00'));
+      assert.deepEqual([j.action, j.kaizenPending, j.wrote], ['exit-published', true, false]);
+      assert.match(j.reason, /12:00/);
+      assert.equal(good(begin(box, 'wdB', 'b1', '11:59')).action, 'resume-kaizen');
+    });
+    test('finish upgrades never touch the kaizen: pending stays pending, done stays done', () => {
+      const pending = sandbox();
+      begin(pending, 'closer', 'c1', '08:47');
+      seedPage(pending, 4);
+      good(st(pending, ['finish', '--tier', '4', '--by', 'closer'], '08:55'));
+      seedPage(pending, 1, { slug: 'real' });
+      assert.equal(good(st(pending, ['finish', '--tier', '1', '--by', 'primary'], '09:40')).action, 'upgraded');
+      assert.deepEqual([pending.run().phase, pending.run().phasesDone.some((e) => e.phase === 'done')], ['kaizen', false]);
+      const finished = publishedRun();
+      good(st(finished, ['skip-phase', '--phase', 'kaizen', '--reason', 'x', '--session', 's1'], '05:10'));
+      seedPage(finished, 1, { slug: 'other' }); // same tier: a no-op
+      assert.equal(good(st(finished, ['finish', '--tier', '1'], '05:20')).action, 'noop');
+      assert.equal(finished.run().phase, 'done');
+    });
   });
   test('bad phase => exit 2', () => {
     const box = sandbox();
@@ -949,7 +1501,7 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
     assert.equal(j.added, true);
     assert.equal(box.run().targetTier, 2);
     assert.equal(good(st(box, ['directive', '--kind', 'scope-cut', '--tier', '2', '--by', 'wdA'], '05:33')).added, false);
-    const ship = good(st(box, ['directive', '--kind', 'ship-now', '--tier', '4', '--by', 'closer'], '07:27'));
+    const ship = good(st(box, ['directive', '--kind', 'ship-now', '--tier', '4', '--by', 'closer'], '08:47'));
     assert.equal(ship.added, true);
     assert.equal(box.run().targetTier, 4);
     assert.equal(st(box, ['directive', '--kind', 'bogus', '--by', 'wdA'], '05:32').code, 2);
@@ -969,11 +1521,11 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     st(box, ['directive', '--kind', 'scope-cut', '--by', 'wdA'], '05:32');
-    st(box, ['directive', '--kind', 'ship-now', '--tier', '4', '--by', 'closer'], '07:27');
-    assert.equal(good(st(box, ['ack-directive', '--kind', 'scope-cut'], '07:28')).acked, 1);
-    assert.deepEqual(good(beat(box, 'primary', 's1', '07:29')).directives.map((d) => d.kind), ['ship-now']);
-    assert.equal(good(st(box, ['ack-directive'], '07:30')).acked, 1);
-    assert.deepEqual(good(beat(box, 'primary', 's1', '07:31')).directives, []);
+    st(box, ['directive', '--kind', 'ship-now', '--tier', '4', '--by', 'closer'], '08:47');
+    assert.equal(good(st(box, ['ack-directive', '--kind', 'scope-cut'], '08:48')).acked, 1);
+    assert.deepEqual(good(beat(box, 'primary', 's1', '08:49')).directives.map((d) => d.kind), ['ship-now']);
+    assert.equal(good(st(box, ['ack-directive'], '08:50')).acked, 1);
+    assert.deepEqual(good(beat(box, 'primary', 's1', '08:51')).directives, []);
   });
   test('event: appends with by/kind, validates kind, caps at 200', () => {
     const box = sandbox();
@@ -1011,6 +1563,20 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
     assert.equal(st(box, ['spend', '--tokens', '-5'], '04:05').code, 2);
     assert.equal(st(box, ['spend', '--tokens', 'lots'], '04:05').code, 2);
   });
+  test('spend after the page is out still counts (the kaizen is paid for), but no longer says "go to a fallback"', () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    seedPage(box, 1);
+    good(st(box, ['finish', '--tier', '1'], '05:00'));
+    const j = good(st(box, ['spend', '--tokens', '2900000', '--calls', '40', '--phase', 'kaizen', '--session', 's1'], '05:30'));
+    assert.deepEqual([j.overCap, j.spend.outputTokens, j.spend.byPhase.kaizen.agentCalls], [true, 2_900_000, 40]);
+    assert.equal(box.run().events.filter((e) => e.kind === 'budget').length, 0);
+    // before the publish the same crossing is a real budget event
+    const live = sandbox();
+    begin(live, 'primary', 's1', '03:55');
+    good(st(live, ['spend', '--tokens', '2900000'], '04:00'));
+    assert.equal(live.run().events.filter((e) => e.kind === 'budget').length, 1);
+  });
   test('choose normalizes the slug and validates', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
@@ -1024,19 +1590,24 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
 });
 
 describe('CLI: finish and fail', () => {
-  test('finish publishes: status, tier, publishedAt, url, phase done', () => {
+  test('finish publishes: status, tier, publishedAt, url; the day is NOT done, its kaizen is still owed', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     seedPage(box, 1);
     const j = good(st(box, ['finish', '--status', 'published', '--tier', '1', '--url', 'https://example.test/d/x/'], '05:00'));
     assert.equal(j.action, 'published');
+    assert.equal(j.kaizenPending, true);
     const run = box.run();
     assert.equal(run.status, 'published');
     assert.equal(run.tier, 1);
     assert.equal(run.publishedAt, iso('05:00'));
     assert.equal(run.publishedUrl, 'https://example.test/d/x/');
-    assert.equal(run.phase, 'done');
-    assert.ok(run.phasesDone.some((e) => e.phase === 'done'));
+    assert.equal(run.phase, 'kaizen');
+    assert.equal(run.phaseStartedAt.kaizen, iso('05:00'));
+    assert.ok(!run.phasesDone.some((e) => e.phase === 'done' || e.phase === 'kaizen'));
+    // the kaizen is what finishes the day
+    good(st(box, ['phase-done', '--phase', 'kaizen', '--session', 's1'], '05:30'));
+    assert.deepEqual([box.run().phase, box.run().status], ['done', 'published']);
   });
   test('the url defaults to the configured site url; --tier is required', () => {
     const box = sandbox();
@@ -1067,9 +1638,9 @@ describe('CLI: finish and fail', () => {
     box.write(`docs/d/${DATE}-ideas-day/index.html`, '<html>');
     box.write(`docs/d/${DATE}-postcard/index.html`, '<html>');
     box.write(`docs/d/${DATE}-other/index.html`, '<html>');
-    good(begin(box, 'closer', 'c1', '07:27'));
+    good(begin(box, 'closer', 'c1', '08:47'));
     seedPage(box, 3);
-    good(st(box, ['finish', '--tier', '3', '--url', 'https://example.test/ideas/', '--by', 'closer'], '07:40'));
+    good(st(box, ['finish', '--tier', '3', '--url', 'https://example.test/ideas/', '--by', 'closer'], '08:55'));
     seedPage(box, 1);
     const up = good(st(box, ['finish', '--tier', '1', '--url', 'https://example.test/real/', '--by', 'primary'], '09:15'));
     assert.equal(up.action, 'upgraded');
@@ -1086,9 +1657,9 @@ describe('CLI: finish and fail', () => {
   });
   test('the upgrade window closes at 23:59 local on the run date', () => {
     const box = sandbox();
-    begin(box, 'closer', 'c1', '07:27');
+    begin(box, 'closer', 'c1', '08:47');
     seedPage(box, 4);
-    good(st(box, ['finish', '--tier', '4'], '07:40'));
+    good(st(box, ['finish', '--tier', '4'], '08:55'));
     const late = st(box, ['finish', '--tier', '1'], '23:59');
     assert.equal(late.code, 1);
     assert.match(late.json.error, /23:59/);
@@ -1153,7 +1724,8 @@ describe('CLI: status', () => {
     assert.deepEqual(j.directives.map((d) => d.kind), ['scope-cut']);
     assert.equal(j.spend.outputTokens, 4200);
     assert.ok(j.eventsTail.length >= 1 && j.eventsTail.length <= 10);
-    assert.equal(j.minutesToDeadline, 230);
+    assert.deepEqual([j.minutesToDeadline, j.minutesToGraceUntil, j.minutesToHardStop], [230, 320, 380]);
+    assert.deepEqual([j.phaseIsLate, j.kaizenPending], [false, false]);
     assert.match(j.nextAction, /alive/);
     assert.match(j.nextAction, /Pending directives/);
     assert.deepEqual(j.phasesDone, ['preflight']);
@@ -1191,18 +1763,71 @@ describe('CLI: status', () => {
     assert.equal(j.runFile, 'corrupt');
     assert.match(j.nextAction, /corrupt/);
   });
-  test('after the deadline without a publish it says to ship a fallback', () => {
+  describe('after the 08:00 guideline (CONTRACT 13)', () => {
+    function primaryIn(phase) {
+      const box = sandbox();
+      begin(box, 'primary', 's1', '03:55');
+      const run = box.run();
+      box.write(box.runFile(), { ...run, phase, phasesDone: run.phasesDone, phaseStartedAt: { [phase]: iso('08:00') }, lease: { ...run.lease, heartbeatAt: iso('08:05') } });
+      return box;
+    }
+    test('a run that is still before qa is told the deadline guideline has passed and to ship a fallback', () => {
+      const box = primaryIn('build');
+      const j = good(st(box, ['status'], '08:10'));
+      assert.match(j.nextAction, /deadline \(a guideline\) has passed/);
+      assert.match(j.nextAction, /ship the best fallback/);
+      assert.deepEqual([j.phaseIsLate, j.minutesToDeadline], [false, -10]);
+    });
+    test('a healthy run in a late phase is told it may keep going until 09:30: quality beats punctuality', () => {
+      for (const phase of ['qa', 'revise', 'package', 'publish']) {
+        const j = good(st(primaryIn(phase), ['status'], '08:10'));
+        assert.equal(j.phaseIsLate, true, phase);
+        assert.match(j.nextAction, /guideline/, phase);
+        assert.match(j.nextAction, /keeps going until 09:30/, phase);
+        assert.doesNotMatch(j.nextAction, /ship the best fallback/, phase);
+      }
+    });
+    test('...but not past 09:30, and past 10:30 everything is force-resolved', () => {
+      const box = primaryIn('qa');
+      beat(box, 'primary', 's1', '09:35');
+      const grace = good(st(box, ['status'], '09:40'));
+      assert.match(grace.nextAction, /grace period ended at 09:30/);
+      assert.equal(grace.minutesToGraceUntil, -10);
+      beat(box, 'primary', 's1', '10:35');
+      const hard = good(st(box, ['status'], '10:40'));
+      assert.match(hard.nextAction, /hard stop \(10:30\) has passed/);
+      assert.match(hard.nextAction, /salvage a finished build/);
+    });
+    test('no run at all past the tier-3 cutoff: only a Postcard fits', () => {
+      const box = sandbox();
+      assert.match(good(st(box, ['status'], '08:50')).nextAction, /tier-3 cutoff \(08:45\) has passed: only a Postcard fits/);
+      assert.match(good(st(box, ['status'], '08:30')).nextAction, /begin --role primary/);
+    });
+  });
+  test('published with a pending kaizen: status exposes it, with who may resume it; done days do not', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
-    beat(box, 'primary', 's1', '08:05');
-    assert.match(good(st(box, ['status'], '08:10')).nextAction, /deadline/);
+    seedPage(box, 1);
+    good(st(box, ['finish', '--tier', '1'], '05:00'));
+    beat(box, 'primary', 's1', '05:10');
+    const alive = good(st(box, ['status'], '05:20'));
+    assert.deepEqual([alive.status, alive.phase, alive.kaizenPending], ['published', 'kaizen', true]);
+    assert.match(alive.nextAction, /Kaizen is pending: primary is running it/);
+    const dead = good(st(box, ['status'], '06:30'));
+    assert.match(dead.nextAction, /Kaizen is pending and its owner is gone/);
+    assert.match(dead.nextAction, /the closer never does/);
+    good(st(box, ['skip-phase', '--phase', 'kaizen', '--reason', 'x', '--session', 's1'], '06:31'));
+    const done = good(st(box, ['status'], '06:32'));
+    assert.deepEqual([done.phase, done.kaizenPending], ['done', false]);
+    assert.doesNotMatch(done.nextAction, /Kaizen/);
   });
 });
 
 describe('CLI: throttle', () => {
-  test('get shows level, bounds and the effective level config', () => {
+  test('get shows level, bounds and the effective level config (with the publish and kaizen reserves)', () => {
     const box = sandbox();
     const j = good(box.state(['throttle', 'get']));
+    assert.deepEqual([j.levelConfig.reserveForPublishTokens, j.levelConfig.reserveForKaizenTokens], [250_000, 350_000]);
     assert.equal(j.level, 'balanced');
     assert.equal(j.floor, 'minimal');
     assert.equal(j.ceiling, 'balanced');
@@ -1529,6 +2154,23 @@ describe('locking and concurrency', () => {
     assert.equal(box.run().spend.outputTokens, 1200);
     assert.equal(box.run().spend.agentCalls, 12);
   });
+  test('two sessions racing to resume the same orphaned kaizen: exactly one resumes it, the other sees it running', async () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    seedPage(box, 1);
+    good(st(box, ['finish', '--tier', '1'], '05:00'));
+    good(st(box, ['phase-start', '--phase', 'kaizen', '--session', 's1'], '05:01')); // ...then the primary is gone
+    const results = await Promise.all([
+      box.cliAsync('state', ['begin', '--role', 'wdA', '--session', 'a1', ...NOW('06:00')]),
+      box.cliAsync('state', ['begin', '--role', 'wdB', '--session', 'b1', ...NOW('06:00')]),
+      box.cliAsync('state', ['begin', '--role', 'manual', '--session', 'm1', ...NOW('06:00')]),
+    ]);
+    const actions = results.map((r) => r.json.action).sort();
+    assert.deepEqual(actions, ['exit-published', 'exit-published', 'resume-kaizen'], results.map((r) => r.stdout).join(''));
+    const winner = results.find((r) => r.json.action === 'resume-kaizen').json.run.lease.session;
+    assert.equal(box.run().lease.session, winner);
+    assert.equal(box.run().events.filter((e) => e.kind === 'takeover').length, 1);
+  });
   test('a racing begin and beat leave a valid, consistent file', async () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
@@ -1549,8 +2191,8 @@ describe('contract with config.json', () => {
   test('the real config.json has every key this component reads', () => {
     const real = readJson(path.join(REPO_ROOT, 'config.json'));
     const need = (obj, keys, where) => keys.forEach((k) => assert.ok(obj?.[k] !== undefined, `config.json is missing ${where}${k}`));
-    need(real, ['timezone', 'workBranch', 'startDate', 'siteUrl', 'leaseStaleMinutes', 'maxAttemptsPerPhase', 'phaseStuckMinutes', 'heartbeatEverySeconds', 'schedule', 'tierCutoffs', 'budget'], '');
-    need(real.schedule, ['deadline', 'closer', 'watchdogA', 'watchdogB', 'primary'], 'schedule.');
+    need(real, ['timezone', 'workBranch', 'heartbeatBranch', 'startDate', 'siteUrl', 'leaseStaleMinutes', 'maxAttemptsPerPhase', 'phaseStuckMinutes', 'heartbeatEverySeconds', 'schedule', 'tierCutoffs', 'budget'], '');
+    need(real.schedule, ['deadline', 'closer', 'watchdogA', 'watchdogB', 'primary', 'graceUntil', 'hardStop'], 'schedule.');
     need(real.tierCutoffs, ['t1Until', 't2Until', 't3Until'], 'tierCutoffs.');
     need(real.budget, ['level', 'levels', 'reserveForPublishTokens', 'autoThrottle'], 'budget.');
     need(real.budget.autoThrottle, ['floor', 'ceiling', 'upAfterCleanDays', 'downOn'], 'budget.autoThrottle.');
@@ -1560,6 +2202,24 @@ describe('contract with config.json', () => {
     const real = readJson(path.join(REPO_ROOT, 'config.json'));
     for (const key of ['timezone', 'leaseStaleMinutes', 'maxAttemptsPerPhase', 'phaseStuckMinutes']) assert.equal(typeof real[key], typeof TEST_CONFIG[key], key);
     assert.deepEqual(Object.keys(real.budget.levels).sort(), Object.keys(TEST_CONFIG.budget.levels).sort());
+  });
+  test('the time marks the tests above rely on are the real ones (a change to config.json must be a conscious change to these tests)', () => {
+    const real = readJson(path.join(REPO_ROOT, 'config.json'));
+    assert.deepEqual(TEST_CONFIG.tierCutoffs, real.tierCutoffs);
+    for (const key of ['primary', 'watchdogA', 'watchdogB', 'closer', 'deadline', 'graceUntil', 'hardStop']) assert.equal(TEST_CONFIG.schedule[key], real.schedule[key], key);
+    assert.equal(TEST_CONFIG.heartbeatBranch, real.heartbeatBranch);
+    assert.equal(TEST_CONFIG.budget.reserveForKaizenTokens, real.budget.reserveForKaizenTokens);
+    assert.notEqual(real.heartbeatBranch, real.workBranch);
+  });
+  test('begin reports the kaizen budget in levelConfig next to the publish reserve, so the playbook never reads config for it', () => {
+    const box = sandbox({ config: { ...TEST_CONFIG, kaizen: { enabled: true, minTokensToStart: 60_000 } } });
+    const j = good(begin(box, 'primary', 's1', '03:55'));
+    assert.deepEqual(
+      [j.levelConfig.reserveForPublishTokens, j.levelConfig.reserveForKaizenTokens, j.levelConfig.kaizenMinTokensToStart, j.levelConfig.capTokens],
+      [250_000, 350_000, 60_000, 2_750_000],
+    );
+    // a config without the kaizen block gets neutral values
+    assert.equal(good(begin(sandbox(), 'primary', 's1', '03:55')).levelConfig.kaizenMinTokensToStart, 0);
   });
 });
 
@@ -1573,7 +2233,8 @@ describe('gitsync: sync()', () => {
   const subject = (cwd, ref = 'HEAD') => git(cwd, 'log', '-1', '--format=%s', ref);
   const gitDirHas = (box, name) => fs.existsSync(path.resolve(box.root, git(box.root, 'rev-parse', '--git-path', name)));
 
-  test('stages only state, docs, work and config.json; never lock or temp files; pushes', async () => {
+  test('the default path set is state, docs and work: never config.json, lock or temp files, or heartbeat files; pushes', async () => {
+    assert.deepEqual(DEFAULT_PATHS, ['state', 'docs', 'work']);
     const box = repoSandbox();
     box.write('state/runs/2026-10-09.json', { a: 1 });
     box.write('docs/index.html', '<html>');
@@ -1582,14 +2243,24 @@ describe('gitsync: sync()', () => {
     box.write('state/runs/.2026-10-09.lock', 'lock');
     box.write('state/scratch.tmp', 'tmp');
     box.write('docs/deep/leftover.tmp', 'tmp');
+    box.write('state/heartbeats/2026-10-09/s1.json', { holder: 'primary', session: 's1', at: iso('04:10') }); // heartbeats live on their own branch
+    box.write('config.json', { ...box.readJson('config.json'), leaseStaleMinutes: 9999 }); // an agent's edit of the guardrails
     const r = await syncA(box, { message: 'run 2026-10-09: preflight' });
     assert.deepEqual({ ok: r.ok, pushed: r.pushed, reason: r.reason, committed: r.committed }, { ok: true, pushed: true, reason: null, committed: true });
     assert.equal(r.sha, remoteSha(box.remote));
+    assert.equal(r.configIgnored, undefined, 'it was never a candidate, so there is nothing to report');
     const files = tree(box.remote);
-    for (const f of ['state/runs/2026-10-09.json', 'docs/index.html', 'work/2026-10-09/ideas/x.json', 'config.json']) assert.ok(files.includes(f), f);
-    for (const f of ['scripts/other.txt', 'state/runs/.2026-10-09.lock', 'state/scratch.tmp', 'docs/deep/leftover.tmp']) assert.ok(!files.includes(f), f);
+    for (const f of ['state/runs/2026-10-09.json', 'docs/index.html', 'work/2026-10-09/ideas/x.json']) assert.ok(files.includes(f), f);
+    for (const f of ['scripts/other.txt', 'state/runs/.2026-10-09.lock', 'state/scratch.tmp', 'docs/deep/leftover.tmp', 'state/heartbeats/2026-10-09/s1.json']) assert.ok(!files.includes(f), f);
+    assert.equal(JSON.parse(remoteFile(box.remote, 'config.json')).leaseStaleMinutes, TEST_CONFIG.leaseStaleMinutes);
     assert.equal(subject(box.remote, `refs/heads/${BRANCH}`), 'run 2026-10-09: preflight');
     assert.match(box.git('status', '--porcelain'), /scripts\//); // still untracked, not swept up
+    assert.match(box.git('status', '--porcelain'), /M config\.json/); // the edit is still there, uncommitted
+    // not even an explicit --paths state can carry heartbeat files to the Pages branch
+    box.write('state/heartbeats/2026-10-09/s2.json', { holder: 'wdA', session: 's2', at: iso('04:11') });
+    box.write('state/x.json', { x: 1 });
+    await syncA(box, { paths: ['state'] });
+    assert.ok(!tree(box.remote).some((f) => f.includes('heartbeats')));
   });
 
   test('CLI: `sync -m` prints one JSON {ok,pushed,sha,reason}, defaults to config.workBranch, honours --paths', () => {
@@ -1937,13 +2608,19 @@ describe('scenarios', () => {
     phase(box, 'publish', 'p', '06:05', '06:10');
     seedPage(box, 1);
     good(run(box, ['finish', '--status', 'published', '--tier', '1', '--url', 'https://example.test/d/2026-10-09-rake-ladder/', '--by', 'primary'], '06:10'));
-    good(run(box, ['throttle', 'day-clean'], '06:11'));
-    assert.equal(good(begin(box, 'wdB', 'b', '06:47')).action, 'exit-published');
-    assert.equal(good(begin(box, 'closer', 'c', '07:27')).action, 'exit-published');
-    const status = good(run(box, ['status'], '07:28'));
+    // the page is out; the day is not done until the kaizen is
+    assert.equal(good(run(box, ['status'], '06:10')).kaizenPending, true);
+    good(run(box, ['phase-start', '--phase', 'kaizen', '--session', 'p'], '06:11'));
+    good(beat(box, 'primary', 'p', '06:30'));
+    good(run(box, ['phase-done', '--phase', 'kaizen', '--note', '9 kaizens', '--session', 'p'], '06:40'));
+    good(run(box, ['throttle', 'day-clean'], '06:41'));
+    const wdB = good(begin(box, 'wdB', 'b', '06:47'));
+    assert.deepEqual([wdB.action, wdB.kaizenPending, wdB.wrote], ['exit-published', false, false]);
+    assert.equal(good(begin(box, 'closer', 'c', '08:47')).action, 'exit-published');
+    const status = good(run(box, ['status'], '08:48'));
     assert.equal(status.status, 'published');
     assert.equal(status.tier, 1);
-    assert.deepEqual(status.phasesDone, ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish', 'done']);
+    assert.deepEqual(status.phasesDone, ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish', 'kaizen', 'done']);
     assert.equal(status.chosen.slug, 'rake-ladder');
     assert.equal(status.spend.outputTokens, 720000);
     assert.equal(box.readJson('state/throttle.json').cleanDays, 1);
@@ -1973,7 +2650,8 @@ describe('scenarios', () => {
     phase(box, 'publish', 'a', '06:40', '06:44');
     seedPage(box, 2);
     good(run(box, ['finish', '--tier', '2', '--url', 'https://example.test/d/b/', '--by', 'wdA'], '06:44'));
-    assert.equal(good(begin(box, 'wdB', 'b', '06:47')).action, 'exit-published');
+    const wdB = good(begin(box, 'wdB', 'b', '06:47')); // wdA is alive and has not done its kaizen yet
+    assert.deepEqual([wdB.action, wdB.kaizenPending], ['exit-published', true]);
     const events = box.run().events.map((e) => e.kind);
     assert.ok(events.includes('takeover'));
   });
@@ -1998,7 +2676,7 @@ describe('scenarios', () => {
     good(run(box, ['phase-done', '--phase', 'package', '--session', 'b'], '06:55'));
     seedPage(box, 4);
     good(run(box, ['finish', '--tier', '4', '--url', 'https://example.test/d/postcard/', '--by', 'wdB'], '06:58'));
-    assert.equal(good(begin(box, 'closer', 'c', '07:27')).action, 'exit-published');
+    assert.equal(good(begin(box, 'closer', 'c', '08:47')).action, 'exit-published');
     // the first primary eventually recovers and its real build wins
     seedPage(box, 2);
     good(run(box, ['finish', '--tier', '2', '--url', 'https://example.test/d/real/', '--by', 'primary'], '09:15'));
@@ -2007,7 +2685,7 @@ describe('scenarios', () => {
     assert.equal(box.run().replaced[0].tier, 4);
   });
 
-  test('D: the primary is still alive but slow at 07:27. The closer force-degrades to the Ideas Day; the primary then yields, and may upgrade later', () => {
+  test('D: the primary is still alive but slow (still building) at 08:47. The closer force-degrades to the Ideas Day; the primary then yields, and may upgrade later', () => {
     const box = sandbox();
     begin(box, 'primary', 'p', '03:55');
     phase(box, 'preflight', 'p', '03:56', '04:00');
@@ -2015,27 +2693,78 @@ describe('scenarios', () => {
     phase(box, 'select', 'p', '04:30', '04:35');
     phase(box, 'spec', 'p', '04:35', '05:30');
     good(run(box, ['phase-start', '--phase', 'build', '--session', 'p'], '05:30'));
-    for (const t of ['05:55', '06:20', '06:40', '07:05', '07:25']) good(beat(box, 'primary', 'p', t));
-    // wdB at 06:47 sees a live primary building: quiet
+    for (const t of ['05:55', '06:20', '06:40']) good(beat(box, 'primary', 'p', t));
+    // wdB at 06:47 sees a live primary building: quiet (a primary past spec is not cut)
     assert.equal(good(begin(box, 'wdB', 'b', '06:47')).wrote, false);
-    const c = good(begin(box, 'closer', 'c', '07:27'));
-    assert.equal(c.action, 'force-degrade');
+    good(run(box, ['phase-start', '--phase', 'build', '--session', 'p'], '07:30')); // the first build attempt failed; attempt 2 is under way
+    for (const t of ['07:50', '08:15', '08:40']) good(beat(box, 'primary', 'p', t));
+    const c = good(begin(box, 'closer', 'c', '08:47'));
+    assert.equal(c.action, 'force-degrade'); // build is not a phase that earns grace
+    assert.equal(c.grace, false);
     assert.equal(c.targetTier, 3);
     assert.equal(c.resumePhase, 'package');
-    const pb = good(beat(box, 'primary', 'p', '07:28'));
+    const pb = good(beat(box, 'primary', 'p', '08:48'));
     assert.equal(pb.leaseHeld, false);
     assert.deepEqual(pb.directives.map((d) => d.kind), ['ship-now']);
-    assert.equal(run(box, ['phase-start', '--phase', 'qa', '--session', 'p'], '07:29').code, 1); // zombie writes are refused
-    phase(box, 'package', 'c', '07:28', '07:35');
+    assert.equal(run(box, ['phase-start', '--phase', 'qa', '--session', 'p'], '08:49').code, 1); // zombie writes are refused
+    phase(box, 'package', 'c', '08:48', '08:55');
     seedPage(box, 3);
-    good(run(box, ['finish', '--tier', '3', '--url', 'https://example.test/d/ideas/', '--by', 'closer'], '07:38'));
+    good(run(box, ['finish', '--tier', '3', '--url', 'https://example.test/d/ideas/', '--by', 'closer'], '08:58'));
     assert.equal(box.run().status, 'published');
-    // the primary finishes its real build at 08:20 and upgrades the page
+    // the primary finishes its real build at 09:20 and upgrades the page
     box.write(`docs/d/${DATE}-ideas-day/index.html`, '<html>');
     seedPage(box, 1);
-    const up = good(run(box, ['finish', '--tier', '1', '--url', 'https://example.test/d/real/', '--by', 'primary'], '08:20'));
+    const up = good(run(box, ['finish', '--tier', '1', '--url', 'https://example.test/d/real/', '--by', 'primary'], '09:20'));
     assert.equal(up.action, 'upgraded');
     assert.deepEqual(up.removedDirs, [`docs/d/${DATE}-ideas-day`]);
+  });
+
+  test('F: a slow but healthy day. The closer at 08:47 babysits in grace instead of degrading; the primary publishes at 09:10, then runs its kaizen', () => {
+    const box = sandbox();
+    begin(box, 'primary', 'p', '03:55');
+    for (const [name, a, b] of [['preflight', '03:56', '04:10'], ['ideate', '04:10', '05:20'], ['select', '05:20', '05:40'], ['spec', '05:40', '06:30'], ['build', '06:30', '08:20']]) phase(box, name, 'p', a, b);
+    good(run(box, ['phase-start', '--phase', 'qa', '--session', 'p'], '08:25'));
+    good(beat(box, 'primary', 'p', '08:40'));
+    // 08:47: the guideline has passed, but qa with a live lease is exactly what grace is for
+    const first = good(begin(box, 'closer', 'c', '08:47'));
+    assert.deepEqual([first.action, first.grace], ['exit-alive', true]);
+    good(beat(box, 'primary', 'p', '08:55'));
+    const babysat = good(begin(box, 'closer', 'c2', '08:56'));
+    assert.deepEqual([babysat.action, babysat.grace, babysat.wrote], ['exit-alive', true, false]);
+    assert.equal(good(st(box, ['today'], '08:56')).phaseIsLate, true);
+    good(run(box, ['phase-done', '--phase', 'qa', '--session', 'p'], '09:00'));
+    phase(box, 'revise', 'p', '09:00', '09:05');
+    phase(box, 'package', 'p', '09:05', '09:08');
+    seedPage(box, 1);
+    good(run(box, ['finish', '--tier', '1', '--url', 'https://example.test/d/slow/', '--by', 'primary'], '09:10'));
+    // the closer comes back at 09:20: the page is up; its kaizen is none of the closer's business
+    const after = good(begin(box, 'closer', 'c3', '09:20'));
+    assert.deepEqual([after.action, after.kaizenPending, after.wrote], ['exit-published', true, false]);
+    good(run(box, ['phase-start', '--phase', 'kaizen', '--session', 'p'], '09:11'));
+    good(run(box, ['phase-done', '--phase', 'kaizen', '--session', 'p'], '09:50'));
+    assert.equal(box.run().phase, 'done');
+    assert.equal(box.run().events.filter((e) => e.code === 'grace').length, 1);
+  });
+
+  test('G: the primary publishes, dies during its kaizen; a watchdog that finds it alive leaves it, a later one resumes it, and the closer never does', () => {
+    const box = sandbox();
+    begin(box, 'primary', 'p', '03:55');
+    for (const [name, a, b] of [['preflight', '03:56', '04:00'], ['ideate', '04:00', '04:20'], ['select', '04:20', '04:25'], ['spec', '04:25', '04:40'], ['build', '04:40', '04:50'], ['qa', '04:50', '04:55'], ['revise', '04:55', '04:58'], ['package', '04:58', '05:00']]) phase(box, name, 'p', a, b);
+    seedPage(box, 1);
+    good(run(box, ['finish', '--tier', '1', '--url', 'https://example.test/d/g/', '--by', 'primary'], '05:01'));
+    good(run(box, ['phase-start', '--phase', 'kaizen', '--session', 'p'], '05:02'));
+    good(beat(box, 'primary', 'p', '05:10')); // ...and then the container is gone
+    const wdA = good(begin(box, 'wdA', 'a', '05:32')); // 22 minutes of silence: still alive
+    assert.deepEqual([wdA.action, wdA.kaizenPending, wdA.wrote], ['exit-published', true, false]);
+    const wdB = good(begin(box, 'wdB', 'b', '06:47')); // 97 minutes: gone
+    assert.deepEqual([wdB.action, wdB.resumePhase, wdB.run.status, wdB.run.tier], ['resume-kaizen', 'kaizen', 'published', 1]);
+    assert.equal(good(begin(box, 'closer', 'c', '08:47')).action, 'exit-published');
+    assert.equal(good(st(box, ['phase-start', '--phase', 'kaizen', '--session', 'b'], '06:48')).attempt, 2);
+    good(run(box, ['phase-done', '--phase', 'kaizen', '--note', 'resumed by wdB', '--session', 'b', '--role', 'wdB'], '07:10'));
+    const status = good(run(box, ['status'], '07:11'));
+    assert.deepEqual([status.phase, status.kaizenPending, status.status], ['done', false, 'published']);
+    assert.deepEqual(status.phasesDone.slice(-2), ['kaizen', 'done']);
+    assert.ok(box.run().events.some((e) => e.kind === 'takeover' && /took over the kaizen/.test(e.msg)));
   });
 
   test('E: a manual genesis run (ROLE_OVERRIDE=manual TARGET_TIER=1) at 10:00 builds a full day, then a rerun refuses to redo it', () => {
@@ -2235,17 +2964,18 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     const { a } = pair();
     good(begin(a, 'primary', 'P1', '03:55'));
     for (const p of ['preflight', 'ideate']) good(st(a, ['phase-done', '--phase', p, '--session', 'P1'], '04:30'));
-    good(beat(a, 'primary', 'P1', '07:20'));
+    good(st(a, ['phase-start', '--phase', 'select', '--session', 'P1'], '08:30'));
+    good(beat(a, 'primary', 'P1', '08:40'));
     good(push(a));
     const closer = a.cloneB('closer');
-    const f = good(begin(closer, 'closer', 'C1', '07:27'));
+    const f = good(begin(closer, 'closer', 'C1', '08:47'));
     assert.equal(f.action, 'force-degrade');
     good(push(closer, 'force-degrade'));
 
-    const bt = good(beat(a, 'primary', 'P1', '07:28'));
+    const bt = good(beat(a, 'primary', 'P1', '08:48'));
     assert.deepEqual({ leaseHeld: bt.leaseHeld, displaced: bt.displaced, holder: bt.holder }, { leaseHeld: false, displaced: true, holder: 'closer' });
     assert.deepEqual(bt.directives.map((x) => [x.kind, x.tier]), [['ship-now', 3]]);
-    assert.equal(st(a, ['phase-done', '--phase', 'package', '--session', 'P1'], '07:29').json.displaced, true);
+    assert.equal(st(a, ['phase-done', '--phase', 'package', '--session', 'P1'], '08:49').json.displaced, true);
     assert.equal(a.run().lease.session, 'P1', 'a displaced writer\'s local file is left alone so that sync still sees the conflict');
     // with nothing of its own to push there is nothing to refuse: the sync just brings it up to date
     const idle = good(push(a));
@@ -2278,16 +3008,16 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     for (const p of ['preflight', 'ideate']) good(st(a, ['phase-done', '--phase', p, '--session', 'P1'], '04:30'));
     good(push(a));
     const closer = a.cloneB('closer');
-    good(begin(closer, 'closer', 'C1', '07:27'));
+    good(begin(closer, 'closer', 'C1', '08:47'));
     seedPage(closer, 3);
     closer.write('docs/index.html', '<html>gallery with the ideas day</html>');
-    good(st(closer, ['finish', '--tier', '3', '--url', 'https://example.test/ideas/', '--by', 'closer'], '07:35'));
+    good(st(closer, ['finish', '--tier', '3', '--url', 'https://example.test/ideas/', '--by', 'closer'], '08:55'));
     good(push(closer, 'closer fallback'));
 
-    // the primary's build was done all along; it notices at 08:20
+    // the primary's build was done all along; it notices at 09:20
     seedPage(a, 1, { slug: 'real' });
     a.write('docs/index.html', '<html>gallery with the real build</html>');
-    const up = good(st(a, ['finish', '--tier', '1', '--url', 'https://example.test/real/', '--by', 'primary'], '08:20'));
+    const up = good(st(a, ['finish', '--tier', '1', '--url', 'https://example.test/real/', '--by', 'primary'], '09:20'));
     assert.equal(up.action, 'upgraded');
     const r = push(a, 'late finisher');
     assert.equal(r.code, 0, r.stdout);
@@ -2321,7 +3051,7 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     assert.match(r.json.error, /downgrade/);
   });
 
-  test('begin sees the remote heartbeat of the lease holder even when the working tree has not pulled it', () => {
+  test('begin sees the remote heartbeat of the lease holder on the HEARTBEAT branch, whatever its checkout has pulled', () => {
     const { a } = pair();
     good(begin(a, 'primary', 'P1', '03:55'));
     good(st(a, ['phase-done', '--phase', 'preflight', '--session', 'P1'], '04:30'));
@@ -2329,13 +3059,46 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     const hbDir = path.join(tmpDir('sed-hb-'), 'clone');
     const hb = a.cli('heartbeat', ['--role', 'primary', '--session', 'P1', '--phase', 'ideate', '--wait', '0', '--now', iso('05:25')], { SED_HB_DIR: hbDir, SED_HB_MIN_PUSH_S: '0' });
     assert.equal(hb.json.pushed, true, hb.stdout + hb.stderr);
-    const wdA = a.cloneB('wda'); // fresh clone: has the heartbeat already
-    assert.equal(good(begin(wdA, 'wdA', 'A1', '05:32')).action, 'exit-alive');
-    // `a` has NOT pulled the heartbeat, yet its own begin (as a watchdog on the same stale checkout) must honour it
+    assert.equal(hb.json.branch, TEST_CONFIG.heartbeatBranch);
+    assert.equal(remoteHas(a.remote, TEST_CONFIG.heartbeatBranch), true);
+    const workFiles = git(a.remote, 'ls-tree', '-r', '--name-only', `refs/heads/${BRANCH}`);
+    assert.doesNotMatch(workFiles, /heartbeats/, 'the work branch (the Pages source) never receives a heartbeat');
+    const wdA = a.cloneB('wda'); // a fresh clone of the work branch has never seen the heartbeat branch
+    const k = good(begin(wdA, 'wdA', 'A1', '05:32'));
+    assert.equal(k.action, 'exit-alive');
+    assert.deepEqual([k.remote.heartbeat.found, k.remote.heartbeat.branch], [true, TEST_CONFIG.heartbeatBranch]);
+    // `a` pulled nothing either, and the lease alone would be 66 minutes stale
     assert.equal(a.exists(`state/heartbeats/${DATE}/P1.json`), false);
     const j = good(begin(a, 'wdB', 'B1', '05:36'));
     assert.equal(j.action, 'exit-alive');
     assert.equal(j.lease.source, 'heartbeat-file');
+    // status and begin agree
+    const status = good(st(a, ['status'], '05:36'));
+    assert.deepEqual([status.lease.source, status.lease.alive, status.remote.heartbeat.found], ['heartbeat-file', true, true]);
+  });
+
+  test('a heartbeat for another session, an absent heartbeat branch and a failing fetch all leave the lease alone to decide', () => {
+    const { a } = pair();
+    good(begin(a, 'primary', 'P1', '03:55'));
+    good(st(a, ['phase-done', '--phase', 'preflight', '--session', 'P1'], '04:30'));
+    good(push(a));
+    // no heartbeat branch at all: nothing proves P1 dead (70 minutes of lease silence is below phaseStuckMinutes), so it is left alone...
+    const none = good(begin(a, 'wdA', 'A1', '05:40'));
+    assert.deepEqual([none.action, none.remote.heartbeat.reason, none.remote.heartbeat.found, none.hbUnreadable], ['exit-alive', 'no-heartbeat-branch', false, true]);
+    // somebody else's heartbeat does not keep P1 alive (and now that the branch can be read, "no record of P1" is a real answer)
+    const hbDir = path.join(tmpDir('sed-hb-'), 'clone');
+    a.cli('heartbeat', ['--role', 'wdA', '--session', 'zombie', '--phase', 'ideate', '--wait', '0', '--now', iso('05:50')], { SED_HB_DIR: hbDir, SED_HB_MIN_PUSH_S: '0' });
+    const taken = good(begin(a, 'wdA', 'A1', '05:51'));
+    assert.deepEqual([taken.action, taken.hbUnreadable, taken.heartbeatAvailable], ['takeover', false, true]);
+    const other = good(begin(a, 'wdB', 'B1', '06:00'));
+    assert.deepEqual([other.action, other.remote.heartbeat.found], ['exit-alive', false]); // A1's own takeover lease (05:51) is fresh
+    // the fetch fails (remote gone): the report says why, the commands keep working
+    a.git('remote', 'set-url', 'origin', path.join(a.base, 'gone.git'));
+    const gone = good(begin(a, 'wdB', 'B1', '06:05'));
+    assert.equal(gone.remote.fetched, false);
+    assert.equal(gone.remote.heartbeat.found, false);
+    assert.equal(gone.remote.heartbeat.unknown, true);
+    assert.match(gone.remote.heartbeat.reason, /fetch failed|fetch-recently-failed/);
   });
 
   test('an unreachable remote costs one bounded fetch, then a minute of silence; commands keep working locally', () => {
@@ -2441,7 +3204,7 @@ describe('mergeRuns() and mergeHistories()', () => {
 
   test('published stays published at the better tier, from whichever side; a late finisher is never displaced for it', () => {
     const base = R();
-    const fallback = R({ ...withLease('closer', 'c1', '07:27', '07:35'), status: 'published', tier: 3, publishedAt: iso('07:35'), publishedUrl: 'u3', phase: 'done', phasesDone: done('preflight', 'ideate', 'done') });
+    const fallback = R({ ...withLease('closer', 'c1', '08:47', '08:55'), status: 'published', tier: 3, publishedAt: iso('08:55'), publishedUrl: 'u3', phase: 'done', phasesDone: done('preflight', 'ideate', 'done') });
     const late = R({ status: 'published', tier: 1, publishedAt: iso('08:20'), publishedUrl: 'u1', phase: 'done', replaced: [{ tier: 3 }] });
     const up = rs.mergeRuns(base, fallback, late);
     assert.equal(up.displaced, false);
@@ -2454,6 +3217,26 @@ describe('mergeRuns() and mergeHistories()', () => {
     // an in-progress zombie against a published day: published wins, and the zombie is displaced
     assert.equal(rs.mergeRuns(base, fallback, R()).displaced, true);
     assert.equal(rs.mergeRuns(base, R({ ...withLease('primary', 'p1', '03:55', '04:00') }), fallback).run.status, 'published');
+  });
+
+  test('the kaizen finishing on either side finishes it for the merged run (and a pending one stays pending)', () => {
+    const upToPublish = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish'];
+    const published = (extra = {}) => R({ status: 'published', tier: 1, publishedAt: iso('05:00'), publishedUrl: 'u1', phase: 'kaizen', phasesDone: done(...upToPublish), ...extra });
+    const finished = () => published({ phase: 'done', phasesDone: [...done(...upToPublish), { phase: 'kaizen', at: iso('05:40'), by: 'primary', note: '' }, { phase: 'done', at: iso('05:40'), by: 'primary', note: 'kaizen closed the day' }], lease: lease('primary', 'p1', '05:40') });
+    const base = published();
+    for (const [remote, local] of [[finished(), published()], [published(), finished()]]) {
+      const { displaced, run } = rs.mergeRuns(base, remote, local);
+      assert.equal(displaced, false);
+      assert.deepEqual([run.status, run.phase, run.tier], ['published', 'done', 1]);
+      assert.deepEqual(run.phasesDone.slice(-2).map((e) => e.phase), ['kaizen', 'done']);
+      assert.equal(rs.kaizenPending(run), false);
+    }
+    const pending = rs.mergeRuns(base, published(), published()).run;
+    assert.deepEqual([pending.phase, rs.kaizenPending(pending)], ['kaizen', true]);
+    // a fallback publisher that never ran the kaizen does not reopen a day whose kaizen another writer finished
+    const fallback = published({ tier: 3, ...withLease('closer', 'c1', '08:47', '08:55') });
+    const merged = rs.mergeRuns(base, fallback, finished()).run;
+    assert.deepEqual([merged.phase, merged.tier], ['done', 1]);
   });
 
   test('the same content in a different key order merges to itself, and the inputs are never mutated', () => {
@@ -2505,7 +3288,7 @@ describe('sync: the push target cannot be redirected', () => {
     assert.equal(r.code, 0, r.stdout + r.stderr);
     assert.equal(r.json.branch, BRANCH);
     assert.equal(r.json.pushed, true);
-    assert.equal(r.json.configIgnored, true);
+    assert.equal(r.json.configIgnored, undefined);
     assert.equal(tip(box, 'main'), mainBefore, 'main must not move');
     assert.equal(JSON.parse(remoteFile(box.remote, 'config.json')).workBranch, BRANCH, 'the tampered config is not on the remote');
     assert.ok(remoteFile(box.remote, 'state/note.json'));
@@ -2537,10 +3320,10 @@ describe('sync: the push target cannot be redirected', () => {
     assert.match(r.json.reason, /default branch/);
   });
 
-  test('a COMMITTED config naming main is refused as well (e.g. after an --allow-config commit)', () => {
+  test('a COMMITTED config naming main is refused as well (e.g. after a `--paths config.json` commit)', () => {
     const box = repoSandbox();
     tamperConfig(box, { workBranch: 'main' });
-    assert.equal(good(syncCli(box, ['--allow-config'])).pushed, true); // lands on the real branch, with the bad value
+    assert.equal(good(syncCli(box, ['--paths', 'config.json'])).pushed, true); // lands on the real branch, with the bad value
     const mainBefore = tip(box, 'main');
     box.write('state/note.json', { a: 2 });
     const r = syncCli(box);
@@ -2549,20 +3332,26 @@ describe('sync: the push target cannot be redirected', () => {
     assert.equal(tip(box, 'main'), mainBefore);
   });
 
-  test('config.json edits are only committed with --allow-config; other changes still go through', () => {
+  test('config.json edits are only committed when --paths names config.json explicitly; other changes still go through', () => {
     const box = repoSandbox();
     tamperConfig(box, { leaseStaleMinutes: 9999 });
     box.write('state/note.json', { a: 1 });
     const plain = good(syncCli(box));
-    assert.equal(plain.configIgnored, true);
+    assert.equal(plain.configIgnored, undefined);
     assert.equal(JSON.parse(remoteFile(box.remote, 'config.json')).leaseStaleMinutes, TEST_CONFIG.leaseStaleMinutes);
     assert.equal(box.readJson('config.json').leaseStaleMinutes, 9999, 'the working copy is left as it was');
-    const allowed = good(syncCli(box, ['--allow-config']));
-    assert.equal(allowed.configIgnored, undefined);
+    assert.ok(remoteFile(box.remote, 'state/note.json'));
+    // the old --allow-config switch is gone: it changes nothing
+    box.write('state/note2.json', { a: 2 });
+    good(syncCli(box, ['--allow-config']));
+    assert.equal(JSON.parse(remoteFile(box.remote, 'config.json')).leaseStaleMinutes, TEST_CONFIG.leaseStaleMinutes);
+    // naming it explicitly (with others) commits it
+    const named = good(syncCli(box, ['--paths', 'state,config.json']));
+    assert.equal(named.configIgnored, undefined);
     assert.equal(JSON.parse(remoteFile(box.remote, 'config.json')).leaseStaleMinutes, 9999);
   });
 
-  test('config.json cannot be smuggled in through a broad --paths either', () => {
+  test('config.json cannot be smuggled in through a broad --paths either (only the exact name config.json counts)', () => {
     const box = repoSandbox();
     tamperConfig(box, { leaseStaleMinutes: 9999 });
     box.write('state/note.json', { a: 1 });
@@ -2642,7 +3431,7 @@ describe('finish: a day is only published when its page and history entry exist'
     run.publishedUrl = 'https://example.test/';
     box.write(box.runFile(), run);
     const before = bytes(box, box.runFile());
-    const j = good(begin(box, 'closer', 'c1', '07:27'));
+    const j = good(begin(box, 'closer', 'c1', '08:47'));
     assert.equal(j.action, 'exit-published');
     assert.equal(j.publicationBacked, false);
     assert.match(j.reason, /no page for it/);
@@ -2651,8 +3440,8 @@ describe('finish: a day is only published when its page and history entry exist'
     assert.equal(good(st(box, ['status'], '07:28')).publicationBacked, false);
     seedPage(box, 1);
     assert.equal(good(st(box, ['status'], '07:29')).publicationBacked, true);
-    assert.equal(good(begin(box, 'closer', 'c1', '07:30')).publicationBacked, undefined);
-    assert.equal(good(st(box, ['finish', '--tier', '1'], '07:31')).action, 'noop');
+    assert.equal(good(begin(box, 'closer', 'c1', '08:48')).publicationBacked, undefined);
+    assert.equal(good(st(box, ['finish', '--tier', '1'], '08:49')).action, 'noop');
   });
 
   test('beginRun({flags.reopenUnbacked}) reopens a phantom publication as failed so a repair can take over', () => {
@@ -2663,9 +3452,10 @@ describe('finish: a day is only published when its page and history entry exist'
     Object.assign(run, { status: 'published', tier: 1, publishedAt: iso('05:00') });
     box.write(box.runFile(), run);
     const out = inRoot(box, () =>
-      rs.beginRun({ role: 'closer', session: 'deadman', date: DATE, now: at('07:30'), config: cfg, flags: { reopenUnbacked: true, force: true } }),
+      rs.beginRun({ role: 'closer', session: 'deadman', date: DATE, now: at('09:40'), config: cfg, flags: { reopenUnbacked: true, force: true } }),
     );
-    assert.equal(out.action, 'force-degrade');
+    // the phantom claim becomes a failed run, which any role may take over; ideate is done, so the Ideas Day is next
+    assert.equal(out.action, 'takeover');
     assert.equal(out.targetTier, 3);
     assert.equal(out.run.status, 'in_progress');
     assert.ok(out.run.events.some((e) => /published claim discarded/.test(e.msg)));
@@ -2674,7 +3464,7 @@ describe('finish: a day is only published when its page and history entry exist'
     begin(real, 'primary', 's1', '03:55');
     seedPage(real, 1);
     good(st(real, ['finish', '--tier', '1'], '05:00'));
-    const kept = inRoot(real, () => rs.beginRun({ role: 'closer', session: 'deadman', date: DATE, now: at('07:30'), config: cfg, flags: { reopenUnbacked: true } }));
+    const kept = inRoot(real, () => rs.beginRun({ role: 'closer', session: 'deadman', date: DATE, now: at('09:40'), config: cfg, flags: { reopenUnbacked: true } }));
     assert.equal(kept.action, 'exit-published');
     assert.equal(kept.wrote, false);
   });
@@ -2748,38 +3538,56 @@ describe('decide(): exhausted QA/revise and late takeovers keep the built site',
     assert.equal(pd.next, 'publish');
   });
 
-  test('wdB at 06:47 with a finished build packages it at tier 2 instead of publishing the Ideas Day', () => {
-    const d = dec('wdB', 'b1', '06:47', built());
+  test('wdB at 07:05 (the clock says tier 3) with a finished build packages it at tier 2 instead of publishing the Ideas Day', () => {
+    const d = dec('wdB', 'b1', '07:05', built());
     assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.builtSiteAvailable], ['takeover', 2, 'package', true]);
     assert.deepEqual(d.skipPhases, ['qa', 'revise']);
     assert.ok(d.events.some((e) => /packaging it as tier 2/.test(e.msg)));
   });
 
-  test('the closer at 07:27 tries one validated package of the finished build before any fallback; the ship-now directive says tier 2', () => {
-    const d = dec('closer', 'c1', '07:27', built({ lease: lease('primary', 'p1', '07:20') }));
+  test('wdB at 06:47 is still inside tier 2: it simply resumes the compact path at QA (no rescue needed yet)', () => {
+    const d = dec('wdB', 'b1', '06:47', built());
+    assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.skipPhases], ['takeover', 2, 'qa', []]);
+  });
+
+  test('the closer takes over a dead tier-2 build at 08:47 and tries one validated package of it before any fallback; no ship-now is needed for a dead owner', () => {
+    const run = built({ lease: lease('primary', 'p1', '07:20') });
+    const d = dec('closer', 'c1', '08:47', run);
+    assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.skipPhases], ['takeover', 2, 'package', ['qa', 'revise']]);
+    assert.ok(d.events.some((e) => /packaging it as tier 2/.test(e.msg)));
+    assert.deepEqual(d.directives, []);
+    // its own re-run resumes instead of degrading again
+    const first = rs.applyDecision(run, d, { role: 'closer', session: 'c1', nowIso: iso('08:47'), date: DATE });
+    assert.equal(dec('closer', 'c1', '08:52', first).action, 'resume');
+  });
+
+  test('the closer force-degrading a LIVE owner past its grace rescues the finished build too; the ship-now directive says tier 2', () => {
+    const run = built({ lease: lease('primary', 'p1', '09:25') });
+    const d = dec('closer', 'c1', '09:31', run);
     assert.deepEqual([d.action, d.targetTier, d.resumePhase], ['force-degrade', 2, 'package']);
     assert.deepEqual(d.directives.map((x) => [x.kind, x.tier]), [['ship-now', 2]]);
     assert.match(d.reason, /package the finished build/);
-    // its own re-run resumes instead of degrading again
-    const first = rs.applyDecision(built({ lease: lease('primary', 'p1', '07:20') }), d, { role: 'closer', session: 'c1', nowIso: iso('07:27'), date: DATE });
-    assert.equal(dec('closer', 'c1', '07:31', first).action, 'resume');
+    const first = rs.applyDecision(run, d, { role: 'closer', session: 'c1', nowIso: iso('09:31'), date: DATE });
+    assert.equal(dec('closer', 'c1', '09:35', first).action, 'resume');
   });
 
-  test('...but not with too little time left (the rescue needs ~20 min before the deadline), after a failed package, or for a run already cut to tier 3', () => {
-    assert.equal(dec('closer', 'c1', '07:41', built()).targetTier, 3);
-    assert.equal(dec('closer', 'c1', '07:41', built()).resumePhase, 'package');
+  test('...but not with too little time left (the rescue needs ~20 min before the hard stop), after a failed package, or for a run already cut to tier 3', () => {
+    const live = (hhmm) => built({ lease: lease('primary', 'p1', hhmm) });
+    assert.deepEqual([dec('closer', 'c1', '10:10', live('10:05')).targetTier, dec('closer', 'c1', '10:11', live('10:05')).targetTier], [2, 3]);
+    assert.equal(dec('closer', 'c1', '10:11', live('10:05')).resumePhase, 'package');
     const failedPackage = built({ phase: 'package', attempts: { build: 1, package: 2 } });
-    assert.equal(dec('closer', 'c1', '07:27', failedPackage).targetTier, 3);
-    assert.equal(dec('wdB', 'b1', '06:47', failedPackage).targetTier, 3);
-    assert.equal(dec('wdB', 'b1', '06:47', built({ targetTier: 3 })).targetTier, 3);
+    assert.equal(dec('closer', 'c1', '08:47', failedPackage).targetTier, 3);
+    assert.equal(dec('wdB', 'b1', '07:05', failedPackage).targetTier, 3);
+    assert.equal(dec('wdB', 'b1', '07:05', built({ targetTier: 3 })).targetTier, 3);
     // no build at all: unchanged behaviour
     const noBuild = mkRun({ phase: 'spec', phasesDone: done('preflight', 'ideate', 'select') });
-    const d = dec('wdB', 'b1', '06:47', noBuild);
+    const d = dec('wdB', 'b1', '07:05', noBuild);
     assert.deepEqual([d.targetTier, d.resumePhase, d.builtSiteAvailable], [3, 'package', false]);
+    assert.deepEqual([dec('wdB', 'b1', '06:47', noBuild).targetTier, dec('wdB', 'b1', '06:47', noBuild).resumePhase], [2, 'spec']);
   });
 
   test('a manual run picks its own tier: no rescue, even from a stale lease', () => {
-    const d = dec('manual', 'm1', '06:47', built(), { flags: { targetTier: 4 } });
+    const d = dec('manual', 'm1', '07:05', built(), { flags: { targetTier: 4 } });
     assert.deepEqual([d.targetTier, d.resumePhase], [4, 'package']);
     assert.deepEqual(d.skipPhases, []);
   });
@@ -2789,7 +3597,7 @@ describe('decide(): exhausted QA/revise and late takeovers keep the built site',
     begin(box, 'primary', 's1', '03:55');
     for (const p of ['preflight', 'ideate', 'select', 'spec', 'build']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '04:50'));
     box.write(`work/${DATE}/build/site/index.html`, '<html>');
-    const j = good(begin(box, 'wdB', 'b1', '06:47'));
+    const j = good(begin(box, 'wdB', 'b1', '07:05'));
     assert.equal(j.resumePhase, 'package');
     assert.deepEqual(j.cleaned, []);
     assert.equal(box.exists(`work/${DATE}/build/site/index.html`), true);
@@ -2812,7 +3620,7 @@ describe('status: a manual run has no deadline pressure', () => {
     assert.equal(j.stuckLimitMinutes, 180);
     assert.equal(j.lease.stuck, false);
     assert.equal(j.lease.alive, true);
-    assert.doesNotMatch(j.nextAction, /deadline has passed|treated as hung|ship the best fallback|STALE/);
+    assert.doesNotMatch(j.nextAction, /deadline \(a guideline\)|hard stop \(|grace period|treated as hung|ship the best fallback|STALE/);
     assert.match(j.nextAction, /manual run/);
     assert.match(j.nextAction, /ignore clock hints/);
   });
@@ -2825,7 +3633,7 @@ describe('status: a manual run has no deadline pressure', () => {
     assert.equal(j.lease.stuck, true);
     assert.match(j.nextAction, /limit 180\)/);
     assert.match(j.nextAction, /treated as hung/);
-    assert.doesNotMatch(j.nextAction, /deadline has passed/);
+    assert.doesNotMatch(j.nextAction, /deadline \(a guideline\)|hard stop \(|grace period/);
   });
 
   test('a stale manual lease is still stale (a dead container is a dead container)', () => {
@@ -2834,16 +3642,306 @@ describe('status: a manual run has no deadline pressure', () => {
     const j = good(st(box, ['status'], '13:00'));
     assert.equal(j.lease.stale, true);
     assert.match(j.nextAction, /STALE/);
-    assert.doesNotMatch(j.nextAction, /deadline has passed/);
+    assert.doesNotMatch(j.nextAction, /deadline \(a guideline\)|hard stop \(|grace period/);
   });
 
   test('non-manual runs keep the clock advice, and a takeover by another role of a manual run uses the manual stuck limit', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
-    assert.match(good(st(box, ['status'], '08:10')).nextAction, /deadline has passed/);
+    assert.match(good(st(box, ['status'], '08:10')).nextAction, /deadline \(a guideline\) has passed/);
     const m = sandbox();
     good(begin(m, 'manual', 'm1', '12:00', ['--target-tier', '1']));
     good(beat(m, 'manual', 'm1', '13:50'));
     assert.equal(good(begin(m, 'wdA', 'a1', '14:00')).action, 'exit-alive');
+  });
+});
+
+// ---------------------------------------------------------------------------------------
+// round 2: an unreadable heartbeat channel, a done package, a dead build worth salvaging
+// ---------------------------------------------------------------------------------------
+
+describe('decide(): an unreadable heartbeat channel is not proof of death (hbUnknown)', () => {
+  // primary in build since 05:50, last lease checkpoint 05:50: at 06:47 the lease is 57 minutes old (limit 35)
+  const inBuild = (over = {}) =>
+    mkRun({ phase: 'build', phasesDone: done('preflight', 'ideate', 'select', 'spec'), lease: lease('primary', 'p1', '05:50'), phaseStartedAt: { build: iso('05:50') }, ...over });
+
+  test('wdB at 06:47: a readable-and-silent heartbeat means takeover, an unreadable one means exit-alive with an hb-unreadable note', () => {
+    const known = dec('wdB', 'w2', '06:47', inBuild());
+    assert.equal(known.action, 'takeover');
+    const d = dec('wdB', 'w2', '06:47', inBuild(), { hbUnknown: true });
+    assert.equal(d.action, 'exit-alive');
+    assert.equal(d.hbUnreadable, true);
+    assert.equal(d.resumePhase, null);
+    assert.equal(d.takeLease, false);
+    assert.match(d.reason, /hb-unreadable.*57 min/);
+    assert.deepEqual(d.events.map((e) => [e.kind, e.code]), [['note', 'hb-unreadable']]);
+  });
+  test('the note is left once per role, not on every fire', () => {
+    const run = inBuild({ events: [{ at: iso('06:00'), by: 'wdB', kind: 'note', code: 'hb-unreadable', msg: 'x' }] });
+    assert.deepEqual(dec('wdB', 'w2', '06:47', run, { hbUnknown: true }).events, []);
+    assert.equal(dec('wdA', 'w1', '06:47', run, { hbUnknown: true }).events.length, 1, 'another role says it once too');
+  });
+  test('the benefit of the doubt ends after phaseStuckMinutes of lease silence: exactly 90 minutes is still alive, 91 is a takeover', () => {
+    assert.equal(dec('wdB', 'w2', '06:47', inBuild({ lease: lease('primary', 'p1', '05:17') }), { hbUnknown: true }).action, 'exit-alive');
+    const d = dec('wdB', 'w2', '06:47', inBuild({ lease: lease('primary', 'p1', '05:16') }), { hbUnknown: true });
+    assert.equal(d.action, 'takeover');
+    assert.match(d.reason, /stale \(91 min/);
+  });
+  test('a phase that has run longer than phaseStuckMinutes is hung whatever the heartbeat channel says', () => {
+    const run = inBuild({ phaseStartedAt: { build: iso('05:00') } }); // 107 minutes in build at 06:47
+    assert.equal(dec('wdB', 'w2', '06:47', run, { hbUnknown: true }).action, 'takeover');
+  });
+  test('a lease that is fresh by its own clock, or a heartbeat that was found, is not touched by the flag', () => {
+    const fresh = inBuild({ lease: lease('primary', 'p1', '06:30') });
+    const d = dec('wdB', 'w2', '06:47', fresh, { hbUnknown: true });
+    assert.deepEqual([d.action, d.hbUnreadable, d.events], ['exit-alive', false, []]);
+    const found = { holder: 'primary', session: 'p1', phase: 'build', at: iso('06:45') };
+    const e = dec('wdB', 'w2', '06:47', inBuild(), { heartbeat: found, hbUnknown: true });
+    assert.deepEqual([e.action, e.hbUnreadable], ['exit-alive', false]);
+  });
+  test('the scope-cut duty of the watchdogs survives an unreadable channel', () => {
+    const behind = mkRun({ phase: 'ideate', lease: lease('primary', 'p1', '04:50'), phaseStartedAt: { ideate: iso('04:50') } });
+    const d = dec('wdA', 'w1', '05:32', behind, { hbUnknown: true });
+    assert.deepEqual([d.action, d.hbUnreadable, d.directives.map((x) => x.kind)], ['exit-alive', true, ['scope-cut']]);
+  });
+  test('leaseInfo reports the flag and the rule; the lease holder\'s own session still resumes', () => {
+    const run = inBuild();
+    const info = rs.leaseInfo(cfg, run, null, at('06:47').getTime(), { hbUnknown: true });
+    assert.deepEqual([info.stale, info.hbUnreadable, info.ageMinutes], [false, true, 57]);
+    assert.equal(rs.leaseInfo(cfg, run, null, at('06:47').getTime()).stale, true);
+    assert.equal(rs.leaseInfo(cfg, null, null, at('06:47').getTime(), { hbUnknown: true }).stale, true, 'no lease at all is still no lease');
+    assert.equal(dec('primary', 'p1', '06:47', run, { hbUnknown: true }).action, 'resume');
+  });
+});
+
+describe('decide(): a package that is already done keeps its tier (no re-packaging as a Tier 2 salvage)', () => {
+  const PACKAGED = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package'];
+  const packaged = (over = {}) =>
+    mkRun({ phase: 'publish', phasesDone: done(...PACKAGED), attempts: { publish: 1 }, lease: lease('primary', 'p1', '08:00'), phaseStartedAt: { publish: iso('08:00') }, ...over });
+
+  test('closer at 09:45 with a dead primary: takeover at the run\'s own tier 1, resume at publish, nothing to wipe', () => {
+    const d = dec('closer', 'c1', '09:45', packaged());
+    assert.deepEqual([d.action, d.targetTier, d.resumePhase, d.skipPhases], ['takeover', 1, 'publish', []]);
+    assert.deepEqual(rs.stagingDirs(d.cleanPhase), [], 'publish has no staging: the staged build and the package are not wiped');
+    assert.deepEqual(d.events.map((e) => e.kind), ['takeover', 'note']);
+    assert.match(d.events[1].msg, /package is already done.*tier 1/);
+    assert.doesNotMatch(d.reason, /tier 2/);
+  });
+  test('the clock does not re-tier it: wdB at 06:47 and at 07:30 resume at publish as well; a Tier 3 package stays Tier 3', () => {
+    for (const hhmm of ['06:47', '07:30']) {
+      const d = dec('wdB', 'w2', hhmm, packaged({ lease: lease('primary', 'p1', '05:50') }));
+      assert.deepEqual([d.action, d.targetTier, d.resumePhase], ['takeover', 1, 'publish'], hhmm);
+    }
+    const ideas = packaged({ targetTier: 3, phasesDone: done('preflight', 'ideate', 'package') });
+    const d = dec('closer', 'c1', '09:45', ideas);
+    assert.deepEqual([d.targetTier, d.resumePhase], [3, 'publish']);
+  });
+  test('publish attempts used up do not swap a finished page for a fallback: publish is retried', () => {
+    const d = dec('closer', 'c1', '09:45', packaged({ attempts: { publish: 2 } }));
+    assert.deepEqual([d.targetTier, d.resumePhase], [1, 'publish']);
+    assert.ok(!d.events.some((e) => e.kind === 'degrade'));
+  });
+  test('without a done package the rescue is unchanged (finished build, stale lease, late: packaged as Tier 2)', () => {
+    const run = packaged({ phase: 'package', phasesDone: done(...PACKAGED.slice(0, 5)), attempts: {}, lease: lease('primary', 'p1', '08:00') });
+    const d = dec('closer', 'c1', '09:45', run);
+    assert.deepEqual([d.targetTier, d.resumePhase], [2, 'package']);
+    assert.ok(d.events.some((e) => e.kind === 'degrade'));
+  });
+  test('the hard stop still force-resolves (row 3 is not softened), and a manual run keeps choosing its own tier', () => {
+    assert.equal(dec('closer', 'c1', '10:35', packaged()).action, 'force-degrade');
+    const m = dec('manual', 'm', '09:45', packaged(), { flags: { targetTier: 2 } });
+    assert.equal(m.targetTier, 2);
+  });
+});
+
+describe('CLI: round 2 scenarios', () => {
+  const PHASES_TO_PACKAGE = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package'];
+
+  test('a done package taken over by the closer resumes at publish and finishes at the ORIGINAL tier', () => {
+    const box = sandbox();
+    good(begin(box, 'primary', 's1', '03:55'));
+    for (const p of PHASES_TO_PACKAGE) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '07:10'));
+    seedPage(box, 1);
+    const j = good(begin(box, 'closer', 'c1', '09:45'));
+    assert.deepEqual([j.action, j.targetTier, j.resumePhase], ['takeover', 1, 'publish']);
+    assert.match(j.reason, /tier 1/);
+    assert.deepEqual(j.cleaned, []);
+    assert.ok(box.run().events.some((e) => e.kind === 'note' && /package is already done/.test(e.msg)));
+    assert.ok(!box.run().events.some((e) => e.kind === 'degrade'));
+    const fin = good(st(box, ['finish', '--tier', '1', '--by', 'closer'], '09:50'));
+    assert.equal(fin.tier, 1);
+    assert.equal(box.run().tier, 1);
+    assert.equal(box.run().status, 'published');
+  });
+
+  test('a stale-lease takeover into a fallback tier KEEPS the dead build\'s site for the closer\'s salvage', () => {
+    const box = sandbox();
+    good(begin(box, 'primary', 's1', '03:55'));
+    for (const p of ['preflight', 'ideate', 'select', 'spec']) good(st(box, ['phase-done', '--phase', p, '--session', 's1'], '04:30'));
+    good(st(box, ['phase-start', '--phase', 'build', '--session', 's1'], '04:31'));
+    box.write(`work/${DATE}/build/site/index.html`, '<html>a nearly finished site');
+    box.write(`work/${DATE}/build/notes.txt`, 'builder notes');
+    box.write(`work/${DATE}/ideas/shortlist.json`, '[]');
+    const j = good(begin(box, 'closer', 'c1', '08:47'));
+    assert.deepEqual([j.action, j.targetTier, j.resumePhase], ['takeover', 3, 'package']);
+    assert.deepEqual(j.cleaned, []);
+    assert.equal(j.kept, `work/${DATE}/build`);
+    assert.equal(j.salvageSite, `work/${DATE}/build/site`);
+    assert.equal(box.exists(`work/${DATE}/build/site/index.html`), true);
+    assert.equal(box.exists(`work/${DATE}/build/notes.txt`), true);
+    assert.ok(box.run().events.some((e) => e.kind === 'note' && /kept work\/.*build.*salvage/.test(e.msg)));
+    // and a takeover that RESTARTS build still wipes it: nothing to salvage there, the builders start over
+    const again = sandbox();
+    good(begin(again, 'primary', 's1', '03:55'));
+    for (const p of ['preflight', 'ideate', 'select', 'spec']) good(st(again, ['phase-done', '--phase', p, '--session', 's1'], '04:20'));
+    good(st(again, ['phase-start', '--phase', 'build', '--session', 's1'], '04:21'));
+    again.write(`work/${DATE}/build/site/index.html`, '<html>half');
+    const w = good(begin(again, 'wdA', 'a1', '05:32'));
+    assert.deepEqual([w.action, w.targetTier, w.resumePhase, w.cleaned, w.kept, w.salvageSite], ['takeover', 2, 'build', [`work/${DATE}/build`], null, null]);
+    assert.equal(again.exists(`work/${DATE}/build`), false);
+  });
+
+  test('status and begin print the fields a closer needs: salvageSite is null when there is no site', () => {
+    const box = sandbox();
+    const j = good(begin(box, 'primary', 's1', '03:55'));
+    assert.equal(j.salvageSite, null);
+    assert.equal(j.kept, null);
+    assert.equal(j.hbUnreadable, false);
+    assert.equal(j.heartbeatAvailable, null, 'no remote: the heartbeat branch was never looked at');
+  });
+
+  describe('with a real remote', () => {
+    const push = (box, msg = 'checkpoint') => box.state(['sync', '-m', msg, '--no-sleep']);
+    const hbEnv = () => ({ SED_HB_DIR: path.join(tmpDir('sed-hb-'), 'clone'), SED_HB_MIN_PUSH_S: '0', SED_NO_SLEEP: '1' });
+
+    // the finding\'s repro: the primary builds since 05:50, pulses reach the heartbeat branch until 06:45
+    function buildingPrimary() {
+      const a = repoSandbox();
+      good(begin(a, 'primary', 'P1', '03:55'));
+      for (const p of ['preflight', 'ideate', 'select', 'spec']) good(st(a, ['phase-done', '--phase', p, '--session', 'P1'], '04:30'));
+      good(st(a, ['phase-start', '--phase', 'build', '--session', 'P1'], '05:50'));
+      good(beat(a, 'primary', 'P1', '05:50'));
+      good(push(a));
+      return a;
+    }
+
+    test('a healthy build 57 minutes after its last checkpoint: alive while the heartbeat branch is readable OR unreadable; taken over only when silent', () => {
+      const a = buildingPrimary();
+      const env = hbEnv();
+      const pulse = a.cli('heartbeat', ['--role', 'primary', '--session', 'P1', '--phase', 'build', '--wait', '0', '--now', iso('06:45')], env);
+      assert.equal(pulse.json.pushed, true, pulse.stdout + pulse.stderr);
+      const readable = good(begin(a.cloneB('wdb1'), 'wdB', 'B1', '06:47'));
+      assert.deepEqual([readable.action, readable.heartbeatAvailable, readable.hbUnreadable, readable.lease.source], ['exit-alive', true, false, 'heartbeat-file']);
+
+      // the heartbeat branch vanishes (deleted, or the proxy never took it): the same lease is not called dead
+      git(a.remote, 'update-ref', '-d', `refs/heads/${TEST_CONFIG.heartbeatBranch}`);
+      const blind = begin(a.cloneB('wdb2'), 'wdB', 'B1', '06:47', []);
+      const j = good(blind);
+      assert.equal(j.action, 'exit-alive', blind.stdout);
+      assert.deepEqual([j.heartbeatAvailable, j.hbUnreadable, j.remote.heartbeat.reason], [false, true, 'no-heartbeat-branch']);
+      assert.match(j.reason, /hb-unreadable/);
+      assert.equal(j.run.lease.session, 'P1');
+      assert.equal(j.run.phase, 'build');
+      assert.ok(j.run.events.some((e) => e.code === 'hb-unreadable'));
+      assert.equal(j.cleaned.length, 0);
+      const status = good(st(a.cloneB('wdb3'), ['status'], '06:47'));
+      assert.deepEqual([status.heartbeatAvailable, status.lease.hbUnreadable, status.lease.alive], [false, true, true]);
+      assert.match(status.nextAction, /hb-unreadable/);
+
+      // silent for 95 minutes the backstop applies even blind
+      const late = good(begin(a.cloneB('wdb4'), 'wdB', 'B1', '07:25'));
+      assert.equal(late.action, 'takeover');
+      assert.equal(late.heartbeatAvailable, false);
+    });
+
+    test('a fetch that fails (remote unreachable) is the same unknown, not a death certificate', () => {
+      const a = buildingPrimary();
+      const b = a.cloneB('wdb');
+      b.git('remote', 'set-url', 'origin', path.join(a.base, 'nowhere.git'));
+      const j = good(b.state(['begin', '--role', 'wdB', '--session', 'B1', ...NOW('06:47')], { SED_NO_SLEEP: '1' }));
+      assert.deepEqual([j.action, j.hbUnreadable, j.heartbeatAvailable], ['exit-alive', true, false]);
+      assert.match(j.remote.heartbeat.reason, /fetch failed/);
+    });
+
+    test('--no-fetch is a deliberate offline look: heartbeatAvailable is null and the lease alone decides as before', () => {
+      const a = buildingPrimary();
+      const j = good(begin(a.cloneB('wdb'), 'wdB', 'B1', '06:47', ['--no-fetch']));
+      assert.deepEqual([j.action, j.heartbeatAvailable, j.hbUnreadable], ['takeover', null, false]);
+    });
+  });
+
+  describe('fetchRemoteHeartbeat(): one dropped fetch is retried', () => {
+    function flakyGit(failures) {
+      const dir = path.join(tmpDir('sed-gitshim-'), 'bin');
+      fs.mkdirSync(dir, { recursive: true });
+      const real = execFileSync('sh', ['-c', 'command -v git'], { encoding: 'utf8' }).trim();
+      const counter = path.join(dir, 'count');
+      fs.writeFileSync(
+        path.join(dir, 'git'),
+        `#!/bin/sh\ncase "$*" in\n  *fetch*${TEST_CONFIG.heartbeatBranch}*)\n    n=$(cat "${counter}" 2>/dev/null || echo 0); n=$((n+1)); echo $n > "${counter}"\n    if [ "$n" -le ${failures} ]; then echo "fatal: unable to access 'x': Could not resolve host" >&2; exit 128; fi;;\nesac\nexec "${real}" "$@"\n`,
+        { mode: 0o755 },
+      );
+      return { dir, counter, calls: () => Number(fs.existsSync(counter) ? fs.readFileSync(counter, 'utf8') : 0) };
+    }
+    function withShim(shim, fn) {
+      const saved = { PATH: process.env.PATH, SED_NO_SLEEP: process.env.SED_NO_SLEEP };
+      process.env.PATH = `${shim.dir}${path.delimiter}${saved.PATH}`;
+      process.env.SED_NO_SLEEP = '1';
+      try {
+        return fn();
+      } finally {
+        process.env.PATH = saved.PATH;
+        if (saved.SED_NO_SLEEP === undefined) delete process.env.SED_NO_SLEEP;
+        else process.env.SED_NO_SLEEP = saved.SED_NO_SLEEP;
+      }
+    }
+    function seeded() {
+      const a = repoSandbox();
+      const r = a.cli('heartbeat', ['--role', 'primary', '--session', 'P1', '--phase', 'build', '--wait', '0', '--now', iso('06:45')], hbEnvLocal());
+      assert.equal(r.json.pushed, true, r.stdout + r.stderr);
+      return a;
+    }
+    const hbEnvLocal = () => ({ SED_HB_DIR: path.join(tmpDir('sed-hb-'), 'clone'), SED_HB_MIN_PUSH_S: '0' });
+
+    test('two failures then success: the record is found and nothing is unknown', () => {
+      const a = seeded();
+      const shim = flakyGit(2);
+      const r = withShim(shim, () => fetchRemoteHeartbeat({ date: DATE, session: 'P1', root: a.root, config: TEST_CONFIG }));
+      assert.equal(shim.calls(), 3);
+      assert.deepEqual([r.fetched, r.unknown, r.heartbeat?.at], [true, false, iso('06:45')]);
+    });
+    test('three failures: unknown (the reason says why), the failure is remembered for a minute, and no more fetches are spent', () => {
+      const a = seeded();
+      const shim = flakyGit(3);
+      const first = withShim(shim, () => fetchRemoteHeartbeat({ date: DATE, session: 'P1', root: a.root, config: TEST_CONFIG }));
+      assert.deepEqual([first.fetched, first.unknown, first.heartbeat], [false, true, null]);
+      assert.match(first.reason, /^fetch failed/);
+      assert.equal(shim.calls(), 3);
+      const second = withShim(shim, () => fetchRemoteHeartbeat({ date: DATE, session: 'P1', root: a.root, config: TEST_CONFIG }));
+      assert.deepEqual([second.reason, second.unknown], ['fetch-recently-failed', true]);
+      assert.equal(shim.calls(), 3);
+    });
+    test('a missing branch is answered at once (no retries) and is unknown; a repo with no origin is not (nothing to read)', () => {
+      const a = repoSandbox();
+      const shim = flakyGit(0);
+      const none = withShim(shim, () => fetchRemoteHeartbeat({ date: DATE, session: 'P1', root: a.root, config: TEST_CONFIG }));
+      assert.deepEqual([none.reason, none.unknown, none.fetched], ['no-heartbeat-branch', true, false]);
+      assert.equal(shim.calls(), 1);
+      const lonely = sandbox();
+      assert.equal(fetchRemoteHeartbeat({ date: DATE, session: 'P1', root: lonely.root, config: TEST_CONFIG }).unknown, false);
+    });
+  });
+});
+
+describe('levelConfigFor: per-level kaizen reserve', () => {
+  test('a level may override the global kaizen reserve (minimal reserves nothing, so its build cap is never zero)', async () => {
+    const { levelConfigFor } = await import('../scripts/lib/runstate.mjs');
+    const real = readJson(path.join(REPO_ROOT, 'config.json'));
+    assert.equal(levelConfigFor(real, 'balanced').reserveForKaizenTokens, 350_000);
+    assert.equal(levelConfigFor(real, 'minimal').reserveForKaizenTokens, 0);
+    for (const level of Object.keys(real.budget.levels)) {
+      const lc = levelConfigFor(real, level);
+      assert.ok(lc.capTokens - lc.reserveForKaizenTokens > 0, `${level} leaves no build budget`);
+    }
   });
 });

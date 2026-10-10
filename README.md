@@ -2,7 +2,7 @@
 
 **One new, sophisticated, one-of-a-kind thing that fits on a static web page. Every single morning. Built while you sleep.**
 
-At 03:55 New York time a Claude Sonnet 5.5 orchestrator wakes up, assembles a team of eight Claude Sonnet agents plus a few Claude Haiku clerks, and gets to work. By 08:00 the day's project is live: a poker range explorer one day, a hockey-physics toy the next, a deeply silly instrument after that. No two alike, none of them throwaway.
+At 03:55 New York time a Claude Sonnet 5.5 orchestrator wakes up, assembles a team of eight Claude Sonnet agents plus a few Claude Haiku clerks, and gets to work. Around 08:00 the day's project is live (a guideline: occasionally later, because quality beats punctuality): a poker range explorer one day, a hockey-physics toy the next, a deeply silly instrument after that. No two alike, none of them throwaway.
 
 **See it:** <https://ph05.github.io/sonnet-every-day/>
 
@@ -31,31 +31,47 @@ Day 1 is 2026-10-09. The gallery keeps every day, shows a streak, and is honest 
        revise      owners fix the serious defects and QA runs again
        package     thumbnail, metadata, validation, gallery rebuild, run report
        publish     push, then check the live site lists today
-08:00  deadline
+       kaizen      after publish, each team member makes one small improvement to the swarm
+05:32  watchdog A  a stuck or dead primary is taken over
+06:47  watchdog B  a slow primary is asked to scale down
+~08:00 live target (a guideline; a healthy run is never cut off before 09:30)
+08:47  closer      babysits a healthy run until 09:30, then salvages or falls back
+10:30  hard stop   anything still unpublished is force-resolved
 ```
 
 Phase 1 is the heart of it: **ten well-researched ideas every day**. Only the winner is built. One unbuilt idea may be saved for tomorrow, and only once, so the ideas stay fresh.
 
 ### Something always ships
 
-A day is never allowed to be blank. Watchdog sessions and a model-free GitHub Action keep watch, and the system steps down a tier rather than miss the deadline.
+A day is never allowed to be blank. Watchdog sessions and a model-free GitHub Action keep watch, and the system steps down a tier rather than leave the day empty. 08:00 is a target, not a cliff: a healthy run that is still polishing gets until 09:30, and anything unpublished at 10:30 is force-resolved.
 
 | Time (ET) | Who | What they do |
 |---|---|---|
 | 03:55 | primary | Runs the whole day. |
 | 05:32 | watchdog A | Healthy primary: nothing. Dead or stuck: takes over from the last finished phase. |
 | 06:47 | watchdog B | Asks a slow primary to scale down, or takes over. |
-| 07:27 | closer | Guarantees a page is live by 08:00. |
-| 07:40 | deadman Action | No Claude needed. Publishes a fallback if the day is still empty. |
+| 08:47 | closer | Waits for a healthy run to finish (until 09:30), salvages a half-built page if there is one, otherwise publishes a fallback. |
+| 09:40 | deadman Action | No Claude needed. Publishes a fallback if the day is still empty and nobody is alive, or after the 10:30 hard stop. |
 
 | Tier | What ships | When it applies |
 |---|---|---|
 | **T1** | Full build with a revise loop | A run starting before 04:45 |
-| **T2** | Compact build, one builder pair | Starting before 06:45, or a primary asked to scope down |
-| **T3** | **Ideas Day**: the ten researched ideas as an interactive page, marked as a fallback | Ideas exist but there is no time to build (before 07:25) |
+| **T2** | Compact build, one builder pair | Starting before 07:00, or a primary asked to scope down |
+| **T3** | **Ideas Day**: the ten researched ideas as an interactive page, marked as a fallback | Ideas exist but there is no time to build (before 08:45) |
 | **T4** | **Postcard**: a deterministic generative page that says today's build did not complete | Anything else; needs nothing at all |
 
 Fallback days count as days but do not use up a category. A primary that recovers late can still replace a fallback until 23:59.
+
+## A swarm that improves itself
+
+The team is built to be resilient, curious and proactive, and the repo shows it.
+
+* **A charter.** [`ops/CULTURE.md`](ops/CULTURE.md) is read by every agent: assume partial failure and checkpoint, ask why and run the cheap experiment, fix what you notice and leave a handoff for tomorrow.
+* **One minor change per member per day.** After the day's page is published, each of the nine team members makes exactly one small change that would make the whole system better. It does not have to be in the member's own lane: it is an observation turned into a small, safe diff. Because it runs after publish, it can never endanger the day.
+* **A gate that does not bend.** `scripts/kaizen.mjs` caps the size of each change, limits it to an allowlist of paths, refuses anything near the safety rules or the gate itself, requires every test to still pass (none deleted or skipped), and keeps the docs from bloating. A change that fails is reverted and logged as a lesson, not a failure.
+* **Proposals for the owner.** A good idea that needs a protected file is never applied. It becomes a note in [`ops/kaizen/proposals/`](ops/kaizen/proposals/) for the owner to accept or ignore.
+* **A public diary.** Every change, every rejected attempt and every open question is written to the swarm's diary on the site (`docs/kaizen/`, linked from the gallery) and to [`ops/kaizen/LOG.md`](ops/kaizen/LOG.md), newest first.
+* **Memory across days.** Each morning starts with a premortem of the day's risks, and each night ends with a short handoff and a blameless note on what went wrong.
 
 ## The rules
 
@@ -77,7 +93,7 @@ Fallback days count as days but do not use up a category. A primary that recover
 
 ```mermaid
 flowchart TD
-    R["Routines: primary 03:55, watchdog A 05:32, watchdog B 06:47, closer 07:27"] --> P["ops/PLAYBOOK.md<br/>orchestrator: Claude Sonnet 5.5"]
+    R["Routines: primary 03:55, watchdog A 05:32, watchdog B 06:47, closer 08:47"] --> P["ops/PLAYBOOK.md<br/>orchestrator: Claude Sonnet 5.5"]
     P --> S["scripts/state.mjs<br/>run state, lease, throttle, git sync"]
     P --> W["ops/workflows<br/>ideate, select, spec, build, qa, revise"]
     W --> T["Team of 8 Sonnet agents<br/>+ Haiku clerks"]
@@ -85,10 +101,11 @@ flowchart TD
     K --> Q["scripts/qa/<br/>headless browser checks"]
     Q --> V["scripts/validate.mjs<br/>quality gate"]
     V --> D["docs/d/&lt;date&gt;-&lt;slug&gt;/"]
-    D --> B["scripts/build-site.mjs<br/>gallery, archive.json, feed"]
+    D --> B["scripts/build-site.mjs<br/>gallery, archive.json, feed, diary"]
     B --> G["GitHub Pages: /docs"]
+    P --> Z["kaizen phase, after publish<br/>one gated change per member"]
     S -.->|"lease and heartbeats"| H["state/ history, runs, ideas"]
-    X["GitHub Action: deadman<br/>07:40 ET, no model needed"] -.->|"fallback if still empty"| F["scripts/fallback.mjs<br/>Ideas Day, Postcard"]
+    X["GitHub Action: deadman<br/>09:40 ET, no model needed"] -.->|"fallback if still empty"| F["scripts/fallback.mjs<br/>Ideas Day, Postcard"]
     F --> D
 ```
 
@@ -98,21 +115,24 @@ Everything lives in git, on one work branch, so any session can pick up where an
 config.json            the knobs: schedule, tiers, budget levels, novelty rules, limits
 ops/
   PLAYBOOK.md          the orchestrator's brain; routines only say "read this and do it"
+  CULTURE.md           the team charter: resilient, curious, proactive
+  kaizen/              the ledger (LOG.md, INDEX.json) and proposals for the owner
   OPERATING.md         the owner's guide
   FAILURE_MODES.md     what can go wrong and what the system does about it
   CONTRACT.md          the exact shapes and CLIs every component is built against
   prompts/             the routine prompts
-  workflows/           ideate, select, spec, build, qa, revise
+  workflows/           ideate, select, spec, build, qa, revise, kaizen
   roles/ rubrics/      what each agent is, and how work is judged
   templates/           the page shell every project starts from
 scripts/
   state.mjs            run state, lease, decision table, throttle, sync
-  heartbeat.mjs        liveness that does not depend on the orchestrator
+  heartbeat.mjs        liveness, pushed to a separate heartbeat branch
+  kaizen.mjs           the daily self-improvement gate and ledger
   validate.mjs         project and repo validation
   novelty.mjs          the no-repeats gate and the category mix
   lenses.mjs           the daily research lenses and provocations
   history.mjs          the history ledger
-  build-site.mjs       the gallery, archive.json, feed, sitemap
+  build-site.mjs       the gallery, archive.json, feed, sitemap, swarm diary
   verify-live.mjs      checks the published site lists today
   fallback.mjs         Ideas Day and Postcard generators
   deadman.mjs          the model-free safety net
@@ -126,7 +146,7 @@ tests/                 node:test suites (no dependencies)
 ## Setup checklist
 
 1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `claude/sonnet-every-day`, folder `/docs`, **Save**.
-2. **Create the four routines** (primary, watchdog A, watchdog B, closer) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md). Cron times are in `America/New_York`.
+2. **Create the routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md). Each is a cron trigger that wakes a persistent session with this repo attached. Cron times are in `America/New_York`.
 3. **Run the first day by hand** by firing the primary with the text `ROLE_OVERRIDE=manual RUN_DATE=2026-10-09 TARGET_TIER=1`.
 4. **Optional but recommended: merge the work branch to `main`.** GitHub runs scheduled workflows only from the default branch, so the `deadman` Action sleeps until `.github/workflows/deadman.yml` is on `main`. Until then it can still be started by hand from the Actions tab.
 

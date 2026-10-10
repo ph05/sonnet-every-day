@@ -1,10 +1,11 @@
-// Regenerates site-src/dev/archive.sample.json: 21 fake days with generated SVG
+// Regenerates site-src/dev/archive.sample.json (its `kaizen` teaser comes from kaizen.sample.json): 21 fake days with generated SVG
 // thumbnails (data URIs) so the gallery can be previewed with no project files.
 // Usage: node site-src/dev/make-sample.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { hashStr, mulberry32, dayNumber, addDays } from '../../scripts/lib/common.mjs';
+import { normalizeKaizen, kaizenTeaser } from '../../scripts/lib/archive.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const START = '2026-10-09';
@@ -118,6 +119,7 @@ const archive = {
     days: days.length, projects: days.length, streak, categories,
     firstDate: days[days.length - 1].date, lastDate: days[0].date, missingDates: MISSING,
   },
+  kaizen: kaizenTeaser(normalizeKaizen(JSON.parse(fs.readFileSync(path.join(HERE, 'kaizen.sample.json'), 'utf8'))).entries),
   days,
 };
 

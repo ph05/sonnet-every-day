@@ -10,13 +10,16 @@
     "primary": "03:55",
     "watchdogA": "05:32",
     "watchdogB": "06:47",
-    "closer": "07:27",
-    "deadline": "08:00"
+    "closer": "08:47",
+    "closerBackup": "09:37",
+    "deadline": "08:00",
+    "graceUntil": "09:30",
+    "hardStop": "10:30"
   },
   "tierCutoffs": {
     "t1Until": "04:45",
-    "t2Until": "06:45",
-    "t3Until": "07:25"
+    "t2Until": "07:00",
+    "t3Until": "08:45"
   },
   "leaseStaleMinutes": 35,
   "maxAttemptsPerPhase": 2,
@@ -71,7 +74,8 @@
         "outputTokens": 8000000,
         "defaultEffort": "max",
         "maxEffortRoles": "all",
-        "reviseLoops": 2
+        "reviseLoops": 2,
+        "reserveForKaizenTokens": 600000
       },
       "balanced": {
         "outputTokens": 3000000,
@@ -87,14 +91,16 @@
         "outputTokens": 1500000,
         "defaultEffort": "high",
         "maxEffortRoles": [],
-        "reviseLoops": 0
+        "reviseLoops": 0,
+        "reserveForKaizenTokens": 150000
       },
       "minimal": {
         "outputTokens": 500000,
         "defaultEffort": "medium",
         "maxEffortRoles": [],
         "reviseLoops": 0,
-        "forceTier": 2
+        "forceTier": 2,
+        "reserveForKaizenTokens": 0
       }
     },
     "reserveForPublishTokens": 250000,
@@ -108,7 +114,8 @@
       "upAfterCleanDays": 5,
       "floor": "minimal",
       "ceiling": "balanced"
-    }
+    },
+    "reserveForKaizenTokens": 350000
   },
   "ideation": {
     "agents": 8,
@@ -177,5 +184,101 @@
     "onFailure": true
   },
   "phaseStuckMinutes": 90,
-  "heartbeatEverySeconds": 300
+  "heartbeatEverySeconds": 300,
+  "heartbeatBranch": "claude/sonnet-every-day-heartbeat",
+  "kaizen": {
+    "enabled": true,
+    "members": [
+      "pulse",
+      "cards",
+      "lab",
+      "jester",
+      "architect",
+      "artisan",
+      "engineer",
+      "critic",
+      "clerk"
+    ],
+    "maxChangedLines": 120,
+    "maxFiles": 4,
+    "minTokensToStart": 60000,
+    "revertWindowDays": 7,
+    "allowedPaths": [
+      "ops/roles/",
+      "ops/rubrics/",
+      "ops/workflows/",
+      "ops/lenses.json",
+      "ops/templates/",
+      "ops/PLAYBOOK.md",
+      "ops/FAILURE_MODES.md",
+      "ops/OPERATING.md",
+      "ops/CULTURE.md",
+      "ops/kaizen/proposals/",
+      "scripts/",
+      "tests/",
+      "site-src/",
+      "README.md"
+    ],
+    "protectedPaths": [
+      "config.json",
+      ".github/",
+      "ops/prompts/",
+      "ops/CONTRACT.md",
+      "ops/rubrics/safety.md",
+      "ops/taxonomy.json",
+      "ops/kaizen/LOG.md",
+      "ops/kaizen/INDEX.json",
+      "scripts/validate.mjs",
+      "scripts/kaizen.mjs",
+      "scripts/state.mjs",
+      "scripts/lib/gitsync.mjs",
+      "scripts/lib/runstate.mjs",
+      "scripts/lib/common.mjs",
+      "scripts/deadman.mjs",
+      "scripts/heartbeat.mjs",
+      "scripts/lib/throttle.mjs",
+      "scripts/fallback.mjs",
+      "scripts/build-site.mjs",
+      "scripts/qa/browser-check.mjs",
+      "LICENSE",
+      "package.json",
+      "state/",
+      "docs/",
+      "work/",
+      "ops/workflows/kaizen.js",
+      "scripts/lib/postcard.mjs",
+      "scripts/lib/png.mjs",
+      "scripts/lib/archive.mjs",
+      "scripts/verify-live.mjs",
+      "scripts/history.mjs",
+      "scripts/novelty.mjs",
+      "scripts/lenses.mjs",
+      "scripts/qa/",
+      "tests/kaizen.test.mjs",
+      "tests/deadman.test.mjs",
+      "tests/heartbeat.test.mjs",
+      "tests/state.test.mjs",
+      "tests/e2e.test.mjs"
+    ],
+    "docLineCaps": {
+      "ops/PLAYBOOK.md": 1400,
+      "ops/CONTRACT.md": 420,
+      "ops/FAILURE_MODES.md": 330,
+      "README.md": 250,
+      "ops/CULTURE.md": 80,
+      "ops/roles/architect.md": 38,
+      "ops/roles/artisan.md": 39,
+      "ops/roles/cards.md": 40,
+      "ops/roles/clerk.md": 32,
+      "ops/roles/critic.md": 43,
+      "ops/roles/engineer.md": 34,
+      "ops/roles/jester.md": 44,
+      "ops/roles/lab.md": 37,
+      "ops/roles/pulse.md": 40,
+      "ops/rubrics/kaizen.md": 52,
+      "ops/rubrics/quality.md": 64,
+      "ops/rubrics/research.md": 50,
+      "ops/rubrics/selection.md": 117
+    }
+  }
 }

@@ -32,6 +32,10 @@ try {
     <div class="masthead-bar mono">
       <p class="dateline" id="dateline">A new thing, every morning</p>
       <div class="tools">
+        <a class="tool" href="kaizen/" id="diary-link" aria-label="Swarm diary: what the swarm changed about itself">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 4.500A1.500 1.500 0 0 1 6.500 3H19v15H6.500A1.500 1.500 0 0 0 5 19.500v-15Z"/><path d="M5 19.500A1.500 1.500 0 0 0 6.500 21H19v-3M9 8h6M9 12h4"/></svg>
+          <span class="tool-label">Swarm diary</span>
+        </a>
         <button type="button" class="tool js-only" id="theme-toggle" aria-pressed="false">
           <svg class="icon icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.500A8.500 8.500 0 0 1 9.500 4a8.500 8.500 0 1 0 10.500 10.500Z"/></svg>
           <svg class="icon icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4.500"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.900 4.900l2.100 2.100M17 17l2.100 2.100M4.900 19.100 7 17M17 7l2.100-2.100"/></svg>
@@ -48,7 +52,7 @@ try {
       <svg class="seal" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
         <defs><path id="seal-ring" d="M60 60m-43 0a43 43 0 1 1 86 0a43 43 0 1 1-86 0"/></defs>
         <circle cx="60" cy="60" r="57" class="seal-disc"/>
-        <text class="seal-text"><textPath href="#seal-ring" startOffset="0">Fresh every morning * 4am Eastern * One new thing * </textPath></text>
+        <text class="seal-text"><textPath href="#seal-ring" startOffset="0">Fresh every morning * 4am Eastern * </textPath></text>
         <path class="seal-star" d="M60 40l6 14 15 1.500-11.500 10 3.500 15L60 72l-13 8.500 3.500-15L39 55.500 54 54z"/>
       </svg>
     </div>
@@ -66,6 +70,8 @@ try {
     <section id="lead" class="lead js-only" aria-labelledby="lead-title"></section>
 
     <section id="stats" class="stats js-only" aria-label="Project stats" hidden></section>
+
+    <aside id="kaizen-teaser" class="teaser js-only" aria-label="Latest swarm self-improvement" hidden></aside>
 
     <section id="run" class="run js-only" aria-labelledby="run-title" hidden>
       <div class="section-head">
@@ -142,6 +148,7 @@ try {
   <div class="wrap footer-inner mono">
     <p>Built every day by a team of Sonnet agents. No trackers, no ads, no network calls.</p>
     <p>
+      <a href="kaizen/">Swarm diary</a> <span aria-hidden="true">/</span>
       <a href="feed.xml">Atom feed</a> <span aria-hidden="true">/</span>
       <a href="archive.json">archive.json</a> <span aria-hidden="true">/</span>
       <span>Updated <time id="generated" datetime="{{GENERATED_AT}}">{{GENERATED_AT}}</time></span>

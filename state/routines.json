@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "note": "Registry of the persistent role sessions and the cron routines that wake them (ids are not secrets). Recreate procedure: ops/prompts/README.md. Routines are cron triggers with persistent_session_id (fresh-session routines cannot attach the repo in this org).",
+  "environmentId": "env_01NMckaFSWQxdM8aUNsJ96A5",
+  "model": "claude-sonnet-5-5",
+  "sessions": {
+    "primary": "session_011MmHKF9EADvVeN8KnZuFsm",
+    "wdA": "session_019zrNGaaf1cHjakm1zrmPfj",
+    "wdB": "session_01HNPuhou7M8CuHbsLcRqvYm",
+    "closer": "session_01SU5YPe7prXU1towYJFWyko",
+    "closerBackup": "session_01VWnvFvcvWLHoCGee3hqg18",
+    "manual": "session_01PCQqwBwwn3hmGCSxhnfg3r"
+  },
+  "triggers": {}
+}

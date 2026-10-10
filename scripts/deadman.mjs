@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-// Model-free safety net (CONTRACT 6.1c): if today has no published entry once it is 07:30 local (or --force),
-// publish the best fallback page that is possible (Ideas Day if the researched ideas exist, else the Postcard),
-// rebuild the site, mark the run published and push.
+// Model-free safety net (CONTRACT 6.1c, 13): if today has no published entry AND either the run's lease is stale or
+// absent and it is at least DEADMAN_GRACE_EXTRA_MINUTES past schedule.graceUntil, or it is schedule.hardStop or later
+// (or --force), publish the best fallback page that is possible (Ideas Day if the researched ideas exist, else the
+// Postcard), rebuild the site, mark the run published and push. 08:00 is a guideline: a healthy run is never cut off
+// before the hard stop. Every clock time comes from config.json.
 //   deadman.mjs [--force] [--now ISO] [--date D] [--no-git] [--dry-run] [--no-sleep]
 // Idempotent: an already published day is never touched, and a better tier is never overwritten.
 //
@@ -20,7 +22,8 @@ import {
   ideasAvailable, ideasDay, postcard, notice, historyHealth, repairHistory,
 } from './fallback.mjs';
 
-export const DEADMAN_FROM = '07:30';
+/** Minutes past schedule.graceUntil before a dead run is taken over (the closer, whose grace-aware babysit ends at graceUntil, goes first). */
+export const DEADMAN_GRACE_EXTRA_MINUTES = 5;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SESSION = 'deadman';
 const MAX_ROUNDS = 3;
@@ -32,6 +35,55 @@ async function optional(spec) {
     if (err?.code === 'ERR_MODULE_NOT_FOUND' && String(err.message).includes(spec.replace('./', ''))) return null;
     throw err;
   }
+}
+
+const clock = (minutes) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
+
+/** The two marks the deadman waits for, in minutes after local midnight (read from config.schedule; deadline stands in for a missing mark). */
+export function deadmanThresholds(config) {
+  const s = config.schedule ?? {};
+  const graceUntil = hm(s.graceUntil ?? s.deadline);
+  const hardStop = hm(s.hardStop ?? s.graceUntil ?? s.deadline);
+  return { staleAfter: Math.min(graceUntil + DEADMAN_GRACE_EXTRA_MINUTES, hardStop), hardStop };
+}
+
+/**
+ * Is anyone still working on `day`'s run? Alive = an in-progress run whose lease is fresh (lease heartbeat or the
+ * session's heartbeat file, local or on the heartbeat branch) and whose phase is not stuck. A missing, failed,
+ * unreadable or stale run counts as dead. Never throws.
+ */
+async function leaseView({ config, day, instant, git }) {
+  const rs = await optional('./lib/runstate.mjs');
+  if (!rs?.loadRun || !rs.leaseInfo) return { alive: false, present: false, reason: 'runstate-missing' };
+  let run;
+  try {
+    run = rs.loadRun(day);
+  } catch {
+    run = null;
+  }
+  if (!run) return { alive: false, present: false, reason: 'no-run' };
+  const session = run.lease?.session;
+  let heartbeat = null;
+  try {
+    heartbeat = rs.loadHeartbeat(day, session);
+    if (git && session) {
+      const gs = await optional('./lib/gitsync.mjs');
+      const remote = gs?.fetchRemoteHeartbeat ? gs.fetchRemoteHeartbeat({ date: day, session, config }) : null;
+      heartbeat = rs.latestHeartbeat(heartbeat, remote?.heartbeat ?? null);
+    }
+  } catch {
+    /* the lease's own heartbeatAt still decides */
+  }
+  const info = rs.leaseInfo(config, run, heartbeat, instant.getTime());
+  const alive = run.status === 'in_progress' && info.present && !info.stale && !info.stuck;
+  return {
+    alive,
+    present: info.present,
+    holder: info.holder,
+    ageMinutes: info.ageMinutes,
+    phase: run.phase,
+    reason: alive ? 'fresh' : run.status !== 'in_progress' ? `run ${run.status}` : !info.present ? 'no-lease' : info.stuck ? 'stuck' : 'stale',
+  };
 }
 
 const message = (err) => (err instanceof Error ? err.message : String(err));
@@ -244,8 +296,15 @@ async function attempt({ config, instant, local, day, force, git, dryRun, noSlee
 
   // A past date counts as end of day, a future one as start of day (same rule the run-state decision table uses).
   const minutes = local.date === day ? local.minutes : local.date > day ? 24 * 60 : 0;
-  if (!force && minutes < hm(DEADMAN_FROM)) {
-    return { ok: true, action: 'none', reason: 'too-early', date: day, time: local.time, notBefore: DEADMAN_FROM, warnings };
+  const { staleAfter, hardStop } = deadmanThresholds(config);
+  if (!force && minutes < hardStop) {
+    if (minutes < staleAfter) {
+      return { ok: true, action: 'none', reason: 'too-early', date: day, time: local.time, notBefore: clock(staleAfter), warnings };
+    }
+    const lease = await leaseView({ config, day, instant, git: git && !dryRun });
+    if (lease.alive) {
+      return { ok: true, action: 'none', reason: 'lease-alive', date: day, time: local.time, notBefore: clock(hardStop), lease, warnings };
+    }
   }
 
   const wantTier = ideasAvailable(day) ? 3 : 4;

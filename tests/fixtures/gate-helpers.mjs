@@ -31,6 +31,10 @@ export function makeSandbox({ config } = {}) {
   fs.copyFileSync(path.join(REAL_ROOT, 'ops', 'lenses.json'), path.join(root, 'ops', 'lenses.json'));
   fs.writeFileSync(path.join(root, 'state', 'history.json'), JSON.stringify({ schema: 1, startDate: cfg.startDate, entries: [] }, null, 2));
   fs.writeFileSync(path.join(root, 'state', 'carryover.json'), JSON.stringify({ schema: 1, idea: null, savedOn: null, carriedCount: 0 }, null, 2));
+  fs.mkdirSync(path.join(root, 'ops', 'kaizen'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'ops', 'kaizen', 'INDEX.json'), JSON.stringify({ schema: 1, entries: [] }, null, 2));
+  fs.writeFileSync(path.join(root, 'ops', 'kaizen', 'LOG.md'), '# Kaizen log\n\n_No entries yet._\n');
+  fs.writeFileSync(path.join(root, 'state', 'kaizen-queue.json'), JSON.stringify({ schema: 1, skipped: [] }, null, 2));
   fs.writeFileSync(path.join(root, 'state', 'throttle.json'), JSON.stringify({ schema: 1, level: 'balanced', cleanDays: 0, lastChange: null, log: [] }, null, 2));
   const prior = process.env.SED_ROOT;
   process.env.SED_ROOT = root;

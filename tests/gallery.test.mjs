@@ -9,12 +9,14 @@ import http from 'node:http';
 import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
-import { renderIndex, render404, readSource, SITE_SRC } from '../site-src/dev/render.mjs';
+import { renderIndex, render404, renderKaizen, readSource, SITE_SRC } from '../site-src/dev/render.mjs';
 
 const SAMPLE = JSON.parse(fs.readFileSync(path.join(SITE_SRC, 'dev', 'archive.sample.json'), 'utf8'));
 const SHOTS = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-gallery-shots-'));
 const TEMPLATE = readSource('index.template.html');
 const TEMPLATE_404 = readSource('404.template.html');
+const TEMPLATE_KAIZEN = readSource('kaizen.template.html');
+const LEDGER = JSON.parse(fs.readFileSync(path.join(SITE_SRC, 'dev', 'kaizen.sample.json'), 'utf8'));
 const CSS = readSource('gallery.css');
 const JS = readSource('gallery.js');
 
@@ -56,6 +58,9 @@ function resetRoutes(archive = SAMPLE, extra = {}) {
   route('/assets/gallery.css', 'text/css; charset=utf-8', CSS);
   route('/assets/gallery.js', 'text/javascript; charset=utf-8', JS);
   route('/404.html', 'text/html; charset=utf-8', render404(TEMPLATE_404, archive, { siteUrl: base }));
+  route('/kaizen/', 'text/html; charset=utf-8', renderKaizen(TEMPLATE_KAIZEN, archive, LEDGER));
+  route('/assets/kaizen.css', 'text/css; charset=utf-8', readSource('kaizen.css'));
+  route('/assets/kaizen.js', 'text/javascript; charset=utf-8', readSource('kaizen.js'));
   for (const [p, v] of Object.entries(extra)) route(p, v.type, v.body);
 }
 
@@ -591,4 +596,272 @@ test('the 404 page renders and offers a way home', async (t) => {
   await shot(page, '404-mobile');
   assert.deepEqual(problems.errors, []);
   assert.deepEqual(problems.external, []);
+});
+
+/* ---------- the swarm's diary and its teaser on the gallery ---------- */
+
+const ENTRY_COUNT = LEDGER.entries.filter((e) => e.status !== 'proposed').length;
+const PROPOSAL_COUNT = LEDGER.entries.filter((e) => e.status === 'proposed').length;
+const visibleEntries = (page) => page.$$eval('#log li.entry:not([hidden])', (els) => els.map((e) => e.id));
+const clickChip = (page, key, value) => page.click(`.chip[data-key="${key}"][data-value="${value}"]`);
+
+test('sample ledger covers every status and the teaser rides along in archive.json', () => {
+  assert.deepEqual(new Set(LEDGER.entries.map((e) => e.status)), new Set(['applied', 'rejected', 'reverted', 'proposed']));
+  assert.equal(new Set(LEDGER.entries.map((e) => e.agent)).size, 9);
+  assert.equal(SAMPLE.kaizen.count, LEDGER.entries.filter((e) => e.status === 'applied').length);
+  assert.ok(SAMPLE.kaizen.latest.title);
+});
+
+test('the gallery links to the diary and shows the latest kaizen as a one-line teaser', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  const { page, problems } = await open(t, { width: 1280, height: 800 });
+  assert.equal(await page.locator('a#diary-link').getAttribute('href'), 'kaizen/');
+  assert.equal(await page.locator('footer a[href="kaizen/"]').count(), 1);
+  const teaser = page.locator('#kaizen-teaser');
+  assert.ok(await teaser.isVisible());
+  const text = await teaser.textContent();
+  assert.ok(text.includes(SAMPLE.kaizen.latest.title), text);
+  assert.ok(text.includes('Cards'), 'agent id is shown as a name');
+  assert.match(text, new RegExp(`${SAMPLE.kaizen.count} kaizens`));
+  assert.equal(await teaser.locator('a').getAttribute('href'), 'kaizen/');
+  const box = await teaser.boundingBox();
+  assert.ok(box.height < 60, `teaser stays one line on desktop (${box.height}px)`);
+  assert.ok((await overflow(page)) <= 0);
+  assert.deepEqual(problems.errors, []);
+  const mobile = await open(t, { width: 360, height: 740 });
+  assert.ok(await mobile.page.locator('#kaizen-teaser').isVisible());
+  assert.ok((await overflow(mobile.page)) <= 0);
+  await shot(mobile.page, 'gallery-teaser-mobile');
+});
+
+test('older archives without a kaizen field, or with a junk one, show no teaser', async (t) => {
+  if (!gate(t)) return;
+  for (const kaizen of [undefined, null, 'x', { latest: 'x' }, { latest: { date: 'nope', agent: 'a', title: 't' }, count: 3 }, { latest: { date: '2026-10-10', agent: '', title: 't' } }]) {
+    const archive = structuredClone(SAMPLE);
+    if (kaizen === undefined) delete archive.kaizen;
+    else archive.kaizen = kaizen;
+    resetRoutes(archive);
+    const { page, problems } = await open(t);
+    assert.equal(await page.locator('#kaizen-teaser').isVisible(), false, JSON.stringify(kaizen));
+    assert.equal(await page.locator('#grid .card').count(), SAMPLE.days.length);
+    assert.deepEqual(problems.errors, []);
+  }
+  const hostile = structuredClone(SAMPLE);
+  hostile.kaizen = { latest: { date: '2026-10-10', agent: 'x<img src=x onerror=window.__pwned=1>', title: '<script>window.__pwned=1</script>' }, count: 'many' };
+  resetRoutes(hostile);
+  const { page } = await open(t);
+  assert.equal(await page.evaluate(() => window.__pwned), undefined);
+  assert.match(await page.locator('#kaizen-teaser').textContent(), /<script>window/, 'shown as text');
+  resetRoutes();
+});
+
+for (const cfg of [
+  { name: 'desktop-light', width: 1280, height: 800, scheme: 'light' },
+  { name: 'desktop-dark', width: 1280, height: 800, scheme: 'dark' },
+  { name: 'mobile-light', width: 390, height: 844, scheme: 'light' },
+  { name: 'mobile-dark', width: 390, height: 844, scheme: 'dark' },
+]) {
+  test(`diary renders cleanly: ${cfg.name}`, async (t) => {
+    if (!gate(t)) return;
+    resetRoutes();
+    const { page, problems } = await open(t, { ...cfg, url: '/kaizen/' });
+    await shot(page, `diary-${cfg.name}`);
+    assert.deepEqual(problems.errors, [], 'no console or page errors');
+    assert.deepEqual(problems.external, [], 'no non-local requests');
+    assert.equal(await page.locator('#log li.entry').count(), ENTRY_COUNT);
+    assert.equal(await page.locator('#proposals li.proposal').count(), PROPOSAL_COUNT);
+    assert.equal(await page.locator('main').count(), 1);
+    assert.equal(await page.locator('header[role=banner], footer[role=contentinfo], nav[aria-label]').count(), 3);
+    assert.equal(await page.locator('h1').count(), 1);
+    assert.ok((await overflow(page)) <= 0, 'no horizontal overflow');
+    assert.equal(await page.locator('a[href="../"]').first().isVisible(), true, 'a way back to the gallery');
+  });
+}
+
+test('the diary does not overflow at 360px and 320px, even with long unbroken text', async (t) => {
+  if (!gate(t)) return;
+  const ledger = structuredClone(LEDGER);
+  ledger.entries[0].title = 'Supercalifragilisticexpialidocious'.repeat(4);
+  ledger.entries[0].observation = 'o'.repeat(300);
+  ledger.entries[0].files = ['ops/' + 'very-long-directory-name/'.repeat(6) + 'file.md'];
+  resetRoutes(SAMPLE, { '/kaizen/': { type: 'text/html; charset=utf-8', body: renderKaizen(TEMPLATE_KAIZEN, SAMPLE, ledger) } });
+  for (const width of [360, 320]) {
+    const { page } = await open(t, { width, height: 740, url: '/kaizen/' });
+    assert.ok((await overflow(page)) <= 0, `overflow at ${width}px`);
+  }
+  resetRoutes();
+});
+
+test('diary filters by member, category and status, and mirrors them in the URL hash', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  const { page, problems } = await open(t, { url: '/kaizen/' });
+  const all = await visibleEntries(page);
+  assert.equal(all.length, ENTRY_COUNT);
+  assert.match(await page.textContent('#result-count'), new RegExp(`^${ENTRY_COUNT} entries`));
+
+  await clickChip(page, 'agent', 'architect');
+  const architect = LEDGER.entries.filter((e) => e.agent === 'architect' && e.status !== 'proposed').map((e) => `e-${e.id}`);
+  assert.deepEqual((await visibleEntries(page)).sort(), architect.sort());
+  assert.match(await page.textContent('#result-count'), new RegExp(`Showing ${architect.length} of ${ENTRY_COUNT}`));
+  assert.equal(await page.getAttribute('.chip[data-key="agent"][data-value="architect"]', 'aria-pressed'), 'true');
+  assert.equal(await page.getAttribute('.chip[data-key="agent"][data-value=""]', 'aria-pressed'), 'false');
+  assert.ok(page.url().endsWith('#agent=architect'), page.url());
+  assert.ok(await page.locator('#clear-filters').isVisible());
+  // days with nothing left are hidden too
+  assert.equal(await page.locator('li.day:not([hidden])').count(), new Set(LEDGER.entries.filter((e) => e.agent === 'architect' && e.status !== 'proposed').map((e) => e.date)).size);
+
+  await clickChip(page, 'status', 'rejected');
+  assert.deepEqual(await visibleEntries(page), [], 'architect has no rejected entry');
+  assert.ok(await page.locator('#no-match').isVisible());
+  assert.equal(await page.locator('#log').isVisible(), false);
+  await page.click('#no-match-clear');
+  assert.equal((await visibleEntries(page)).length, ENTRY_COUNT);
+  assert.equal(new URL(page.url()).hash, '');
+
+  await clickChip(page, 'status', 'rejected');
+  await clickChip(page, 'category', 'prevention');
+  const expected = LEDGER.entries.filter((e) => e.status === 'rejected' && e.category === 'prevention').map((e) => `e-${e.id}`);
+  assert.deepEqual((await visibleEntries(page)).sort(), expected.sort());
+  assert.ok(page.url().includes('category=prevention') && page.url().includes('status=rejected'));
+  await page.click('#clear-filters');
+  assert.equal((await visibleEntries(page)).length, ENTRY_COUNT);
+
+  // proposals are a separate section: member and category apply, status never does
+  await clickChip(page, 'agent', 'jester');
+  assert.equal(await page.locator('#proposals li.proposal:not([hidden])').count(), LEDGER.entries.filter((e) => e.status === 'proposed' && e.agent === 'jester').length);
+  assert.equal(await page.locator('#proposals-filtered').isVisible(), false);
+  await clickChip(page, 'agent', 'pulse');
+  assert.equal(await page.locator('#proposals li.proposal:not([hidden])').count(), 0);
+  assert.equal(await page.locator('#proposals-filtered').isVisible(), true);
+  await clickChip(page, 'agent', '');
+  await clickChip(page, 'status', 'applied');
+  assert.equal(await page.locator('#proposals li.proposal:not([hidden])').count(), PROPOSAL_COUNT);
+  assert.deepEqual(problems.errors, []);
+});
+
+test('diary hash deep links apply, unknown values are ignored, and entry anchors are left alone', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  const { page } = await open(t, { url: '/kaizen/#agent=lab&category=tests' });
+  const expected = LEDGER.entries.filter((e) => e.agent === 'lab' && e.category === 'tests' && e.status !== 'proposed');
+  assert.equal((await visibleEntries(page)).length, expected.length);
+  assert.equal(await page.getAttribute('.chip[data-key="agent"][data-value="lab"]', 'aria-pressed'), 'true');
+  await page.evaluate(() => { location.hash = '#agent=%3Cscript%3E&status=bogus&category=nothing'; });
+  await page.waitForFunction((n) => document.querySelectorAll('#log li.entry:not([hidden])').length === n, ENTRY_COUNT);
+  await page.evaluate(() => { location.hash = '#e-2026-10-30-lab'; });
+  assert.equal((await visibleEntries(page)).length, ENTRY_COUNT, 'an entry anchor is not a filter');
+  await page.goto(base.replace(/\/$/, '') + '/kaizen/#e-2026-10-30-lab');
+  await page.waitForSelector('html.ready');
+  assert.equal((await visibleEntries(page)).length, ENTRY_COUNT);
+});
+
+test('diary: theme toggle persists, keyboard reaches the chips with a visible focus ring, links are real', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  const { page } = await open(t, { url: '/kaizen/', scheme: 'dark' });
+  assert.equal(await page.getAttribute('#theme-toggle', 'aria-pressed'), 'true');
+  await page.click('#theme-toggle');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
+  await page.reload();
+  await page.waitForSelector('html.ready');
+  assert.equal(await page.evaluate(() => document.documentElement.dataset.theme), 'light');
+
+  await page.focus('.chip[data-key="agent"][data-value="pulse"]');
+  const ring = await page.evaluate(() => { const s = getComputedStyle(document.activeElement); return [s.outlineStyle, parseFloat(s.outlineWidth)]; });
+  assert.deepEqual(ring, ['solid', 3]);
+  await page.keyboard.press('Enter');
+  assert.ok((await visibleEntries(page)).length < ENTRY_COUNT);
+
+  const links = await page.$$eval('#log a.entry-link', (as) => as.map((a) => a.href));
+  assert.ok(links.length > 5);
+  assert.ok(links.every((h) => /^https:\/\/github\.com\/example\/sonnet-every-day\/commit\/[0-9a-f]{40}$/.test(h)), links.join('\n'));
+  const proposalLinks = await page.$$eval('#proposals a.entry-link', (as) => as.map((a) => a.href));
+  assert.ok(proposalLinks.some((h) => h.includes('/blob/main/ops/kaizen/proposals/')));
+  assert.equal(await page.locator('#proposals h2').textContent(), 'Proposals for the owner');
+});
+
+test('diary colour tokens used for text meet WCAG AA in both themes', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  for (const scheme of ['light', 'dark']) {
+    const { page } = await open(t, { url: '/kaizen/', scheme });
+    const worst = await page.evaluate(() => {
+      const lum = (rgb) => {
+        const [r, g, b] = rgb.map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const parse = (c) => { const m = c.match(/[\d.]+/g).map(Number); return { rgb: m.slice(0, 3), a: m.length > 3 ? m[3] : 1 }; };
+      const bgOf = (el) => {
+        for (let n = el; n; n = n.parentElement) { const c = parse(getComputedStyle(n).backgroundColor); if (c.a > 0.5) return c.rgb; }
+        return parse(getComputedStyle(document.body).backgroundColor).rgb;
+      };
+      let min = 21;
+      let where = '';
+      for (const el of document.querySelectorAll('.entry-obs, .entry-title a, .who-name, .who-role, .entry-meta, .lines, .entry-link, .badge, .files code, .entry-reason, .entry-question, .chip, .stat-value, .stat-sub, .section-intro, .tagline, .d-mon')) {
+        if (!el.offsetParent) continue;
+        const fg = parse(getComputedStyle(el).color).rgb;
+        const bg = bgOf(el);
+        const [a, b] = [lum(fg), lum(bg)];
+        const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+        if (ratio < min) { min = ratio; where = el.className || el.tagName; }
+      }
+      return { min, where };
+    });
+    assert.ok(worst.min >= 4.5, `${scheme}: ${worst.where} has contrast ${worst.min.toFixed(2)}`);
+  }
+});
+
+test('diary without JavaScript is fully readable, and reduced motion switches animation off', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes();
+  const { page, problems } = await open(t, { url: '/kaizen/', js: false });
+  assert.equal(await page.locator('#log li.entry').count(), ENTRY_COUNT);
+  assert.equal(await page.locator('#log li.entry:visible').count(), ENTRY_COUNT);
+  assert.equal(await page.locator('#filters').isVisible(), false, 'filters need JS and are hidden without it');
+  assert.ok(await page.locator('#proposals').isVisible());
+  assert.ok((await overflow(page)) <= 0);
+  assert.deepEqual(problems.errors, []);
+  const motion = await open(t, { url: '/kaizen/', reducedMotion: 'reduce' });
+  assert.equal(await motion.page.evaluate(() => getComputedStyle(document.querySelector('.seal-text')).animationName), 'none');
+});
+
+test('diary day 0: an empty ledger gets a charming empty state, not an empty frame', async (t) => {
+  if (!gate(t)) return;
+  const body = renderKaizen(TEMPLATE_KAIZEN, SAMPLE, { schema: 1, entries: [] });
+  resetRoutes(SAMPLE, { '/kaizen/': { type: 'text/html; charset=utf-8', body } });
+  const { page, problems } = await open(t, { url: '/kaizen/' });
+  assert.match(await page.textContent('.empty-diary h2'), /first page is still blank/);
+  assert.equal(await page.locator('#log-section').isVisible(), false, 'no empty log section');
+  assert.equal(await page.locator('.diary-stats').isVisible(), false);
+  assert.match(await page.textContent('#proposals'), /No proposals waiting/);
+  assert.ok((await overflow(page)) <= 0);
+  await shot(page, 'diary-empty-desktop');
+  assert.deepEqual(problems.errors, []);
+  const mobile = await open(t, { url: '/kaizen/', width: 390, height: 844, scheme: 'dark' });
+  assert.ok((await overflow(mobile.page)) <= 0);
+  await shot(mobile.page, 'diary-empty-mobile-dark');
+  resetRoutes();
+});
+
+test('hostile ledger text never becomes markup or runs script in the diary', async (t) => {
+  if (!gate(t)) return;
+  const evil = '<img src=x onerror="window.__pwned=1"><script>window.__pwned=1</script>';
+  const ledger = {
+    schema: 1,
+    entries: [
+      { id: 'x', date: '2026-10-31', agent: 'pulse', title: evil, observation: evil, category: evil, files: [evil], sha: null, status: 'rejected', linesChanged: 1, question: evil, reason: evil },
+      { id: 'y', date: '2026-10-31', agent: 'cards', title: 'javascript:alert(1)', observation: 'ok', category: 'x', files: [], sha: 'zzzz', status: 'proposed', linesChanged: 1, question: null, reason: null },
+    ],
+  };
+  const body = renderKaizen(TEMPLATE_KAIZEN, SAMPLE, ledger);
+  resetRoutes(SAMPLE, { '/kaizen/': { type: 'text/html; charset=utf-8', body } });
+  const { page, problems } = await open(t, { url: '/kaizen/' });
+  assert.equal(await page.evaluate(() => window.__pwned), undefined);
+  assert.equal(await page.locator('#log img').count(), 0);
+  assert.match(await page.locator('#log .entry-title').first().textContent(), /<script>window/);
+  assert.deepEqual(problems.errors, []);
+  assert.deepEqual(problems.external, []);
+  resetRoutes();
 });

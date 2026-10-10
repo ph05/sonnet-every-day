@@ -14,6 +14,7 @@ import { buildSite } from '../scripts/build-site.mjs';
 import {
   escapeHtml, escapeXml, jsonForScript, renderTemplate, streakOf, missingDatesBetween, buildArchive,
   renderFeed, renderSitemap, renderRobots, normalizeSiteUrl, absoluteUrl, FEED_LIMIT,
+  normalizeKaizen, kaizenTeaser, summarizeKaizen, renderKaizenPage, renderKaizenJson,
 } from '../scripts/lib/archive.mjs';
 import { verifyLive, archiveUrl } from '../scripts/verify-live.mjs';
 
@@ -949,4 +950,256 @@ test('verify-live CLI defaults to today (local date) and config.siteUrl', async 
   } finally {
     await srv.close();
   }
+});
+
+// ---------- the swarm's diary (docs/kaizen/) ----------
+
+const SHA_A = 'a1b2c3d4e5f60718293a4b5c6d7e8f9012345678';
+const SHA_B = 'b2c3d4e5f60718293a4b5c6d7e8f901234567890';
+
+function ledgerEntry(over) {
+  const date = over.date ?? '2026-10-10';
+  const agent = over.agent ?? 'pulse';
+  return {
+    id: `${date}-${agent}`, date, agent, title: `Title of ${agent}`, observation: `Observation of ${agent}.`, category: 'clarity',
+    files: ['ops/roles/pulse.md'], sha: SHA_A, status: 'applied', linesChanged: 6, question: null, reason: null, ...over,
+  };
+}
+
+const DIARY_FILES = ['kaizen.template.html', 'kaizen.css', 'kaizen.js'];
+function withDiaryFiles(box) {
+  for (const f of DIARY_FILES) box.put(`site-src/${f}`, fs.readFileSync(path.join(REAL_ROOT, 'site-src', f)));
+}
+const putLedger = (box, entries) => box.put('ops/kaizen/INDEX.json', JSON.stringify({ schema: 1, entries }));
+
+test('normalizeKaizen sorts newest first, validates, links to GitHub and skips junk', () => {
+  const raw = { schema: 1, entries: [
+    ledgerEntry({ date: '2026-10-10', agent: 'pulse', title: 'First of the day' }),
+    ledgerEntry({ date: '2026-10-11', agent: 'cards', title: 'Cards on day two', sha: SHA_B }),
+    ledgerEntry({ date: '2026-10-10', agent: 'lab', title: 'Second of the day', sha: 'not-a-sha' }),
+    ledgerEntry({ date: '2026-10-12', agent: 'jester', status: 'proposed', files: ['ops/kaizen/proposals/2026-10-12-jester.md'], title: 'A proposal' }),
+    ledgerEntry({ date: '2026-02-30', agent: 'critic' }),
+    ledgerEntry({ date: '2026-10-10', agent: 'Bad Agent!' }),
+    ledgerEntry({ date: '2026-10-10', agent: 'clerk', status: 'sparkling' }),
+    ledgerEntry({ date: '2026-10-10', agent: 'engineer', title: '   ' }),
+    'junk', null,
+  ] };
+  const res = normalizeKaizen(raw, { repo: 'ph05/sonnet-every-day', workBranch: 'claude/sonnet-every-day' });
+  assert.equal(res.ok, true);
+  assert.deepEqual(res.entries.map((e) => e.id), ['2026-10-12-jester', '2026-10-11-cards', '2026-10-10-lab', '2026-10-10-pulse'],
+    'newest date first; within a date the later ledger line first');
+  assert.equal(res.warnings.length, 6, res.warnings.join('\n'));
+  const [prop, cards, lab, pulse] = res.entries;
+  assert.equal(pulse.commitUrl, `https://github.com/ph05/sonnet-every-day/commit/${SHA_A}`);
+  assert.equal(cards.commitUrl, `https://github.com/ph05/sonnet-every-day/commit/${SHA_B}`);
+  assert.equal(lab.sha, null);
+  assert.equal(lab.commitUrl, null);
+  assert.equal(prop.proposalUrl, 'https://github.com/ph05/sonnet-every-day/blob/claude/sonnet-every-day/ops/kaizen/proposals/2026-10-12-jester.md');
+  assert.equal(pulse.persona, 'Pulse');
+  assert.match(pulse.role, /scout/);
+  assert.equal(normalizeKaizen({ schema: 1, entries: [] }).entries.length, 0);
+  assert.deepEqual(normalizeKaizen(undefined), { ok: true, entries: [], warnings: [] });
+  assert.equal(normalizeKaizen({ entries: 'nope' }).ok, false);
+  assert.equal(normalizeKaizen([]).ok, false);
+});
+
+test('normalizeKaizen refuses to build GitHub links from a bad repo or sha and caps long text', () => {
+  const long = 'x'.repeat(5000);
+  const res = normalizeKaizen({ entries: [ledgerEntry({ title: long, observation: long, files: Array.from({ length: 100 }, (_, i) => `ops/f${i}.md`), linesChanged: -4 })] }, { repo: 'evil/../repo?x=1' });
+  const [e] = res.entries;
+  assert.equal(e.commitUrl, null);
+  assert.ok(res.warnings.some((w) => /config\.repo/.test(w)));
+  assert.ok(e.title.length <= 200 && e.title.endsWith('…'));
+  assert.ok(e.observation.length <= 1200);
+  assert.equal(e.files.length, 40);
+  assert.equal(e.linesChanged, 0);
+  const dup = normalizeKaizen({ entries: [ledgerEntry({ title: 'one' }), ledgerEntry({ title: 'two' })] }, { repo: 'a/b' });
+  assert.deepEqual(dup.entries.map((x) => x.title), ['two']);
+  assert.ok(dup.warnings.some((w) => /more than one entry/.test(w)));
+});
+
+test('kaizenTeaser reports the newest applied kaizen and how many landed; summarizeKaizen counts', () => {
+  const { entries } = normalizeKaizen({ entries: [
+    ledgerEntry({ date: '2026-10-10', agent: 'pulse' }),
+    ledgerEntry({ date: '2026-10-11', agent: 'cards', status: 'rejected', reason: 'too many lines' }),
+    ledgerEntry({ date: '2026-10-11', agent: 'lab', title: 'Lab wins' }),
+    ledgerEntry({ date: '2026-10-12', agent: 'jester', status: 'proposed' }),
+  ] }, { repo: 'a/b' });
+  assert.deepEqual(kaizenTeaser(entries), { latest: { date: '2026-10-11', agent: 'lab', title: 'Lab wins' }, count: 2 });
+  assert.equal(kaizenTeaser([]), null);
+  assert.equal(kaizenTeaser(entries.filter((e) => e.status !== 'applied')), null);
+  const stats = summarizeKaizen(entries);
+  assert.deepEqual([stats.entries, stats.applied, stats.rejected, stats.proposed, stats.linesChanged, stats.members], [4, 2, 1, 1, 12, 4]);
+  assert.equal(stats.firstDate, '2026-10-10');
+  assert.equal(stats.lastDate, '2026-10-12');
+  const base = { name: 'S', startDate: '2026-10-09' };
+  const archive = buildArchive({ projects: [], config: base, siteUrl: SITE_URL, now: NOW, through: '2026-10-08', kaizen: kaizenTeaser(entries) });
+  assert.deepEqual(archive.kaizen, kaizenTeaser(entries));
+  assert.equal('kaizen' in buildArchive({ projects: [], config: base, siteUrl: SITE_URL, now: NOW, through: '2026-10-08' }), false, 'backward compatible');
+});
+
+test('the diary page escapes hostile ledger text in every context', () => {
+  const evil = '</script><img src=x onerror=alert(1)> "quoted" \'single\' & <b>bold</b>';
+  const template = fs.readFileSync(path.join(REAL_ROOT, 'site-src', 'kaizen.template.html'), 'utf8');
+  const { entries } = normalizeKaizen({ entries: [
+    ledgerEntry({ title: evil, observation: evil, reason: evil, question: evil, category: evil, files: [evil], status: 'rejected' }),
+    ledgerEntry({ agent: 'jester', title: evil, observation: evil, status: 'proposed', files: [`ops/kaizen/proposals/2026-10-10-jester.md`] }),
+  ] }, { repo: 'a/b' });
+  const archive = { site: { name: evil, url: SITE_URL, startDate: '2026-10-09' }, generatedAt: NOW.toISOString() };
+  const { html, unknown, missing } = renderKaizenPage(template, { archive, entries });
+  assert.deepEqual(unknown, []);
+  assert.deepEqual(missing, []);
+  assert.doesNotMatch(html, /<img src=x/);
+  assert.doesNotMatch(html, /<b>bold/);
+  assert.doesNotMatch(html, /\{\{[A-Z_]+\}\}/);
+  assert.equal((html.match(/<script/g) ?? []).length, 2, 'only the two template scripts (theme bootstrap, kaizen.js) exist');
+  assert.match(html, /&lt;\/script&gt;&lt;img src=x onerror=alert\(1\)&gt;/);
+  const json = JSON.parse(renderKaizenJson({ archive, entries, repo: 'a/b', workBranch: 'main' }));
+  assert.equal(json.entries[0].title.slice(0, 9), '</script>', 'JSON keeps raw text; it is data, not markup');
+});
+
+test('the diary page renders entries by day, with statuses, files and commit links', () => {
+  const template = fs.readFileSync(path.join(REAL_ROOT, 'site-src', 'kaizen.template.html'), 'utf8');
+  const { entries } = normalizeKaizen({ entries: [
+    ledgerEntry({ date: '2026-10-10', agent: 'pulse', title: 'Applied one', question: 'Why though?' }),
+    ledgerEntry({ date: '2026-10-10', agent: 'cards', title: 'Rejected one', status: 'rejected', reason: 'touched a protected path', sha: null }),
+    ledgerEntry({ date: '2026-10-11', agent: 'lab', title: 'Many files', files: ['a.md', 'b.md', 'c.md', 'd.md', 'e.md', 'f.md', 'g.md', 'h.md'] }),
+    ledgerEntry({ date: '2026-10-11', agent: 'jester', title: 'Wishlist item', status: 'proposed', files: ['ops/kaizen/proposals/2026-10-11-jester.md'] }),
+  ] }, { repo: 'ph05/sonnet-every-day', workBranch: 'claude/sonnet-every-day' });
+  const archive = { site: { name: 'Sonnet Every Day', url: SITE_URL, startDate: '2026-10-09' }, generatedAt: NOW.toISOString() };
+  const { html } = renderKaizenPage(template, { archive, entries });
+  const log = html.slice(html.indexOf('id="log"'), html.indexOf('id="proposals"'));
+  assert.ok(log.indexOf('Many files') < log.indexOf('Applied one'), 'newest day first');
+  assert.equal((log.match(/class="day"/g) ?? []).length, 2);
+  assert.match(log, /<time datetime="2026-10-11"><span class="d-day">11<\/span>/);
+  assert.match(log, /Day 3/);
+  assert.match(log, /data-agent="pulse" data-category="clarity" data-status="applied"/);
+  assert.match(log, /badge-rejected/);
+  assert.match(log, /Why it was rejected\.<\/strong> touched a protected path/);
+  assert.match(log, /Still wondering\.<\/strong> Why though\?/);
+  assert.match(log, new RegExp(`href="https://github\\.com/ph05/sonnet-every-day/commit/${SHA_A}"`));
+  assert.match(log, /\+2 more/);
+  assert.ok(!log.includes('Wishlist item'), 'proposals are not in the log');
+  const proposals = html.slice(html.indexOf('id="proposals"'));
+  assert.match(proposals, /Proposals for the owner/);
+  assert.match(proposals, /Wishlist item/);
+  assert.match(proposals, /Read the proposal/);
+  assert.doesNotMatch(proposals.slice(proposals.indexOf('<li class="entry')), /data-status/, 'status filter never hides proposals');
+  assert.match(html, /16 line|6 lines changed/);
+  assert.match(html, /<button type="button" class="chip" data-key="agent" data-value="pulse"/);
+});
+
+test('buildSite renders the diary, teaser, sitemap entry and feed link from the ledger', async () => {
+  await withBox({}, async (box) => {
+    withDiaryFiles(box);
+    box.addAll([{ date: '2026-10-09', slug: 'first-toy', title: 'First Toy' }]);
+    putLedger(box, [
+      ledgerEntry({ date: '2026-10-10', agent: 'pulse', title: 'Older kaizen' }),
+      ledgerEntry({ date: '2026-10-11', agent: 'cards', title: 'Newest kaizen', sha: SHA_B }),
+      ledgerEntry({ date: '2026-10-11', agent: 'lab', status: 'proposed', files: ['ops/kaizen/proposals/2026-10-11-lab.md'], title: 'Please unlock this' }),
+    ]);
+    const res = await buildSite({ now: NOW, validate: okValidator });
+    assert.equal(res.ok, true, res.error);
+    assert.deepEqual(res.diary, { entries: 3, rendered: true });
+    assert.deepEqual(res.warnings, []);
+    for (const f of ['kaizen/index.html', 'kaizen/kaizen.json', 'assets/kaizen.css', 'assets/kaizen.js']) assert.ok(box.exists(`docs/${f}`), f);
+    assert.equal(box.read('docs/assets/kaizen.js'), fs.readFileSync(path.join(REAL_ROOT, 'site-src', 'kaizen.js'), 'utf8'));
+    const page = box.read('docs/kaizen/index.html');
+    assert.doesNotMatch(page, /\{\{[A-Z_]+\}\}/);
+    assert.match(page, /Newest kaizen/);
+    assert.match(page, /Please unlock this/);
+    assert.match(page, new RegExp(`https://github\\.com/ph05/sonnet-every-day/commit/${SHA_B}`));
+    assert.match(page, /<link rel="canonical" href="https:\/\/example\.test\/site\/kaizen\/">/);
+    const kz = box.readJson('docs/kaizen/kaizen.json');
+    assert.equal(kz.schema, 1);
+    assert.equal(kz.repo, 'ph05/sonnet-every-day');
+    assert.deepEqual(kz.entries.map((e) => e.id), ['2026-10-11-lab', '2026-10-11-cards', '2026-10-10-pulse']);
+    assert.equal(kz.stats.applied, 2);
+    assert.equal(kz.entries.every((e) => !('hue' in e)), true);
+    assert.deepEqual(box.readJson('docs/archive.json').kaizen, { latest: { date: '2026-10-11', agent: 'cards', title: 'Newest kaizen' }, count: 2 });
+    const sitemap = box.read('docs/sitemap.xml');
+    assert.match(sitemap, /<loc>https:\/\/example\.test\/site\/kaizen\/<\/loc>\s*<lastmod>2026-10-11<\/lastmod>/);
+    assertWellFormedXml(sitemap);
+    const feed = box.read('docs/feed.xml');
+    assert.match(feed, /<link rel="related" type="text\/html" title="The swarm’s diary" href="https:\/\/example\.test\/site\/kaizen\/"\/>/);
+    assertWellFormedXml(feed);
+
+    const snap = box.docsSnapshot();
+    const again = await buildSite({ now: NOW, validate: okValidator });
+    assert.deepEqual(again.changed, []);
+    assert.deepEqual(box.docsSnapshot(), snap, 'byte-identical on a repeat run');
+  });
+});
+
+test('no ledger yet: the diary is an empty state, there is no teaser, and nothing fails', async () => {
+  await withBox({}, async (box) => {
+    withDiaryFiles(box);
+    box.addAll([{ date: '2026-10-09', slug: 'a' }]);
+    for (const setup of [() => {}, () => putLedger(box, [])]) {
+      setup();
+      const res = await buildSite({ now: NOW, validate: okValidator });
+      assert.equal(res.ok, true, res.error);
+      assert.deepEqual(res.warnings, []);
+      const page = box.read('docs/kaizen/index.html');
+      assert.match(page, /The first page is still blank/);
+      assert.match(page, /No proposals waiting/);
+      assert.doesNotMatch(page, /id="filters"|id="log"/);
+      assert.equal('kaizen' in box.readJson('docs/archive.json'), false);
+      assert.equal(box.readJson('docs/kaizen/kaizen.json').entries.length, 0);
+    }
+  });
+});
+
+test('a corrupt ledger keeps the published diary and warns; the rest of the site still builds', async () => {
+  await withBox({}, async (box) => {
+    withDiaryFiles(box);
+    box.addAll([{ date: '2026-10-09', slug: 'a' }]);
+    putLedger(box, [ledgerEntry({ title: 'Survivor' })]);
+    assert.equal((await buildSite({ now: NOW, validate: okValidator })).ok, true);
+    const published = box.read('docs/kaizen/index.html');
+    for (const bad of ['{ not json', JSON.stringify({ entries: 'no' }), JSON.stringify([1, 2])]) {
+      box.put('ops/kaizen/INDEX.json', bad);
+      const res = await buildSite({ now: new Date(NOW.getTime() + 60_000), validate: okValidator });
+      assert.equal(res.ok, true, res.error);
+      assert.ok(res.warnings.some((w) => /diary was not rebuilt/.test(w) && /keeping the published page/.test(w)), res.warnings.join('\n'));
+      assert.equal(box.read('docs/kaizen/index.html'), published);
+      assert.match(box.read('docs/sitemap.xml'), /site\/kaizen\//, 'the existing page stays in the sitemap');
+      assert.equal(res.diary.rendered, false);
+    }
+  });
+});
+
+test('without the diary templates the build still succeeds, warns, and lists no diary page', async () => {
+  await withBox({}, async (box) => {
+    box.addAll([{ date: '2026-10-09', slug: 'a' }]);
+    putLedger(box, [ledgerEntry({})]);
+    const res = await buildSite({ now: NOW, validate: okValidator });
+    assert.equal(res.ok, true, res.error);
+    assert.ok(res.warnings.some((w) => /diary was not built/.test(w) && /kaizen\.template\.html/.test(w)), res.warnings.join('\n'));
+    assert.equal(box.exists('docs/kaizen'), false);
+    assert.doesNotMatch(box.read('docs/sitemap.xml'), /kaizen/);
+    assert.doesNotMatch(box.read('docs/feed.xml'), /kaizen/);
+    assert.equal('kaizen' in box.readJson('docs/archive.json'), false);
+  });
+});
+
+test('a ledger with junk entries builds the diary from the good ones and warns about the rest', async () => {
+  await withBox({}, async (box) => {
+    withDiaryFiles(box);
+    box.addAll([{ date: '2026-10-09', slug: 'a' }]);
+    putLedger(box, [ledgerEntry({ title: 'Good one' }), { date: 'yesterday', agent: 'x', title: 'bad date', status: 'applied' }, 42]);
+    const res = await buildSite({ now: NOW, validate: okValidator });
+    assert.equal(res.ok, true, res.error);
+    assert.equal(res.warnings.filter((w) => /entry \d skipped/.test(w)).length, 2);
+    assert.match(box.read('docs/kaizen/index.html'), /Good one/);
+    assert.equal(res.diary.entries, 1);
+  });
+});
+
+test('renderSitemap and renderFeed take the diary as an optional extra', () => {
+  const archive = buildArchive({ projects: [], config: { name: 'S', startDate: '2026-10-09' }, siteUrl: SITE_URL, now: NOW, through: '2026-10-08' });
+  assert.doesNotMatch(renderSitemap(archive), /kaizen/);
+  assert.doesNotMatch(renderFeed({ archive }), /kaizen/);
+  assert.match(renderSitemap(archive, [{ path: 'kaizen/' }]), /<loc>https:\/\/example\.test\/site\/kaizen\/<\/loc>\s*<\/url>/);
+  assert.match(renderFeed({ archive, diary: true }), /rel="related"/);
 });

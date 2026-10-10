@@ -10,13 +10,16 @@
     "primary": "03:55",
     "watchdogA": "05:32",
     "watchdogB": "06:47",
-    "closer": "07:27",
-    "deadline": "08:00"
+    "closer": "08:47",
+    "closerBackup": "09:37",
+    "deadline": "08:00",
+    "graceUntil": "09:30",
+    "hardStop": "10:30"
   },
   "tierCutoffs": {
     "t1Until": "04:45",
-    "t2Until": "06:45",
-    "t3Until": "07:25"
+    "t2Until": "07:00",
+    "t3Until": "08:45"
   },
   "leaseStaleMinutes": 35,
   "maxAttemptsPerPhase": 2,
@@ -108,7 +111,8 @@
       "upAfterCleanDays": 5,
       "floor": "minimal",
       "ceiling": "balanced"
-    }
+    },
+    "reserveForKaizenTokens": 350000
   },
   "ideation": {
     "agents": 8,
@@ -177,5 +181,6 @@
     "onFailure": true
   },
   "phaseStuckMinutes": 90,
-  "heartbeatEverySeconds": 300
+  "heartbeatEverySeconds": 300,
+  "heartbeatBranch": "claude/sonnet-every-day-heartbeat"
 }

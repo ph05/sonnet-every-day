@@ -12,24 +12,29 @@
 //
 // The push target is pinned: the branch comes from the COMMITTED config.json (an agent can edit the
 // working copy), must be a claude/* branch, and may never be the remote's default branch. config.json is
-// only staged when the caller passes allowConfig.
+// only staged when --paths names it explicitly. Liveness heartbeats never ride on the work branch (every push
+// to it can rebuild GitHub Pages): they live on config.heartbeatBranch, see fetchRemoteHeartbeat and heartbeat.mjs.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { repoRoot, loadConfig } from './common.mjs';
-import { mergeRuns, parseRunText, readRunFile, saveRun, runLockPath, withLock, validHeartbeat, heartbeatRel, removeFallbackDir } from './runstate.mjs';
+import { mergeRuns, parseRunText, readRunFile, saveRun, runLockPath, withLock, validHeartbeat, heartbeatRel, removeFallbackDir, sleepSync } from './runstate.mjs';
 
 export const BACKOFF_SECONDS = [2, 4, 8, 16];
-export const DEFAULT_PATHS = ['state', 'docs', 'work', 'config.json'];
+export const DEFAULT_PATHS = ['state', 'docs', 'work'];
 const CONFIG_FILE = 'config.json';
 const RUN_FILE_RE = /^state\/runs\/(\d{4}-\d{2}-\d{2})\.json$/;
 const BRANCH_RE = /^claude\/[A-Za-z0-9][A-Za-z0-9._/-]*$/;
 // Lock and temp files are transient; they must never be committed even if a sync races a writer.
-const EXCLUDES = [':(exclude,glob)**/*.lock', ':(exclude,glob)**/*.tmp', ':(exclude,glob)**/*.lock.stale.*'];
+// Heartbeat files belong to the heartbeat branch only.
+const EXCLUDES = [':(exclude,glob)**/*.lock', ':(exclude,glob)**/*.tmp', ':(exclude,glob)**/*.lock.stale.*', ':(exclude)state/heartbeats'];
 const LOCAL_TIMEOUT_MS = 60_000;
 const NETWORK_TIMEOUT_MS = 120_000;
 const FRESHEN_TIMEOUT_MS = 10_000;
 const FETCH_BREAKER_MS = 60_000; // after a failed fetch, skip the bounded fetch of state commands for a minute
+// A single dropped fetch must not make a live primary look dead: the heartbeat fetch is tried again after these pauses.
+const HEARTBEAT_RETRY_MS = [1000, 2000];
+const MISSING_REMOTE_REF = /couldn't find remote ref/i;
 const FALLBACK_IDENTITY = { name: 'Claude', email: 'noreply@anthropic.com' };
 
 export function firstLine(text) {
@@ -150,10 +155,11 @@ function ensureBranch(g, branch) {
 
 /**
  * Stages `paths`. config.json holds the guardrails, the budget and the push target, so an edited copy is only
- * committed on request: whichever path pulled it into the index (`config.json`, `.`, a parent directory) it is
- * unstaged again and reported as `configIgnored`; the working copy is left as it was.
+ * committed when `paths` names it explicitly: whichever other path pulled it into the index (`.`, `./config.json`,
+ * a parent directory) it is unstaged again and reported as `configIgnored`; the working copy is left as it was.
  */
-function stage(g, paths, allowConfig) {
+function stage(g, paths) {
+  const allowConfig = paths.includes(CONFIG_FILE);
   for (const p of paths) {
     const r = g.run(['add', '-A', '--', p, ...EXCLUDES]);
     // A listed path that does not exist and was never tracked is simply nothing to stage.
@@ -173,7 +179,7 @@ function stage(g, paths, allowConfig) {
  */
 export function branchProblem(g, branch) {
   if (typeof branch !== 'string' || !BRANCH_RE.test(branch) || branch.includes('..') || branch.endsWith('/') || branch.endsWith('.lock')) {
-    return `refusing to use branch "${branch}": the work branch must look like claude/<name>`;
+    return `refusing to use branch "${branch}": a branch unattended runs write to must look like claude/<name>`;
   }
   const head = g.out(['symbolic-ref', '-q', '--short', 'refs/remotes/origin/HEAD']);
   if (head === `origin/${branch}`) return `refusing to use branch "${branch}": it is the remote's default branch`;
@@ -181,27 +187,43 @@ export function branchProblem(g, branch) {
 }
 
 /**
- * The work branch from the COMMITTED config.json (HEAD), falling back to the working copy only when HEAD has none.
- * Returns { branch, edited } where `edited` means the working copy names a different branch.
+ * A branch name (`key` of config.json) from the COMMITTED config.json (HEAD), falling back to the working copy only
+ * when HEAD has none. Returns { branch, edited } where `edited` means the working copy names a different branch.
  */
-export function committedWorkBranch(g, config) {
+function committedBranch(g, config, key) {
   let committed = null;
   const text = g.out(['show', `HEAD:${CONFIG_FILE}`]);
   if (text) {
     try {
-      committed = JSON.parse(text).workBranch ?? null;
+      committed = JSON.parse(text)[key] ?? null;
     } catch {
       /* unreadable committed config: fall back below */
     }
   }
   let working = null;
   try {
-    working = (config ?? loadConfig()).workBranch ?? null;
+    working = (config ?? loadConfig())[key] ?? null;
   } catch {
     /* no readable working config */
   }
   const branch = committed ?? working;
   return { branch, edited: committed !== null && working !== null && working !== committed };
+}
+
+export const committedWorkBranch = (g, config) => committedBranch(g, config, 'workBranch');
+
+/**
+ * The branch heartbeats go to (CONTRACT 14): { branch, problem }. It must pass the same checks as the work
+ * branch and must be a different branch, otherwise every beat would trigger a Pages build.
+ */
+export function resolveHeartbeatBranch(g, config) {
+  const { branch } = committedBranch(g, config, 'heartbeatBranch');
+  if (!branch) return { branch: null, problem: 'config.heartbeatBranch is not set; heartbeats must not go to the work branch' };
+  const problem = branchProblem(g, branch);
+  if (problem) return { branch, problem };
+  const work = committedWorkBranch(g, config).branch;
+  if (branch === work) return { branch, problem: `heartbeatBranch must differ from the work branch (${work}): heartbeats there would rebuild GitHub Pages` };
+  return { branch, problem: null };
 }
 
 const unmergedFiles = (g) => (g.out(['diff', '--name-only', '--diff-filter=U']) ?? '').split('\n').filter(Boolean);
@@ -432,7 +454,7 @@ function integrate(g, branch, log) {
 }
 
 /**
- * sync({ message, paths?, branch?, noSleep?, sleep?, root?, config?, log?, allowConfig? })
+ * sync({ message, paths?, branch?, noSleep?, sleep?, root?, config?, log? })
  * -> { ok, pushed, sha, reason, branch, committed, attempts, conflicts?, remoteLease?, configIgnored? }
  * ok:false only for conflict / displaced / unreachable remote / push refusal; "nothing to commit" is ok:true, pushed:false.
  */
@@ -467,10 +489,10 @@ export async function sync(opts = {}) {
   }
   const onBranch = ensureBranch(g, branch);
   if (!onBranch.ok) return done(false, false, onBranch.reason, { committed: false });
-  const staged = stage(g, paths, Boolean(opts.allowConfig));
+  const staged = stage(g, paths);
   if (!staged.ok) return done(false, false, staged.reason, { committed: false });
   const extra = staged.configIgnored ? { configIgnored: true } : {}; // result fields set along the way (configIgnored, rebuildSite)
-  if (staged.configIgnored) log('config.json has uncommitted edits; not staged (pass --allow-config to commit them)');
+  if (staged.configIgnored) log('config.json has uncommitted edits; not staged (name config.json in --paths to commit them)');
   const commit = commitStaged(g, message);
   if (commit.error) return done(false, false, commit.error, { committed: false, ...extra });
   if (commit.committed) log(`committed ${head()?.slice(0, 9)}: ${message.split('\n')[0]}`);
@@ -525,8 +547,8 @@ export async function sync(opts = {}) {
 // freshen: let a running operator see what other containers pushed (lease, directives, status)
 // ---------------------------------------------------------------------------------------
 
-function breakerFile(g) {
-  const rel = g.out(['rev-parse', '--git-path', 'sed-fetch-failed']);
+function breakerFile(g, name = 'sed-fetch-failed') {
+  const rel = g.out(['rev-parse', '--git-path', name]);
   return rel ? path.resolve(g.cwd, rel) : null;
 }
 
@@ -539,16 +561,69 @@ function breakerOpen(file) {
 }
 
 /**
- * The remote heartbeat record `session` pushed for `date`, read from the last fetched work branch (no network).
+ * fetchRemoteHeartbeat({ date, session, root?, config?, timeoutMs? }) -> never throws.
+ * The liveness record `session` pushed for `date` to the heartbeat branch (CONTRACT 14): a bounded
+ * `git fetch` of that branch (retried twice after 1 s and 2 s: one network blip must not decide a takeover), then `git show` of the session's file. Best effort: whenever the fetch fails (no
+ * network, no such branch yet, a recent failure) it reports why and `heartbeat:null`, and the caller falls back
+ * to the lease's own heartbeatAt, so the stale/stuck thresholds still decide.
+ *
+ * `unknown:true` says the channel itself could not be read (the fetch failed even after retries, was skipped
+ * because one failed a moment ago, or the branch does not exist): "no record" then proves nothing about the
+ * holder, and `begin` must not call a lease dead on its own age. `unknown:false` with `heartbeat:null` means the
+ * branch was read and holds no record for the session.
+ *
+ * Returns { fetched, unknown, heartbeat, branch?, reason? }.
  */
-export function readRemoteHeartbeat({ root, branch, date, session }) {
-  const g = createGit(root ?? repoRoot());
-  const text = g.out(['show', `refs/remotes/origin/${branch}:${heartbeatRel(date, session).split(path.sep).join('/')}`]);
-  if (!text) return null;
+export function fetchRemoteHeartbeat({ date, session, root, config, timeoutMs = FRESHEN_TIMEOUT_MS, retryDelaysMs = HEARTBEAT_RETRY_MS } = {}) {
+  const out = { fetched: false, unknown: false, heartbeat: null };
   try {
-    return validHeartbeat(JSON.parse(text), session);
-  } catch {
-    return null;
+    const cwd = root ?? repoRoot();
+    const g = createGit(cwd);
+    const top = g.out(['rev-parse', '--show-toplevel']);
+    if (!top || fs.realpathSync(top) !== fs.realpathSync(cwd)) return { ...out, reason: 'not-a-repo-root' };
+    if (!g.run(['remote', 'get-url', 'origin']).ok) return { ...out, reason: 'no-origin' };
+    const { branch, problem } = resolveHeartbeatBranch(g, config);
+    if (problem) return { ...out, reason: problem };
+    out.branch = branch;
+    out.unknown = true;
+
+    const breaker = breakerFile(g, 'sed-hb-fetch-failed');
+    if (breaker && breakerOpen(breaker)) return { ...out, reason: 'fetch-recently-failed' };
+    const ref = `refs/remotes/origin/${branch}`;
+    const fetchArgs = ['fetch', '--no-tags', 'origin', `+refs/heads/${branch}:${ref}`];
+    let fetched = g.run(fetchArgs, { network: true, timeoutMs });
+    for (const pause of retryDelaysMs) {
+      if (fetched.ok || MISSING_REMOTE_REF.test(fetched.stderr)) break;
+      if (!envFlag(process.env.SED_NO_SLEEP)) sleepSync(pause);
+      fetched = g.run(fetchArgs, { network: true, timeoutMs });
+    }
+    if (!fetched.ok) {
+      // a heartbeat branch that nobody has created yet is not a network failure and must not silence later fetches
+      if (MISSING_REMOTE_REF.test(fetched.stderr)) return { ...out, reason: 'no-heartbeat-branch' };
+      if (breaker) {
+        try {
+          fs.writeFileSync(breaker, new Date().toISOString());
+        } catch {
+          /* best effort */
+        }
+      }
+      return { ...out, reason: `fetch failed: ${fetched.timedOut ? 'timed out' : firstLine(fetched.stderr)}` };
+    }
+    if (breaker) fs.rmSync(breaker, { force: true });
+    out.fetched = true;
+    out.unknown = false;
+
+    const text = g.out(['show', `${ref}:${heartbeatRel(date, session).split(path.sep).join('/')}`]);
+    if (text) {
+      try {
+        out.heartbeat = validHeartbeat(JSON.parse(text), session);
+      } catch {
+        /* a torn or foreign file proves nothing */
+      }
+    }
+    return out;
+  } catch (err) {
+    return { ...out, unknown: out.branch !== undefined, reason: `heartbeat fetch failed: ${err.message}` };
   }
 }
 

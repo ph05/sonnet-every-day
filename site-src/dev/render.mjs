@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { normalizeKaizen, renderKaizenPage } from '../../scripts/lib/archive.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const SITE_SRC = path.resolve(HERE, '..');
@@ -58,4 +59,11 @@ export function render404(template, archive, { siteUrl = archive.site?.url ?? ''
 
 export function readSource(name) {
   return fs.readFileSync(path.join(SITE_SRC, name), 'utf8');
+}
+
+/** The swarm's diary page, rendered by the same code build-site uses. `ledger` is a parsed ops/kaizen/INDEX.json. */
+export function renderKaizen(template, archive, ledger, { repo = 'example/sonnet-every-day', workBranch = 'main' } = {}) {
+  const { entries } = normalizeKaizen(ledger, { repo, workBranch });
+  const site = { name: '', url: '', startDate: '', ...archive.site };
+  return renderKaizenPage(template, { archive: { site, generatedAt: archive.generatedAt ?? '' }, entries }).html;
 }

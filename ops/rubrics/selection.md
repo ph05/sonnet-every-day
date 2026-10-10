@@ -46,7 +46,7 @@ The best non-winner that is `durable: true`, has not been carried before (its `o
 
 ## Critic's final check
 
-Question: "Why would this embarrass us at 8am?" The critic returns `approve` or `veto`. A veto counts only when it names a concrete blocker that scope-cutting in the spec cannot fix (a false core premise, a guardrail violation, a build that cannot work offline or in a day) AND an eligible runner-up exists. A vague veto is overruled and its risks go to the spec as `mustFixInSpec`. One veto per day; the new winner gets a risk pass but no second veto.
+Question: "Why would this embarrass us the moment it goes live?" The critic returns `approve` or `veto`. A veto counts only when it names a concrete blocker that scope-cutting in the spec cannot fix (a false core premise, a guardrail violation, a build that cannot work offline or in a day) AND an eligible runner-up exists. A vague veto is overruled and its risks go to the spec as `mustFixInSpec`. One veto per day; the new winner gets a risk pass but no second veto.
 
 **Mandatory judges.** `safety` and `feasibility` open eligibility gates, so a gap in either is never read as a pass. An idea that one of these judges skipped is ineligible ("unscored"). If a whole judge produced nothing after its retry, the critic challenge becomes mandatory (the budget and time guards do not apply), is told it is the only review of that criterion, and covers the winner and, after a veto, the runner-up; if it cannot run, or finds blockers with no alternative, the selection fails closed (`reason:"mandatory-judge-missing"`, nothing recorded) and the playbook retries or lowers the tier. A day that went through the stand-in is recorded in `winnerNotes.unscoredMandatory`.
 
@@ -79,6 +79,7 @@ Calibration: use the whole scale, at most 3 ideas share a score, an honest 3 bea
 * 10: obviously doable, well understood, parallelizes across the whole team.
 
 ### timeliness (freshness)
+"Verified" is defined in `ops/rubrics/research.md`: a page really opened, or two independent search results that agree (WebFetch mostly fails in the cloud, so search-only evidence counts). Judge the dates and the `verification.evidence` field, not the label alone.
 * 2: stale, dated or the hook is thin or unverified.
 * 5: neutral; neither topical nor especially timeless.
 * 8: a verified current hook, or a clearly evergreen premise with charm.
@@ -95,7 +96,7 @@ Owner loves: poker ranges and GTO, Balatro and mods, hockey, Reddit-born ideas. 
 * 2: visually inert; nothing to animate, light up or sound.
 * 5: a decent canvas.
 * 8: rich visual identity, motion and micro-interaction opportunities; a thumbnail that stops a scroll.
-* 10: begs to be gorgeous; a strong 8am first impression is almost guaranteed.
+* 10: begs to be gorgeous; a strong first impression is almost guaranteed.
 
 ### safety (guardrails and honesty)
 Read `ops/rubrics/safety.md`. Raise a `blocker` flag for anything that must not be built as pitched.
