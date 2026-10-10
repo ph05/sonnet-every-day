@@ -1,12 +1,6 @@
 {
   "schema": 1,
   "skipped": [
-    "cards",
-    "lab",
-    "jester",
-    "architect",
-    "artisan",
-    "engineer",
     "critic",
     "clerk",
     "pulse"
