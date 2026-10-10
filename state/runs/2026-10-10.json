@@ -64,7 +64,8 @@
     "qa": 1,
     "revise": 1,
     "package": 1,
-    "publish": 1
+    "publish": 1,
+    "kaizen": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-10T05:50:16.803Z",
@@ -76,13 +77,14 @@
     "revise": "2026-10-10T11:32:36.746Z",
     "package": "2026-10-10T11:32:45.308Z",
     "publish": "2026-10-10T11:34:16.800Z",
-    "kaizen": "2026-10-10T11:34:17.509Z"
+    "kaizen": "2026-10-10T11:34:33.859Z"
   },
   "lease": {
     "holder": "manual",
     "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
     "acquiredAt": "2026-10-10T05:50:02.392Z",
-    "heartbeatAt": "2026-10-10T11:34:16.800Z"
+    "heartbeatAt": "2026-10-10T11:34:33.859Z",
+    "phase": "kaizen"
   },
   "directives": [
     {
