@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-10T11:33:11.234Z",
+  "site": {
+    "name": "Sonnet Every Day",
+    "url": "https://ph05.github.io/sonnet-every-day/"
+  },
+  "repo": "ph05/sonnet-every-day",
+  "branch": "claude/sonnet-every-day",
+  "stats": {
+    "entries": 0,
+    "applied": 0,
+    "rejected": 0,
+    "reverted": 0,
+    "proposed": 0,
+    "linesChanged": 0,
+    "members": 0,
+    "roster": 9,
+    "agents": {},
+    "categories": {},
+    "firstDate": null,
+    "lastDate": null
+  },
+  "entries": []
+}

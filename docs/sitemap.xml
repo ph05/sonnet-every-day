@@ -2,5 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ph05.github.io/sonnet-every-day/</loc>
+    <lastmod>2026-10-10</lastmod>
+  </url>
+  <url>
+    <loc>https://ph05.github.io/sonnet-every-day/kaizen/</loc>
+  </url>
+  <url>
+    <loc>https://ph05.github.io/sonnet-every-day/d/2026-10-10-jokers-in-phase/</loc>
+    <lastmod>2026-10-10</lastmod>
   </url>
 </urlset>

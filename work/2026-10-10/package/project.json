@@ -83,9 +83,9 @@
   ],
   "makingOf": "Jokers In Phase is an unofficial fan concept in the style of joker-deck roguelikes such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented. Two community guides say joker effects resolve left to right, so the page uses that rule as the guides describe it. The Firefly joker is a simplified, integer-only cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies. Phases are whole numbers on a 64-step cycle, deals use a seeded shuffle, and an exhaustive solver checks all 17,576 swap lines, so a shared link replays the same scores in any browser. The research was read from search results only; the pages were not opened.",
   "stats": {
-    "files": 0,
-    "bytes": 0,
-    "ownLoc": 0
+    "files": 14,
+    "bytes": 347650,
+    "ownLoc": 3804
   },
   "credits": "Built by the Sonnet Every Day team"
 }
