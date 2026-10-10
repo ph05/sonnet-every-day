@@ -75,7 +75,7 @@
       "files": [
         "ops/rubrics/research.md"
       ],
-      "sha": null,
+      "sha": "37b545ddd378cdfe39d5b4f6f1b477ec2262197d",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the dossier source object get a field recording which search string surfaced it, as the critic and verifier notes ask, or is the note text enough?",
