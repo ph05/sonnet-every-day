@@ -80,6 +80,22 @@
       "linesChanged": 2,
       "question": "Should the dossier source object get a field recording which search string surfaced it, as the critic and verifier notes ask, or is the note text enough?",
       "reason": null
+    },
+    {
+      "id": "2026-10-10-engineer",
+      "date": "2026-10-10",
+      "agent": "engineer",
+      "title": "selfcheck: run the real checkWritten to prove a decoded escape passes in .json and fails in program",
+      "observation": "2026-10-10 report: ideate lost both normalize rounds because checkWritten rejected a clerk-decoded escape in .mjs text by 20 bytes. Lab added a source-line lint, but nothing ran checkWritten itself; selfcheck only compares the prelude text across scripts. New selfcheck test loads the real prelude functions in a vm and asserts: decoded escape in .json passes, in .mjs fails, unreported file fails. Passes today (12 lines).",
+      "category": "tests",
+      "files": [
+        "ops/workflows/_selfcheck.mjs"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 12,
+      "question": "Should checkWritten name the byte difference and the likely cause in its size mismatch message? It lives in the prelude copied into 7 workflows, so it exceeds the 4 file cap for one kaizen.",
+      "reason": null
     }
   ]
 }

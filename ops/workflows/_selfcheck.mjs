@@ -919,6 +919,18 @@ describe('static checks', () => {
     preludes.forEach((p, i) => assert.equal(p, preludes[0], `${PRELUDE_USERS[i]}.js prelude differs from ${PRELUDE_USERS[0]}.js`));
   });
 
+  test('checkWritten forgives a decoded unicode escape in .json only, so a clerk that decodes one in program text still fails loudly (2026-10-10 ideate)', () => {
+    const prelude = stripMarkers(fs.readFileSync(path.join(HERE, 'ideate.js'), 'utf8'));
+    const pick = (re) => { const m = re.exec(prelude); assert.ok(m, `prelude lacks ${re}`); return m[0]; };
+    const src = [/^const arr = .*$/m, /^const toNum = .*$/m, /^const utf8Len = [\s\S]*?\n};$/m, /^const jsonEscapeSlack = .*$/m, /^function checkWritten[\s\S]*?\n}$/m].map(pick).join('\n');
+    const checkWritten = vm.runInNewContext(`${src}\ncheckWritten`, Object.create(null));
+    const esc = '\\u00e9\\u00e9';
+    const decoded = (p) => ({ written: [{ path: p, bytes: Buffer.byteLength('éé') }] });
+    assert.equal(checkWritten([{ path: '/t/a.json', content: esc }], decoded('/t/a.json')).length, 0, 'a decoded escape in .json is allowed');
+    assert.equal(checkWritten([{ path: '/t/a.mjs', content: esc }], decoded('/t/a.mjs')).length, 1, 'a decoded escape in .mjs must fail');
+    assert.equal(checkWritten([{ path: '/t/a.mjs', content: 'abc' }], { written: [] }).length, 1, 'an unreported file must fail');
+  });
+
   test('the safety-critical passages sit inside balanced protected blocks, so a kaizen cannot edit them (CONTRACT 12.4)', () => {
     const spans = (text) => [...text.matchAll(/^[ \t]*\/\/ protected:begin\n([\s\S]*?)^[ \t]*\/\/ protected:end$/gm)].map((m) => m[1]).join('\n');
     const common = [

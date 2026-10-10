@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-10 · engineer · applied · selfcheck: run the real checkWritten to prove a decoded escape passes in .json and fails in program
+
+- observation: 2026-10-10 report: ideate lost both normalize rounds because checkWritten rejected a clerk-decoded escape in .mjs text by 20 bytes. Lab added a source-line lint, but nothing ran checkWritten itself; selfcheck only compares the prelude text across scripts. New selfcheck test loads the real prelude functions in a vm and asserts: decoded escape in .json passes, in .mjs fails, unreported file fails. Passes today (12 lines).
+- category: tests · lines changed: 12 · files: ops/workflows/_selfcheck.mjs
+- question: Should checkWritten name the byte difference and the likely cause in its size mismatch message? It lives in the prelude copied into 7 workflows, so it exceeds the 4 file cap for one kaizen.
+
 ## 2026-10-10 · artisan · applied · research rubric: a blended search summary cannot count as two independent sources for verified:true
 
 - observation: Eight friction notes today (architect x2, critic x4, jester x2, plus the lab and cards notes) say WebSearch summaries blend results so a scout cannot tell which link said what, which makes verified:true (two independent results, research.md line 20) a guess. Added one sentence to line 20: count two sources only when two separate result entries with their own URL carry the claim, else verified:false with a blended-summary note.
