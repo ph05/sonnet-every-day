@@ -113,7 +113,7 @@ const PAGE = `<!doctype html>
 
 function makeSandbox({ config = {}, templates = true, assets = true } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-sitegen-'));
-  const cfg = { ...JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'config.json'), 'utf8')), siteUrl: SITE_URL, ...config };
+  const cfg = { ...JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'config.json'), 'utf8')), siteUrl: SITE_URL, startDate: '2026-10-09', ...config }; // frozen: fixtures count days from 2026-10-09
   const put = (rel, content) => {
     const abs = path.join(root, rel);
     fs.mkdirSync(path.dirname(abs), { recursive: true });

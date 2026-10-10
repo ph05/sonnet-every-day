@@ -25,7 +25,7 @@ export function makeSandbox({ config } = {}) {
   fs.mkdirSync(path.join(root, 'state', 'ideas'), { recursive: true });
   fs.mkdirSync(path.join(root, 'state', 'runs'), { recursive: true });
   fs.mkdirSync(path.join(root, 'docs', 'd'), { recursive: true });
-  const cfg = JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'config.json'), 'utf8'));
+  const cfg = { ...JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'config.json'), 'utf8')), startDate: '2026-10-09' }; // frozen: fixtures count days from 2026-10-09
   fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(config ? config(cfg) ?? cfg : cfg, null, 2));
   fs.copyFileSync(path.join(REAL_ROOT, 'ops', 'taxonomy.json'), path.join(root, 'ops', 'taxonomy.json'));
   fs.copyFileSync(path.join(REAL_ROOT, 'ops', 'lenses.json'), path.join(root, 'ops', 'lenses.json'));
