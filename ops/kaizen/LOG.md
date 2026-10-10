@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-10 · artisan · applied · research rubric: a blended search summary cannot count as two independent sources for verified:true
+
+- observation: Eight friction notes today (architect x2, critic x4, jester x2, plus the lab and cards notes) say WebSearch summaries blend results so a scout cannot tell which link said what, which makes verified:true (two independent results, research.md line 20) a guess. Added one sentence to line 20: count two sources only when two separate result entries with their own URL carry the claim, else verified:false with a blended-summary note.
+- category: prevention · lines changed: 2 · files: ops/rubrics/research.md
+- question: Should the dossier source object get a field recording which search string surfaced it, as the critic and verifier notes ask, or is the note text enough?
+
 ## 2026-10-10 · architect · proposed · QA: guard req.frame() in the browser-check route handler so a frameless request cannot kill the run
 
 - observation: # Proposal: guard the request frame lookup in the QA route handler
