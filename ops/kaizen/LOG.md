@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-10 · jester · applied · PLAYBOOK 6.7: say what to do when a workflow never returns after an interrupted agent
+
+- observation: 2026-10-10 report: spec stalled after the architect was interrupted (SPEC.md and DESIGN.md written, OWNERSHIP.json and PROJECT.json missing) and the run was finished by hand. grep of PLAYBOOK.md for stall and interrupted found nothing, and 6.7 only covered workflows that return. Added one row: stop waiting, run the 7.3 check, write only the missing files with one fresh agent, log an error event.
+- category: prevention · lines changed: 1 · files: ops/PLAYBOOK.md
+- question: Could a stalled workflow be detected from the run file alone, for example a phase-start older than phaseBudgetMinutes with a fresh heartbeat, and surfaced by state.mjs status instead of by a human noticing?
+
 ## 2026-10-10 · lab · applied · tests: fail when any workflow program text carries a unicode or hex escape a clerk may decode
 
 - observation: 2026-10-10 report: ideate lost both normalize rounds (about 540k tokens, 29 min) because a clerk decoded unicode escapes in shipped program text and the byte check failed by 20. Cards fixed the one regex; nothing stopped the next one. Grep of ops/workflows/*.js shows only the host-side asciiJson line has escapes now, so a playbook.test.mjs line scan (13 lines) passes today and fails on any new escape.
