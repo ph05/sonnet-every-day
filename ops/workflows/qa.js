@@ -405,12 +405,15 @@ const RUN_SCHEMA = {
   },
   required: ['written', 'exitCode', 'stdout'],
 };
+// A clerk that writes JSON may legitimately turn \uXXXX escapes into the characters they stand for (6 bytes become 1 to 3),
+// so the byte count may drop by up to 5 per escape in .json files; any other difference still fails the check.
+const jsonEscapeSlack = (f) => (/\.json$/i.test(String(f && f.path)) ? 5 * (String(f.content).match(/\\u[0-9a-fA-F]{4}/g) || []).length : 0);
 function checkWritten(files, r) {
   const problems = [];
   for (const f of files) {
     const w = arr(r.written).find((x) => x && x.path === f.path);
     if (!w) problems.push(`file not reported: ${f.path}`);
-    else if (Math.abs(toNum(w.bytes, -999) - utf8Len(f.content)) > 1) problems.push(`size mismatch for ${f.path}: wrote ${w.bytes} bytes, expected ${utf8Len(f.content)}`);
+    else if (Math.abs(toNum(w.bytes, -999) - utf8Len(f.content)) > 1 + jsonEscapeSlack(f)) problems.push(`size mismatch for ${f.path}: wrote ${w.bytes} bytes, expected ${utf8Len(f.content)}`);
   }
   return problems;
 }
