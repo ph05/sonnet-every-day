@@ -101,6 +101,25 @@ describe('deadman: time gate and no-op cases', () => {
     }
   });
 
+  test('the level it records in the run it creates is the one in force at --now (the owner override is judged at the instant, not at the real clock)', () => {
+    // an override that ends between the fixture clock and the real clock: 2026-10-09 23:00 EDT
+    const cfg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'config.json'), 'utf8'));
+    cfg.budget.ownerOverride = { until: '2026-10-09T23:00:00-04:00', level: 'all-in', note: 'test' };
+    const throttleOf = (date, hhmm) => {
+      const box = prepare(makeSandbox({ config: cfg }), { ideas: true });
+      try {
+        const r = run(box, ['--no-git', '--date', date, '--now', etIso(date, hhmm)]);
+        assert.equal(r.code, 0, r.stderr + r.stdout);
+        assert.equal(r.json.action, 'published', r.stdout);
+        return box.readJson(`state/runs/${date}.json`).throttle;
+      } finally {
+        box.cleanup();
+      }
+    };
+    assert.equal(throttleOf(DATE, '09:40'), 'all-in', 'inside the window');
+    assert.equal(throttleOf('2026-10-10', '09:40'), 'balanced', 'the next morning the stored level is back');
+  });
+
   test('DST-aware boundary: 09:35 local in EDT (October) and in EST (January)', () => {
     for (const date of [DATE, '2027-01-12']) {
       const box = prepare(makeSandbox(), { ideas: false });

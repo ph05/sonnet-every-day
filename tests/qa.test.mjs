@@ -25,6 +25,7 @@ after(() => fs.rmSync(TMP, { recursive: true, force: true }));
 
 const { startServer, mimeFor } = await import(pathToFileURL(path.join(ROOT, 'scripts', 'qa', 'serve.mjs')).href);
 const png = await import(pathToFileURL(path.join(ROOT, 'scripts', 'qa', 'png-optimize.mjs')).href);
+const { isTopLevelNavigation } = await import(pathToFileURL(CHECK).href);
 
 /* ------------------------------------------------------------------------------------------------
  * helpers
@@ -371,6 +372,29 @@ describe('png-optimize', () => {
 });
 
 /* ------------------------------------------------------------------------------------------------
+ * browser-check.mjs: the route handler's request classification (no browser needed)
+ * ---------------------------------------------------------------------------------------------- */
+
+describe('browser-check: top-level navigation detection', () => {
+  const NO_FRAME = 'Frame for this navigation request is not available, because the request was issued before the frame is created.';
+  const frameless = (nav) => ({ isNavigationRequest: () => nav, frame() { throw new Error(NO_FRAME); } });
+  const framed = (nav, parent) => ({ isNavigationRequest: () => nav, frame: () => ({ parentFrame: () => parent }) });
+
+  test('request.frame() throwing (a popup\'s first navigation, a service worker) never escapes the route handler', () => {
+    assert.equal(isTopLevelNavigation(frameless(true)), true, 'a popup\'s own first navigation is top-level');
+    assert.equal(isTopLevelNavigation(frameless(false)), false, 'a frameless request that is no navigation (a worker) is not');
+    assert.equal(isTopLevelNavigation({ isNavigationRequest() { throw new Error('gone'); }, frame: () => ({ parentFrame: () => null }) }), false);
+  });
+
+  test('requests with a frame: only a main-frame navigation is top-level', () => {
+    assert.equal(isTopLevelNavigation(framed(true, null)), true, 'main frame navigation');
+    assert.equal(isTopLevelNavigation(framed(true, {})), false, 'iframe navigation');
+    assert.equal(isTopLevelNavigation(framed(false, null)), false, 'subresource of the main frame');
+    assert.equal(isTopLevelNavigation(framed(false, {})), false, 'subresource of an iframe');
+  });
+});
+
+/* ------------------------------------------------------------------------------------------------
  * browser-check.mjs against real Chromium
  * ---------------------------------------------------------------------------------------------- */
 
@@ -413,7 +437,12 @@ describe('browser-check: clean sample', () => {
       assert.ok(m.passes[pass].domNodes > 10, `${pass} domNodes`);
       assert.equal(typeof m.passes[pass].loadMs, 'number', `${pass} load timing`);
       assert.equal(m.passes[pass].overflowPx, 0, `${pass} overflow`);
-      assert.equal(m.passes[pass].longTasks.count, 0);
+      // A task over 50 ms counts as "long", and on a clean page that only happens when the renderer was descheduled: on a busy machine
+      // the old check (count === 0) failed in 2 of 3 concurrent runs of this file, with tasks of about 100 ms. The probe itself is pinned
+      // by the 400 ms fixture below (always seen, more load only makes it longer); here the clean page must not come near that, and a page
+      // that keeps the main thread busy in many short bursts (a task per frame, each under 250 ms) still fails on the count.
+      const long = m.passes[pass].longTasks;
+      assert.ok(Number.isInteger(long.count) && typeof long.totalMs === 'number' && long.count <= 2 && long.maxMs < 250, `${pass} long tasks ${JSON.stringify(long)}`);
     }
     const d = m.passes['desktop-light'];
     assert.equal(d.focusable, 7);
@@ -579,6 +608,28 @@ describe('browser-check: robustness', () => {
     const r = await runCheck([fixture('clean'), '--seconds', '60', '--timeout', '8']);
     assert.ok(r.ms < 35000, `took ${r.ms}ms`);
     assert.ok((r.json.metrics.monkey?.['monkey-desktop']?.durationMs ?? 0) < 8000, 'the monkey never exceeds the budget');
+  });
+
+  test('a monkey click on a target=_blank cited-source link opens a popup: tolerated and reported, never a crash of the run', async () => {
+    // request.frame() throws for a popup's first navigation request; unguarded, that ended the process with no report at all.
+    const r = await runCheck([fixture('popup'), '--seconds', '3', '--seed', '1']);
+    assert.equal(r.code, 0, JSON.stringify(r.json.errors));
+    assert.equal(r.json.ok, true);
+    assert.ok(r.json.warnings.some((w) => /^popup: /.test(w)), 'QA says a window was opened and closed it');
+    assert.doesNotMatch(r.json.errors.join('\n'), /non-local-request/, 'following a cited-source link is not a policy violation');
+    assert.deepEqual(r.json.metrics.nonLocalRequests, []);
+    assert.deepEqual(await waitForNoLeaks(), []);
+  });
+
+  test('a page that blocks the main thread for 400 ms shows up in the long-task metrics of every pass', async () => {
+    const r = await runCheck([fixture('longtask'), '--no-monkey']);
+    assert.equal(r.code, 0, JSON.stringify(r.json.errors));
+    const passes = Object.entries(r.json.metrics.passes);
+    assert.equal(passes.length, 6);
+    for (const [pass, m] of passes) {
+      // lower bounds only: a loaded machine can make the task longer, never shorter
+      assert.ok(m.longTasks.count >= 1 && m.longTasks.maxMs >= 350 && m.longTasks.totalMs >= m.longTasks.maxMs, `${pass}: ${JSON.stringify(m.longTasks)}`);
+    }
   });
 
   test('without Chromium it answers no-browser quickly', async () => {

@@ -75,6 +75,7 @@
         "defaultEffort": "max",
         "maxEffortRoles": "all",
         "reviseLoops": 2,
+        "reviseLoopsTier2": 2,
         "reserveForKaizenTokens": 600000
       },
       "balanced": {
@@ -85,13 +86,15 @@
           "engineer",
           "critic"
         ],
-        "reviseLoops": 1
+        "reviseLoops": 1,
+        "reviseLoopsTier2": 1
       },
       "lean": {
         "outputTokens": 1500000,
         "defaultEffort": "high",
         "maxEffortRoles": [],
         "reviseLoops": 0,
+        "reviseLoopsTier2": 1,
         "reserveForKaizenTokens": 150000
       },
       "minimal": {
@@ -99,6 +102,7 @@
         "defaultEffort": "medium",
         "maxEffortRoles": [],
         "reviseLoops": 0,
+        "reviseLoopsTier2": 0,
         "forceTier": 2,
         "reserveForKaizenTokens": 0
       }
@@ -121,6 +125,12 @@
       "level": "all-in",
       "note": "Owner lifted the token budget until Sunday 2026-10-11 19:00 ET (their words: do not worry about tokens). Overage and a rejected plan limit still stop the run."
     }
+  },
+  "revisePolicy": {
+    "tier2MinSeverity": "S2",
+    "tier2S3Threshold": 4,
+    "minMinutesLeftForRevise": 25,
+    "maxLoopsHardCap": 3
   },
   "ideation": {
     "agents": 8,
@@ -242,6 +252,9 @@
       "scripts/deadman.mjs",
       "scripts/heartbeat.mjs",
       "scripts/lib/throttle.mjs",
+      "scripts/lib/usage.mjs",
+      "scripts/lib/phasewatch.mjs",
+      "scripts/lib/revisepolicy.mjs",
       "scripts/fallback.mjs",
       "scripts/build-site.mjs",
       "scripts/qa/browser-check.mjs",
@@ -263,7 +276,10 @@
       "tests/deadman.test.mjs",
       "tests/heartbeat.test.mjs",
       "tests/state.test.mjs",
-      "tests/e2e.test.mjs"
+      "tests/e2e.test.mjs",
+      "tests/usage.test.mjs",
+      "tests/phasewatch.test.mjs",
+      "tests/revise-policy.test.mjs"
     ],
     "docLineCaps": {
       "ops/PLAYBOOK.md": 1400,

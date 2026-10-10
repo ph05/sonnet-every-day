@@ -18,6 +18,9 @@ export const ROLES = ['primary', 'wdA', 'wdB', 'closer', 'manual'];
 export const STATUSES = ['in_progress', 'published', 'failed'];
 // Machine-readable tags ride on these kinds as `code`: corrupt-run (error), grace (note).
 export const EVENT_KINDS = ['note', 'error', 'takeover', 'degrade', 'rate-limit', 'budget'];
+// The only tag an operator may put on its own event (`state.mjs event --code`); every other code is written by the scripts. planned-compact
+// marks the degrade event of PLAYBOOK 8.4 (spec went compact on a machine with few agent slots): expected, so Appendix A5 does not count it.
+export const OPERATOR_EVENT_CODES = ['planned-compact'];
 export const DIRECTIVE_KINDS = ['scope-cut', 'ship-now'];
 export const MAX_EVENTS = 200;
 
@@ -33,7 +36,12 @@ const TIER_PHASES = {
 // Phases in which a healthy run keeps its grace period past the 08:00 guideline (CONTRACT 13).
 const LATE_PHASES = ['qa', 'revise', 'package', 'publish'];
 // No kaizen is resumed after this local time: a retrospective that wakes up at lunch time is a zombie.
-const KAIZEN_CUTOFF_MINUTES = 12 * 60;
+export const KAIZEN_CUTOFF_MINUTES = 12 * 60;
+// An armed phase watch (scripts/lib/phasewatch.mjs) that is overdue by more than this makes its holder's lease count as stale.
+export const WATCH_STALE_AFTER_MINUTES = 15;
+// The watch falls due this long after the phase budget the Workflow was given (phasewatch.mjs arms it; the lease rule below uses the
+// same number to estimate how long a phase may take when no watch is visible).
+export const WATCH_MARGIN_MINUTES = 10;
 // Phases whose work lands in work/<date>/<dir>/ and is wiped when a takeover restarts them.
 const STAGING_DIRS = {
   ideate: ['ideate', 'ideas'],
@@ -391,6 +399,103 @@ export function kaizenPending(run) {
   return run?.status === 'published' && run.phase === 'kaizen' && !doneNames(run).includes('kaizen');
 }
 
+// A JS Date holds at most +-8.64e15 ms; a number beyond it cannot be turned back into an ISO string (RangeError), so it is no instant at all.
+const MAX_DATE_MS = 8.64e15;
+const instantMs = (v) => {
+  const t = typeof v === 'number' ? v : typeof v === 'string' ? Date.parse(v) : NaN;
+  return Number.isFinite(t) && Math.abs(t) <= MAX_DATE_MS ? t : null;
+};
+
+/** A short label that came out of a file or a platform answer and goes back into an answer or a message: letters, digits and _.:- only. */
+export const inertToken = (v, max = 40) => String(v).replace(/[^A-Za-z0-9_.:\- ]/g, '?').slice(0, max);
+/** Free text from a run file as one inert line: control characters and line breaks become spaces, capped. */
+export const inertText = (v, max = 300) => String(v).replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g, ' ').trim().slice(0, max);
+
+/**
+ * The usage stop in force on `run` at `nowMs`, { at, reason, resetsAt, rateLimitType, kind }, or null. `usage observe`
+ * (scripts/lib/usage.mjs) latches a stop on the run when the plan has no room left (a rejected limit, overage in use):
+ * no agent work may start while it stands, and the decision table degrades the day to a tier that needs no model tokens.
+ * It ends when its reset time passes, or when a later `usage observe` reads an allowed status while the reset time is
+ * unknown (`usageClearedAt` records the clear; it is also what lets two writers of one run file merge correctly), or when the
+ * owner clears a wrongly latched limit stop by hand (`usage clear`). `kind` is overage (money) or limit (a refusal); a stop from
+ * before the field existed is read from its words. Every text in the answer is made inert: the file may have been edited by hand.
+ */
+export function usageStopActive(run, nowMs = Date.now()) {
+  const s = run?.usageStop;
+  if (!isObj(s)) return null;
+  const at = instantMs(s.at);
+  const cleared = instantMs(run.usageClearedAt);
+  if (cleared !== null && (at === null || cleared >= at)) return null;
+  const resets = instantMs(s.resetsAt);
+  if (resets !== null && resets <= nowMs) return null;
+  const kind = s.kind === 'overage' || s.kind === 'limit' ? s.kind : /overage/i.test(`${s.reason} ${s.rateLimitType}`) ? 'overage' : 'limit';
+  return {
+    at: s.at === undefined || s.at === null ? null : inertText(s.at, 40),
+    reason: typeof s.reason === 'string' && s.reason.trim() ? inertText(s.reason) : 'usage limit',
+    resetsAt: resets === null ? null : new Date(resets).toISOString(),
+    rateLimitType: s.rateLimitType === undefined || s.rateLimitType === null ? null : inertToken(s.rateLimitType),
+    kind,
+  };
+}
+
+const ISO_INSTANT = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/;
+/** Epoch ms of an ISO-8601 instant string; NaN for anything else (Date.parse alone accepts numbers and fragments such as "5"). */
+export const isoMs = (v) => (typeof v === 'string' && ISO_INSTANT.test(v) ? Date.parse(v) : NaN);
+
+/**
+ * Is `phase` in phasesDone and not running again? `phase-start` on a skipped phase (PLAYBOOK 4.1, the compact QA of a rescue) runs it
+ * once more without taking it out of phasesDone, so a phase that was started after its entry was written is still under way.
+ */
+export function phaseIsOver(run, phase) {
+  const entry = (run?.phasesDone ?? []).find((e) => e?.phase === phase);
+  if (!entry) return false;
+  const restarted = isoMs(run.phaseStartedAt?.[phase]);
+  const finished = isoMs(entry.at);
+  return !(run.phase === phase && Number.isFinite(restarted) && Number.isFinite(finished) && restarted > finished);
+}
+
+/**
+ * Minutes the run's armed phase watch (scripts/lib/phasewatch.mjs) is past its dueAt (negative: still to come), or null when the run
+ * has no live watch: never armed, disarmed, armed by a session that no longer holds the lease, for another phase than the run's, for a
+ * phase that is done, one that fired and whose phase was started again afterwards (the retry has to arm a watch of its own: the fired
+ * one belongs to the attempt that was stopped), or on a day that is over. Whatever run.watch holds this never throws: a damaged block
+ * simply is no watch.
+ */
+export function watchOverdueMinutes(run, nowMs) {
+  const w = run?.watch;
+  if (!isObj(w) || w.disarmedAt) return null;
+  const due = isoMs(w.dueAt);
+  if (!Number.isFinite(due) || typeof w.phase !== 'string') return null;
+  if (!run.lease || w.session !== run.lease.session) return null; // a previous holder's timer is not the new holder's problem
+  if (run.phase !== w.phase || phaseIsOver(run, w.phase)) return null;
+  if (run.status !== 'in_progress' && !kaizenPending(run)) return null;
+  if (w.firedAt && Number.isInteger(w.attemptsAtFire) && (Number(run.attempts?.[w.phase]) || 0) > w.attemptsAtFire) return null; // restarted
+  return (nowMs - due) / 60000;
+}
+
+/** What `begin` and `status` print about run.watch: null without a block; a damaged block still shows, with nulls. */
+export function watchSummary(run, nowMs) {
+  const w = run?.watch;
+  if (!isObj(w)) return null;
+  const str = (v) => (typeof v === 'string' && v ? v : null);
+  const due = isoMs(w.dueAt);
+  const late = watchOverdueMinutes(run, nowMs);
+  return {
+    phase: str(w.phase),
+    attempt: Number.isInteger(w.attempt) ? w.attempt : null,
+    session: str(w.session),
+    armedAt: str(w.armedAt),
+    dueAt: Number.isFinite(due) ? w.dueAt : null,
+    disarmedAt: str(w.disarmedAt),
+    firedAt: str(w.firedAt),
+    triggerId: str(w.triggerId),
+    workflowTask: str(w.workflowTask),
+    live: late !== null,
+    overdueMinutes: late === null ? null : round1(late),
+    staleLease: late !== null && late > WATCH_STALE_AFTER_MINUTES,
+  };
+}
+
 /** First phase of the tier's path that is not done yet. */
 export function firstPending(tier, done) {
   const set = new Set(done);
@@ -426,7 +531,11 @@ function phaseStartMs(run) {
  * Liveness of the lease. Last sign of life = latest of lease.heartbeatAt and the out-of-process
  * heartbeat file (when it belongs to the same session). `stale` = silent for leaseStaleMinutes;
  * `stuck` = the current phase has run longer than phaseStuckMinutes (a hung orchestrator with a
- * live heartbeat is still dead).
+ * live heartbeat is still dead); a live phase watch of the holder (phasewatch.mjs) widens that limit to its own due
+ * time plus WATCH_STALE_AFTER_MINUTES, where the watch itself makes the lease stale. The watch lives in the holder's local run file
+ * until a push carries it, so another container often cannot see it: without a visible watch the limit is widened to the phase budget
+ * the owner configured (config.phaseBudgetMinutes) plus the same margin and grace, which is exactly where a watch armed with that
+ * budget would have put it.
  * `hbUnknown` = the heartbeat channel could not be read at all (fetch failed after retries, branch missing). The
  * lease's own heartbeatAt only moves at checkpoint syncs and routinely ages past leaseStaleMinutes inside a healthy
  * build phase, so silence alone proves nothing then: such a lease keeps the benefit of the doubt (`hbUnreadable`)
@@ -435,7 +544,7 @@ function phaseStartMs(run) {
 export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } = {}) {
   const lease = run?.lease ?? null;
   if (!lease) {
-    return { present: false, holder: null, session: null, stale: true, hbUnreadable: false, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
+    return { present: false, holder: null, session: null, stale: true, beatStale: true, watchStale: false, watchOverdueMinutes: null, hbUnreadable: false, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
   }
   const own = Date.parse(lease.heartbeatAt ?? lease.acquiredAt);
   let last = Number.isFinite(own) ? own : 0;
@@ -449,18 +558,38 @@ export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } =
   }
   const ageMinutes = last > 0 ? Math.max(0, (nowMs - last) / 60000) : Infinity;
   const silent = !(ageMinutes <= config.leaseStaleMinutes);
-  const hbUnreadable = silent && hbUnknown && ageMinutes <= config.phaseStuckMinutes;
-  const stale = silent && !hbUnreadable;
+  // An armed phase watch that nobody answered for WATCH_STALE_AFTER_MINUTES past its due time (scripts/lib/phasewatch.mjs: the
+  // operator's own timer, set to the phase budget plus a margin) is as good as a dead holder, a live heartbeat or an unreadable
+  // heartbeat channel notwithstanding. The heartbeat staleness above is otherwise untouched.
+  const watchLate = watchOverdueMinutes(run, nowMs);
+  const watchStale = watchLate !== null && watchLate > WATCH_STALE_AFTER_MINUTES;
+  const hbUnreadable = silent && hbUnknown && ageMinutes <= config.phaseStuckMinutes && !watchStale;
+  const beatStale = silent && !hbUnreadable;
+  const stale = beatStale || watchStale;
   const start = phaseStartMs(run);
   const phaseMinutes = start === null ? null : Math.max(0, (nowMs - start) / 60000);
   // A human-supervised manual run has no deadline pressure and legitimately spends long in one phase.
-  const stuckLimit = config.phaseStuckMinutes * (lease.holder === 'manual' ? MANUAL_STUCK_FACTOR : 1);
+  const baseLimit = config.phaseStuckMinutes * (lease.holder === 'manual' ? MANUAL_STUCK_FACTOR : 1);
+  // A live phase watch is the holder's own, checkable statement of how long this phase may take (the phase budget plus a margin; the
+  // owner's phaseBudgetMinutes for build, qa, revise and kaizen are longer than phaseStuckMinutes). Until that watch is itself
+  // WATCH_STALE_AFTER_MINUTES late (watchStale above: the lease is stale then, whatever else holds) a phase is not "stuck" merely
+  // for outlasting phaseStuckMinutes. When no live watch is visible (not pushed yet, disarmed, another phase's) the configured
+  // phase budget stands in for it. Without either the limit is exactly what it always was.
+  const watchDue = watchLate === null ? NaN : isoMs(run.watch.dueAt);
+  const watchLimit = Number.isFinite(watchDue) && start !== null ? round1((watchDue - start) / 60000 + WATCH_STALE_AFTER_MINUTES) : null;
+  const budget = config.phaseBudgetMinutes?.[run.phase];
+  const budgetLimit = typeof budget === 'number' && Number.isFinite(budget) && budget > 0 ? round1(budget + WATCH_MARGIN_MINUTES + WATCH_STALE_AFTER_MINUTES) : null;
+  const allowance = watchLimit ?? budgetLimit;
+  const stuckLimit = allowance !== null && allowance > baseLimit ? allowance : baseLimit;
   const stuck = (run.status === 'in_progress' || kaizenPending(run)) && run.phase !== 'done' && phaseMinutes !== null && phaseMinutes > stuckLimit;
   return {
     present: true,
     holder: lease.holder,
     session: lease.session,
     stale,
+    beatStale,
+    watchStale,
+    watchOverdueMinutes: watchLate === null ? null : round1(watchLate),
     hbUnreadable,
     stuck,
     stuckLimitMinutes: stuckLimit,
@@ -609,6 +738,9 @@ const plan = (p) => ({
 /** Why a lease no longer counts as alive: the lease half of a takeover reason. */
 function leaseProblem(config, run, info) {
   if (!info.present) return 'no lease';
+  if (info.watchStale && !info.beatStale) {
+    return `phase watch for ${run.phase} is ${info.watchOverdueMinutes} min overdue (> ${WATCH_STALE_AFTER_MINUTES}) although the heartbeat is fresh`;
+  }
   if (info.stuck && !info.stale) {
     return `phase ${run.phase} has run ${info.phaseMinutes} min (> ${info.stuckLimitMinutes}) although the heartbeat is fresh`;
   }
@@ -626,6 +758,8 @@ function decidePublished({ config, run, role, session, heartbeat, hbUnknown, now
   if (!base.kaizenPending) return exit();
   if (role === 'closer') return exit('; its kaizen is pending but the closer never runs it');
   if (minutes >= KAIZEN_CUTOFF_MINUTES) return exit('; its kaizen is pending but the 12:00 window for resuming it has closed');
+  const stop = usageStopActive(run, nowMs);
+  if (stop) return exit(`; its kaizen is pending but a usage stop is in force (${stop.reason}, ${stop.resetsAt ? `until ${stop.resetsAt}` : 'reset time unknown'}): not resumed`);
 
   const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown });
   const self = isSelf(run.lease, role, session);
@@ -708,6 +842,36 @@ export function decide(input) {
   const self = isSelf(run.lease, role, session);
   const leaseGone = run.status === 'failed' || !info.present || info.stale;
   const leaseDead = leaseGone || (!self && info.stuck);
+
+  // 2b. a usage stop is in force (scripts/lib/usage.mjs latched it on the run): the plan has no room left, so no agent
+  // work may start, whatever the role, the lease or the clock say. Degrade to the cheapest tier that needs no model
+  // tokens: the Ideas Day when ideate is done, else the Postcard. Idempotent: once the run's target is that cheap the
+  // ordinary rows below apply (a holder already on the scripts-only path is left alone).
+  const stop = usageStopActive(run, nowMs);
+  const stopTier = stop ? Math.max(doneNames(run).includes('ideate') ? 3 : 4, run.targetTier) : null;
+  if (stop && stopTier > run.targetTier) {
+    const resets = stop.resetsAt ? `resets ${stop.resetsAt}` : 'reset time unknown';
+    const lifts = stop.resetsAt ? `the stop ends at ${stop.resetsAt}` : 'its reset time is unknown, so only a `usage observe` that reads allowed lifts it';
+    return plan({
+      ...base,
+      action: 'force-degrade',
+      takeLease: true,
+      setPhase: true,
+      clearFailed: true,
+      changed: true,
+      targetTier: stopTier,
+      resumePhase: firstPending(stopTier, doneNames(run)),
+      reason: `usage-stop: ${stop.reason} (${stop.rateLimitType ?? 'limit'}, ${resets}); no agent work may start, forcing tier ${stopTier} (${stopTier === 3 ? 'Ideas Day from the researched ideas' : 'Postcard, no ideas exist'}), scripts only; ${lifts}, and the tier does not go back up within the run`,
+      events: [
+        {
+          kind: 'degrade',
+          code: 'usage-stop',
+          msg: `${role} (${session}) forced tier ${stopTier} at ${clock}: usage stop (${stop.reason}, ${resets}); ${self ? 'kept the lease' : `took the lease from ${run.lease ? `${run.lease.holder}/${run.lease.session}` : 'nobody'}`}`,
+        },
+      ],
+      directives: self ? [] : newDirectives(run, [{ kind: 'ship-now', tier: stopTier }]),
+    });
+  }
 
   // 3. closer at/after the tier-3 cutoff (CONTRACT 13). A healthy run (fresh lease, phase advancing) in
   // qa/revise/package/publish keeps its grace period until graceUntil: the closer waits instead of discarding
@@ -1048,6 +1212,23 @@ export function mergeRuns(base, remote, local) {
   if (remote.replaced || local.replaced) {
     out.replaced = unionBy([...(remote.replaced ?? []), ...(local.replaced ?? [])], (r) => JSON.stringify(r), (a) => a);
   }
+  // The phase watch (scripts/lib/phasewatch.mjs) belongs to the lease holder: one holder on both sides keeps the block it touched
+  // last (armed, bound, fired or disarmed), whichever side that was; with two holders the winner's block stands (cloned above).
+  if (sameHolder) {
+    const watches = [remote.watch, local.watch].filter(isObj);
+    const touched = (w) => Math.max(ms(w.armedAt), ms(w.boundAt), ms(w.firedAt), ms(w.disarmedAt), ms(w.extendedAt), ms(w.timerFiredAt));
+    const newest = watches.length === 2 ? (touched(remote.watch) > touched(local.watch) ? remote.watch : local.watch) : watches[0];
+    if (newest) out.watch = structuredClone(newest);
+  }
+
+  // A usage stop (usage.mjs) belongs to the account, not to the lease holder: keep the newest stop either side saw,
+  // unless a clear (usageClearedAt) that is not older than it was recorded on either side.
+  const stops = [remote.usageStop, local.usageStop].filter(isObj).sort((a, b) => ms(b.at) - ms(a.at));
+  const clearedAt = [remote.usageClearedAt, local.usageClearedAt].filter((t) => typeof t === 'string').sort((a, b) => ms(b) - ms(a))[0];
+  delete out.usageStop;
+  delete out.usageClearedAt;
+  if (clearedAt) out.usageClearedAt = clearedAt;
+  if (stops[0] && !(clearedAt && ms(clearedAt) >= ms(stops[0].at))) out.usageStop = stops[0];
 
   // a published day stays published, at the better tier, whichever side said so
   if (remote.status === 'published' || local.status === 'published') {
@@ -1083,7 +1264,7 @@ function doneMarker(date, phase) {
   return path.join(stagingRoot(date), phase, 'DONE.json');
 }
 
-function hasDoneMarker(date, phase) {
+export function hasDoneMarker(date, phase) {
   if (!STAGING_DIRS[phase]) return false;
   const marker = readJson(doneMarker(date, phase), null);
   return isObj(marker) && marker.ok !== false;
@@ -1190,16 +1371,27 @@ export function levelConfigFor(config, level) {
   };
 }
 
-export function spendSummary(config, run) {
-  const lc = levelConfigFor(config, run.throttle ?? config.budget.level);
+/**
+ * The day's spend against its cap. `level` (optional) is the level in force right now, the throttle's effective one: a run that is
+ * still going follows it, so a cap changes at the very instant the owner override ends and not at the next `begin`; a finished run
+ * keeps the level it ran at. `workflowCapTokens` and `kaizenCapTokens` are what to pass as `args.capTokens` of a Workflow launched
+ * NOW: budget.spent() restarts at 0 in every turn, so what the day has spent so far must already be out of the cap (ideate to
+ * revise also leave the kaizen reserve; kaizen does not). They are the PLAYBOOK 6.5 table with BASE worked out for you.
+ */
+export function spendSummary(config, run, { level } = {}) {
+  const live = run.status === 'in_progress' || kaizenPending(run);
+  const lc = levelConfigFor(config, live && level ? level : (run.throttle ?? config.budget.level));
+  const spent = run.spend.outputTokens;
   return {
-    outputTokens: run.spend.outputTokens,
+    outputTokens: spent,
     agentCalls: run.spend.agentCalls,
     byPhase: run.spend.byPhase,
     level: lc.level,
     capTokens: lc.capTokens,
-    remainingTokens: Math.max(0, lc.capTokens - run.spend.outputTokens),
-    overCap: run.spend.outputTokens > lc.capTokens,
+    remainingTokens: Math.max(0, lc.capTokens - spent),
+    workflowCapTokens: Math.max(0, lc.capTokens - lc.reserveForKaizenTokens - spent),
+    kaizenCapTokens: Math.max(0, lc.capTokens - spent),
+    overCap: spent > lc.capTokens,
   };
 }
 
@@ -1207,7 +1399,7 @@ export function spendSummary(config, run) {
 // commands (each is one atomic, locked read-modify-write)
 // ---------------------------------------------------------------------------------------
 
-function guardHolder(run, session) {
+export function guardHolder(run, session) {
   if (session && run.lease && run.lease.session !== session) {
     throw new StateError(
       `lease is held by ${run.lease.holder}/${run.lease.session}, not ${session}; stop writing (leaseHeld:false)`,
@@ -1317,6 +1509,7 @@ export function beginRun(opts) {
       salvageSite: result.status === 'published' ? null : unfinishedSite(date),
       kept,
       kaizenPending: kaizenPending(result),
+      ...(usageStopActive(result, now.getTime()) ? { usageStop: usageStopActive(result, now.getTime()) } : {}),
       ...(unbacked ? { publicationBacked: false, publicationProblem: unbacked } : {}),
       run: result,
       recovered,
@@ -1328,14 +1521,15 @@ export function beginRun(opts) {
 }
 
 /** beat: refresh the lease heartbeat when the lease is ours; otherwise report who holds it. */
-export function beatRun({ role, session, phase, note, date, now, displacedBy, config = loadConfig() }) {
+export function beatRun({ role, session, phase, note, date, now, displacedBy, level, config = loadConfig() }) {
   assertIdentity(role, session);
   if (phase !== undefined) assertPhase(phase);
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   return updateRun(day, (run) => {
     const pending = run.directives.filter((d) => !d.ack);
-    const common = { directives: pending, targetTier: run.targetTier, status: run.status, spend: spendSummary(config, run), kaizenPending: kaizenPending(run) };
+    const usageStop = usageStopActive(run, at.getTime()); // a stop another session latched shows up at the next boundary beat
+    const common = { directives: pending, targetTier: run.targetTier, status: run.status, spend: spendSummary(config, run, { level }), kaizenPending: kaizenPending(run), ...(usageStop ? { usageStop } : {}) };
     if (displacedBy) {
       // another container's newer lease reached the shared branch: this writer lost and must not refresh anything
       return {
@@ -1498,19 +1692,19 @@ export function ackDirectives({ kind, tier, date, now, config = loadConfig() }) 
   });
 }
 
-export function eventRun({ kind, msg, by, date, now, config = loadConfig() }) {
+export function eventRun({ kind, msg, by, date, now, config = loadConfig(), code }) {
   if (!EVENT_KINDS.includes(kind)) throw new UsageError(`event kind must be ${EVENT_KINDS.join('|')} (got "${kind}")`);
   if (typeof msg !== 'string' || !msg.trim()) throw new UsageError('--msg is required');
   if (!by) throw new UsageError('--by <role> is required');
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   return updateRun(day, (run) => {
-    pushEvent(run, kind, msg, by, at.toISOString());
+    pushEvent(run, kind, msg, by, at.toISOString(), code); // `code`: the machine-readable tag some callers add (usage-warn)
     return { run, result: { kind, events: run.events.length } };
   });
 }
 
-export function spendRun({ tokens = 0, calls = 0, phase, session, date, now, config = loadConfig() }) {
+export function spendRun({ tokens = 0, calls = 0, phase, session, date, now, level, config = loadConfig() }) {
   const t = Number(tokens);
   const c = Number(calls);
   if (!Number.isFinite(t) || t < 0 || !Number.isFinite(c) || c < 0) throw new UsageError('--tokens and --calls must be non-negative numbers');
@@ -1520,12 +1714,12 @@ export function spendRun({ tokens = 0, calls = 0, phase, session, date, now, con
   return updateRun(day, (run) => {
     guardHolder(run, session);
     const bucket = phase ?? run.phase;
-    const before = spendSummary(config, run);
+    const before = spendSummary(config, run, { level });
     run.spend.outputTokens += t;
     run.spend.agentCalls += c;
     const cur = run.spend.byPhase[bucket] ?? { outputTokens: 0, agentCalls: 0 };
     run.spend.byPhase[bucket] = { outputTokens: (cur.outputTokens ?? 0) + t, agentCalls: (cur.agentCalls ?? 0) + c };
-    const after = spendSummary(config, run);
+    const after = spendSummary(config, run, { level });
     if (after.overCap && !before.overCap && run.status !== 'published') {
       pushEvent(
         run,
@@ -1682,10 +1876,108 @@ export function syncThrottleToRun({ date, now, level, reason, kind = 'note', by 
 }
 
 // ---------------------------------------------------------------------------------------
+// usage stop (written by scripts/lib/usage.mjs; read by usageStopActive, decide and mergeRuns above)
+// ---------------------------------------------------------------------------------------
+
+const sameUsageStop = (a, b) => a.rateLimitType === b.rateLimitType && a.resetsAt === b.resetsAt && a.reason === b.reason;
+
+/**
+ * Latches `stop` ({ reason, resetsAt, rateLimitType, kind }) on the run of `date`: run.usageStop = { at, reason, resetsAt, rateLimitType,
+ * kind } (kind: overage = money, limit = a refusal), an event, and any earlier clear forgotten (a new stop outranks it). The account's
+ * limit is nobody's lease, so no holder check.
+ * Returns { found, recorded, ... } and never throws for a missing, unreadable or finished run. A stop identical to the one in
+ * force is not recorded again (`repeat:true`): the first sighting keeps its time.
+ */
+export function latchUsageStop({ date, now, stop, kind = 'rate-limit', session, phase }) {
+  const day = assertDate(date);
+  const at = toDate(now);
+  const nowIso = at.toISOString();
+  const read = readRunFile(day);
+  if (read.status !== 'ok') return { found: false, ...(read.status === 'corrupt' ? { corrupt: true } : {}) };
+  if (read.run.status === 'published' && !kaizenPending(read.run)) return { found: true, recorded: false, finished: true }; // the day is over: nothing left to degrade
+  try {
+    return updateRun(day, (run) => {
+      const active = usageStopActive(run, at.getTime());
+      if (active && sameUsageStop(active, stop)) return { result: { found: true, recorded: false, repeat: true, usageStop: active } };
+      run.usageStop = {
+        at: nowIso,
+        reason: inertText(stop.reason),
+        resetsAt: stop.resetsAt ?? null,
+        rateLimitType: stop.rateLimitType === undefined || stop.rateLimitType === null ? null : inertToken(stop.rateLimitType),
+        kind: stop.kind === 'overage' ? 'overage' : 'limit',
+      };
+      delete run.usageClearedAt;
+      const when = stop.resetsAt ? `resets ${stop.resetsAt}` : 'reset time unknown';
+      pushEvent(run, kind === 'budget' ? 'budget' : 'rate-limit', `usage stop: ${stop.reason} (${when}); seen by ${session ?? 'an unnamed session'}${phase ? ` in ${phase}` : ''}`, 'usage', nowIso, 'usage-stop');
+      return { run, result: { found: true, recorded: true, usageStop: run.usageStop } };
+    });
+  } catch (err) {
+    return { found: false, error: err.message };
+  }
+}
+
+/**
+ * Lifts the usage stop of `date` once nothing but a reading can: its reset time has passed, or it never had one. A stop whose reset
+ * time is still ahead stays (`standingStop`): an "allowed" reading may be stale, the reset time is the better witness. The lift
+ * deletes run.usageStop and records run.usageClearedAt (so a merge with a writer that still has the stop cannot bring it back).
+ * Returns { found, cleared, why?, clearedStop?, standingStop? }.
+ */
+export function liftUsageStop({ date, now, session }) {
+  const day = assertDate(date);
+  const at = toDate(now);
+  const nowIso = at.toISOString();
+  const read = readRunFile(day);
+  if (read.status !== 'ok' || !read.run.usageStop) return { found: read.status === 'ok', cleared: false };
+  try {
+    return updateRun(day, (run) => {
+      const prior = run.usageStop;
+      if (!prior) return { result: { found: true, cleared: false } };
+      const active = usageStopActive(run, at.getTime());
+      if (active?.resetsAt) return { result: { found: true, cleared: false, standingStop: active } };
+      const passed = Date.parse(prior.resetsAt) <= at.getTime();
+      const why = active ? 'the stop had no known reset time and the plan now reads allowed' : passed ? `its reset time (${prior.resetsAt}) has passed` : 'another container had already cleared it';
+      delete run.usageStop;
+      run.usageClearedAt = nowIso;
+      pushEvent(run, 'note', `usage stop recorded ${prior.at ?? '?'} cleared: ${why}; seen by ${session ?? 'an unnamed session'}`, 'usage', nowIso, 'usage-clear');
+      return { run, result: { found: true, cleared: true, why, clearedStop: prior } };
+    });
+  } catch (err) {
+    return { found: false, cleared: false, error: err.message };
+  }
+}
+
+/**
+ * The owner's way out of a LIMIT stop that its reset time keeps in force although the plan is open again (a refusal read from a window
+ * that does not apply to us, a clock error): deletes run.usageStop, records run.usageClearedAt and an event that carries the owner's
+ * reason, and nothing else (the tier the stop forced stays: a tier never goes back up). An overage stop (money) is never cleared this way.
+ * Returns { found, cleared, ... }; `refused:'overage'` when it is one. Throws UsageError without a real reason.
+ */
+export function clearUsageStop({ date, now, reason, session }) {
+  const why = typeof reason === 'string' ? inertText(reason, 200) : '';
+  if (why.length < 12) throw new UsageError('--reason is required: one sentence saying why this stop is wrong (at least 12 characters)');
+  const day = assertDate(date);
+  const at = toDate(now);
+  const nowIso = at.toISOString();
+  return updateRun(day, (run) => {
+    const active = usageStopActive(run, at.getTime());
+    if (!active) return { result: { found: true, cleared: false, reason: run.usageStop ? 'the stop on file is no longer in force (reset time passed or already cleared)' : 'the run has no usage stop' } };
+    if (active.kind === 'overage') {
+      const ends = active.resetsAt ? `it ends at its reset time (${active.resetsAt})` : 'its reset time is unknown, so only a `usage observe` that reads allowed lifts it';
+      return { result: { found: true, cleared: false, refused: 'overage', reason: `an overage stop (money) is never cleared by hand: ${ends}`, stop: active } };
+    }
+    const prior = run.usageStop;
+    delete run.usageStop;
+    run.usageClearedAt = nowIso;
+    pushEvent(run, 'note', `usage stop recorded ${prior.at ?? '?'} cleared by hand: ${why}; seen by ${session ? inertToken(session, 120) : 'an unnamed session'}`, 'owner', nowIso, 'usage-clear');
+    return { run, result: { found: true, cleared: true, why, clearedStop: active } };
+  });
+}
+
+// ---------------------------------------------------------------------------------------
 // status
 // ---------------------------------------------------------------------------------------
 
-function nextActionHint({ run, info, config, minutes, spend }) {
+function nextActionHint({ run, info, config, minutes, spend, usageStop = null }) {
   const sched = scheduleMinutes(config);
   // A manual run (genesis, rerun, repair) has no deadline pressure: clock-based advice would abandon a good run.
   const manual = info.present && info.holder === 'manual';
@@ -1710,6 +2002,8 @@ function nextActionHint({ run, info, config, minutes, spend }) {
     parts.push('Run has no lease: `begin` takes it over.');
   } else if (info.hbUnreadable) {
     parts.push(`${info.holder} last checkpointed ${info.ageMinutes} min ago but the heartbeat branch cannot be read (hb-unreadable): its silence is not proof of death, so \`begin\` leaves it alone until ${config.phaseStuckMinutes} min of silence or a phase stuck past ${info.stuckLimitMinutes} min.`);
+  } else if (info.watchStale && !info.beatStale) {
+    parts.push(`The phase watch for ${run.phase} is ${info.watchOverdueMinutes} min overdue (limit ${WATCH_STALE_AFTER_MINUTES}) although ${info.holder} still beats: treated as hung, \`begin\` takes over at ${firstPending(run.targetTier, doneNames(run))}.`);
   } else if (info.stale) {
     parts.push(`Lease of ${info.holder} is STALE (${info.ageMinutes} min silent, limit ${config.leaseStaleMinutes}): \`begin\` takes over at ${firstPending(run.targetTier, doneNames(run))}.`);
   } else if (info.stuck) {
@@ -1717,9 +2011,13 @@ function nextActionHint({ run, info, config, minutes, spend }) {
   } else {
     parts.push(`${info.holder} is alive (last sign ${info.ageMinutes} min ago) in ${run.phase}${info.phaseMinutes === null ? '' : ` for ${info.phaseMinutes} min`}: watchdogs exit quietly.`);
   }
+  if (info.watchOverdueMinutes > 0 && !info.watchStale) {
+    parts.push(`The phase watch for ${run.phase} fell due ${info.watchOverdueMinutes} min ago and nothing answered it: the holder obeys the PHASEWATCH verdict (\`state.mjs watch check\`), and \`begin\` takes over once it is ${WATCH_STALE_AFTER_MINUTES} min late.`);
+  }
   const pending = run.directives.filter((d) => !d.ack);
   if (pending.length) parts.push(`Pending directives for the holder: ${pending.map((d) => `${d.kind}(tier ${d.tier})`).join(', ')}.`);
   if (spend.overCap) parts.push(`Output tokens ${spend.outputTokens} are over the ${spend.capTokens} cap: no new agent work, go to package or a fallback.`);
+  if (usageStop) parts.push(`A usage stop is in force (${usageStop.reason}, ${usageStop.resetsAt ? `until ${usageStop.resetsAt}` : 'reset time unknown'}): no agent work may start; \`begin\` degrades the day to the Ideas Day or Postcard (scripts only). ${usageStop.resetsAt ? 'It ends at its reset time (a `usage observe` that reads allowed does not lift it earlier).' : 'Its reset time is unknown: a `usage observe` that reads allowed lifts it.'}`);
   if (manual) {
     parts.push('This is a manual run: clock-based advice (deadline, tier cutoffs) does not apply to it; ignore clock hints.');
   } else if (minutes >= sched.hardStop) {
@@ -1736,7 +2034,7 @@ function nextActionHint({ run, info, config, minutes, spend }) {
   return parts.join(' ');
 }
 
-export function statusSummary({ date, now, config = loadConfig(), history = [], heartbeat = null, hbUnknown = false }) {
+export function statusSummary({ date, now, config = loadConfig(), history = [], heartbeat = null, hbUnknown = false, level }) {
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   const read = readRunFile(day);
@@ -1770,7 +2068,8 @@ export function statusSummary({ date, now, config = loadConfig(), history = [], 
       history,
     };
   }
-  const spend = spendSummary(config, run);
+  const spend = spendSummary(config, run, { level });
+  const usageStop = usageStopActive(run, at.getTime());
   return {
     ...base,
     status: run.status,
@@ -1785,8 +2084,9 @@ export function statusSummary({ date, now, config = loadConfig(), history = [], 
     phasesDone: doneNames(run),
     attempts: run.attempts,
     lease: run.lease
-      ? { ...run.lease, ageMinutes: info.ageMinutes, lastSignOfLifeAt: info.lastBeatAt, source: info.source, stale: info.stale, stuck: info.stuck, hbUnreadable: info.hbUnreadable, alive: !info.stale && !info.stuck }
+      ? { ...run.lease, ageMinutes: info.ageMinutes, lastSignOfLifeAt: info.lastBeatAt, source: info.source, stale: info.stale, stuck: info.stuck, hbUnreadable: info.hbUnreadable, alive: !info.stale && !info.stuck, ...(info.watchStale ? { watchStale: true } : {}) }
       : null,
+    ...(run.watch ? { watch: watchSummary(run, at.getTime()) } : {}),
     directives: run.directives.filter((d) => !d.ack),
     directivesAcked: run.directives.filter((d) => d.ack).length,
     chosen: run.chosen,
@@ -1797,7 +2097,8 @@ export function statusSummary({ date, now, config = loadConfig(), history = [], 
     ...(run.status === 'published' ? { publicationBacked: publicationProblem(day) === null } : {}),
     eventsTail: run.events.slice(-10),
     eventCount: run.events.length,
-    nextAction: nextActionHint({ run, info, config, minutes, spend }),
+    ...(usageStop ? { usageStop } : {}),
+    nextAction: nextActionHint({ run, info, config, minutes, spend, usageStop }),
     history,
   };
 }

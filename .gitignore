@@ -3,3 +3,7 @@ node_modules/
 .DS_Store
 work/*/qa/shots/
 work/*/tmp/
+# machine-local diagnostics and lock files: never committed, never "dirt" for the kaizen gate, never a merge conflict
+state/usage.json
+*.lock
+*.lock.stale.*

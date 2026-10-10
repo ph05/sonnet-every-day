@@ -36,7 +36,7 @@ Anchors: 2 = clearly deficient, 5 = acceptable but unremarkable, 8 = strong, 10 
 * **S3 (minor polish).** Spacing, easing, a missing hover state, small copy tightening, an extra easter egg.
 * **S4 (nit).** Cosmetic trivia not worth a loop; also used for unverifiable items such as a source link that timed out from our network.
 
-Rank by what a visitor feels in the first minute, not by how easy the fix is. When two things are equally bad, the one the visitor meets first is the higher severity. Revise loops work on S1 and S2 only.
+Rank by what a visitor feels in the first minute, not by how easy the fix is. When two things are equally bad, the one the visitor meets first is the higher severity. Revise loops work on S1 and S2 first, and on a compact day with four or more S3 on those too, after the rest; S4 is never worth a loop. A loop only reaches the page when it leaves the page strictly better.
 
 ## Defect record
 

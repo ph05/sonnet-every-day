@@ -7,6 +7,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { validateProject, validateRepo } from '../scripts/validate.mjs';
 import { MALICIOUS, BENIGN } from './fixtures/gate-vectors.mjs';
+import { startMeter, childCpuMs, childCpuAvailable } from './helpers/cpu.mjs';
 import {
   makeSandbox, buildProject, makePng, projectJson, fingerprint, codesOf, REAL_ROOT,
 } from './fixtures/gate-helpers.mjs';
@@ -370,7 +371,21 @@ test('internals: JS lexer handles regex, templates, comments and escapes', async
   assert.equal(lex('\\u0066etch').tokens[0].value, 'fetch');
 });
 
-test('performance: an 8 MB project validates in under 2 seconds', async () => {
+test('the CPU meter of the performance tests sees the work of a child process (Linux), and a sleep is wall time only', { skip: !childCpuAvailable() && 'no /proc/self/stat' }, () => {
+  const burn = startMeter();
+  // the child burns 300 ms of its OWN CPU time (not of wall time: on a loaded machine the same loop takes longer, it never burns less)
+  spawnSync(process.execPath, ['-e', 'const t0 = process.cpuUsage(); while ((process.cpuUsage(t0).user + process.cpuUsage(t0).system) / 1000 < 300);']);
+  const burned = burn.stop();
+  assert.ok(burned.childMs >= 250, `a child that burned 300 ms of CPU read ${burned.childMs} ms`);
+  assert.ok(burned.cpuMs >= burned.childMs, JSON.stringify(burned));
+  const sleep = startMeter();
+  spawnSync(process.execPath, ['-e', 'Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 400)']);
+  const slept = sleep.stop();
+  assert.ok(slept.wallMs >= 380 && slept.childMs < 250, `a sleeping child read ${slept.childMs} ms of CPU in ${slept.wallMs} ms of wall time`);
+  assert.ok(childCpuMs() >= burned.childMs, 'the counter only grows');
+});
+
+test('performance: an 8 MB project validates in under 2 seconds of CPU time (children included), and never stalls', async () => {
   const box = makeSandbox();
   try {
     const minified = (bytes) => {
@@ -402,15 +417,21 @@ test('performance: an 8 MB project validates in under 2 seconds', async () => {
     };
     for (let i = 0; i < 100; i++) files[`js/m${i}.js`] = minified(2500);
     const dir = project(box, { files, mjs: 'export const a = 1;\n' });
-    const times = [];
+    // The budget is CPU time, not wall time: on a loaded machine the same validation took 2 to 9 s of wall clock for 0.7 to 1.0 s of CPU (the
+    // wall-clock version failed in 1 of 3 concurrent runs of this file). The CPU counted is this process's plus the `node --check` children it
+    // waited for (a slow or serialized child shows up there), and a loose wall-clock backstop on the best run catches an order-of-magnitude
+    // stall that burns no CPU (a hang, a sleep) without failing a busy machine.
+    const runs = [];
     for (let i = 0; i < 3; i++) {
-      const t0 = performance.now();
+      const meter = startMeter();
       const res = await validateProject(dir, { tier: 3 });
-      times.push(performance.now() - t0);
+      runs.push(meter.stop());
       assert.deepEqual(res.errors, []);
       assert.ok(res.stats.bytes > 6.5 * mb, `project is only ${res.stats.bytes} bytes`);
     }
-    assert.ok(Math.min(...times) < 2000, `took ${times.map((x) => x.toFixed(0)).join('ms, ')}ms`);
+    const shown = runs.map((r) => `${r.cpuMs.toFixed(0)}ms (own ${r.ownMs.toFixed(0)}, children ${r.childMs.toFixed(0)}, wall ${r.wallMs.toFixed(0)})`).join(', ');
+    assert.ok(Math.min(...runs.map((r) => r.cpuMs)) < 2000, `took ${shown} of CPU time`);
+    assert.ok(Math.min(...runs.map((r) => r.wallMs)) < 8 * 2000, `stalled: ${shown}`);
   } finally {
     box.cleanup();
   }

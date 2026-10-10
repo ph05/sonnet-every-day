@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Long Task</title>
+<style>
+html, body { margin: 0; background: #ffffff; color: #111111; font: 18px/1.4 system-ui, sans-serif; }
+main { padding: 1rem 2rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Long task</h1>
+<p>This page keeps the main thread busy for about 400 ms right after it loads, on every visit.</p>
+</main>
+<script>
+window.addEventListener('load', function () {
+  var end = performance.now() + 400;
+  while (performance.now() < end) { /* busy on purpose: a task well over the 50 ms long-task line, well under the 1000 ms warning */ }
+});
+</script>
+</body>
+</html>

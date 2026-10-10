@@ -285,6 +285,10 @@ const HISTORY_FILE = 'state/history.json';
 const DAY_PATH_RE = /^(?:work|docs\/d|state\/ideas|state\/reports)\/(\d{4}-\d{2}-\d{2})(?:[-/.]|$)/;
 // Files build-site regenerates from history; a conflict in one is resolved by taking upstream and rebuilding.
 const SITE_GENERATED_RE = /^docs\/(index\.html|archive\.json|feed\.xml|sitemap\.xml|404\.html|robots\.txt|\.nojekyll|assets\/.+)$/;
+// The usage observation log (usage.mjs) is machine-local diagnostics (.gitignore keeps it out of every sync and out of the kaizen
+// gate's dirt); the decisions live in the run file. A copy somebody committed by hand is still tracked, though: two containers appending
+// to the same end of it must never block a push, so a conflict in it takes upstream (the losing side's lines are dropped).
+const USAGE_LOG_FILE = 'state/usage.json';
 
 const entryMap = (history) => new Map(history.entries.filter((e) => e && typeof e.date === 'string').map((e) => [e.date, e]));
 
@@ -370,7 +374,7 @@ function planMerges(g, remoteRef) {
  * always left usable (a failed rebase is aborted).
  */
 function rebaseOnto(g, remoteRef, merged, log) {
-  const resolvable = (f) => merged.has(f) || SITE_GENERATED_RE.test(f);
+  const resolvable = (f) => merged.has(f) || SITE_GENERATED_RE.test(f) || f === USAGE_LOG_FILE;
   let rebuildSite = false;
   let r = g.run(['rebase', '--autostash', remoteRef]);
   for (let step = 0; !r.ok && step < 200; step++) {
@@ -381,7 +385,7 @@ function rebaseOnto(g, remoteRef, merged, log) {
         fs.writeFileSync(path.join(g.cwd, f), merged.get(f).text);
       } else {
         g.run(['checkout', '--ours', '--', f]); // during a rebase "ours" is the upstream being rebased onto
-        rebuildSite = true;
+        if (f !== USAGE_LOG_FILE) rebuildSite = true;
       }
       g.run(['add', '--', f]);
     }

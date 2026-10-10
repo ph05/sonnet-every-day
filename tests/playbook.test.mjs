@@ -15,6 +15,10 @@ const D = '2026-10-09';
 const read = (rel) => fs.readFileSync(path.join(REPO_ROOT, rel), 'utf8');
 const PLAYBOOK = read('ops/PLAYBOOK.md');
 const REAL_CONFIG = JSON.parse(read('config.json'));
+// The owner's time-limited budget override (config.budget.ownerOverride) is a live setting, not something these recipes verify:
+// while it is active every level below would read the override's level. tests/usage.test.mjs covers the override itself.
+const FIXTURE_CONFIG = structuredClone(REAL_CONFIG);
+delete FIXTURE_CONFIG.budget.ownerOverride;
 const TAXONOMY = read('ops/taxonomy.json');
 
 function section(text, heading) {
@@ -54,7 +58,7 @@ function runSnippet(box, id, env = {}) {
 
 /** A sandbox that carries the real config and taxonomy (the playbook's tools read both). */
 function realBox({ git = false } = {}) {
-  const box = git ? makeRepoSandbox({ config: REAL_CONFIG }) : makeSandbox({ config: REAL_CONFIG });
+  const box = git ? makeRepoSandbox({ config: FIXTURE_CONFIG }) : makeSandbox({ config: FIXTURE_CONFIG });
   box.write('ops/taxonomy.json', TAXONOMY);
   return box;
 }

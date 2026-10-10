@@ -48,6 +48,9 @@ export function copyPristine(root, dest, config) {
   // Frozen fixture clock: every scenario counts days from 2026-10-09 whatever the live config.startDate is.
   const cfgPath = path.join(dest, 'config.json');
   const frozen = { ...JSON.parse(fs.readFileSync(cfgPath, 'utf8')), startDate: '2026-10-09' };
+  // The owner's time-limited budget override is a live setting too: the fixture clock lies inside its window, which would
+  // make every scenario run at the override's level instead of the levels they set and read (tests/usage.test.mjs covers it).
+  if (frozen.budget) delete frozen.budget.ownerOverride;
   fs.writeFileSync(cfgPath, json(frozen));
   config = { ...config, startDate: '2026-10-09' };
   for (const [rel, content] of Object.entries(pristineFiles(config))) {

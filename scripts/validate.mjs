@@ -14,6 +14,9 @@ import { pathToFileURL, domainToASCII } from 'node:url';
 import {
   repoRoot, rp, loadConfig, loadTaxonomy, parseArgs, resolveNow, localParts, dayNumber, print, die,
 } from './lib/common.mjs';
+import { PHASES } from './lib/runstate.mjs';
+import { ownerOverrideProblems } from './lib/throttle.mjs';
+import { revisePolicyProblems } from './lib/revisepolicy.mjs';
 
 /* ------------------------------------------------------------------------------------------------
  * Reporting
@@ -2423,6 +2426,35 @@ async function mapPool(items, limit, fn) {
   return results;
 }
 
+/**
+ * budget.ownerOverride (the owner lifting the budget until a time: the throttle ignores a malformed one, so say so here) and
+ * phaseBudgetMinutes (minutes a phase may take, keyed by the fixed phase names). Both are optional.
+ */
+function checkBudgetKeys(report, cfg, f) {
+  for (const problem of ownerOverrideProblems(cfg)) report.error('config', problem, f);
+  const minutes = cfg.phaseBudgetMinutes;
+  if (minutes === undefined) return;
+  if (minutes === null || typeof minutes !== 'object' || Array.isArray(minutes)) {
+    report.error('config', 'phaseBudgetMinutes must be an object of phase name -> positive number of minutes', f);
+    return;
+  }
+  for (const [phase, value] of Object.entries(minutes)) {
+    if (!PHASES.includes(phase)) report.error('config', `phaseBudgetMinutes.${phase} is not a phase (${PHASES.join(', ')})`, f);
+    if (!(typeof value === 'number' && Number.isFinite(value) && value > 0)) report.error('config', `phaseBudgetMinutes.${phase} must be a positive number of minutes`, f);
+  }
+}
+
+/**
+ * config.revisePolicy and budget.levels.<level>.reviseLoopsTier2: the revise policy of a compact day (scripts/lib/revisepolicy.mjs,
+ * PLAYBOOK 8.6). Both are optional (a config without them keeps the old rescue-only rule); a damaged value is an error because the
+ * policy would silently fall back to its default.
+ */
+function checkReviseKeys(report, cfg, f) {
+  const { errors, warnings } = revisePolicyProblems(cfg);
+  for (const problem of errors) report.error('config', problem, f);
+  for (const problem of warnings) report.warn('config', problem, f);
+}
+
 // `projects` defaults to true: whatever sits under docs/d is served by Pages, so the repo gate must look inside it.
 export async function validateRepo({ projects = true } = {}) {
   const report = new Report();
@@ -2461,6 +2493,8 @@ export async function validateRepo({ projects = true } = {}) {
     if (!cfg.budget?.levels?.[cfg.budget?.level]) report.error('config', `budget.level ${JSON.stringify(cfg.budget?.level)} is not a defined level`, f);
     if (!Number.isInteger(cfg.mix?.windowDays) || !Number.isInteger(cfg.mix?.politicsMaxPer14Days)) report.error('config', 'mix.windowDays and mix.politicsMaxPer14Days must be integers', f);
     if (!cfg.workBranch || !cfg.siteUrl) report.error('config', 'workBranch and siteUrl are required', f);
+    checkBudgetKeys(report, cfg, f);
+    checkReviseKeys(report, cfg, f);
   }
 
   // state files

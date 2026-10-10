@@ -62,6 +62,23 @@ async function settle(promise, ms) {
   }
 }
 
+/**
+ * Is `req` (a Playwright Request, as seen by a route handler) a top-level navigation? request.frame() THROWS for a request
+ * without a frame: the first navigation of a popup (a target=_blank link, window.open) is issued before its frame exists,
+ * and service-worker requests never have one. An exception inside a route handler is uncaught and ends the whole run with
+ * no report, so the lookup is guarded. A navigation with no frame yet is a new window's own first navigation, i.e.
+ * top-level (the monkey follows cited-source links on purpose); any other frameless request is not.
+ */
+export function isTopLevelNavigation(req) {
+  let nav = false;
+  try {
+    nav = req.isNavigationRequest();
+    return Boolean(nav && !req.frame().parentFrame());
+  } catch {
+    return Boolean(nav); // no frame yet (popup) or never (worker)
+  }
+}
+
 /* ------------------------------------------------------------------------------------------------
  * Playwright and Chromium discovery
  * ---------------------------------------------------------------------------------------------- */
@@ -717,7 +734,7 @@ export async function runBrowserCheck(options) {
     };
     await ctx.route('**/*', (route) => {
       const req = route.request();
-      const top = req.isNavigationRequest() && !req.frame().parentFrame();
+      const top = isTopLevelNavigation(req);
       const c = recordRequest(req.url(), req.method(), req.resourceType(), top);
       if (c.kind === 'local') route.continue().catch(() => {});
       else route.abort('blockedbyclient').catch(() => {});

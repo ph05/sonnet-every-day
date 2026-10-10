@@ -1,23 +1,32 @@
 export const meta = {
   name: 'revise',
-  description: 'Sonnet Every Day revise: S1 and S2 defects from qa/report.json (plus extra defects from the orchestrator) are grouped by owner, fix agents repair their own disjoint files, the browser check and a critic recheck run again, for up to the revise loops the budget level allows; the QA report is rewritten with a higher revision.',
-  whenToUse: 'Phase "revise" of the daily run (CONTRACT section 8).',
+  description: 'Sonnet Every Day revise: the defects of qa/report.json (S1 and S2, S3 too when fixSeverity says so; plus extra defects from the orchestrator) are grouped by owner and fixed in severity order by fix agents on a working copy of the site, the browser check and a critic recheck run again, and only a loop that got strictly better is promoted into the build; up to the revise loops the budget level and the tier allow. The QA report is rewritten with a higher revision.',
+  whenToUse: 'Phase "revise" of the daily run (CONTRACT section 8); `node scripts/state.mjs revise plan` decides whether it runs and prints its args (PLAYBOOK 8.6).',
   phases: [
-    { title: 'Load', detail: 'read the QA report, merge extra defects, read the ownership roster' },
-    { title: 'Fix', detail: 'one fix agent per owner, disjoint files, then a wave for cross-owner root causes and the integrator' },
-    { title: 'Recheck', detail: 'browser-check again and a critic re-verifies each defect and hunts regressions' },
+    { title: 'Load', detail: 'read the QA report, merge extra defects, read the ownership roster (the build is copied to a working directory when the first loop starts)' },
+    { title: 'Fix', detail: 'one fix agent per owner on the working copy, severity order, disjoint files, then a wave for cross-owner root causes and the integrator' },
+    { title: 'Recheck', detail: 'browser-check again and a critic re-verifies each defect and hunts regressions; a strictly better loop is promoted into the build' },
     { title: 'Finalize', detail: 'rewrite qa/report.json (revision + 1), write revise/log.json and revise/DONE.json' },
   ],
 };
 // args (PLAYBOOK 7.2): the common set (date, repoDir, role, session, phase, level, levelConfig, tier, compact, phaseBudgetMinutes,
-//   capTokens, directives, config) plus ideaId, slug, title, siteDir, reviseLoops (max loops in this call), qaReport
-//   (default work/<date>/qa/report.json), extraDefects (defects in the QA report's shape, counted as S1).
-// reads/writes: fixes only the owners' own files in the site directory. Rewrites the QA report with revision + 1 (also when no loop
-//   runs), writes work/<date>/revise/{log.json, DONE.json (last)}. No loop runs for reviseLoops 0 or a ship-now directive. Compact (tier 2)
-//   builds get at most ONE rescue loop and only for S1 defects (S2 stay as known issues). A 'no-critic-review' defect (qa ran without a
-//   critic) is never sent to a fix agent and is carried over unchanged: only a qa rerun clears it.
-// returns: {ok, phase:'revise', loopsRun, counts{S1..S4}, fixed[], spend, clean, skipped[], skippedWhy, remaining[], browserOk, noBrowser,
-//   revision, degraded, reason, notes}
+//   capTokens, directives, config) plus ideaId, slug, title, siteDir, reviseLoops (max loops in this call; `state.mjs revise plan` prints
+//   it: min(reviseLoopsTier2, revisePolicy.maxLoopsHardCap) on a compact day), fixSeverity (S1, S2 or S3: the lowest severity the loops
+//   fix, default S2; the plan says S3 when the S3 count triggered a compact day, S1 for the bare S1 rescue), qaReport (default
+//   work/<date>/qa/report.json), extraDefects (defects in the QA report's shape, counted as S1), seconds (browser-check seconds).
+// reads/writes: the build (siteDir) is NEVER edited in place. Fix agents edit a working copy (work/<date>/tmp/revise-site); after each
+//   loop the recheck judges it, and only a loop that is strictly better than the one before (fewer S1, else fewer S2, else fewer known S3,
+//   a critic really having rechecked it) is promoted: the working copy replaces the build, and the very first replaced build is kept in
+//   work/<date>/tmp/pre-revise-site. A loop that is not better, a recheck that returns nothing, a stall, a stop by the phase watch or any
+//   failure leaves the build exactly as QA (or the last promoted loop) saw it, so revise can never cost the day its build. Compact (tier 2)
+//   builds honour reviseLoops like full builds. Rewrites the QA report with revision + 1 (also when no loop runs), describing the build
+//   that is in the site: after every promoted loop and again at the end, so a stall in between cannot leave it describing an older build.
+//   A retry after a stall continues from that build and report (what an earlier attempt fixed stays in revise.fixed, its loops in
+//   revise.promotedBefore, and kept stays 'revised'; the pre-revise build stays the one QA saw).
+//   Writes work/<date>/revise/{log.json, DONE.json (last)}. No loop runs for reviseLoops 0 or a ship-now directive.
+//   A 'no-critic-review' defect (qa ran without a critic) is never sent to a fix agent and is carried over unchanged: only a qa rerun clears it.
+// returns: {ok, phase:'revise', loopsRun, promoted, kept ('revised' | 'pre-revise'), discarded[], fixSeverity, counts{S1..S4}, fixed[], spend,
+//   clean, skipped[], skippedWhy, remaining[], browserOk, noBrowser, revision, degraded, reason, notes}
 // A missing or mistyped argument returns {ok:false, error:'bad-args', missing[], problems[]} at once, before any agent runs.
 // Also common and optional: maxAgents (integer >= 1, the harness's concurrent-agent slots = min(16, CPUs - 2), capped at 8; fewer than 6 makes spec and
 //   build compact and shrinks the work gate) and osHeartbeat (true when the orchestrator runs its own heartbeat loop around this call).
@@ -649,8 +658,14 @@ function checkArgs(name, need, more = {}) {
 }
 // ---- sed-prelude:end ----
 
-const BAD_ARGS = checkArgs('revise', ['date', 'repoDir'], { ideaId: 'string', slug: 'string', title: 'string', siteDir: 'string', qaReport: 'string', reviseLoops: 'count', extraDefects: 'array', seconds: 'number' });
+const FIX_SEVERITIES = ['S1', 'S2', 'S3'];
+const BAD_ARGS = checkArgs('revise', ['date', 'repoDir'], { ideaId: 'string', slug: 'string', title: 'string', siteDir: 'string', qaReport: 'string', reviseLoops: 'count', extraDefects: 'array', seconds: 'number', fixSeverity: 'string' });
 if (BAD_ARGS) return BAD_ARGS;
+if (A.fixSeverity !== undefined && !FIX_SEVERITIES.includes(A.fixSeverity)) {
+  const problems = [`fixSeverity: expected ${FIX_SEVERITIES.join(', ')}, got ${clip(JSON.stringify(A.fixSeverity), 50)}`];
+  log(`BAD ARGS for revise: ${problems.join('; ')}`);
+  return { ok: false, phase: 'revise', error: 'bad-args', missing: ['fixSeverity'], problems, notes: clip(`The revise workflow did not start. Fix the args and call it again: ${problems.join('; ')}`, 600) };
+}
 
 // ======================================================================= revise
 const QA_DIR = `${WORK}/qa`;
@@ -659,14 +674,26 @@ const NOTES_DIR = `${WORK}/build/notes`;
 const REV_DIR = `${WORK}/revise`;
 const REPORT = resolvePath(A.qaReport, `${QA_DIR}/report.json`);
 const IDEA_ID = str(A.ideaId, '(the chosenId in the ideas file)');
-const LOOPS = Math.max(0, Math.min(3, Math.floor(num(A.reviseLoops, num(LC.reviseLoops, 1)))));
-// A compact (tier 2) build gets no routine revise loop, but one rescue loop for S1 defects: an S1 build is not shippable, and without
-// the rescue every late-day tier 2 build with a single S1 would be thrown away for Tier 3 (PLAYBOOK 8.6).
-const LOOPS_RUN = COMPACT ? Math.min(1, LOOPS) : LOOPS;
+// The loops are the orchestrator's decision (`state.mjs revise plan`, PLAYBOOK 8.6): a compact day honours them like a full build does,
+// min(reviseLoopsTier2, revisePolicy.maxLoopsHardCap) of them. Nothing here caps them to a bare rescue loop any more. Without the arg the
+// level's own figure applies (reviseLoopsTier2 on a compact day, a level written before the policy: one loop).
+const HARD_CAP = Math.max(1, Math.min(3, Math.floor(num(isObj(CFG.revisePolicy) ? CFG.revisePolicy.maxLoopsHardCap : undefined, 3))));
+const LOOPS = Math.max(0, Math.min(HARD_CAP, Math.floor(num(A.reviseLoops, COMPACT ? num(LC.reviseLoopsTier2, 1) : num(LC.reviseLoops, 1)))));
+const LOOPS_RUN = LOOPS;
+// The lowest severity the loops fix, in severity order: S1 alone is the bare rescue of a build that cannot ship, S2 the normal reach, S3
+// when a compact day was triggered by its S3 count (PLAYBOOK 8.6). S2 defects above the reach stay in the report as known issues.
+const FIX_SEV = FIX_SEVERITIES.includes(A.fixSeverity) ? A.fixSeverity : 'S2';
+const FIX_RANK = { S1: 0, S2: 1, S3: 2 }[FIX_SEV];
 const COST = { loop: 350000 };
 const MINUTES = { loop: 14 };
 const NO_REVIEW_KIND = 'no-critic-review';
 const SEV_RANK = { S1: 0, S2: 1, S3: 2, S4: 3 };
+const inScope = (d) => SEV_RANK[d.severity] <= FIX_RANK;
+// Fix agents edit a copy of the build, never the build itself (see the header). PRE is the build as QA saw it, kept by the first promotion.
+const EDIT = `${WORK}/tmp/revise-site`;
+const PRE = `${WORK}/tmp/pre-revise-site`;
+const STAGE = `${WORK}/tmp/revise-stage`;
+const REPLACED = `${WORK}/tmp/revise-replaced`;
 
 const FIX_SCHEMA = {
   type: 'object',
@@ -715,7 +742,11 @@ async function readReportProgram({ fs, argv }) {
     id: String(d.id), severity: String(d.severity), kind: String(d.kind || ''), owner: String(d.owner || 'architect'), file: String(d.file || ''),
     title: String(d.title || '').slice(0, 160), detail: String(d.detail || d.description || '').slice(0, 400),
   }));
-  console.log(JSON.stringify({ ok: true, found: Boolean(doc), revision: doc && Number.isInteger(doc.revision) ? doc.revision : 0, verdict: doc ? String(doc.verdict || '') : '', defects, at: performance.timeOrigin + performance.now() }));
+  // An earlier attempt of this same revise phase may already have promoted loops into the build: its record is in the report it rewrote.
+  const rv = doc && doc.revise && typeof doc.revise === 'object' ? doc.revise : null;
+  const count = (x) => (Number.isInteger(x) && x > 0 ? x : 0);
+  const prior = rv && rv.kept === 'revised' ? { promoted: count(rv.promoted) + count(rv.promotedBefore) || 1, fixed: (Array.isArray(rv.fixed) ? rv.fixed : []).map(String).slice(0, 200) } : null;
+  console.log(JSON.stringify({ ok: true, found: Boolean(doc), revision: doc && Number.isInteger(doc.revision) ? doc.revision : 0, verdict: doc ? String(doc.verdict || '') : '', defects, prior, at: performance.timeOrigin + performance.now() }));
 }
 // Rewrites the QA report: revision + 1, the overlay's blocking and new low-severity defects, the old S3/S4 ones that were not fixed.
 async function writeReportProgram({ fs, path, argv }) {
@@ -736,9 +767,11 @@ async function writeReportProgram({ fs, path, argv }) {
   const defects = [...byId.values()].sort((a, b) => (rank[a.severity] - rank[b.severity]) || (a.id < b.id ? -1 : 1));
   const counts = { S1: 0, S2: 0, S3: 0, S4: 0 };
   for (const d of defects) if (d.severity in counts) counts[d.severity]++;
+  // The report is rewritten after every promoted loop (so it always describes the build that ships) and once more at the end: the
+  // overlay pins the revision the run started from, so that however often it is rewritten the result is that revision + 1.
   const doc = {
     ...base,
-    revision: (Number.isInteger(base.revision) ? base.revision : 0) + 1,
+    revision: (Number.isInteger(ov.baseRevision) ? ov.baseRevision : Number.isInteger(base.revision) ? base.revision : 0) + 1,
     verdict: counts.S1 + counts.S2 === 0 ? 'ship' : 'revise',
     counts,
     browser: ov.browser || base.browser || { ok: true, error: null },
@@ -756,28 +789,132 @@ async function readReport(file, phaseName) {
   const r = await runFiles('read defects', [{ path: prog, content: makeProgram(readReportProgram) }], `node ${prog} ${file}`, { phase: phaseName });
   const out = r.ok ? parseJsonOut(r.stdout) : null;
   if (!out || out.ok !== true) return null;
-  return { found: out.found === true, revision: num(out.revision, 0), defects: arr(out.defects).filter((d) => isObj(d) && str(d.id)) };
+  const prior = isObj(out.prior) ? { promoted: Math.max(1, Math.round(num(out.prior.promoted, 1))), fixed: arr(out.prior.fixed).map((x) => String(x)) } : null;
+  return { found: out.found === true, revision: num(out.revision, 0), defects: arr(out.defects).filter((d) => isObj(d) && str(d.id)), prior };
+}
+
+// Runs in node on the clerk's machine; closes over nothing. Copies the build into the directory the fix agents edit (never the build itself).
+async function copySiteProgram({ fs, path, argv }) {
+  const [from, to] = argv;
+  const tally = (dir) => {
+    let files = 0;
+    let bytes = 0;
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) walk(full);
+        else {
+          files++;
+          bytes += fs.lstatSync(full).size;
+        }
+      }
+    };
+    walk(dir);
+    return { files, bytes };
+  };
+  const at = performance.timeOrigin + performance.now();
+  if (!fs.existsSync(path.join(from, 'index.html'))) {
+    console.log(JSON.stringify({ ok: false, error: 'the build has no index.html', at }));
+    return;
+  }
+  fs.rmSync(to, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(to), { recursive: true });
+  fs.cpSync(from, to, { recursive: true });
+  const a = tally(from);
+  const b = tally(to);
+  console.log(JSON.stringify({ ok: a.files === b.files && a.bytes === b.bytes && a.files > 0, files: b.files, bytes: b.bytes, at }));
+}
+// Runs in node on the clerk's machine; closes over nothing. Promotes a verified working copy into the build: the copy is staged next to
+// the build and checked file by file first, then two renames swap it in. The build it replaces is kept (the first time as `pre`, the
+// build QA saw; later ones are dropped once the swap worked), and a failed swap puts the old build back.
+async function promoteProgram({ fs, path, argv }) {
+  const [from, to, pre, stage, old] = argv;
+  const tally = (dir) => {
+    let files = 0;
+    let bytes = 0;
+    const walk = (d) => {
+      for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+        const full = path.join(d, e.name);
+        if (e.isDirectory()) walk(full);
+        else {
+          files++;
+          bytes += fs.lstatSync(full).size;
+        }
+      }
+    };
+    walk(dir);
+    return { files, bytes };
+  };
+  const at = performance.timeOrigin + performance.now();
+  const fail = (error) => console.log(JSON.stringify({ ok: false, error, at }));
+  if (!fs.existsSync(path.join(from, 'index.html'))) return fail('the working copy has no index.html');
+  if (!fs.existsSync(path.join(to, 'index.html'))) return fail('the build has no index.html to replace');
+  fs.rmSync(stage, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(stage), { recursive: true });
+  fs.cpSync(from, stage, { recursive: true });
+  const a = tally(from);
+  const b = tally(stage);
+  if (a.files !== b.files || a.bytes !== b.bytes || a.files === 0) {
+    fs.rmSync(stage, { recursive: true, force: true });
+    return fail('the staged copy differs from the working copy');
+  }
+  const keep = fs.existsSync(pre) ? old : pre;
+  fs.rmSync(keep, { recursive: true, force: true });
+  fs.renameSync(to, keep);
+  try {
+    fs.renameSync(stage, to);
+  } catch (err) {
+    fs.renameSync(keep, to);
+    fs.rmSync(stage, { recursive: true, force: true });
+    return fail(`the swap failed and the old build was put back: ${err.message}`);
+  }
+  if (keep === old) fs.rmSync(old, { recursive: true, force: true });
+  console.log(JSON.stringify({ ok: true, files: b.files, bytes: b.bytes, at }));
+}
+async function makeWorkingCopy() {
+  const prog = `${WORK}/tmp/revise-copy.mjs`;
+  const r = await runFiles('copy site', [{ path: prog, content: makeProgram(copySiteProgram) }], `node ${prog} ${SITE} ${EDIT}`, { phase: 'Load', essential: true });
+  const out = r.ok ? parseJsonOut(r.stdout) : null;
+  if (out && out.ok === true) return { ok: true };
+  return { ok: false, why: r.problems.join('; ') || clip(out && out.error, 160) || 'unreadable output' };
+}
+async function promoteLoop(k) {
+  const prog = `${WORK}/tmp/revise-promote.mjs`;
+  const r = await runFiles(`promote loop ${k}`, [{ path: prog, content: makeProgram(promoteProgram) }], `node ${prog} ${EDIT} ${SITE} ${PRE} ${STAGE} ${REPLACED}`, { phase: 'Recheck', essential: true });
+  const out = r.ok ? parseJsonOut(r.stdout) : null;
+  if (out && out.ok === true) return { ok: true };
+  return { ok: false, why: r.problems.join('; ') || clip(out && out.error, 160) || 'unreadable output' };
+}
+// The prelude's browser-check clerk, pointed at the working copy instead of the build.
+async function runBrowserOn(dir, label, outDir, extraFlags, phaseName) {
+  const prompt = browserCheckPrompt(outDir, extraFlags, 7).split(`browser-check.mjs ${SITE} --out`).join(`browser-check.mjs ${dir} --out`);
+  const r = await clerk(prompt, { label, phase: phaseName, schema: BROWSER_SCHEMA });
+  if (!r) return { ran: false, ok: false, noBrowser: false, errors: ['browser check could not be run (clerk failed)'], warnings: [], shots: [], reportPath: `${outDir}/report.json` };
+  return { ...r, errors: arr(r.errors), warnings: arr(r.warnings), shots: arr(r.shots), reportPath: str(r.reportPath, `${outDir}/report.json`) };
 }
 
 function fixPrompt(owner, files, defects, reportFile, loop, wave) {
+  const ordered = [...defects].sort((a, b) => (SEV_RANK[a.severity] - SEV_RANK[b.severity]) || (a.id < b.id ? -1 : 1));
+  const polish = ordered.some((d) => d.severity === 'S3');
   const task = [
     `## Task: fix the QA defects assigned to you (revise loop ${loop}${wave === 2 ? ', cross-owner wave' : wave === 3 ? ', integrator wave: the other owners have finished' : ''})`,
-    `The full records (title, detail, evidence, suggested fix) are in ${reportFile}: find each defect by its id${defects.some((d) => d.extra) ? ' (defects marked extra come from the orchestrator and are listed in full below)' : ''}. Site directory: ${SITE}/ . Spec and interface contract: ${SPEC_DIR}/SPEC.md and DESIGN.md (binding). Idea: ${REPO}/state/ideas/${DATE}.json (${IDEA_ID}).`,
+    `The full records (title, detail, evidence, suggested fix) are in ${reportFile}: find each defect by its id${ordered.some((d) => d.extra) ? ' (defects marked extra come from the orchestrator and are listed in full below)' : ''}. Site directory: ${EDIT}/ (a working copy: it replaces the page only after the recheck confirms that your fixes made it better, so never touch any other copy of the site). Spec and interface contract: ${SPEC_DIR}/SPEC.md and DESIGN.md (binding). Idea: ${REPO}/state/ideas/${DATE}.json (${IDEA_ID}).`,
     '',
-    'Your defects:',
-    ...defects.map((d) => `- ${d.id} [${d.severity}] ${d.file || '(no file)'}: ${clip(d.title, 160)}${d.extra ? ` | ${clip(d.detail, 400)} | ${clip(d.evidence, 200)}` : ''}`),
+    'Your defects, most severe first (work in this order):',
+    ...ordered.map((d) => `- ${d.id} [${d.severity}] ${d.file || '(no file)'}: ${clip(d.title, 160)}${d.extra ? ` | ${clip(d.detail, 400)} | ${clip(d.evidence, 200)}` : ''}`),
     '',
     wave === 3
       ? `Files you own: ${files.join(', ') || '(none)'}. As the integrator you may ALSO edit another owner's file, but only a file named in your defects and only for the wiring or integration problem described, after re-reading its current content (the other owners just changed their files). Log each such edit in ${NOTES_DIR}/revise-${owner}.md.`
       : `Files you own (the ONLY files you may edit): ${files.join(', ')}`,
     'Rules:',
     '- Fix the ROOT CAUSE, not the symptom, and make the evidence from the record stop reproducing. Read the code path again after you edit.',
+    ...(polish ? ['- S3 items are polish: fix each one that is a small, safe change after the S1 and S2 items are done. A polish fix that could break a fix above it or the core loop is not worth it: leave it under notFixed with the reason.'] : []),
     wave === 3
       ? '- Fix the root cause with the smallest edit that does not undo another owner\'s work.'
       : '- Do not touch files you do not own. If the real cause is in someone else\'s file, do not edit it: list it under blocked with the file and its owner, and say so in ' + `${NOTES_DIR}/revise-${owner}.md.`,
     '- Do not regress: keep exports, event names, DOM ids and data shapes that the interface contract promises. After your edits re-check that anything you renamed is still wired everywhere.',
     '- Keep to the quality list in ' + `${REPO}/ops/rubrics/quality.md and the safety rules in ${REPO}/ops/rubrics/safety.md. No placeholders, no padding, no external requests. The site holds no project.json or thumb.png: do not create them.`,
-    `- Syntax-check each JavaScript file you touch (ES module: node --input-type=module --check < file; classic script: node --check file). You may run the quick browser check yourself if useful: cd ${REPO} && node scripts/qa/browser-check.mjs ${SITE} --out ${QA_DIR}/fix-${owner}-${loop}-w${wave} --no-monkey (Bash timeout=420000), but it is not required: the loop re-runs the full check afterwards.`,
+    `- Syntax-check each JavaScript file you touch (ES module: node --input-type=module --check < file; classic script: node --check file). You may run the quick browser check yourself if useful: cd ${REPO} && node scripts/qa/browser-check.mjs ${EDIT} --out ${QA_DIR}/fix-${owner}-${loop}-w${wave} --no-monkey (Bash timeout=420000), but it is not required: the loop re-runs the full check afterwards.`,
     'A defect you decide is not a defect (a false positive) still gets a short note under notFixed with the evidence.',
     'Reply with: owner, fixed (ids), notFixed [{id, why}], blocked [{id, file, owner}], filesTouched.',
   ].join('\n');
@@ -785,22 +922,23 @@ function fixPrompt(owner, files, defects, reportFile, loop, wave) {
 }
 
 function recheckPrompt(open, touched, browser, loop, prevFile) {
+  const ordered = [...open].sort((a, b) => (SEV_RANK[a.severity] - SEV_RANK[b.severity]) || (a.id < b.id ? -1 : 1));
   const task = [
     `## Task: recheck after revise loop ${loop}`,
-    `These S1/S2 defects were open (full records in ${prevFile}, by id):`,
-    ...open.map((d) => `- ${d.id} [${d.severity}] ${d.owner} ${d.file || '(no file)'}: ${clip(d.title, 200)}${d.extra ? ` | ${clip(d.detail, 300)}` : ''}`),
-    `The owners changed: ${touched.length ? touched.join(', ') : '(no file changes were reported)'}. Spec: ${SPEC_DIR}/SPEC.md. Site: ${SITE}/ . Rubric: ${REPO}/ops/rubrics/quality.md (read it for severity definitions) and ${REPO}/ops/rubrics/safety.md.`,
+    `These defects were open (${FIX_SEV === 'S1' ? 'S1' : FIX_SEV === 'S2' ? 'S1/S2' : 'S1, S2 and S3 polish'}; full records in ${prevFile}, by id):`,
+    ...ordered.map((d) => `- ${d.id} [${d.severity}] ${d.owner} ${d.file || '(no file)'}: ${clip(d.title, 200)}${d.extra ? ` | ${clip(d.detail, 300)}` : ''}`),
+    `The owners changed: ${touched.length ? touched.join(', ') : '(no file changes were reported)'}. Spec: ${SPEC_DIR}/SPEC.md. Site (the working copy the owners edited; it replaces the page only if your verdict says it got better): ${EDIT}/ . Rubric: ${REPO}/ops/rubrics/quality.md (read it for severity definitions) and ${REPO}/ops/rubrics/safety.md.`,
     `Fresh automated check (${browser.noBrowser ? 'NO BROWSER AVAILABLE' : browser.ran ? `ok=${browser.ok}` : 'did not run'}), report ${browser.reportPath}, screenshots in ${QA_DIR}/recheck-${loop}/shots/ (open them with the Read tool). Errors: ${browser.errors.length ? `\n${browser.errors.slice(0, 20).map((e) => `    ${clip(e, 280)}`).join('\n')}` : 'none'}.`,
     '',
-    `1. For EACH open defect re-run its evidence as exactly as you can (a throwaway Playwright script under ${QA_DIR}/critic-tmp/ is fine; serve the site with node ${REPO}/scripts/qa/serve.mjs ${SITE} --port <free port> and stop the server afterwards; never write inside the site directory) and read the changed code. Decide fixed or still open. Be strict: a defect is fixed only if you can no longer make it happen.`,
-    '2. Hunt for regressions and new problems the fixes introduced (changed files first, then the core loop, console, mobile 390px, dark mode, keyboard).',
-    '3. Return the CURRENT defect list: every defect that is still open (keep its original id, update the detail if it changed) plus every new one (use ids N1, N2, ...), each with severity S1 to S4, owner (owner of the file holding the root cause), file, title, detail, evidence (exact repro) and suggestedFix. Every browser-check error above is a defect (S1) unless you can show it is a false positive. Put the ids you verified as fixed in `fixed`. Do not list defects of severity S3 or S4 that you did not touch; they stay in the report.',
+    `1. For EACH open defect re-run its evidence as exactly as you can (a throwaway Playwright script under ${QA_DIR}/critic-tmp/ is fine; serve the site with node ${REPO}/scripts/qa/serve.mjs ${EDIT} --port <free port> and stop the server afterwards; never write inside the site directory) and read the changed code. Decide fixed or still open. Be strict: a defect is fixed only if you can no longer make it happen.`,
+    '2. Hunt for regressions and new problems the fixes introduced (changed files first, then the core loop, console, mobile 390px, dark mode, keyboard). A regression is the one thing that makes this loop worthless: say so with S1 or S2.',
+    '3. Return the CURRENT defect list: every defect that is still open (keep its original id, update the detail if it changed) plus every new one (use ids N1, N2, ...), each with severity S1 to S4, owner (owner of the file holding the root cause), file, title, detail, evidence (exact repro) and suggestedFix. Every browser-check error above is a defect (S1) unless you can show it is a false positive. Put the ids you verified as fixed in `fixed`. Defects of severity S3 or S4 that are not on the list above stay in the report: do not list them unless a fix changed them or you found them new.',
     'Reply with the structured result.',
   ].join('\n');
   return preamble('critic', task);
 }
 
-const normFile = (f) => String(f || '').trim().replace(/^.*\/work\/[^/]+\/build\/site\//, '').replace(/^work\/[^/]+\/build\/site\//, '').replace(/^\.\//, '').replace(/^\/+/, '');
+const normFile = (f) => String(f || '').trim().replace(/^.*\/work\/[^/]+\/tmp\/revise-site\//, '').replace(/^.*\/work\/[^/]+\/build\/site\//, '').replace(/^work\/[^/]+\/build\/site\//, '').replace(/^\.\//, '').replace(/^\/+/, '');
 const group = (list, key) => {
   const out = {};
   for (const x of list) (out[key(x)] = out[key(x)] || []).push(x);
@@ -820,6 +958,10 @@ const toDefect = (d, extra) => ({
 
 // ======================================================================= main
 const pulse = startPulse('revise', 180);
+// Loops promoted into the build so far (the catch below reports it), and the ones an earlier attempt of this phase promoted before a
+// stall or a stop (read back from the report it rewrote): the build is `revised` when either is more than zero.
+const OUTCOME = { promoted: 0, before: 0 };
+const keptOf = () => (OUTCOME.promoted + OUTCOME.before > 0 ? 'revised' : 'pre-revise');
 let finalReport;
 try {
   await tick('start');
@@ -829,10 +971,32 @@ try {
   if (!roster.ok) log(`ownership roster unavailable (${roster.error}): fixes cannot be routed`);
   const filesOf = (o) => arr(roster.owners[o]);
   const ownerValid = (o) => BUILDERS.includes(o) && filesOf(o).length > 0;
+  // Who fixes a defect: its owner when that owner built files; else whoever owns the file it names (a compact day has two builders and
+  // the critic may name an owner who built nothing); else the architect; else, on a compact day without one, the builder that fits the
+  // file type.
+  const ownerOfFile = (file) => {
+    const f = normFile(file);
+    let best = null;
+    if (f) for (const [o, list] of Object.entries(roster.owners)) for (const p of arr(list)) if (ownerValid(o) && f.includes(p) && (!best || p.length > best.path.length)) best = { owner: o, path: p };
+    return best ? best.owner : null;
+  };
+  const routeOwner = (d) => {
+    if (ownerValid(d.owner)) return d.owner;
+    const byFile = ownerOfFile(d.file);
+    if (byFile) return byFile;
+    if (ownerValid('architect')) return 'architect';
+    const styled = /\.(css|html|svg)$/i.test(d.file || '');
+    return (styled ? ['artisan', 'engineer'] : ['engineer', 'artisan']).find(ownerValid) || 'architect';
+  };
+  const bySeverity = (a, b) => (SEV_RANK[a.severity] - SEV_RANK[b.severity]) || (a.id < b.id ? -1 : 1);
+  const countOf = (list, sev) => list.filter((d) => d.severity === sev).length;
 
   const initial = await readReport(REPORT, 'Load');
   const noReport = !initial || !initial.found;
   if (noReport) log(`the QA report ${relPath(REPORT)} could not be read: only extra defects can be handled`);
+  const earlier = initial && initial.prior ? initial.prior : { promoted: 0, fixed: [] };
+  OUTCOME.before = earlier.promoted;
+  if (earlier.promoted) log(`an earlier attempt already promoted ${earlier.promoted} loop(s) into the build (it fixed ${earlier.fixed.join(', ') || 'nothing that is named'}): this run continues from that build`);
   // Extra defects (validator failures found by the orchestrator) count as S1; a clashing id gets a prefix.
   const known = new Set(initial ? initial.defects.map((d) => d.id) : []);
   const extras = arr(A.extraDefects).filter((d) => isObj(d) && (str(d.title) || str(d.detail))).map((d, i) => {
@@ -842,15 +1006,16 @@ try {
     return toDefect({ ...d, id, severity: 'S1' }, true);
   });
   if (extras.length) log(`${extras.length} extra defect(s) from the orchestrator are counted as S1`);
-  let current = [
-    ...(initial ? initial.defects.filter((d) => (d.severity === 'S1' || d.severity === 'S2') && d.kind !== NO_REVIEW_KIND).map((d) => toDefect({ ...d, evidence: '', suggestedFix: '' }, false)) : []),
-    ...extras,
-  ];
+  // What the loops work on: the defects up to the fix severity, most severe first. A missing critic review is no defect a fix agent can
+  // repair. S2 defects above the fix severity (only when it is S1, the bare rescue) are not attempted: they stay in the report.
+  const reviewed = initial ? initial.defects.filter((d) => d.kind !== NO_REVIEW_KIND) : [];
+  const asDefects = (list) => list.map((d) => toDefect({ ...d, evidence: '', suggestedFix: '' }, false));
+  let current = [...asDefects(reviewed.filter((d) => d.severity === 'S1' || d.severity === 'S2' || d.severity === 'S3')).filter(inScope), ...extras].sort(bySeverity);
+  const deferred = asDefects(reviewed.filter((d) => d.severity === 'S2')).filter((d) => !inScope(d));
   let loopsRun = 0;
   let browserState = { ran: false, ok: false, noBrowser: false, errors: [] };
-  const fixedIds = [];
   const loopLog = [];
-  const lowNew = [];
+  const discarded = [];
 
   const noReview = initial ? initial.defects.filter((d) => d.kind === NO_REVIEW_KIND) : [];
   if (noReview.length) log('the QA report says the critic never reviewed the page: no fix agent can repair that, only a qa rerun clears it (the defect stays in the report)');
@@ -858,28 +1023,63 @@ try {
   if (arr(A.directives).some((d) => isObj(d) && d.kind === 'ship-now' && d.ack !== true)) skipWhy = 'ship-now directive';
   else if (LOOPS === 0) skipWhy = 'this level allows no revise loops';
   else if (!roster.ok) skipWhy = 'no ownership roster';
-  else if (!current.length) skipWhy = 'no S1/S2 defects to fix';
-  else if (COMPACT && !current.some((d) => d.severity === 'S1')) skipWhy = 'compact tier: the single rescue loop runs only for S1 defects';
-  // Compact rescue: S2 defects are not attempted; they stay in the report as known issues.
-  let deferred = [];
-  if (COMPACT && !skipWhy) {
-    deferred = current.filter((d) => d.severity !== 'S1');
-    current = current.filter((d) => d.severity === 'S1');
-    log(`compact tier: one rescue loop for ${current.length} S1 defect(s); ${deferred.length} S2 defect(s) are left as known issues`);
-  }
+  else if (!current.length) skipWhy = FIX_RANK === 0 ? 'fix severity S1: the rescue loop runs only for S1 defects and none is open' : FIX_RANK === 1 ? 'no S1/S2 defects to fix' : 'no S1/S2/S3 defects to fix';
+  // Fix agents never edit the build: they get a copy (made when the first loop is about to start), and the build only changes when a
+  // loop is promoted (see the header). Without a copy there is no safe way to revise, so no loop runs.
+  let copyFailed = false;
+  let copied = false;
   if (skipWhy) skipStage('revise loops', skipWhy);
+  else if (deferred.length) log(`${deferred.length} S2 defect(s) are above the fix severity ${FIX_SEV}: they stay in the report as known issues`);
 
+  // `shipped` is what the build stands for. It moves only when a loop is promoted; the report is rewritten from it.
+  let shipped = { open: current, deferred, fixed: uniq(earlier.fixed), low: [], browser: null };
+  const initialIds = new Set(current.map((d) => d.id));
   let reportFile = REPORT;
+  const keptNow = keptOf;
+  // Rewrites the QA report (revision + 1 from the revision the run started at) so that it describes `shipped`.
+  async function rewriteReport(label, phaseName) {
+    const fixedNow = uniq(shipped.fixed);
+    const browserInfo = shipped.browser ? { ok: shipped.browser.ran && shipped.browser.ok, error: shipped.browser.noBrowser ? 'no-browser' : shipped.browser.ran ? null : 'browser-check-did-not-run' } : null;
+    const overlay = {
+      blocking: [...shipped.open, ...shipped.deferred].map((d) => ({ ...d, extra: undefined })),
+      noReviewKind: NO_REVIEW_KIND,
+      low: shipped.low,
+      fixedIds: fixedNow,
+      browser: browserInfo,
+      baseRevision: initial ? initial.revision : 0,
+      revise: { loopsRun, promoted: OUTCOME.promoted, promotedBefore: OUTCOME.before, kept: keptNow(), fixed: fixedNow, skipped: skipWhy, extraDefects: extras.length, fixSeverity: FIX_SEV, rescue: FIX_RANK === 0 && loopsRun > 0, discarded },
+    };
+    const progReport = `${WORK}/tmp/revise-report.mjs`;
+    const rep = await runFiles(
+      `rewrite qa report (${label})`,
+      [{ path: progReport, content: makeProgram(writeReportProgram) }, { path: `${REV_DIR}/overlay.json`, content: safeJson(overlay) }],
+      `node ${progReport} ${REPO} ${DATE} ${REPORT} ${REV_DIR}/overlay.json`,
+      { phase: phaseName, essential: true },
+    );
+    const repOut = rep.ok ? parseJsonOut(rep.stdout) : null;
+    const rewritten = Boolean(repOut && repOut.ok === true);
+    return { rewritten, repOut, why: rep.problems.join(' | ') || clip(rep.stdout, 300) };
+  }
   for (let k = 1; !skipWhy && k <= LOOPS_RUN && current.length; k++) {
     if (HALT.reason) { skipStage(`revise loop ${k}`, HALT.reason); break; }
     await tick(`loop ${k}`);
     if (room() < COST.loop) { skipStage(`revise loop ${k}`, `${kfmt(room())} usable tokens`); break; }
     if (!timeFor(MINUTES.loop)) { skipStage(`revise loop ${k}`, `about ${Math.round(timeLeftMin())} minutes left of the phase budget`); break; }
+    if (!copied) {
+      const copy = await makeWorkingCopy();
+      if (!copy.ok) {
+        copyFailed = true;
+        skipWhy = `the build could not be copied to a working directory (${copy.why}); revise never edits the build in place`;
+        skipStage('revise loops', skipWhy);
+        break;
+      }
+      copied = true;
+    }
     loopsRun = k;
-    log(`revise loop ${k}/${LOOPS_RUN}: ${current.length} blocking defect(s) (${current.filter((d) => d.severity === 'S1').length} S1)`);
+    log(`revise loop ${k}/${LOOPS_RUN}: ${current.length} defect(s) to fix (${countOf(current, 'S1')} S1, up to ${FIX_SEV}, severity order)`);
 
     phase('Fix');
-    const byOwner = group(current, (d) => (ownerValid(d.owner) ? d.owner : 'architect'));
+    const byOwner = group(current, routeOwner);
     for (const o of Object.keys(byOwner)) if (!ownerValid(o)) log(`defects ${byOwner[o].map((d) => d.id).join(', ')} have no owner with files: left open`);
     const touched = [];
     const blocked = [];
@@ -912,12 +1112,12 @@ try {
     }
 
     phase('Recheck');
-    browserState = await runBrowser(`recheck browser loop ${k}`, `${QA_DIR}/recheck-${k}`, `--seconds ${Math.max(4, Math.round(num(A.seconds, 10)))}`, 'Recheck');
+    browserState = await runBrowserOn(EDIT, `recheck browser loop ${k}`, `${QA_DIR}/recheck-${k}`, `--seconds ${Math.max(4, Math.round(num(A.seconds, 10)))}`, 'Recheck');
     const prevFile = reportFile;
     const rc = await specialist('critic', recheckPrompt(current, uniq(touched), browserState, k, prevFile), { label: `recheck loop ${k}`, phase: 'Recheck', schema: RECHECK_SCHEMA });
     const fixedNow = rc ? arr(rc.fixed) : [];
     let n = 0;
-    let list = rc
+    const list = rc
       ? arr(rc.defects).filter((d) => isObj(d) && (str(d.detail) || str(d.title))).map((d) => toDefect({ ...d, id: /^N\d+$/i.test(String(d.id)) || !str(d.id) ? `r${k}-${String(++n).padStart(2, '0')}` : String(d.id) }, false))
       : current.map((d) => ({ ...d }));
     if (!rc) log(`recheck critic returned nothing: assuming the previous defects remain (${current.length})`);
@@ -925,73 +1125,106 @@ try {
       if (/^no-browser/.test(e) || list.some((d) => `${d.title} ${d.detail}`.toLowerCase().includes(e.toLowerCase().slice(0, 48)))) continue;
       list.push(toDefect({ id: `r${k}-${String(++n).padStart(2, '0')}`, severity: 'S1', owner: 'architect', file: '', title: `browser-check: ${e}`, detail: `browser-check reported: ${e}`, evidence: `node scripts/qa/browser-check.mjs ${relPath(SITE)} --out work/${DATE}/qa/recheck-${k}`, suggestedFix: 'Fix the root cause named in the message.' }, false));
     }
-    list.sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
+    list.sort(bySeverity);
     const recheckFile = `${QA_DIR}/recheck-${k}.json`;
     const w = await writeJsonFiles(`write recheck ${k}`, [{ path: recheckFile, data: { schema: 1, date: DATE, loop: k, fixed: fixedNow, filesTouched: uniq(touched), browser: { ran: browserState.ran, ok: browserState.ok, noBrowser: browserState.noBrowser === true, errors: browserState.errors }, defects: list } }], { phase: 'Recheck', essential: true });
     if (w.ok) reportFile = recheckFile;
     else log(`recheck ${k} file NOT confirmed (${w.problems.join(' | ')}): the next loop reads the previous report`);
-    const after = list.filter((d) => d.severity === 'S1' || d.severity === 'S2');
-    for (const d of list) if ((d.severity === 'S3' || d.severity === 'S4') && !lowNew.some((x) => x.id === d.id)) lowNew.push(d);
-    for (const d of current) if (!after.some((x) => x.id === d.id)) fixedIds.push(d.id);
-    loopLog.push({ loop: k, blockingBefore: current.length, blockingAfter: after.length, fixed: fixedNow.length, filesTouched: uniq(touched).length });
-    log(`loop ${k}: ${current.length} -> ${after.length} blocking defect(s); browser ${browserState.noBrowser ? 'unavailable' : browserState.ok ? 'clean' : `${browserState.errors.length} error(s)`}`);
+
+    // The verdict on the loop. What counts is what the loop was asked to fix (up to the fix severity) plus any S1 or S2 that appeared; a new
+    // S3 is a nit for the report, never a reason to throw a fixed page away. The loop is promoted only if a critic really rechecked it and
+    // the page is strictly better by severity order (fewer S1, else fewer S2, else fewer S3); otherwise the build stays as it was.
+    const knownDefect = (d) => initialIds.has(d.id) || current.some((x) => x.id === d.id);
+    const counted = (d) => inScope(d) && (d.severity !== 'S3' || knownDefect(d));
+    const after = list.filter(counted);
+    let better = false;
+    for (const sev of FIX_SEVERITIES) {
+      const was = countOf(current, sev);
+      const is = countOf(after, sev);
+      if (was !== is) { better = is < was; break; }
+    }
+    let why = '';
+    if (rc === null) why = 'the recheck critic returned nothing, so the fixes are unverified';
+    else if (!better) why = countOf(after, 'S1') > countOf(current, 'S1') ? 'the loop introduced S1 defects' : 'the loop did not make the page strictly better';
+    log(`loop ${k}: ${current.length} -> ${after.length} defect(s) in scope; browser ${browserState.noBrowser ? 'unavailable' : browserState.ok ? 'clean' : `${browserState.errors.length} error(s)`}`);
+    let promotedNow = false;
+    if (!why) {
+      const pr = await promoteLoop(k);
+      promotedNow = pr.ok;
+      if (!pr.ok) why = `the verified copy could not be promoted (${pr.why})`;
+    }
+    loopLog.push({ loop: k, blockingBefore: current.length, blockingAfter: after.length, fixed: fixedNow.length, filesTouched: uniq(touched).length, promoted: promotedNow });
+    if (!promotedNow) {
+      discarded.push({ loop: k, why });
+      log(`loop ${k} NOT promoted: ${why}; the build stays as ${OUTCOME.promoted ? `loop ${OUTCOME.promoted} left it` : OUTCOME.before ? 'the earlier attempt left it' : 'QA saw it'}`);
+      break;
+    }
+    OUTCOME.promoted++;
+    const nextLow = [...shipped.low];
+    const nextDeferred = [...shipped.deferred];
+    for (const d of list) {
+      if (counted(d)) continue;
+      if (d.severity === 'S3' || d.severity === 'S4') { if (!nextLow.some((x) => x.id === d.id)) nextLow.push(d); }
+      else if (!nextDeferred.some((x) => x.id === d.id)) nextDeferred.push(d);
+    }
+    shipped = {
+      open: after,
+      deferred: nextDeferred,
+      fixed: uniq([...shipped.fixed, ...current.filter((d) => !after.some((x) => x.id === d.id)).map((d) => d.id)]),
+      low: nextLow,
+      browser: browserState,
+    };
     current = after;
+    // The QA report must describe the build that is in the site at every moment: a stall or a stop after this point may not leave it
+    // describing the build before this loop (an S1 this loop fixed would still send the day to Tier 3).
+    const midway = await rewriteReport(`after loop ${k}`, 'Recheck');
+    if (!midway.rewritten) log(`the QA report was NOT rewritten after loop ${k}: ${midway.why}; the final rewrite tries again`);
   }
 
   phase('Finalize');
-  const fixedUnique = uniq(fixedIds);
-  const browserInfo = loopsRun > 0 ? { ok: browserState.ran && browserState.ok, error: browserState.noBrowser ? 'no-browser' : browserState.ran ? null : 'browser-check-did-not-run' } : null;
-  const overlay = {
-    blocking: [...current, ...deferred].map((d) => ({ ...d, extra: undefined })),
-    noReviewKind: NO_REVIEW_KIND,
-    low: lowNew,
-    fixedIds: fixedUnique,
-    browser: browserInfo,
-    revise: { loopsRun, fixed: fixedUnique, skipped: skipWhy, extraDefects: extras.length, rescue: COMPACT && loopsRun > 0 },
-  };
-  const progReport = `${WORK}/tmp/revise-report.mjs`;
-  const rep = await runFiles(
-    'rewrite qa report',
-    [{ path: progReport, content: makeProgram(writeReportProgram) }, { path: `${REV_DIR}/overlay.json`, content: safeJson(overlay) }],
-    `node ${progReport} ${REPO} ${DATE} ${REPORT} ${REV_DIR}/overlay.json`,
-    { phase: 'Finalize', essential: true },
-  );
-  const repOut = rep.ok ? parseJsonOut(rep.stdout) : null;
-  const rewritten = Boolean(repOut && repOut.ok === true);
-  if (!rewritten) log(`the QA report was NOT rewritten: ${rep.problems.join(' | ') || clip(rep.stdout, 300)}`);
-  const counts = rewritten ? repOut.counts : { S1: current.filter((d) => d.severity === 'S1').length, S2: current.filter((d) => d.severity === 'S2').length, S3: 0, S4: 0 };
-  const remaining = [...current, ...deferred].map((d) => ({ id: d.id, severity: d.severity, owner: d.owner, file: d.file, title: clip(d.title, 120) }));
-  const logDoc = { schema: 1, date: DATE, loopsRun, skipped: skipWhy, fixed: fixedUnique, remaining, extraDefects: extras.length, loops: loopLog, revision: rewritten ? repOut.revision : null };
+  const fixedUnique = uniq(shipped.fixed);
+  const kept = keptNow();
+  const { rewritten, repOut, why: rewriteWhy } = await rewriteReport('final', 'Finalize');
+  if (!rewritten) log(`the QA report was NOT rewritten: ${rewriteWhy}`);
+  const remaining = [...shipped.open, ...shipped.deferred].map((d) => ({ id: d.id, severity: d.severity, owner: d.owner, file: d.file, title: clip(d.title, 120) }));
+  const counts = rewritten ? repOut.counts : { S1: countOf(shipped.open, 'S1'), S2: countOf(shipped.open, 'S2') + countOf(shipped.deferred, 'S2'), S3: countOf(shipped.open, 'S3'), S4: 0 };
+  const logDoc = { schema: 1, date: DATE, loopsRun, promoted: OUTCOME.promoted, promotedBefore: OUTCOME.before, kept, fixSeverity: FIX_SEV, skipped: skipWhy, fixed: fixedUnique, remaining, discarded, extraDefects: extras.length, loops: loopLog, revision: rewritten ? repOut.revision : null };
   const wl = await writeJsonFiles('write revise log', [{ path: `${REV_DIR}/log.json`, data: logDoc }], { phase: 'Finalize', essential: true });
   // The marker comes last: a takeover credits a phase that has one.
   let marked = false;
   if (rewritten && wl.ok) {
-    const done = await writeJsonFiles('write revise DONE', [{ path: `${REV_DIR}/DONE.json`, data: { ok: true, phase: 'revise', date: DATE, loopsRun, counts, revision: repOut.revision } }], { phase: 'Finalize', essential: true });
+    const done = await writeJsonFiles('write revise DONE', [{ path: `${REV_DIR}/DONE.json`, data: { ok: true, phase: 'revise', date: DATE, loopsRun, promoted: OUTCOME.promoted, kept, counts, revision: repOut.revision } }], { phase: 'Finalize', essential: true });
     marked = done.ok;
     if (!marked) log(`revise DONE.json NOT confirmed: ${done.problems.join(' | ')}`);
   }
   finalReport = {
     ok: rewritten && wl.ok && marked,
     loopsRun,
+    promoted: OUTCOME.promoted,
+    kept,
+    discarded,
+    fixSeverity: FIX_SEV,
     counts,
     fixed: fixedUnique,
     clean: remaining.length === 0,
     skippedWhy: skipWhy,
     remaining,
     revision: rewritten ? repOut.revision : null,
-    browserOk: loopsRun > 0 ? browserState.ran && browserState.ok : null,
+    browserOk: shipped.browser ? shipped.browser.ran && shipped.browser.ok : null,
     noBrowser: browserState.noBrowser === true,
-    degraded: Boolean(HALT.reason) || !rewritten || !wl.ok || !marked || noReport,
-    reason: HALT.reason || (!rewritten ? 'report-rewrite-failed' : !wl.ok || !marked ? 'done-marker-failed' : noReport ? 'no-qa-report' : ''),
-    notes: skipWhy ? `no loop ran: ${skipWhy}` : `${loopsRun} loop(s); ${remaining.length} S1/S2 defect(s) remain`,
+    degraded: Boolean(HALT.reason) || !rewritten || !wl.ok || !marked || noReport || copyFailed,
+    reason: HALT.reason || (!rewritten ? 'report-rewrite-failed' : !wl.ok || !marked ? 'done-marker-failed' : noReport ? 'no-qa-report' : copyFailed ? 'copy-failed' : ''),
+    notes: skipWhy
+      ? `no loop ran: ${skipWhy}`
+      : `${loopsRun} loop(s), ${OUTCOME.promoted} promoted into the build${OUTCOME.before ? ` (after ${OUTCOME.before} from an earlier attempt)` : ''}; ${remaining.length} defect(s) remain${discarded.length ? `; discarded: ${discarded.map((d) => `loop ${d.loop} (${d.why})`).join('; ')}` : ''}`,
   };
 } catch (e) {
   noteFailure(e, 'revise script');
-  finalReport = { ok: false, loopsRun: 0, counts: { S1: 0, S2: 0, S3: 0, S4: 0 }, fixed: [], clean: false, remaining: [], degraded: true, reason: HALT.reason || 'script-error', notes: clip(e && e.message ? e.message : e, 300) };
+  finalReport = { ok: false, loopsRun: 0, promoted: OUTCOME.promoted, kept: keptOf(), discarded: [], fixSeverity: FIX_SEV, counts: { S1: 0, S2: 0, S3: 0, S4: 0 }, fixed: [], clean: false, remaining: [], degraded: true, reason: HALT.reason || 'script-error', notes: clip(e && e.message ? e.message : e, 300) };
 } finally {
   pulse.stop();
 }
 finalReport = withIntegrity(finalReport, await integrityCheck('revise'));
 finalReport = { ok: finalReport.ok, phase: 'revise', ...finalReport, skipped: SKIPPED, spend: spend() };
-log(`revise done: loops=${finalReport.loopsRun} remaining=${finalReport.remaining.length}`);
+log(`revise done: loops=${finalReport.loopsRun} promoted=${finalReport.promoted} remaining=${finalReport.remaining.length}`);
 return finalReport;

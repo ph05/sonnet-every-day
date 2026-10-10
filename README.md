@@ -6,7 +6,7 @@ At 03:55 New York time a Claude Sonnet 5.5 orchestrator wakes up, assembles a te
 
 **See it:** <https://ph05.github.io/sonnet-every-day/>
 
-Day 1 is 2026-10-09. The gallery keeps every day, shows a streak, and is honest about the days that did not go to plan.
+Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, and is honest about the days that did not go to plan.
 
 ---
 
@@ -51,12 +51,13 @@ A day is never allowed to be blank. Watchdog sessions and a model-free GitHub Ac
 | 05:32 | watchdog A | Healthy primary: nothing. Dead or stuck: takes over from the last finished phase. |
 | 06:47 | watchdog B | Asks a slow primary to scale down, or takes over. |
 | 08:47 | closer | Waits for a healthy run to finish (until 09:30), salvages a half-built page if there is one, otherwise publishes a fallback. |
+| 09:37 | closer backup | Same prompt, fifty minutes later: stops quietly if the day is published, finishes the job if the closer's session died. |
 | 09:40 | deadman Action | No Claude needed. Publishes a fallback if the day is still empty and nobody is alive, or after the 10:30 hard stop. |
 
 | Tier | What ships | When it applies |
 |---|---|---|
 | **T1** | Full build with a revise loop | A run starting before 04:45 |
-| **T2** | Compact build, one builder pair | Starting before 07:00, or a primary asked to scope down |
+| **T2** | Compact build, one builder pair, revised like a full one when QA finds an S2 or four S3 | Starting before 07:00, or a primary asked to scope down |
 | **T3** | **Ideas Day**: the ten researched ideas as an interactive page, marked as a fallback | Ideas exist but there is no time to build (before 08:45) |
 | **T4** | **Postcard**: a deterministic generative page that says today's build did not complete | Anything else; needs nothing at all |
 
@@ -72,6 +73,12 @@ The team is built to be resilient, curious and proactive, and the repo shows it.
 * **Proposals for the owner.** A good idea that needs a protected file is never applied. It becomes a note in [`ops/kaizen/proposals/`](ops/kaizen/proposals/) for the owner to accept or ignore.
 * **A public diary.** Every change, every rejected attempt and every open question is written to the swarm's diary on the site (`docs/kaizen/`, linked from the gallery) and to [`ops/kaizen/LOG.md`](ops/kaizen/LOG.md), newest first.
 * **Memory across days.** Each morning starts with a premortem of the day's risks, and each night ends with a short handoff and a blameless note on what went wrong.
+
+## How it is kept running
+
+There is no server. Each role (primary, watchdog A, watchdog B, closer, closer backup, and a manual one that only you fire) is **one long-lived Claude Code session** with this repo attached as its source, and a **routine** wakes it: a cron trigger in `America/New_York` time that adds a new turn to that session, with no text of its own beyond the routine's prompt ("read `ops/PLAYBOOK.md` and do your role"). The conversation is not the memory, the repo is: every phase is checkpointed to git, so a session can die, be compacted or be replaced and the next turn carries on from the files. A turn orchestrates by launching background Workflow scripts, and a timer ("phase watch") wakes it if one of them stalls. The session ids are in [`state/routines.json`](state/routines.json); how to recreate the five sessions and routines (with their cron lines, `CRON_TZ=America/New_York 55 3 * * *` for the primary and so on) is in [`ops/prompts/README.md`](ops/prompts/README.md).
+
+The cloud network is restricted: web search works, opening most pages does not. Research therefore rests on search results, and the "is the site live" check from the cloud answers "unreachable", which is normal. You can allow more hosts in the cloud environment's network settings; the steps and the list of hosts are in [`ops/OPERATING.md`](ops/OPERATING.md) ("What the cloud can reach").
 
 ## The rules
 
@@ -145,9 +152,9 @@ tests/                 node:test suites (no dependencies)
 
 ## Setup checklist
 
-1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `claude/sonnet-every-day`, folder `/docs`, **Save**.
-2. **Create the routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md). Each is a cron trigger that wakes a persistent session with this repo attached. Cron times are in `America/New_York`.
-3. **Run the first day by hand** by firing the primary with the text `ROLE_OVERRIDE=manual RUN_DATE=2026-10-09 TARGET_TIER=1`.
+1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `claude/sonnet-every-day`, folder `/docs`, **Save**. The site is then at <https://ph05.github.io/sonnet-every-day/> after the first deploy (a few minutes).
+2. **Create the sessions and routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md): one session per role created with this repo as its source, then one cron trigger per session (`persistent_session_id`, no text, `CRON_TZ=America/New_York`). Record the ids in `state/routines.json`.
+3. **Run a day by hand** whenever you want one (the first day was built this way) by firing the manual routine with the text `ROLE_OVERRIDE=manual RUN_DATE=<date> TARGET_TIER=1`; see [`ops/OPERATING.md`](ops/OPERATING.md).
 4. **Optional but recommended: merge the work branch to `main`.** GitHub runs scheduled workflows only from the default branch, so the `deadman` Action sleeps until `.github/workflows/deadman.yml` is on `main`. Until then it can still be started by hand from the Actions tab.
 
 CI (`.github/workflows/validate.yml`) runs the tests and `node scripts/validate.mjs repo` on every push and pull request.
@@ -158,7 +165,7 @@ Pausing, resuming, steering the budget, rerunning or removing a day, and reading
 
 ## Cost and limits
 
-It runs entirely inside a Claude subscription and is configured to never buy overage. The budget has four levels (`all-in`, `balanced`, `lean`, `minimal`), `balanced` by default. A rate limit, usage limit or budget signal steps the level down automatically and the day finishes at a lower tier; five clean days in a row step it back up. Cheap Haiku clerks do the repetitive chores so the Sonnet agents spend their effort on the thinking.
+It runs entirely inside a Claude subscription and is configured to never buy overage. The budget has four levels (`all-in`, `balanced`, `lean`, `minimal`), `balanced` by default (about 3 million output tokens a day at most; a compact Tier-2 day uses roughly 2.2 million). Before every phase the operator reads its own plan state: an overage in use or a rejected plan limit stops the run and publishes a fallback instead, and a nearly full short window steps the level down; five clean days in a row step it back up. The owner can lift the budget for a while (`budget.ownerOverride` in `config.json`: a level until a stated time, after which the normal level applies again by itself); that never lifts the no-overage rule. Cheap Haiku clerks do the repetitive chores so the Sonnet agents spend their effort on the thinking. Details: [`ops/OPERATING.md`](ops/OPERATING.md).
 
 ## Who builds what
 

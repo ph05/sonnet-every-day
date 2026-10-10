@@ -5,7 +5,18 @@ import os from 'node:os';
 import path from 'node:path';
 import { localParts } from '../../scripts/lib/common.mjs';
 
+// Every temp dir a test process makes is removed when that process exits (set SED_KEEP_TMP=1 to keep them for debugging),
+// so repeated suite runs (the kaizen gate runs the suite on every attempt) cannot fill the disk (FM-05).
+const created = new Set();
+process.once('exit', () => {
+  if (process.env.SED_KEEP_TMP) return;
+  for (const d of created) {
+    try { fs.rmSync(d, { recursive: true, force: true }); } catch { /* best effort */ }
+  }
+});
+
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-test-gitcfg-'));
+created.add(dir);
 export const GIT_GLOBAL_CONFIG = path.join(dir, 'gitconfig');
 fs.writeFileSync(
   GIT_GLOBAL_CONFIG,
@@ -42,5 +53,7 @@ export const etIso = (date, hhmm) => etInstant(date, hhmm).toISOString();
 export const plusMinutes = (iso, minutes) => new Date(Date.parse(iso) + minutes * 60_000).toISOString();
 
 export function tmpDir(prefix = 'sed-test-') {
-  return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  const d = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+  created.add(d);
+  return d;
 }

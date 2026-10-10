@@ -20,6 +20,9 @@
 //     spends past cap plus reserve; budget.remaining() is called in exactly one place per script
 //   * research works with search-only evidence: the network probe and work/<date>/ideas/network.json, extended search for time-sensitive
 //     lenses only, `verified` meaning an opened page or two independent results, unverified facts never shown as facts
+//   * revise honours reviseLoops on a compact day too, fixes in severity order (S3 only when asked), and never edits the build in place: fix
+//     agents work on a copy, a loop reaches the build only when a critic rechecked it and it is strictly better, so a failed, stalled,
+//     regressing or unverified revise leaves the build as QA saw it
 // No network, no model calls, nothing outside a temp directory is written.
 import { test, describe, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -775,28 +778,42 @@ export function qaWorld(sb, cfg = {}) {
 }
 
 // ---- revise
+// The fake fix agent really edits the working copy it is told about (it appends a marker line to the first file it owns), so a test can
+// tell what reached the build: `state.marks` lists the markers; `state.atRecheck[n]` is what the build and the copy held at recheck n.
 export function reviseWorld(sb, cfg = {}) {
-  const state = { fixCalls: [], rechecks: 0, wave2: 0 };
+  const state = { fixCalls: [], rechecks: 0, wave2: 0, marks: [], atRecheck: [], editDirs: new Set() };
+  const mark = (dir, file) => (dir && file && fs.existsSync(path.join(dir, file)) && fs.readFileSync(path.join(dir, file), 'utf8').includes('// fixed by') ? 1 : 0);
   return {
     sb,
     state,
     respond: async ({ prompt, opts, sink: rec }) => {
       const label = opts.label;
       if (label.startsWith('pulse')) return { ok: true, pushed: true, note: '' };
-      if (/^roster|^read defects|^rewrite qa report|^write recheck|^write revise|^clock /.test(label)) return emulateFileClerk(sb, prompt, rec);
+      if (/^roster|^read defects|^rewrite qa report|^write recheck|^write revise|^clock |^copy site|^promote loop /.test(label)) return emulateFileClerk(sb, prompt, rec);
       if (label.startsWith('fix ')) {
         state.fixCalls.push(label);
         if (/wave 2/.test(label)) state.wave2++;
-        const ids = [...prompt.matchAll(/^- (\S+) \[S[12]\]/gm)].map((m) => m[1]);
+        const ids = [...prompt.matchAll(/^- (\S+) \[S[123]\]/gm)].map((m) => m[1]);
         const owner = label.split(' ')[1];
         const blocked = (cfg.blocked && cfg.blocked(owner, ids, label)) || [];
+        const dir = /Site directory: (\S+)\//.exec(prompt)?.[1];
+        const owned = /Files you own(?: \(the ONLY files you may edit\))?: (.+?)(?:\. As the integrator|$)/m.exec(prompt)?.[1]?.split(', ') ?? [];
+        if (dir && owned[0] && !cfg.noEdit) {
+          state.editDirs.add(dir);
+          fs.appendFileSync(path.join(dir, owned[0]), `\n// fixed by ${owner} (${label})\n`);
+          state.marks.push({ label, dir, file: owned[0] });
+        }
         return { owner, fixed: ids.filter((i) => !blocked.some((b) => b.id === i)), notFixed: [], blocked, filesTouched: [`${owner}-file.js`] };
       }
       if (label.startsWith('recheck browser')) return cfg.browser ? cfg.browser(state.rechecks + 1) : okBrowser();
       if (label.startsWith('recheck loop')) {
         state.rechecks++;
+        // what the build (the page that ships) and the working copy hold while the critic looks: nothing may reach the build before this verdict
+        const marked = state.marks.filter((m) => m.label.includes(`loop ${state.rechecks}`));
+        state.atRecheck[state.rechecks] = { inBuild: marked.filter((m) => mark(sb.work('build', 'site'), m.file)).length, inCopy: marked.filter((m) => mark(m.dir, m.file)).length };
         if (cfg.recheckNull) return null;
-        const open = [...prompt.matchAll(/^- (\S+) \[(S[12])\] (\w+) (\S+):/gm)].map((m) => ({ id: m[1], severity: m[2], owner: m[3], file: m[4] === '(no' ? '' : m[4] }));
+        if (cfg.recheckThrows) throw new Error(cfg.recheckThrows);
+        const open = [...prompt.matchAll(/^- (\S+) \[(S[123])\] (\w+) (\S+):/gm)].map((m) => ({ id: m[1], severity: m[2], owner: m[3], file: m[4] === '(no' ? '' : m[4] }));
         const r = cfg.recheck ? cfg.recheck(state.rechecks, open) : { fixed: open.map((d) => d.id), defects: [] };
         return { exercisedInBrowser: true, notes: '', ...r };
       }
@@ -2167,6 +2184,18 @@ describe('revise.js', () => {
       assert.deepEqual([marker.ok, marker.phase, marker.revision], [true, 'revise', 1]);
       assert.ok(s.exists(s.work('qa', 'recheck-1.json')));
       assert.ok(run.rec.calls.some((c) => c.label === 'recheck browser loop 1'));
+      // the fix agents edited a working copy; the verified loop was promoted into the build and the build QA saw was kept
+      assert.deepEqual([run.result.promoted, run.result.kept, run.result.fixSeverity, rep.revise.promoted, rep.revise.kept], [1, 'revised', 'S2', 1, 'revised']);
+      assert.deepEqual(w.state.atRecheck[1], { inBuild: 0, inCopy: 2 }, 'while the critic looks, the fixes are in the copy only');
+      assert.ok(run.rec.calls.find((c) => c.label === 'recheck loop 1').prompt.includes(`${s.work('tmp', 'revise-site')}/`), 'the critic looks at the copy');
+      assert.equal(w.state.marks.length, 2);
+      for (const { file: f } of w.state.marks) {
+        assert.ok(fs.readFileSync(s.work('build', 'site', f), 'utf8').includes('// fixed by'), `${f}: the promoted fix is in the build`);
+        assert.ok(!fs.readFileSync(s.work('tmp', 'pre-revise-site', f), 'utf8').includes('// fixed by'), `${f}: the pre-revise build is kept as QA saw it`);
+      }
+      assert.ok(run.rec.calls.some((c) => c.label === 'copy site') && run.rec.calls.some((c) => c.label === 'promote loop 1'));
+      const shot = run.rec.calls.find((c) => c.label === 'recheck browser loop 1').prompt;
+      assert.ok(shot.includes(`browser-check.mjs ${s.work('tmp', 'revise-site')} --out`) && !shot.includes(`browser-check.mjs ${s.work('build', 'site')} --out`), 'the browser check runs on the copy');
     } finally { s.clean(); }
   });
 
@@ -2216,18 +2245,24 @@ describe('revise.js', () => {
     } finally { s.clean(); }
   });
 
-  test('qaReport and siteDir args are honored', async () => {
+  test('qaReport and siteDir args are honored: the copy is made from siteDir and the verified fixes are promoted back into it', async () => {
     const s = base();
     try {
       fs.cpSync(s.work('qa', 'report.json'), s.work('qa', 'other.json'));
       fs.rmSync(s.work('qa', 'report.json'));
-      const run = await go(s, reviseWorld(s), {}, { qaReport: `work/${DATE}/qa/other.json` });
+      fs.renameSync(s.work('build', 'site'), s.work('build', 'alt'));
+      const run = await go(s, reviseWorld(s), {}, { qaReport: `work/${DATE}/qa/other.json`, siteDir: `work/${DATE}/build/alt` });
       checkRunInvariants('revise', run);
       assert.equal(run.result.ok, true);
       assert.equal(s.json(s.work('qa', 'other.json')).revision, 1);
       assert.equal(s.exists(s.work('qa', 'report.json')), false);
-      assert.ok(run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt.includes(s.work('qa', 'other.json')));
-      assert.ok(run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt.includes(`Site directory: ${s.work('build', 'site')}/`));
+      const fix = run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt;
+      assert.ok(fix.includes(s.work('qa', 'other.json')));
+      assert.ok(fix.includes(`Site directory: ${s.work('tmp', 'revise-site')}/`), 'the agents are sent to the working copy');
+      assert.ok(!fix.includes(s.work('build', 'alt')), 'and never see the build itself');
+      assert.equal(s.exists(s.work('build', 'site')), false, 'the default build directory was never created');
+      assert.ok(fs.readFileSync(s.work('build', 'alt', 'js', 'engine.js'), 'utf8').includes('// fixed by engineer'), 'the verified fix landed in siteDir');
+      assert.ok(s.exists(s.work('tmp', 'pre-revise-site', 'js', 'engine.js')), 'the build QA saw is kept next to it');
     } finally { s.clean(); }
   });
 
@@ -2273,50 +2308,46 @@ describe('revise.js', () => {
     } finally { s.clean(); }
   });
 
-  test('compact tier: one rescue loop, only for S1 defects; S2 stay as known issues; never more than one loop', async () => {
+  test('compact tier honours reviseLoops like a full build: S1 and S2 are fixed in severity order, loop after loop', async () => {
     const s = base();
     try {
-      const w = reviseWorld(s);
-      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 3 });
+      const w = reviseWorld(s, {
+        recheck: (n) => (n === 1
+          ? { fixed: ['d01', 'd02'], defects: [D('d03', 'S2', 'engineer', 'js/engine.js', 'still wrong')] }
+          : { fixed: ['d03'], defects: [] }),
+      });
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 2 });
       checkRunInvariants('revise', run, { skipPhaseUse: true });
       assert.equal(run.result.ok, true, JSON.stringify(run.result));
-      assert.equal(run.result.loopsRun, 1, 'a compact build never gets more than the single rescue loop');
-      assert.deepEqual([...w.state.fixCalls].sort(), ['fix engineer loop 1'], 'only the S1 owner is asked to fix');
-      const eng = run.rec.calls.find((c) => c.label === 'fix engineer loop 1');
-      assert.ok(eng.prompt.includes('d01 [S1]') && !eng.prompt.includes('d03 [S2]'), 'the engineer sees the S1 defect, not its own S2 one');
-      assert.deepEqual(JSON.parse(JSON.stringify(run.result.fixed)), ['d01']);
-      assert.deepEqual(JSON.parse(JSON.stringify(run.result.remaining)).map((d) => d.id).sort(), ['d02', 'd03'], 'deferred S2 defects are reported as remaining');
-      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 2, S3: 1, S4: 1 });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted, run.result.kept, run.result.fixSeverity], [2, 2, 'revised', 'S2'], 'two loops, both promoted: a compact day is not capped to one rescue loop');
+      assert.deepEqual([...run.result.fixed].sort(), ['d01', 'd02', 'd03'], 'the S2 defects are fixed too, not left as known issues');
+      assert.equal(run.result.clean, true);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 0, S3: 1, S4: 1 });
+      const eng1 = run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt;
+      assert.ok(eng1.indexOf('d01 [S1]') > 0 && eng1.indexOf('d01 [S1]') < eng1.indexOf('d03 [S2]'), 'the owner is told to work in severity order');
+      assert.ok(!run.rec.calls.some((c) => c.label.startsWith('fix ') && c.prompt.includes('d04 [')), 'S3 defects are out of reach at the default fix severity');
+      assert.ok(!run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt.includes('S3 items are polish'));
+      assert.ok(w.state.fixCalls.includes('fix engineer loop 2'));
       const rep = rd(s);
-      assert.deepEqual(rep.defects.map((d) => d.id).sort(), ['d02', 'd03', 'd04', 'd05'], 'the S2 defects were not silently dropped from the report');
-      assert.equal(rep.verdict, 'revise');
-      assert.equal(rep.revise.rescue, true);
-      assert.equal(run.result.clean, false);
+      assert.deepEqual(rep.defects.map((d) => d.id).sort(), ['d04', 'd05']);
+      assert.equal(rep.revise.rescue, false);
+      assert.equal(rep.verdict, 'ship');
     } finally { s.clean(); }
-    // S2 only (or nothing blocking): a compact build ships as is, no loop
+    // the policy case of a compact day: an S2 and S3 nits, no S1 at all
     const t = makeSandbox();
     try {
-      seedProject(t);
-      seedQaReport(t, [D('d02', 'S2', 'artisan', 'css/style.css'), D('d04', 'S3', 'jester', 'js/copy.js')]);
+      seedProject(t, { compact: true });
+      seedQaReport(t, [D('d02', 'S2', 'artisan', 'index.html'), D('d04', 'S3', 'engineer', 'app.js')]);
       const w = reviseWorld(t);
       const run = await go(t, w, {}, { tier: 2, compact: true, reviseLoops: 1 });
       checkRunInvariants('revise', run, { skipPhaseUse: true });
-      assert.equal(run.result.loopsRun, 0);
-      assert.equal(w.state.fixCalls.length, 0);
-      assert.ok(run.result.skippedWhy.includes('only for S1'), run.result.skippedWhy);
-      assert.deepEqual(JSON.parse(JSON.stringify(run.result.remaining)).map((d) => d.id), ['d02']);
-    } finally { t.clean(); }
-    // extra defects from the orchestrator count as S1 and trigger the rescue too
-    const u = makeSandbox();
-    try {
-      seedProject(u);
-      seedQaReport(u, [D('d04', 'S3', 'jester', 'js/copy.js')]);
-      const w = reviseWorld(u);
-      const run = await go(u, w, {}, { tier: 2, compact: true, reviseLoops: 1, extraDefects: [{ title: 'validate: missing viewport meta', detail: 'index.html has no viewport meta', owner: 'artisan', file: 'index.html' }] });
-      checkRunInvariants('revise', run, { skipPhaseUse: true });
       assert.equal(run.result.loopsRun, 1);
       assert.deepEqual([...w.state.fixCalls], ['fix artisan loop 1']);
-    } finally { u.clean(); }
+      assert.deepEqual([run.result.promoted, run.result.kept], [1, 'revised']);
+      assert.ok(fs.readFileSync(t.work('build', 'site', 'index.html'), 'utf8').includes('// fixed by artisan'), 'the S2 fix shipped');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 0, S3: 1, S4: 0 });
+      assert.equal(rd(t).verdict, 'ship');
+    } finally { t.clean(); }
     // reviseLoops 0 still means no loop at all, compact or not
     const v = base();
     try {
@@ -2324,7 +2355,285 @@ describe('revise.js', () => {
       const run = await go(v, w, {}, { tier: 2, compact: true, reviseLoops: 0, levelConfig: { ...baseArgs(v).levelConfig, reviseLoops: 0 } });
       assert.equal(run.result.loopsRun, 0);
       assert.ok(run.result.skippedWhy.includes('no revise loops'));
+      assert.equal(w.state.fixCalls.length, 0);
+      assert.equal(v.exists(v.work('tmp', 'revise-site')), false, 'no loop, no copy');
     } finally { v.clean(); }
+  });
+
+  test('compact S3 day (S1 = S2 = 0): the loop fixes one known S3, the critic finds three brand-new S3 nits: fewer KNOWN defects, so the loop is promoted', async () => {
+    // The S3 rule of the comparison only matters when S1 and S2 are equal -- the day the S3 threshold triggers. New nits are the critic's taste
+    // on a second look; counting them would make a revise that fixed something look like a regression and throw it away.
+    const s = makeSandbox();
+    try {
+      seedProject(s, { compact: true });
+      seedQaReport(s, [D('d02', 'S3', 'artisan', 'index.html'), D('d03', 'S3', 'engineer', 'app.js'), D('d04', 'S3', 'artisan', 'index.html'), D('d05', 'S3', 'engineer', 'app.js')]);
+      const w = reviseWorld(s, { recheck: () => ({ fixed: ['d02'], defects: [D('d03', 'S3', 'engineer', 'app.js'), D('d04', 'S3', 'artisan', 'index.html'), D('d05', 'S3', 'engineer', 'app.js'), D('N1', 'S3', 'artisan', 'index.html', 'new nit one'), D('N2', 'S3', 'artisan', 'index.html', 'new nit two'), D('N3', 'S3', 'artisan', 'index.html', 'new nit three')] }) });
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S3' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.promoted, run.result.kept], [1, 'revised'], JSON.stringify({ promoted: run.result.promoted, kept: run.result.kept }));
+      assert.ok(rd(s).defects.filter((d) => /^new nit/.test(d.title)).length === 3, 'and the new nits are in the report');
+    } finally { s.clean(); }
+    // the same loop that fixes nothing known while the critic adds a nit is NOT better: nothing is promoted
+    const t = makeSandbox();
+    try {
+      seedProject(t, { compact: true });
+      seedQaReport(t, [D('d02', 'S3', 'artisan', 'index.html'), D('d03', 'S3', 'engineer', 'app.js'), D('d04', 'S3', 'artisan', 'index.html'), D('d05', 'S3', 'engineer', 'app.js')]);
+      const w = reviseWorld(t, { recheck: () => ({ fixed: [], defects: [D('d02', 'S3', 'artisan', 'index.html'), D('d03', 'S3', 'engineer', 'app.js'), D('d04', 'S3', 'artisan', 'index.html'), D('d05', 'S3', 'engineer', 'app.js'), D('N1', 'S3', 'artisan', 'index.html', 'new nit one')] }) });
+      const run = await go(t, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S3' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.promoted, 0);
+    } finally { t.clean(); }
+  });
+
+  test('the QA report could not be rewritten (the clerk fails): the result says ok:false, because the report still describes the build before the revise', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s, { compact: true });
+      seedQaReport(s, [D('d01', 'S1', 'engineer', 'app.js', 'crash on load'), D('d03', 'S2', 'artisan', 'index.html')]);
+      const w = reviseWorld(s);
+      const inner = w.respond;
+      w.respond = async (ctx) => (ctx.opts.label.startsWith('rewrite qa report') ? { written: [], exitCode: 1, stdout: '', stderr: 'ENOSPC: no space left on device' } : inner(ctx));
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S2' });
+      assert.equal(run.result.ok, false, JSON.stringify(run.result));
+      assert.equal(rd(s).revision, 0, 'the stale report is what the orchestrator would otherwise read as "S1 still open"');
+    } finally { s.clean(); }
+  });
+
+  test('routing: the defect\'s own owner fixes it when that owner built files, whatever file it names; an owner who built nothing falls back to the file\'s owner', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s, { compact: true }); // artisan owns index.html, engineer owns app.js; nobody else built anything
+      seedQaReport(s, [D('d01', 'S2', 'artisan', 'app.js', 'artisan\'s own bug, in a file the engineer owns'), D('d02', 'S2', 'lab', 'index.html', 'named a role that built nothing')]);
+      const w = reviseWorld(s);
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S2' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([...w.state.fixCalls].sort(), ['fix artisan loop 1'], 'both defects go to the artisan: d01 by its named owner, d02 by the owner of index.html');
+      const prompt = run.rec.calls.find((c) => c.label === 'fix artisan loop 1').prompt;
+      assert.ok(prompt.includes('d01 [S2]') && prompt.includes('d02 [S2]'), 'one agent, both defects');
+    } finally { s.clean(); }
+  });
+
+  test('compact: the S3 reach (fixSeverity S3) fixes polish last, new nits never veto a better page, and the bare S1 rescue stays S1-only', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s, { compact: true });
+      seedQaReport(s, [D('d01', 'S2', 'artisan', 'index.html', 'cascade below the fold'), D('d02', 'S3', 'artisan', 'index.html'), D('d03', 'S3', 'engineer', 'app.js'), D('d04', 'S3', 'artisan', 'index.html'), D('d05', 'S3', 'engineer', 'app.js'), D('d06', 'S4', 'engineer', 'app.js')]);
+      const w = reviseWorld(s, { recheck: () => ({ fixed: ['d01', 'd02', 'd03', 'd04'], defects: [D('d05', 'S3', 'engineer', 'app.js'), D('N1', 'S3', 'artisan', 'index.html', 'a brand new nit'), D('N2', 'S4', 'artisan', 'index.html', 'trivia')] }) });
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S3' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.fixSeverity, 'S3');
+      const art = run.rec.calls.find((c) => c.label === 'fix artisan loop 1').prompt;
+      assert.ok(art.includes('S3 items are polish'), 'the owners are told how to treat polish');
+      assert.ok(art.indexOf('d01 [S2]') > 0 && art.indexOf('d01 [S2]') < art.indexOf('d02 [S3]'), 'S2 before S3');
+      assert.deepEqual([run.result.promoted, run.result.kept], [1, 'revised'], 'fewer S2 and fewer known S3: promoted although the critic found a new nit');
+      assert.deepEqual([...run.result.fixed].sort(), ['d01', 'd02', 'd03', 'd04']);
+      const rep = rd(s);
+      assert.ok(rep.defects.some((d) => d.title === 'a brand new nit' && d.severity === 'S3'), 'the new nit is reported');
+      assert.ok(rep.defects.some((d) => d.id === 'd05') && rep.defects.some((d) => d.id === 'd06'), 'what was not fixed stays');
+      assert.equal(rep.counts.S2, 0);
+      assert.equal(rep.verdict, 'ship', 'S3 leftovers never make the verdict revise');
+    } finally { s.clean(); }
+    // fixSeverity S1: the rescue floor. Only the S1 owner works; the S2 stays a known issue, listed as remaining
+    const t = base();
+    try {
+      const w = reviseWorld(t);
+      const run = await go(t, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S1' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.ok, true, JSON.stringify(run.result));
+      assert.deepEqual([...w.state.fixCalls].sort(), ['fix engineer loop 1'], 'only the S1 owner is asked to fix');
+      const eng = run.rec.calls.find((c) => c.label === 'fix engineer loop 1');
+      assert.ok(eng.prompt.includes('d01 [S1]') && !eng.prompt.includes('d03 [S2]'));
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.fixed)), ['d01']);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.remaining)).map((d) => d.id).sort(), ['d02', 'd03']);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 2, S3: 1, S4: 1 });
+      const rep = rd(t);
+      assert.equal(rep.revise.rescue, true);
+      assert.equal(rep.verdict, 'revise');
+    } finally { t.clean(); }
+    // fixSeverity S1 with nothing at S1: no loop (the plan only asks for it when there is an S1)
+    const u = makeSandbox();
+    try {
+      seedProject(u);
+      seedQaReport(u, [D('d02', 'S2', 'artisan', 'css/style.css'), D('d04', 'S3', 'jester', 'js/copy.js')]);
+      const w = reviseWorld(u);
+      const run = await go(u, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S1' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.loopsRun, 0);
+      assert.equal(w.state.fixCalls.length, 0);
+      assert.ok(run.result.skippedWhy.includes('only for S1'), run.result.skippedWhy);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.remaining)).map((d) => d.id), ['d02']);
+    } finally { u.clean(); }
+    // extra defects from the orchestrator count as S1 and are fixed
+    const x = makeSandbox();
+    try {
+      seedProject(x);
+      seedQaReport(x, [D('d04', 'S3', 'jester', 'js/copy.js')]);
+      const w = reviseWorld(x);
+      const run = await go(x, w, {}, { tier: 2, compact: true, reviseLoops: 1, extraDefects: [{ title: 'validate: missing viewport meta', detail: 'index.html has no viewport meta', owner: 'artisan', file: 'index.html' }] });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.loopsRun, 1);
+      assert.deepEqual([...w.state.fixCalls], ['fix artisan loop 1']);
+    } finally { x.clean(); }
+  });
+
+  test('compact routing: a defect whose owner built nothing goes to the owner of its file, else to the builder that fits the file type', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s, { compact: true });
+      seedQaReport(s, [
+        D('d01', 'S2', 'jester', 'index.html (About, p.sed-making-of) vs /x/work/PROJECT.json'),
+        D('d02', 'S2', 'architect', 'app.js'),
+        D('d03', 'S3', 'jester', 'js/copy.js'),
+        D('d04', 'S3', 'lab', 'css/extra.css'),
+      ]);
+      const w = reviseWorld(s);
+      const run = await go(s, w, {}, { tier: 2, compact: true, reviseLoops: 1, fixSeverity: 'S3' });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      const art = run.rec.calls.find((c) => c.label === 'fix artisan loop 1').prompt;
+      const eng = run.rec.calls.find((c) => c.label === 'fix engineer loop 1').prompt;
+      assert.ok(art.includes('d01 [S2]') && !eng.includes('d01 ['), 'the file index.html is the artisan\'s, whoever the critic named');
+      assert.ok(eng.includes('d02 [S2]') && eng.includes('d03 [S3]'), 'the architect built nothing on a compact day: app.js goes to its owner, an unknown .js file to the engineer');
+      assert.ok(art.includes('d04 [S3]'), 'an unknown stylesheet goes to the artisan');
+      assert.ok(!run.rec.calls.some((c) => c.label === 'fix architect loop 1'));
+      assert.ok(!run.rec.logs.some((l) => /no owner with files/.test(l)), 'no defect is left without a fixer');
+    } finally { s.clean(); }
+  });
+
+  test('revise never costs the day its build: a loop that is not strictly better, unverified or failing leaves the build as QA (or the last good loop) saw it', async () => {
+    const pristine = (s, files = ['index.html', 'css/style.css', 'js/engine.js']) => files.every((f) => !fs.readFileSync(s.work('build', 'site', f), 'utf8').includes('// fixed by'));
+    const s2only = () => {
+      const s = makeSandbox();
+      seedProject(s);
+      seedQaReport(s, [D('d02', 'S2', 'artisan', 'css/style.css'), D('d03', 'S2', 'engineer', 'js/engine.js')]);
+      return s;
+    };
+    // (1) the fixes introduce an S1: S2 improved, S1 got worse, so the pre-revise build (S1 = 0) is what ships
+    let s = s2only();
+    try {
+      const w = reviseWorld(s, { recheck: () => ({ fixed: ['d02', 'd03'], defects: [D('N1', 'S1', 'engineer', 'js/engine.js', 'page crashes on load')] }) });
+      const run = await go(s, w, {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.promoted, run.result.kept, run.result.discarded.length], [0, 'pre-revise', 1]);
+      assert.ok(run.result.discarded[0].why.includes('S1'), run.result.discarded[0].why);
+      assert.ok(pristine(s), 'the build holds none of the discarded edits');
+      assert.ok(w.state.marks.length > 0 && w.state.marks.every((m) => m.dir === s.work('tmp', 'revise-site')), 'they were made in the copy');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 2, S3: 0, S4: 0 }, 'the report describes the build that ships: no S1');
+      assert.equal(rd(s).revision, 1);
+      assert.equal(rd(s).revise.kept, 'pre-revise');
+      assert.equal(s.exists(s.work('tmp', 'pre-revise-site')), false, 'nothing was replaced');
+      assert.ok(s.exists(s.work('revise', 'DONE.json')), 'the phase still completes: ok, with the pre-revise build');
+      assert.equal(run.result.ok, true);
+    } finally { s.clean(); }
+    // (2) the recheck critic returned nothing: the fixes are unverified
+    s = s2only();
+    try {
+      const run = await go(s, reviseWorld(s, { recheckNull: true }), {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.promoted, run.result.kept], [0, 'pre-revise']);
+      assert.ok(run.result.discarded[0].why.includes('unverified'));
+      assert.ok(pristine(s));
+    } finally { s.clean(); }
+    // (3) the critic says nothing got better
+    s = s2only();
+    try {
+      const run = await go(s, reviseWorld(s, { recheck: (n, open) => ({ fixed: [], defects: open.map((d) => D(d.id, d.severity, d.owner, d.file)) }) }), {}, { reviseLoops: 2 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted], [1, 0], 'and the second loop is not even started');
+      assert.ok(run.result.discarded[0].why.includes('strictly better'));
+      assert.ok(pristine(s));
+    } finally { s.clean(); }
+    // (4) loop 1 is good and promoted, loop 2 regresses: the build keeps loop 1
+    s = s2only();
+    try {
+      const w = reviseWorld(s, {
+        recheck: (n) => (n === 1
+          ? { fixed: ['d02'], defects: [D('d03', 'S2', 'engineer', 'js/engine.js')] }
+          : { fixed: [], defects: [D('d03', 'S2', 'engineer', 'js/engine.js'), D('N1', 'S1', 'engineer', 'js/engine.js', 'crash')] }),
+      });
+      const run = await go(s, w, {}, { reviseLoops: 2 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted, run.result.kept], [2, 1, 'revised']);
+      assert.equal(run.result.discarded[0].loop, 2);
+      const html = fs.readFileSync(s.work('build', 'site', 'index.html'), 'utf8'); // the artisan's first file
+      const js = fs.readFileSync(s.work('build', 'site', 'js/engine.js'), 'utf8');
+      assert.ok(html.includes('fix artisan loop 1') && js.includes('fix engineer loop 1'), 'loop 1 shipped');
+      assert.ok(!js.includes('fix engineer loop 2'), 'loop 2 did not');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 0, S2: 1, S3: 0, S4: 0 }, 'the report is the state after loop 1');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.fixed)), ['d02']);
+      assert.ok(!s.exists(s.work('tmp', 'revise-replaced')), 'scratch of the second swap is gone');
+      assert.ok(!fs.readFileSync(s.work('tmp', 'pre-revise-site', 'js/engine.js'), 'utf8').includes('// fixed by'), 'the pre-revise build is still the one QA saw');
+    } finally { s.clean(); }
+    // (5) the script itself dies after the fixes (a bug, a stop by the phase watch): the build is untouched, the phase is not marked done
+    s = s2only();
+    try {
+      const w = reviseWorld(s);
+      const run = await go(s, { ...w, onLog: (m) => { if (/^loop 1:/.test(m)) throw new Error('simulated bug'); } }, {}, { reviseLoops: 1 });
+      assert.equal(run.error, null, 'the script catches its own failure');
+      assert.equal(run.result.ok, false);
+      assert.equal(run.result.reason, 'script-error');
+      assert.deepEqual([run.result.promoted, run.result.kept], [0, 'pre-revise']);
+      assert.ok(pristine(s));
+      assert.equal(s.exists(s.work('revise', 'DONE.json')), false);
+      assert.equal(rd(s).revision, 0, 'and the QA report is the one QA wrote');
+    } finally { s.clean(); }
+    // (5b) it dies after a promoted loop: the QA report already describes the build that is in the site (an S1 that loop fixed must not send
+    // the day to Tier 3 because the final rewrite never happened), and the phase is still not marked done
+    s = s2only();
+    try {
+      const w = reviseWorld(s, { recheck: (n) => ({ fixed: ['d02'], defects: [D('d03', 'S2', 'engineer', 'js/engine.js')] }) });
+      const run = await go(s, { ...w, onLog: (m) => { if (/^revise loop 2\//.test(m)) throw new Error('simulated bug'); } }, {}, { reviseLoops: 2 });
+      assert.equal(run.error, null);
+      assert.deepEqual([run.result.ok, run.result.reason, run.result.promoted, run.result.kept], [false, 'script-error', 1, 'revised']);
+      const rep = rd(s);
+      assert.deepEqual([rep.revision, rep.counts.S2, rep.defects.map((d) => d.id).includes('d02'), rep.revise.kept], [1, 1, false, 'revised'], 'one revision, the fixed defect gone, the build named');
+      assert.ok(fs.readFileSync(s.work('build', 'site', 'index.html'), 'utf8').includes('fix artisan loop 1'), 'and the build holds the promoted loop');
+      assert.equal(s.exists(s.work('revise', 'DONE.json')), false);
+      // and the retry (the phase watch's second attempt) starts from that build: the promoted loop stays, what it fixed is not redone,
+      // the pre-revise build stays the one QA saw, and the revision counts from where the first attempt left the report
+      const again = await go(s, reviseWorld(s), {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', again, { skipPhaseUse: true });
+      assert.deepEqual([again.result.ok, again.result.promoted, again.result.kept, again.result.clean], [true, 1, 'revised', true]);
+      assert.deepEqual(JSON.parse(JSON.stringify(again.result.fixed)), ['d02', 'd03'], 'what the first attempt fixed stays on the record, then the defect that was still open');
+      assert.equal(rd(s).revision, 2);
+      assert.deepEqual(rd(s).defects, [], 'nothing left');
+      assert.deepEqual([rd(s).revise.promoted, rd(s).revise.promotedBefore, rd(s).revise.kept], [1, 1, 'revised']);
+      assert.ok(fs.readFileSync(s.work('build', 'site', 'index.html'), 'utf8').includes('fix artisan loop 1'), 'loop 1 of the first attempt is still in the build');
+      assert.ok(fs.readFileSync(s.work('build', 'site', 'js/engine.js'), 'utf8').includes('fix engineer loop 1'), 'and the second attempt\'s fix joined it');
+      assert.ok(!fs.readFileSync(s.work('tmp', 'pre-revise-site', 'js/engine.js'), 'utf8').includes('// fixed by'), 'the pre-revise build is still the one QA saw');
+      assert.equal(s.exists(s.work('revise', 'DONE.json')), true);
+      assert.ok(!s.exists(s.work('tmp', 'revise-replaced')) && !s.exists(s.work('tmp', 'revise-stage')), 'no scratch is left behind');
+      // a third run has nothing left to fix: no loop, and the build is still named as revised (two earlier promotions, never reset to pre-revise)
+      const third = await go(s, reviseWorld(s), {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', third, { skipPhaseUse: true });
+      assert.deepEqual([third.result.ok, third.result.loopsRun, third.result.promoted, third.result.kept], [true, 0, 0, 'revised']);
+      assert.deepEqual(JSON.parse(JSON.stringify(third.result.fixed)), ['d02', 'd03']);
+      assert.deepEqual([rd(s).revise.promoted, rd(s).revise.promotedBefore, rd(s).revise.kept, rd(s).revision], [0, 2, 'revised', 3]);
+      assert.ok(fs.readFileSync(s.work('build', 'site', 'js/engine.js'), 'utf8').includes('fix engineer loop 1'), 'the build is untouched');
+    } finally { s.clean(); }
+    // (6) no working copy, no loop: revise never falls back to editing the build in place
+    s = s2only();
+    try {
+      const w = reviseWorld(s);
+      const run = await go(s, { ...w, respond: async (x) => (/^copy site/.test(x.opts.label) ? null : w.respond(x)) }, {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.loopsRun, 0);
+      assert.equal(w.state.fixCalls.length, 0);
+      assert.deepEqual([run.result.degraded, run.result.reason], [true, 'copy-failed']);
+      assert.ok(run.result.skippedWhy.includes('working directory'));
+      assert.ok(pristine(s));
+      assert.equal(rd(s).revision, 1, 'the report is still rewritten');
+    } finally { s.clean(); }
+    // (7) the promotion itself fails (the copy lost its index.html): the build is untouched
+    s = s2only();
+    try {
+      const w = reviseWorld(s);
+      const run = await go(s, { ...w, respond: async (x) => { const r = await w.respond(x); if (/^recheck loop/.test(x.opts.label)) fs.rmSync(s.work('tmp', 'revise-site', 'index.html')); return r; } }, {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.promoted, run.result.kept], [0, 'pre-revise']);
+      assert.ok(run.result.discarded[0].why.includes('promoted'), run.result.discarded[0].why);
+      assert.ok(pristine(s));
+      assert.ok(s.exists(s.work('build', 'site', 'index.html')));
+    } finally { s.clean(); }
   });
 
   test('a no-critic-review defect is never sent to a fix agent and survives the rewrite until qa is rerun', async () => {
@@ -2477,6 +2786,7 @@ describe('loud argument validation (bad-args)', () => {
       assert.deepEqual((await bad('spec', { ...good, ideaId: 4 })).missing, ['ideaId']);
       assert.deepEqual((await bad('qa', { ...good, seconds: '20' })).missing, ['seconds']);
       assert.deepEqual((await bad('revise', { ...good, reviseLoops: -1, extraDefects: 'none' })).missing.sort(), ['extraDefects', 'reviseLoops']);
+      for (const fixSeverity of ['S4', 's2', 2, null]) assert.deepEqual((await bad('revise', { ...good, fixSeverity })).missing, ['fixSeverity'], String(fixSeverity));
       assert.deepEqual((await bad('kaizen', { ...good, dayNumber: '3', members: 'pulse', queue: 'x', degradedDay: 1, notesDir: 4 })).missing.sort(), ['dayNumber', 'degradedDay', 'members', 'notesDir', 'queue']);
       assert.deepEqual((await bad('kaizen', { ...good, dayNumber: 2.5 })).missing, ['dayNumber']);
       // an object holding the lens entries as .agents is accepted (the shape lenses.mjs prints)

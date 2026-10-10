@@ -27,7 +27,7 @@ Rules come from the **committed** `config.json` (editing the working copy loosen
 | Rule id | Meaning |
 |---|---|
 | `too-many-lines`, `too-many-files`, `file-too-large` | `maxChangedLines` (added+removed), `maxFiles`, 256 KiB per file |
-| `path-not-allowed`, `protected-path`, `ledger-edit`, `bad-path` | outside `allowedPaths`; inside `protectedPaths` (config.json's list plus a built-in floor: the gate, the ledger, `deadman.mjs`, `heartbeat.mjs`, `lib/throttle.mjs`, `fallback.mjs`, `build-site.mjs`, `qa/browser-check.mjs`) (edit, create, delete or rename-away; case, Unicode, zero-width and trailing-dot look-alikes count); `LOG.md`/`INDEX.json` edited by hand; `..`, `.git`, backslashes, control characters |
+| `path-not-allowed`, `protected-path`, `ledger-edit`, `bad-path` | outside `allowedPaths`; inside `protectedPaths` (config.json's list plus a built-in floor: the gate, the ledger, `deadman.mjs`, `heartbeat.mjs`, `lib/throttle.mjs`, `lib/usage.mjs`, `lib/phasewatch.mjs`, `lib/revisepolicy.mjs`, `fallback.mjs`, `build-site.mjs`, `qa/browser-check.mjs`) (edit, create, delete or rename-away; case, Unicode, zero-width and trailing-dot look-alikes count); `LOG.md`/`INDEX.json` edited by hand; `..`, `.git`, backslashes, control characters |
 | `symlink`, `submodule`, `type-change`, `exec-bit`, `binary-file` | no symlinks, nested repos, mode changes, new executables, or binary files |
 | `protected-block-changed`, `-removed`, `-neutralized`, `protected-markers-unbalanced`, `protected-marker-count` | `<!-- protected:begin/end -->` and `// protected:begin/end` blocks must stay byte-identical, present, and in the same lexical context (not commented out, quoted or wrapped). New blocks may be added; none may shrink. |
 | `test-file-deleted`, `test-removed`, `test-skipped` | no test file deleted or renamed away, no test declaration dropped, no `.skip`/`.todo`/`.only`/`skip:`/`todo:` added |
@@ -40,6 +40,8 @@ Rules come from the **committed** `config.json` (editing the working copy loosen
 
 Then the three suites run with timeouts (`validate repo`, `ops/workflows/_selfcheck.mjs`, `tests/*.test.mjs`; a hung suite is killed with its whole process group) and are compared with the baseline taken at `begin`: nothing may fail, the passing count may not drop, skipped and todo counts may not rise, the suites may not leave files behind, and `validate repo` must also pass with the new ledger entry in place. Only then is the change (plus `LOG.md` and `INDEX.json`) committed as `kaizen(<agent>): <title>` with `Kaizen-*` trailers.
 
+**One automatic re-run.** A suite that fails on its own (not a timeout: a hang is never repeated) is run once more, in `begin`'s baseline and in `commit`, before it counts as failed. If the re-run passes, the gate goes on and says so: `flaky-suspect: <suite> failed once and passed on the automatic re-run: <test>` in the output (`flaky`, `warnings`, `baseline.notes`) and as the note of the ledger entry, and the tests that flipped are appended to `state/flaky-suspects.json` (newest first, 40 entries, atomic write, `count` per test). A failure that repeats is refused exactly as before, with `failed again on the automatic re-run` and the failing test names in the reason; if the two runs failed on different tests, those are recorded as suspects too. `begin` shows the top of the list (`flakySuspects`): making one of those tests deterministic (never loosening it) is a good kaizen.
+
 `propose --body-file` must point to a regular file (no symlink, at most 20 KB) that really lives under `<repo>/work/<date>/tmp/` (the scratch path the workflow gives members); anything else is a usage error and nothing is read.
 
 Baselines live in `os.tmpdir()/sed-kaizen-<repo hash>/` keyed by HEAD sha and agent: the previous member's passing run is the next member's baseline (so is a rejection's: its restored tree is the baselined tree plus a ledger entry), so a day costs about one full suite run per member. `begin` refuses a red tree (a kaizen cannot start on failing suites). `commit` without any baseline exits 2 and touches nothing.
@@ -49,7 +51,8 @@ Baselines live in `os.tmpdir()/sed-kaizen-<repo hash>/` keyed by HEAD sha and ag
 * `begin` refuses a dirty tree: `state.mjs sync` (commit and push `state docs work`) before the kaizen phase, and do not write to the tree while members run (no `state.mjs event/spend`, no notes appended) until the phase ends. Run `sync` after it: `kaizen.mjs` never pushes.
 * Members run one at a time. A crash mid-`commit` can leave the tree dirty (an interrupted ledger write); the next `begin` will say which paths. Restore them with `git checkout -- <paths>` (and delete untracked ones), then continue.
 * When the budget stop skips members, record them with `kaizen.mjs queue --skip a,b` after the phase and `queue --clear` for those that ran; `status` shows `queue` and who is still `pending` today.
-* `SED_KAIZEN_SUITE_TIMEOUT_MS` overrides every suite timeout (defaults: validate 3 min, selfcheck 10 min, tests 30 min).
+* `SED_KAIZEN_SUITE_TIMEOUT_MS` overrides every suite timeout (defaults: validate 3 min, selfcheck 10 min, tests 30 min). A re-run after a failure costs one more run of that suite (about 7 minutes for `tests`).
+* `state/flaky-suspects.json` is written by the gate and left uncommitted, like `state/kaizen-queue.json`: it does not count as a dirty tree for the gate, and the `sync` after the round commits it.
 * Shallow clones and a missing `origin` are fine: nothing here fetches or pushes.
 
 ## Known limits

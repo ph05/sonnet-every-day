@@ -17,6 +17,7 @@ import {
   normalizeKaizen, kaizenTeaser, summarizeKaizen, renderKaizenPage, renderKaizenJson,
 } from '../scripts/lib/archive.mjs';
 import { verifyLive, archiveUrl } from '../scripts/verify-live.mjs';
+import { startMeter } from './helpers/cpu.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REAL_ROOT = path.resolve(HERE, '..');
@@ -702,7 +703,7 @@ test('smoke build against the real site-src templates when they exist', async (t
   });
 });
 
-test('performance: 1000 projects build in under 3 seconds (validator stubbed, and structural fallback)', async (t) => {
+test('performance: 1000 projects build in under 3 seconds of CPU time (validator stubbed, and structural fallback), and never stall', async (t) => {
   await withBox({}, async (box) => {
     const specs = [];
     for (let i = 0; i < 1000; i++) {
@@ -713,13 +714,17 @@ test('performance: 1000 projects build in under 3 seconds (validator stubbed, an
     const now = new Date(Date.UTC(2026, 9, 9 + 1000, 15));
     for (const validate of [okValidator, false]) {
       fs.rmSync(box.p('docs', 'archive.json'), { force: true });
-      const t0 = performance.now();
+      // CPU time, not wall time: a loaded machine stretches wall time several-fold (the same measure on the 8 MB validation test read 2 to 9 s
+      // of wall clock for under 1 s of CPU) while the work done, and so the budget, stays the same. The CPU counted is this process's plus
+      // that of the children it waited for; the loose wall-clock backstop below catches an order-of-magnitude stall that burns no CPU.
+      const meter = startMeter();
       const res = await buildSite({ now, validate });
-      const ms = performance.now() - t0;
+      const { cpuMs: ms, wallMs } = meter.stop();
       assert.equal(res.ok, true, res.error);
       assert.equal(res.projects, 1000);
-      assert.ok(ms < 3000, `took ${Math.round(ms)} ms`);
-      t.diagnostic?.(`validate=${validate === false ? 'structural' : 'stub'}: ${Math.round(ms)} ms`);
+      assert.ok(ms < 3000, `took ${Math.round(ms)} ms of CPU time`);
+      assert.ok(wallMs < 8 * 3000, `stalled: ${Math.round(wallMs)} ms of wall time for ${Math.round(ms)} ms of CPU`);
+      t.diagnostic?.(`validate=${validate === false ? 'structural' : 'stub'}: ${Math.round(ms)} ms CPU`);
     }
     assert.equal(box.readJson('docs/archive.json').stats.streak, 1000);
     assert.equal((box.read('docs/feed.xml').match(/<entry>/g) ?? []).length, FEED_LIMIT);

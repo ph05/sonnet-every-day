@@ -16,6 +16,12 @@
 // rules come from the COMMITTED config.json so an agent cannot loosen them by editing the working copy;
 // nothing is pushed, reset or force-anything: on failure only the touched files are restored; ledger writes
 // are atomic and keyed by (date, agent). Exit codes: 0 ok, 1 checked and failed, 2 usage.
+//
+// Flaky suites: a suite that fails on its own (not a timeout) is run ONCE more before it counts. A pass on the re-run is accepted
+// with a note ("flaky-suspect", in the output and the ledger entry) and the tests that flipped are appended to the capped,
+// advisory state/flaky-suspects.json (left for the orchestrator's sync, like state/kaizen-queue.json). A failure that repeats
+// is refused exactly as before. The re-run runs in a fresh empty temp directory, so state the first run left in the shared one cannot
+// make a cold-start failure look like a flake.
 import { spawn, execFileSync } from 'node:child_process';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -56,6 +62,11 @@ const DEFAULT_DIGEST_DAYS = 14;
 const SUITE_TAIL_CHARS = 1500;
 const LOCK_STALE_MS = 90 * 60 * 1000;
 const FALLBACK_IDENTITY = { name: 'Claude', email: 'noreply@anthropic.com' };
+// Tests whose first run failed and whose automatic re-run passed. Advisory, capped, written only by this script.
+const FLAKY_FILE = 'state/flaky-suspects.json';
+const MAX_FLAKY_SUSPECTS = 40;
+const MAX_FLAKY_NAMES = 12;
+const MAX_FLAKY_NAME = 200;
 
 const SECRET_PATTERNS = [
   ['GitHub token', /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}/g],
@@ -96,10 +107,12 @@ const MAX_PROMPT_BYTES = 12 * 1024;
 // Written by the orchestrator while members run; a kaizen never touches them and the gate never restores them.
 const RUNTIME_AREAS = ['state/', 'docs/', 'work/'];
 // Always protected, whatever the committed config says: the gate itself, the ledger, and the scripts that guard the deadline,
-// the throttle, the fallbacks, the published site and the browser safety net.
+// the throttle and the usage limits (never overage), the stalled-phase watch, the revise policy, the fallbacks, the published
+// site and the browser safety net.
 const CORE_PROTECTED = [
   'config.json', 'scripts/kaizen.mjs', 'ops/kaizen/LOG.md', 'ops/kaizen/INDEX.json',
-  'scripts/deadman.mjs', 'scripts/heartbeat.mjs', 'scripts/lib/throttle.mjs', 'scripts/fallback.mjs', 'scripts/build-site.mjs', 'scripts/qa/browser-check.mjs',
+  'scripts/deadman.mjs', 'scripts/heartbeat.mjs', 'scripts/lib/throttle.mjs', 'scripts/lib/usage.mjs', 'scripts/lib/phasewatch.mjs', 'scripts/lib/revisepolicy.mjs',
+  'scripts/fallback.mjs', 'scripts/build-site.mjs', 'scripts/qa/browser-check.mjs',
 ];
 const REVERT_RATIO = 0.5;
 const MIN_MEANINGFUL_LINE = 4;
@@ -606,6 +619,8 @@ function collectChanges(g, root) {
     if (!rel) continue;
     map.set(rel, { path: rel, status: '?', oldMode: null, newMode: null, added: 0, removed: 0, binary: false, tracked: false, nested: rel.endsWith('/') });
   }
+  // The gate's own advisory list (recordFlaky) is not a member's edit and not foreign dirt: it waits for the orchestrator's next sync.
+  map.delete(FLAKY_FILE);
   for (const e of map.values()) {
     const abs = path.join(root, e.path);
     let st = null;
@@ -838,28 +853,131 @@ function runProcess(cwd, args, { timeoutMs, env }) {
   });
 }
 
-/** Runs the three suites in `dir` (the repo root or a pristine export). Stops at the first failure unless `all`. */
-export async function runSuites(dir, { all = false, only = null } = {}) {
+/**
+ * The tests that failed in a TAP report, as "tests/x.test.mjs > suite > test" (leaf failures only: a suite that merely holds a
+ * failing test is not listed, and a `# TODO`/`# SKIP` line is not a failure). The file comes from the failure's `location:`.
+ * The YAML block under each result is read by its exact indentation, so text inside an `error: |-` block (a nested test run's
+ * own output, say) is never taken for a result. Capped; never throws.
+ */
+export function failedTests(tap, dir = null) {
+  let real = dir;
+  try {
+    real = dir ? fs.realpathSync(dir) : null;
+  } catch {
+    real = dir;
+  }
+  const rel = (p) => {
+    for (const base of [dir, real]) if (base && p.startsWith(`${base}/`)) return p.slice(base.length + 1);
+    return p;
+  };
+  const unquote = (v) => v.replace(/^'|'$/g, '');
+  const stack = [];
+  const names = [];
+  let pending = null; // the failed result whose YAML block is being read
+  let yamlPad = null; // indentation of the open YAML block, `---` to `...`
+  const flush = () => {
+    if (pending && pending.type !== 'subtestsFailed') {
+      const own = rel(pending.name);
+      const above = stack.slice(0, pending.depth).filter(Boolean).map(rel).filter((n) => n !== pending.file); // a runner that wraps each file names it in the stack
+      const parts = [...(pending.file && pending.file !== own ? [pending.file] : []), ...above, own];
+      const name = clean(parts.join(' > '), MAX_FLAKY_NAME);
+      if (name && !names.includes(name) && names.length < MAX_FLAKY_NAMES) names.push(name);
+    }
+    pending = null;
+  };
+  for (const raw of String(tap ?? '').split('\n')) {
+    const line = raw.trimEnd();
+    if (yamlPad !== null) {
+      if (line === `${yamlPad}...`) {
+        yamlPad = null;
+        flush();
+      } else if (pending && line.startsWith(yamlPad) && line[yamlPad.length] !== ' ') {
+        const kv = /^(\w+): (.*)$/.exec(line.slice(yamlPad.length));
+        if (kv?.[1] === 'failureType') pending.type = unquote(kv[2]);
+        else if (kv?.[1] === 'location') pending.file = rel(unquote(kv[2]).replace(/:\d+:\d+$/, ''));
+      }
+      continue;
+    }
+    const open = /^( *)---$/.exec(line);
+    if (open) {
+      yamlPad = open[1];
+      continue;
+    }
+    flush();
+    const sub = /^( *)# Subtest: (.*)$/.exec(line);
+    if (sub) {
+      const depth = Math.floor(sub[1].length / 4);
+      stack.length = depth;
+      stack[depth] = sub[2];
+      continue;
+    }
+    const bad = /^( *)not ok \d+ - (.*)$/.exec(line);
+    if (bad && !/\s#\s*(?:TODO|SKIP)\b/i.test(bad[2])) pending = { name: bad[2], depth: Math.floor(bad[1].length / 4), type: '', file: '' };
+  }
+  flush();
+  return names;
+}
+
+/** One run of one suite. `failed` names the failing tests of a run that failed on its own (not a timeout). */
+async function runSuiteOnce(dir, suite, env) {
+  const r = await runProcess(dir, suite.args, { timeoutMs: suiteTimeout(suite), env });
+  const counts = suite.counts ? parseCounts(r.out) : null;
+  const res = {
+    ok: r.code === 0 && !r.timedOut,
+    code: r.code,
+    timedOut: r.timedOut,
+    ms: r.ms,
+    counts,
+    tail: r.out.slice(-SUITE_TAIL_CHARS).trim(),
+    failed: [],
+  };
+  if (res.ok && suite.counts && !counts) {
+    res.ok = false;
+    res.tail = `could not read the test summary (# tests / # pass) from ${suite.name}\n${res.tail}`;
+  }
+  if (!res.ok && !res.timedOut) res.failed = failedTests(r.out, dir);
+  return res;
+}
+
+/**
+ * The ONE automatic re-run of a suite that failed on its own, in a fresh empty temp directory (TMPDIR). The second run decides; `retry`
+ * keeps what the first one said and `flipped`, the tests that behaved differently in the two runs (the flaky suspects). A second pass
+ * names every failure of the first; a second failure names only the tests that differ, so a failure that repeats exactly flips nothing.
+ */
+async function rerunSuite(dir, suite, env, first) {
+  // The re-run gets a fresh, empty temp directory: a cache, lock or fixture that the first run left in the shared one must not be able to
+  // cure a failure that the next fresh container would hit again (a cold start, state that only an earlier run created).
+  const fresh = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-kaizen-rerun-'));
+  let second;
+  try {
+    second = await runSuiteOnce(dir, suite, { ...env, TMPDIR: fresh, TEMP: fresh, TMP: fresh });
+  } finally {
+    fs.rmSync(fresh, { recursive: true, force: true });
+  }
+  let flipped = [];
+  if (second.ok) flipped = first.failed.length ? first.failed : [`${suite.name}: unnamed failure`];
+  else if (first.counts && second.counts && !second.timedOut) {
+    // both runs produced a report: whatever failed in only one of them flipped (a crash or a hang decides nothing)
+    flipped = [...first.failed.filter((n) => !second.failed.includes(n)), ...second.failed.filter((n) => !first.failed.includes(n))];
+  }
+  second.retry = { firstCode: first.code, firstMs: first.ms, firstFailed: first.failed, flipped: flipped.slice(0, MAX_FLAKY_NAMES) };
+  return second;
+}
+
+/**
+ * Runs the three suites in `dir` (the repo root or a pristine export). Stops at the first failure unless `all`. A suite that
+ * fails on its own is run once more before it counts as failed (`retry: false` switches that off); a timeout is never
+ * repeated, because a hang is not a flake the phase budget can pay for twice.
+ */
+export async function runSuites(dir, { all = false, only = null, retry = true } = {}) {
   const env = { ...process.env, SED_ROOT: dir, GIT_TERMINAL_PROMPT: '0' };
   delete env.NODE_TEST_CONTEXT; // a nested `node --test` inside a test run would otherwise emit the child protocol, not TAP
   delete env.SED_NOW;
   const results = {};
   for (const suite of SUITES) {
     if (only && !only.includes(suite.name)) continue;
-    const r = await runProcess(dir, suite.args, { timeoutMs: suiteTimeout(suite), env });
-    const counts = suite.counts ? parseCounts(r.out) : null;
-    const res = {
-      ok: r.code === 0 && !r.timedOut,
-      code: r.code,
-      timedOut: r.timedOut,
-      ms: r.ms,
-      counts,
-      tail: r.out.slice(-SUITE_TAIL_CHARS).trim(),
-    };
-    if (res.ok && suite.counts && !counts) {
-      res.ok = false;
-      res.tail = `could not read the test summary (# tests / # pass) from ${suite.name}\n${res.tail}`;
-    }
+    let res = await runSuiteOnce(dir, suite, env);
+    if (!res.ok && retry && !res.timedOut) res = await rerunSuite(dir, suite, env, res);
     results[suite.name] = res;
     if (!res.ok && !all) break;
   }
@@ -868,7 +986,11 @@ export async function runSuites(dir, { all = false, only = null } = {}) {
 
 const suiteFailure = (results) => {
   for (const [name, r] of Object.entries(results)) {
-    if (!r.ok) return `${name} ${r.timedOut ? `timed out after ${Math.round(r.ms / 1000)}s` : `failed (exit ${r.code})`}: ${clean(r.tail.split('\n').slice(-6).join(' | '), 400)}`;
+    if (r.ok) continue;
+    const tail = clean(r.tail.split('\n').slice(-6).join(' | '), 400);
+    if (r.timedOut) return `${name} timed out after ${Math.round(r.ms / 1000)}s: ${tail}`;
+    const failing = r.failed?.length ? ` [${r.failed.slice(0, 3).map((n) => n.slice(0, 120)).join('; ')}${r.failed.length > 3 ? `; +${r.failed.length - 3} more` : ''}]` : '';
+    return `${name} failed (exit ${r.code})${r.retry ? ', and failed again on the automatic re-run' : ''}${failing}: ${tail}`;
   }
   return null;
 };
@@ -896,14 +1018,100 @@ async function baselineFor(ctx) {
   return { suites: await runSuites(ctx.root, { all: true }), cached: false };
 }
 
+/** What a baseline keeps of a run: counts and verdicts. A re-run's details were recorded when it happened and must not be re-reported by the next member. */
+const withoutRetries = (suites) =>
+  Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).filter(([key]) => key !== 'retry' && key !== 'failed'))]));
+
 function storeBaseline(ctx, agent, head, suites) {
-  const rec = { schema: 1, head, at: new Date().toISOString(), suites };
+  const rec = { schema: 1, head, at: new Date().toISOString(), suites: withoutRetries(suites) };
   writeJsonAtomic(headBaselineFile(ctx.root, head), rec);
   if (agent) writeJsonAtomic(agentBaselineFile(ctx.root, agent), { ...rec, agent });
 }
 
 const summarizeSuites = (suites) =>
-  Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, { ok: v.ok, ms: v.ms, ...(v.counts ? { pass: v.counts.pass, skipped: v.counts.skipped } : {}) }]));
+  Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, {
+    ok: v.ok,
+    ms: v.ms,
+    ...(v.counts ? { pass: v.counts.pass, skipped: v.counts.skipped } : {}),
+    ...(v.retry ? { retried: true, ...(v.retry.flipped.length ? { flaky: v.retry.flipped } : {}) } : {}),
+  }]));
+
+// ---------------------------------------------------------------------------------------------- flaky suspects
+
+/** state/flaky-suspects.json, sanitized: whatever is on disk, the caller gets a well-formed, capped list. */
+function readFlaky() {
+  const raw = readJson(rp(FLAKY_FILE), null);
+  const suspects = [];
+  for (const s of Array.isArray(raw?.suspects) ? raw.suspects : []) {
+    if (!s || typeof s.test !== 'string' || !clean(s.test, MAX_FLAKY_NAME)) continue;
+    suspects.push({
+      test: scrub(clean(s.test, MAX_FLAKY_NAME)),
+      suite: typeof s.suite === 'string' && clean(s.suite, 20) ? clean(s.suite, 20) : 'tests',
+      count: Number.isInteger(s.count) && s.count > 0 ? Math.min(s.count, 9999) : 1,
+      firstSeen: DATE_RE.test(String(s.firstSeen)) ? s.firstSeen : null,
+      lastSeen: DATE_RE.test(String(s.lastSeen)) ? s.lastSeen : null,
+      lastBy: typeof s.lastBy === 'string' && clean(s.lastBy, 20) ? clean(s.lastBy, 20) : null,
+    });
+  }
+  return { suspects: suspects.slice(0, MAX_FLAKY_SUSPECTS) };
+}
+
+/** Suites that were re-run and whose two runs disagreed about at least one test: [{suite, rescued, tests[]}]. */
+function flakyIncidents(suites) {
+  return Object.entries(suites ?? {})
+    .filter(([, r]) => r?.retry?.flipped?.length)
+    .map(([suite, r]) => ({ suite, rescued: r.ok === true, tests: r.retry.flipped }));
+}
+
+const flakyNotes = (incidents) =>
+  incidents.map((i) => `flaky-suspect: ${i.suite} ${i.rescued ? 'failed once and passed on the automatic re-run' : 'failed, and its automatic re-run failed differently'}: ${i.tests.slice(0, 3).join('; ')}${i.tests.length > 3 ? ` (+${i.tests.length - 3} more)` : ''}`);
+
+/**
+ * Appends the incidents to state/flaky-suspects.json (newest first, capped, atomic write). The file is advisory and written while the
+ * ledger lock is held; it stays uncommitted like state/kaizen-queue.json, and the orchestrator's `sync` carries it. A failed write
+ * is only logged: it must never turn a good kaizen into a rejected one.
+ */
+function recordFlaky(incidents, { date, agent }) {
+  if (incidents.length === 0) return;
+  try {
+    const { suspects } = readFlaky();
+    for (const inc of incidents) {
+      for (const test of inc.tests) {
+        let s = suspects.find((x) => x.test === test);
+        if (!s) suspects.push((s = { test, suite: inc.suite, count: 0, firstSeen: date, lastSeen: date, lastBy: agent }));
+        s.count = Math.min(9999, s.count + 1);
+        s.suite = inc.suite;
+        s.lastSeen = date;
+        s.lastBy = agent;
+      }
+    }
+    suspects.sort((a, b) => (b.lastSeen ?? '').localeCompare(a.lastSeen ?? '') || b.count - a.count || a.test.localeCompare(b.test));
+    writeJsonAtomic(rp(FLAKY_FILE), {
+      schema: 1,
+      note: 'Advisory. Tests whose first run failed and whose automatic re-run passed (scripts/kaizen.mjs re-runs a failing suite once). Written only by the gate; newest first, capped.',
+      suspects: suspects.slice(0, MAX_FLAKY_SUSPECTS),
+    });
+  } catch (err) {
+    process.stderr.write(`kaizen: could not record flaky suspects: ${err.message}\n`);
+  }
+}
+
+/** Records and returns the flaky incidents of one batch of suite results. */
+function noteFlaky(suites, meta) {
+  const incidents = flakyIncidents(suites);
+  recordFlaky(incidents, meta);
+  return incidents;
+}
+
+function flakySummary() {
+  const { suspects } = readFlaky();
+  return {
+    file: FLAKY_FILE,
+    count: suspects.length,
+    top: suspects.slice(0, 8).map((s) => ({ test: scrub(s.test), suite: s.suite, count: s.count, lastSeen: s.lastSeen })),
+    ...(suspects.length ? { hint: 'These tests failed once and passed on the automatic re-run. Making one deterministic (a fixed clock, a unique temp dir, waiting on a condition) is a welcome kaizen; never loosen its assertion.' } : {}),
+  };
+}
 
 // ---------------------------------------------------------------------------------------------- the check
 
@@ -1336,6 +1544,7 @@ function reject(ctx, base, reason, extra = {}) {
     reason,
     ...(extra.violations ? { violations: extra.violations } : {}),
     ...(extra.suites ? { suites: summarizeSuites(extra.suites) } : {}),
+    ...(extra.flaky?.length ? { flaky: extra.flaky } : {}),
     restored: restoreInfo,
     ledgerCommit: sha,
     ...(warnings.length ? { warnings } : {}),
@@ -1390,39 +1599,41 @@ async function cmdCommit(ctx, kz, flags, tz) {
 
     const touched = dirtyPaths(ctx);
     const suites = await runSuites(ctx.root);
+    const flaky = noteFlaky(suites, { date, agent });
     const failure = suiteFailure(suites);
-    if (failure) return reject(ctx, base, failure, { suites, linesChanged: check.stats.changedLines });
+    if (failure) return reject(ctx, base, failure, { suites, linesChanged: check.stats.changedLines, flaky });
     const drops = compareCounts(baseline.suites, suites);
-    if (drops.length) return reject(ctx, base, drops.join('; '), { suites, linesChanged: check.stats.changedLines });
+    if (drops.length) return reject(ctx, base, drops.join('; '), { suites, linesChanged: check.stats.changedLines, flaky });
     const after = dirtyPaths(ctx);
     const strays = after.filter((p) => !touched.includes(p));
     if (strays.length) {
-      return reject(ctx, base, `the suites left files behind: ${strays.slice(0, 4).join(', ')}`, { suites, linesChanged: check.stats.changedLines });
+      return reject(ctx, base, `the suites left files behind: ${strays.slice(0, 4).join(', ')}`, { suites, linesChanged: check.stats.changedLines, flaky });
     }
 
     const files = check.stats.paths;
-    const reason = evidence && check.warnings.some((w) => w.startsWith('reverts')) ? `evidence of harm: ${evidence}` : null;
+    const harm = evidence && check.warnings.some((w) => w.startsWith('reverts')) ? `evidence of harm: ${evidence}` : null;
     const index = readIndex();
-    const entry = makeEntry({ ...base, files, linesChanged: check.stats.changedLines, status: 'applied', reason });
+    const entry = makeEntry({ ...base, files, linesChanged: check.stats.changedLines, status: 'applied', reason: [harm, ...flakyNotes(flaky)].filter(Boolean).join('; ') || null });
     upsertEntry(index, entry);
     saveLedger(index);
     const validated = await runSuites(ctx.root, { only: ['validate'] });
+    flaky.push(...noteFlaky(validated, { date, agent }));
     if (!validated.validate?.ok) {
-      return reject(ctx, base, `validate repo failed after the ledger entry was added: ${suiteFailure(validated)}`, { suites, linesChanged: check.stats.changedLines });
+      return reject(ctx, base, `validate repo failed after the ledger entry was added: ${suiteFailure(validated)}`, { suites, linesChanged: check.stats.changedLines, flaky });
     }
 
     const stage = ctx.g.run(['add', '-A', '--', ...files, ...LEDGER_FILES]);
-    if (!stage.ok) return reject(ctx, base, `git add failed: ${firstLine(stage.stderr)}`, { suites, linesChanged: check.stats.changedLines });
+    if (!stage.ok) return reject(ctx, base, `git add failed: ${firstLine(stage.stderr)}`, { suites, linesChanged: check.stats.changedLines, flaky });
     const staged = ctx.g.text(['diff', '--cached', '--name-only', '-z']).split('\0').filter(Boolean);
     const expected = new Set([...files, ...LEDGER_FILES]);
     const unexpected = staged.filter((p) => !expected.has(p));
-    if (unexpected.length) return reject(ctx, base, `unexpected staged paths: ${unexpected.slice(0, 4).join(', ')}`, { suites, linesChanged: check.stats.changedLines });
+    if (unexpected.length) return reject(ctx, base, `unexpected staged paths: ${unexpected.slice(0, 4).join(', ')}`, { suites, linesChanged: check.stats.changedLines, flaky });
 
     let sha;
     try {
       sha = gitCommit(ctx, commitMessage(entry, [`Kaizen-Files: ${files.join(', ')}`]));
     } catch (err) {
-      return reject(ctx, base, err.message, { suites, linesChanged: check.stats.changedLines });
+      return reject(ctx, base, err.message, { suites, linesChanged: check.stats.changedLines, flaky });
     }
     const stampWarning = stampSha(ctx, entry, sha);
     const finalHead = ctx.g.text(['rev-parse', 'HEAD']).trim();
@@ -1436,7 +1647,8 @@ async function cmdCommit(ctx, kz, flags, tz) {
       files,
       linesChanged: check.stats.changedLines,
       suites: summarizeSuites(suites),
-      warnings: [...check.warnings, ...(stampWarning ? [stampWarning] : []), ...(leftover.length ? [`working tree not clean after commit: ${leftover.slice(0, 4).join(', ')}`] : [])],
+      ...(flaky.length ? { flaky } : {}),
+      warnings: [...check.warnings, ...flakyNotes(flaky), ...(stampWarning ? [stampWarning] : []), ...(leftover.length ? [`working tree not clean after commit: ${leftover.slice(0, 4).join(', ')}`] : [])],
     };
   });
 }
@@ -1507,8 +1719,9 @@ async function cmdPropose(ctx, kz, flags, tz) {
     upsertEntry(index, entry);
     saveLedger(index);
     const validated = await runSuites(ctx.root, { only: ['validate'] });
+    const flaky = noteFlaky(validated, { date, agent });
     if (!validated.validate?.ok) {
-      return reject(ctx, base, `validate repo failed after the proposal was added: ${suiteFailure(validated)}`);
+      return reject(ctx, base, `validate repo failed after the proposal was added: ${suiteFailure(validated)}`, { flaky });
     }
     const stage = ctx.g.run(['add', '--', rel, ...LEDGER_FILES]);
     if (!stage.ok) return reject(ctx, base, `git add failed: ${firstLine(stage.stderr)}`);
@@ -1521,7 +1734,7 @@ async function cmdPropose(ctx, kz, flags, tz) {
     const stampWarning = stampSha(ctx, entry, sha);
     const prev = readJsonSafe(agentBaselineFile(ctx.root, agent));
     if (prev) writeJsonAtomic(agentBaselineFile(ctx.root, agent), { ...prev, head: ctx.g.text(['rev-parse', 'HEAD']).trim() });
-    return { ok: true, status: 'proposed', id: entry.id, sha, file: rel, ...(stampWarning ? { warnings: [stampWarning] } : {}) };
+    return { ok: true, status: 'proposed', id: entry.id, sha, file: rel, ...(flaky.length ? { flaky } : {}), ...(stampWarning || flaky.length ? { warnings: [...flakyNotes(flaky), ...(stampWarning ? [stampWarning] : [])] } : {}) };
   });
 }
 
@@ -1636,6 +1849,7 @@ function cmdStatus(ctx, kz, flags, tz) {
     counts,
     today: { done, rejected: today.filter((e) => e.status === 'rejected').map((e) => e.agent), pending: kz.members.filter((m) => !done.includes(m)) },
     queue: readQueue().skipped,
+    flakySuspects: readFlaky().suspects.length,
     last: index.entries.at(-1) ?? null,
     caps: { maxChangedLines: kz.maxChangedLines, maxFiles: kz.maxFiles },
   };
@@ -1656,10 +1870,13 @@ async function cmdBegin(ctx, kz, flags, tz) {
   const hidden = hiddenFromGit(ctx.g);
   if (hidden.length) throw new KaizenError(`files hidden from git (assume-unchanged/skip-worktree): ${hidden.slice(0, 5).join(', ')}`, 1);
   const prior = findEntry(readIndex(), date, agent);
-  const baseline = await withLock(ctx.root, 'ledger', () => baselineFor(ctx));
+  const baseline = await withLock(ctx.root, 'ledger', async () => {
+    const b = await baselineFor(ctx);
+    return { ...b, flaky: b.cached ? [] : noteFlaky(b.suites, { date, agent }) };
+  });
   const failure = suiteFailure(baseline.suites);
   if (failure) {
-    throw new KaizenError(`the suites already fail at HEAD (${failure}); a kaizen cannot start on a red tree. Fix it or report it in the handoff`, 1, { suites: summarizeSuites(baseline.suites) });
+    throw new KaizenError(`the suites already fail at HEAD (${failure}); a kaizen cannot start on a red tree. Fix it or report it in the handoff`, 1, { suites: summarizeSuites(baseline.suites), ...(baseline.flaky.length ? { flaky: baseline.flaky } : {}) });
   }
   storeBaseline(ctx, agent, ctx.head, baseline.suites);
   const notes = notesFor(date, agent);
@@ -1671,7 +1888,8 @@ async function cmdBegin(ctx, kz, flags, tz) {
     clean: true,
     alreadyDone: prior && prior.status !== 'rejected' ? { id: prior.id, status: prior.status, title: prior.title } : null,
     previousAttempt: prior?.status === 'rejected' ? { reason: prior.reason, title: prior.title } : null,
-    baseline: { cached: baseline.cached, suites: summarizeSuites(baseline.suites) },
+    baseline: { cached: baseline.cached, suites: summarizeSuites(baseline.suites), ...(baseline.flaky.length ? { flaky: baseline.flaky, notes: flakyNotes(baseline.flaky) } : {}) },
+    flakySuspects: flakySummary(),
     rules: { maxChangedLines: kz.maxChangedLines, maxFiles: kz.maxFiles, allowedPaths: kz.allowedPaths, protectedPaths: kz.protectedPaths, docLineCaps: kz.docLineCaps },
     digest: digestOf(kz, { date }),
     notes,

@@ -1543,6 +1543,24 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
     assert.equal(events[0].msg, 'old3');
     assert.equal(events.at(-1).msg, 'new3');
   });
+  test('event --code: only the operator tags (planned-compact) are accepted; every other code is written by the scripts themselves', () => {
+    const box = sandbox();
+    begin(box, 'primary', 's1', '03:55');
+    good(st(box, ['event', '--kind', 'degrade', '--code', 'planned-compact', '--msg', 'spec went compact: mini-spec, tier 2 from here', '--by', 'primary'], '04:00'));
+    assert.deepEqual(box.run().events.at(-1), { at: iso('04:00'), by: 'primary', kind: 'degrade', msg: 'spec went compact: mini-spec, tier 2 from here', code: 'planned-compact' });
+    // a code that only the scripts write cannot be forged, and a missing value is a usage error: nothing is appended
+    const before = box.run().events.length;
+    for (const code of ['usage-stop', 'usage-clear', 'watch-fired', 'corrupt-run', 'grace', 'anything', '']) {
+      const r = st(box, ['event', '--kind', 'note', '--code', code, '--msg', 'x', '--by', 'primary'], '04:01');
+      assert.equal(r.code, 2, code);
+      assert.match(r.json.error, /--code must be one of planned-compact/);
+    }
+    assert.equal(st(box, ['event', '--kind', 'note', '--code', '--msg', 'x', '--by', 'primary'], '04:01').code, 2);
+    assert.equal(box.run().events.length, before);
+    // without --code the event has no code key at all
+    good(st(box, ['event', '--kind', 'note', '--msg', 'plain', '--by', 'primary'], '04:02'));
+    assert.equal('code' in box.run().events.at(-1), false);
+  });
   test('spend accumulates per phase and raises one budget event when the level cap is crossed', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
@@ -1562,6 +1580,22 @@ describe('CLI: directive, ack-directive, event, spend, choose', () => {
     assert.equal(good(beat(box, 'primary', 's1', '04:04')).spend.overCap, true);
     assert.equal(st(box, ['spend', '--tokens', '-5'], '04:05').code, 2);
     assert.equal(st(box, ['spend', '--tokens', 'lots'], '04:05').code, 2);
+  });
+  test('every spend answer carries the caps a Workflow is launched with: workflowCapTokens (the kaizen reserve kept back) and kaizenCapTokens, both net of what is spent', () => {
+    // A turn that a notification starts has budget.spent() at 0 again: the operator passes THESE as args.capTokens, no BASE to keep by hand
+    const box = sandbox();
+    const b = good(begin(box, 'primary', 's1', '03:55'));
+    assert.deepEqual([b.spend.level, b.spend.capTokens, b.spend.workflowCapTokens, b.spend.kaizenCapTokens], ['balanced', 2_750_000, 2_400_000, 2_750_000]);
+    const j = good(st(box, ['spend', '--tokens', '1000000', '--calls', '10'], '04:10')).spend;
+    assert.deepEqual([j.capTokens, j.remainingTokens, j.workflowCapTokens, j.kaizenCapTokens], [2_750_000, 1_750_000, 1_400_000, 1_750_000]);
+    for (const answer of [good(beat(box, 'primary', 's1', '04:11')).spend, good(st(box, ['status'], '04:12')).spend, good(begin(box, 'primary', 's1', '04:13')).spend]) {
+      assert.deepEqual([answer.outputTokens, answer.workflowCapTokens, answer.kaizenCapTokens], [1_000_000, 1_400_000, 1_750_000]);
+    }
+    // between the two caps: no room for more workflow phases, the kaizen reserve is still there; past both: zero, never negative
+    const between = good(st(box, ['spend', '--tokens', '1500000'], '04:20')).spend;
+    assert.deepEqual([between.workflowCapTokens, between.kaizenCapTokens, between.overCap], [0, 250_000, false]);
+    const past = good(st(box, ['spend', '--tokens', '900000'], '04:21')).spend;
+    assert.deepEqual([past.workflowCapTokens, past.kaizenCapTokens, past.remainingTokens, past.overCap], [0, 0, 0, true]);
   });
   test('spend after the page is out still counts (the kaizen is paid for), but no longer says "go to a fallback"', () => {
     const box = sandbox();

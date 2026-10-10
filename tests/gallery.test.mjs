@@ -102,10 +102,13 @@ after(async () => {
 });
 
 /** Opens a page, collecting console errors, page errors and any request that leaves localhost. */
-async function open(t, { width = 1280, height = 800, scheme = 'light', reducedMotion = 'no-preference', js = true, url = '/', storage, ready = js } = {}) {
+async function open(t, { width = 1280, height = 800, scheme = 'light', reducedMotion = 'no-preference', js = true, url = '/', storage, ready = js, observer = true } = {}) {
   const context = await browser.newContext({
     viewport: { width, height }, colorScheme: scheme, reducedMotion, javaScriptEnabled: js, deviceScaleFactor: 1,
   });
+  // observer:false removes IntersectionObserver before any page script runs, so the gallery's scroll-driven "load the next page when
+  // Show more nears the viewport" never fires; tests that count cards after an explicit click or key press need exactly one cause.
+  if (!observer) await context.addInitScript(() => { delete window.IntersectionObserver; });
   if (storage) await context.addInitScript((s) => { try { for (const k in s) localStorage.setItem(k, s[k]); } catch { /* ignore */ } }, storage);
   const page = await context.newPage();
   const problems = { errors: [], external: [] };
@@ -546,8 +549,8 @@ test('robust to missing optional fields, junk entries and hostile strings', asyn
   resetRoutes();
 });
 
-test('1,500 days: paginates, stays fast and never overflows', async (t) => {
-  if (!gate(t)) return;
+/** 1,500 days with a gap every 17th day: far more than one page of cards. */
+function bigArchive() {
   const days = [];
   const start = Date.UTC(2026, 9, 9);
   const cats = Object.keys(SAMPLE.stats.categories);
@@ -557,10 +560,21 @@ test('1,500 days: paginates, stays fast and never overflows', async (t) => {
     const proto = SAMPLE.days[i % SAMPLE.days.length];
     days.push({ ...proto, n: i + 1, date, slug: `s${i}`, path: `d/${date}-s${i}/`, title: `${proto.title} #${i + 1}`, category: cats[i % cats.length], tier: i % 41 === 0 ? 3 : 1 });
   }
-  const big = { ...SAMPLE, days, stats: { ...SAMPLE.stats, days: days.length, missingDates: [] } };
+  return { ...SAMPLE, days, stats: { ...SAMPLE.stats, days: days.length, missingDates: [] } };
+}
+const cardCountIs = (page, n) => page.waitForFunction((want) => document.querySelectorAll('#grid .card').length === want, n);
+
+test('1,500 days: paginates, stays fast and never overflows', async (t) => {
+  if (!gate(t)) return;
+  const big = bigArchive();
+  const days = big.days;
   resetRoutes(big);
+  t.after(() => resetRoutes()); // also when an assertion below throws: the next test must not inherit the big archive
   const started = Date.now();
-  const { page, problems } = await open(t, { width: 390, height: 844 });
+  // The button and the j key are the explicit ways to load a page. The scroll-driven auto-load (next test) is off here: with it on,
+  // the observer can load a page in addition, at a moment that depends on frame scheduling (and on the machine's load), so the
+  // exact counts below were a race (once seen: 96 cards where 72 were expected).
+  const { page, problems } = await open(t, { width: 390, height: 844, observer: false });
   const loadMs = Date.now() - started;
   assert.ok(loadMs < 4000, `loaded in ${loadMs}ms`);
   assert.equal(await page.locator('#grid .card').count(), 24, 'only one page rendered');
@@ -568,21 +582,34 @@ test('1,500 days: paginates, stays fast and never overflows', async (t) => {
   assert.equal(await page.locator('.run-cell').count() >= days.length, true);
   assert.ok((await overflow(page)) <= 0);
   await page.click('#load-more');
-  assert.equal(await page.locator('#grid .card').count(), 48);
+  await cardCountIs(page, 48);
   // j past the last rendered card pulls in the next page
   await page.focus('#grid .card:last-child .card-link');
   await page.keyboard.press('j');
-  assert.equal(await page.locator('#grid .card').count(), 72);
+  await cardCountIs(page, 72);
   await page.fill('#q', 'pigeons');
   await page.waitForFunction(() => /Showing/.test(document.querySelector('#result-count').textContent));
   const t0 = Date.now();
   await page.fill('#q', '');
-  await page.waitForFunction(() => document.querySelectorAll('#grid .card').length === 24);
+  await cardCountIs(page, 24);
   assert.ok(Date.now() - t0 < 2000);
   await shot(page, 'big-mobile');
   assert.deepEqual(problems.errors, []);
   assert.deepEqual(problems.external, []);
-  resetRoutes();
+});
+
+test('1,500 days: Show more loads the next page by itself once it nears the viewport', async (t) => {
+  if (!gate(t)) return;
+  resetRoutes(bigArchive());
+  t.after(() => resetRoutes());
+  const { page, problems } = await open(t, { width: 390, height: 844 });
+  await cardCountIs(page, 24); // one page to begin with: the button is far below the fold
+  await page.evaluate(() => document.querySelector('#load-more').scrollIntoView({ block: 'center' }));
+  await page.waitForFunction(() => document.querySelectorAll('#grid .card').length > 24); // the observer loads at least one more page, whenever the browser gets to it
+  const count = await page.locator('#grid .card').count();
+  assert.equal(count % 24, 0, `only whole pages are added (${count} cards)`);
+  assert.deepEqual(problems.errors, []);
+  assert.deepEqual(problems.external, []);
 });
 
 test('the 404 page renders and offers a way home', async (t) => {

@@ -328,7 +328,7 @@ async function attempt({ config, instant, local, day, force, git, dryRun, noSlee
     try {
       const role = minutes >= hm(config.tierCutoffs.t3Until) ? 'closer' : 'manual';
       // state.mjs begin records the current throttle level in every run it creates; so must this (CONTRACT 5.8 "throttle").
-      const throttleLevel = th?.getThrottle ? th.getThrottle(config).level : config.budget.level;
+      const throttleLevel = th?.getThrottle ? th.getThrottle(config, { now: instant }).level : config.budget.level;
       const begun = rs.beginRun({ role, session: SESSION, date: day, now: instant, config, throttleLevel, flags: { targetTier: wantTier, force: true, reopenUnbacked: true } });
       runAction = begun.action;
       if (begun.action === 'exit-published') {

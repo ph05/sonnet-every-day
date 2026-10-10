@@ -1,3 +1,5 @@
+Status: applied in round 4 (scripts/qa/browser-check.mjs isTopLevelNavigation(); a frameless navigation counts as top-level, not false; tests in tests/qa.test.mjs)
+
 # Proposal: QA: guard req.frame() in the browser-check route handler so a frameless request cannot kill the run
 
 - from: architect
