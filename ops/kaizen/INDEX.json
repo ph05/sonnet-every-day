@@ -91,7 +91,7 @@
       "files": [
         "ops/workflows/_selfcheck.mjs"
       ],
-      "sha": null,
+      "sha": "7acc6545a38d4d44435da2fbbde36477db5c2a36",
       "status": "applied",
       "linesChanged": 12,
       "question": "Should checkWritten name the byte difference and the likely cause in its size mismatch message? It lives in the prelude copied into 7 workflows, so it exceeds the 4 file cap for one kaizen.",
