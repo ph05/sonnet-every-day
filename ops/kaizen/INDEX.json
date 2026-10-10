@@ -16,6 +16,22 @@
       "linesChanged": 4,
       "question": "Should checkWritten in the other workflows (build, qa, select, spec, revise) also be proven free of escape sequences in shipped programs, or should the byte slack cover .mjs too?",
       "reason": null
+    },
+    {
+      "id": "2026-10-10-lab",
+      "date": "2026-10-10",
+      "agent": "lab",
+      "title": "tests: fail when any workflow program text carries a unicode or hex escape a clerk may decode",
+      "observation": "2026-10-10 report: ideate lost both normalize rounds (about 540k tokens, 29 min) because a clerk decoded unicode escapes in shipped program text and the byte check failed by 20. Cards fixed the one regex; nothing stopped the next one. Grep of ops/workflows/*.js shows only the host-side asciiJson line has escapes now, so a playbook.test.mjs line scan (13 lines) passes today and fails on any new escape.",
+      "category": "prevention",
+      "files": [
+        "tests/playbook.test.mjs"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 11,
+      "question": "Spec stalled after an interrupted architect and never returned: could a workflow older than its phase budget be detected from the run file alone, without a new watchdog?",
+      "reason": null
     }
   ]
 }

@@ -1153,3 +1153,14 @@ test('kaizen feedback loop: the preflight commands exist, A5 tolerates a missing
   assert.match(read('ops/OPERATING.md'), /Quarantine\./);
   assert.match(read('ops/FAILURE_MODES.md'), /^\| FM-112 \|[^\n]*quarantine/m);
 });
+
+test('workflows: no escape sequence can sit in program text a clerk writes verbatim (2026-10-10 ideate lost both normalize rounds to one)', () => {
+  // A clerk may decode \uXXXX or \xXX into the character, which changes the byte count and fails runFiles' size check
+  // (only .json files get slack). Build such characters from code points instead. asciiJson is host code that is never shipped.
+  const escape = /\\u[0-9a-fA-F]{4}|\\u\{|\\x[0-9a-fA-F]{2}/;
+  for (const f of fs.readdirSync(path.join(REPO_ROOT, 'ops/workflows')).filter((n) => n.endsWith('.js'))) {
+    read(`ops/workflows/${f}`).split('\n').forEach((line, i) => {
+      if (!line.startsWith('const asciiJson =')) assert.ok(!escape.test(line), `ops/workflows/${f}:${i + 1} has an escape sequence a clerk may decode: ${line.trim().slice(0, 80)}`);
+    });
+  }
+});
