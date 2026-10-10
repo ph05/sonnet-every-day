@@ -42,7 +42,7 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
 const BENIGN = path.join(HERE, 'fixtures', 'gate-benign', '2026-10-09-sample-toy');
 const PLAYBOOK = fs.readFileSync(path.join(REPO, 'ops', 'PLAYBOOK.md'), 'utf8');
-const CONFIG = JSON.parse(fs.readFileSync(path.join(REPO, 'config.json'), 'utf8'));
+const CONFIG = { ...JSON.parse(fs.readFileSync(path.join(REPO, 'config.json'), 'utf8')), startDate: '2026-10-09' }; // frozen fixture clock (the live startDate moves with the project)
 const TAXONOMY = JSON.parse(fs.readFileSync(path.join(REPO, 'ops', 'taxonomy.json'), 'utf8'));
 const SITE_URL = CONFIG.siteUrl;
 const HB_BRANCH = CONFIG.heartbeatBranch; // CONTRACT 14: liveness lives here, never on the work branch
@@ -4299,6 +4299,12 @@ describe('e2e', () => {
     const live = tmpDir('sed-e2e-live-');
     TO_CLEAN.push(live);
     fs.cpSync(REPO, live, { recursive: true, filter: (src) => !['.git', 'node_modules'].includes(path.basename(src)) });
+    for (const rel of ['config.json', 'state/history.json']) { // frozen fixture clock, as in the seed
+      const f = path.join(live, rel);
+      const j = JSON.parse(fs.readFileSync(f, 'utf8'));
+      j.startDate = '2026-10-09';
+      fs.writeFileSync(f, JSON.stringify(j, null, 2) + '\n');
+    }
     const run = (script, args) => {
       const r = spawnSync(process.execPath, [path.join(live, 'scripts', script), ...args], { cwd: live, env: { ...process.env, SED_ROOT: live }, encoding: 'utf8' });
       assert.equal(r.status, 0, `${script} ${args.join(' ')}: ${r.stdout}${r.stderr}`);

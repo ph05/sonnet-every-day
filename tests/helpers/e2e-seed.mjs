@@ -45,6 +45,11 @@ export function pristineFiles(config) {
  */
 export function copyPristine(root, dest, config) {
   fs.cpSync(root, dest, { recursive: true, filter: repoFilter(root) });
+  // Frozen fixture clock: every scenario counts days from 2026-10-09 whatever the live config.startDate is.
+  const cfgPath = path.join(dest, 'config.json');
+  const frozen = { ...JSON.parse(fs.readFileSync(cfgPath, 'utf8')), startDate: '2026-10-09' };
+  fs.writeFileSync(cfgPath, json(frozen));
+  config = { ...config, startDate: '2026-10-09' };
   for (const [rel, content] of Object.entries(pristineFiles(config))) {
     fs.mkdirSync(path.dirname(path.join(dest, rel)), { recursive: true });
     fs.writeFileSync(path.join(dest, rel), content);
