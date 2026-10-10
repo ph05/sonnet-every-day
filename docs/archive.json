@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-10T11:33:11.234Z",
+  "generatedAt": "2026-10-10T12:56:16.912Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
@@ -20,6 +20,14 @@
     "firstDate": "2026-10-10",
     "lastDate": "2026-10-10",
     "missingDates": []
+  },
+  "kaizen": {
+    "latest": {
+      "date": "2026-10-10",
+      "agent": "engineer",
+      "title": "selfcheck: run the real checkWritten to prove a decoded escape passes in .json and fails in program"
+    },
+    "count": 5
   },
   "days": [
     {

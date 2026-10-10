@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-10T11:33:11.234Z",
+  "generatedAt": "2026-10-10T12:56:16.912Z",
   "site": {
     "name": "Sonnet Every Day",
     "url": "https://ph05.github.io/sonnet-every-day/"
@@ -8,18 +8,150 @@
   "repo": "ph05/sonnet-every-day",
   "branch": "claude/sonnet-every-day",
   "stats": {
-    "entries": 0,
-    "applied": 0,
+    "entries": 6,
+    "applied": 5,
     "rejected": 0,
     "reverted": 0,
-    "proposed": 0,
-    "linesChanged": 0,
-    "members": 0,
+    "proposed": 1,
+    "linesChanged": 30,
+    "members": 6,
     "roster": 9,
-    "agents": {},
-    "categories": {},
-    "firstDate": null,
-    "lastDate": null
+    "agents": {
+      "architect": 1,
+      "artisan": 1,
+      "cards": 1,
+      "engineer": 1,
+      "jester": 1,
+      "lab": 1
+    },
+    "categories": {
+      "prevention": 4,
+      "proposal": 1,
+      "tests": 1
+    },
+    "firstDate": "2026-10-10",
+    "lastDate": "2026-10-10"
   },
-  "entries": []
+  "entries": [
+    {
+      "id": "2026-10-10-engineer",
+      "date": "2026-10-10",
+      "agent": "engineer",
+      "persona": "Engineer",
+      "role": "logic, performance and correctness",
+      "title": "selfcheck: run the real checkWritten to prove a decoded escape passes in .json and fails in program",
+      "observation": "2026-10-10 report: ideate lost both normalize rounds because checkWritten rejected a clerk-decoded escape in .mjs text by 20 bytes. Lab added a source-line lint, but nothing ran checkWritten itself; selfcheck only compares the prelude text across scripts. New selfcheck test loads the real prelude functions in a vm and asserts: decoded escape in .json passes, in .mjs fails, unreported file fails. Passes today (12 lines).",
+      "category": "tests",
+      "files": [
+        "ops/workflows/_selfcheck.mjs"
+      ],
+      "linesChanged": 12,
+      "status": "applied",
+      "sha": "7acc6545a38d4d44435da2fbbde36477db5c2a36",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/7acc6545a38d4d44435da2fbbde36477db5c2a36",
+      "proposalUrl": null,
+      "question": "Should checkWritten name the byte difference and the likely cause in its size mismatch message? It lives in the prelude copied into 7 workflows, so it exceeds the 4 file cap for one kaizen.",
+      "reason": null
+    },
+    {
+      "id": "2026-10-10-artisan",
+      "date": "2026-10-10",
+      "agent": "artisan",
+      "persona": "Artisan",
+      "role": "look, feel and motion",
+      "title": "research rubric: a blended search summary cannot count as two independent sources for verified:true",
+      "observation": "Eight friction notes today (architect x2, critic x4, jester x2, plus the lab and cards notes) say WebSearch summaries blend results so a scout cannot tell which link said what, which makes verified:true (two independent results, research.md line 20) a guess. Added one sentence to line 20: count two sources only when two separate result entries with their own URL carry the claim, else verified:false with a blended-summary note.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/research.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "37b545ddd378cdfe39d5b4f6f1b477ec2262197d",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/37b545ddd378cdfe39d5b4f6f1b477ec2262197d",
+      "proposalUrl": null,
+      "question": "Should the dossier source object get a field recording which search string surfaced it, as the critic and verifier notes ask, or is the note text enough?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-10-architect",
+      "date": "2026-10-10",
+      "agent": "architect",
+      "persona": "Architect",
+      "role": "structure and integration",
+      "title": "QA: guard req.frame() in the browser-check route handler so a frameless request cannot kill the run",
+      "observation": "# Proposal: guard the request frame lookup in the QA route handler",
+      "category": "proposal",
+      "files": [
+        "ops/kaizen/proposals/2026-10-10-architect.md"
+      ],
+      "linesChanged": 34,
+      "status": "proposed",
+      "sha": "c782368498de85b5697767dce9554bc1e445f45a",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/c782368498de85b5697767dce9554bc1e445f45a",
+      "proposalUrl": "https://github.com/ph05/sonnet-every-day/blob/claude/sonnet-every-day/ops/kaizen/proposals/2026-10-10-architect.md",
+      "question": null,
+      "reason": null
+    },
+    {
+      "id": "2026-10-10-jester",
+      "date": "2026-10-10",
+      "agent": "jester",
+      "persona": "Jester",
+      "role": "the humor-and-words specialist",
+      "title": "PLAYBOOK 6.7: say what to do when a workflow never returns after an interrupted agent",
+      "observation": "2026-10-10 report: spec stalled after the architect was interrupted (SPEC.md and DESIGN.md written, OWNERSHIP.json and PROJECT.json missing) and the run was finished by hand. grep of PLAYBOOK.md for stall and interrupted found nothing, and 6.7 only covered workflows that return. Added one row: stop waiting, run the 7.3 check, write only the missing files with one fresh agent, log an error event.",
+      "category": "prevention",
+      "files": [
+        "ops/PLAYBOOK.md"
+      ],
+      "linesChanged": 1,
+      "status": "applied",
+      "sha": "1c20ee88e165ab5f394607034e100eaa62f5681f",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/1c20ee88e165ab5f394607034e100eaa62f5681f",
+      "proposalUrl": null,
+      "question": "Could a stalled workflow be detected from the run file alone, for example a phase-start older than phaseBudgetMinutes with a fresh heartbeat, and surfaced by state.mjs status instead of by a human noticing?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-10-lab",
+      "date": "2026-10-10",
+      "agent": "lab",
+      "persona": "Lab",
+      "role": "the science-and-systems specialist",
+      "title": "tests: fail when any workflow program text carries a unicode or hex escape a clerk may decode",
+      "observation": "2026-10-10 report: ideate lost both normalize rounds (about 540k tokens, 29 min) because a clerk decoded unicode escapes in shipped program text and the byte check failed by 20. Cards fixed the one regex; nothing stopped the next one. Grep of ops/workflows/*.js shows only the host-side asciiJson line has escapes now, so a playbook.test.mjs line scan (13 lines) passes today and fails on any new escape.",
+      "category": "prevention",
+      "files": [
+        "tests/playbook.test.mjs"
+      ],
+      "linesChanged": 11,
+      "status": "applied",
+      "sha": "c62f6046bba1340d1d227c5a54ff9257b5099f53",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/c62f6046bba1340d1d227c5a54ff9257b5099f53",
+      "proposalUrl": null,
+      "question": "Spec stalled after an interrupted architect and never returned: could a workflow older than its phase budget be detected from the run file alone, without a new watchdog?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-10-cards",
+      "date": "2026-10-10",
+      "agent": "cards",
+      "persona": "Cards",
+      "role": "the odds-and-games specialist",
+      "title": "ideate: build sanitizer CTRL regex from code points so clerk copy cannot change its bytes",
+      "observation": "The 2026-10-10 report says ideate lost both normalize rounds: the clerk decoded the unicode escapes in the CTRL regex of sanitizeDossier, which ideate.js ships as text, so the byte size check failed by 20 bytes. The byte slack only covers .json files. Now the regex is built from code point ranges and sanitizeDossier has no escapes left. Checked all 65536 BMP chars: old and new regex strip exactly the same ones.",
+      "category": "prevention",
+      "files": [
+        "ops/workflows/ideate.js"
+      ],
+      "linesChanged": 4,
+      "status": "applied",
+      "sha": "3281efd4d79fc96a80ff702dd4686eb905be871e",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/3281efd4d79fc96a80ff702dd4686eb905be871e",
+      "proposalUrl": null,
+      "question": "Should checkWritten in the other workflows (build, qa, select, spec, revise) also be proven free of escape sequences in shipped programs, or should the byte slack cover .mjs too?",
+      "reason": null
+    }
+  ]
 }
