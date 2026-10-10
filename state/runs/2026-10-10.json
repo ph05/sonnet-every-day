@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "qa",
+  "phase": "package",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -35,6 +35,18 @@
       "at": "2026-10-10T10:54:36.035Z",
       "by": "manual",
       "note": "build ok, trial validate ok (tier 2, 3804 own lines)"
+    },
+    {
+      "phase": "qa",
+      "at": "2026-10-10T11:32:36.746Z",
+      "by": "manual",
+      "note": "qa verdict revise S1=0 S2=1 S3=11 S4=8"
+    },
+    {
+      "phase": "revise",
+      "at": "2026-10-10T11:32:37.273Z",
+      "by": "manual",
+      "note": "skipped: compact tier, S1=0, S2 shipped as known issue"
     }
   ],
   "attempts": {
@@ -42,7 +54,9 @@
     "ideate": 1,
     "select": 1,
     "spec": 1,
-    "build": 1
+    "build": 1,
+    "qa": 1,
+    "revise": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-10T05:50:16.803Z",
@@ -50,13 +64,15 @@
     "select": "2026-10-10T06:33:51.469Z",
     "spec": "2026-10-10T06:52:25.025Z",
     "build": "2026-10-10T09:29:45.380Z",
-    "qa": "2026-10-10T10:54:36.035Z"
+    "qa": "2026-10-10T10:54:42.815Z",
+    "revise": "2026-10-10T11:32:36.746Z",
+    "package": "2026-10-10T11:32:37.273Z"
   },
   "lease": {
     "holder": "manual",
     "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
     "acquiredAt": "2026-10-10T05:50:02.392Z",
-    "heartbeatAt": "2026-10-10T10:54:36.035Z"
+    "heartbeatAt": "2026-10-10T11:32:37.273Z"
   },
   "directives": [
     {
@@ -74,8 +90,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 1826723,
-    "agentCalls": 89,
+    "outputTokens": 2088387,
+    "agentCalls": 98,
     "byPhase": {
       "ideate": {
         "outputTokens": 799455,
@@ -92,6 +108,10 @@
       "build": {
         "outputTokens": 661469,
         "agentCalls": 10
+      },
+      "qa": {
+        "outputTokens": 261664,
+        "agentCalls": 9
       }
     }
   },

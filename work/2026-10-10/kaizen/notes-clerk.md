@@ -1,1 +1,2 @@
 ideate: the size check of runFiles fails by 20 bytes because the clerk decodes the 7 backslash-u escapes of the CTRL regex into literal characters (see ideate.js CTRL regex); both normalize rounds were lost and 0 ideas resulted, cost about 540k tokens and 29 minutes. Idea: loosen the byte tolerance or build the regex from char codes.
+- Link check: 4 of 5 source URLs returned 000 and github returned 403, so the sandbox network looks restricted; reported all 5 as unreachable-link, no retries.
