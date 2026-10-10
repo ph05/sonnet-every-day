@@ -1077,7 +1077,9 @@ async function scoutRound(specs, phaseName) {
 // must be public http(s). critical is true when the title, pitch or core loop had to be redacted (the candidate is then dropped).
 function sanitizeDossier(doc) {
   const MARK = '[redacted: instruction-like text from a web source]';
-  const CTRL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f\u200b-\u200f\u202a-\u202e\u2060-\u2064\ufeff]/g;
+  // Built from code points, not written as unicode escapes: this function is shipped to a clerk as text, and a clerk that decodes
+  // the escapes changes the byte count, which failed the size check and lost both normalize rounds on 2026-10-10.
+  const CTRL = new RegExp('[' + [[0, 8], [11, 12], [14, 31], [127, 127], [0x200b, 0x200f], [0x202a, 0x202e], [0x2060, 0x2064], [0xfeff, 0xfeff]].map(([a, b]) => String.fromCharCode(a) + '-' + String.fromCharCode(b)).join('') + ']', 'g');
   const INJECTION = [
     /\b(ignore|disregard|forget|override|bypass)\b[^.\n]{0,50}\b(instruction|rule|prompt|guideline|direction|constraint)s?\b/i,
     /\b(system|developer)\s+(prompt|message|instruction)s?\b/i,
