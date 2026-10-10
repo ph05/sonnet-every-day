@@ -115,7 +115,12 @@
       "floor": "minimal",
       "ceiling": "balanced"
     },
-    "reserveForKaizenTokens": 350000
+    "reserveForKaizenTokens": 350000,
+    "ownerOverride": {
+      "until": "2026-10-11T19:00:00-04:00",
+      "level": "all-in",
+      "note": "Owner lifted the token budget until Sunday 2026-10-11 19:00 ET (their words: do not worry about tokens). Overage and a rejected plan limit still stop the run."
+    }
   },
   "ideation": {
     "agents": 8,
@@ -280,5 +285,16 @@
       "ops/rubrics/research.md": 50,
       "ops/rubrics/selection.md": 117
     }
+  },
+  "phaseBudgetMinutes": {
+    "preflight": 15,
+    "ideate": 90,
+    "select": 45,
+    "spec": 75,
+    "build": 150,
+    "qa": 90,
+    "revise": 90,
+    "package": 25,
+    "kaizen": 120
   }
 }
