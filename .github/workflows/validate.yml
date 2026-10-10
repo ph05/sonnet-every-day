@@ -65,7 +65,13 @@ jobs:
 
       - name: Unit tests
         if: steps.changes.outputs.code == 'true'
-        run: npm test
+        shell: bash
+        run: npm test 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
+
+      # The job log viewer keeps only the last lines, so print the failing tests once more at the end.
+      - name: Show failing tests
+        if: failure() && steps.changes.outputs.code == 'true'
+        run: grep -E '^\s*not ok' -A30 "$RUNNER_TEMP/npm-test.log" | head -300 || true
 
       - name: Validate repository
         run: node scripts/validate.mjs repo
