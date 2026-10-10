@@ -100,7 +100,7 @@ export function cardFace(card) {
   const label = RANK_TEXT[r] || String(r);
   return node('svg', { viewBox: '0 0 40 56', class: 'card-face', role: 'img', 'aria-label': cardName({ r, s }) }, [
     node('rect', { x: 1, y: 1, width: 38, height: 54, rx: 5, fill: '#ffffff', stroke: '#b9b2a2', 'stroke-width': 1.5 }),
-    text(label === '10' ? 4 : 6, 17, label, { fill: ink, 'font-size': 15, 'font-weight': 700, 'font-family': 'system-ui, sans-serif' }),
+    text(label === '10' ? 3 : 5, 20, label, { fill: ink, 'font-size': 18, 'font-weight': 700, 'font-family': 'system-ui, sans-serif' }),
     node('path', { d: SUIT_PATH[s], fill: ink, transform: 'translate(8 26)' })
   ]);
 }

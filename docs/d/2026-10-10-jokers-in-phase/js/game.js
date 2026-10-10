@@ -2,7 +2,7 @@
 // The view-model carries ids, codes and numbers only; every human-readable word belongs to the UI.
 import { N_HANDS, P, FIRST_FIREFLY, ACTIONS, LETTERS, nextSeed, openRound, swap, undo, play, project, syncPct } from './engine.js';
 import { solve, hintFor } from './solver.js';
-import { CHALLENGES } from '../data/challenges.js';
+import { CHALLENGES, CHALLENGE_MAX_LOCK } from '../data/challenges.js';
 import { HAND, JOKERS, LOCK } from '../data/tables.js';
 
 const STORAGE_KEY = 'jip.v1.progress';
@@ -17,6 +17,8 @@ const SANDBOX_K = 2;
 const SOLVES_KEPT = 8;
 const PENDULUM = JOKERS.indexOf('pendulum');
 const ROW_JOKERS = ['pendulum', 'lantern', 'ember', 'spark'].map((id) => JOKERS.indexOf(id));
+// The three shipped deals already carry their exact answer, so the first frame needs no search: { best, maxLock } by deal.
+const SHIPPED = new Map(CHALLENGES.map((c, i) => [`${c.seed}:${c.k}`, { best: c.best, maxLock: CHALLENGE_MAX_LOCK[i] }]));
 
 // Hash grammar: #c=<1|2|3> or #s=<seed>&k=<0..3>, plus optional &l=<up to three letters>. A recognised key with a bad
 // value, or a recognised key without a deal, rejects the whole hash; unknown keys are ignored. Pure and total.
@@ -184,6 +186,7 @@ export function createGame(env = {}) {
   const progress = loadProgress(storage);
   const misses = [0, 0, 0, 0]; // finished rounds below par, per challenge, since page load
   const solved = new Map();
+  const checked = new Set(); // deals whose shipped answer has been confirmed by the exact solve
   let session = null;
   let current = null;
   let fatal = false;
@@ -304,13 +307,37 @@ export function createGame(env = {}) {
     return play(moved).round;
   }
 
+  // The shipped deals are answered from data for the first frame; this runs the exact 17,576-line solve right after it
+  // (outside the first paint and outside any input), keeps the full result and corrects the view if the data ever disagreed.
+  function confirmLater(key, seed, k) {
+    if (checked.has(key)) return;
+    checked.add(key);
+    setTimeout(() => {
+      try {
+        const known = solved.get(key);
+        const exact = solve(openRound(seed, k));
+        if (solved.has(key)) solved.set(key, exact);
+        if (session && session.sol === known && known && (known.best !== exact.best || known.maxLock !== exact.maxLock)) {
+          session.sol = exact;
+          emit(session.round.last, false);
+        } else if (session && session.sol === known) {
+          session.sol = exact;
+        }
+      } catch (err) {
+        failed(err);
+      }
+    }, 0);
+  }
+
   // Starts a deal (and replays a shared line hand by hand). The exact solve is cached per deal. Starting the deal that
   // is already on the table counts as another attempt, so the UI can tell a restart from a redraw.
   function launch(cid, seed, k, line, notice) {
     let round = openRound(seed, k);
     const key = `${seed}:${k}`;
     if (!solved.has(key)) {
-      solved.set(key, solve(round));
+      const shipped = SHIPPED.get(key);
+      solved.set(key, shipped || solve(round));
+      if (shipped) confirmLater(key, seed, k);
       if (solved.size > SOLVES_KEPT) solved.delete(solved.keys().next().value);
     }
     for (const letter of line) round = replay(round, letter);

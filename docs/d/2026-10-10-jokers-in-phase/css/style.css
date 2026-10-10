@@ -111,7 +111,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .coach {
   display: flex;
   align-items: center;
-  min-height: calc(4.8em + 26px); /* three lines; the breakpoints below reserve what the longest line needs */
+  /* The box always has the height of the longest message at its own width, so nothing below it moves after the first swap.
+     It is a size container, and the ::before strut below is as tall as that many lines; the ladder of @container rules after
+     the breakpoints counts the lines in em, so it follows the text size and the font (see the ladder). */
+  container-type: inline-size;
   margin: 0;
   padding: 12px 14px;
   border: 1px solid var(--border);
@@ -119,6 +122,7 @@ button { -webkit-tap-highlight-color: transparent; }
   border-radius: 10px;
   background: var(--surface);
 }
+.coach::before { content: ""; flex: none; width: 0; height: calc(9 * 1.6em); }
 
 /* ---- Layout: one column, panes flatten and reorder on phones -------------------------------------------- */
 .grid { display: flex; flex-direction: column; gap: 16px; }
@@ -128,8 +132,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .actions { order: 30; }
 .hint-text { order: 31; }
 .notice { order: 32; }
-.keys { order: 33; }
-.score { order: 40; }
+.score { order: 33; } /* right under Play and the hint lines, so "If you play now" is read next to the button */
+.keys { order: 34; }
 .scope { order: 50; }
 .steps-panel { order: 60; }
 .result { order: 70; }
@@ -168,6 +172,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .hand-tag { color: var(--muted); }
 .hand-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; }
 .card-face { display: block; width: 100%; height: auto; }
+/* the rank is the only thing on a small card you read: CSS beats the 15-unit presentation attribute, so it grows to 20 of 40 */
+.card-face text { font-size: 20px; font-weight: 800; }
 .hand-name { font-size: 0.9375rem; font-weight: 700; line-height: 1.2; }
 .hand-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 4px; font-variant-numeric: tabular-nums; font-size: 0.8125rem; }
 .hand-base { color: var(--muted); }
@@ -178,7 +184,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .rail, .bench-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; max-width: 520px; }
 .bench { grid-column: 1 / span 3; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
 .bench-note { grid-column: 4 / span 2; margin: 0; align-self: center; color: var(--muted); font-size: 0.75rem; line-height: 1.35; }
-.joker-info { min-height: 2.6em; margin: 8px 0 0; color: var(--muted); font-size: 0.875rem; }
+/* Same idea as the coach: a size container with a zero-width float strut as tall as the longest description needs at this width. */
+.joker-info { container-type: inline-size; display: flow-root; margin: 8px 0 0; color: var(--muted); font-size: 0.875rem; }
+.joker-info::before { content: ""; float: left; width: 0; height: calc(9 * 1.6em); }
 
 .slot {
   position: relative;
@@ -193,7 +201,7 @@ button { -webkit-tap-highlight-color: transparent; }
   color: var(--fg);
   font: inherit;
   cursor: grab;
-  touch-action: none;
+  touch-action: pan-y pinch-zoom; /* a vertical swipe over the rail scrolls the page and a pinch still zooms; ui.js starts a touch drag only when the first move is sideways */
   user-select: none;
   -webkit-user-select: none;
   transition: transform 0.15s var(--ease), border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
@@ -217,7 +225,7 @@ button { -webkit-tap-highlight-color: transparent; }
 .glyph-svg { color: var(--fg); }
 .glyph > .glyph-svg { display: block; width: 100%; height: 100%; }
 .glyph-svg .f { fill: var(--fam, #888); }
-.jname { max-width: 100%; font-size: clamp(0.625rem, 2.8vw, 0.75rem); font-weight: 600; line-height: 1.1; overflow-wrap: normal; }
+.jname { max-width: 100%; font-size: 0.6875rem; /* 11px is the floor at every width */ font-weight: 600; line-height: 1.1; overflow-wrap: normal; }
 .pos { position: absolute; top: 7px; left: 5px; color: var(--muted); font-size: 0.625rem; font-variant-numeric: tabular-nums; }
 .slot:hover { border-color: var(--accent); transform: translateY(-2px); }
 .slot:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
@@ -348,16 +356,37 @@ input[type="text"], input[type="number"] { min-height: 44px; min-width: 0; paddi
 }
 
 /* ---- Breakpoints: 360 is the base, then 768 and 1100 ------------------------------------------------------- */
+/* Phones: the rail is the hook, so it comes right after the nav and the one-line description; the coach explains it, Play and the
+   score follow, and the four hand tiles sit under the score as context. In sandbox mode the deal panel stays at the end of the
+   page (it is 417px tall: above Play it would push the board two screens down); the "Change deal" button under the description
+   jumps to it, and dealing sends the visitor back to the rail. */
+@media (max-width: 767px) {
+  .rig { order: 5; }
+  .coach { order: 6; }
+  .actions { order: 8; }
+  .hint-text, .notice, .score { order: 9; }
+  /* the round-over panel (Next, Retry) comes up right under the score instead of two screens below the rail */
+  .result { order: 10; }
+  .deal { order: 12; }
+  .keys { order: 65; }
+  /* a tighter title block, so the rail starts as high as it can */
+  .sed-tagline { margin-bottom: 8px; font-size: 0.9375rem; line-height: 1.4; }
+  .fan-note { margin-bottom: 10px; font-size: 0.75rem; line-height: 1.4; }
+}
 @media (min-width: 768px) {
   .grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 24px; align-items: start; }
   .pane { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
   .sandbox { order: 55; } /* in sandbox mode the deal controls sit right under the scope, not under the card */
-  .coach { min-height: calc(6.4em + 26px); } /* the left pane is narrow here: the longest coach line takes four lines */
-  .jname { font-size: 0.6875rem; } /* slots are about 70px wide in this range; "Handshake" must not break */
   .stat-v { font-size: 1.375rem; }
 }
+@media (min-width: 768px) and (max-width: 1099px) {
+  /* two columns but a narrow left pane: the rail comes before the hand tiles so it is in the first screen, and Play and the
+     score follow it; the tiles sit under the score as context */
+  .rig { order: 5; }
+  .deal { order: 35; }
+  .keys { order: 36; }
+}
 @media (min-width: 1100px) {
-  .coach { min-height: calc(4.8em + 26px); }
   /* Title band: heading and tagline on the left, the fan note on the right, so the board starts high in the first frame. */
   .sed-main { display: grid; grid-template-columns: 7fr 5fr; column-gap: 24px; align-content: start; }
   .sed-title { grid-area: 1 / 1; align-self: end; }
@@ -376,21 +405,117 @@ input[type="text"], input[type="number"] { min-height: 44px; min-width: 0; paddi
   .rig .rail { grid-area: 2 / 1; max-width: none; }
   .bench-row { display: contents; }
   .rig .bench { grid-area: 2 / 2; }
-  .joker-info { grid-area: 3 / 1 / 4 / 3; margin-top: 18px; }
+  .joker-info { grid-area: 3 / 1 / 4 / 3; margin-top: 10px; }
   .bench-note { grid-area: 4 / 1 / 5 / 3; margin-top: 2px; }
   /* a little less air above the ring so the sync meter is whole in the 1200x630 first frame */
   .scope { padding-block: 16px; }
   #coupling-line { margin: 2px 0; }
+  /* the score is one row of four right under Play, so "If you play now" is read next to the button */
+  .score { grid-template-columns: 1.25fr 1fr 1.25fr 0.8fr; padding-block: 12px; }
+  .stat-total { grid-column: auto; flex-direction: column; justify-content: flex-start; }
+  .stat-total .stat-v { font-size: 2.25rem; line-height: 1.1; }
+  .stat-v { font-size: 1.5rem; line-height: 1.2; }
 }
-@media (min-width: 1200px) {
-  .coach { min-height: calc(3.2em + 26px); }
+/* ---- Reserved lines for the coach and the joker description -------------------------------------------------
+   Both boxes keep the height of their longest message, so Play and the rail do not move after the first swap (iOS Safari has no
+   scroll anchoring to hide it). The thresholds are widths of the box's own content area in em, the container's own font size, so
+   they hold with a larger text size too, and they are measured with DejaVu Sans, about 8% wider than Inter and the widest font
+   a system-ui stack lands on. A narrower font reserves one line too many in the bands just above a step.
+   Longest coach message: the 120-character first-run line in ui.js coachText ("Hand 1 played itself. Order matters: tap one
+   joker, ..."); a longer one needs the ladder re-measured. Longest description: the Firefly line (112 characters), at 0.875rem.
+   Resulting coach lines at 16px: 5 at 320px, 4 to 411px, 3 to 606px, 2 to 767px, then the narrow two-column pane: 4 at 768px,
+   3 from 775px, 2 from 1100px. Joker description: 3 to 454px, 2 to 767px, 3 at 768px, 2 from 854px. */
+@container (min-width: 8.6em) { .coach::before { height: calc(8 * 1.6em); } }
+@container (min-width: 10.5em) { .coach::before { height: calc(7 * 1.6em); } }
+@container (min-width: 11.7em) { .coach::before { height: calc(6 * 1.6em); } }
+@container (min-width: 13.7em) { .coach::before { height: calc(5 * 1.6em); } }
+@container (min-width: 17.2em) { .coach::before { height: calc(4 * 1.6em); } }
+@container (min-width: 21.6em) { .coach::before { height: calc(3 * 1.6em); } }
+@container (min-width: 32.8em) { .coach::before { height: calc(2 * 1.6em); } }
+@container (min-width: 8.4em) { .joker-info::before { height: calc(8 * 1.6em); } }
+@container (min-width: 9.3em) { .joker-info::before { height: calc(7 * 1.6em); } }
+@container (min-width: 10.9em) { .joker-info::before { height: calc(6 * 1.6em); } }
+@container (min-width: 11.4em) { .joker-info::before { height: calc(5 * 1.6em); } }
+@container (min-width: 15.6em) { .joker-info::before { height: calc(4 * 1.6em); } }
+@container (min-width: 19.8em) { .joker-info::before { height: calc(3 * 1.6em); } }
+@container (min-width: 29.9em) { .joker-info::before { height: calc(2 * 1.6em); } }
+/* A browser without container queries gets the largest reserve the page ever needs on a phone or tablet. */
+@supports not (container-type: inline-size) {
+  .coach::before, .joker-info::before { height: 0; } /* the nine-line struts are only for the container ladder above */
+  .coach { min-height: calc(4 * 1.6em + 26px); }
+  .joker-info { min-height: calc(3 * 1.6em); }
+}
+@media (min-width: 1100px) {
+  @supports not (container-type: inline-size) {
+    .coach { min-height: calc(2 * 1.6em + 26px); }
+    .joker-info { min-height: calc(2 * 1.6em); }
+  }
+}
+@media (max-width: 399px) {
+  .jname { letter-spacing: -0.02em; } /* names stay at 11px; "Handshake" is the widest and the slot is about 60px */
 }
 @media (max-width: 359px) {
+  :root { --gutter: 12px; }
   .actions .sed-btn { font-size: 0.8125rem; }
   .score { gap: 8px 6px; }
-  .tok { padding-inline: 0; } /* slots are about 50px wide here: let the longest names ("Handshake") fit */
-  .jname { letter-spacing: -0.02em; }
+  .rail, .bench, .bench-row { gap: 4px; }
+  .tok { padding-inline: 0; } /* slots are about 54px wide here: let the longest names ("Handshake") fit at 11px */
+  .jname { letter-spacing: -0.03em; }
 }
-@media (max-width: 329px) {
-  .jname { font-size: 0.59rem; }
+@media (max-width: 339px) {
+  :root { --gutter: 10px; }
+  .rail, .bench, .bench-row { gap: 3px; }
+  .jname { letter-spacing: -0.045em; } /* 320px: five slots of about 57px, "Handshake" at 11px just fits */
 }
+
+
+/* ---- cascade toast ---- */
+/* The scoring rows, mirrored near the bottom of the screen while the real list is out of view (aria-hidden, never takes a tap). */
+#cascade-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 12px;
+  z-index: 50;
+  width: min(92vw, 420px);
+  max-height: calc(100vh - 24px);
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+  /* bottom-aligned: on a very short screen or with enlarged text the head is cut, never the final "= score" row */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px 10px 4px;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--fg);
+  box-shadow: var(--shadow), 0 12px 32px rgb(0 0 0 / 24%);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+#cascade-toast .ct-head { margin: 0 0 2px 8px; color: var(--muted); font-size: 0.8125rem; font-weight: 700; line-height: 1.3; }
+#cascade-toast .steps { font-size: 0.75rem; }
+#cascade-toast .step { padding: 4px 4px 4px 8px; grid-template-columns: 1.1rem 1fr auto; gap: 6px; }
+#cascade-toast .step-total { font-size: 0.875rem; }
+@media (prefers-reduced-motion: no-preference) {
+  #cascade-toast { animation: toast-in 0.22s var(--ease) both; }
+}
+@keyframes toast-in { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%); } }
+
+/* Sandbox: the "Change deal" button after the description jumps to the seed field. */
+.challenge-desc .change-deal { display: flex; margin-top: 8px; font-size: 0.9375rem; }
+/* Clipboard fallback: the long "Press Ctrl+C (Cmd+C on a Mac)" label sits under the selected link instead of squeezing it. */
+.share #btn-copy[data-manual] { grid-column: 1 / -1; }
+
+/* ---- Keyboard shortcuts switch and focus repair ---- */
+/* Shortcuts switch (WCAG 2.1.4): a text-style button at the end of the Keys line, 44px tall touch target on coarse pointers. */
+.keys .keys-toggle { display: inline; margin: 0; padding: 2px 0; border: 0; background: none; color: var(--accent-ink, var(--accent)); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.keys .keys-toggle:hover { text-decoration-thickness: 2px; }
+.keys .keys-toggle:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 3px; }
+.keys.is-off kbd { opacity: 0.55; text-decoration: line-through; }
+@media (pointer: coarse) {
+  .keys .keys-toggle { display: inline-block; min-height: 44px; padding: 10px 2px; }
+}
+/* A rail slot that receives repaired focus is scrolled in with room for its focus ring. */
+.slot { scroll-margin: 24px; }

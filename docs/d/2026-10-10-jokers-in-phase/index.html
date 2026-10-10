@@ -269,7 +269,7 @@
         </div>
         <p id="hint-text" class="hint-text"></p>
         <p id="notice" class="notice" role="status"></p>
-        <p class="keys">Keys: <kbd>P</kbd> play, <kbd>U</kbd> undo, <kbd>R</kbd> retry, <kbd>H</kbd> hint, <kbd>M</kbd> sound, <kbd>1</kbd> to <kbd>3</kbd> challenges, <kbd>S</kbd> sandbox.</p>
+        <p class="keys">Keys: <kbd>P</kbd> play, <kbd>U</kbd> undo, <kbd>R</kbd> retry, <kbd>H</kbd> hint, <kbd>M</kbd> sound, <kbd>1</kbd> to <kbd>3</kbd> challenges, <kbd>S</kbd> sandbox. They work while you are in the game, not while you type in a box; once you have played a hand, <kbd>R</kbd>, <kbd>1</kbd> to <kbd>3</kbd> and <kbd>S</kbd> ask for a second press.</p>
 
         <section class="score" aria-label="Score">
           <p class="stat stat-total"><span class="stat-l">Total</span><span id="score-total" class="stat-v" data-value="0">0</span></p>
@@ -306,7 +306,7 @@
             <span class="sync-track"><span class="sync-fill"></span><span class="sync-mark"></span></span>
             <span id="sync-val" class="sync-v">&ndash;</span>
           </div>
-          <p id="sync-note" class="scope-sub">locks at 92</p>
+          <p id="sync-note" class="scope-sub">Locks at 92%</p>
           <table id="phase-table" class="phase-table">
             <caption>Phases on a 64-step cycle, 0 at the top, clockwise</caption>
             <thead><tr><th scope="col">Joker</th><th scope="col">Now</th><th scope="col">If you play</th><th scope="col">Place</th></tr></thead>
@@ -341,7 +341,7 @@
 
         <section id="sandbox" class="sandbox" aria-labelledby="sandbox-h" hidden>
           <h2 id="sandbox-h">Sandbox deal</h2>
-          <p class="scope-sub">Free deal: no cards, but the exact best score is still shown.</p>
+          <p class="scope-sub">Free deal: it earns no concept card, but the exact best score is still shown.</p>
           <div class="field">
             <label for="sandbox-seed">Deal number (1 to 99999)</label>
             <input id="sandbox-seed" type="number" min="1" max="99999" step="1" inputmode="numeric">
@@ -374,7 +374,6 @@
       <p class="sed-making-of">Jokers In Phase is an unofficial fan concept in the style of joker-deck roguelikes such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented. Two community guides say joker effects resolve left to right, so the page uses that rule as the guides describe it. The Firefly joker is a simplified, integer-only cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies. Phases are whole numbers on a 64-step cycle, deals use a seeded shuffle, and an exhaustive solver checks all 17,576 swap lines, so a shared link replays the same scores in any browser. The research was read from search results only; the pages were not opened.</p>
       <h2>How it works</h2>
       <p>Score = points &times; mult. Each hand starts from a base (a pair is 6 points &times; 2 mult), then the five jokers act from the left slot to the right slot. Computed by this page: a pair with Steady (+4 mult) then Twofold (&times;2) gives 6 &times; 12 = 72, and with Twofold then Steady it gives 6 &times; 8 = 48. Points are only a score: nothing here costs or pays anything. The rules and numbers are invented for this concept.</p>
-      <p>Phases are whole numbers on a 64-step cycle with a fixed sine table, deals use a seeded shuffle, and the solver tries all 17,576 swap lines, so a shared link reproduces the same scores in any browser.</p>
       <h2>Research</h2>
       <p>As of 2026-10-10, per search results only (the pages were not opened): two community guides, Destructoid and Prima Games, state that joker effects resolve left to right, so additive mult belongs before multiplying mult. This page uses that rule as the guides describe it, not as a developer statement. The Kuramoto model is described as a model of phase-coupled oscillators, each with its own natural frequency plus a coupling term (Complexity Explorables, &ldquo;ride my kuramotocycle&rdquo;). A 2025 APS March Meeting abstract, &ldquo;Relating the Kuramoto model to data from immobile firefly swarms&rdquo;, tests a Kuramoto variant on swarm data. The Firefly rule here is a simplified invented cousin chosen for play, not a model of real fireflies.</p>
       <p>A Lua mod loader and API layer for the game exists (the Steamodded repository); this page is a standalone web toy and ships no mod files. No claim is made that timing-based jokers are new to the genre.</p>

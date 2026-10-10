@@ -13,7 +13,7 @@ import * as engine from '../js/engine.js';
 import * as solver from '../js/solver.js';
 import * as game from '../js/game.js';
 import { SIN, COS, HAND, JOKERS, OMEGA, PULL, F, W } from '../data/tables.js';
-import { CHALLENGES } from '../data/challenges.js';
+import { CHALLENGES, CHALLENGE_MAX_LOCK } from '../data/challenges.js';
 
 const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
 const names = (list) => Array.from(list, (j) => JOKERS[j]);
@@ -188,6 +188,7 @@ test('the exact solver finds the shipped par, best, bestLine and goldLine', () =
     const sol = solve(openRound(seed, k));
     assert.deepEqual(sol, want[i]);
     assert.equal(sol.best, best);
+    assert.equal(sol.maxLock, CHALLENGE_MAX_LOCK[i]);
     assert.ok(par < best, 'par is reachable');
   });
 });
@@ -611,6 +612,22 @@ test('start: ignores a hash equal to the current one and in-page anchors; rewrit
   assert.deepEqual([g.vm().notice, g.vm().share.hash, g.hashes.at(-1), g.vm().round.finished], [{ code: 'line-clipped' }, '#s=789&k=1&l=hra', '#s=789&k=1&l=hra', true]);
   g.game.start('');
   assert.deepEqual([g.vm().notice, g.vm().challenge.id, g.vm().round.hand], [null, 1, 1], 'an empty hash is a fresh Challenge 1');
+});
+
+test('start: a shipped deal answers from data in its first state, and the exact solve that follows changes and emits nothing', async () => {
+  for (const { id, best } of CHALLENGES) {
+    const g = rig();
+    g.game.start(`#c=${id}`);
+    const first = JSON.stringify(g.last());
+    const count = g.states.length;
+    assert.deepEqual([g.vm().challenge.best, g.vm().challenge.maxLock], [best, CHALLENGE_MAX_LOCK[id - 1]], `challenge ${id}: first state`);
+    await new Promise((resolve) => setTimeout(resolve, 30)); // the confirming solve runs in a timer queued by start()
+    assert.equal(g.states.length, count, `challenge ${id}: the data was right, so the confirming solve emits nothing`);
+    assert.equal(JSON.stringify(g.last()), first, `challenge ${id}: the state is untouched`);
+    g.act('play');
+    assert.equal(g.vm().round.hand, 2, `challenge ${id}: play still works after the confirming solve`);
+    assert.equal(g.vm().challenge.best, best);
+  }
 });
 
 test('l= round trip: replaying a link equals playing the same moves, and the hash is written after each play', () => {

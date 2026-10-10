@@ -11,7 +11,7 @@ const NOTICE = {
   'bad-hash': 'That link did not parse, so here is a fresh deal.',
   'seed-clamped': 'Deal numbers run from 1 to 99999.',
   'line-clipped': 'That link had more moves than hands; the extra moves were ignored.',
-  'no-hint': 'Hints unlock after three rounds below par.'
+  'no-hint': 'Hints open here after three rounds below par. First Beat and Sandbox have them from the start.'
 };
 const EASE = 'cubic-bezier(.2,.8,.2,1)';
 const PREF_KEY = 'jip.v1.ui';
@@ -20,6 +20,14 @@ const $ = (id) => document.getElementById(id);
 const fmt = (n) => (Number.isFinite(n) ? Math.round(n) : 0).toLocaleString('en-US');
 const posName = (p) => (p < 5 ? 'slot ' + (p + 1) : 'bench ' + (p - 4));
 const nameOf = (id) => JOKER_NAME[id] || String(id);
+
+function noticeText(v) {
+  if (!v.notice) return '';
+  const text = NOTICE[v.notice.code] || '';
+  if (v.notice.code !== 'no-hint') return text;
+  const n = v.round.misses;
+  return text.replace('three rounds below par.', `three rounds below par (${n > 3 ? 3 : n} of 3 so far).`);
+}
 
 function jokerDesc(id) {
   switch (id) {
@@ -54,6 +62,12 @@ let liveFlip = false;
 let copyTimer = 0;
 let readyStarted = false;
 let readyDone = false;
+let basePos = null; // the arrangement before the pending swap: the last one seen with nothing moved
+let putBack = false; // the hint on screen was asked for while a swap was pending, so the page put that swap back first
+let toast = null; // the floating cascade summary: { el, timer }
+let keysOn = true; // single-key shortcuts can be switched off (WCAG 2.1.4); saved in the ui prefs
+let appActive = true; // shortcuts are live while the visitor is working in the app, not while they read the footer or follow links
+let armed = null; // a destructive shortcut waiting for its second press: { key, timer }
 
 function act(detail) {
   finishCascade();
@@ -87,14 +101,16 @@ function loadPrefs() {
   try {
     const o = JSON.parse(localStorage.getItem(PREF_KEY) || 'null');
     soundOn = !!(o && o.v === 1 && o.muted === false);
+    keysOn = !(o && o.v === 1 && o.keys === false);
   } catch (err) {
     soundOn = false;
+    keysOn = true;
   }
 }
 
 function savePrefs() {
   try {
-    localStorage.setItem(PREF_KEY, JSON.stringify({ v: 1, muted: !soundOn }));
+    localStorage.setItem(PREF_KEY, JSON.stringify({ v: 1, muted: !soundOn, keys: keysOn }));
   } catch (err) {
     /* storage is a convenience only */
   }
@@ -143,6 +159,27 @@ function toggleSound() {
   announce(soundOn ? 'Sound on.' : 'Sound off.');
 }
 
+function renderKeysToggle() {
+  const on = keysOn;
+  E.keysToggle.textContent = on ? 'Turn keyboard shortcuts off' : 'Turn keyboard shortcuts on';
+  E.keysLine.classList.toggle('is-off', !on);
+  for (const b of [E.play, E.undo, E.retry, E.hint, E.sound, ...E.navBtns]) {
+    const k = b.dataset.keys || b.getAttribute('aria-keyshortcuts');
+    if (!k) continue;
+    b.dataset.keys = k;
+    if (on) b.setAttribute('aria-keyshortcuts', k);
+    else b.removeAttribute('aria-keyshortcuts');
+  }
+}
+
+function toggleKeys() {
+  keysOn = !keysOn;
+  disarm();
+  savePrefs();
+  renderKeysToggle();
+  announce(keysOn ? 'Keyboard shortcuts on.' : 'Keyboard shortcuts off. The buttons still work.');
+}
+
 function renderSoundButton() {
   E.sound.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
   E.sound.textContent = soundOn ? 'Sound on' : 'Sound off';
@@ -182,10 +219,11 @@ async function copyLink() {
       ok = false;
     }
   }
-  E.copy.textContent = ok ? 'Link copied' : 'Press Ctrl+C';
-  announce(ok ? 'Link copied.' : 'Link selected. Press Ctrl+C to copy it.');
+  E.copy.textContent = ok ? 'Link copied' : 'Press Ctrl+C (Cmd+C on a Mac)';
+  E.copy.toggleAttribute('data-manual', !ok); // the long label takes its own row under the link
+  announce(ok ? 'Link copied.' : 'Link selected. Press Ctrl+C (Cmd+C on a Mac) to copy it.');
   clearTimeout(copyTimer);
-  copyTimer = setTimeout(() => { E.copy.textContent = 'Copy link'; }, 2400);
+  copyTimer = setTimeout(() => { E.copy.textContent = 'Copy link'; E.copy.removeAttribute('data-manual'); }, ok ? 2400 : 6000);
 }
 
 /* ---- Copy text for the coach and the steps ---------------------------------------------------------------- */
@@ -200,10 +238,10 @@ function coachText(v) {
   }
   const n = r.hand + 1;
   if (v.mode === 'challenge' && v.challenge.id === 1 && r.hand === 1 && !v.changed.length) {
-    return "Hand 1 played itself: points × mult, joker by joker, left to right. Order matters. Tap one joker, then another, to swap them and watch 'If you play now'.";
+    return 'Hand 1 played itself. Order matters: tap one joker, then another, to swap them and watch the Play button\'s score change.';
   }
-  if (v.changed.length) return `Swap made. Compare 'If you play now', undo it, or play hand ${n}.`;
-  if (r.hand === 1 && v.challenge.id === 2) return 'Fireflies pull toward their neighbours. Watch the sync meter: 92 or more is a lock.';
+  if (v.changed.length) return `Swap made. The Play button shows what hand ${n} would score now. Undo it, or play.`;
+  if (r.hand === 1 && v.challenge.id === 2) return 'Fireflies pull toward their neighbours. Watch the sync meter: 92% or more is a lock.';
   if (r.hand === 1 && v.challenge.id === 3) return 'The Handshake multiplies by 3 only when both neighbours are in matching phase.';
   return `Hand ${n} of 4. One swap per beat, then play.`;
 }
@@ -211,7 +249,7 @@ function coachText(v) {
 function challengeDesc(v) {
   const c = v.challenge;
   if (v.mode === 'sandbox') return `Deal #${c.seed}, coupling ${COUPLING[c.k] || 'Off'}. Par is 70% of the best possible score.`;
-  if (c.id === 1) return 'Coupling off. Fireflies blink alone. Fix the order and reach par.';
+  if (c.id === 1) return 'Coupling off, so the Fireflies (Lantern, Ember, Spark) blink alone. Reach par.';
   if (c.id === 2) return "Neighbours nudge each other's beat, nearest first. Lock the fireflies for silver or gold.";
   return 'Medium coupling, and a Handshake that scores only when its neighbours match.';
 }
@@ -241,7 +279,18 @@ function renderTop(v) {
     if (Number(b.dataset.challenge) === v.challenge.id) b.setAttribute('aria-current', 'true');
     else b.removeAttribute('aria-current');
   }
-  E.desc.textContent = challengeDesc(v);
+  // The description is one text node so a button after it (Sandbox only) keeps its focus across renders.
+  if (!E.descText || E.descText.parentNode !== E.desc) {
+    E.desc.textContent = '';
+    E.descText = document.createTextNode('');
+    E.desc.appendChild(E.descText);
+  }
+  E.descText.nodeValue = challengeDesc(v);
+  if (v.mode === 'sandbox') {
+    if (!E.changeDeal.parentNode) E.desc.appendChild(E.changeDeal);
+  } else if (E.changeDeal.parentNode) {
+    E.changeDeal.remove();
+  }
   E.coach.textContent = coachText(v);
 }
 
@@ -267,9 +316,22 @@ function renderDeal(v, prev, animate) {
   }
 }
 
+// Slots to flag after a swap. The bench re-sorts into catalog order, so a rail-bench swap shifts up to four positions;
+// only a joker that left or entered the rail counts as moved, which flags exactly the two jokers the visitor swapped.
+function markedOf(v) {
+  const marks = new Set();
+  if (!basePos) return marks;
+  for (const pos of v.changed) {
+    const was = basePos.indexOf(v.pos[pos]);
+    if (was !== pos && (was < 5 || pos < 5)) marks.add(pos);
+  }
+  return marks;
+}
+
 function renderSlots(v, prev) {
   const same = prev && dealKey(prev) === dealKey(v);
   const locked = v.round.finished || v.fatal;
+  const marks = markedOf(v);
   for (let pos = 0; pos < E.slots.length; pos++) {
     const s = E.slots[pos];
     const id = v.pos[pos] || '';
@@ -280,7 +342,7 @@ function renderSlots(v, prev) {
       const from = same ? prev.pos.indexOf(id) : -1;
       if (from >= 0 && from !== pos && !reduced) flip(s, E.parts[pos].tok, E.slots[from]);
     }
-    const isChanged = v.changed.includes(pos);
+    const isChanged = marks.has(pos);
     const isHint = !!v.hint && !v.hint.noop && (v.hint.a === pos || v.hint.b === pos);
     s.classList.toggle('is-changed', isChanged);
     s.classList.toggle('is-hint', isHint);
@@ -304,7 +366,7 @@ function renderButtons(v) {
   E.play.disabled = !r.canPlay || v.fatal;
   E.play.textContent = r.finished ? 'Round over' : `Play hand ${r.hand + 1}`;
   // The projected score rides on the button (CSS ::after), so a swap shows its effect right under the rail.
-  if (!r.finished && v.next) E.play.dataset.pre = `${fmt(v.next.score)} points`;
+  if (!r.finished && v.next) E.play.dataset.pre = `If played: ${fmt(v.next.score)} points`;
   else delete E.play.dataset.pre;
   E.undo.disabled = !r.canUndo || v.fatal;
   E.hint.disabled = r.finished || v.fatal;
@@ -313,8 +375,11 @@ function renderButtons(v) {
     if (next) next.focus();
   }
   E.hintText.textContent = '';
-  if (v.hint) E.hintText.textContent = v.hint.noop ? 'Hold still: no swap is best before this hand.' : `Try swapping ${posName(v.hint.a)} with ${posName(v.hint.b)}.`;
-  E.notice.textContent = v.notice ? NOTICE[v.notice.code] || '' : '';
+  if (v.hint) {
+    const said = v.hint.noop ? 'Hold still: no swap is best before this hand.' : `Try swapping ${posName(v.hint.a)} with ${posName(v.hint.b)}.`;
+    E.hintText.textContent = (putBack ? 'Your swap was put back first. ' : '') + said;
+  }
+  E.notice.textContent = noticeText(v);
 }
 
 function lastScore(v) {
@@ -380,8 +445,8 @@ function renderScope(v) {
   E.syncFill.style.width = has ? pct + '%' : '0%';
   E.syncVal.textContent = has ? pct + '%' : '–';
   if (c.k === 0) E.syncNote.textContent = 'Coupling is off, so there is nothing to lock.';
-  else if (!has) E.syncNote.textContent = `Needs two fireflies on the rail. Locks at ${s.lock}.`;
-  else E.syncNote.textContent = `Locks at ${s.lock}.` + (v.next && Number.isFinite(s.now) ? ` Right now: ${s.now}%.` : '');
+  else if (!has) E.syncNote.textContent = `Needs two fireflies on the rail. Locks at ${s.lock}%.`;
+  else E.syncNote.textContent = `Locks at ${s.lock}%.` + (v.next && Number.isFinite(s.now) ? ` Right now: ${s.now}%.` : '');
 
   const parts = [];
   for (const tr of E.phaseRows) {
@@ -445,7 +510,7 @@ function renderResult(v, reveal) {
   const lines = [`Total ${fmt(res.total)}, par ${fmt(res.par)}: ${res.parMet ? `${fmt(res.total - res.par)} to spare.` : `${fmt(res.par - res.total)} short.`}`];
   if (c.k > 0 && v.mode === 'challenge') lines.push(res.lock > 0 ? `Locked: ${res.lock} of 3 fireflies.` : 'No lock this round.');
   lines.push(`Best possible on this deal: ${fmt(res.best)} (all 17,576 lines checked).`);
-  if (c.k > 0) lines.push(c.maxLock > 0 ? `The best rail on this deal locks ${c.maxLock} of 3.` : 'No rail on this deal locks.');
+  if (c.k > 0) lines.push(c.maxLock > 0 ? `The most in-step rail on this deal locks ${c.maxLock} of 3.` : 'No rail on this deal locks.');
   if (c.bestSaved != null) lines.push(`Your best: ${fmt(c.bestSaved)}.`);
   E.resultLines.textContent = lines.join('\n');
   const showNext = v.mode === 'challenge' && c.hasNext;
@@ -463,7 +528,9 @@ function renderCard(v, reveal) {
     E.cardHost.replaceChildren(conceptCard(card));
     if (earned) playClass(E.cardHost, 'reveal');
   }
-  E.cardCaption.textContent = card.tier === 'none' ? 'Practice sketch. Finish the round to earn this card.' : `${TIER_LABEL[card.tier]}. Share it with the link below.`;
+  // A sandbox deal never earns a card (the panel above says so), so its sketch must not promise one.
+  const sketch = v.mode === 'sandbox' ? 'Practice sketch. Sandbox deals do not earn a card.' : 'Practice sketch. Finish the round to earn this card.';
+  E.cardCaption.textContent = card.tier === 'none' ? sketch : `${TIER_LABEL[card.tier]}. Share it with the link below.`;
   const url = shareUrl(v);
   if (E.shareUrl.value !== url) E.shareUrl.value = url;
 }
@@ -505,7 +572,7 @@ function describe(v, prev, trace) {
     const h = v.deal[v.round.hand - 1];
     out.push(`Hand ${v.round.hand} played: ${HAND_NAME[h.cat]}, ${fmt(h.score)} points. Total ${fmt(v.total)}.`);
   } else if (v.pos.join() !== prev.pos.join()) {
-    if (!v.changed.length) out.push('Swap undone.');
+    if (!v.changed.length) { if (!putBack) out.push('Swap undone.'); }
     else {
       // A rail-bench swap re-sorts the bench, so three or four positions can move: describe it from the rail slots.
       const moved = [];
@@ -519,13 +586,32 @@ function describe(v, prev, trace) {
   if (v.hint && !(prev && prev.hint)) out.push(E.hintText.textContent);
   if (v.lockEvent) out.push(v.lockEvent === 3 ? 'Gold lock! All three fireflies are in phase.' : 'Silver lock! Two fireflies are in phase.');
   if (v.round.finished && (!prev || !prev.round.finished || fresh)) out.push(coachText(v));
-  if (v.notice) out.push(NOTICE[v.notice.code] || '');
+  if (v.notice) out.push(noticeText(v));
   announce(out.join(' '));
+}
+
+// Keyboard focus must never fall to <body> because the control that had it was hidden or disabled by this render.
+function repairFocus(hadFocus) {
+  if (!hadFocus || hadFocus === document.body || hadFocus === document.documentElement) return;
+  const gone = !hadFocus.isConnected || hadFocus.disabled || (hadFocus.closest && hadFocus.closest('[hidden]'));
+  const now = document.activeElement; // the browser may not have cleared focus from a hidden element yet
+  if (!gone || (now !== hadFocus && now !== document.body)) return;
+  const slot = E.slots[Math.min(focusPos, 4)];
+  const target = slot && slot.getAttribute('aria-disabled') !== 'true' ? slot : [E.play, E.retry].find((b) => !b.disabled);
+  if (!target) return;
+  target.focus({ preventScroll: true });
+  // A keyboard or switch user must be able to see where focus went: when the ring would be off-screen, bring it into view.
+  // (A pointer user whose button went away is not shown a ring, so the page does not jump for them.)
+  const r = target.getBoundingClientRect();
+  if (target.matches(':focus-visible') && (r.top < 0 || r.bottom > window.innerHeight)) {
+    target.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+  }
 }
 
 function render(v, trace, animate) {
   const prev = vm;
   const fresh = !prev || dealKey(prev) !== dealKey(v);
+  const hadFocus = document.activeElement;
   vm = v;
   E.fatal.hidden = !v.fatal;
   if (v.fatal) {
@@ -537,6 +623,11 @@ function render(v, trace, animate) {
   if (trace) tab = 'last';
   else if (prev && !fresh && prev.changed.join() !== v.changed.join()) tab = 'next';
   if (v.round.finished) tab = 'last';
+  if (fresh || !basePos || !v.changed.length) basePos = v.pos.slice();
+  if (!v.hint) putBack = false;
+  else if (fresh) putBack = false;
+  else if (prev.changed.length && !v.changed.length && !prev.hint) putBack = true;
+  E.app.dataset.mode = v.mode;
 
   const cascade = animate && !!trace && !reduced && !document.hidden;
   renderTop(v);
@@ -553,7 +644,9 @@ function render(v, trace, animate) {
     startCascade(trace, v, prev ? prev.total : 0);
   } else {
     settle(v, animate);
+    if (animate && trace && reduced && !document.hidden) showToast(trace);
   }
+  repairFocus(hadFocus);
   ring.resize();
   dirty = true;
   kick();
@@ -564,12 +657,16 @@ function startCascade(tr, v, prevTotal) {
   const lis = E.steps.children;
   const c = { anims: [], timers: [], tweens: [], notes: [], raf: 0, vm: v };
   casc = c;
+  dropToast();
+  const delays = [];
   let d = 0;
   let tick = 0;
   for (let i = 0; i < lis.length; i++) {
     const s = i >= 1 && i <= tr.steps.length ? tr.steps[i - 1] : null;
     const live = !!s && s.kind !== 'idle';
-    c.anims.push(lis[i].animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 360, delay: d, easing: EASE, fill: 'backwards' }));
+    const rise = [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }];
+    c.anims.push(lis[i].animate(rise, { duration: 360, delay: d, easing: EASE, fill: 'backwards' }));
+    delays.push(d);
     if (live) {
       const slot = E.slots[s.slot];
       if (slot) c.anims.push(slot.animate([{ boxShadow: '0 0 0 0 var(--accent)' }, { boxShadow: '0 0 0 6px transparent' }], { duration: 240, delay: d, easing: 'ease-out' }));
@@ -586,8 +683,61 @@ function startCascade(tr, v, prevTotal) {
     d += live ? 300 : 90;
   }
   E.hand.textContent = '0';
-  c.timers.push(setTimeout(finishCascade, d + 460));
+  c.timers.push(setTimeout(() => finishCascade(true), d + 460));
   c.raf = requestAnimationFrame(runTweens);
+  // The scoring list sits far below Play, so the same rows play in a floating summary at the same delays. It is built
+  // after the first frame has been painted (it needs a layout read), and joins the rows part-way in by the time already gone.
+  const t0 = performance.now();
+  c.toastRaf = requestAnimationFrame(() => {
+    c.toastRaf = 0;
+    c.timers.push(setTimeout(() => {
+      if (casc !== c) return;
+      const rows = buildToast(tr);
+      if (!rows) return;
+      const late = performance.now() - t0;
+      const rise = [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }];
+      for (let i = 0; i < rows.length; i++) {
+        c.anims.push(rows[i].animate(rise, { duration: 360, delay: Math.max(0, (delays[i] || 0) - late), easing: EASE, fill: 'backwards' }));
+      }
+    }, 0));
+  });
+}
+
+/* ---- Cascade toast: an aria-hidden copy of the scoring rows, pinned to the bottom of the screen ---------------- */
+function dropToast() {
+  if (!toast) return;
+  clearTimeout(toast.timer);
+  toast.el.remove();
+  toast = null;
+}
+
+// Reduced motion: the summary appears at once and goes after a moment.
+function showToast(tr) {
+  dropToast();
+  if (buildToast(tr)) toast.timer = setTimeout(dropToast, 2500);
+}
+
+// Returns the row elements (same order as #steps) so the cascade can reveal them at the same delays; null if no toast.
+function buildToast(tr) {
+  dropToast();
+  const panel = E.stepsPanel.getBoundingClientRect();
+  if (panel.top >= 0 && panel.bottom <= window.innerHeight) return null; // the real list is already on screen
+  const el = document.createElement('div');
+  el.id = 'cascade-toast';
+  el.setAttribute('aria-hidden', 'true');
+  const head = document.createElement('p');
+  head.className = 'ct-head';
+  head.textContent = `Hand ${tr.hand + 1} played`;
+  const list = document.createElement('ol');
+  list.className = 'steps';
+  const rows = [stepRow('', `${HAND_NAME[tr.cat] || 'Hand'}: ${tr.pts0} × ${tr.mult0}`, '', 'step-base')];
+  for (const s of tr.steps) rows.push(stepRow(String(s.slot + 1), stepText(s), `${s.pts} × ${s.mult}`, 'kind-' + s.kind));
+  rows.push(stepRow('', `= ${fmt(tr.score)}`, `${tr.pts} × ${tr.mult}`, 'step-total'));
+  list.append(...rows);
+  el.append(head, list);
+  document.body.appendChild(el);
+  toast = { el, timer: 0 };
+  return rows;
 }
 
 function runTweens(now) {
@@ -606,12 +756,23 @@ function runTweens(now) {
   casc.raf = live ? requestAnimationFrame(runTweens) : 0;
 }
 
-function finishCascade() {
-  if (!casc) return;
+// natural: the cascade ran to its end by itself, so its toast stays a moment longer; any other finish is the visitor moving on.
+function finishCascade(natural) {
+  if (!casc) {
+    if (natural !== true) dropToast();
+    return;
+  }
   const c = casc;
   casc = null;
+  if (natural === true && toast) {
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(dropToast, 1200);
+  } else {
+    dropToast();
+  }
   for (const t of c.timers) clearTimeout(t);
   if (c.raf) cancelAnimationFrame(c.raf);
+  if (c.toastRaf) cancelAnimationFrame(c.toastRaf);
   for (const a of c.anims) {
     try { a.finish(); } catch (err) { /* already settled */ }
   }
@@ -736,7 +897,16 @@ function onPointerDown(ev) {
 function onPointerMove(ev) {
   if (!drag || drag.id !== ev.pointerId) return;
   if (!drag.on) {
-    if (Math.hypot(ev.clientX - drag.x, ev.clientY - drag.y) < 6) return;
+    const dx = ev.clientX - drag.x;
+    const dy = ev.clientY - drag.y;
+    const touch = ev.pointerType !== 'mouse';
+    if (Math.hypot(dx, dy) < (touch ? 8 : 6)) return;
+    // A finger that starts out vertical is scrolling the page, not carrying a joker; the browser takes the gesture over
+    // (pointercancel) and the joker stays put. Rail-to-bench moves on touch go through tap-select.
+    if (touch && Math.abs(dx) <= Math.abs(dy)) {
+      drag = null;
+      return;
+    }
     drag.on = true;
     setGrab(drag.pos);
     const ghost = document.createElement('div');
@@ -769,11 +939,49 @@ function endDrag(ev, commit) {
 }
 
 /* ---- Keys and buttons ---------------------------------------------------------------------------------------- */
+// Single-key shortcuts (WCAG 2.1.4) belong to the game: they work while focus or the last click is in the app, and never
+// from links, the About summary or the footer, where a stray letter from speech input or a screen reader would be a surprise.
+function shortcutsLive(t) {
+  if (t && t.closest && t.closest('a, summary, .sed-about, .sed-footer, .sed-header')) return false;
+  const a = document.activeElement;
+  // Focus on <main> (a click on plain text, or Skip to content) is the same as no focus: the last pointer or skip-link action decides.
+  if (a && a !== document.body && a !== document.documentElement && a !== E.main) return !!(E.app.contains(a) || E.app.contains(t));
+  return appActive;
+}
+
+function disarm() {
+  if (!armed) return;
+  clearTimeout(armed.timer);
+  armed = null;
+  if (E.notice.dataset.armed) {
+    delete E.notice.dataset.armed;
+    E.notice.textContent = vm ? noticeText(vm) : '';
+  }
+}
+
+// Restarting or switching deals throws away a round in progress, so past hand 1 the shortcut asks for a second press.
+function confirmed(key, verb) {
+  const r = vm && vm.round;
+  if (!r || r.hand <= 1 || r.finished) return true;
+  if (armed && armed.key === key) {
+    disarm();
+    return true;
+  }
+  disarm();
+  const msg = `Press ${key.toUpperCase()} again to ${verb}.`;
+  armed = { key, timer: setTimeout(disarm, 2000) };
+  E.notice.dataset.armed = '1';
+  E.notice.textContent = msg;
+  announce(msg);
+  return false;
+}
+
 function onGlobalKey(ev) {
   if (ev.defaultPrevented || ev.ctrlKey || ev.metaKey || ev.altKey || ev.repeat) return;
   const t = ev.target;
   const tag = t && t.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+  if (!shortcutsLive(t)) return;
   finishCascade();
   if (ev.key === 'Escape') {
     if (grabbed >= 0) {
@@ -783,16 +991,22 @@ function onGlobalKey(ev) {
     }
     return;
   }
-  if (!vm || ev.key.length !== 1) return;
+  if (!keysOn || !vm || ev.key.length !== 1) return;
   const r = vm.round;
-  switch (ev.key.toLowerCase()) {
-    case 'p': if (r.canPlay) { setGrab(-1); act({ type: 'play' }); } break;
-    case 'u': if (r.canUndo) act({ type: 'undo' }); break;
-    case 'r': act({ type: 'retry' }); break;
-    case 'h': if (!r.finished) act({ type: 'hint' }); break;
-    case 'm': toggleSound(); break;
-    case '1': case '2': case '3': goChallenge(Number(ev.key)); break;
-    case 's': act({ type: 'sandbox' }); break;
+  const key = ev.key.toLowerCase();
+  switch (key) {
+    case 'p': disarm(); if (r.canPlay) { setGrab(-1); act({ type: 'play' }); } break;
+    case 'u': disarm(); if (r.canUndo) act({ type: 'undo' }); break;
+    case 'r': if (confirmed(key, 'restart')) act({ type: 'retry' }); break;
+    case 'h': disarm(); if (!r.finished) act({ type: 'hint' }); break;
+    case 'm': disarm(); toggleSound(); break;
+    case '1': case '2': case '3': {
+      const id = Number(key);
+      if (vm.mode === 'challenge' && vm.challenge.id === id) break;
+      if (confirmed(key, `switch to challenge ${id}`)) goChallenge(id);
+      break;
+    }
+    case 's': if (confirmed(key, 'deal a sandbox round')) act({ type: 'sandbox' }); break;
     default: return;
   }
   ev.preventDefault();
@@ -812,6 +1026,21 @@ function dealSandbox(fresh) {
   const detail = { type: 'sandbox', k: selectedK() };
   if (!fresh && Number.isFinite(n)) detail.seed = n;
   act(detail);
+  // The deal controls can sit far from the rail (below it on a phone, below the fold beside it on a desktop): when the
+  // new round is out of view, take the visitor back up to it.
+  const rig = E.rig.getBoundingClientRect();
+  if (rig.bottom < 0 || rig.top > window.innerHeight) {
+    const slot = E.slots[Math.min(focusPos, 4)];
+    if (slot) slot.focus({ preventScroll: true });
+    E.desc.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  }
+}
+
+// The deal controls live in their own panel, which is below the fold on most screens: one tap takes the visitor there.
+function goChangeDeal() {
+  E.sandbox.scrollIntoView({ block: 'start', behavior: reduced ? 'auto' : 'smooth' });
+  E.seedInput.focus({ preventScroll: true });
+  E.seedInput.select();
 }
 
 function pickTab(name) {
@@ -825,6 +1054,7 @@ function bind() {
     if (!d || !d.vm) return;
     try {
       finishCascade();
+      disarm();
       render(d.vm, d.trace || null, !!d.animate);
     } catch (err) {
       console.warn('render failed', err);
@@ -845,8 +1075,10 @@ function bind() {
   E.hint.addEventListener('click', () => act({ type: 'hint' }));
   E.sound.addEventListener('click', toggleSound);
   E.copy.addEventListener('click', copyLink);
+  E.keysToggle.addEventListener('click', toggleKeys);
   E.shareUrl.addEventListener('focus', () => E.shareUrl.select());
   E.btnNext.addEventListener('click', () => { if (vm) act({ type: 'challenge', id: vm.challenge.id + 1 }); });
+  E.changeDeal.addEventListener('click', goChangeDeal);
   $('btn-deal').addEventListener('click', () => dealSandbox(false));
   $('btn-newseed').addEventListener('click', () => dealSandbox(true));
   E.seedInput.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); dealSandbox(false); } });
@@ -882,6 +1114,25 @@ function bind() {
   E.rig.addEventListener('pointercancel', (ev) => endDrag(ev, false));
 
   document.addEventListener('keydown', onGlobalKey);
+  // Any key or tap puts the floating cascade summary away; where the visitor last worked decides if shortcuts are live.
+  document.addEventListener('keydown', dropToast, true);
+  document.addEventListener('pointerdown', (ev) => {
+    dropToast();
+    const t = ev.target;
+    if (t && t.closest && t.closest('a, summary, .sed-footer, .sed-header')) appActive = false;
+    else if (E.main.contains(t)) appActive = true; // the board, the title, the notes: all part of the game
+  }, true);
+  let skipFocus = false;
+  document.addEventListener('focusin', (ev) => {
+    const t = ev.target;
+    if (t === E.main) {
+      // A click on plain text lands focus on <main> right after pointerdown decided; only Skip to content changes the answer here.
+      if (skipFocus) appActive = true;
+    } else {
+      appActive = E.app.contains(t);
+    }
+    skipFocus = !!(t && t.closest && t.closest('.sed-skip'));
+  });
   if (soundOn) {
     const wake = () => { ensureAudio(); };
     document.addEventListener('pointerdown', wake, { once: true });
@@ -917,8 +1168,18 @@ export function mountUI() {
     phaseRows: q('#phase-table tbody tr'), tabLast: $('tab-last'), tabNext: $('tab-next'), stepsBody: $('steps-body'), stepsTitle: $('steps-title'), steps: $('steps'),
     result: $('result'), resultTitle: $('result-h'), resultLines: $('result-lines'), btnNext: $('btn-next'), resultRetry: $('btn-result-retry'),
     cardHost: $('card-host'), cardCaption: $('card-caption'), shareUrl: $('share-url'), sandbox: $('sandbox'), seedInput: $('sandbox-seed'),
-    kRadios: q('#sandbox input[name="k"]')
+    kRadios: q('#sandbox input[name="k"]'), app: $('app'), main: $('main'), stepsPanel: $('steps-panel'), descText: null, changeDeal: document.createElement('button')
   };
+  E.changeDeal.type = 'button';
+  E.changeDeal.id = 'btn-change-deal';
+  E.changeDeal.className = 'sed-btn is-quiet change-deal';
+  E.changeDeal.textContent = 'Change deal';
+  E.keysLine = document.querySelector('.keys') || document.createElement('p');
+  E.keysToggle = document.createElement('button');
+  E.keysToggle.type = 'button';
+  E.keysToggle.id = 'btn-keys';
+  E.keysToggle.className = 'keys-toggle';
+  if (E.keysLine) E.keysLine.append(' ', E.keysToggle);
   E.parts = E.slots.map((s) => ({ tok: s.querySelector('.tok'), glyph: s.querySelector('.glyph'), name: s.querySelector('.jname') }));
   E.hands = Array.from(E.deal.children).map((li) => ({
     root: li, key: '', tag: li.querySelector('.hand-tag'), cards: li.querySelector('.hand-cards'), name: li.querySelector('.hand-name'),
@@ -934,5 +1195,6 @@ export function mountUI() {
   ring = createRing(E.ring);
   loadPrefs();
   renderSoundButton();
+  renderKeysToggle();
   bind();
 }
