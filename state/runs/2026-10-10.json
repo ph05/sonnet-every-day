@@ -4,17 +4,27 @@
   "status": "in_progress",
   "targetTier": 1,
   "tier": null,
-  "phase": "preflight",
-  "phasesDone": [],
-  "attempts": {},
+  "phase": "ideate",
+  "phasesDone": [
+    {
+      "phase": "preflight",
+      "at": "2026-10-10T05:50:22.985Z",
+      "by": "manual",
+      "note": "preflight ok"
+    }
+  ],
+  "attempts": {
+    "preflight": 1
+  },
   "phaseStartedAt": {
-    "preflight": "2026-10-10T05:50:02.392Z"
+    "preflight": "2026-10-10T05:50:16.803Z",
+    "ideate": "2026-10-10T05:50:22.985Z"
   },
   "lease": {
     "holder": "manual",
     "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
     "acquiredAt": "2026-10-10T05:50:02.392Z",
-    "heartbeatAt": "2026-10-10T05:50:02.392Z"
+    "heartbeatAt": "2026-10-10T05:50:22.985Z"
   },
   "directives": [],
   "chosen": null,
@@ -33,6 +43,18 @@
       "by": "manual",
       "kind": "note",
       "msg": "run created by manual (cse_01PCQqwBwwn3hmGCSxhnfg3r) targeting tier 1"
+    },
+    {
+      "at": "2026-10-10T05:50:17.870Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "agent slots: 2 (nproc 4)"
+    },
+    {
+      "at": "2026-10-10T05:50:22.436Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "premortem skipped: genesis day, no reports or handoff to read"
     }
   ]
 }

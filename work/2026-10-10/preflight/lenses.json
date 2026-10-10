@@ -1,0 +1,173 @@
+{
+  "ok": true,
+  "date": "2026-10-10",
+  "agents": [
+    {
+      "agent": "pulse",
+      "lens": {
+        "id": "season-and-sky",
+        "name": "Calendar Hooks",
+        "kind": "current",
+        "brief": "The week has a shape: a season turning, a holiday, a meteor shower, an equinox, daylight saving, a playoff calendar. Build the thing that only makes sense this week and still works when it is not: a seasonal toy with a good reason to exist today.",
+        "sourceHints": [
+          "NASA skywatching and Sky and Telescope public event calendars",
+          "Wikipedia: List of observances, current month article",
+          "timeanddate-style public astronomy tables (derive your own)",
+          "r/space and r/astronomy weekly posts"
+        ]
+      },
+      "provocation": [
+        "orchard",
+        "granite",
+        "receipt"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lens": {
+        "id": "card-dice-odds",
+        "name": "Odds and Ends",
+        "kind": "interest",
+        "brief": "Dice, cards and shuffles produce answers that feel wrong until you watch them happen ten million times. Pick one counterintuitive result, such as a rigged-looking streak, a shuffle that is not random enough, or a probability paradox, and build a simulator that lets the visitor lose an argument with arithmetic.",
+        "sourceHints": [
+          "r/probabilitytheory and r/statistics curiosities",
+          "Wikipedia: List of probability paradoxes, Birthday problem, Riffle shuffle",
+          "r/dataisbeautiful posts on simulation results",
+          "Numberphile-style puzzle write-ups described in your own words"
+        ]
+      },
+      "provocation": [
+        "rubble",
+        "cascade",
+        "nightshift"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lens": {
+        "id": "generative-art",
+        "name": "Algorithmic Atelier",
+        "kind": "wildcard",
+        "brief": "Procedural art with a point of view: reaction-diffusion, L-systems, flow fields, shader sculpture, packed circles. Give the visitor meaningful controls, a seed they can share, and a reason to keep turning the knob. A poster-worthy default matters more than any option.",
+        "sourceHints": [
+          "r/generative, r/creativecoding and r/proceduralgeneration",
+          "Wikipedia: Reaction-diffusion system, L-system, Perlin noise",
+          "Are.na channels on generative art",
+          "Hacker News creative-coding posts"
+        ]
+      },
+      "provocation": [
+        "ferment",
+        "ultraviolet",
+        "mishap"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lens": {
+        "id": "fake-product-satire",
+        "name": "Fictional Gadget Co.",
+        "kind": "humor",
+        "brief": "Build the product page, the control panel and the manual of a gadget that cannot exist and should not, with one working gimmick at its core. Parody the genre of product pages, never a real company, and label it clearly fictional with invented names and logos.",
+        "sourceHints": [
+          "r/ProgrammerHumor, r/CrappyDesign and r/Design_Critiques for genre tropes",
+          "Wikipedia: Satire, Parody, Mockumentary",
+          "Old infomercial and catalog structure (in your own words)",
+          "r/InternetIsBeautiful"
+        ]
+      },
+      "provocation": [
+        "tide",
+        "filing",
+        "catalyst"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lens": {
+        "id": "bureaucracy-sim",
+        "name": "Form 27-B",
+        "kind": "humor",
+        "brief": "Queues, forms, stamps, and a department that sends you to the other department. Turn bureaucracy into a puzzle game or an orienteering course with emergent loopholes. Fictional agencies only, with a human-warmth joke buried in every rule.",
+        "sourceHints": [
+          "r/CrappyDesign and r/mildlyinfuriating for institutional absurdity",
+          "Wikipedia: Red tape, Catch-22, Parkinson's law",
+          "Papers, Please-style design talks and postmortems (study the mechanic, don't copy)",
+          "r/gamedev bureaucracy sim threads"
+        ]
+      },
+      "provocation": [
+        "icing",
+        "unravel",
+        "underpass"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lens": {
+        "id": "balatro-mod-ideas",
+        "name": "Joker Modder",
+        "kind": "interest",
+        "brief": "Invent the mod that the Balatro community does not know it wants: a new joker family, a deck with a twisted rule, a blind that attacks a specific strategy, a stake that changes what winning means. Ship a tiny scoring engine plus a concept sandbox so the idea can be played with, not just described.",
+        "sourceHints": [
+          "r/balatro top of the week and mod-showcase threads",
+          "Balatro modding community Discord write-ups and public mod lists (concepts only, no copied assets)",
+          "r/gamedev postmortems about balancing scoring systems",
+          "itch.io deckbuilder jam entries"
+        ]
+      },
+      "provocation": [
+        "handshake",
+        "pendulum",
+        "firefly"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lens": {
+        "id": "anti-lens-dud-rescue",
+        "name": "Anti-Lens: Rescue the Dud",
+        "kind": "wildcard",
+        "brief": "Pick a subject everyone would reject as boring: parking regulations, spreadsheets, weather small talk, tax forms, queue theory. Make it irresistible with a real mechanic, fierce clarity and a joke that serves the learning. Turning dust into a lantern.",
+        "sourceHints": [
+          "r/AskReddit boring-topic threads",
+          "Wikipedia: Queueing theory, Parking, Standardization",
+          "r/dataisbeautiful unglamorous datasets",
+          "Hacker News posts about mundane infrastructure"
+        ]
+      },
+      "provocation": [
+        "lullaby",
+        "sonnet",
+        "gargoyle"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lens": {
+        "id": "meme-anatomy",
+        "name": "Meme Anatomy",
+        "kind": "current",
+        "brief": "A meme format is a tiny grammar: slots, rhythm, a punchline structure. Dissect the format that is everywhere this week and build a generator, an evolution viewer, or a field guide that makes the grammar explicit. Formats and patterns only; no real people, no real photos.",
+        "sourceHints": [
+          "r/OutOfTheLoop, r/memes and r/MemeEconomy top of the week",
+          "Wikipedia: List of Internet phenomena, Image macro",
+          "Know-Your-Meme-style format histories (describe in your own words)",
+          "r/InternetIsBeautiful"
+        ]
+      },
+      "provocation": [
+        "cobblestone",
+        "gossip",
+        "canopy"
+      ]
+    }
+  ],
+  "owedKinds": [
+    "interest",
+    "current",
+    "humor",
+    "wildcard"
+  ],
+  "relaxedDays": 0
+}

@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "window": {
+    "days": 14,
+    "from": "2026-09-26",
+    "to": "2026-10-09",
+    "builds": 0
+  },
+  "categoryCounts": {},
+  "slotCounts": {
+    "interest": 0,
+    "currentEvents": 0,
+    "humor": 0,
+    "wildcard": 0
+  },
+  "owed": [
+    "interest",
+    "currentEvents",
+    "humor",
+    "wildcard"
+  ],
+  "owedDetail": [
+    {
+      "slot": "interest",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "currentEvents",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "humor",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "wildcard",
+      "lastDate": null,
+      "daysSince": null
+    }
+  ],
+  "avoidCategories": [],
+  "avoidMechanics": [],
+  "politicsAllowed": true,
+  "summary": "Nothing has shipped in the last 14 days that counts for novelty, so the field is wide open. Owed this week, so at least one idea each: interest (poker/GTO, Balatro & mod concepts, hockey, Reddit-born ideas); currentEvents (skew pop/fun/hockey; politics is rare); humor; wildcard. A political idea is permitted but rare: playful and satirical only, never partisan."
+}
