@@ -1,2 +1,3 @@
 WebSearch summaries blend several results without per-link attribution, so a scout cannot tell which site said what; a short rule in research.md on how to record a source from a blended summary would stop us guessing at verified:true.
 The pitch for scouts asks for 'at least 3 sources from 2 sites' but blended WebSearch summaries make per-site attribution guesswork; a one-line field like attribution:blended on a source would let verifiers see which snippets to re-check first.
+Shortlist.json is 2500 lines and the Read tool caps at about 1000 per page, so judges burn three reads; a one-line-per-idea index (id, scope, cut-list) at the top would let feasibility judges start from the design block.

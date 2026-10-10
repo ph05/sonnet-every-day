@@ -1,2 +1,3 @@
 - Pulse: www.nhl.com failed at DNS level in WebFetch, so the league's own release was only seen through search; adding it to the pre-probed host list would save a scout one attempt.
 - Pulse: Pulse noted at 2026-10-10 that crypto.stanford.edu and www.sciencenews.org also fail at DNS in WebFetch, and that other scouts' round-one pitches (a coin-pattern race, a riffle study) overlapped my lens, so a quick look at the day's idea titles before searching would save a pivot.
+Timeliness judging: every shortlisted whyNow was timeless and no dossier carried a dated current hook, so a 'hookDate' field in the dossier would let judges compare freshness faster.
