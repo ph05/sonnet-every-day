@@ -2,6 +2,11 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-10 · architect · proposed · QA: guard req.frame() in the browser-check route handler so a frameless request cannot kill the run
+
+- observation: # Proposal: guard the request frame lookup in the QA route handler
+- category: proposal · lines changed: 34 · files: ops/kaizen/proposals/2026-10-10-architect.md
+
 ## 2026-10-10 · jester · applied · PLAYBOOK 6.7: say what to do when a workflow never returns after an interrupted agent
 
 - observation: 2026-10-10 report: spec stalled after the architect was interrupted (SPEC.md and DESIGN.md written, OWNERSHIP.json and PROJECT.json missing) and the run was finished by hand. grep of PLAYBOOK.md for stall and interrupted found nothing, and 6.7 only covered workflows that return. Added one row: stop waiting, run the 7.3 check, write only the missing files with one fresh agent, log an error event.
