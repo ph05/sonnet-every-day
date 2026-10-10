@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "slug": "jokers-in-phase",
+  "title": "Jokers In Phase",
+  "tagline": "Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.",
+  "description": "An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.",
+  "tier": 2,
+  "fingerprint": {
+    "category": "modding-games",
+    "mechanic": "toy",
+    "tone": [
+      "playful",
+      "nerdy",
+      "serene"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "dom-ui",
+      "web-animations",
+      "pointer-events",
+      "webaudio",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "balatro",
+      "joker-mod",
+      "mod-concept",
+      "scoring-engine",
+      "synchronization",
+      "oscillators",
+      "deckbuilder",
+      "sandbox"
+    ],
+    "keywords": [
+      "joker-order",
+      "phase-ring",
+      "points-times-mult",
+      "coupled-oscillators",
+      "seeded-hands",
+      "concept-card",
+      "share-hash"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "palette": [
+    "#f3eee4",
+    "#0f1226",
+    "#5b3fd1",
+    "#d9f55c",
+    "#ff9f6e",
+    "#e0a82e",
+    "#fffdf8",
+    "#a3225f"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Destructoid joker order guide",
+      "url": "https://destructoid.com/?p=478541"
+    },
+    {
+      "title": "Prima Games: Four Things I Wish I Knew When Starting Balatro",
+      "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro"
+    },
+    {
+      "title": "APS March Meeting 2025 abstract: Relating the Kuramoto model to data from immobile firefly swarms",
+      "url": "https://meetings-archive.aps.org/smt/2025/mar-m58/7"
+    },
+    {
+      "title": "Complexity Explorables: ride my kuramotocycle",
+      "url": "https://complexity-explorables.org/explorables/ride-my-kuramotocycle"
+    },
+    {
+      "title": "Steamodded (smods) repository",
+      "url": "https://github.com/Steamodded/smods"
+    }
+  ],
+  "makingOf": "Jokers In Phase is an unofficial fan concept in the style of joker-deck roguelikes such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented. Two community guides say joker effects resolve left to right, so the page uses that rule as the guides describe it. The Firefly joker is a simplified, integer-only cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies. Phases are whole numbers on a 64-step cycle, deals use a seeded shuffle, and an exhaustive solver checks all 17,576 swap lines, so a shared link replays the same scores in any browser. The research was read from search results only; the pages were not opened.",
+  "stats": {
+    "files": 0,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

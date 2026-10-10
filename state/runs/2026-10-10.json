@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "build",
+  "phase": "qa",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -29,26 +29,34 @@
       "at": "2026-10-10T09:29:36.151Z",
       "by": "manual",
       "note": "spec ok (compact, tier 2)"
+    },
+    {
+      "phase": "build",
+      "at": "2026-10-10T10:54:36.035Z",
+      "by": "manual",
+      "note": "build ok, trial validate ok (tier 2, 3804 own lines)"
     }
   ],
   "attempts": {
     "preflight": 1,
     "ideate": 1,
     "select": 1,
-    "spec": 1
+    "spec": 1,
+    "build": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-10T05:50:16.803Z",
     "ideate": "2026-10-10T05:50:32.853Z",
     "select": "2026-10-10T06:33:51.469Z",
     "spec": "2026-10-10T06:52:25.025Z",
-    "build": "2026-10-10T09:29:36.151Z"
+    "build": "2026-10-10T09:29:45.380Z",
+    "qa": "2026-10-10T10:54:36.035Z"
   },
   "lease": {
     "holder": "manual",
     "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
     "acquiredAt": "2026-10-10T05:50:02.392Z",
-    "heartbeatAt": "2026-10-10T09:29:36.151Z"
+    "heartbeatAt": "2026-10-10T10:54:36.035Z"
   },
   "directives": [
     {
@@ -66,8 +74,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 1165254,
-    "agentCalls": 79,
+    "outputTokens": 1826723,
+    "agentCalls": 89,
     "byPhase": {
       "ideate": {
         "outputTokens": 799455,
@@ -80,6 +88,10 @@
       "spec": {
         "outputTokens": 190000,
         "agentCalls": 3
+      },
+      "build": {
+        "outputTokens": 661469,
+        "agentCalls": 10
       }
     }
   },
