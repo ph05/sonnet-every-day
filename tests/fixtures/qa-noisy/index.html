@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Noisy</title>
+<style>html, body { margin: 0; background: #000; } canvas { display: block; position: fixed; inset: 0; width: 100vw; height: 100vh; }</style>
+</head>
+<body>
+<main><h1 style="position:relative;color:#fff;margin:0;padding:8px;font:700 28px system-ui">Static</h1></main>
+<canvas id="c" width="1200" height="630" role="img" aria-label="Television static"></canvas>
+<script>
+// deterministic full-colour noise: incompressible, so the raw PNG screenshot is far above the size cap
+const c = document.getElementById('c');
+const g = c.getContext('2d');
+const img = g.createImageData(c.width, c.height);
+let s = 12345;
+for (let i = 0; i < img.data.length; i += 4) {
+  s = (Math.imul(s, 1664525) + 1013904223) >>> 0; img.data[i] = s >>> 24;
+  s = (Math.imul(s, 1664525) + 1013904223) >>> 0; img.data[i + 1] = s >>> 24;
+  s = (Math.imul(s, 1664525) + 1013904223) >>> 0; img.data[i + 2] = s >>> 24;
+  img.data[i + 3] = 255;
+}
+g.putImageData(img, 0, 0);
+</script>
+</body>
+</html>

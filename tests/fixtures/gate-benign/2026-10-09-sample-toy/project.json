@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "date": "2026-10-09",
+  "slug": "sample-toy",
+  "title": "Sample Toy",
+  "tagline": "A fixture that stands in for a well-behaved daily build.",
+  "description": "A tiny cellular automaton with a palette picker. It exists only to prove the validator accepts honest work.",
+  "tier": 1,
+  "fingerprint": {
+    "category": "math-puzzle",
+    "mechanic": "toy",
+    "tone": [
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui"
+    ],
+    "tags": [
+      "automaton",
+      "cells",
+      "palette"
+    ],
+    "keywords": [
+      "grid",
+      "rules",
+      "seed"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#0b1020",
+    "#ff3d6e",
+    "#ffd166"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Cellular automaton",
+      "url": "https://en.wikipedia.org/wiki/Cellular_automaton"
+    }
+  ],
+  "makingOf": "Hand-written for the validator tests.",
+  "stats": {
+    "files": 0,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

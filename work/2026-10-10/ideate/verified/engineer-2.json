@@ -1,0 +1,318 @@
+{
+  "id": "engineer-2",
+  "title": "The Waiting Hum",
+  "pitch": "A calm little waiting room whose arrivals and departures are played as soft notes: run it at low load and it sounds like a slow lullaby, push the load toward capacity and the tune swells, stutters and collapses into a tangle. The visitor staffs the counters, chooses one shared line or separate lines, and tunes how erratic arrivals and service are, trying to keep the average wait under a target on a budget. A live panel compares the running simulation with the textbook formulas, so the famous knee in the waiting-time curve is something you hear and see.",
+  "whyNow": "Timeless. Queue theory is the textbook definition of a dud subject, rescued by letting the visitor hear a system approach saturation.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "anti-lens-dud-rescue"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "simulator",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "webaudio",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "queueing-theory",
+      "discrete-event-simulation",
+      "sonification",
+      "littles-law",
+      "utilization",
+      "lullaby-sound",
+      "seeded-random",
+      "pooling"
+    ],
+    "keywords": [
+      "queue",
+      "waiting",
+      "utilization",
+      "variability",
+      "servers",
+      "sonification",
+      "simulation"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Search results from several independent course and reference pages agree on the M/M/1 results (mean number in system rho/(1-rho), mean time 1/(mu-lambda), both growing without bound as utilization approaches 1) and on Little's law linking number, rate and time. Kingman's approximation adds a variability term that lets the page show why erratic arrivals or service inflate waits; it is best near saturation and weaker for very bursty arrivals. Erlang C is the standard multi-server delay model (Poisson arrivals, exponential service, no abandonment). Whether one pooled line beats separate lines is not settled for human servers: the simple model favours pooling, while a Penn Today summary of research on strategic servers describes a case where dedicated queues did better, so the page treats pooling as a result of its own simulation with fixed-speed servers and says so. Parameter-mapping sonification is an established technique, and quantizing to a musical scale trades resolution for musicality. The simulation computes truth; the formulas run alongside as a check.",
+    "sources": [
+      {
+        "title": "Utilization and Littles Law",
+        "url": "https://www.se.rit.edu/~swen-549/performance/slides/Utilization%20and%20Littles%20Law.pdf",
+        "date": "",
+        "snippet": "Course slides: utilization is arrival rate over service rate, the system cannot keep up when it reaches 1, and Little's law ties average number to rate and time.",
+        "via": "search",
+        "note": "Scout's source. Not returned again by the verifier's claim searches and not opened, so unverified; replaced as support by sources 12 to 14.",
+        "verified": false
+      },
+      {
+        "title": "queue 1 (UCF lecture notes)",
+        "url": "https://www.cs.ucf.edu/~czou/CDA6530-12/queue-1.pdf",
+        "date": "",
+        "snippet": "Lecture notes giving M/M/1 results and stability only when utilization is below 1.",
+        "via": "search",
+        "note": "WebFetch failed at the connection level (host not found) and the page was not returned by the verifier's claim search, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "MIT2 854F16 Mm1Queue",
+        "url": "https://ocw.mit.edu/courses/2-854-introduction-to-manufacturing-systems-fall-2016/927056a1af54772a587fd84ad4951e71_MIT2_854F16_Mm1Queue.pdf",
+        "date": "2016",
+        "snippet": "Open courseware notes on the M/M/1 queue in manufacturing systems.",
+        "via": "search",
+        "note": "Host is on today's failed list; not opened and not found again by the verifier, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "Kingman's formula",
+        "url": "https://en.wikipedia.org/wiki/Kingman%27s_formula",
+        "date": "",
+        "snippet": "Encyclopedia entry: an approximation of mean wait in a G/G/1 queue as a product of a utilization term, a variability term and a service-time term.",
+        "via": "search",
+        "note": "Found again by a claim search; the formula text itself was not shown, but two other results (sources 4 and 15) state the same form.",
+        "verified": true
+      },
+      {
+        "title": "Queue & AI: When Faster Tasks Slow Down the Workflow",
+        "url": "https://arxiv.org/pdf/2605.27202",
+        "date": "2026",
+        "snippet": "Paper restating the approximation: wait grows with rho/(1-rho), the average of squared variability of arrivals and service, and mean service time.",
+        "via": "search",
+        "note": "Found again by a claim search and agrees with the lecture notes in source 15.",
+        "verified": true
+      },
+      {
+        "title": "4.8.3 G/G/1 System",
+        "url": "https://web.mit.edu/course/other/urban_or_book/OldFiles/www/book/chapter4/4.8.3.html",
+        "date": "",
+        "snippet": "Operations research text section on the G/G/1 queue and heavy-traffic behavior.",
+        "via": "search",
+        "note": "Found again by a claim search, but only its title was seen, so it supports nothing beyond the topic being textbook material.",
+        "verified": false
+      },
+      {
+        "title": "When several lines are better than one",
+        "url": "https://penntoday.upenn.edu/news/when-several-lines-are-better-one",
+        "date": "",
+        "snippet": "University news summary of research on pooled versus dedicated queues with human servers; the excerpt describes an emergency department that moved from a pooled to dedicated queues and saw shorter waits.",
+        "via": "search",
+        "note": "Found again, but only an excerpt was seen and no second result covers the same finding, so unverified. It points the opposite way from the scout's gloss: pooling is not always best when servers are people.",
+        "verified": false
+      },
+      {
+        "title": "Single-Line Queues Vs Multiple-Line Queues: Which One Is Better?",
+        "url": "https://www.qminder.com/single-line-vs-multiple-line-queues",
+        "date": "",
+        "snippet": "Practitioner article weighing a single serpentine line against multiple lines, including fairness and space trade-offs.",
+        "via": "search",
+        "note": "Not returned again by the verifier's claim search, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "Erlang C",
+        "url": "https://www.techtarget.com/enterprise-software/definition/Erlang-C",
+        "date": "",
+        "snippet": "Glossary entry on the Erlang C model used to estimate staffing and the probability a caller must wait; lists Poisson arrivals, exponential service and no abandonment as assumptions.",
+        "via": "search",
+        "note": "Returned again by a claim search; agrees with source 9 and other glossary results.",
+        "verified": true
+      },
+      {
+        "title": "What is Erlang C Formula?",
+        "url": "https://www.nice.com/glossary/erlang-c-formula",
+        "date": "",
+        "snippet": "Vendor glossary entry on the Erlang C formula for contact-centre staffing.",
+        "via": "search",
+        "note": "Returned again by the same claim search; a vendor source, used only as the second agreeing result on the model assumptions.",
+        "verified": true
+      },
+      {
+        "title": "data2midi part1",
+        "url": "https://nbviewer.org/github/SYSTEMSounds/sonification-tutorials/tree/HEAD/data2midi-part1.ipynb",
+        "date": "",
+        "snippet": "Tutorial describing parameter-mapping sonification where discrete data points become musical notes.",
+        "via": "search",
+        "note": "Not returned again by the verifier's search, so unverified; not used for any fact.",
+        "verified": false
+      },
+      {
+        "title": "what is data mapping",
+        "url": "https://accessibleoceans.whoi.edu/what-is-data-mapping",
+        "date": "",
+        "snippet": "Explainer warning that forcing data onto a pentatonic scale can mislead, with a pleasing effect that may have little to do with the data.",
+        "via": "search",
+        "note": "Returned again by a claim search; agrees with source 17 and a Medium sonification guide on the quantization trade-off.",
+        "verified": true
+      },
+      {
+        "title": "M/M/1 queue (encyclopedia entry)",
+        "url": "https://en.wikipedia.org/wiki/M/M/1_queue",
+        "date": "",
+        "snippet": "Encyclopedia entry on the M/M/1 queue; search summary reports stability only when lambda is below mu and the standard closed forms.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; independent of sources 13 and 14.",
+        "verified": true
+      },
+      {
+        "title": "Introduction to Queueing Theory and Stochastic Teletraffic Models",
+        "url": "https://arxiv.org/pdf/1307.2968",
+        "date": "",
+        "snippet": "Text deriving M/M/1 mean delay as 1/(mu-lambda) via Little's law.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; agrees with sources 12 and 14.",
+        "verified": true
+      },
+      {
+        "title": "Jain lecture slides on queueing (k_31asq)",
+        "url": "https://classes.engineering.wustl.edu/~jain/iucee/ftp/k_31asq.pdf",
+        "date": "",
+        "snippet": "Course slides listing M/M/1 mean response time as (1/mu)/(1-rho).",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; agrees with sources 12 and 13.",
+        "verified": true
+      },
+      {
+        "title": "Lecture GGQ's FULL Marked (Technion)",
+        "url": "https://serveng.technion.ac.il/files/Lectures/Lecture_GGQ's_FULL_Marked.pdf",
+        "date": "",
+        "snippet": "Lecture notes on G/G queues; search summary reports the Kingman form is asymptotically exact in heavy traffic.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; agrees with sources 3 and 4.",
+        "verified": true
+      },
+      {
+        "title": "One-line checkouts are better than multiple-line checkouts (Kellogg MBA Learnings)",
+        "url": "https://www.kellogg.northwestern.edu/news/blog/2015/07/31/one-line-checkouts-are-better-than-multiple-line-checkouts-mba-learnings/",
+        "date": "2015-07-31",
+        "snippet": "Blog post arguing a single line shields you from one slow customer in your lane; its one-third figure is illustrative, not measured.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; a blog, used only for the qualitative variability argument together with source 19.",
+        "verified": true
+      },
+      {
+        "title": "Exploring blazars through sonification",
+        "url": "https://arxiv.org/pdf/2502.01929",
+        "date": "",
+        "snippet": "Paper mapping normalized values into seven bins, each tied to one note of a minor scale.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; shows parameter mapping to a quantized scale in practice.",
+        "verified": true
+      },
+      {
+        "title": "Sonification 101 (Medium guide)",
+        "url": "https://medium.com/@astromattrusso/sonification-101-how-toconvert-data-into-music-with-python-71a6dd67751c",
+        "date": "",
+        "snippet": "Guide noting that heavier quantization sounds more musical but lowers resolution.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; independent of source 11.",
+        "verified": true
+      },
+      {
+        "title": "The science of queue formation: how line configurations impact wait times (Visiontron)",
+        "url": "https://www.visiontron.com/the-science-of-queue-formation-how-line-configurations-impact-wait-times/",
+        "date": "",
+        "snippet": "Trade article saying a single queue feeding several servers balances load and can reduce average waits.",
+        "via": "search",
+        "note": "Seen in the verifier's own claim search; a trade article, second agreeing result for the pooling fact.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "An M/M/1 queue is stable only when arrival rate is below service rate (utilization below 1); mean number in system is rho/(1-rho) and mean time in system is 1/(mu-lambda), and both grow without bound as utilization approaches 1.",
+        "sourceIndex": 12,
+        "alsoIn": [
+          13,
+          14
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Little's law (mean number equals arrival rate times mean time) is the step that turns the M/M/1 mean number into the mean time in system.",
+        "sourceIndex": 13,
+        "alsoIn": [
+          12
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Kingman's approximation puts the mean wait in a G/G/1 queue near rho/(1-rho) times half the sum of the squared variability of arrivals and of service times, times the mean service time; it is accurate near saturation and exact for Poisson arrivals, with accuracy degrading for very bursty arrivals.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          15
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Erlang C is the M/M/c delay model: Poisson arrivals, exponential service times and no abandonment, with stability requiring offered load below the number of servers.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "For identical servers working at a fixed speed, a single line feeding all servers is described as reducing the chance of being stuck behind a slow customer and balancing load across servers; this is the qualitative effect the simulation will show, not a measured claim about real shops.",
+        "sourceIndex": 16,
+        "alsoIn": [
+          19
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Parameter-mapping sonification assigns data values to pitch, and quantizing to a musical scale trades resolution for musicality and can create an effect unrelated to the data.",
+        "sourceIndex": 11,
+        "alsoIn": [
+          18,
+          17
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "call-centre staffing calculators",
+      "supermarket checkout line choices",
+      "sonification of scientific data",
+      "generative ambient music"
+    ]
+  },
+  "design": {
+    "coreLoop": "Set arrival pressure, number of counters, line layout (pooled or separate), and variability, then run a seeded shift. Arrivals and service completions play notes while a canvas shows people queueing; at the end the page scores mean and 90th percentile wait against the target and the budget. Shifts hand over constraints (a rush hour profile, a lunch break that removes a counter, a slow-service burst) so the visitor keeps learning why waits explode near full load and what variability and pooling buy.",
+    "sophisticationHooks": [
+      "Discrete-event simulation with a binary-heap event list, seeded mulberry32 RNG, exponential and tunable-variance service and arrival distributions, multi-server with pooled or join-shortest-line policies, run in a blob worker or in batched main-thread steps to stay smooth",
+      "Live theory overlay: M/M/1 curve and a Kingman-style approximation plotted against the running simulation, plus a Little's-law check (average number equals rate times average time), so the visitor sees them converge",
+      "Sonification: arrivals and departures map to notes of a consonant scale, wait length to harmonic tension, with scale quantization declared in the making-of panel and a continuous-pitch toggle to compare; a calm mode and a muted default for the autoplay policy",
+      "Shift challenges with a scoring rule and shareable URL hash (seed, servers, layout, variability)"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: pure sim core (heap, seeded RNG, two distributions, pooled and separate-lines policies), canvas queue scene, WebAudio synth with hand-made envelopes and a visual-only equivalent, theory overlay with one M/M/1 curve plus a Kingman-style estimate and a Little's-law readout, 5 challenge shifts, share link in the URL hash, light/dark, reduced motion (no flashing, static chart fallback), keyboard controls, short about/making-of panel. Worker is optional: the sim is cheap enough to run in batched main-thread steps if a blob worker slips. Cut: abandonment, priority classes, exact multi-server Kingman or Erlang C overlay, recorded audio, account scores, 8 shifts.",
+    "risks": [
+      "Audio must start only after a user gesture and be muted-safe; a visual-only fallback of equal clarity is required",
+      "The pooling claim is unsettled for human servers: a Penn Today summary (seen only as one search excerpt, unverified) describes dedicated queues doing better with strategic servers, so the page must label the pooled-line result as a property of this simulation's fixed-speed servers and may cite that source only as 'as of 2026-10-10, per Penn Today' or omit it",
+      "Erlang C is verified only as a model definition; if the page shows multi-server theory it should use the simulation as the source of truth and label any formula overlay as an approximation",
+      "Sonification mapping is a design choice, not a proven method of conveying load; the making-of panel must say the scale quantization hides fine detail and offer the continuous-pitch toggle",
+      "Scope is wide for one morning (sim, scene, synth, overlay, shifts); the architect should cut shifts before cutting the audio-visual parity or the overlay",
+      "Worker performance with long runs; mitigated by capping event counts and batching posted frames"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The M/M/1, Kingman and Erlang C claims were found again by independent search results, but no page opened (WebFetch to one host failed at DNS), and the scout's pooling gloss was wrong since the Penn Today excerpt points the other way for human servers; scope is shrunk to 5 shifts and a worker-optional sim, which a team of 8 can build."
+  }
+}

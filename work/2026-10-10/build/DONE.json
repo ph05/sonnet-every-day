@@ -1,0 +1,75 @@
+{
+  "phase": "build",
+  "ok": true,
+  "date": "2026-10-10",
+  "tier": 2,
+  "compact": true,
+  "owners": {
+    "artisan": [
+      "index.html",
+      "css/style.css",
+      "js/ui.js",
+      "js/ring.js",
+      "js/art.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/game.js",
+      "js/engine.js",
+      "js/solver.js",
+      "data/tables.js",
+      "data/challenges.js",
+      "test/engine.test.mjs"
+    ]
+  },
+  "files": 12,
+  "missing": [],
+  "ownLoc": 3916,
+  "integration": {
+    "agentOk": true,
+    "rounds": 5,
+    "browserChecked": true,
+    "browserOk": true,
+    "errors": [],
+    "edits": [
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/js/ui.js",
+        "why": "describe() announces rail-bench swaps from the rail slots. The bench re-sorts so 3 or 4 positions move; the old exactly-two-moved rule stayed silent and left stale #live text (engineer's concern, reproduced in Chromium)."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/js/ui.js",
+        "why": "Play button carries the projected score as data-pre (CSS ::after with empty alt text, accessible name stays 'Play hand N'), so a swap shows its effect right under the rail; the If-you-play-now number sat 300 to 450 px below the rail at every size."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/js/ui.js",
+        "why": "paintTotals() renders saved progress ('Your best here: N · Par card.') from vm.challenge.bestSaved and cardSaved into #score-best, so a returning visitor sees it persisted (SPEC 'Coming back'); nothing rendered cardSaved before."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/js/art.js",
+        "why": "Concept-card SVG paints its own paper (background plus matching corner radius). Same pixels, but the QA contrast check measured the dark ink against the dark page surface (1.02:1) in dark mode."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/css/style.css",
+        "why": "First-frame layout and polish: from 1100 px title and tagline left with the fan note beside them, scope at the top of the right column, rail and bench in one row, header and footer aligned to the 1160 px column; waiting hand tiles lose opacity (4.02:1 contrast) for a dashed edge and paler face; .jname no longer breaks words and fits 'Handshake' down to 320 px; coach is a centred flex box reserving each breakpoint's longest line count; sandbox panel sits under the scope from 768 px; Play chip styles. At 1200x630 the thumbnail frame now shows nav, coach, four hand tiles, rail, bench and the whole ring with the sync meter."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/index.html",
+        "why": "Moved nav#challenge-nav, #challenge-desc and #coach into .pane-l (ids and tab order unchanged) so the scope can start at the top of the right column; added p#score-best."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/index.html",
+        "why": "About panel lead block is now 'The short version': one p.sed-making-of that is word for word the makingOf in package/project.json and carries SPEC 8.1 (fan line); sections 8.2 to 8.4 follow in the same order."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/index.html",
+        "why": "APS sentence and its source note reworded to what the dossier supports ('tests a Kuramoto variant on swarm data'); 'flash data from one firefly swarm' went beyond the recorded facts."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-10/build/site/index.html",
+        "why": "Removed target=_blank from the five source links (kept rel=noopener noreferrer). scripts/qa/browser-check.mjs line 720 calls req.frame() unguarded, so a monkey click on a popup link throws inside the route handler and kills the whole run with no report (seed 222 died; same seed passes with same-tab links)."
+      }
+    ]
+  },
+  "siteDir": "work/2026-10-10/build/site",
+  "projectDraft": "work/2026-10-10/package/project.json"
+}

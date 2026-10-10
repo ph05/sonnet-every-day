@@ -1,0 +1,186 @@
+{
+  "schema": 1,
+  "name": "Sonnet Every Day",
+  "repo": "ph05/sonnet-every-day",
+  "workBranch": "claude/sonnet-every-day",
+  "timezone": "America/New_York",
+  "startDate": "2026-10-09",
+  "siteUrl": "https://ph05.github.io/sonnet-every-day/",
+  "schedule": {
+    "primary": "03:55",
+    "watchdogA": "05:32",
+    "watchdogB": "06:47",
+    "closer": "08:47",
+    "closerBackup": "09:37",
+    "deadline": "08:00",
+    "graceUntil": "09:30",
+    "hardStop": "10:30"
+  },
+  "tierCutoffs": {
+    "t1Until": "04:45",
+    "t2Until": "07:00",
+    "t3Until": "08:45"
+  },
+  "leaseStaleMinutes": 35,
+  "maxAttemptsPerPhase": 2,
+  "models": {
+    "orchestrator": "claude-sonnet-5-5",
+    "specialist": "sonnet",
+    "cheap": "haiku"
+  },
+  "roster": {
+    "pulse": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "cards": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "lab": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "jester": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "architect": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "artisan": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "engineer": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "critic": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "clerk": {
+      "model": "cheap",
+      "effort": "medium"
+    }
+  },
+  "budget": {
+    "level": "balanced",
+    "neverOverage": true,
+    "levels": {
+      "all-in": {
+        "outputTokens": 8000000,
+        "defaultEffort": "max",
+        "maxEffortRoles": "all",
+        "reviseLoops": 2
+      },
+      "balanced": {
+        "outputTokens": 3000000,
+        "defaultEffort": "high",
+        "maxEffortRoles": [
+          "architect",
+          "engineer",
+          "critic"
+        ],
+        "reviseLoops": 1
+      },
+      "lean": {
+        "outputTokens": 1500000,
+        "defaultEffort": "high",
+        "maxEffortRoles": [],
+        "reviseLoops": 0
+      },
+      "minimal": {
+        "outputTokens": 500000,
+        "defaultEffort": "medium",
+        "maxEffortRoles": [],
+        "reviseLoops": 0,
+        "forceTier": 2
+      }
+    },
+    "reserveForPublishTokens": 250000,
+    "autoThrottle": {
+      "downOn": [
+        "rate-limit",
+        "usage-limit",
+        "budget-exhausted",
+        "overage-warning"
+      ],
+      "upAfterCleanDays": 5,
+      "floor": "minimal",
+      "ceiling": "balanced"
+    },
+    "reserveForKaizenTokens": 350000
+  },
+  "ideation": {
+    "agents": 8,
+    "candidatesPerAgent": 2,
+    "shortlist": 10,
+    "carryover": {
+      "maxIdeas": 1,
+      "maxCarries": 1
+    }
+  },
+  "novelty": {
+    "categoryCooldownDays": 1,
+    "maxPerCategoryIn7Days": 2,
+    "mechanicCooldownDays": 7,
+    "sameCategoryAndMechanicDays": 30,
+    "tagJaccardMax": 0.45,
+    "titleSimilarityMax": 0.6
+  },
+  "mix": {
+    "windowDays": 14,
+    "targets": {
+      "interest": {
+        "minPer7Days": 1,
+        "note": "poker/GTO, Balatro & mod concepts, hockey, Reddit-born ideas"
+      },
+      "currentEvents": {
+        "minPer7Days": 1,
+        "note": "skew pop/fun/hockey; politics is rare"
+      },
+      "humor": {
+        "minPer7Days": 1
+      },
+      "wildcard": {
+        "minPer7Days": 1
+      }
+    },
+    "politicsMaxPer14Days": 1
+  },
+  "limits": {
+    "projectMaxBytes": 8388608,
+    "projectMaxFiles": 200,
+    "singleFileMaxBytes": 3145728,
+    "thumbMaxBytes": 307200,
+    "siteWarnBytes": 700000000,
+    "minOwnLinesOfCodeTier1": 700,
+    "minOwnLinesOfCodeTier2": 350
+  },
+  "guardrails": {
+    "politics": "rare (at most one per 14 days), satirical or playful, never partisan advocacy or electioneering",
+    "currentEvents": "lean pop-culture, hockey, tech, games, science, internet culture",
+    "forbidden": [
+      "harassing or targeting private individuals",
+      "hate, slurs, or demeaning protected groups",
+      "impersonating real people or organizations (their branding, logos, domains, bylines); parody must be obviously labeled and use no real branding",
+      "real-money gambling, wagering, or anything that solicits deposits",
+      "presenting fiction as fact; every factual claim carries a dated source",
+      "collecting personal data, analytics, trackers, cookies beyond localStorage convenience",
+      "medical, legal, or financial advice presented as authoritative",
+      "copyrighted logos, images, audio, or fonts that are not freely licensed (draw and synthesize instead)",
+      "malware, phishing-like flows, credential forms, anything deceptive"
+    ]
+  },
+  "notify": {
+    "onPublish": true,
+    "onFallback": true,
+    "onFailure": true
+  },
+  "phaseStuckMinutes": 90,
+  "heartbeatEverySeconds": 300,
+  "heartbeatBranch": "claude/sonnet-every-day-heartbeat"
+}

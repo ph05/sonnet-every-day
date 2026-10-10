@@ -1,0 +1,171 @@
+{
+  "id": "engineer-r1-1",
+  "title": "Crouch Then Cut",
+  "pitch": "The visitor types or picks an X and watches a drawn figure crouch lower and lower while the caption builds beat by beat, then either hard-cuts to a procedurally drawn X or morphs into it. A visible timeline shows the format as a tiny program (setup text, descent, hold, cut, settle) that can be retimed, and a tension meter rates how big the gap is between what the setup promises and what X delivers. The delight is a loopable, shareable clip of a tall figure becoming a very small cobblestone, a leafy canopy or a teapot, in sync with a synthesized squish jingle.",
+  "whyNow": "The 'turn into a cute little X' crouch-and-cut format took off on short video in August 2026 and was still listed in a Know Your Meme roundup dated 2026-10-08, so the grammar is fresh; the engine itself (a beat-quantized format timeline) outlives it.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "meme-anatomy"
+  },
+  "fingerprint": {
+    "category": "pop-culture",
+    "mechanic": "generator",
+    "tone": [
+      "playful",
+      "absurd",
+      "cozy"
+    ],
+    "tech": [
+      "canvas2d",
+      "webaudio",
+      "procedural-audio",
+      "pointer-events"
+    ],
+    "tags": [
+      "meme-format",
+      "timeline",
+      "beat-grid",
+      "shape-morph",
+      "reveal",
+      "snowclone",
+      "procedural-drawing",
+      "loop"
+    ],
+    "keywords": [
+      "crouch",
+      "jump-cut",
+      "morph",
+      "caption-timing",
+      "syllable-beats",
+      "squash-and-stretch",
+      "format-as-program",
+      "cute-little-x"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Know Your Meme and meme.com describe a short-video format that took off in August 2026: a creator crouches lower and lower while on-screen text builds 'Today I'm gonna turn into a cute little [X]', then a hard cut shows X. Animators made drawn versions where the transformation plays on screen instead of a cut. That gives two sibling grammars (jump cut vs morph) over one slot X, which is exactly a snowclone: a fixed phrase frame with one open slot. The page treats the format as a small timeline program whose beats are quantized to a tempo grid and whose payoff depends on the gap between setup and X. Search coverage is aggregator-heavy, so no view counts or creator names are used on the page, and the original song is not used (the page synthesizes its own jingle).",
+    "sources": [
+      {
+        "title": "Today I'm Gonna Turn Into A Cute Little X (Know Your Meme)",
+        "url": "https://knowyourmeme.com/memes/today-im-gonna-turn-into-a-cute-little-x",
+        "date": "",
+        "snippet": "Entry for the August 2026 short-video trend: crouching creator, caption that builds piece by piece, cut to the subject; animators later made drawn versions.",
+        "via": "search",
+        "note": "Format structure and August 2026 emergence",
+        "verified": true
+      },
+      {
+        "title": "Today I'm Gonna Turn Into A Cute Little X Meme Explained (meme.com)",
+        "url": "https://meme.com/memes/today-im-gonna-turn-into-a-cute-little-x",
+        "date": "",
+        "snippet": "Independent explainer: trend began in early August 2026, crouch then cut to the subject, drawn animation versions appeared by mid-August.",
+        "via": "search",
+        "note": "Second agreeing account of format and timing",
+        "verified": true
+      },
+      {
+        "title": "Cute Little Transformation: The Viral TikTok Trend (trendsbymasterhooks)",
+        "url": "https://www.trendsbymasterhooks.com/articles/cute-little-transformation-tiktok-trend",
+        "date": "",
+        "snippet": "Marketing-site write-up describing the format as same sound, beat-synced cuts and an unexpected transformation.",
+        "via": "search",
+        "note": "Beat-synced cut framing (weak source)",
+        "verified": false
+      },
+      {
+        "title": "25 Trending Memes For Every Current Mood (Know Your Meme)",
+        "url": "https://trending.knowyourmeme.com/editorials/collections/25-trending-memes-for-every-current-mood",
+        "date": "2026-10-08",
+        "snippet": "Roundup that lists the cute-little-X trend among current memes as of the date shown.",
+        "via": "search",
+        "note": "Format still circulating in early October (single source)",
+        "verified": false
+      },
+      {
+        "title": "Snowclone (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Snowclone",
+        "date": "",
+        "snippet": "A snowclone is a phrase template built on a cliche with substituted words, usually for humorous effect.",
+        "via": "search",
+        "note": "Slot-in-a-frame concept",
+        "verified": true
+      },
+      {
+        "title": "Language Log post on snowclones",
+        "url": "https://languagelog.ldc.upenn.edu/nll/?p=2094",
+        "date": "",
+        "snippet": "Linguistics blog where the term snowclone was discussed in 2004 for customizable, recognizable phrase frames.",
+        "via": "search",
+        "note": "Independent origin of the snowclone term",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 'turn into a cute little X' format shows a crouching figure with a caption that builds on screen, then cuts to the subject X.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The format took off on short-video platforms in August 2026 (early August per meme.com; popularized through August per Know Your Meme).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Animators made drawn versions in August 2026 where the transformation plays on screen instead of a jump cut.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A snowclone is a phrasal template with a fixed frame and substituted words, a term introduced on Language Log in January 2004.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-08, per a Know Your Meme roundup, the trend was still listed among current memes (single source, unconfirmed).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Know Your Meme trending roundups",
+      "snowclone collections on Language Log",
+      "tempo-grid editors in music trackers",
+      "shape-morph demos in vector animation tools"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick or type an X, choose a grammar variant (jump cut, morph, slow-burn), nudge the beat grid and descent curve, press play, read the tension meter, then tweak the setup phrase or X to push the payoff. Repeats stay interesting because each X has hand-authored axes (size, softness, absurdity, how far from the human silhouette) so the same timing lands differently, and a gallery of lucky pairings can be saved as a link.",
+    "sophisticationHooks": [
+      "Format-as-program: a small timeline spec (setup, descent, hold, cut, settle) compiled to events on a beat grid, with syllable counting to align caption chunks to subdivisions and a validator that explains off-grid beats",
+      "Contour morph: each figure is a closed outline resampled to 64 points, with the cyclic offset chosen by minimum total distance, then eased with spring physics so the crouching figure flows into X",
+      "Payoff model: a tension meter from the setup-versus-reveal distance across hand-set axes, with a plain-words explanation of why a cobblestone beats a puppy at a given tempo",
+      "Own synthesized jingle: WebAudio squish blips quantized to the grid, seeded so every link replays identically"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: timeline compiler and validator, beat-grid player, 30 to 40 drawn subjects from primitive shapes with seeded variation, contour morph, WebAudio blips, tension meter, hash-state sharing, about panel. Cut: video export, user-uploaded art, any real footage, any real song or account names.",
+    "risks": [
+      "Drawing 30+ readable subjects in one morning is the largest cost; mitigate by composing from a shared primitive kit and cutting the library to 24 if needed",
+      "News-bound: the trend may fade in weeks; copy frames it as 'a format from late summer 2026' and the engine stays useful for other formats",
+      "Trend details come from aggregator sites; as of 2026-10-10, per Know Your Meme and meme.com, so the page shows no view counts, creators or song titles",
+      "The Oct 8 roundup listing is a single unconfirmed source, so the page must not claim the trend is trending today",
+      "Morph quality between very different outlines can look wrong; fall back to a crossfade with squash when the distance is high"
+    ]
+  },
+  "durable": false
+}

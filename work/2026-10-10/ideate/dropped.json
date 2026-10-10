@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "dropped": [
+    {
+      "stage": "shortlist",
+      "id": "pulse-1",
+      "title": "Slab Sundial Workshop",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "pulse-2",
+      "title": "Small Sample Rink",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-1",
+      "title": "Culture Plate",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-2",
+      "title": "Unreliable Plotter",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "artisan-2",
+      "title": "Blind Foundry",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "critic-2",
+      "title": "Format Drift",
+      "reason": "surplus: 16 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    }
+  ]
+}

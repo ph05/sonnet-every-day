@@ -1,0 +1,13 @@
+{
+  "name": "sonnet-every-day",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A new sophisticated, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test \"tests/*.test.mjs\" ops/workflows/_selfcheck.mjs",
+    "validate": "node scripts/validate.mjs repo",
+    "build-site": "node scripts/build-site.mjs"
+  }
+}

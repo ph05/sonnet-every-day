@@ -1,0 +1,77 @@
+# Checks every push and pull request: the unit tests, and the repo-wide validator
+# (config, state files, history, every published project under docs/).
+#
+# The daily build commits a new docs/d/<day>/ folder. Those commits only need the
+# validator, not the whole test suite, so the test step is skipped when nothing
+# outside docs/ changed. The validator always runs.
+name: validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # The tests create throwaway git repos; they need an identity.
+      GIT_AUTHOR_NAME: ci
+      GIT_AUTHOR_EMAIL: ci@example.invalid
+      GIT_COMMITTER_NAME: ci
+      GIT_COMMITTER_EMAIL: ci@example.invalid
+      # The QA, gallery and e2e tests drive a real Chromium. tests/qa.test.mjs defaults to this same
+      # location, and the browser is installed below, so the browser tests run instead of failing.
+      PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Detect changes outside docs/
+        id: changes
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          code=true
+          if [ -n "${BASE:-}" ] && ! [[ "$BASE" =~ ^0+$ ]] && git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
+            if ! git diff --name-only "$BASE" HEAD | grep -qv '^docs/'; then
+              code=false
+            fi
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "changes outside docs/: $code"
+
+      - name: Install Playwright and Chromium
+        if: steps.changes.outputs.code == 'true'
+        run: |
+          set -euo pipefail
+          sudo mkdir -p "$PLAYWRIGHT_BROWSERS_PATH"
+          sudo chown "$(id -u):$(id -g)" "$PLAYWRIGHT_BROWSERS_PATH"
+          npm install -g playwright@1.56.1
+          playwright install --with-deps chromium
+
+      - name: Unit tests
+        if: steps.changes.outputs.code == 'true'
+        shell: bash
+        run: npm test 2>&1 | tee "$RUNNER_TEMP/npm-test.log"
+
+      # The job log viewer keeps only the last lines, so print the failing tests once more at the end.
+      - name: Show failing tests
+        if: failure() && steps.changes.outputs.code == 'true'
+        run: grep -E '^\s*not ok' -A30 "$RUNNER_TEMP/npm-test.log" | head -300 || true
+
+      - name: Validate repository
+        run: node scripts/validate.mjs repo

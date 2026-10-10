@@ -1,0 +1,340 @@
+{
+  "schema": 1,
+  "agent": "artisan",
+  "lens": "balatro-mod-ideas",
+  "candidates": [
+    {
+      "id": "artisan-1",
+      "title": "Jokers In Phase",
+      "pitch": "A concept mod for a poker roguelike: a new joker family whose bonuses depend on timing instead of just position. A Pendulum joker swings between flat mult and multiplied mult hand by hand, Firefly jokers blink on their own beat and slowly nudge their neighbours into step, and Handshake jokers pay out only when the two jokers beside them are in matching phase. The visitor arranges a five-slot rail, plays seeded hands through a tiny chips-times-mult engine, and watches a phase ring show who is in sync; a fully synchronised rail makes the whole page pulse once and drops a screenshot-worthy score card.",
+      "whyNow": "Timeless for the modding community: joker ordering is the core puzzle of the genre and no vanilla joker cares about rhythm, so the family opens a new axis of play. The page is a self-contained sandbox that works offline, so it stays good for weeks.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "balatro-mod-ideas"
+      },
+      "fingerprint": {
+        "category": "modding-games",
+        "mechanic": "toy",
+        "tone": ["playful", "nerdy", "serene"],
+        "tech": ["canvas2d", "dom-ui", "web-animations", "pointer-events", "procedural-audio", "localstorage"],
+        "tags": ["balatro", "joker-mod", "mod-concept", "scoring-engine", "synchronization", "oscillators", "deckbuilder", "sandbox"],
+        "keywords": ["joker-order", "phase-ring", "chips-times-mult", "coupled-oscillators", "seeded-hands", "concept-card", "share-hash"],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Community guides agree on the evaluation rule that makes joker order matter: effects resolve left to right, with flat mult before multiplying mult. That ordering is the hook the new family bends: instead of only where a joker sits, when it fires also changes its value. Fireflies are a well-studied case of many weakly coupled rhythms locking together (the Kuramoto family of models, with a 2025 abstract testing it on swarm data), which gives the Firefly joker a real, recomputable rule: each blink nudges neighbours' phases a little. The mod scene already runs on a common loader and injector pair, and mod listings show that vanilla-feeling joker packs are what many modders aim for, so the concept ships with a rail that mimics that scale. All scoring numbers in the page are invented for the concept and labelled as such.",
+        "sources": [
+          {
+            "title": "destructoid.com Balatro joker order guide",
+            "url": "https://destructoid.com/?p=478541",
+            "date": "",
+            "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones; its example reordering of three jokers roughly doubled the score.",
+            "via": "search",
+            "note": "Joker evaluation order and why placement matters.",
+            "verified": true
+          },
+          {
+            "title": "Four Things I Wish I Knew When Starting Balatro",
+            "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+            "date": "",
+            "snippet": "Explains that mult is totalled in order before it multiplies chips, so a multiplying joker placed early lowers the final result; a worked example gains from moving it to the end.",
+            "via": "search",
+            "note": "Independent second statement of the left-to-right, additive-before-multiplying rule.",
+            "verified": true
+          },
+          {
+            "title": "Relating the Kuramoto model to data from immobile firefly swarms",
+            "url": "https://meetings-archive.aps.org/smt/2025/mar-m58/7",
+            "date": "2025",
+            "snippet": "A 2025 physics meeting abstract that compares the Kuramoto coupled-oscillator model with data from stationary firefly swarms and reports network-style interaction and slow collective oscillation.",
+            "via": "search",
+            "note": "Fireflies are modelled as coupled phase oscillators; real swarms only approximate the model.",
+            "verified": true
+          },
+          {
+            "title": "fireflies synchronization",
+            "url": "https://abakcus.com/articles/fireflies-synchronization",
+            "date": "",
+            "snippet": "A popular-maths article on how fireflies with no leader adjust their flash timing after seeing others, linking it to the Kuramoto model of collective synchronisation.",
+            "via": "search",
+            "note": "Independent explainer agreeing that firefly sync is modelled with coupled oscillators.",
+            "verified": true
+          },
+          {
+            "title": "Steamodded smods repository",
+            "url": "https://github.com/Steamodded/smods",
+            "date": "",
+            "snippet": "Repository of a Lua mod loader and API layer for the game, built to run alongside the LOVE framework the game uses.",
+            "via": "search",
+            "note": "Mods are built on a community loader; the concept can speak the modders' vocabulary.",
+            "verified": true
+          },
+          {
+            "title": "Mistigris mod listing (mod index)",
+            "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/commit/118dcb4eaacdabeb7c129addefb3a67d029433e6/mods/Astrapboy@Mistigris/description.md",
+            "date": "2025",
+            "snippet": "A vanilla-style mod adding 36 jokers and one boss blind; the listing says it needs the Steamodded loader and the Lovely injector.",
+            "via": "search",
+            "note": "Second independent mention of the loader plus injector requirement.",
+            "verified": true
+          },
+          {
+            "title": "Balatro Community College Pack description (mod index)",
+            "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/gitea-sync/mods/BKM@BalatroCommunityCollegePack/description.md",
+            "date": "2025",
+            "snippet": "Describes a pack of 25+ new jokers meant to keep the base game's balance and vanilla feel.",
+            "via": "search",
+            "note": "Single-source evidence that modders aim for vanilla-feeling jokers.",
+            "verified": false
+          },
+          {
+            "title": "Balatro blueprint vs brainstorm guide (two average gamers)",
+            "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+            "date": "",
+            "snippet": "Strategy guide result in a search about copy jokers; the search summary said one copies the joker to its right and the other copies the leftmost joker.",
+            "via": "search",
+            "note": "Neighbour-aware vanilla jokers exist; per-result attribution was not clear, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-10, two independent community guides (Destructoid and Prima Games) state that joker effects resolve left to right, so additive mult belongs before multiplying mult.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The Kuramoto model (introduced 1975) describes many coupled oscillators locking to a shared rhythm, and is the standard way to model firefly synchrony; a 2025 APS meeting abstract tests it against swarm data and finds real interaction closer to a network than to pure distance.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "As of 2026-10-10, Balatro mods commonly require the Steamodded loader together with the Lovely injector (Steamodded repository and the Mistigris listing agree).",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Unconfirmed: as of 2026-10-10, per one mod-index listing, the Community College Pack aims for vanilla-like balance with 25+ jokers.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Unconfirmed: as of 2026-10-10, per one guide, Blueprint copies the joker to its right and Brainstorm copies the leftmost joker.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "Blueprint and Brainstorm neighbour-copy jokers",
+          "Kuramoto firefly synchronisation demos",
+          "Newton's cradle and double-pendulum desk toys",
+          "Steamodded joker packs",
+          "tabletop deck-builder concept cards"
+        ]
+      },
+      "design": {
+        "coreLoop": "Arrange five joker slots, play a seeded hand, read the phase ring and the line-by-line score cascade, then rearrange or retune coupling to chase a target score. Each played hand advances every oscillator one step, so the same rail scores differently on hand one than on hand four, and the best order changes with the beat. The second minute teaches that sync is worth more than raw power; the tenth minute is hunting the rail that locks all three Fireflies on the final hand.",
+        "sophisticationHooks": [
+          "Real discrete Kuramoto update for Firefly phases: each hand, a firefly's phase advances at its own rate and is pulled toward neighbours; coupling strength is a knob, and an order parameter meter shows how in-sync the rail is.",
+          "A tiny but honest scoring engine: seeded 52-card deck, eight hand types, chips times mult, left-to-right joker resolution with a step-by-step cascade animation and a log that explains every number.",
+          "Phase scope: a canvas ring shows each joker's phase as a dot on a circle, pendulum swing as an arc, handshake links as glowing bridges; a locked rail triggers a restrained synchronised pulse.",
+          "Shareable concept card: rail order, seed and coupling are encoded in the URL hash and rendered as a printable-looking joker card with invented art drawn in SVG."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: engine (hands, scoring, three joker behaviours plus 5 plain filler jokers), rail with drag and keyboard reordering, phase ring canvas, score cascade, three challenge targets with par, URL-hash state, muted WebAudio ticks, about/making-of panel with verified sources only. Cut: shop, consumables, editions, a full run, saving mods as real Lua files.",
+        "risks": [
+          "Mechanic must be explainable in one screen; mitigation: a 20-second guided first hand and plain-language tooltips.",
+          "Scoring numbers are invented and not from the real game; the page labels them as concept values and uses no game art, names or audio of its own.",
+          "Firefly coupling must stay deterministic for sharing; mitigation: fixed-step phase update seeded by the hash.",
+          "Blueprint/Brainstorm behaviour is unconfirmed (single source); the page shows it only as 'as of 2026-10-10, per one guide' or omits it.",
+          "Dense motion could hurt reduced-motion users; mitigation: a static phase table replaces the animated ring."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "artisan-2",
+      "title": "Blind Foundry",
+      "pitch": "A boss-blind design bench for a poker roguelike. The visitor snaps together rule bricks (silence a suit, forbid repeating a hand type, cap hand size, halve base values, or a swinging rule that alternates each hand) and a Monte Carlo lab instantly runs five bot archetypes through hundreds of seeded rounds, drawing a win-rate bar per strategy. Puzzle cards set goals such as 'shut down the flush farmer while sparing everyone else', and a final twist lets the visitor swap what winning means, for example finishing close to the target instead of far above it.",
+      "whyNow": "Timeless for the genre: boss blinds are the part of the game designed to punish a single strategy, and modders keep adding new ones. The lab turns the vague feeling 'this blind is unfair' into a visible number, which is exactly what balance discussions lack.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "balatro-mod-ideas"
+      },
+      "fingerprint": {
+        "category": "cards-odds",
+        "mechanic": "simulator",
+        "tone": ["analytical", "competitive", "nerdy"],
+        "tech": ["worker", "canvas2d", "dom-ui", "localstorage", "pointer-events"],
+        "tags": ["balatro", "boss-blind", "monte-carlo", "game-balance", "mod-concept", "poker-hands", "strategy-archetypes", "puzzle-cards"],
+        "keywords": ["win-rate", "rule-bricks", "bot-archetypes", "seeded-runs", "balance-lab", "counter-strategy", "win-condition"],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Boss blinds in the source game attack a specific plan (for example banning repeated hand types, limiting a round to one hand type, debuffing a suit, or forcing five-card hands), which is why they are a favourite mod target: several community mods list dozens of new ones. Balance for scoring-multiplier games is hard because stacking can produce runaway combos, and sources on the genre say heavy playtesting is required, so a quick in-browser Monte Carlo of simple bots is a genuine, useful stand-in for a designer's first pass. The lab uses invented numbers and toy bots, clearly labelled, and the exact vanilla blind rules are shown only as 'per fan guides' because they were not confirmed against the developer's own text.",
+        "sources": [
+          {
+            "title": "destructoid.com Balatro joker order guide",
+            "url": "https://destructoid.com/?p=478541",
+            "date": "",
+            "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones.",
+            "via": "search",
+            "note": "Basis for the engine's evaluation order.",
+            "verified": true
+          },
+          {
+            "title": "Four Things I Wish I Knew When Starting Balatro",
+            "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+            "date": "",
+            "snippet": "Explains that mult is totalled in order before it multiplies chips, so early multiplying jokers lower the result.",
+            "via": "search",
+            "note": "Independent second statement of the evaluation order.",
+            "verified": true
+          },
+          {
+            "title": "All in Jest mod listing (mod index)",
+            "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/Survivalaiden@AllinJest/description.md",
+            "date": "2025",
+            "snippet": "A mod listing that advertises 64 new boss blinds and a rework of the blue stake.",
+            "via": "search",
+            "note": "Boss blinds are a heavy mod target.",
+            "verified": true
+          },
+          {
+            "title": "Balatro Lost Edition",
+            "url": "https://kotaku.com/games/balatro-lost-edition",
+            "date": "",
+            "snippet": "A listing for a mod that adds 10+ challenging boss blinds plus decks, stakes, tags, vouchers and more.",
+            "via": "search",
+            "note": "Independent second mod with new boss blinds and stakes.",
+            "verified": true
+          },
+          {
+            "title": "my balatro mods (betmma)",
+            "url": "https://github.com/betmma/my_balatro_mods",
+            "date": "",
+            "snippet": "A collection of small mods, including an overpowered-boss challenge in which every boss blind halves base chips and mult.",
+            "via": "search",
+            "note": "Shows blinds used as a rule-twist challenge; single source.",
+            "verified": false
+          },
+          {
+            "title": "Roguelike deck-building game",
+            "url": "https://en.wikipedia.org/wiki/Roguelike_deck-building_game",
+            "date": "",
+            "snippet": "Overview stating these games generally need intensive playtesting because randomness touches so many systems.",
+            "via": "search",
+            "note": "Balance needs heavy testing.",
+            "verified": true
+          },
+          {
+            "title": "Balatro-Style Poker Deckbuilder (template page)",
+            "url": "https://www.summerengine.com/templates/strategy/deckbuilder/balatro-style",
+            "date": "",
+            "snippet": "Template page saying a scoring prototype lets developers test multiplier stacking and find broken combos before players do.",
+            "via": "search",
+            "note": "Independent agreement that testing multiplier stacking early is the practice.",
+            "verified": true
+          },
+          {
+            "title": "V3 - Learning how to balance a scoring system",
+            "url": "https://unbreaded.itch.io/tictactic/devlog/782040/v3-learning-how-to-balance-a-scoring-system",
+            "date": "",
+            "snippet": "A solo developer's devlog on expected value: a tile with a 10 percent chance of big damage averages out low, so averages alone can mislead.",
+            "via": "search",
+            "note": "Why the lab shows distributions and not only means; single source.",
+            "verified": false
+          },
+          {
+            "title": "Balatro: Top 10 Most Challenging Bosses to Blind",
+            "url": "https://thefilibusterblog.com/balatro-top-10-most-challenging-bosses-to-blind/",
+            "date": "",
+            "snippet": "A fan ranking of tough boss blinds; forum posts in the same search describe blinds that halve base values, allow one hand, or remove discards.",
+            "via": "search",
+            "note": "Fan descriptions of vanilla blinds; per-result attribution unclear, so unverified.",
+            "verified": false
+          },
+          {
+            "title": "Nintendo Life: Balatro first major update",
+            "url": "https://nintendolife.com/news/2024/04/balatro-is-getting-its-first-major-update",
+            "date": "2024-04",
+            "snippet": "News piece summarising an April 2024 experimental patch that changed the late stakes and reduced ante scaling on some early ones.",
+            "via": "search",
+            "note": "Stake rules drift between versions, so the page avoids quoting vanilla stake numbers.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-10, mod-index and news listings show boss blinds are a popular mod target: All in Jest lists 64 new boss blinds and Lost Edition lists 10+ alongside new stakes.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "As of 2026-10-10, two independent community guides (Destructoid and Prima Games) state that joker effects resolve left to right, with additive mult before multiplying mult.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Roguelike deck-builders need heavy playtesting to balance, and prototypes that test multiplier stacking help find broken combos early (Wikipedia overview and a template page agree in substance).",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Unconfirmed: as of 2026-10-10, per fan guides, vanilla blinds include one that bans repeating a hand type, one that allows a single hand type, one that debuffs a suit, and one that halves base chips and mult.",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Unconfirmed: as of 2026-10-10, per one GitHub mod collection, an overpowered-boss challenge makes every boss blind halve base chips and mult.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Unconfirmed: as of 2024-04, per one news summary, stake modifiers changed between the original release and an experimental patch.",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "boss blinds that counter one build",
+          "modded boss-blind packs",
+          "balance spreadsheets and Monte Carlo playtesting",
+          "puzzle-card challenge decks",
+          "tower-defence wave designers"
+        ]
+      },
+      "design": {
+        "coreLoop": "Pick or build a blind from rule bricks, press run, and read a win-rate bar for each of five bot archetypes over a few hundred seeded rounds. The goal cards ask for a specific shape of result (one archetype crushed, others untouched, or a fairness budget of total brick cost), so every tweak is a hypothesis and the lab is the experiment. The tenth minute is discovering that bricks interact: a suit silence is weak alone but lethal beside a halved base.",
+        "sophisticationHooks": [
+          "Small deterministic engine shared by the UI and a Web Worker: seeded decks, eight hand types, chips times mult, left-to-right joker order, so thousands of simulated rounds run in a blink.",
+          "Five transparent greedy bot archetypes (flush farmer, pair spammer, high-card scaler, straight runner, mult tower) with inspectable heuristics, and a replay of any single run.",
+          "Brick cost budget and goal cards (kill one archetype, spare the rest) turn open-ended tinkering into a puzzle with par scores; a swinging brick alternates its rule each hand.",
+          "Win-condition selector (beat target, land within a narrow band, or survive N hands) shows how redefining victory changes which strategies survive; shareable blind card encoded in the URL hash."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: engine, worker runner, 10 to 12 rule bricks, five bot archetypes, results chart on canvas, 6 goal cards, three win-condition modes, URL-hash share card, about/making-of with verified sources. Cut: real joker shop, full run simulation, learned bots, importing real mod files.",
+        "risks": [
+          "Toy bots are not real players; mitigation: label every result as 'toy bots, concept numbers' and show run counts and variance.",
+          "Vanilla blind rules are unconfirmed; the page shows them only as 'as of 2026-10-10, per fan guides', or uses invented blind names and rules only.",
+          "Scope creep in bot logic; mitigation: archetypes are greedy one-liners over the shared engine.",
+          "Chart-heavy page must stay readable at 360px; mitigation: stacked horizontal bars with numeric labels and a text table fallback."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "id": "cards-r1-2",
+  "title": "Misprint Press",
+  "pitch": "Design the back of a card deck from layered spirograph curves, then run a simulated four-ink press and print a sheet of 54. The press has wear, humidity and ink dials that change the exact odds of registration slips, starved ink, double strikes, blank albino cards and miscuts, and the page shows those odds as exact combinatorics. Hunt the flawed cards with a loupe and a UV lamp that reveals a hidden mark, then keep the finds in a binder and share the seed.",
+  "whyNow": "Timeless. The deckbuilder skin-mod scene and the error-card hobby both love flawed cards, and no card-adjacent or generative piece has shipped yet. The mishap-as-feature angle turns a design tool into a hunt.",
+  "origin": {
+    "agent": "cards",
+    "lens": "generative-art"
+  },
+  "fingerprint": {
+    "category": "modding-games",
+    "mechanic": "generator",
+    "tone": [
+      "playful",
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "card-backs",
+      "guilloche",
+      "misprint",
+      "deck-skin",
+      "spirograph",
+      "seeded",
+      "uv-layer",
+      "inspection"
+    ],
+    "keywords": [
+      "hypotrochoid",
+      "registration-error",
+      "albino-card",
+      "moire",
+      "binder",
+      "odds-panel",
+      "print-run",
+      "loupe"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Guilloche patterns are mathematically generated curve families built on spirograph-style hypotrochoids and sums of sinusoids, so a rich card-back generator needs only a few parameters. Fine line work and moire are why guilloche resists copying, which gives a natural loupe interaction. Fluorescent ink visible only under UV is a real document security feature, giving the hidden-layer lamp. Card-collecting communities sort printing errors into registration shifts, missing or faded ink, albino cards and miscuts versus ordinary off-centering, a ready taxonomy of mishaps with probabilities we can model exactly. Deck and texture skin mods are a visible modding scene for deckbuilders. All odds on the page are our own model, labelled simulated, with no prices or money values.",
+    "sources": [
+      {
+        "title": "GuillochePattern (MathWorld)",
+        "url": "https://mathworld.wolfram.com/GuillochePattern.html",
+        "date": "",
+        "snippet": "Frames guilloche as curves between inner and outer envelopes, buildable from nested sums and products of sinusoids.",
+        "via": "search",
+        "note": "Maths of the pattern generator",
+        "verified": true
+      },
+      {
+        "title": "Guilloche (Wikipedia mirror)",
+        "url": "https://en.wikipedia.com/wiki/Guilloche",
+        "date": "",
+        "snippet": "Describes the spirograph, a hypotrochoid traced by a point on a circle rolling inside a fixed circle, as the basis of guilloche.",
+        "via": "search",
+        "note": "Independent confirmation of the hypotrochoid basis",
+        "verified": true
+      },
+      {
+        "title": "Guilloches (Regula glossary)",
+        "url": "https://regulaforensics.com/glossary/banknotes/guilloches/",
+        "date": "",
+        "snippet": "Notes that guilloches use subtle interwoven thin lines and that such patterns need to be rebuilt from mathematics, not traced.",
+        "via": "search",
+        "note": "Why fine lines and moire matter for the loupe",
+        "verified": false
+      },
+      {
+        "title": "Fluorescence in Banknotes and Passports (Axiom Optics)",
+        "url": "https://www.axiomoptics.com/blog/using-portable-fluorescence-spectrometers-to-enhance-document-security/",
+        "date": "",
+        "snippet": "Fluorescent inks are invisible in daylight and visible under UV, used on passports and banknotes to authenticate them.",
+        "via": "search",
+        "note": "Hidden UV layer is a real security feature",
+        "verified": true
+      },
+      {
+        "title": "Shine Bright Like a Banknote (PMG)",
+        "url": "https://www.pmgnotes.com/news/article/6549/Shine-Bright-Like-a-Banknote/",
+        "date": "",
+        "snippet": "Article on fluorescence features visible under UV light on banknotes.",
+        "via": "search",
+        "note": "Second independent source on UV ink",
+        "verified": true
+      },
+      {
+        "title": "A Beginner's Guide to Understanding Magic: The Gathering Misprints (Beckett)",
+        "url": "https://www.beckett.com/news/a-beginners-guide-to-understanding-magic-the-gathering-misprints/",
+        "date": "",
+        "snippet": "Explains misprint types such as registration problems, missing ink including albino cards, and miscuts, and separates them from common off-centering.",
+        "via": "search",
+        "note": "Error taxonomy for the mishap engine",
+        "verified": true
+      },
+      {
+        "title": "How Pokemon Card Print Errors Happen (misprint.com)",
+        "url": "https://www.misprint.com/posts/how-pokemon-card-print-errors-happen",
+        "date": "",
+        "snippet": "Sorts errors into ink not laying down, colour off-register, design and text errors, and notes corrected versions within a run.",
+        "via": "search",
+        "note": "Independent confirmation of the mishap categories",
+        "verified": true
+      },
+      {
+        "title": "Understanding MTG Misprints (Draftsim)",
+        "url": "https://draftsim.com/mtg-misprints/",
+        "date": "",
+        "snippet": "Third guide covering misprint categories for trading cards.",
+        "via": "search",
+        "note": "Third independent taxonomy source",
+        "verified": true
+      },
+      {
+        "title": "A downloadable balatro texture pack (itch.io)",
+        "url": "https://aplovestudio.itch.io/aplove-balatro-deck",
+        "date": "",
+        "snippet": "A community texture pack with new art for playing cards, tarot cards, planet cards and edition backgrounds, installable via a mod loader.",
+        "via": "search",
+        "note": "Deckbuilder skin-mod scene exists",
+        "verified": true
+      },
+      {
+        "title": "Balatro mods (Nexus Mods)",
+        "url": "https://www.nexusmods.com/balatro/mods/887",
+        "date": "",
+        "snippet": "A mod page for a large deck skin collection with many skin options.",
+        "via": "search",
+        "note": "Second independent site showing deck-skin mods",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Guilloche patterns are mathematically generated curves, with the spirograph hypotrochoid as the basic family and sums of sinusoids as a construction (seen 2026-10-10).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Fluorescent inks that are invisible in ordinary light and visible under UV are used to authenticate documents such as passports and banknotes.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Card collectors classify printing mishaps into registration (colour plate shift), missing or faded ink including albino cards, and miscuts, and treat plain off-centering as a separate, common condition.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Very fine line work and moire are why guilloche patterns are hard to copy (one vendor glossary; a forensics survey result also describes thin interwoven lines).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Community texture and deck-skin mods for a popular deckbuilder are distributed on itch.io and Nexus Mods pages.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Spirograph and guilloche engine turning",
+      "Error-card and misprint collecting",
+      "Deckbuilder deck-skin mods such as Balatro texture packs",
+      "Blacklight security-ink reveals",
+      "Spot-the-difference inspection games"
+    ]
+  },
+  "design": {
+    "coreLoop": "Shape a card back with a few dials (rosette, ring count, moire phase, four ink colours), set the press (plate wear, paper humidity, ink flow), print 54 cards, then inspect: loupe for registration slips and starved ink, UV lamp for the hidden mark. Flag the flawed cards, reveal how many you caught against the true list, and file keepers in a binder. Each new press setting changes which mishaps appear, so the tenth run is a hunt for a perfect press or a wonder sheet.",
+    "sophisticationHooks": [
+      "Exact odds panel: per-card mishap probabilities from the dials, and run-level chances like at least one albino in 54 as 1-(1-p)^54, plus expected counts, all computed in closed form",
+      "Four-plate rendering model: each ink plate is its own guilloche layer with an offset, alpha and double-strike option, composited on canvas",
+      "Limited-charge UV lamp reveals a seed-derived hidden glyph, so inspection has a tradeoff",
+      "Seed and press settings in the URL hash reproduce the identical sheet with a seeded PRNG and no hidden randomness"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "About 850 lines: hypotrochoid and rosette layer generator, 4-plate compositor on canvas2d, press model and exact odds, sheet view with loupe zoom and UV lamp, inspector mode with scoring, binder in localStorage with try/catch, hash state, about panel. Cut: card faces, trading, animation of the press, sound.",
+    "risks": [
+      "Looks like banknote art: use invented card frames, no currency motifs, no real deck art or brand names",
+      "Gambling-funnel reading: no packs, no prices or market values, no purchases; rarity is shown only as simulated odds and labelled simulated",
+      "Moire on high-density patterns can shimmer: cap line density and honour reduced motion",
+      "Collector terms differ between sources, so the page uses its own plain definitions"
+    ]
+  },
+  "durable": true
+}

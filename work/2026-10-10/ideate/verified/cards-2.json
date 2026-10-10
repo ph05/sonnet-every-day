@@ -1,0 +1,200 @@
+{
+  "id": "cards-2",
+  "title": "Second Pick Wins",
+  "pitch": "A visitor picks a three-flip coin pattern, a smug bot picks its own after seeing it, and a flip-by-flip race decides whose pattern shows up first. Every first pick loses at least two thirds of the time to the best reply, so the visitor runs ten million simulated races and watches the bot's edge settle on exact fractions such as 2 to 1. Then the visitor takes the second pick and the table flips; a red-and-black card mode with tricks shows the same effect in a real deck.",
+  "whyNow": "Timeless. The game is fair in each pick yet decided by the order of choosing, which makes it a durable argument-loser.",
+  "origin": {
+    "agent": "cards",
+    "lens": "card-dice-odds"
+  },
+  "fingerprint": {
+    "category": "math-puzzle",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "competitive",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "dom-ui",
+      "localstorage",
+      "pointer-events"
+    ],
+    "tags": [
+      "penney-game",
+      "coin-flip",
+      "paradox",
+      "non-transitive",
+      "probability",
+      "patterns",
+      "markov-chain",
+      "cards"
+    ],
+    "keywords": [
+      "pattern-race",
+      "second-mover-advantage",
+      "leading-number",
+      "waiting-time",
+      "red-black-deck",
+      "payoff-matrix",
+      "exact-odds"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "In Penney's game two players each pick a short heads-tails pattern and the one that appears first in a fair coin sequence wins. Because picking is sequential, the second picker can answer any three-flip pattern with a reply that is strictly more likely to appear first (at least 2 to 1 for length 3, computed here from the leading-number formula). A short rule builds the reply, and Conway's leading-number method gives exact odds. A red/black card version with tricks (Humble-Nishiyama) exists. The page can show the payoff matrix for lengths 3 to 5, exact odds next to a seeded Monte Carlo, and expected waiting times. At length 3 the winning reply never has a longer average wait than the pattern it beats, but at length 4 it can (THTH, wait 20, beats HTHH, wait 18, with probability 9/14), which is where the loss feels unfair.",
+    "sources": [
+      {
+        "title": "Penney's game (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Penney%27s_game",
+        "date": "",
+        "snippet": "Appeared in several results for the claim; its text was not seen and the host failed to open today.",
+        "via": "search",
+        "note": "Not opened and no text seen; not relied on",
+        "verified": false
+      },
+      {
+        "title": "Penney Ante (Haverford problem-solving notes)",
+        "url": "https://blogsarchive.sites.haverford.edu/mathproblemsolving/files/2011/06/Penney-Ante.pdf",
+        "date": "2011",
+        "snippet": "Returned again for a search on the HHT versus HTH claim; independent sources agree HHT wins about two thirds of the time.",
+        "via": "search",
+        "note": "Worked pair HTH versus HHT; found by search, not opened",
+        "verified": true
+      },
+      {
+        "title": "Penney's Game Odds From No-Arbitrage (arXiv 1904.09888)",
+        "url": "https://arxiv.org/abs/1904.09888",
+        "date": "2019",
+        "snippet": "Returned for the leading-number query; no-arbitrage derivation of Conway's odds, odds for B over A are (AA-AB):(BB-BA).",
+        "via": "search",
+        "note": "Leading-number formula; same paper as source 5",
+        "verified": true
+      },
+      {
+        "title": "The Humble-Nishiyama Randomness Game (Futility Closet)",
+        "url": "https://futilitycloset.com/2016/12/31/humble-nishiyama-randomness-game",
+        "date": "2016-12-31",
+        "snippet": "Returned again for the card-game query: red/black cards, three-colour claims, tricks, reply RRB answered by BRR.",
+        "via": "search",
+        "note": "Card variant and its reply rule; its 1000-game simulation counts are single-source and not used",
+        "verified": true
+      },
+      {
+        "title": "Penney's Game (Stanford notes)",
+        "url": "https://crypto.stanford.edu/~blynn/pr/penney.html",
+        "date": "",
+        "snippet": "Returned twice; works the HTH versus HHT battle and finds the HHT player twice as likely to win.",
+        "via": "search",
+        "note": "HTH answered by HHT at 2 to 1",
+        "verified": true
+      },
+      {
+        "title": "Penney's Game Odds From No-Arbitrage (Theory and Decision)",
+        "url": "https://link.springer.com/article/10.1007/s11238-026-10123-w",
+        "date": "2026",
+        "snippet": "Returned twice; published version of the arXiv paper, states a different pattern is strictly more likely to appear first for any three-flip pattern.",
+        "via": "search",
+        "note": "Published form of source 2, same author, so not independent of it",
+        "verified": true
+      },
+      {
+        "title": "Recreational Mathematics Magazine paper on Penney's game",
+        "url": "https://reference-global.com/download/article/10.2478/rmm-2020-0002.pdf",
+        "date": "2020",
+        "snippet": "Returned in several results; example of a longer-waiting pattern winning, 20 flips versus 18 flips, probability 9/14.",
+        "via": "search",
+        "note": "Waiting time does not decide the winner; example also recomputed exactly here",
+        "verified": true
+      },
+      {
+        "title": "Code In Place project: The Humble-Nishiyama Randomness Game",
+        "url": "https://compedu.stanford.edu/codeinplace/public/projects/1342.html",
+        "date": "2020",
+        "snippet": "Returned for the card-game query; a project on the same game by this name.",
+        "via": "search",
+        "note": "Second result confirming the card game exists",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In Penney's game the second chooser can answer any three-flip pattern with a pattern strictly more likely to appear first; HTH answered by HHT wins 2 to 1 (two thirds).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5,
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Conway's leading-number method gives the odds between two patterns: odds for B over A are (AA-AB):(BB-BA); a no-arbitrage derivation was published in 2019 and in Theory and Decision in 2026.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          5,
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reply rule: take the opposite of the first pick's middle symbol, put it in front, and keep the first two symbols of the first pick; HTH is answered by HHT and RRB by BRR.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          1,
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A red/black card version (Humble-Nishiyama) uses three-colour claims and collected tricks instead of single wins.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Longer average wait does not decide the winner: THTH (average wait 20 flips) beats HTHH (average wait 18) with probability 9/14.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Numberphile-style coin pattern puzzles",
+      "non-transitive Efron dice",
+      "magician's red-black deck bets",
+      "bar-bet probability traps"
+    ]
+  },
+  "design": {
+    "coreLoop": "A pattern of length 3 (later 4 or 5) is picked, the bot answers, and one live race runs flip by flip with a tension bar, followed by batches of 1,000 or ten million simulated races while the running win rate converges to the exact fraction. Modes: visitor picks first and loses, bot picks first and the visitor finds the reply, and a puzzle mode that looks for the pattern with the best guaranteed odds. Replay value comes from lengths 4 and 5, the card-deck mode, and shareable argument challenges.",
+    "sophisticationHooks": [
+      "Exact odds via Markov-chain absorption (Conway leading numbers cross-checked), versus seeded worker Monte Carlo with error bars",
+      "Payoff matrix heatmap for all patterns of length 3 to 5 with the best-reply path highlighted, plus a cycle view showing the non-transitive loop",
+      "Expected waiting time panel showing the pattern that arrives later on average still wins the race",
+      "Red/black deck mode played without replacement with tricks, so the visitor sees the effect survive in a real deck; hash state with seed and picks"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build: pattern picker for lengths 3 and 4 (matrix also shows 5), bot reply engine, race animation, exact solver by leading numbers cross-checked by Markov absorption, worker Monte Carlo in chunks, payoff matrix heatmap, waiting-time panel, red/black card mode with seeded Monte Carlo (exact deck odds only if the DP is quick), about panel, hash state. Cut: lengths above 5 in play, multiplayer, sound, cycle view if time is short.",
+    "risks": [
+      "All odds beyond the sourced 2 to 1 and 9/14 examples are computed by the page and labelled 'computed here'",
+      "The ten-million-race run must stay responsive: chunked in a worker with a progress bar and a cancel control",
+      "Card-mode trick odds differ from coin odds; the Futility Closet simulation counts (such as 995 of 1000) are single-source and unverified, so the page shows its own seeded results instead, or 'as of 2026-10-10, per Futility Closet' if quoted",
+      "At length 3 the winning reply never has a longer expected wait than the pattern it beats, so the waiting-time surprise only appears at length 4 and up; copy must not claim it for length 3",
+      "Plain Penney content is common online, so the matrix, deck mode and waiting-time angle carry the distinct feel; no uniqueness claim is made on the page"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Core premise and the 2 to 1 and 9/14 figures were found in several independent search results and recomputed exactly with the leading-number formula; no page was opened. Fixed the waiting-time claim, which only holds from length 4, and removed the unverifiable uniqueness claim."
+  }
+}

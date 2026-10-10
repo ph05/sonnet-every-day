@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "startDate": "2026-10-10",
+  "entries": [
+    {
+      "n": 1,
+      "date": "2026-10-10",
+      "slug": "jokers-in-phase",
+      "title": "Jokers In Phase",
+      "tagline": "Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.",
+      "tier": 2,
+      "fingerprint": {
+        "category": "modding-games",
+        "mechanic": "toy",
+        "tone": [
+          "playful",
+          "nerdy",
+          "serene"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg",
+          "dom-ui",
+          "web-animations",
+          "pointer-events",
+          "webaudio",
+          "procedural-audio",
+          "localstorage"
+        ],
+        "tags": [
+          "balatro",
+          "joker-mod",
+          "mod-concept",
+          "scoring-engine",
+          "synchronization",
+          "oscillators",
+          "deckbuilder",
+          "sandbox"
+        ],
+        "keywords": [
+          "joker-order",
+          "phase-ring",
+          "points-times-mult",
+          "coupled-oscillators",
+          "seeded-hands",
+          "concept-card",
+          "share-hash"
+        ],
+        "slot": "interest",
+        "political": false
+      },
+      "path": "d/2026-10-10-jokers-in-phase/",
+      "publishedAt": "2026-10-10T11:33:11.181Z",
+      "countsForNovelty": true
+    }
+  ]
+}

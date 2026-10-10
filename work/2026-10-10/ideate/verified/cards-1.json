@@ -1,0 +1,223 @@
+{
+  "id": "cards-1",
+  "title": "Seven Riffles",
+  "pitch": "A night-shift dealer swears three riffles is plenty. The visitor cuts a 52-card deck and releases a riffle, watches the rising sequences fan out like strands, and sees a meter of how far the whole riffle process still sits from a truly random deck, computed exactly on the page. Then an audit runs thousands of seeded shuffles at 1 to 10 riffles and charts which simple tests (top card, suit runs, card guessing) stop betraying the opening order, and when.",
+  "whyNow": "Timeless: the seven-shuffles slogan is half-known, and which yardstick you pick changes the verdict, which makes it a good argument to lose.",
+  "origin": {
+    "agent": "cards",
+    "lens": "card-dice-odds"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "simulator",
+    "tone": [
+      "playful",
+      "nerdy",
+      "analytical"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "shuffle",
+      "riffle",
+      "probability",
+      "cutoff-phenomenon",
+      "cards",
+      "randomness",
+      "simulation",
+      "combinatorics"
+    ],
+    "keywords": [
+      "riffle-shuffle",
+      "gilbert-shannon-reeds",
+      "rising-sequences",
+      "total-variation",
+      "52-cards",
+      "seeded-monte-carlo",
+      "deck-audit",
+      "eulerian-numbers"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "The Gilbert-Shannon-Reeds model cuts a deck at a binomially distributed point and interleaves the two piles with probability proportional to pile sizes. Bayer and Diaconis showed that the chance of any deck order after m riffles depends only on its number of rising sequences r, as C(2^m + n - r, n) / 2^(mn), so the distance from uniform for 52 cards can be computed exactly by grouping orders by r (Eulerian counts) and compared with Monte Carlo. Total variation distance stays near 1 at five riffles, is about 0.924 at five, 0.614 at six and 0.334 at seven, so the slogan comes from a drop below one half at seven. A report of work by the Trefethens says an information-style yardstick would accept five to six; that is a single report, so the page treats it as attributed, not established. The page computes its own numbers and labels them as computed here. 52 factorial is about 8.07e67.",
+    "sources": [
+      {
+        "title": "Gilbert-Shannon-Reeds model",
+        "url": "https://en.wikipedia.org/wiki/Gilbert%E2%80%93Shannon%E2%80%93Reeds_model",
+        "date": "",
+        "snippet": "Defines the riffle model and reports that for 52 cards five riffles leave total variation distance near 1 while seven give 0.334.",
+        "via": "search",
+        "note": "Re-found by a claim-worded search on 2026-10-10 and the result text states the five versus seven figures; the host cannot be fetched from here so the page was not opened",
+        "verified": true
+      },
+      {
+        "title": "How many times should you shuffle the cards 2",
+        "url": "https://blogs.mathworks.com/cleve/2016/02/15/how-many-times-should-you-shuffle-the-cards-2/",
+        "date": "2016-02-15",
+        "snippet": "Blog post on total variation for 52 cards and the shuffling cutoff.",
+        "via": "search",
+        "note": "Appears again in results but its specific figures (near 1 for four shuffles, below 0.1 around nine) were not visible in any result text and the host cannot be fetched; unconfirmed, not used for any fact",
+        "verified": false
+      },
+      {
+        "title": "Lecture 36 notes on riffle shuffles",
+        "url": "https://faculty.uml.edu/rmontenegro/8843/notes/lecture36.pdf",
+        "date": "",
+        "snippet": "University lecture notes on riffle shuffles and total variation distance.",
+        "via": "search",
+        "note": "Returned for the claim search but its table was not visible in the result text and the fetch failed at the connection level; unconfirmed, replaced by the Dartmouth notes for the figures",
+        "verified": false
+      },
+      {
+        "title": "Disorder in the Deck",
+        "url": "https://www.sciencenews.org/article/disorder-deck-0",
+        "date": "",
+        "snippet": "Magazine report saying Aldous and Diaconis argued in 1986 that roughly seven riffles suffice, and that the Trefethens argued five do a reasonable job and six make mixing practically certain.",
+        "via": "search",
+        "note": "Seen in two searches but it is one outlet and the fetch failed; the entropy-style dispute stays unverified and is shown only as attributed",
+        "verified": false
+      },
+      {
+        "title": "Bayer and Diaconis, Trailing the dovetail shuffle to its lair",
+        "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/bayer_diaconis.pdf",
+        "date": "",
+        "snippet": "Primary paper linking the probability of a deck arrangement after m riffles to its count of rising sequences.",
+        "via": "search",
+        "note": "Found again by a formula search; the formula C(2^m + n - r, n) / 2^(mn) agrees across the Cornell course page and several arXiv papers in the results; the paper itself was not opened",
+        "verified": true
+      },
+      {
+        "title": "Factorial 52: A Stirling Problem",
+        "url": "https://thatsmaths.com/2015/12/24/factorial-52-a-stirling-problem/",
+        "date": "2015-12-24",
+        "snippet": "Discusses the size of 52 factorial, about 8.07 times ten to the 67th.",
+        "via": "search",
+        "note": "Found again; the full 68-digit value 8.0658e67 is given consistently across the results",
+        "verified": true
+      },
+      {
+        "title": "Each Shuffle of a Deck of Cards is Probably Unique in History",
+        "url": "https://puzzlewocky.com/brain-teasers/probability-puzzles/every-shuffle-of-a-deck-of-cards-is-probably-unique-in-history/",
+        "date": "",
+        "snippet": "Puzzle write-up on 52 factorial and uniqueness of shuffled orders.",
+        "via": "search",
+        "note": "Not found in my searches; unconfirmed and not used",
+        "verified": false
+      },
+      {
+        "title": "Riffle shuffle permutation",
+        "url": "https://en.wikipedia.org/wiki/Riffle_shuffle_permutation",
+        "date": "",
+        "snippet": "Describes riffle permutations and their rising sequences.",
+        "via": "search",
+        "note": "Not found in my searches; the page re-derives rising-sequence structure by enumeration so it is not needed",
+        "verified": false
+      },
+      {
+        "title": "Shuffling lecture notes (Dartmouth)",
+        "url": "https://math.dartmouth.edu//~doyle/docs/test/shuffling.pdf",
+        "date": "",
+        "snippet": "Lecture notes on the Bayer-Diaconis result giving total variation distance 0.924 after five shuffles, 0.614 after six and 0.334 after seven for 52 cards.",
+        "via": "search",
+        "note": "Result text states the three figures, independent of the Wikipedia article",
+        "verified": true
+      },
+      {
+        "title": "52 Factorial",
+        "url": "https://czep.net/weblog/52cards.html",
+        "date": "",
+        "snippet": "Weblog post on the size of 52 factorial.",
+        "via": "search",
+        "note": "Listed in the 52 factorial results, which agree on about 8.0658e67",
+        "verified": true
+      },
+      {
+        "title": "Numb3rs 519: Animal Rites",
+        "url": "https://pi.math.cornell.edu/~numb3rs/spulido/Numb3rs_season5/Numb3rs_519.html",
+        "date": "",
+        "snippet": "Course page stating the Bayer-Diaconis theorem for m riffles and r rising sequences.",
+        "via": "search",
+        "note": "Clean statement of the formula that matches the arXiv papers returned for the same search",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "For a 52-card deck under the Gilbert-Shannon-Reeds model, total variation distance from uniform is about 0.924 after five riffles, 0.614 after six and 0.334 after seven.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The distance stays close to 1 through five riffles and falls below one half only at seven riffles, which is where the seven-shuffles slogan comes from.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The number of orderings of a 52-card deck is 52 factorial, about 8.0658e67.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "After m riffles of an n-card deck, the probability of an arrangement with r rising sequences is C(2^m + n - r, n) / 2^(mn), so it depends only on r and exact distances can be computed without sampling.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per Science News, the Trefethens argued that five riffles do a reasonable job and six make mixing practically certain, using an information-style yardstick (single report, unverified).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "the cutoff phenomenon in Markov chains",
+      "magician's faro and riffle control moves",
+      "card-counting shuffle tracking lore"
+    ]
+  },
+  "design": {
+    "coreLoop": "The visitor picks an opening deck (new-deck order, suits grouped, lightly pre-shuffled), chooses a cut point by dragging and releases a riffle (or presses auto-riffle), and reads the rising-sequence strands and a meter showing the exact distance from random for that many riffles under the standard model. A yardstick switch (total variation, separation, entropy-style) shows the verdict moving. An audit panel runs seeded Monte Carlo in a worker at 1 to 10 riffles and charts how several simple tests (top card, suit adjacency, a card-guessing duel against the page) betray the opening order, next to the exact curve with a stated sample size and error bar. A seeded daily challenge gives a shareable puzzle: find the smallest riffle count at which a chosen test stops beating chance.",
+    "sophisticationHooks": [
+      "Exact total variation, separation and entropy-style distances for 52 cards by grouping orders by rising-sequence count (Eulerian numbers in BigInt), checked against brute force at n=3 and 4",
+      "Yardstick switch so the visitor sees the seven versus five-to-six dispute emerge from the numbers, with every figure labelled computed here",
+      "A card-guessing duel: the page guesses each next card by exploiting residual order and its score over chance is charted against riffle count",
+      "Hand riffle by pointer drag with keyboard equivalent, and a URL hash carrying seed, opening deck and riffle count"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build: seeded GSR sampler, exact distances via Eulerian counts in BigInt, canvas deck renderer with a simple two-pile slide riffle (reduced-motion static fallback), worker Monte Carlo defaulting to about 200k decks with an optional longer run, three simple tests plus the guessing duel, hash state, about panel. Cut: other shuffle types beyond one comparison toggle, sound, a 10-million-shuffle default, per-card art.",
+    "risks": [
+      "The meter describes the riffle process, not the particular deck on screen, and the hand riffle only chooses the cut with interleaving drawn by the model; the page must say so plainly",
+      "The seven versus five-to-six dispute rests on one report; the page shows it as 'as of 2026-10-10, per Science News' or omits it, and presents the entropy meter as its own computation",
+      "Ten million riffles at ten counts is too heavy for a worker in a visitor's patience; the default is a few hundred thousand decks with a stated error bar",
+      "Exact computation for 52 cards needs BigInt or log-space arithmetic; node self-checks against n=3 and 4 brute force",
+      "Riffle animation art could eat the morning; keep to a two-pile slide animation"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The 0.924/0.614/0.334 figures, the rising-sequence formula and 52 factorial each came back in independent search results; no page could be opened (all fetches failed on DNS). The entropy-yardstick claim rests on one report and is shown only as attributed; scope trimmed (smaller default Monte Carlo, meter wording fixed)."
+  }
+}

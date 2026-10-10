@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "agent": "jester",
+  "lens": "bureaucracy-sim",
+  "candidates": [
+    {
+      "id": "jester-r1-1",
+      "title": "The Loophole Ministry",
+      "pitch": "Carry one packet of stamps across the floor of an invented ministry where every window has a rule card: this one only takes an even number of stamps, that one turns a Blue into two Greens, another swallows anything stamped before lunch. The official route is long on purpose; the game is spotting the loophole, an underpass that opens only when two innocent rules meet, and watching your trail of red tape unravel into a shorter path. A built-in solver grades every run against the official route, and a daily seed brings a fresh ministry whose clerks each leave one small, human note on their rule.",
+      "whyNow": "Timeless. Rule-composition puzzles are loved (Baba-style) and bureaucracy satire is evergreen, but the web is full of stamp-the-form inspection clones, so a pathfinding-and-loophole angle on red tape is a fresh and more replayable take.",
+      "origin": {
+        "agent": "jester",
+        "lens": "bureaucracy-sim"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "puzzle",
+        "tone": ["satirical", "playful", "absurd", "cozy", "nerdy"],
+        "tech": ["svg", "dom-ui", "web-animations", "localstorage"],
+        "tags": ["bureaucracy", "red-tape", "loophole", "rule-composition", "pathfinding", "daily-puzzle", "fictional-ministry", "office-satire", "solver-graded"],
+        "keywords": ["stamps", "windows", "rule-cards", "clerk-notes", "state-search", "seeded-daily", "shortcut", "ribbon", "queue"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Red tape is literally a thing: official papers were tied with red tape from the 17th century, and the figurative sense came later, which gives the game its central object, a ribbon you trail through the ministry. Catch-22 names the circular-rule trap and supplies the flavour of rule collisions. Baba Is You proves that rules treated as manipulable objects produce surprising emergent solutions that players love to share. Papers, Please shows that document rules can carry a whole game, but it is an inspection drama and the browser-game space is crowded with stamp-the-form clones, so this idea switches to state-space pathfinding with a solver, which also lets the page measure how clever a loophole was. Queue psychology (waits feel longer when unexplained) shapes the clerk microcopy.",
+      "sources": [
+        {
+          "title": "red tape (Phrase Finder)",
+          "url": "https://www.phrases.org.uk/meanings/red-tape.html",
+          "date": "",
+          "snippet": "Says legal and official documents were bound with red tape from the 17th century, with an early reference in Maryland laws of 1696-1715, and the first clearly figurative use in an 1838 novel.",
+          "via": "search",
+          "note": "Establishes the literal red tape binding official papers and when the figurative sense appears.",
+          "verified": true
+        },
+        {
+          "title": "origin of 'red tape' (obstructive official rules) (Word Histories)",
+          "url": "https://wordhistories.net/2018/01/11/red-tape-origin/",
+          "date": "",
+          "snippet": "Cites a 1658 advertisement about lost papers tied with red tape as the earliest known mention of the binding practice.",
+          "via": "search",
+          "note": "Independent second source agreeing that papers were tied with red tape in the 17th century.",
+          "verified": true
+        },
+        {
+          "title": "Catch-22 (logic)",
+          "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+          "date": "",
+          "snippet": "Describes a catch-22 as a paradoxical situation one cannot escape because of contradictory or mutually dependent rules; coined by Joseph Heller in the 1961 novel.",
+          "via": "search",
+          "note": "Defines the circular-rule trap the game plays with.",
+          "verified": true
+        },
+        {
+          "title": "catch 22 (Literary Devices)",
+          "url": "https://literarydevices.net/catch-22",
+          "date": "",
+          "snippet": "Explains the term as an inescapable dilemma created by conflicting rules, with the novel as origin.",
+          "via": "search",
+          "note": "Second independent explainer agreeing with the definition.",
+          "verified": true
+        },
+        {
+          "title": "Baba Is You",
+          "url": "https://en.wikipedia.org/wiki/Baba_Is_You",
+          "date": "",
+          "snippet": "A puzzle game where rules are movable word tiles; a rule stays enforced until its text is broken apart, and rules can be locked in place.",
+          "via": "search",
+          "note": "Proves that rules-as-objects makes emergent puzzles; we study the idea, not copy it.",
+          "verified": true
+        },
+        {
+          "title": "Baba Is You review (TechRaptor)",
+          "url": "https://techraptor.net/content/baba-is-you-review",
+          "date": "",
+          "snippet": "Review noting that properties can be assigned to objects and change with proximity, producing surprising interactions.",
+          "via": "search",
+          "note": "Independent second source on rules-as-objects emergence.",
+          "verified": true
+        },
+        {
+          "title": "Designing the bleak genius of Papers, Please (Game Developer)",
+          "url": "https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-i-",
+          "date": "",
+          "snippet": "Design write-up on the inspector role, where earning money conflicts with admitting only people whose documents are in order.",
+          "via": "search",
+          "note": "Reference for what the genre already does; the result summary did not attribute details per result, so held unverified.",
+          "verified": false
+        },
+        {
+          "title": "Behind the scenes of Papers, Please (Kill Screen)",
+          "url": "https://www.killscreen.com/peek-behind-scenes-papers-please-reveals-baggage-search-and-gun-fights/",
+          "date": "",
+          "snippet": "Covers features cut before release, such as baggage search, UV seal checks and occasional gun fights, shared by the developer on a forum.",
+          "via": "search",
+          "note": "Shows the value of cutting scope to keep rules legible.",
+          "verified": false
+        },
+        {
+          "title": "The Bureaucratic Loop (itch.io)",
+          "url": "https://aleshani.itch.io/the-bureaucratic-loop",
+          "date": "2025",
+          "snippet": "A 2025 jam game in which each incident adds a new rule so the process grows more absurd.",
+          "via": "search",
+          "note": "Evidence that the bureaucracy-game space exists and leans on stamping or rule growth, not pathfinding.",
+          "verified": false
+        },
+        {
+          "title": "The Psychology of Waiting Lines (David Maister)",
+          "url": "https://davidmaister.com/blog/201/The-Psychology-of-Waiting-Lines.html",
+          "date": "",
+          "snippet": "Lists propositions on why waits feel long, including that unoccupied and uncertain waits feel longer.",
+          "via": "search",
+          "note": "Basis for the clerk microcopy: explain the wait, give people something to do.",
+          "verified": true
+        },
+        {
+          "title": "8 reasons why waiting in line drives us crazy (Psych Central)",
+          "url": "https://psychcentral.com/blog/8-reasons-why-waiting-in-line-drives-us-crazy",
+          "date": "",
+          "snippet": "Popular summary of the same waiting-line propositions, including idle time and not knowing how long the wait will be.",
+          "via": "search",
+          "note": "Independent second source agreeing on idle and uncertain waits feeling longer.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Legal and official papers were tied with red tape from the 17th century; as of 2026-10-10, Phrase Finder dates the first clearly figurative use to 1838 and Word Histories cites a 1658 advertisement as the earliest mention of the practice.",
+          "sourceIndex": 0,
+          "alsoIn": [1],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The term catch-22 comes from Joseph Heller's 1961 novel and names an inescapable situation created by contradictory or mutually dependent rules.",
+          "sourceIndex": 2,
+          "alsoIn": [3],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "In Baba Is You, rules are word tiles that players move, and a rule stays enforced until its text is broken apart.",
+          "sourceIndex": 4,
+          "alsoIn": [5],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Idle time and uncertain waits feel longer than occupied and certain ones, according to David Maister's 1985 waiting-line propositions.",
+          "sourceIndex": 9,
+          "alsoIn": [10],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Papers, Please casts the player as a border inspector balancing pay against admitting only people with documents in order, and its developer cut features such as baggage search and UV seal checks before release (reported, not independently confirmed).",
+          "sourceIndex": 6,
+          "alsoIn": [7],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": ["Baba Is You", "Papers, Please", "Catch-22", "Infocom Bureaucracy", "Zachtronics-style rule puzzles", "The Bureaucratic Loop"]
+      },
+      "design": {
+        "coreLoop": "Read the ministry map and each window's rule card, plan a route for your packet of stamps, walk it, and watch the red tape ribbon trail behind you; the solver then scores your route against the official one and the shortest possible one. Spotting a loophole (two rules interacting, or an underpass that opens only when you hold a certain stamp combination) beats the official route and earns a Loophole Index, which pushes you to retry for a tidier path and to try the daily seed. Rules stay few per window but compose, so the second minute is about reading interactions and the tenth about chaining them.",
+        "sophisticationHooks": [
+          "A rule engine where each window has a precondition and an effect over a small stamp multiset, with a breadth-first solver over the state space that grades runs, proves solvability and detects true loopholes (any route shorter than the official chain).",
+          "Seeded generator with rejection sampling: only ministries with a solvable official route and a loophole gap of at least two steps are served; daily seed in the URL hash and a text-only share strip of the windows visited.",
+          "The red tape ribbon drawn in SVG: it trails your path, tangles on detours and visibly unravels when you take a loophole; underpass corridors fade in on the map once their unlock stamps are held.",
+          "Copy system: every rule card is plain text and every clerk adds one separate warm one-liner (a biscuit left in the tray, a note about the lunch hour), so jokes never hide the instruction."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "About 900 to 1100 lines of own code: rule engine and BFS solver (about 200), seeded ministry generator with loophole check (about 200), SVG map, ribbon and animation (about 250), UI with keyboard and touch, light and dark, reduced motion, hash state and share strip (about 200), copy module with roughly 60 rule templates, clerk notes and stamp names (about 150), about and making-of panel. Ships with 6 hand-made tutorial ministries plus the daily seed and an endless mode. Cut: sound, level editor, accounts, any live data.",
+        "risks": [
+          "Resemblance to stamp-the-form inspection games: mitigated by having no inspection or moral-drama loop; the core act is routing through composing rules.",
+          "Generated ministries could be unsolvable or have no loophole: mitigated by solver-based rejection sampling at generation time and by shipping hand-checked tutorial levels.",
+          "Rules must stay readable: cap two clauses per window and show state (stamps held) permanently; playtest at 360px width.",
+          "The Papers, Please facts come from unverified search summaries: the making-of panel shows them only as 'as of 2026-10-10, per Game Developer', or leaves them out.",
+          "All agencies, stamps and clerks are invented and labelled fiction; no real agency names, forms or logos."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "jester-r1-2",
+      "title": "Whistle Tribunal",
+      "pitch": "You are the clerk at the video-review desk of an invented pond-hockey league: scrub through a short canvas replay of dots and a puck, then rule by citing a clause card (a race to the faceoff dot decides icing, a puck lofted straight out of play is an automatic delay minor, and so on). Every ruling is filed as precedent that binds later look-alike clips, the league adds a new amendment each period, and sooner or later two clauses demand opposite calls and you must find the loophole that lets you distinguish your own case law. You are scored on consistency, not on truth, and the season ends with an appeals-court verdict and a shareable stat sheet.",
+      "whyNow": "Timeless: hockey fans argue about rulebook edge cases all year, and precedent plus an ever-growing rulebook is a bureaucracy joke that doubles as a mechanic. It fills the owed hockey and interest slot without needing live data.",
+      "origin": {
+        "agent": "jester",
+        "lens": "bureaucracy-sim"
+      },
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "game",
+        "tone": ["playful", "satirical", "nerdy", "competitive", "absurd"],
+        "tech": ["canvas2d", "dom-ui", "pointer-events", "localstorage"],
+        "tags": ["hockey", "rulebook", "precedent", "video-review", "referee", "bureaucracy", "amendments", "fictional-league", "case-law"],
+        "keywords": ["hybrid-icing", "faceoff-dot", "puck-over-glass", "delay-of-game", "stare-decisis", "consistency-score", "appeals", "replay-scrubber", "clause-cards"],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Hockey's real rulebook is a ready-made bureaucracy: hybrid icing replaced a race to the end boards with a race to the faceoff dots from the 2013-14 season, so a single rule is decided by a measurable arrival order that a canvas replay can show, and the puck-over-glass delay minor is automatic regardless of intent, a famous source of fan complaints. Parkinson's essay satirised officials making work for each other, which maps onto an amendment-every-period rulebook. Stare decisis gives the precedent mechanic a real model: courts follow earlier decisions, can distinguish cases on the facts, and can overrule. The game uses invented league and clause text inspired by these ideas, with no real league names or art.",
+      "sources": [
+        {
+          "title": "New hybrid icing rule a sensible change (The Hockey News)",
+          "url": "https://thehockeynews.com/news/new-hybrid-icing-rule-a-sensible-change",
+          "date": "",
+          "snippet": "Explains hybrid icing: the official judges a race to the faceoff dots, calling icing if the defender wins or the race is close, and playing on if the attacker is ahead.",
+          "via": "search",
+          "note": "Establishes the dot-race rule used as a clause and as a replay test.",
+          "verified": true
+        },
+        {
+          "title": "NHL players approve hybrid icing, safety trumps subjectivity (Yahoo Sports Puck Daddy)",
+          "url": "https://sports.yahoo.com/blogs/nhl-puck-daddy/nhl-players-approve-hybrid-icing-safety-trumps-subjectivity-231456246--nhl.html",
+          "date": "2013",
+          "snippet": "Coverage of players approving hybrid icing, which took effect for the start of the 2013-14 regular season and was aimed at reducing injuries.",
+          "via": "search",
+          "note": "Independent second source for the rule and its start season.",
+          "verified": true
+        },
+        {
+          "title": "What is icing in hockey? (HockeyAnswered)",
+          "url": "https://hockeyanswered.com/what-is-icing-in-hockey-with-pictures/",
+          "date": "",
+          "snippet": "Explainer with diagrams of icing and its exceptions, including the dot-race variant.",
+          "via": "search",
+          "note": "Third explainer to check clause wording against; used for diagrams concept only.",
+          "verified": true
+        },
+        {
+          "title": "Delay of game (ice hockey)",
+          "url": "https://en.wikipedia.org/wiki/Delay_of_game_(ice_hockey)",
+          "date": "",
+          "snippet": "Describes the delay-of-game minor for shooting the puck out of play over the glass from the defensive zone.",
+          "via": "search",
+          "note": "Establishes the puck-over-glass delay rule.",
+          "verified": true
+        },
+        {
+          "title": "Delay of Game in Hockey (Hockey Monkey)",
+          "url": "https://www.hockeymonkey.com/learn/hockey-delay-of-game-nhl",
+          "date": "",
+          "snippet": "States the two-minute minor for shooting the puck directly over the glass from the defensive zone, with exceptions for deflections.",
+          "via": "search",
+          "note": "Independent second source for the delay rule and the deflection exception.",
+          "verified": true
+        },
+        {
+          "title": "Is the Puck-Over-Glass Rule the Dumbest Regulation in Sports? (Grantland)",
+          "url": "https://grantland.com/the-triangle/is-the-puck-over-glass-rule-the-dumbest-regulation-in-sports",
+          "date": "",
+          "snippet": "Opinion piece whose title shows the puck-over-glass rule is a lightning rod for fan complaints.",
+          "via": "search",
+          "note": "Only the title was seen; evidence that the rule sparks debate, held unverified.",
+          "verified": false
+        },
+        {
+          "title": "Parkinson's Law (Wayword Radio)",
+          "url": "https://waywordradio.org/parkinsons-law/",
+          "date": "",
+          "snippet": "Notes that the phrase comes from a humorous 1955 Economist essay by C. Northcote Parkinson satirising government bureaucracy.",
+          "via": "search",
+          "note": "Establishes the satirical origin and the officials-make-work-for-each-other idea.",
+          "verified": true
+        },
+        {
+          "title": "Parkinson's Law (Etymonline)",
+          "url": "https://www.etymonline.com/word/Parkinson%27s%20Law",
+          "date": "",
+          "snippet": "Dates the term to the Economist of 19 November 1955 and names Parkinson as originator.",
+          "via": "search",
+          "note": "Independent second source for the 1955 origin.",
+          "verified": true
+        },
+        {
+          "title": "Precedent",
+          "url": "https://en.wikipedia.org/wiki/Precedent",
+          "date": "",
+          "snippet": "Explains that courts follow earlier decisions on closely related issues and that precedent can be distinguished or overruled.",
+          "via": "search",
+          "note": "Model for the ruling-as-precedent mechanic.",
+          "verified": true
+        },
+        {
+          "title": "Stare decisis (EBSCO Research Starters)",
+          "url": "https://www.ebsco.com/research-starters/social-sciences-and-humanities/stare-decisis",
+          "date": "",
+          "snippet": "Summarises the doctrine that like cases are treated alike, applying to the holding and not every argument, with room to overrule.",
+          "via": "search",
+          "note": "Independent second source for how precedent binds and bends.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Hybrid icing, which decides icing by a race to the faceoff dots rather than the end boards, took effect at the start of the 2013-14 NHL regular season after players approved it.",
+          "sourceIndex": 0,
+          "alsoIn": [1, 2],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Shooting the puck directly over the glass from the defensive zone draws an automatic two-minute delay-of-game minor, regardless of intent; deflections off a player or post are exempt.",
+          "sourceIndex": 3,
+          "alsoIn": [4],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The phrase Parkinson's Law comes from a satirical essay in The Economist in November 1955 by C. Northcote Parkinson, aimed at bureaucracy.",
+          "sourceIndex": 6,
+          "alsoIn": [7],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Under stare decisis courts generally follow earlier rulings on the same issue, but may distinguish a case on its facts or overrule an earlier decision.",
+          "sourceIndex": 8,
+          "alsoIn": [9],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": ["hybrid icing dot race", "puck-over-glass delay minor", "Parkinson's Law", "common-law precedent", "Papers, Please", "Baba Is You", "replay review desks"]
+      },
+      "design": {
+        "coreLoop": "A clip arrives; scrub the canvas replay to read the facts (who reached the dot first, did the puck deflect, was it a lofted clear), pick the clause that governs it, and file a ruling. The ruling becomes precedent keyed to the clip features the clause reads, so a later look-alike clip is checked against your own case law; a new amendment lands each period, and when clauses collide you spend limited distinguish tokens to carve a principled exception. Consistency scoring means the tenth minute is about managing your own precedent web rather than spotting the obvious call.",
+        "sophisticationHooks": [
+          "Parametric replay engine: roughly 14 clip templates (dot race, lofted clear, deflection, crease contact, line change) with seeded jitter so facts differ per clip, drawn on canvas with a keyboard-and-touch scrubber.",
+          "Clause engine with predicates over clip features plus a precedent ledger that matches new clips by the features each clause reads; contradictions between old precedent and a new amendment are detected and surfaced as a dilemma.",
+          "Season arc with escalating amendments (rulebook creep), limited distinguish tokens, and an appeals-court end screen that lists reversed rulings and a consistency grade; seeded season in the URL hash.",
+          "Original clause copy in a deadpan legal voice with one warm human line per clause; text-only share sheet of the season."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "About 1000 to 1200 lines of own code: replay templates and canvas renderer with scrubber (about 300), clause and precedent engine with conflict detection (about 250), season and amendment director with scoring (about 150), UI with responsive layout, light and dark, reduced motion, hash state and share text (about 200), copy module with clause cards, ledger lines and verdict jokes (about 150), about and making-of panel. Cut: real teams, players or logos, audio beyond an optional synthesized whistle, multiplayer, live data.",
+        "risks": [
+          "Non-fans may bounce: each clause card must be self-contained and the opening clips must teach by example; test the first three clips with no hockey knowledge.",
+          "Rule accuracy: the league, clause text and art are invented and labelled as inspired by, not copied from, real rules; only the dated facts above are quoted as fact.",
+          "Scoring has to feel fair: define consistency precisely (same governing clause plus same read features gives same ruling), unit-test it, and explain it in the about panel.",
+          "Canvas replays could eat time: keep tracks as short keyframe lists with simple easing and cut crowd and bench detail first.",
+          "The Grantland source was seen by title only and stays unverified; the page does not cite it as fact."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "id": "artisan-1",
+  "title": "Jokers In Phase",
+  "pitch": "A fan-made concept sandbox for a poker roguelike: a new joker family whose bonuses depend on timing instead of just position. A Pendulum joker swings between flat mult and multiplied mult hand by hand, Firefly jokers blink on their own beat and slowly nudge their neighbours into step, and Handshake jokers pay out only when the two jokers beside them are in matching phase. The visitor arranges a five-slot rail, plays seeded hands through a tiny chips-times-mult engine with play-money chips, and watches a phase ring show who is in sync; a fully synchronised rail makes the whole page pulse once and drops a shareable concept card.",
+  "whyNow": "Joker ordering is a well-known puzzle in the genre, and this family adds a timing axis to it. The page is a self-contained sandbox that works offline, so it stays good for weeks.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "balatro-mod-ideas"
+  },
+  "fingerprint": {
+    "category": "modding-games",
+    "mechanic": "toy",
+    "tone": ["playful", "nerdy", "serene"],
+    "tech": ["canvas2d", "dom-ui", "web-animations", "pointer-events", "procedural-audio", "localstorage"],
+    "tags": ["balatro", "joker-mod", "mod-concept", "scoring-engine", "synchronization", "oscillators", "deckbuilder", "sandbox"],
+    "keywords": ["joker-order", "phase-ring", "chips-times-mult", "coupled-oscillators", "seeded-hands", "concept-card", "share-hash"],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Community guides agree on the evaluation rule that makes joker order matter: effects resolve left to right, so flat mult added early is multiplied by later multiplying jokers. Two guides give worked examples (one doubles mult before a +16 and ends at 26 instead of 42). That ordering is the hook the new family bends: besides where a joker sits, when it fires also changes its value. Fireflies are a classic case of many weakly coupled rhythms locking together, modelled by the Kuramoto family of coupled phase oscillators; a 2025 APS meeting abstract tests a Kuramoto variant on swarm data. This gives the Firefly joker a real, recomputable rule. Modding in this scene commonly uses the Steamodded framework with the Lovely injector, which is background only; the page ships no mod files. All scoring numbers in the page are invented for the concept and labelled as such. One forum user reported seeing multipliers apply regardless of order, without a controlled test; the page states the left-to-right rule as the guides' description, not as a developer statement.",
+    "sources": [
+      {
+        "title": "destructoid.com Balatro joker order guide",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones; its example of moving a +12 mult joker ahead of an X3 joker raised the score from about 6,966.",
+        "via": "search",
+        "note": "Found again by the verifier's own search; joker evaluation order and why placement matters.",
+        "verified": true
+      },
+      {
+        "title": "Four Things I Wish I Knew When Starting Balatro",
+        "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+        "date": "",
+        "snippet": "Guide result that places additive mult jokers before multiplying ones, with a worked example of final mult 26 versus 42 depending on order.",
+        "via": "search",
+        "note": "Found again by a claim-based search; independent second statement of the left-to-right rule.",
+        "verified": true
+      },
+      {
+        "title": "Relating the Kuramoto model to data from immobile firefly swarms",
+        "url": "https://meetings-archive.aps.org/smt/2025/mar-m58/7",
+        "date": "2025",
+        "snippet": "APS March Meeting 2025 abstract (Amichay, Prasertkul, Scheiner, Abrams): firefly interactions fit a topological network better than a distance-based one, the order parameter oscillates ('breathing'), and a Kuramoto variant with phase lag and decaying interactions reproduces it.",
+        "via": "search",
+        "note": "Found again by the verifier's search (two mirror URLs of the same abstract); page not opened.",
+        "verified": true
+      },
+      {
+        "title": "fireflies synchronization",
+        "url": "https://abakcus.com/articles/fireflies-synchronization",
+        "date": "",
+        "snippet": "A popular-maths article on firefly flash timing and the Kuramoto model.",
+        "via": "search",
+        "note": "Did not appear in the verifier's searches; unverified and not used for any fact.",
+        "verified": false
+      },
+      {
+        "title": "Steamodded smods repository",
+        "url": "https://github.com/Steamodded/smods",
+        "date": "",
+        "snippet": "Repository of a Lua mod loader and API layer for the game, made to run alongside the LOVE framework.",
+        "via": "search",
+        "note": "Found again by the verifier's search.",
+        "verified": true
+      },
+      {
+        "title": "Mistigris mod listing (mod index)",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/commit/118dcb4eaacdabeb7c129addefb3a67d029433e6/mods/Astrapboy@Mistigris/description.md",
+        "date": "2025",
+        "snippet": "A vanilla-style mod adding 36 jokers and one boss blind; the listing says it needs the Steamodded loader and the Lovely injector.",
+        "via": "search",
+        "note": "Not found again by the verifier; unverified and not used for any fact.",
+        "verified": false
+      },
+      {
+        "title": "Balatro Community College Pack description (mod index)",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/gitea-sync/mods/BKM@BalatroCommunityCollegePack/description.md",
+        "date": "2025",
+        "snippet": "Describes a pack of 25+ new jokers meant to keep the base game's balance and vanilla feel.",
+        "via": "search",
+        "note": "Single source, not found again; dropped from the facts and from the page.",
+        "verified": false
+      },
+      {
+        "title": "Balatro blueprint vs brainstorm guide (two average gamers)",
+        "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+        "date": "",
+        "snippet": "Strategy guide that surfaced for the copy-joker query; the search summary attributed the Blueprint (copies right) and Brainstorm (copies leftmost) rules to guides and forum threads without per-result detail.",
+        "via": "search",
+        "note": "Surfaced again, but per-result attribution was not visible, so it stays unverified.",
+        "verified": false
+      },
+      {
+        "title": "ride my kuramotocycle (Brockmann and Strogatz explorable)",
+        "url": "https://complexity-explorables.org/explorables/ride-my-kuramotocycle",
+        "date": "",
+        "snippet": "Interactive explorable describing the Kuramoto model as a model for phase-coupled oscillators whose interaction term yields full or partial synchrony.",
+        "via": "search",
+        "note": "Seen in the verifier's Kuramoto search; page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Morris Huang (Georgia Tech nonlinear dynamics lab study)",
+        "url": "https://nldlab.gatech.edu/w/images/0/0f/Morris_Huang.pdf",
+        "date": "",
+        "snippet": "Study extending a Kuramoto-derived firefly model to examine how sight distance affects synchronisation.",
+        "via": "search",
+        "note": "Seen in the verifier's Kuramoto search; independent of the APS abstract; page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Nexus Mods Balatro mod page 887",
+        "url": "https://www.nexusmods.com/balatro/mods/887",
+        "date": "",
+        "snippet": "Mod page whose requirements list the Lovely injector and Steamodded.",
+        "via": "search",
+        "note": "Seen in the verifier's loader search; page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Nexus Mods Balatro mod page 909",
+        "url": "https://www.nexusmods.com/balatro/mods/909",
+        "date": "",
+        "snippet": "A second mod page that lists the same two prerequisites, Lovely and Steamodded.",
+        "via": "search",
+        "note": "Seen in the verifier's loader search; independent of page 887; page not opened.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, two independent community guides (Destructoid and Prima Games) state that joker effects resolve left to right, so additive mult belongs before multiplying mult.",
+        "sourceIndex": 0,
+        "alsoIn": [1],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per Prima Games, a doubling joker placed before a +16 mult joker gives a final mult of 26, against 42 with the +16 first; the Destructoid example shows the same direction of effect.",
+        "sourceIndex": 1,
+        "alsoIn": [0],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, the Kuramoto model is described by several independent results as a model of phase-coupled oscillators (each with its own natural frequency plus a coupling term) that is applied to firefly flash synchrony without a leader.",
+        "sourceIndex": 8,
+        "alsoIn": [9],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per a 2025 APS March Meeting abstract, firefly interactions in a stationary swarm fit a network-style connectivity better than a distance-based one, and the swarm's order parameter oscillates over time.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, Balatro content mods commonly list both the Lovely injector and the Steamodded framework as requirements (two Nexus Mods pages agree); Steamodded is a Lua loader and API layer for the LOVE-based game.",
+        "sourceIndex": 10,
+        "alsoIn": [11, 4],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Blueprint and Brainstorm neighbour-copy jokers",
+      "Kuramoto firefly synchronisation demos",
+      "Newton's cradle and double-pendulum desk toys",
+      "Steamodded joker packs",
+      "tabletop deck-builder concept cards"
+    ]
+  },
+  "design": {
+    "coreLoop": "Arrange five joker slots, play a seeded hand, read the phase ring and the line-by-line score cascade, then rearrange or retune coupling to chase a target score. Each played hand advances every oscillator one step, so the same rail scores differently on hand one than on hand four, and the best order changes with the beat. The second minute teaches that sync is worth more than raw power; the tenth minute is hunting the rail that locks all three Fireflies on the final hand.",
+    "sophisticationHooks": [
+      "Real discrete Kuramoto update for Firefly phases: each hand, a firefly's phase advances at its own rate and is pulled toward neighbours; coupling strength is a knob, and an order parameter meter shows how in-sync the rail is.",
+      "A tiny but honest scoring engine: seeded 52-card deck, eight hand types, chips times mult, left-to-right joker resolution with a step-by-step cascade animation and a log that explains every number.",
+      "Phase scope: a canvas ring shows each joker's phase as a dot on a circle, pendulum swing as an arc, handshake links as glowing bridges; a locked rail triggers a restrained synchronised pulse.",
+      "Shareable concept card: rail order, seed and coupling are encoded in the URL hash and rendered as a joker-style card with invented art drawn in SVG."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: engine (seeded deck, hand detection, chips times mult, left-to-right resolution), three new joker behaviours (Pendulum, Firefly, Handshake) plus 3 plain filler jokers, five-slot rail with drag and keyboard reordering, phase ring canvas with order-parameter meter, score cascade log, two or three challenge targets with par, URL-hash state, muted-by-default WebAudio ticks, short about panel listing only verified sources. Cut: shop, consumables, editions, a full run, Blueprint and Brainstorm behaviour, saving mods as real Lua files. Playtest note: tune natural frequencies and coupling so a three-Firefly lock is reachable but not trivial.",
+    "risks": [
+      "Mechanic needs to be explainable in one screen; mitigation: a 20-second guided first hand and plain-language tooltips.",
+      "Scoring numbers are invented and not from the real game; the page labels them as concept values, says it is an unofficial fan concept, and uses no game art, fonts, logo or audio of its own. Chips are play money only, labelled as simulated.",
+      "Firefly coupling needs to stay deterministic for sharing; mitigation: fixed-step phase update seeded by the hash.",
+      "Blueprint and Brainstorm behaviour is unconfirmed (attribution not visible in search); the page omits it or shows it only as 'as of 2026-10-10, per community guides'.",
+      "One forum user reported multipliers applying regardless of order, without a controlled test; the page presents the left-to-right rule as 'as of 2026-10-10, per Destructoid and Prima Games' rather than as developer fact.",
+      "The Community College Pack and Mistigris listings are unverified and are left out of the page; the claim that no vanilla joker uses rhythm was not checked and is left out.",
+      "Dense motion could hurt reduced-motion users; mitigation: a static phase table replaces the animated ring.",
+      "Kuramoto sync needs coupling above a threshold; tuning is a playtest item so the lock goal stays reachable."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The left-to-right ordering hook and the Kuramoto firefly basis were each found again by my own claim-based searches, with independent results agreeing; the Blueprint, Community College Pack, Mistigris and abakcus sources could not be confirmed and were dropped from the facts. Scope is trimmed to three new jokers plus three fillers so it fits a morning with QA slack."
+  }
+}

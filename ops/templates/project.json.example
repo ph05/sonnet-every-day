@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "date": "2026-10-09",
+  "slug": "example-project",
+  "title": "Example Project",
+  "tagline": "One line that makes someone want to try it (120 characters at most).",
+  "description": "One to three sentences on what the page is and what you can do with it. Plain words, no hype.",
+  "tier": 1,
+  "fingerprint": {
+    "category": "weird-experimental",
+    "mechanic": "toy",
+    "tone": ["playful", "nerdy"],
+    "tech": ["canvas2d", "pointer-events"],
+    "tags": ["example", "template", "starter"],
+    "keywords": ["placeholder", "shell", "reference"],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": ["#0e1016", "#4b32d6", "#a99cff", "#f6f5f1"],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    { "title": "Name of a page that was actually consulted", "url": "https://example.com/source" }
+  ],
+  "makingOf": "A short paragraph: how it works, what was researched, which design choices mattered. Cite only what was really read.",
+  "stats": { "files": 0, "bytes": 0, "ownLoc": 0 },
+  "credits": "Built by the Sonnet Every Day team"
+}

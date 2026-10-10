@@ -1,0 +1,180 @@
+{
+  "id": "pulse-r1-2",
+  "title": "You Are Not Random",
+  "pitch": "The visitor taps heads or tails as randomly as they can while a small oracle tries to guess each next tap, and its score climbs above the fifty percent chance line. Then the page flips its own fair coin for the oracle and the score collapses to chance, so the visitor loses the argument that they could imitate a coin. A forgery lab lets them write a fake two-hundred-flip log and watch run-length bars, longest-streak odds and an auditor's verdict expose it against ten thousand simulated honest logs.",
+  "whyNow": "Timeless: the surprise that people cannot fake a coin never goes stale, and it ends in a screenshot-friendly verdict card.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "card-dice-odds"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "nerdy",
+      "competitive"
+    ],
+    "tech": [
+      "dom-ui",
+      "canvas2d",
+      "worker",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "randomness",
+      "coin-flip",
+      "prediction",
+      "runs",
+      "streaks",
+      "human-bias",
+      "forgery",
+      "counterintuitive"
+    ],
+    "keywords": [
+      "fake-randomness",
+      "longest-run",
+      "oracle",
+      "n-gram",
+      "run-length",
+      "streak-odds",
+      "auditor",
+      "binomial-band"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Two threads make this real. First, a well-known classroom demonstration has a small program guess a person's next binary key press from their last few presses; reports say it does clearly better than chance on people, but near chance on a computer random source (anecdotal, not a controlled study). Second, a Hungarian teacher's classroom exercise separates real from invented 200-flip logs, because real logs almost always hold a long run and fakers avoid them. The scout computed on 2026-10-10 by exact dynamic programming that 200 fair flips contain a run of at least 5 with probability 99.93% and of at least 6 with 96.5%, which agrees with a published 99.9% figure for five. Sources disagree on whether the teacher's cutoff was four or six, so the page computes its own thresholds.",
+    "sources": [
+      {
+        "title": "the Aaronson Oracle",
+        "url": "https://notes.billmill.org/link_blog/2023/05/the_Aaronson_Oracle.html",
+        "date": "2023-05",
+        "snippet": "A link-blog note about a small program that guesses which of two keys a person presses next, using the last five presses, and that does well on humans.",
+        "via": "search",
+        "note": "Establishes the predictor mechanic and the anecdotal accuracy",
+        "verified": true
+      },
+      {
+        "title": "The Magnet 082",
+        "url": "https://themagnet.substack.com/p/the-magnet-082-take-this-online-test",
+        "date": "",
+        "snippet": "A newsletter author tried a left or right arrow version, reporting about 71 percent correct after a couple hundred presses and about 44 percent on a generator-made random sequence.",
+        "via": "search",
+        "note": "Independent anecdote of the same effect and of the random-source control",
+        "verified": true
+      },
+      {
+        "title": "Oraculo de Aaronson: que es este curioso algoritmo",
+        "url": "https://psicologiaymente.com/miscelanea/oraculo-aaronson",
+        "date": "",
+        "snippet": "Spanish-language explainer saying the prediction rate rises above 60 percent as the key sequence grows.",
+        "via": "search",
+        "note": "Third description of the predictor",
+        "verified": true
+      },
+      {
+        "title": "schooled by randomness",
+        "url": "https://kucharski.substack.com/p/schooled-by-randomness",
+        "date": "",
+        "snippet": "Essay on the classroom exercise where one group flips a coin 200 times and another invents a sequence; says about 99.9 percent of real 200-flip sequences contain five identical results in a row.",
+        "via": "search",
+        "note": "Exercise plus a published run-length probability",
+        "verified": true
+      },
+      {
+        "title": "Electronic Proceedings of the Thirteenth Annual International Conference on Technology in Collegiate Mathematics",
+        "url": "https://www.math.odu.edu/~bogacki/epictcm/i/13/P002.html",
+        "date": "",
+        "snippet": "A conference paper on telling real from fake coin-flip sequences by counting the longest run; real 200-flip sequences nearly always have a run of at least six, fakers rarely do.",
+        "via": "search",
+        "note": "Independent write-up of the exercise (cutoff six)",
+        "verified": true
+      },
+      {
+        "title": "unideb.hu (teaching mathematics and computer science article)",
+        "url": "https://ojs.lib.unideb.hu/tmcs/article/download/14899/12801/33867",
+        "date": "",
+        "snippet": "A Hungarian journal article on the same example, saying children inventing a sequence rarely wrote the same symbol more than four times in a row.",
+        "via": "search",
+        "note": "Third write-up, cutoff stated as four, hence the disagreement",
+        "verified": true
+      },
+      {
+        "title": "Why Are People Bad At Randomness",
+        "url": "https://user.informatik.uni-bremen.de/~zach/software/ArtSaver/Why_Are_People_Bad_At_Randomness.pdf",
+        "date": "",
+        "snippet": "A document in a result set on human random generation, which broadly reports too much alternation and too few repeats; the scout did not see which exact page said what.",
+        "via": "search",
+        "note": "Background only; attribution of the alternation finding not confirmed",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, a small program that learns from a person's last five key presses is reported to predict their next press at roughly 70 percent (anecdotal), well above the 50 percent chance line.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "One newsletter author reported about 71 percent after a couple hundred presses and about 44 percent when the same program saw a generator-made random sequence; this rests on a single report.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A classroom exercise credited to a Hungarian teacher separates real from invented 200-flip logs because real logs almost always hold a long run that fakers avoid; sources give the cutoff as four, five or six, so the page shows the sourced idea and computes its own numbers.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Scout's own exact calculation on 2026-10-10: in 200 fair flips the chance of at least one run of 5 or more is 99.93 percent, of 6 or more 96.5 percent, of 8 or more 54 percent; the 99.93 percent figure agrees with the roughly 99.9 percent quoted for five.",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported, unconfirmed as of 2026-10-10: people asked for random binary sequences alternate too often and repeat too rarely, per a result set on human random generation.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "the Aaronson Oracle",
+      "classroom real-or-fake coin log exercise",
+      "hot hand debates",
+      "Turing-test style games",
+      "mind-reader card tricks"
+    ]
+  },
+  "design": {
+    "coreLoop": "Round one: the visitor taps H or T about sixty times while the oracle's guess for each tap is revealed after it lands, with a running score against a chance band. Round two: the same oracle watches a fair coin flipped by the page and stays inside the band, which is the reveal. Round three: the forgery lab, where a hand-written fake log is graded by run-length, longest-streak and switch-rate tests against a worker-made honest crowd; replays stay interesting because the visitor can try tricks (digits of pi, glancing at a clock) and see which ones the oracle or auditor sees through.",
+    "sophisticationHooks": [
+      "An online-learning oracle blending several context lengths (one to five previous taps) with a visible 'what it thinks' strip showing its current pattern memory",
+      "Exact longest-run probabilities by dynamic programming, plotted beside the visitor's own streak, with a ten-thousand-log worker crowd for comparison",
+      "A forgery lab auditor with three transparent tests and a combined verdict card, shareable through the URL hash as a sequence fingerprint",
+      "A trick gallery of ten bundled strategies (alternate, mirror the last two, use a hash of the clock) the oracle is run against, with their scores"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: tap game with oracle, chance band and fair-coin control round, forgery lab with run-length histogram and three tests, worker crowd, trick gallery, hash state, keyboard (H, T keys) and touch, light and dark, reduced motion, about panel. Cut: network play, accounts, global leaderboards, sound.",
+    "risks": [
+      "The cutoff the teacher used is sourced three different ways; the page must state only its own computed probabilities and label the classroom story as reported.",
+      "The oracle's reported accuracy is anecdotal; the page measures the visitor's own score and does not promise a number.",
+      "The alternation-bias finding is unverified; present it as 'as of 2026-10-10, per search results' or drop it.",
+      "Opening prior for the oracle must be a hand-set, labelled assumption rather than presented as measured human data.",
+      "Danger of dull play if sessions are short; mitigate with the trick gallery and the verdict card."
+    ]
+  },
+  "durable": true
+}

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Thumb Ready</title>
+<style>html, body { margin: 0; height: 100%; } body { background: #222; color: #fff; font: 700 40px system-ui; }</style>
+</head>
+<body>
+<main><h1 id="h" style="margin:0;padding:24px;font-size:1em;overflow-wrap:anywhere">Warming up</h1></main>
+<script>
+window.__sedThumbReady = new Promise((resolve) => {
+  setTimeout(() => {
+    document.body.style.background = '#0a7d3a';
+    document.getElementById('h').textContent = 'Ready';
+    resolve();
+  }, 1500);
+});
+</script>
+</body>
+</html>

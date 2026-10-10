@@ -1,0 +1,5 @@
+node_modules/
+*.tmp
+.DS_Store
+work/*/qa/shots/
+work/*/tmp/

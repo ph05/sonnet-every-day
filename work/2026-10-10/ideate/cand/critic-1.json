@@ -1,0 +1,162 @@
+{
+  "id": "critic-1",
+  "title": "Starter Pack Syntax",
+  "pitch": "The visitor is dealt a subject card for a thing rather than a person (a rainy Monday, a rink snack bar at the second intermission, a first week with a new roguelike) and fills a cobblestone-style mosaic of six tiles from a tray of hand-drawn vector items. A live grammar linter labels every tile with its job (the unmistakable anchor, the niche specific, the filler, the ironic turn) and scores the pack on balance, recognisability and sting. A reverse mode shows a finished pack and asks which subject it was; any pack exports as a PNG and as a shareable link.",
+  "whyNow": "The starter pack is a Reddit-born format that has stayed active for years, so the grammar is timeless; the page also takes a seasonal subject deck keyed to the run date. I could not verify a single format that dominates this particular week (trend lists disagree), so the hook is the structure, not a news item.",
+  "origin": {
+    "agent": "critic",
+    "lens": "meme-anatomy"
+  },
+  "fingerprint": {
+    "category": "pop-culture",
+    "mechanic": "generator",
+    "tone": [
+      "playful",
+      "nerdy",
+      "analytical"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "canvas2d",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "meme-format",
+      "starter-pack",
+      "grammar",
+      "reddit-born",
+      "mosaic",
+      "linter",
+      "daily-subject",
+      "vector-icons"
+    ],
+    "keywords": [
+      "starter-pack",
+      "meme-anatomy",
+      "slots",
+      "anchor-item",
+      "ironic-turn",
+      "cobblestone-grid",
+      "png-export",
+      "shareable-hash"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "The starter pack is a well-documented, Reddit-centred collage format: a plain title plus a handful of images that together stand for a stereotype or situation. Wikipedia and Know Your Meme both trace it to a late September 2014 Twitter post, and the community later split off derivative templates where one image is swapped. Linguists have started treating memes as having rules of composition (labelled-object templates, multimodal grammar), which supports a page that makes the slots and roles explicit. Every subject in the page is a thing or situation, never a group of people or a private person, and all art is drawn in code. Trend lists for early October 2026 come from marketing blogs and do not agree on one dominant format, so no news claim is made.",
+    "sources": [
+      {
+        "title": "Starter pack (meme)",
+        "url": "https://en.wikipedia.org/wiki/Starter_pack_(meme)",
+        "date": "",
+        "snippet": "Describes the starter pack as a collage of several images under a plain title, traces it to a 27 September 2014 tweet, and says the format now lives mostly on Reddit.",
+        "via": "search",
+        "note": "Origin date and layout description.",
+        "verified": true
+      },
+      {
+        "title": "Starter Packs (Know Your Meme entry)",
+        "url": "https://knowyourmeme.com//memes//starter-packs",
+        "date": "",
+        "snippet": "Entry ties the first starter pack to a tweet timestamped 27 Sep 2014 and says dedicated curation accounts followed in mid-November 2014.",
+        "via": "search",
+        "note": "Independent confirmation of the 2014 origin date.",
+        "verified": true
+      },
+      {
+        "title": "Loyal But Dangerous (Know Your Meme)",
+        "url": "https://amp.knowyourmeme.com/memes/loyal-but-dangerous",
+        "date": "",
+        "snippet": "Says this spinoff first appeared on the starter pack subreddit in May 2021 and that later versions often swap out one image of the macro.",
+        "via": "search",
+        "note": "Shows a format branching by swapping one slot.",
+        "verified": false
+      },
+      {
+        "title": "Such Syntax, Much Meme: A Linguistic Analysis of Memes and Their Structural Syntax",
+        "url": "https://meme-syntax.obdurodon.org/Distracted_Boyfriend.xhtml",
+        "date": "",
+        "snippet": "Student project analysing the structure of text memes; calls the labelled-figures layout an Object Labeling template.",
+        "via": "search",
+        "note": "Memes can be analysed as structure with named slots.",
+        "verified": true
+      },
+      {
+        "title": "The Language of Memes (Cambridge University Press)",
+        "url": "https://resolve.cambridge.org/core/books/language-of-memes/A2842153D9F8B15D14CD3C318E656741",
+        "date": "",
+        "snippet": "Book listing arguing that memes are multimodal artifacts governed by rules of composition and interpretation.",
+        "via": "search",
+        "note": "Second independent source that memes have compositional rules.",
+        "verified": true
+      },
+      {
+        "title": "Top Trending Memes on Social Media (October 2026)",
+        "url": "https://napoleoncat.com/blog/trending-memes/",
+        "date": "",
+        "snippet": "Marketing blog listing early-October 2026 formats; commercial, mixed dates, no single agreed winner.",
+        "via": "search",
+        "note": "Context only; used to avoid claiming a dominant format this week.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The starter pack meme is traced by Wikipedia and Know Your Meme to a Twitter post dated 27 September 2014.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Researchers and a student project describe memes as structured artifacts with composition rules and labelled-slot templates, so slot roles can be named explicitly.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per Know Your Meme, the Loyal But Dangerous spinoff began on the starter pack subreddit in May 2021 and later versions often replace one image (single source, shown as reported).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, trend lists from marketing blogs disagree on which meme format dominates early October 2026 (single commercial source, not presented as fact).",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "r/starterpacks",
+      "Loyal But Dangerous",
+      "Object Labeling meme templates",
+      "Mad-Libs",
+      "Wordle-style daily subject"
+    ]
+  },
+  "design": {
+    "coreLoop": "Draw a subject card, fill six tiles from a twelve-item tray, read the linter's verdict on each tile's role, swap items to fix balance and sting, then lock the pack. Repetition stays interesting because each subject has its own hand-authored item matrix (typicality plus role tags), the linter explains why a swap helps, and reverse mode flips the skill from composing to decoding.",
+    "sophisticationHooks": [
+      "Grammar linter: every item carries per-subject typicality 0 to 3 and a role tag (anchor, specific, filler, turn); rules flag two competing anchors, no turn, or all filler, and name the fix",
+      "Reverse mode: a finished pack is shown and the visitor picks the subject from four; distractor subjects are chosen to overlap on filler items so the specifics decide",
+      "Cobblestone mosaic layout: one large anchor tile and five irregular tiles packed with a mortar gap, rendered in SVG and exported to PNG through canvas",
+      "Daily subject seeded from the run date, 18 subjects, shareable URL hash holding subject plus six item ids, so a friend can open your exact pack"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: 18 subject cards, about 70 drawn SVG items (simple geometric glyphs), the per-subject matrix, linter rules and scoring, build mode, reverse mode, PNG export, hash state, light and dark, reduced motion, keyboard placement (arrow plus enter), about/making-of panel listing only verified sources. Cut: free-text item entry, user-uploaded images, any real photo, multiplayer.",
+    "risks": [
+      "Hand-authoring 18 by 70 typicality values is the main time sink; mitigate with tag-derived defaults and hand-tuning only the top three items per subject",
+      "Stereotype drift: subjects are restricted to things and situations, never groups or named people, and the about panel states the rule",
+      "The origin facts rest on Wikipedia and Know Your Meme, which may share lineage; the page presents them as 'per Wikipedia and Know Your Meme' and makes no claim about this week's trends",
+      "Scoring can feel arbitrary; the linter must show its reasons, and the score is labelled as a game score, not a verdict on humour"
+    ]
+  },
+  "durable": true
+}

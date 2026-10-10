@@ -1,0 +1,247 @@
+{
+  "id": "critic-r1-1",
+  "title": "Meteor Tally Night",
+  "pitch": "The visitor lies back in a procedural night sky and counts meteors the way real visual observers do: tap or press Space for each streak, or plot its start and end so the page can check whether the trail points back to the shower's radiant. The sky is driven by a real rate model (radiant altitude, moonlight, light pollution, trees blocking the view), so the choice of observing spot matters: an apple orchard hides part of the sky, a bare granite ridge shows all of it. At dawn a thermal-paper observing receipt prints with the visitor's count, the estimated true zenithal rate, and how many faint ones slipped by.",
+  "whyNow": "The Orionids peak on the night of Oct 21-22, 2026 under a bright waxing gibbous moon, while today (Oct 10) is a new moon with dark skies, so the page can show the moon-versus-meteor tradeoff both ways. It keeps working for any date because the moon and radiant are computed.",
+  "origin": {
+    "agent": "critic",
+    "lens": "season-and-sky"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "game",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "pointer-events",
+      "webaudio",
+      "localstorage"
+    ],
+    "tags": [
+      "meteor-shower",
+      "orionids",
+      "night-sky",
+      "observing",
+      "moon-phase",
+      "zhr",
+      "citizen-science",
+      "autumn"
+    ],
+    "keywords": [
+      "radiant",
+      "limiting-magnitude",
+      "bortle",
+      "population-index",
+      "visual-counting",
+      "plotting",
+      "dark-adaptation",
+      "receipt",
+      "hash-state"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Several independent guides agree the 2026 Orionids peak on the night of Oct 21-22 with the full moon on Oct 26, so the moon is roughly 77-80% lit and sets around 3 a.m., leaving a dark window before dawn. The shower comes from debris of Halley's comet, radiates from a point north of Betelgeuse in Orion, and arrives at roughly 66 km/s with a zenithal rate near 20 per hour. The standard observer correction chain (radiant altitude via sin(h), limiting magnitude via population index to the power 6.5 minus LM, obstructed-field factor) is documented in encyclopedic and paper sources, and Bortle classes map to naked-eye limiting magnitudes. Those real formulas become the game engine: the sky is a model the player learns to read, not random decoration. A population index near 2.5 appeared in only one result, so it is an assumed constant, labelled as such.",
+    "sources": [
+      {
+        "title": "Orionid meteor shower 2026: All you need to know",
+        "url": "https://earthsky.org/clusters-nebulae-galaxies/everything-you-need-to-know-orionid-meteor-shower/",
+        "date": "",
+        "snippet": "Predicted 2026 maximum around 18 UTC on Oct 21, peak night Oct 21-22, citing the RASC handbook; gives the full moon at 04:12 UTC on Oct 26.",
+        "via": "search",
+        "note": "Peak timing and full-moon time for 2026",
+        "verified": true
+      },
+      {
+        "title": "Orionid Meteor Shower 2026: Peak Date, Halley's Comet Origin, and Viewing Tips",
+        "url": "https://www.farmersalmanac.com/orionid-meteor-shower",
+        "date": "",
+        "snippet": "Says the moon sets around 3 a.m. local on peak nights so the best window runs from moonset to dawn; quotes a rate range of about 15 to 25 per hour.",
+        "via": "search",
+        "note": "Moonset window and rate range",
+        "verified": true
+      },
+      {
+        "title": "Orionid meteor shower 2026: When and how to watch",
+        "url": "https://www.nhm.ac.uk/discover/meteor-shower-lyrids-perseids-geminids-leonids-orionids.html",
+        "date": "",
+        "snippet": "Notes the Orionid peak falls only a few days before a full moon this year.",
+        "via": "search",
+        "note": "Independent confirmation of the moon problem",
+        "verified": true
+      },
+      {
+        "title": "Your Moon Guide for October 2026",
+        "url": "https://www.timeanddate.com/news/astronomy/moon-october-2026",
+        "date": "",
+        "snippet": "New moon on Oct 10, 2026 at 15:50 UTC and the Hunter's Moon full moon on Oct 26; the 11th full moon of 2026.",
+        "via": "search",
+        "note": "Moon phase test values for the page's own moon routine",
+        "verified": true
+      },
+      {
+        "title": "October Full Moon 2026 (Hunter's Moon): Date, Time & Meaning",
+        "url": "https://starwalk.space/en/news/full-moon-october",
+        "date": "",
+        "snippet": "Agrees on the Oct 10 new moon and the Oct 26 full moon, giving the new moon as 11:50 AM EDT.",
+        "via": "search",
+        "note": "Second independent moon-phase source",
+        "verified": true
+      },
+      {
+        "title": "Zenithal hourly rate",
+        "url": "https://en.wikipedia.org/wiki/Zenithal_hourly_rate",
+        "date": "",
+        "snippet": "Defines ZHR as the hourly count a single observer would see with the radiant overhead, limiting magnitude 6.5 and an unobstructed sky.",
+        "via": "search",
+        "note": "Definition of the rate the game estimates",
+        "verified": true
+      },
+      {
+        "title": "Increasing Geminid meteor shower activity",
+        "url": "https://arxiv.org/pdf/1712.01516",
+        "date": "",
+        "snippet": "Uses the correction ZHR = c_F * N * r^(6.5 - LM) / (T * sin h_R) on visual observation data, with c_F the field-obstruction factor.",
+        "via": "search",
+        "note": "The correction formula the receipt computes",
+        "verified": true
+      },
+      {
+        "title": "Orionids (NASA Solar System Exploration)",
+        "url": "https://solarsystem.nasa.gov/planets/meteors/orionids",
+        "date": "",
+        "snippet": "Radiant lies just north of Betelgeuse in Orion; meteors travel about 66 km/s; roughly 23 per hour in moonless skies.",
+        "via": "search",
+        "note": "Radiant position, speed and rate from the space agency",
+        "verified": true
+      },
+      {
+        "title": "Orionids",
+        "url": "https://en.wikipedia.org/wiki/Orionids",
+        "date": "",
+        "snippet": "Parent body is comet 1P/Halley; speed listed near 66.9 km/s; zenithal hourly rate listed as 20.",
+        "via": "search",
+        "note": "Parent body and ZHR agree with the other sources",
+        "verified": true
+      },
+      {
+        "title": "The Bortle Scale",
+        "url": "https://skynews.ca/bortle-scale/",
+        "date": "",
+        "snippet": "Table of Bortle sky classes with naked-eye limiting magnitudes, roughly 6.1-6.5 for class 4 down to about 4.0 or less for class 9.",
+        "via": "search",
+        "note": "Maps sky darkness to limiting magnitude",
+        "verified": true
+      },
+      {
+        "title": "The Bortle Scale Explained",
+        "url": "https://starlust.org/the-bortle-scale-explained",
+        "date": "",
+        "snippet": "Gives matching limiting magnitudes per class and warns the values depend on the observer's eyesight.",
+        "via": "search",
+        "note": "Second source for the Bortle mapping and its caveat",
+        "verified": true
+      },
+      {
+        "title": "Orionid Meteor Shower 2026: Peak Oct 21-22, Best Time, Moon",
+        "url": "https://www.telescopeadvisor.com/orionid-meteor-shower-2026-telescope-guide/",
+        "date": "",
+        "snippet": "Title and summary place the 2026 peak on Oct 21-22 and discuss the moonlight problem.",
+        "via": "search",
+        "note": "Independent agreement on peak dates and moon",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026 Orionids are predicted to peak on the night of Oct 21-22, with the maximum around 18 UTC on Oct 21 (per the RASC handbook as cited by EarthSky).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "On the Orionid peak nights of 2026 the moon is a waxing gibbous roughly 77-80% lit and sets around 3 a.m. local time, leaving a dark window before dawn.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2,
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "New moon is on 2026-10-10 at 15:50 UTC and the full Hunter's Moon on 2026-10-26 at about 04:12 UTC.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Orionid zenithal hourly rate is about 20 per hour (reported as 20 to about 23 depending on source), from debris of comet 1P/Halley.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          7,
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Orionid radiant lies just north of Betelgeuse in Orion and the meteors enter at roughly 66 km/s.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Visual rates are corrected to a ZHR with the factor r^(6.5 - LM) for limiting magnitude, a divide by sin of radiant altitude, and 1/(1-k) for an obstructed fraction k of the field.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Bortle sky classes map to naked-eye limiting magnitudes, for example class 4 about 6.1-6.5, class 7 about 5.0, class 9 about 4.0 or less; the values depend on the observer.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "visual meteor counting sessions run by amateur astronomy groups",
+      "planisphere and star-chart toys",
+      "thermal-paper till receipts",
+      "slow observational idle games"
+    ]
+  },
+  "design": {
+    "coreLoop": "A compressed night (about one real minute per sky hour) plays out under a procedural sky. Meteors arrive as a Poisson stream whose rate follows the shower's ZHR, the radiant's altitude, the sky's limiting magnitude and the fraction of sky blocked by the chosen spot; each meteor has a brightness drawn from a population-index distribution, so the faint ones are genuinely hard to catch. The visitor counts by tapping or pressing Space, and in plot mode marks start and end so trails that point back to the radiant are scored as shower members and the rest as sporadics. The night ends with a receipt that compares the visitor's tally against the hidden truth log and back-computes an estimated ZHR. Repeating with a different spot, date or moon teaches why the numbers move; the tenth night is about technique: scanning away from the moon, resting the eyes, and plotting accurately.",
+    "sophisticationHooks": [
+      "Real rate engine: ZHR times sin(radiant altitude) times r^(LM-6.5) times the unobstructed fraction, plus a sporadic background, with radiant altitude computed from latitude, date and time",
+      "Moon module (phase, altitude and a moonlight term in the limiting magnitude) self-checked against the sourced new moon of 2026-10-10 15:50 UTC and full moon of 2026-10-26 about 04:12 UTC",
+      "Plot-and-classify skill layer: backward-extended trails that hit the radiant box score as shower meteors, with an accuracy grade",
+      "Observing spots as terrain silhouettes (orchard rows, granite ridge, rooftop, field) with different obstruction and light-dome values, plus a procedural thermal receipt (WebAudio printer chirps, tear-off animation) and a URL hash that carries seed, date, spot and result for a friend to compare"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: canvas sky with a hand-made bright-star set (about 150 stars plus Orion), Orionids model with real parameters, 2 to 3 further showers marked as approximate hand-made data, moon routine, 4 observing spots, count and plot modes, receipt renderer, light/dark (day-sky red-light mode vs paper mode), reduced-motion static replay, keyboard and touch, about panel, hash state. Cut: geolocation, live weather, planets, satellite passes, accounts, leaderboards.",
+    "risks": [
+      "Only the Orionid parameters are verified; any other shower's dates and rates are hand-made approximations and must be labelled as such on the page, or cut.",
+      "The population index near 2.5 was seen in one result only (unverified); the page labels it an assumed constant.",
+      "Sunrise, moon position and radiant altitude come from low-precision hand-coded formulas: show them as approximate and keep the moon self-check against the sourced phase times as a test.",
+      "Counting meteors can feel passive; the plot-and-classify mode, spot choice and receipt feedback must land in the first two minutes or the loop is thin.",
+      "Not a forecast or observing advice: the page is a simulation with simulated meteors, labelled as such, and the real Orionid facts are shown as 'as of 2026-10-10, per' the listed sources."
+    ]
+  },
+  "durable": true
+}

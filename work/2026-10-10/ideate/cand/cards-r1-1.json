@@ -1,0 +1,217 @@
+{
+  "id": "cards-r1-1",
+  "title": "Crock of Spots",
+  "pitch": "A glowing crock of two simulated chemicals. The visitor picks feed and kill rates from a small atlas and paints them onto the dish with a brush, so spots, worms and coral grow side by side and fight at their borders. A blacklight toggle swaps daylight pigments for fluorescent ones, a spill button drops a seeded accident into the culture, and every dish freezes into a poster with a shareable seed code.",
+  "whyNow": "Timeless: reaction-diffusion is the poster-worthy corner of procedural art, and no generative piece has shipped yet. The spatially painted parameter field is the twist that gives a reason to keep turning the knob.",
+  "origin": {
+    "agent": "cards",
+    "lens": "generative-art"
+  },
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "toy",
+    "tone": [
+      "serene",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "webgl",
+      "shaders",
+      "pointer-events"
+    ],
+    "tags": [
+      "reaction-diffusion",
+      "gray-scott",
+      "turing-patterns",
+      "morphogenesis",
+      "poster",
+      "seeded",
+      "blacklight",
+      "parameter-map"
+    ],
+    "keywords": [
+      "feed-rate",
+      "kill-rate",
+      "spots",
+      "stripes",
+      "coral",
+      "petri-dish",
+      "shareable-seed",
+      "field-guide"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "The Gray-Scott model has two chemicals on a grid: A is added at a feed rate f and B is removed at a kill rate k, and small changes to f and k give very different patterns (spots, worms, coral, mazes). The map of those patterns over (f,k) was charted by Pearson in 1993 and extended by Munafo, which makes a clickable atlas natural. Explorers exist (one browser tool lets you pick f,k from a map), but none that paint different f,k onto different regions of one dish, which is the new angle. The update step is cheap (explicit Euler, 3x3 Laplacian with weights -1, 0.2, 0.05), so a deterministic CPU worker is enough; seeds that reproduce output exactly are standard practice in generative art platforms.",
+    "sources": [
+      {
+        "title": "reaction-diffusion tutorial (Karl Sims)",
+        "url": "https://www.karlsims.com/rd.html",
+        "date": "",
+        "snippet": "Describes chemical A fed at a rate and B removed at a rate; small changes to the two numbers give a wide range of results. Typical values near f=0.055, k=0.062, DA=1, DB=0.5.",
+        "via": "search",
+        "note": "Model definition and typical parameters",
+        "verified": true
+      },
+      {
+        "title": "49 reaction diffusion patterns (GameDev.net)",
+        "url": "https://gamedev.net/shaderlab/49-reaction-diffusion-patterns/",
+        "date": "",
+        "snippet": "A shader write-up of the model producing organic spots, stripes and coral, using a wrapped grid, double buffer and a weighted 3x3 Laplacian.",
+        "via": "search",
+        "note": "Independent confirmation of pattern variety and of the Laplacian weights",
+        "verified": true
+      },
+      {
+        "title": "Morphe (itch.io page)",
+        "url": "https://matthodges.itch.io/morphe",
+        "date": "",
+        "snippet": "A generator page listing spots, worms, coral and maze-like patterns from the same feed and kill mechanism.",
+        "via": "search",
+        "note": "Third independent listing of pattern families",
+        "verified": true
+      },
+      {
+        "title": "pearson classes (mrob.com)",
+        "url": "https://mrob.com/pub/comp/xmorphia/pearson-classes.html",
+        "date": "",
+        "snippet": "Munafo's page extends Pearson's Greek-letter classification of Gray-Scott patterns; notes Pearson used one starting pattern and missed some types.",
+        "via": "search",
+        "note": "Parameter-space atlas exists and was extended",
+        "verified": true
+      },
+      {
+        "title": "Exploring complex pattern formation with convolutional neural networks",
+        "url": "https://arxiv.org/pdf/2110.07306",
+        "date": "",
+        "snippet": "A 2021 paper using the same model says pattern classes run from alpha to nu, plus two uniform steady states, following Pearson's 1993 map.",
+        "via": "search",
+        "note": "Independent confirmation of the Pearson classification",
+        "verified": true
+      },
+      {
+        "title": "How the leopard got its spots: Revisiting Turing's Chemical Basis of Morphogenesis (Springer Nature Communities)",
+        "url": "https://communities.springernature.com/posts/how-the-leopard-got-its-spots-revisiting-turing-s-chemical-basis-of-morphogenesis",
+        "date": "",
+        "snippet": "Turing's 1952 paper proposed that interacting reacting and diffusing chemicals could self-organise into stripes and spots from a uniform start.",
+        "via": "search",
+        "note": "Historical frame for the about panel",
+        "verified": true
+      },
+      {
+        "title": "The Mathematics of Pattern Formation (Maths Careers)",
+        "url": "https://www.mathscareers.org.uk/?p=7847",
+        "date": "",
+        "snippet": "Secondary account of Turing's two-morphogen idea and its link to animal coat markings.",
+        "via": "search",
+        "note": "Second independent source for the Turing frame",
+        "verified": true
+      },
+      {
+        "title": "Using Randomness Correctly (fxhash docs)",
+        "url": "https://fxhash.notion.site/Using-Randomness-Correctly-12b5d7a78b5248648f8598baef17382d",
+        "date": "",
+        "snippet": "Docs stress that a piece must give identical output for the same input hash.",
+        "via": "search",
+        "note": "Seed-determinism convention for shareable seeds",
+        "verified": true
+      },
+      {
+        "title": "What is Art Blocks Engine? (Art Blocks docs)",
+        "url": "https://docs.artblocks.io/creator-onboarding/engine-partners/what-is-engine.md",
+        "date": "",
+        "snippet": "Says a token hash acts as the seed so the same seed gives the same output.",
+        "via": "search",
+        "note": "Second independent platform agreeing on seed determinism",
+        "verified": true
+      },
+      {
+        "title": "RDTool example Reaction-Diffusion Explorer Tool (Karl Sims)",
+        "url": "https://www.karlsims.com/rdtool-help.html",
+        "date": "",
+        "snippet": "Help page for a browser explorer: choose f,k from a pattern map, regrow from a central seed; needs WebGL 2.",
+        "via": "search",
+        "note": "Prior art and the differentiator (single global f,k)",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In the Gray-Scott model chemical A is fed at rate f and chemical B removed at rate k, and small changes to f and k yield a wide range of patterns including spots, worms, coral and mazes (as seen in search results on 2026-10-10).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Pearson's 1993 work mapped Gray-Scott patterns over (f,k) with Greek-letter classes, and Munafo's xmorphia site extended the classification.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Turing's 1952 paper proposed two interacting morphogens that react and diffuse, producing stripes or spots from a uniform start.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A standard discrete update is explicit Euler with a 3x3 Laplacian (centre -1, edge neighbours 0.2, diagonals 0.05) and typical DA=1.0, DB=0.5.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Generative-art platforms treat same seed gives same output as the core rule for seeded pieces.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A browser Gray-Scott explorer exists that picks f,k from a pattern map and needs WebGL 2 (single search snippet, not confirmed).",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Karl Sims' reaction-diffusion tutorial",
+      "xmorphia atlas",
+      "Turing coat-pattern lore",
+      "fxhash and Art Blocks seed culture",
+      "kombucha pellicles and sourdough crumb as visual language"
+    ]
+  },
+  "design": {
+    "coreLoop": "Choose a recipe from the f,k atlas, paint it onto part of the dish, watch it grow for a few seconds, then disturb it (stir, spill, switch brush recipe) and see where regimes collide. Each named regime you coax into existence ticks off a field-guide checklist (second minute); boundary design between regimes and composing a poster worth keeping is the tenth-minute game. Freeze and bottle the dish to a PNG poster plus a seed code.",
+    "sophisticationHooks": [
+      "Spatially varying f,k field painted with a brush, so one dish holds several regimes and fronts between them",
+      "Deterministic worker simulation: seed plus a stroke list plus a step count reproduces the exact dish from the URL hash on any device",
+      "Field guide of named regimes whose f,k ranges we measure ourselves with node runs and label as our own survey",
+      "Daylight and blacklight palettes via a colour ramp over the B concentration, plus poster export with an invented culture-number caption"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "About 900 lines: Float32 CPU worker (about 192 to 256 square, several steps per frame), brush and atlas UI with keyboard-accessible controls, palettes, hash encode and decode, spill events from a seeded PRNG, field guide, poster PNG export, about panel. Cut: WebGL path, audio, animation recording.",
+    "risks": [
+      "Phone performance: drop to a smaller grid and fewer steps per frame on narrow screens, show a pause control",
+      "Regime ranges in the field guide are our own measurements, labelled as such; Pearson letter-to-region details are shown only as reported by sources and class counts are left out because sources disagree",
+      "The RD Tool prior-art snippet is a single unconfirmed search result, so the page will say as of 2026-10-10 per that source or leave it out",
+      "Floating-point determinism across engines: use only add and multiply in Float32, avoid transcendental functions in the step"
+    ]
+  },
+  "durable": true
+}

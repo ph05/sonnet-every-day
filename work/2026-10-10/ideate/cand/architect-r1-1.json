@@ -1,0 +1,242 @@
+{
+  "id": "architect-r1-1",
+  "title": "The Narrow Win",
+  "pitch": "A concept mod for a poker-and-jokers roguelike in which a new stake changes what winning means: you must land inside a score band, because overshooting the blind busts the hand. The visitor is dealt eight cards and a five-slot joker rack full of runaway multipliers plus new throttle jokers, and has to find the one play and joker order that lands in the window. A solver then reveals how many of the thousands of plays were valid, so each puzzle has a rarity score you can brag about.",
+  "whyNow": "Timeless: the community keeps building toward ever bigger numbers, and a stake that punishes excess flips every instinct a returning player has. Nothing similar has shipped here yet, so it is fresh.",
+  "origin": {
+    "agent": "architect",
+    "lens": "balatro-mod-ideas"
+  },
+  "fingerprint": {
+    "category": "modding-games",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "analytical",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "worker",
+      "localstorage"
+    ],
+    "tags": [
+      "balatro-mod-concept",
+      "scoring-engine",
+      "stake-design",
+      "joker-ordering",
+      "daily-puzzle",
+      "overshoot-penalty",
+      "seeded-deals",
+      "solver"
+    ],
+    "keywords": [
+      "goldilocks",
+      "score-band",
+      "bust",
+      "throttle-jokers",
+      "pendulum-window",
+      "handshake-pair",
+      "rarity-score",
+      "mod-sandbox"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Base-game scoring is a chips times mult product where jokers resolve left to right, so order matters (multiplying effects want to sit after additive ones). Stakes stack extra penalties, and special starting decks already twist the scoring formula (one equalizes chips and mult), which shows rule-twisting concepts fit the genre. A large unbalanced mod exists purely to push numbers higher, so the community appetite for runaway scaling is real; a stake that punishes overshoot is the mirror image. The 'closest without going over' rule from a famous bidding game is the familiar precedent that makes the band easy to explain. All numbers on the page would be invented concept values, labelled as such.",
+    "sources": [
+      {
+        "title": "destructoid.com (Balatro joker order guide)",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "Guide says joker effects trigger left to right, so additive-mult jokers should sit left of multiplying ones; includes a worked example where the same three jokers score very differently by order.",
+        "via": "search",
+        "note": "Joker order matters; basis for the rack-reordering puzzle. Attribution taken from a blended search summary.",
+        "verified": true
+      },
+      {
+        "title": "balatro tips for scoring big (Inverse)",
+        "url": "https://www.inverse.com/gaming/balatro-tips-for-scoring-big",
+        "date": "",
+        "snippet": "Scoring tips article returned in the same results; the results agreed that joker placement changes the final score.",
+        "via": "search",
+        "note": "Independent second outlet on joker placement affecting score.",
+        "verified": true
+      },
+      {
+        "title": "Balatro Score Calculator (west-games)",
+        "url": "https://west-games.com/balatro-score-calculator/",
+        "date": "",
+        "snippet": "A community calculator describing score as chips multiplied by mult, with multiplying effects applied after additive mult.",
+        "via": "search",
+        "note": "Formula the tiny engine will mirror.",
+        "verified": true
+      },
+      {
+        "title": "Balatro Royal Flush (dotesports: all stakes in unlock order)",
+        "url": "https://dotesports.com/indies/news/all-balatro-stakes-in-unlock-order",
+        "date": "",
+        "snippet": "Lists the eight stakes in order; each stake keeps all earlier penalties and adds a new one, and Green raises required scores faster per ante.",
+        "via": "search",
+        "note": "Stakes stack; a new stake is a natural mod unit.",
+        "verified": true
+      },
+      {
+        "title": "the latest balatro update has some massive changes that should make winning easier (press-start)",
+        "url": "https://press-start.com.au/news/2024/04/08/the-latest-balatro-update-has-some-massive-changes-that-should-make-winning-easier/",
+        "date": "2024-04-08",
+        "snippet": "Beta patch coverage describing stake changes and reduced score scaling between antes; confirms stakes are stacked difficulty modifiers.",
+        "via": "search",
+        "note": "Second outlet agreeing that stakes stack and that stakes touch score scaling.",
+        "verified": true
+      },
+      {
+        "title": "Balatro: how to unlock and use the Plasma Deck (SI)",
+        "url": "https://videogames.si.com/guides/balatro-plasma-deck",
+        "date": "",
+        "snippet": "Explains a deck that equalizes chips and mult after scoring and doubles blind requirements, with a worked example turning 10 chips x 2 mult into 6 x 6.",
+        "via": "search",
+        "note": "Precedent for decks that twist the scoring formula itself.",
+        "verified": true
+      },
+      {
+        "title": "Balatro Plasma Deck: how to unlock and use (VideoGamer)",
+        "url": "https://www.videogamer.com/?p=472178",
+        "date": "",
+        "snippet": "Another outlet describing the same deck: chips and mult are balanced and blind requirement is doubled; advises avoiding static mult bonuses.",
+        "via": "search",
+        "note": "Independent confirmation of the equalizing deck.",
+        "verified": true
+      },
+      {
+        "title": "Cryptid: an unbalanced Balatro mod (GitTrend, SpectralPack/Cryptid)",
+        "url": "https://gittrend.io/repo/SpectralPack/Cryptid",
+        "date": "",
+        "snippet": "Project summary calls it a mod that ignores game balance with overpowered content; needs Steamodded and a big-number helper mod.",
+        "via": "search",
+        "note": "Community appetite for runaway scaling; the band stake is its mirror.",
+        "verified": true
+      },
+      {
+        "title": "r/balatro: The Cryptid experience (mirror)",
+        "url": "https://redlib.belloworld.it/r/balatro/comments/1fa20ru/the_cryptid_experience",
+        "date": "Sep 06 '24",
+        "snippet": "Thread where commenters split over whether the mod is too unbalanced or deliberately broken; some say many other mods are fairly balanced.",
+        "via": "search",
+        "note": "Independent community view that Cryptid is intentionally broken.",
+        "verified": true
+      },
+      {
+        "title": "bidding optimally on the price is right (COMAP)",
+        "url": "https://www.comap.org/membership/member-resources/item/bidding-optimally-on-the-price-is-right",
+        "date": "",
+        "snippet": "Math resource on the bidding game where the closest bid without going over wins and an all-overbid round forces re-bids.",
+        "via": "search",
+        "note": "Familiar precedent for a band where excess loses.",
+        "verified": true
+      },
+      {
+        "title": "List of The Price Is Right pricing games (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/List_of_The_Price_Is_Right_pricing_games",
+        "date": "",
+        "snippet": "Reference list of the show's pricing games; the opening bidding round awards the closest bid that does not exceed the price.",
+        "via": "search",
+        "note": "Independent reference for the closest-without-going-over rule.",
+        "verified": true
+      },
+      {
+        "title": "Leiden thesis on Balatro scoring (WiskerJ)",
+        "url": "https://theses.liacs.nl/pdf/2025-2026-WiskerJ.pdf",
+        "date": "",
+        "snippet": "Thesis states big blind is 50 percent above small blind and boss is double, with an Ante 1 example of 300, 450 and 600.",
+        "via": "search",
+        "note": "Single source for blind ratios; not stated as fact on the page.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, community guides agree that jokers in the base game resolve left to right, so placing additive-mult jokers before multiplying ones raises the total.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A community calculator models a hand score as chips times mult, with multiplying effects applied after additive mult.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Base-game stakes stack: each harder stake keeps the earlier penalties and adds another, and the Green stake raises blind requirements faster each ante.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A base-game starting deck equalizes chips and mult when scoring and doubles the blind requirement, so decks that twist the scoring formula already exist.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Cryptid mod describes itself as ignoring balance and relies on a helper mod for very large numbers; commenters in a Sep 2024 thread describe it as intentionally broken.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "In the famous pricing show's opening bid round, the closest bid that does not go over the price wins.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported unconfirmed: one thesis example shows blind targets of 300, 450 and 600 in Ante 1 (big blind 1.5x small, boss 2x small).",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Balatro stakes and starting decks",
+      "Plasma Deck equalizing rule",
+      "Cryptid and other scaling-heavy mods",
+      "closest-without-going-over bidding game",
+      "golf scoring (lower is better, exact is best)"
+    ]
+  },
+  "design": {
+    "coreLoop": "Read the day's deal and band, drag cards into a play and jokers into rack order, watch the engine tally chips times mult step by step, then lock in. Land inside the band to clear, bust if you overshoot, fizzle if you undershoot. The solver then shows how many valid plays existed, awarding a rarity grade; tighter stakes (band widths shrinking from loose to razor thin) and the swinging-window rule keep the tenth puzzle as tense as the first.",
+    "sophisticationHooks": [
+      "A real scoring engine (hand types with levels, card chips, additive and multiplying jokers resolving left to right) plus new throttle jokers such as a clamp, a bleed-off and a handshake pair that only works when two throttles sit apart",
+      "An exhaustive solver over all 218 plays of eight cards times up to 120 joker orders (about 26,000 evaluations), giving exact counts of valid solutions, a par, and a rarity score",
+      "A stake explorer that runs thousands of seeded deals in a worker and plots how often a random deal has any solution as the band narrows, so the visitor sees where the stake becomes cruel",
+      "A swinging-window mode where the target band alternates between a low and a high window across three hands, so the player must plan the whole sequence; seed, rack and play live in the URL hash for sharing"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: scoring engine and joker data module, seeded dealer, solver and stake-explorer worker, puzzle UI with keyboard and touch card and rack handling, step-by-step score tape, band meter with bust and fizzle animations, daily seed plus free sandbox, hash state, about and making-of panel with verified sources. Cut: custom art for real-game assets (all cards and jokers are drawn with CSS and SVG), full-run progression, sound beyond optional tiny synth ticks, user-written joker scripting.",
+    "risks": [
+      "The base-game formula details come from community guides, so the page labels its rules as a fan concept with invented numbers and shows no game art or names beyond a plain reference.",
+      "The blind ratio claim rests on one thesis and stays unverified: the page does not state it as fact, it uses its own invented targets.",
+      "Joker interactions could multiply into untestable edge cases; mitigation: keep the engine to six effect types and test it against a hand-computed table before the UI is wired.",
+      "A puzzle with no valid solution frustrates; the dealer must reject unsolvable seeds using the solver before publishing the daily."
+    ]
+  },
+  "durable": true
+}

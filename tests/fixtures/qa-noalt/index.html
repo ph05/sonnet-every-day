@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA No Alt</title>
+<style>body { font: 16px/1.5 system-ui, sans-serif; } .muted { color: #c9c9c9; }</style>
+</head>
+<body>
+<main>
+<h1>Accessibility gaps</h1>
+<img src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='red'/%3E%3C/svg%3E" width="40" height="40">
+<button type="button"></button>
+<a href="#x"><span></span></a>
+<input type="text">
+<p class="muted">Pale grey text on white is hard to read.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,300 @@
+{
+  "schema": 1,
+  "name": "Sonnet Every Day",
+  "repo": "ph05/sonnet-every-day",
+  "workBranch": "claude/sonnet-every-day",
+  "timezone": "America/New_York",
+  "startDate": "2026-10-10",
+  "siteUrl": "https://ph05.github.io/sonnet-every-day/",
+  "schedule": {
+    "primary": "03:55",
+    "watchdogA": "05:32",
+    "watchdogB": "06:47",
+    "closer": "08:47",
+    "closerBackup": "09:37",
+    "deadline": "08:00",
+    "graceUntil": "09:30",
+    "hardStop": "10:30"
+  },
+  "tierCutoffs": {
+    "t1Until": "04:45",
+    "t2Until": "07:00",
+    "t3Until": "08:45"
+  },
+  "leaseStaleMinutes": 35,
+  "maxAttemptsPerPhase": 2,
+  "models": {
+    "orchestrator": "claude-sonnet-5-5",
+    "specialist": "sonnet",
+    "cheap": "haiku"
+  },
+  "roster": {
+    "pulse": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "cards": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "lab": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "jester": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "architect": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "artisan": {
+      "model": "specialist",
+      "effort": "high"
+    },
+    "engineer": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "critic": {
+      "model": "specialist",
+      "effort": "max"
+    },
+    "clerk": {
+      "model": "cheap",
+      "effort": "medium"
+    }
+  },
+  "budget": {
+    "level": "balanced",
+    "neverOverage": true,
+    "levels": {
+      "all-in": {
+        "outputTokens": 8000000,
+        "defaultEffort": "max",
+        "maxEffortRoles": "all",
+        "reviseLoops": 2,
+        "reserveForKaizenTokens": 600000
+      },
+      "balanced": {
+        "outputTokens": 3000000,
+        "defaultEffort": "high",
+        "maxEffortRoles": [
+          "architect",
+          "engineer",
+          "critic"
+        ],
+        "reviseLoops": 1
+      },
+      "lean": {
+        "outputTokens": 1500000,
+        "defaultEffort": "high",
+        "maxEffortRoles": [],
+        "reviseLoops": 0,
+        "reserveForKaizenTokens": 150000
+      },
+      "minimal": {
+        "outputTokens": 500000,
+        "defaultEffort": "medium",
+        "maxEffortRoles": [],
+        "reviseLoops": 0,
+        "forceTier": 2,
+        "reserveForKaizenTokens": 0
+      }
+    },
+    "reserveForPublishTokens": 250000,
+    "autoThrottle": {
+      "downOn": [
+        "rate-limit",
+        "usage-limit",
+        "budget-exhausted",
+        "overage-warning"
+      ],
+      "upAfterCleanDays": 5,
+      "floor": "minimal",
+      "ceiling": "balanced"
+    },
+    "reserveForKaizenTokens": 350000,
+    "ownerOverride": {
+      "until": "2026-10-11T19:00:00-04:00",
+      "level": "all-in",
+      "note": "Owner lifted the token budget until Sunday 2026-10-11 19:00 ET (their words: do not worry about tokens). Overage and a rejected plan limit still stop the run."
+    }
+  },
+  "ideation": {
+    "agents": 8,
+    "candidatesPerAgent": 2,
+    "shortlist": 10,
+    "carryover": {
+      "maxIdeas": 1,
+      "maxCarries": 1
+    }
+  },
+  "novelty": {
+    "categoryCooldownDays": 1,
+    "maxPerCategoryIn7Days": 2,
+    "mechanicCooldownDays": 7,
+    "sameCategoryAndMechanicDays": 30,
+    "tagJaccardMax": 0.45,
+    "titleSimilarityMax": 0.6
+  },
+  "mix": {
+    "windowDays": 14,
+    "targets": {
+      "interest": {
+        "minPer7Days": 1,
+        "note": "poker/GTO, Balatro & mod concepts, hockey, Reddit-born ideas"
+      },
+      "currentEvents": {
+        "minPer7Days": 1,
+        "note": "skew pop/fun/hockey; politics is rare"
+      },
+      "humor": {
+        "minPer7Days": 1
+      },
+      "wildcard": {
+        "minPer7Days": 1
+      }
+    },
+    "politicsMaxPer14Days": 1
+  },
+  "limits": {
+    "projectMaxBytes": 8388608,
+    "projectMaxFiles": 200,
+    "singleFileMaxBytes": 3145728,
+    "thumbMaxBytes": 307200,
+    "siteWarnBytes": 700000000,
+    "minOwnLinesOfCodeTier1": 700,
+    "minOwnLinesOfCodeTier2": 350
+  },
+  "guardrails": {
+    "politics": "rare (at most one per 14 days), satirical or playful, never partisan advocacy or electioneering",
+    "currentEvents": "lean pop-culture, hockey, tech, games, science, internet culture",
+    "forbidden": [
+      "harassing or targeting private individuals",
+      "hate, slurs, or demeaning protected groups",
+      "impersonating real people or organizations (their branding, logos, domains, bylines); parody must be obviously labeled and use no real branding",
+      "real-money gambling, wagering, or anything that solicits deposits",
+      "presenting fiction as fact; every factual claim carries a dated source",
+      "collecting personal data, analytics, trackers, cookies beyond localStorage convenience",
+      "medical, legal, or financial advice presented as authoritative",
+      "copyrighted logos, images, audio, or fonts that are not freely licensed (draw and synthesize instead)",
+      "malware, phishing-like flows, credential forms, anything deceptive"
+    ]
+  },
+  "notify": {
+    "onPublish": true,
+    "onFallback": true,
+    "onFailure": true
+  },
+  "phaseStuckMinutes": 90,
+  "heartbeatEverySeconds": 300,
+  "heartbeatBranch": "claude/sonnet-every-day-heartbeat",
+  "kaizen": {
+    "enabled": true,
+    "members": [
+      "pulse",
+      "cards",
+      "lab",
+      "jester",
+      "architect",
+      "artisan",
+      "engineer",
+      "critic",
+      "clerk"
+    ],
+    "maxChangedLines": 120,
+    "maxFiles": 4,
+    "minTokensToStart": 60000,
+    "revertWindowDays": 7,
+    "allowedPaths": [
+      "ops/roles/",
+      "ops/rubrics/",
+      "ops/workflows/",
+      "ops/lenses.json",
+      "ops/templates/",
+      "ops/PLAYBOOK.md",
+      "ops/FAILURE_MODES.md",
+      "ops/OPERATING.md",
+      "ops/CULTURE.md",
+      "ops/kaizen/proposals/",
+      "scripts/",
+      "tests/",
+      "site-src/",
+      "README.md"
+    ],
+    "protectedPaths": [
+      "config.json",
+      ".github/",
+      "ops/prompts/",
+      "ops/CONTRACT.md",
+      "ops/rubrics/safety.md",
+      "ops/taxonomy.json",
+      "ops/kaizen/LOG.md",
+      "ops/kaizen/INDEX.json",
+      "scripts/validate.mjs",
+      "scripts/kaizen.mjs",
+      "scripts/state.mjs",
+      "scripts/lib/gitsync.mjs",
+      "scripts/lib/runstate.mjs",
+      "scripts/lib/common.mjs",
+      "scripts/deadman.mjs",
+      "scripts/heartbeat.mjs",
+      "scripts/lib/throttle.mjs",
+      "scripts/fallback.mjs",
+      "scripts/build-site.mjs",
+      "scripts/qa/browser-check.mjs",
+      "LICENSE",
+      "package.json",
+      "state/",
+      "docs/",
+      "work/",
+      "ops/workflows/kaizen.js",
+      "scripts/lib/postcard.mjs",
+      "scripts/lib/png.mjs",
+      "scripts/lib/archive.mjs",
+      "scripts/verify-live.mjs",
+      "scripts/history.mjs",
+      "scripts/novelty.mjs",
+      "scripts/lenses.mjs",
+      "scripts/qa/",
+      "tests/kaizen.test.mjs",
+      "tests/deadman.test.mjs",
+      "tests/heartbeat.test.mjs",
+      "tests/state.test.mjs",
+      "tests/e2e.test.mjs"
+    ],
+    "docLineCaps": {
+      "ops/PLAYBOOK.md": 1400,
+      "ops/CONTRACT.md": 420,
+      "ops/FAILURE_MODES.md": 330,
+      "README.md": 250,
+      "ops/CULTURE.md": 80,
+      "ops/roles/architect.md": 38,
+      "ops/roles/artisan.md": 39,
+      "ops/roles/cards.md": 40,
+      "ops/roles/clerk.md": 32,
+      "ops/roles/critic.md": 43,
+      "ops/roles/engineer.md": 34,
+      "ops/roles/jester.md": 44,
+      "ops/roles/lab.md": 37,
+      "ops/roles/pulse.md": 40,
+      "ops/rubrics/kaizen.md": 52,
+      "ops/rubrics/quality.md": 64,
+      "ops/rubrics/research.md": 50,
+      "ops/rubrics/selection.md": 117
+    }
+  },
+  "phaseBudgetMinutes": {
+    "preflight": 15,
+    "ideate": 90,
+    "select": 45,
+    "spec": 75,
+    "build": 150,
+    "qa": 90,
+    "revise": 90,
+    "package": 25,
+    "kaizen": 120
+  }
+}

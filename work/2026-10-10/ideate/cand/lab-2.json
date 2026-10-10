@@ -1,0 +1,219 @@
+{
+  "id": "lab-2",
+  "title": "Unreliable Plotter",
+  "pitch": "A virtual pen plotter draws a generative poster line by line on screen: flow-field ribbons, L-system shrubs or spiral-packed circles, each in two or three pens. The twist is a mishap dial that lets the machine misbehave in physically motivated ways (a pen drying out and skipping, a blot on touchdown, paper creeping between pen swaps), narrated by a deadpan operator log. The visitor hunts for the dial setting where the imperfections make the poster better than the ideal version, then shares the seed or saves the layered SVG.",
+  "whyNow": "Timeless: pen-plotter flow-field art is a recognised craft scene, and treating machine error as a creative parameter is a fresh angle on a familiar genre.",
+  "origin": {
+    "agent": "lab",
+    "lens": "generative-art"
+  },
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "generator",
+    "tone": [
+      "playful",
+      "nerdy",
+      "absurd"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "svg",
+      "pointer-events"
+    ],
+    "tags": [
+      "pen-plotter",
+      "flow-field",
+      "l-system",
+      "perlin-noise",
+      "procedural-art",
+      "shareable-seed",
+      "svg-export",
+      "ink-simulation",
+      "poster-art"
+    ],
+    "keywords": [
+      "plotter-log",
+      "ink-reservoir",
+      "paper-creep",
+      "pen-swap",
+      "ideal-vs-actual",
+      "layered-svg",
+      "seeded-random",
+      "flow-ribbons"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "A flow field is a grid of direction vectors, usually angles taken from Perlin noise, along which particles are traced to produce smooth curves; the technique is widely used and suits plotters because each curve is one continuous pen stroke. Plotter workflows separate artwork into SVG layers that map to pens. The mishap model is stylised: ordinary pens skip when the tip clogs or the paper is rough or very absorbent, and one forum report describes paper drifting during long plots, but none of this is calibrated to a specific machine. The page therefore labels the physics as an approximation and keeps the ideal SVG export honest. Perlin noise was formally described in a 1985 SIGGRAPH paper; sources disagree on whether it was first developed in 1982 or 1983, so the page leaves that date out.",
+    "sources": [
+      {
+        "title": "Flow Fields (Tyler Hobbs)",
+        "url": "https://www.tylerxhobbs.com/words/flow-fields",
+        "date": "2020",
+        "snippet": "Widely cited essay on flow fields; reported to note that Perlin noise is the usual way to initialise the vectors.",
+        "via": "search",
+        "note": "Primary essay on the technique, seen as a search result only",
+        "verified": true
+      },
+      {
+        "title": "Getting Creative with Perlin Noise Fields (Sighack)",
+        "url": "https://sighack.com/post/getting-creative-with-perlin-noise-fields",
+        "date": "",
+        "snippet": "Processing write-up explaining Perlin noise fields as a force field that steers particles, with source code and GIFs.",
+        "via": "search",
+        "note": "Independent agreement that noise fields steer particle paths",
+        "verified": true
+      },
+      {
+        "title": "Noise in Creative Coding (Varun Ferreira)",
+        "url": "https://varun.ca/noise/",
+        "date": "",
+        "snippet": "Tutorial covering the three steps of a noise-based vector field, particles dropped on it and traced paths, with damping.",
+        "via": "search",
+        "note": "Third independent description of the flow-field mechanism",
+        "verified": true
+      },
+      {
+        "title": "Executing Generative Art with a Plotter (Tyler Hobbs)",
+        "url": "https://tylerxhobbs.com/essays/2018/executing-generative-art-with-a-plotter",
+        "date": "2018",
+        "snippet": "Essay on plotter work; reported to stress that a plotter only draws lines and cannot cover earlier ink, which constrains layering order.",
+        "via": "search",
+        "note": "Single-source claim about plotter constraints; not independently confirmed",
+        "verified": false
+      },
+      {
+        "title": "vfab (PyPI)",
+        "url": "https://pypi.org/project/vfab/",
+        "date": "",
+        "snippet": "Plotter workflow tool that detects SVG layers and offers pen mapping for multi-layer designs.",
+        "via": "search",
+        "note": "Layers map to pens in plotter workflows",
+        "verified": true
+      },
+      {
+        "title": "christmas2023 (GitHub project)",
+        "url": "https://github.com/sihil/christmas2023",
+        "date": "2023",
+        "snippet": "An artist's pipeline generates SVGs, post-processes them with a plotter-vector tool and keeps layers separate for different pens.",
+        "via": "search",
+        "note": "Independent confirmation of the layers-per-pen workflow",
+        "verified": true
+      },
+      {
+        "title": "How to stop a rollerball pen from skipping (Scriveiner)",
+        "url": "https://scriveiner.com/en-au/blogs/scriveiner-blog/how-to-stop-a-rollerball-pen-from-skipping-and-restore-smooth-ink-flow",
+        "date": "",
+        "snippet": "Explains skipping as caused by clogged tips from dried ink or paper fibres, and by paper surface affecting ink flow.",
+        "via": "search",
+        "note": "Ordinary-pen physics for ink skipping; not plotter-specific",
+        "verified": true
+      },
+      {
+        "title": "Troubleshooting Fountain Pen Flow and Skipping (Ferris Wheel Press)",
+        "url": "https://ferriswheelpress.com/blogs/ferris-wheel-press-blog/fountain-pen-flow-skipping-troubleshooting",
+        "date": "",
+        "snippet": "Lists dried ink, debris and paper type among causes of skipping and poor flow.",
+        "via": "search",
+        "note": "Independent agreement on skipping causes",
+        "verified": true
+      },
+      {
+        "title": "graphtec 8600 drawing pen with new paper type (Signs101 forum)",
+        "url": "https://www.signs101.com/threads/graphtec-8600-drawing-pen-with-new-paper-type.162292",
+        "date": "",
+        "snippet": "Forum thread in which a long plot shifts sideways, attributed to paper sliding through the rollers.",
+        "via": "search",
+        "note": "Single forum report of paper creep; unverified anecdote",
+        "verified": false
+      },
+      {
+        "title": "Perlin noise (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Perlin_noise",
+        "date": "",
+        "snippet": "Encyclopedia article on the noise function Ken Perlin developed after working on a 1982 film, later described in a 1985 SIGGRAPH paper.",
+        "via": "search",
+        "note": "Background and 1985 paper date; development year differs in other results",
+        "verified": true
+      },
+      {
+        "title": "Noise (The Book of Shaders)",
+        "url": "https://thebookofshaders.com/11/",
+        "date": "",
+        "snippet": "Shader tutorial noting that Perlin introduced gradient noise in 1985 to reduce the blocky look of value noise.",
+        "via": "search",
+        "note": "Independent agreement on 1985",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A flow field is a grid of direction vectors; particles dropped onto it and traced along it produce smooth curves, and Perlin noise is the common way to set the vector angles (as of 2026-10-10).",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Plotter workflows keep artwork in separate SVG layers that are mapped to different pens.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Ordinary pens skip when the tip is clogged by dried ink or fibres and when the paper surface hampers ink flow; the page borrows this as a stylised model, not a plotter calibration.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Perlin's gradient noise was described in a 1985 SIGGRAPH paper.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported but unconfirmed: a plotter can only draw lines and cannot cover earlier ink, so layer order matters (per Tyler Hobbs's plotter essay, seen in a search result only).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "pen plotter flow-field posters",
+      "Fidenza-style ribbon compositions",
+      "vpype layered SVG workflow",
+      "teletype operator logs",
+      "The Algorithmic Beauty of Plants"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick a composition and a seed, press plot, and watch the pen draw in real time while the operator log narrates events. The mishap dial changes how often ink skips, blots appear, the paper creeps or a pen swap lands slightly off. An ideal-versus-actual ghost toggle shows what the machine meant to draw, so each seed becomes a small experiment and the dial setting that flatters a given composition is the thing to find.",
+    "sophisticationHooks": [
+      "Three seeded composition engines (flow-field ribbons with spacing control, L-system shrubs, spiral-packed circles) split across 2 to 3 pen layers",
+      "Stylised machine model: ink reservoir that depletes with distance and recovers on re-dip, touchdown blots, cumulative paper creep that misregisters later layers, with all randomness drawn from the seed so the URL reproduces the same plot",
+      "Operator log with deadpan one-line entries per event and an ideal-versus-actual ghost overlay",
+      "Exports: layered SVG of the ideal paths (labelled as ideal) and a PNG of the as-plotted poster with a plot-number caption"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: pure path generators and plotter-state model in a worker, canvas2d renderer with per-pen ink look, playback controls (speed, pause, skip to end), mishap dial plus 4 individual toggles, hash state (composition, seed, pens, dial), SVG and PNG export through Blob downloads, light/dark paper themes, reduced-motion path (instant draw), about/making-of panel. Cut: real G-code, stepper-motor audio, user-drawn input paths, more than 3 composition engines.",
+    "risks": [
+      "The mishap physics is stylised and not calibrated to a real machine; the UI says so and the dossier keeps the plotter-constraint claim flagged as reported, unconfirmed.",
+      "Ordinary-pen skipping sources are not plotter-specific, so the about panel presents them as inspiration only.",
+      "Performance: long plots can reach tens of thousands of segments, so segments are batched, capped (about 60k) and drawn incrementally to a backing canvas.",
+      "Dial and toggle count could crowd a 360px layout; the controls fold into a drawer on small screens.",
+      "Flow-field ribbons are a very familiar look; differentiation relies on the machine-error layer and log, which needs strong writing and visible payoffs."
+    ]
+  },
+  "durable": true
+}

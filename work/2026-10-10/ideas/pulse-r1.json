@@ -1,0 +1,286 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "card-dice-odds",
+  "candidates": [
+    {
+      "id": "pulse-r1-1",
+      "title": "The Dice Foundry",
+      "pitch": "A night-shift foundry where the visitor melts a heap of rubble dice into new ones: every face on two dice is editable, and the exact sum odds redraw as a cascade of bars while a worker rolls ten million times to prove it. Puzzle orders ask for impossible-sounding things, such as two dice that are not the usual pair yet give exactly the usual sum odds, or three dice that beat each other in a loop. The visitor loses the argument that only the ordinary dice can do it, then ships the winning pair as a shareable link.",
+      "whyNow": "Timeless: the dice maths never ages, and a tactile workbench with real puzzles fills the interest slot without repeating a coin-pattern race or a shuffle study.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "card-dice-odds"
+      },
+      "fingerprint": {
+        "category": "cards-odds",
+        "mechanic": "puzzle",
+        "tone": ["playful", "nerdy", "analytical"],
+        "tech": ["dom-ui", "canvas2d", "worker", "localstorage"],
+        "tags": ["dice", "probability", "sum-distribution", "relabeling", "generating-functions", "workbench", "puzzle-orders", "counterintuitive"],
+        "keywords": ["dice", "sum-odds", "alternate-dice", "face-editor", "exact-probability", "monte-carlo", "polynomial", "foundry"],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Two six-sided dice can be relabelled so the sum odds match ordinary dice exactly; with positive whole-number faces there is exactly one such non-standard pair (1-2-2-3-3-4 and 1-3-4-5-6-8). The reason is a polynomial factorisation that the page can show as coloured factor tiles, which turns a trick into a mechanic. A second classic, a four-dice cycle where each die beats the next with probability 2/3, gives a contrast puzzle. The scout also checked both results by brute force on 2026-10-10: only two positive relabelings exist with faces up to 11, and the four-dice cycle has exactly the stated 2/3 edges (one non-adjacent pair is 4/9). The page can verify all of this exactly in the browser, and a worker simulation shows sampling noise shrinking.",
+        "sources": [
+          {
+            "title": "Sicherman dice",
+            "url": "https://en.wikipedia.org/wiki/Sicherman_dice",
+            "date": "",
+            "snippet": "Describes the pair 1-2-2-3-3-4 and 1-3-4-5-6-8 that matches the sum odds of two normal dice, and says it is the only such non-standard pair with positive integer faces.",
+            "via": "search",
+            "note": "Core phenomenon and uniqueness claim",
+            "verified": true
+          },
+          {
+            "title": "Sicherman Dice",
+            "url": "https://www.cut-the-knot.org/arithmetic/combinatorics/Sicherman.shtml",
+            "date": "",
+            "snippet": "Explains the generating-function factorisation that shows the relabeling exists and that no other positive-integer relabeling works.",
+            "via": "search",
+            "note": "Mechanism the page can visualise",
+            "verified": true
+          },
+          {
+            "title": "Abnormal normal dice",
+            "url": "https://generalist.academy/2021/12/30/abnormal-normal-dice/",
+            "date": "2021-12-30",
+            "snippet": "A popular write-up of the same pair, noting that other matching relabelings need zeros or negative numbers.",
+            "via": "search",
+            "note": "Independent confirmation of uniqueness caveat",
+            "verified": true
+          },
+          {
+            "title": "Revisiting Dice Relabeling Using Cyclotomic Polynomials",
+            "url": "https://arxiv.org/html/2408.10331v1",
+            "date": "",
+            "snippet": "Research note that re-derives dice relabeling through factoring over cyclotomic polynomials.",
+            "via": "search",
+            "note": "Second independent source for the factorisation method",
+            "verified": true
+          },
+          {
+            "title": "On cyclic and nontransitive probabilities",
+            "url": "https://arxiv.org/pdf/2012.05198",
+            "date": "",
+            "snippet": "Paper covering cycles of dice where each beats the next; the standard four-dice set has each beating its neighbour with probability 2/3.",
+            "via": "search",
+            "note": "Cycle puzzle data",
+            "verified": true
+          },
+          {
+            "title": "Efronsche Wuerfel (educational PDF)",
+            "url": "https://explorer.technorama.ch/media/dokumente/10098_Efronsche_Wu%CC%88rfel_DEFIL.pdf",
+            "date": "",
+            "snippet": "Science-centre handout describing the four non-transitive dice and their 2/3 win chances in a loop.",
+            "via": "search",
+            "note": "Independent confirmation of the 2/3 cycle",
+            "verified": true
+          },
+          {
+            "title": "Daily Illuminator, May 2026",
+            "url": "https://sjgames.com/ill/archive/May_06_2026",
+            "date": "",
+            "snippet": "A short piece mentioning the dice pair and giving 1977 as the year they were found; other results say 1978.",
+            "via": "search",
+            "note": "Only evidence of the invention-year disagreement",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-10, two six-sided dice faced 1-2-2-3-3-4 and 1-3-4-5-6-8 give the same sum odds as two ordinary dice, and among positive whole-number faces this is the only non-standard pair.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The relabeling can be derived by factoring the sum-odds polynomial of one die over cyclotomic polynomials and redistributing the factors; the same factoring shows no other positive-integer pair works.",
+            "sourceIndex": 1,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "In the standard four-dice cycle (A 0,0,4,4,4,4; B 1,1,1,5,5,5; C 2,2,2,2,6,6; D 3 on every face) B beats A, C beats B, D beats C and A beats D, each with probability 2/3.",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Scout's own exhaustive check on 2026-10-10 (faces 1 to 11, two dice, matching the ordinary 36-outcome sum table) found exactly two solutions: the ordinary pair and the Sicherman pair; also in that set A beats C with probability 4/9.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Sources disagree on the year the pair was found (1977 versus 1978), so the page says only 'late 1970s' or omits the year.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["Sicherman dice", "non-transitive dice sets", "generating-function tricks", "dice tray tabletop feel", "puzzle-order fulfilment games"]
+      },
+      "design": {
+        "coreLoop": "The visitor receives a work order, edits faces on one to four dice, watches exact sum or win-matrix charts update live, and presses the foundry button to test the order against a ten-million-roll simulation. Orders escalate from easy (make sevens likeliest) to surprising (match ordinary sums with different faces, close a three-way beating loop, make a pair that ties more often than an ordinary pair), and a free-play mode keeps rewarding tinkering because the factor tiles and win matrix reveal why a change works.",
+        "sophisticationHooks": [
+          "Exact odds via convolution and polynomial factor tiles, so the page explains why a relabeling works instead of only asserting it",
+          "A worker rolls ten million seeded rolls and a cascade chart shows simulation noise converging on the exact bars",
+          "A win-matrix for up to four dice that highlights loops and ties, with an order set of about twelve bundled puzzles and hints",
+          "Shareable URL hash that encodes the dice faces so a solved order can be sent as a link"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: face editor for up to four dice (4 to 12 sides), exact distribution and win-matrix engine, factor-tile view for two dice, worker simulation with a cascade chart, about twelve hand-written work orders with a checker, hash state, light and dark, reduced motion, about panel. Cut: loaded-die weights beyond a simple weight slider, accounts, scores, sound.",
+        "risks": [
+          "Nearby ground: another candidate covers a coin-pattern race with a second-mover edge; the cycle puzzles here must stay a minor part and the lead puzzle must be the sum-odds relabeling.",
+          "The invention year of the relabeling is unverified; show 'late 1970s' or leave it out.",
+          "The claim that no loading of two dice can make all sums equally likely was not sourced by the scout; leave it out unless a source is found.",
+          "Factor-tile view is the hardest piece; fall back to exact bars only if time runs short."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "pulse-r1-2",
+      "title": "You Are Not Random",
+      "pitch": "The visitor taps heads or tails as randomly as they can while a small oracle tries to guess each next tap, and its score climbs above the fifty percent chance line. Then the page flips its own fair coin for the oracle and the score collapses to chance, so the visitor loses the argument that they could imitate a coin. A forgery lab lets them write a fake two-hundred-flip log and watch run-length bars, longest-streak odds and an auditor's verdict expose it against ten thousand simulated honest logs.",
+      "whyNow": "Timeless: the surprise that people cannot fake a coin never goes stale, and it ends in a screenshot-friendly verdict card.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "card-dice-odds"
+      },
+      "fingerprint": {
+        "category": "education-explainer",
+        "mechanic": "game",
+        "tone": ["playful", "nerdy", "competitive"],
+        "tech": ["dom-ui", "canvas2d", "worker", "pointer-events", "localstorage"],
+        "tags": ["randomness", "coin-flip", "prediction", "runs", "streaks", "human-bias", "forgery", "counterintuitive"],
+        "keywords": ["fake-randomness", "longest-run", "oracle", "n-gram", "run-length", "streak-odds", "auditor", "binomial-band"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Two threads make this real. First, a well-known classroom demonstration has a small program guess a person's next binary key press from their last few presses; reports say it does clearly better than chance on people, but near chance on a computer random source (anecdotal, not a controlled study). Second, a Hungarian teacher's classroom exercise separates real from invented 200-flip logs, because real logs almost always hold a long run and fakers avoid them. The scout computed on 2026-10-10 by exact dynamic programming that 200 fair flips contain a run of at least 5 with probability 99.93% and of at least 6 with 96.5%, which agrees with a published 99.9% figure for five. Sources disagree on whether the teacher's cutoff was four or six, so the page computes its own thresholds.",
+        "sources": [
+          {
+            "title": "the Aaronson Oracle",
+            "url": "https://notes.billmill.org/link_blog/2023/05/the_Aaronson_Oracle.html",
+            "date": "2023-05",
+            "snippet": "A link-blog note about a small program that guesses which of two keys a person presses next, using the last five presses, and that does well on humans.",
+            "via": "search",
+            "note": "Establishes the predictor mechanic and the anecdotal accuracy",
+            "verified": true
+          },
+          {
+            "title": "The Magnet 082",
+            "url": "https://themagnet.substack.com/p/the-magnet-082-take-this-online-test",
+            "date": "",
+            "snippet": "A newsletter author tried a left or right arrow version, reporting about 71 percent correct after a couple hundred presses and about 44 percent on a generator-made random sequence.",
+            "via": "search",
+            "note": "Independent anecdote of the same effect and of the random-source control",
+            "verified": true
+          },
+          {
+            "title": "Oraculo de Aaronson: que es este curioso algoritmo",
+            "url": "https://psicologiaymente.com/miscelanea/oraculo-aaronson",
+            "date": "",
+            "snippet": "Spanish-language explainer saying the prediction rate rises above 60 percent as the key sequence grows.",
+            "via": "search",
+            "note": "Third description of the predictor",
+            "verified": true
+          },
+          {
+            "title": "schooled by randomness",
+            "url": "https://kucharski.substack.com/p/schooled-by-randomness",
+            "date": "",
+            "snippet": "Essay on the classroom exercise where one group flips a coin 200 times and another invents a sequence; says about 99.9 percent of real 200-flip sequences contain five identical results in a row.",
+            "via": "search",
+            "note": "Exercise plus a published run-length probability",
+            "verified": true
+          },
+          {
+            "title": "Electronic Proceedings of the Thirteenth Annual International Conference on Technology in Collegiate Mathematics",
+            "url": "https://www.math.odu.edu/~bogacki/epictcm/i/13/P002.html",
+            "date": "",
+            "snippet": "A conference paper on telling real from fake coin-flip sequences by counting the longest run; real 200-flip sequences nearly always have a run of at least six, fakers rarely do.",
+            "via": "search",
+            "note": "Independent write-up of the exercise (cutoff six)",
+            "verified": true
+          },
+          {
+            "title": "unideb.hu (teaching mathematics and computer science article)",
+            "url": "https://ojs.lib.unideb.hu/tmcs/article/download/14899/12801/33867",
+            "date": "",
+            "snippet": "A Hungarian journal article on the same example, saying children inventing a sequence rarely wrote the same symbol more than four times in a row.",
+            "via": "search",
+            "note": "Third write-up, cutoff stated as four, hence the disagreement",
+            "verified": true
+          },
+          {
+            "title": "Why Are People Bad At Randomness",
+            "url": "https://user.informatik.uni-bremen.de/~zach/software/ArtSaver/Why_Are_People_Bad_At_Randomness.pdf",
+            "date": "",
+            "snippet": "A document in a result set on human random generation, which broadly reports too much alternation and too few repeats; the scout did not see which exact page said what.",
+            "via": "search",
+            "note": "Background only; attribution of the alternation finding not confirmed",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-10, a small program that learns from a person's last five key presses is reported to predict their next press at roughly 70 percent (anecdotal), well above the 50 percent chance line.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "One newsletter author reported about 71 percent after a couple hundred presses and about 44 percent when the same program saw a generator-made random sequence; this rests on a single report.",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "A classroom exercise credited to a Hungarian teacher separates real from invented 200-flip logs because real logs almost always hold a long run that fakers avoid; sources give the cutoff as four, five or six, so the page shows the sourced idea and computes its own numbers.",
+            "sourceIndex": 3,
+            "alsoIn": [4, 5],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Scout's own exact calculation on 2026-10-10: in 200 fair flips the chance of at least one run of 5 or more is 99.93 percent, of 6 or more 96.5 percent, of 8 or more 54 percent; the 99.93 percent figure agrees with the roughly 99.9 percent quoted for five.",
+            "sourceIndex": 3,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Reported, unconfirmed as of 2026-10-10: people asked for random binary sequences alternate too often and repeat too rarely, per a result set on human random generation.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["the Aaronson Oracle", "classroom real-or-fake coin log exercise", "hot hand debates", "Turing-test style games", "mind-reader card tricks"]
+      },
+      "design": {
+        "coreLoop": "Round one: the visitor taps H or T about sixty times while the oracle's guess for each tap is revealed after it lands, with a running score against a chance band. Round two: the same oracle watches a fair coin flipped by the page and stays inside the band, which is the reveal. Round three: the forgery lab, where a hand-written fake log is graded by run-length, longest-streak and switch-rate tests against a worker-made honest crowd; replays stay interesting because the visitor can try tricks (digits of pi, glancing at a clock) and see which ones the oracle or auditor sees through.",
+        "sophisticationHooks": [
+          "An online-learning oracle blending several context lengths (one to five previous taps) with a visible 'what it thinks' strip showing its current pattern memory",
+          "Exact longest-run probabilities by dynamic programming, plotted beside the visitor's own streak, with a ten-thousand-log worker crowd for comparison",
+          "A forgery lab auditor with three transparent tests and a combined verdict card, shareable through the URL hash as a sequence fingerprint",
+          "A trick gallery of ten bundled strategies (alternate, mirror the last two, use a hash of the clock) the oracle is run against, with their scores"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: tap game with oracle, chance band and fair-coin control round, forgery lab with run-length histogram and three tests, worker crowd, trick gallery, hash state, keyboard (H, T keys) and touch, light and dark, reduced motion, about panel. Cut: network play, accounts, global leaderboards, sound.",
+        "risks": [
+          "The cutoff the teacher used is sourced three different ways; the page must state only its own computed probabilities and label the classroom story as reported.",
+          "The oracle's reported accuracy is anecdotal; the page measures the visitor's own score and does not promise a number.",
+          "The alternation-bias finding is unverified; present it as 'as of 2026-10-10, per search results' or drop it.",
+          "Opening prior for the oracle must be a hand-set, labelled assumption rather than presented as measured human data.",
+          "Danger of dull play if sessions are short; mitigate with the trick gallery and the verdict card."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

@@ -1,0 +1,347 @@
+{
+ "schema": 1,
+ "entries": [
+  {
+   "id": "2026-10-29-pulse",
+   "date": "2026-10-29",
+   "agent": "pulse",
+   "title": "Date-stamp every hook in the scout brief",
+   "observation": "My note from yesterday: two ideas leaned on a hockey result that was already three days old by the time the verifier opened the page. The scout role now asks for the page date next to every hook, in the same line as the URL.",
+   "category": "clarity",
+   "files": [
+    "ops/roles/pulse.md"
+   ],
+   "sha": "3f9a1c2b7e4d5a60918b2c3d4e5f60718293a4b5",
+   "status": "applied",
+   "linesChanged": 6,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-cards",
+   "date": "2026-10-29",
+   "agent": "cards",
+   "title": "Show the odds calculator its own edge cases",
+   "observation": "Cards ideas keep shipping a simulator without a seed field. Added a one-line checklist item to the build template: any shuffle or deal takes a seed from the URL hash.",
+   "category": "prevention",
+   "files": [
+    "ops/templates/project.json.example",
+    "ops/roles/cards.md"
+   ],
+   "sha": "a1b2c3d4e5f60718293a4b5c6d7e8f9012345678",
+   "status": "applied",
+   "linesChanged": 11,
+   "question": "Should the seed also be shown on the page so a result can be replayed exactly?",
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-lab",
+   "date": "2026-10-29",
+   "agent": "lab",
+   "title": "Name the units in the sim brief",
+   "observation": "Two science sims in a row showed an unlabeled axis. The role file now lists \"units on every axis, in words\" next to the accessibility checks.",
+   "category": "clarity",
+   "files": [
+    "ops/roles/lab.md"
+   ],
+   "sha": "b2c3d4e5f60718293a4b5c6d7e8f901234567890",
+   "status": "applied",
+   "linesChanged": 4,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-jester",
+   "date": "2026-10-29",
+   "agent": "jester",
+   "title": "Retire the joke that always opens with \"walks into a bar\"",
+   "observation": "Reading the last two weeks of taglines, four of them used the same shape. Added a banned-patterns line to the jester brief so the shape cannot repeat within 14 days.",
+   "category": "simplification",
+   "files": [
+    "ops/roles/jester.md"
+   ],
+   "sha": "c3d4e5f60718293a4b5c6d7e8f90123456789012",
+   "status": "applied",
+   "linesChanged": 5,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-architect",
+   "date": "2026-10-29",
+   "agent": "architect",
+   "title": "Fail fast when the file map overlaps",
+   "observation": "spec.js accepted a file-ownership map where two builders owned the same path; the clash only surfaced at build time. The spec step now rejects duplicate owners before any builder starts.",
+   "category": "prevention",
+   "files": [
+    "ops/workflows/spec.js",
+    "tests/workflows.test.mjs"
+   ],
+   "sha": "d4e5f60718293a4b5c6d7e8f9012345678901234",
+   "status": "applied",
+   "linesChanged": 38,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-artisan",
+   "date": "2026-10-29",
+   "agent": "artisan",
+   "title": "Honor reduced motion in the page shell by default",
+   "observation": "The shell animated the back link on hover with no reduced-motion override, which the critic flagged twice this week. One media query fixes it for every future project.",
+   "category": "tests",
+   "files": [
+    "ops/templates/page-shell.html"
+   ],
+   "sha": "e5f60718293a4b5c6d7e8f901234567890123456",
+   "status": "applied",
+   "linesChanged": 7,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-engineer",
+   "date": "2026-10-29",
+   "agent": "engineer",
+   "title": "Cap the heartbeat log at 200 lines",
+   "observation": "The heartbeat note kept growing across a long day and slowed the status read. Trimmed on write.",
+   "category": "speed",
+   "files": [
+    "scripts/lib/runstate.mjs"
+   ],
+   "sha": null,
+   "status": "rejected",
+   "linesChanged": 0,
+   "question": null,
+   "reason": "path-not-allowed: scripts/lib/runstate.mjs is protected; the real fix lives there (see the proposal below)."
+  },
+  {
+   "id": "2026-10-29-critic",
+   "date": "2026-10-29",
+   "agent": "critic",
+   "title": "Add a \"would I send this to a friend?\" line to the critic rubric",
+   "observation": "The rubric scores polish but not delight. One sentence at the top of the delight criterion asks the critic to name the moment a visitor would show someone else.",
+   "category": "clarity",
+   "files": [
+    "ops/rubrics/critic.md"
+   ],
+   "sha": "f60718293a4b5c6d7e8f90123456789012345678",
+   "status": "applied",
+   "linesChanged": 3,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-29-clerk",
+   "date": "2026-10-29",
+   "agent": "clerk",
+   "title": "Point the clerk at the exact command, not the idea of it",
+   "observation": "Clerk steps said \"run the validator\" without the flags. Spelled the command out in the step so it cannot drift.",
+   "category": "tooling",
+   "files": [
+    "ops/roles/clerk.md"
+   ],
+   "sha": "0718293a4b5c6d7e8f901234567890123456789a",
+   "status": "applied",
+   "linesChanged": 8,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-pulse",
+   "date": "2026-10-30",
+   "agent": "pulse",
+   "title": "Prefer sources with a visible dated byline",
+   "observation": "A source without a date cost the verifier a full round trip. The scout brief now says: no dated byline, mark the source unverified up front.",
+   "category": "prevention",
+   "files": [
+    "ops/roles/pulse.md",
+    "tests/workflows.test.mjs"
+   ],
+   "sha": "1829304a5b6c7d8e9f01234567890123456789ab",
+   "status": "applied",
+   "linesChanged": 14,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-cards",
+   "date": "2026-10-30",
+   "agent": "cards",
+   "title": "Link the range grid example from the cards brief",
+   "observation": "The cards specialist had no concrete picture of what a good 13x13 grid page looks like; linked the Day 1 project as the reference.",
+   "category": "clarity",
+   "files": [
+    "ops/roles/cards.md"
+   ],
+   "sha": "29304a5b6c7d8e9f01234567890123456789abcd",
+   "status": "applied",
+   "linesChanged": 3,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-lab",
+   "date": "2026-10-30",
+   "agent": "lab",
+   "title": "Add a unit test for the missing-date edge in the run ribbon",
+   "observation": "The gallery counted a missing day twice when two gaps were adjacent. Test added for the adjacent-gaps case.",
+   "category": "tests",
+   "files": [
+    "tests/gallery.test.mjs"
+   ],
+   "sha": "304a5b6c7d8e9f01234567890123456789abcdef",
+   "status": "applied",
+   "linesChanged": 22,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-jester",
+   "date": "2026-10-30",
+   "agent": "jester",
+   "title": "Rename the confusing \"stand-in\" label",
+   "observation": "The label read as an insult to fallback days. Proposed \"Understudy\" but the string lives in the protected gate; filing it as a proposal instead of forcing it.",
+   "category": "clarity",
+   "files": [
+    "ops/kaizen/proposals/2026-10-30-jester.md"
+   ],
+   "sha": "4a5b6c7d8e9f01234567890123456789abcdef01",
+   "status": "proposed",
+   "linesChanged": 18,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-architect",
+   "date": "2026-10-30",
+   "agent": "architect",
+   "title": "Merge two near-identical retry helpers",
+   "observation": "build.js and qa.js carried the same 24-line retry wrapper. Merged into one shared block; the self-check still passes.",
+   "category": "simplification",
+   "files": [
+    "ops/workflows/build.js",
+    "ops/workflows/qa.js",
+    "ops/workflows/_selfcheck.mjs"
+   ],
+   "sha": "5b6c7d8e9f01234567890123456789abcdef0123",
+   "status": "applied",
+   "linesChanged": 64,
+   "question": "Could the other three workflows share the same helper without making the scripts depend on each other?",
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-artisan",
+   "date": "2026-10-30",
+   "agent": "artisan",
+   "title": "Undo the sticky masthead",
+   "observation": "Sticky masthead looked great on desktop and swallowed 20% of a 390px screen.",
+   "category": "clarity",
+   "files": [
+    "site-src/gallery.css"
+   ],
+   "sha": "6c7d8e9f01234567890123456789abcdef012345",
+   "status": "reverted",
+   "linesChanged": 9,
+   "question": null,
+   "reason": "Evidence of harm: mobile screenshots at 390x844 showed the masthead covering the first card for a full scroll; reverted to the static masthead."
+  },
+  {
+   "id": "2026-10-30-engineer",
+   "date": "2026-10-30",
+   "agent": "engineer",
+   "title": "Reject a fallback thumbnail over the byte budget",
+   "observation": "A postcard thumbnail landed at 190 KB, over the 150 KB budget, and nothing checked it until publish. The fallback now re-encodes at a lower palette depth when the PNG is too big.",
+   "category": "prevention",
+   "files": [
+    "scripts/fallback.mjs"
+   ],
+   "sha": null,
+   "status": "rejected",
+   "linesChanged": 0,
+   "question": null,
+   "reason": "test-removed: the change deleted an assertion that guarded the byte budget."
+  },
+  {
+   "id": "2026-10-30-critic",
+   "date": "2026-10-30",
+   "agent": "critic",
+   "title": "Ask for a screenshot when filing an S1",
+   "observation": "S1 defects without a screenshot cost the revise loop a reproduction pass.",
+   "category": "speed",
+   "files": [
+    "ops/rubrics/critic.md",
+    "ops/roles/critic.md"
+   ],
+   "sha": "7d8e9f01234567890123456789abcdef01234567",
+   "status": "applied",
+   "linesChanged": 12,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-30-clerk",
+   "date": "2026-10-30",
+   "agent": "clerk",
+   "title": "List every placeholder the template expects, in order",
+   "observation": "Template substitution failed silently when a placeholder was misspelled. The clerk checklist now includes a grep for leftover double braces.",
+   "category": "prevention",
+   "files": [
+    "ops/roles/clerk.md"
+   ],
+   "sha": "8e9f01234567890123456789abcdef0123456789",
+   "status": "applied",
+   "linesChanged": 6,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-31-pulse",
+   "date": "2026-10-31",
+   "agent": "pulse",
+   "title": "Write the hook and the evergreen core on separate lines",
+   "observation": "Ideas that mixed the news hook and the mechanic in one sentence were harder to dedupe. Two lines, one for each.",
+   "category": "clarity",
+   "files": [
+    "ops/roles/pulse.md"
+   ],
+   "sha": "9f01234567890123456789abcdef0123456789ab",
+   "status": "applied",
+   "linesChanged": 7,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-31-cards",
+   "date": "2026-10-31",
+   "agent": "cards",
+   "title": "Explain \"GTO\" in the first screen of any poker page",
+   "observation": "The critic noted two poker pages assumed every visitor knows what GTO means. One line in the cards brief fixes it for good.",
+   "category": "clarity",
+   "files": [
+    "ops/roles/cards.md"
+   ],
+   "sha": "a01234567890123456789abcdef0123456789abc",
+   "status": "applied",
+   "linesChanged": 4,
+   "question": null,
+   "reason": null
+  },
+  {
+   "id": "2026-10-31-engineer",
+   "date": "2026-10-31",
+   "agent": "engineer",
+   "title": "Proposal: give heartbeats their own log file",
+   "observation": "The status read slows down because heartbeat notes share the run file. Moving them needs a change to runstate.mjs, which kaizens may not touch, so here is the case in writing.",
+   "category": "speed",
+   "files": [
+    "ops/kaizen/proposals/2026-10-31-engineer.md"
+   ],
+   "sha": "b1234567890123456789abcdef0123456789abcd",
+   "status": "proposed",
+   "linesChanged": 27,
+   "question": "Does anyone read heartbeat notes older than one day?",
+   "reason": null
+  }
+ ]
+}

@@ -1,0 +1,234 @@
+{
+  "id": "engineer-1",
+  "title": "Curb Verdict",
+  "pitch": "A pole of stacked parking plates stands on an invented street, a stone gargoyle perched on top, and the visitor rules on each case: may this car, with this permit, at this day and hour, stay, and until when? Behind the jokes is a real rules engine that merges time windows, day masks, permits and street-cleaning slots into a week-long legality strip, so every wrong answer shows exactly which plate decided it. A second mode, Sign Smith, hands over a target pattern and a plate budget and scores how few plates reproduce it.",
+  "whyNow": "Timeless. Takes a commonly complained-about subject (stacked parking rules) and turns rule-reading into a deduction puzzle with a deadpan gargoyle judge.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "anti-lens-dud-rescue"
+  },
+  "fingerprint": {
+    "category": "games-arcade",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "satirical",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "localstorage",
+      "pointer-events"
+    ],
+    "tags": [
+      "parking-rules",
+      "rule-engine",
+      "interval-logic",
+      "deduction",
+      "daily-puzzle",
+      "bureaucracy",
+      "gargoyle-judge",
+      "seeded-generator"
+    ],
+    "keywords": [
+      "parking",
+      "signs",
+      "time-windows",
+      "permits",
+      "verdict",
+      "puzzle",
+      "bureaucracy-humor"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Independent search results show that confusing parking signs are a recurring reported problem in the UK and in US cities, that stacked or multi-panel signs are commonly read top to bottom with day, time and arrow conditions on each panel, and that phone apps now read photographed signs. My own searches found no game or quiz about decoding stacked signs, but absence in search results is weak evidence, so the page makes no 'first of its kind' claim. The page uses an invented municipal code and invented sign vocabulary (no real jurisdiction, no real signage), so the engine is fully specified by the page itself; real-world sources only show that the pain is real.",
+    "sources": [
+      {
+        "title": "how to read parking signs australia",
+        "url": "https://www.parkhound.com.au/blog/how-to-read-parking-signs-australia/",
+        "date": "",
+        "snippet": "A guide to reading layered parking plates: days first, then time windows, then permit wording, with arrows showing which way a rule applies.",
+        "via": "search",
+        "note": "Not found again by the verifier's claim-based searches; unconfirmed and not to be cited. Source 8 and 9 cover the same reading skill.",
+        "verified": false
+      },
+      {
+        "title": "parking signs explained",
+        "url": "https://www.mynrma.com.au/open-road/advice-and-how-to/road-safety/parking-signs-explained",
+        "date": "",
+        "snippet": "Motoring-club explainer on how parking signs and combined plates are read.",
+        "via": "search",
+        "note": "Not found again by the verifier; unconfirmed and not to be cited.",
+        "verified": false
+      },
+      {
+        "title": "Signs of confusion: Moves to end perplexing parking signs",
+        "url": "https://itv.com/news/2024-12-04/signs-of-confusion-moves-to-end-perplexing-parking-signs",
+        "date": "2024-12-04",
+        "snippet": "ITV News report, data compiled for Confused.com: 81% of drivers believe parking signs are confusing and 30% of motorists who appeal fines cite signage.",
+        "via": "search",
+        "note": "Re-found by a claim-based search; page not opened. Independent agreement from the Which? result (RAC 2024 survey, source 10).",
+        "verified": true
+      },
+      {
+        "title": "DC transportation officials receive hundreds of parking sign complaints",
+        "url": "https://nbcwashington.com/news/local/dc-transportation-officials-receive-hundreds-of-parking-sign-complaints/155128",
+        "date": "",
+        "snippet": "NBC Washington report on a city agency fielding many complaints about conflicting or confusing parking signs; undated in results, related DC coverage runs 2012 to 2018.",
+        "via": "search",
+        "note": "Re-found by search; Fox 5 DC and WTOP results independently report confusing DC signs. Coverage is historical, not current.",
+        "verified": true
+      },
+      {
+        "title": "No parking signs have West Side residents confused",
+        "url": "https://www.cbsnews.com/chicago/news/no-parking-signs-have-west-side-residents-confused",
+        "date": "",
+        "snippet": "Local TV report on residents puzzled by no-parking signs in a Chicago neighborhood.",
+        "via": "search",
+        "note": "Not re-found by the verifier's searches; unconfirmed, not used in facts.",
+        "verified": false
+      },
+      {
+        "title": "Montreal team develops app to help you decipher perplexing parking signs",
+        "url": "https://ctvnews.ca/montreal/article/montreal-team-develops-app-to-help-you-decipher-perplexing-parking-signs",
+        "date": "",
+        "snippet": "CTV News item (the app is Parky.AI, launched 2023): photograph the signs and get a yes or no answer on parking.",
+        "via": "search",
+        "note": "Re-found by search; Global News and other results independently describe the same app.",
+        "verified": true
+      },
+      {
+        "title": "Parky.AI - Intelligent Parking",
+        "url": "https://apps.apple.com/us/app/-/id6446705281",
+        "date": "",
+        "snippet": "App store listing for an app that reads photographed signs and answers yes, no or not sure, with a note that it is not a legal guarantee.",
+        "via": "search",
+        "note": "Re-found in two separate searches; agrees with the CTV and Global News descriptions.",
+        "verified": true
+      },
+      {
+        "title": "Design impact on New York City parking signs: Motorists pay $600 million in parking violations",
+        "url": "https://benjamins.com/catalog/idj.17.2.04akw",
+        "date": "2009",
+        "snippet": "Information Design Journal 17(2), 2009: abstract reports user testing in which existing signs did not match drivers' mental models and prototypes with plain language and clear hierarchy fared better.",
+        "via": "search",
+        "note": "Seen only as publisher catalog and mirror pages (one publisher, not independent); full text paywalled. Unverified, cite only as 'per the publisher abstract' or omit.",
+        "verified": false
+      },
+      {
+        "title": "Reading Common Signs (City of Windsor)",
+        "url": "https://www.citywindsor.ca/residents/traffic-and-parking/parking-enforcement/reading-common-signs",
+        "date": "",
+        "snippet": "Municipal guidance: read from the top sign down and check directional arrows; some signs apply only in certain times, days and months.",
+        "via": "search",
+        "note": "Seen in the verifier's search results; page not opened. Agrees with the RAC WA guide and a DDOT quote.",
+        "verified": true
+      },
+      {
+        "title": "How to read even WA's most confusing parking signs (RAC WA)",
+        "url": "https://rac.com.au/horizons/drive/wa-parking-signs-explained",
+        "date": "",
+        "snippet": "Motoring-club guide: when signs include days or times, those are the only times the restriction applies; arrows show which side of the sign a restriction covers.",
+        "via": "search",
+        "note": "Seen in the verifier's search results; page not opened. Agrees with Windsor.",
+        "verified": true
+      },
+      {
+        "title": "Are private parking firms playing fair? (Which?)",
+        "url": "https://www.which.co.uk/news/article/are-private-parking-firms-playing-fair-aFZ4f3V91uix",
+        "date": "",
+        "snippet": "Consumer group article citing a 2024 RAC survey: nearly eight in ten people who read parking signs had trouble seeing or understanding them.",
+        "via": "search",
+        "note": "Seen in the verifier's search results; page not opened; second independent result for sign confusion in the UK.",
+        "verified": true
+      },
+      {
+        "title": "DC's plans to fix confusing street signs (WTOP)",
+        "url": "https://wtop.com/dc-transit/2018/03/dcs-plans-to-fix-confusing-street-signs/",
+        "date": "2018-03",
+        "snippet": "WTOP report on DDOT plans to fix conflicting signs; DDOT advice quoted in search coverage is to read multiple signs for one space from top to bottom.",
+        "via": "search",
+        "note": "Seen in the verifier's search results; page not opened. Date taken from the URL path.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, per ITV News (2024-12-04), data compiled for Confused.com said 81% of UK drivers find parking signs confusing and 30% of motorists who appeal fines cite signage; a Which? article cites a 2024 RAC survey with nearly eight in ten sign readers having trouble.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, news coverage from Washington DC (NBC Washington, Fox 5, WTOP; mostly 2012 to 2018) reports complaints about conflicting or confusing parking signs; the coverage is historical, not a current figure.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, municipal and motoring-club guidance (City of Windsor, RAC WA) and a quoted DDOT official say stacked signs are generally read from the top down, with local rules varying.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9,
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, City of Windsor and RAC WA guidance agree that days and times on a sign are the only periods the restriction applies, and that arrows show where along the kerb it applies.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, a Montreal-built app, Parky.AI (launched 2023), reads photographed parking signs and answers yes, no or not sure, with a note that it is not a legal guarantee.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "parking sign decoder apps",
+      "Papers Please style rule-checking",
+      "Wordle-style daily puzzle",
+      "gargoyle judge on a cathedral roof"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each case shows a pole, a car with a permit type, and a day and time. The visitor chooses stay or leave and then the latest legal departure time on a week strip. The engine reveals the deciding plate and the full legality timeline, and the gargoyle comments. Cases escalate from one plate to six, with generated traps (exception plates, overnight windows that wrap midnight, cleaning slots that bite only on one weekday) so minute ten feels different from minute one. Sign Smith mode inverts it: build a stack to match a target legality pattern with the fewest plates.",
+    "sophisticationHooks": [
+      "Rules engine: each plate is {action, day mask, minute window (may wrap midnight), permit exceptions, limit}; the week is 10080 minutes, rules are compiled into merged intervals, and precedence is the most restrictive active plate, with an explain trace naming the deciding plate",
+      "Seeded case generator (mulberry32 from the date or a hash seed) that uses the solver to guarantee a unique answer and a difficulty score based on how often the naive top-plate reading is wrong",
+      "Sign Smith inverse mode: a small bounded search over plate templates computes the minimum plate count, so the score is relative to the optimum",
+      "Week legality strip and explain overlay that make the logic visible; shareable URL hash holds seed, mode and answers"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: pure rules module (compile, evaluate, explain, generate), SVG pole and gargoyle art drawn by hand, Verdict mode with a seeded set of about 25 generated cases per seed (difficulty ramp from 1 to 5 plates), Sign Smith mode with 8 hand-authored target patterns whose optimum is found by a bounded brute-force over a small plate-template set, printed in-game municipal code, share link, short about panel, light/dark, reduced motion, keyboard play. Cut: multiple cities, real signage, any sound beyond one optional stamp sound, accounts, streak sync, a greedy general solver. Build order: engine plus tests first, Verdict UI second, Sign Smith last (droppable to 4 patterns if the morning slips).",
+    "risks": [
+      "Must use an invented jurisdiction and invented plate styling; no real sign designs, no legal advice, with a visible note that the in-game code is fictional",
+      "Rule-precedence ambiguity could make answers feel unfair; mitigated by printing the in-game municipal code and showing the explain trace. Real-world reading conventions vary by city, so the page states its own rules rather than claiming they are universal",
+      "Unverified claims stay out of the page or appear only as 'as of 2026-10-10, per <source>': the Australian guide specifics (sources 0 and 1), the Chicago report, the 2009 New York study, and any 'no existing game' statement, which rests only on the absence of search results",
+      "Scope risk: Sign Smith's optimum search must stay small and bounded; if it is not finished by mid-morning it ships with fewer patterns"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Sign-confusion and top-to-bottom reading claims were re-found in several independent search results but no page was opened; the Australian guides, Chicago report and 2009 study stay unverified and the 'no such game' claim is dropped from the pitch. The idea is buildable offline in a morning once Sign Smith is cut to 8 hand-authored patterns."
+  }
+}

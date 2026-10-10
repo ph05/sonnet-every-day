@@ -1,0 +1,69 @@
+{
+  "id": "lab-2",
+  "title": "Unreliable Plotter",
+  "pitch": "A virtual pen plotter draws a generative poster line by line on screen: flow-field ribbons and spiral-packed circles (plus L-system shrubs if time allows), each in two or three pens. A mishap dial lets the machine misbehave in stylised ways (a pen drying out and skipping, a blot on touchdown, paper creeping between pen swaps), narrated by a deadpan operator log. The visitor hunts for the dial setting where the imperfections make the poster better than the ideal version, then shares the seed or saves the layered SVG.",
+  "whyNow": "Timeless: pen-plotter flow-field art is an established craft scene, and the page treats machine error as a creative parameter.",
+  "origin": { "agent": "lab", "lens": "generative-art" },
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "generator",
+    "tone": ["playful", "nerdy", "absurd"],
+    "tech": ["canvas2d", "worker", "svg", "pointer-events"],
+    "tags": ["pen-plotter", "flow-field", "l-system", "perlin-noise", "procedural-art", "shareable-seed", "svg-export", "ink-simulation", "poster-art"],
+    "keywords": ["plotter-log", "ink-reservoir", "paper-creep", "pen-swap", "ideal-vs-actual", "layered-svg", "seeded-random", "flow-ribbons"],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "A flow field is a grid of direction vectors, usually angles taken from Perlin noise, along which particles are traced to produce smooth curves; each curve is one continuous stroke, which suits a plotter. Plotter tooling such as vpype treats each SVG layer as one pen, so the page exports layers per pen. The mishap model is stylised: ordinary pens skip when the tip is clogged by dried ink or paper fibres, but the page does not claim any calibration to a specific plotter. Paper drift during long plots and offsets at pen swaps are reported only in forum anecdotes and one patent that calls pen-drag shift usually negligible, so the page presents them as playful exaggeration, not measured fact. Perlin's paper 'An Image Synthesizer' appeared at SIGGRAPH in 1985; sources disagree on when the noise was first developed, so the page leaves that date out.",
+    "sources": [
+      { "title": "Flow Fields (Tyler Hobbs)", "url": "https://www.tylerxhobbs.com/words/flow-fields", "date": "", "snippet": "Essay on flow fields, found again by a claim search about Perlin-noise vector grids.", "via": "search", "note": "Found again in search results; page not opened (host did not resolve)", "verified": true },
+      { "title": "Getting Creative with Perlin Noise Fields (Sighack)", "url": "https://sighack.com/post/getting-creative-with-perlin-noise-fields", "date": "", "snippet": "Processing write-up on Perlin noise fields steering particles.", "via": "search", "note": "Found again; agrees noise fields steer particle paths", "verified": true },
+      { "title": "particles in simplex noise flow field (CodePen post)", "url": "https://codepen.io/DonKarlssonSan/post/particles-in-simplex-noise-flow-field", "date": "", "snippet": "Post about particles moving through a noise-driven flow field.", "via": "search", "note": "Independent result agreeing on the mechanism (noise-driven vector field, particles follow it)", "verified": true },
+      { "title": "vfab (PyPI)", "url": "https://pypi.org/project/vfab/", "date": "", "snippet": "Detects SVG layers and offers pen mapping for multi-pen AxiDraw jobs.", "via": "search", "note": "Found again; layers map to pens", "verified": true },
+      { "title": "vpype fundamentals (documentation)", "url": "https://vpype.readthedocs.io/en/1.15.0/fundamentals.html", "date": "", "snippet": "Docs state each layer holds geometry for a specific pen or colour.", "via": "search", "note": "Independent second result: one layer per pen", "verified": true },
+      { "title": "How to stop a rollerball pen from skipping (Scriveiner)", "url": "https://scriveiner.com/en-au/blogs/scriveiner-blog/how-to-stop-a-rollerball-pen-from-skipping-and-restore-smooth-ink-flow", "date": "", "snippet": "Skipping linked to dried ink and fibres in the tip.", "via": "search", "note": "Found again; ordinary-pen physics, not plotter-specific", "verified": true },
+      { "title": "Common Rollerball Pen Issues (The Online Pen Company)", "url": "https://www.theonlinepencompany.com/eu/rollerball-pens/common-rollerball-issues", "date": "", "snippet": "Dried ink in the tip and paper fibres lodged in the nib block flow.", "via": "search", "note": "Independent second result on skipping causes", "verified": true },
+      { "title": "An image synthesizer by Perlin (ACM SIGGRAPH History Archives)", "url": "https://history.siggraph.org/?p=107418", "date": "1985", "snippet": "Archive entry for Perlin's 1985 paper.", "via": "search", "note": "Seen in search results; paper in Computer Graphics vol 19 no 3, 1985", "verified": true },
+      { "title": "perlin:1985:IS (University of Utah library)", "url": "https://www.sci.utah.edu/~kpotter/Library/Papers/perlin:1985:IS/", "date": "1985", "snippet": "Library entry for the same 1985 paper.", "via": "search", "note": "Independent second result agreeing on 1985", "verified": true },
+      { "title": "graphtec 8600 drawing pen with new paper type (Signs101 forum)", "url": "https://www.signs101.com/threads/graphtec-8600-drawing-pen-with-new-paper-type.162292", "date": "", "snippet": "Forum thread in which lines overlap on long plots, read by a commenter as paper slipping sideways.", "via": "search", "note": "Found again but it is one anecdote; not treated as fact", "verified": false },
+      { "title": "Executing Generative Art with a Plotter (Tyler Hobbs)", "url": "https://tylerxhobbs.com/essays/2018/executing-generative-art-with-a-plotter", "date": "2018", "snippet": "Claimed essay on plotter constraints.", "via": "search", "note": "Not found again by a search for the title; no claim rests on it", "verified": false }
+    ],
+    "facts": [
+      { "claim": "A flow field is a grid of direction vectors; Perlin noise is a common way to choose the angles, and particles traced along the field give smooth curves.", "sourceIndex": 1, "alsoIn": [0, 2], "asOf": "2026-10-10" },
+      { "claim": "In plotter tooling such as vpype, each SVG layer holds the geometry for one pen or colour, and vfab maps detected layers to pens.", "sourceIndex": 4, "alsoIn": [3], "asOf": "2026-10-10" },
+      { "claim": "Ordinary pens skip when the tip is clogged by dried ink or lodged paper fibres; the page borrows this as a stylised model, not a plotter calibration.", "sourceIndex": 5, "alsoIn": [6], "asOf": "2026-10-10" },
+      { "claim": "Perlin's paper 'An Image Synthesizer' appeared in Computer Graphics (SIGGRAPH) in 1985.", "sourceIndex": 7, "alsoIn": [8], "asOf": "2026-10-10" }
+    ],
+    "inspirations": ["pen plotter flow-field posters", "Fidenza-style ribbon compositions", "vpype layered SVG workflow", "teletype operator logs", "The Algorithmic Beauty of Plants"]
+  },
+  "design": {
+    "coreLoop": "Pick a composition and a seed, press plot, and watch the pen draw in real time while the operator log narrates events. The mishap dial changes how often ink skips, blots appear, the paper creeps or a pen swap lands slightly off. An ideal-versus-actual ghost toggle shows what the machine meant to draw, so each seed becomes a small experiment and finding the dial setting that flatters a given composition is the goal.",
+    "sophisticationHooks": [
+      "Seeded composition engines (flow-field ribbons with spacing control and spiral-packed circles; L-system shrubs as a stretch) split across 2 to 3 pen layers",
+      "Stylised machine model: ink reservoir that depletes with distance and recovers on re-dip, touchdown blots, cumulative paper creep that misregisters later layers, with all randomness drawn from the seed so the URL reproduces the same plot",
+      "Operator log with deadpan one-line entries per event and an ideal-versus-actual ghost overlay",
+      "Exports: layered SVG of the ideal paths (labelled as ideal) and a PNG of the as-plotted poster with a plot-number caption"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Must ship: two composition engines (flow-field ribbons, spiral-packed circles), plotter-state model in a worker, canvas2d renderer with per-pen ink look, playback controls (speed, pause, skip to end), mishap dial plus 3 individual toggles (dry pen, blot, paper creep), operator log, ideal-vs-actual ghost, hash state (composition, seed, pens, dial), SVG and PNG export through Blob downloads, light and dark paper themes, reduced-motion path (instant draw), short about panel. Stretch only if QA slack remains: L-system engine, pen-swap offset toggle. Cut: real G-code, stepper-motor audio, user-drawn input paths.",
+    "risks": [
+      "The mishap physics is stylised and not calibrated to a real machine; the UI says so.",
+      "Unverified: the claim that a plotter can only draw lines and cannot cover earlier ink (Hobbs essay) could not be found again; the page omits it or shows it as 'as of 2026-10-10, per a search result for Tyler Hobbs's plotter essay, unconfirmed'.",
+      "Unverified: paper creep over long plots rests on forum anecdotes (one Signs101 thread) and pen-swap offsets on an unattributed anecdote; the page presents both as playful exaggeration and says 'reported by hobbyists, not measured', or omits them.",
+      "Ordinary-pen skipping sources are not plotter-specific, so the about panel presents them as inspiration only.",
+      "Performance: long plots can reach tens of thousands of segments, so segments are batched, capped (about 60k) and drawn incrementally to a backing canvas.",
+      "Dial and toggle count could crowd a 360px layout; the controls fold into a drawer on small screens.",
+      "Flow-field ribbons are a very familiar look; differentiation relies on the machine-error layer and log, which needs strong writing and visible payoffs where ideal and actual differ clearly."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Core technique and layer-per-pen workflow were found again in independent search results; no page could be opened, and the plotter-constraint and paper-creep claims stay unverified and are softened. Buildable offline in a morning once scoped to two engines."
+  }
+}

@@ -1,0 +1,270 @@
+{
+  "writeCarryover": false,
+  "scores": {
+    "i04": {
+      "sophistication": 7.6,
+      "delight": 6.8,
+      "distinctness": 9,
+      "feasibility": 6.4,
+      "timeliness": 5.5,
+      "interestFit": 9.3,
+      "polishPotential": 8.6,
+      "safety": 5.8
+    },
+    "i01": {
+      "sophistication": 6.2,
+      "delight": 6.2,
+      "distinctness": 7,
+      "feasibility": 8.5,
+      "timeliness": 9,
+      "interestFit": 6.4,
+      "polishPotential": 5.5,
+      "safety": 8.2
+    },
+    "i08": {
+      "sophistication": 8.3,
+      "delight": 5,
+      "distinctness": 6.8,
+      "feasibility": 7.2,
+      "timeliness": 7,
+      "interestFit": 4.1,
+      "polishPotential": 6.3,
+      "safety": 7.1
+    },
+    "i10": {
+      "sophistication": 6.8,
+      "delight": 3.8,
+      "distinctness": 6,
+      "feasibility": 6.8,
+      "timeliness": 8.5,
+      "interestFit": 7,
+      "polishPotential": 6.6,
+      "safety": 8.6
+    },
+    "i07": {
+      "sophistication": 7.4,
+      "delight": 7,
+      "distinctness": 4.5,
+      "feasibility": 7.5,
+      "timeliness": 5,
+      "interestFit": 4.5,
+      "polishPotential": 6.9,
+      "safety": 6.6
+    },
+    "i05": {
+      "sophistication": 5.6,
+      "delight": 7.5,
+      "distinctness": 4,
+      "feasibility": 5.3,
+      "timeliness": 6.5,
+      "interestFit": 5.3,
+      "polishPotential": 8,
+      "safety": 7.4
+    },
+    "i02": {
+      "sophistication": 6.6,
+      "delight": 6.3,
+      "distinctness": 3.5,
+      "feasibility": 5.8,
+      "timeliness": 6,
+      "interestFit": 3.8,
+      "polishPotential": 7.4,
+      "safety": 7
+    },
+    "i03": {
+      "sophistication": 7,
+      "delight": 9,
+      "distinctness": 6,
+      "feasibility": 4.9,
+      "timeliness": 6,
+      "interestFit": 3.2,
+      "polishPotential": 9,
+      "safety": 6.4
+    },
+    "i06": {
+      "sophistication": 3.2,
+      "delight": 7.7,
+      "distinctness": 8.5,
+      "feasibility": 4.5,
+      "timeliness": 3.5,
+      "interestFit": 7.2,
+      "polishPotential": 7.1,
+      "safety": 5.2
+    },
+    "i09": {
+      "sophistication": 8,
+      "delight": 8.4,
+      "distinctness": 2.5,
+      "feasibility": 3.8,
+      "timeliness": 4.5,
+      "interestFit": 4.9,
+      "polishPotential": 7.6,
+      "safety": 7.7
+    }
+  },
+  "totals": {
+    "i04": 74.5,
+    "i01": 70.6,
+    "i08": 66.3,
+    "i10": 64.5,
+    "i07": 63.3,
+    "i05": 59.7,
+    "i02": 57,
+    "i03": 65.7,
+    "i06": 60.2,
+    "i09": 57.8
+  },
+  "chosenId": "i04",
+  "carryoverOutId": "i01",
+  "rejectedNotes": [
+    {
+      "title": "Second Pick Wins",
+      "reason": "Rank 2, 70.6/100. Weakest on polishPotential (5.5): Coin-flip race bar, payoff-matrix heatmap and a convergence counter are a decent canvas, but the dossier cuts sound and the cycle view, and the hero is mostl... Best on timeliness (9)."
+    },
+    {
+      "title": "The Waiting Hum",
+      "reason": "Rank 3, 66.3/100. Weakest on interestFit (4.1): Queueing-theory sonification (M/M/1, Kingman, Little's law) is a rescued dud subject with no connection to the owner's interests; fine but neutral-to-cool fo... Best on sophistication (8.3)."
+    },
+    {
+      "title": "Seven Riffles",
+      "reason": "Rank 4, 64.5/100. Weakest on delight (3.8): The night-shift dealer is a thin frame around a total-variation meter and Monte Carlo audit charts; the 'seven shuffles' fact is a decent trivia hook but the... Best on safety (8.6)."
+    },
+    {
+      "title": "Curb Verdict",
+      "reason": "Rank 5, 63.3/100. Weakest on interestFit (4.5): Parking-sign rules engine with a gargoyle judge; a clever deduction puzzle on a complained-about everyday subject, no tie to poker, Balatro or hockey. Best on feasibility (7.5)."
+    },
+    {
+      "title": "Cabinet of Opinions",
+      "reason": "Rank 6, 59.7/100. Weakest on distinctness (4): Fake smart-cabinet product page with control panel and manual copies i03's shell and shares the office-satire, rule-deduction flavour of i09 and i07, though ... Best on polishPotential (8)."
+    },
+    {
+      "title": "Clause And Effect",
+      "reason": "Rank 7, 57/100. Weakest on distinctness (3.5): Dependency-knot graph puzzle about circular permits and queues is a bureaucracy-satire sibling of i09, i07 and i05 (tags bureaucracy, red-tape, catch-22, que... Best on polishPotential (7.4)."
+    },
+    {
+      "title": "The Overtoaster",
+      "reason": "Rank 8, 65.7/100. Gated: feasibility 4.9 < 5. Weakest on interestFit (3.2): Heater-grid toaster that burns art onto bread with a paywall-gadget satire shell; the pitch is mostly a novelty appliance gag with no overlap with the owner'... Best on delight (9)."
+    },
+    {
+      "title": "Starter Pack Syntax",
+      "reason": "Rank 9, 60.2/100. Gated: feasibility 4.5 < 5. Weakest on sophistication (3.2): The core is a hand-authored per-subject typicality 0-3 and role-tag matrix with a few lint rules over 12 subjects and about 48 items, which is essentially a ... Best on distinctness (8.5)."
+    },
+    {
+      "title": "The Wrong Window",
+      "reason": "Rank 10, 57.8/100. Gated: feasibility 3.8 < 5. Weakest on distinctness (2.5): Citizen walking a ministry of counters, forms, stamps and circular requirements is the most direct twin of i02 (red-tape, catch-22, queue) and also echoes i0... Best on delight (8.4)."
+    }
+  ],
+  "rationale": "Jokers In Phase (i04) scored 74.5/100, rank 1 of 10. Strongest on interestFit (9.3): Fan-made Balatro-style joker sandbox with a chips-times-mult engine, left-to-right joker resolution and a seeded 52-card deck: a direct hit on the owner's Balatro and mod love, and strong on its own. Weakest on timeliness (5.5): Balatro joker order and Kuramoto fireflies are stable (left-to-right rule in two guides, 2025 Kuramoto abstract), but the idea rides a game and mod ecosystem whose details drift, and the mod-index ... Critic check: Approve: no blocker, the left-to-right and Kuramoto premises hold, but one source is misattributed, fireflies-as-Kuramoto is overstated, and the Firefly-lock payoff fails on many random seeds unless engineered.",
+  "winnerNotes": {
+    "vetoed": false,
+    "vetoedId": null,
+    "headline": "Approve: no blocker, the left-to-right and Kuramoto premises hold, but one source is misattributed, fireflies-as-Kuramoto is overstated, and the Firefly-lock payoff fails on many random seeds unless engineered.",
+    "risks": [
+      "major: The payoff (lock all three Fireflies, page pulses, concept card drops) is untuned and probably unwinnable or trivial as pitched. In my throwaway prototype (assumed rules, not the team's engine: theta += omega + K*mean(sin(theta_other - theta)) once per played hand, three Fireflies on a 5-slot rail = 60 placements, lock = order parameter r >= 0.97, 1,500 random seeds per setting) no placement locked for roughly 15 to 90 percent of seeds at K 0.15 to 0.5 over 4 to 6 hands, while at K 0.8 with distance-decaying coupling up to 82 percent of seeds locked in at least half of all placements. Random or hash-supplied seeds will therefore often be dead ends or free wins, and a free coupling knob is just a difficulty slider. -> Make solvability a property of the engine: an in-page solver brute-forces every rail for the current seed in milliseconds; shipped challenges use seeds found by a build-time search so that a small share of rails (roughly 1 to 10 percent) reaches the lock; unvetted hash seeds show 'best rail locks n of 3' instead of a silent dead end; the coupling knob is fixed per challenge or priced (stronger coupling shrinks each Firefly's flash bonus).",
+      "major: About-panel facts are shakier than the dossier's verified:true flags suggest. Fact 2 credits the 'final mult 26 versus 42' example to Prima Games, but two of my searches name Inverse (inverse.com/gaming/balatro-tips-for-scoring-big) for those numbers, none names Prima, and the Prima summaries I got show different numbers; the Destructoid 6,966 looks like the score after the reorder, not before. WebFetch failed once each on www.inverse.com, primagames.com and destructoid.com (ENOTFOUND), so every guide claim stays search-only. The research summary also says fireflies are 'modelled by the Kuramoto family', yet a search summary of arXiv 1203.1699 says pulse-driven systems like fireflies are usually modelled with pulse-coupled (integrate-and-fire) models and treats Kuramoto as a poor fit; the APS abstract only proposes a Kuramoto variant. Nexus Mods pages 887 and 909 and the Georgia Tech PDF were never opened by anyone. Rubric severity: S2, or S1 if it sits in headline copy. -> Restrict the page to the facts policy in mustFixInSpec items 1 to 3: cite only the left-to-right rule, Kuramoto as a textbook toy, one APS abstract and Mirollo-Strogatz as the classic alternative; show the page's own computed examples; keep 'as of 2026-10-10' visible because a 1.1 update with new jokers is reported as pending (no release date found in GamesRadar, PC Gamer, Godisageek or DualShockers results).",
+      "major: Minute ten may look like minute one. With three fixed Fireflies and nearest-neighbour coupling my prototype found only 7 distinct coupling patterns among the 60 placements (18 with distance-decaying coupling); the Pendulum is a period-2 pattern readable after two hands; at 4 to 6 hands per round a Firefly barely completes a cycle, so 'blinks on its own beat' is hard to see. The dossier is ambiguous between setting the rail once and rearranging it every hand. -> The SPEC picks one reading and says what minute ten teaches. Recommended: rearrange between hands with a next-hand phase preview, a pool of at least 8 jokers for 5 slots (two tempos per Firefly), distance-decaying coupling (which is also what the APS abstract describes), and a real conflict between the best rail for sync and the best rail for left-to-right mult, proven by a headless brute-force test.",
+      "major: The page is a fan concept of a commercial game. I found no published fan-content policy (one extended search); the only precedent seen is a fan Commodore 64 port whose author says on its itch.io page that the publisher asked for its removal (single source, and a faithful port rather than a concept toy). The practical exposure is look-alike trade dress (green felt, blue chips with red mult, CRT shader, pixel art, card backs) and the game's name in the title or thumbnail. -> Visible unofficial-fan-concept line in the first viewport, the name used only there, in the About panel and in tags, an original visual identity, invented numbers and glyphs, no game vocabulary, system fonts only (mustFixInSpec items 4 and 5).",
+      "major: Scope is long for one day: engine, three new behaviours plus three fillers, three input paths, ring plus table, cascade log, two or three challenges with par, hash state, audio, six original SVG portraits and a share card. The real cost is tuning and testing, not typing, and a spec that quietly shrinks to a mini-spec mismatches build and QA (premortem FM-83, the risk that sits in my lane today). -> SPEC header states tier 1, a per-file line budget and an ordered cut list that leaves a valid core (mustFixInSpec item 16), so a scope-cut directive removes list items instead of forcing a rewrite.",
+      "minor: In March 2025 the game's creator banned AI-generated art on the official subreddit and wrote that neither he nor the publisher condones AI 'art' (Push Square, PC Gamer, TheGamer and GameRant agree). This page is AI-built fan content of his game, so posting it into the game's official community invites a hostile reception. -> Keep the 'Built by the Sonnet Every Day team' credit visible, draw abstract geometric joker glyphs in code (no character illustration), and do not post the link to the game's official subreddit or Discord.",
+      "minor: The dossier says eight hand types; standard poker has nine categories. A wrong hand name (Ace-low straight, a flush that is also a straight, full house versus trips) on a poker toy is a wrong core loop (S1 if shipped) in front of a poker-literate owner. -> Headless test that enumerates all 2,598,960 five-card hands and asserts the exact category counts in mustFixInSpec item 6 (I verified them by enumeration in about 9 seconds).",
+      "minor: Shared links must reproduce scores. ECMA-262 only requires Math.sin and its relatives to be implementation-approximated, and search results report last-bit differences between engines (one open issue reports a simulation diverging between Node 20 and a recent Chrome, unverified). Flips are rare, but exact lock thresholds and the share-by-hash feature depend on it. -> Integer phases with a literal sine table, seeded mulberry32, no trig or Math.random in state or score paths, golden hash states in tests (mustFixInSpec item 7).",
+      "minor: In March 2024 a ratings change to 18+ for 'gambling imagery' pulled the game from some European storefronts (VGC, MP1st, GameSpot and Nintendo Life agree; the publisher called it mistaken). The dossier's own copy says 'pay out' and 'play-money chips', which reads like wagering. -> Chips are score points, stated once; ban wager vocabulary in all copy (mustFixInSpec item 5).",
+      "minor: Hash state rendered as text lets a crafted link put arbitrary words on our page; a whole-page pulse plus three blinking Fireflies could stack into a flashy sequence; the thumbnail is a light-mode screenshot where a firefly-glow look washes out; a canvas ring is invisible to screen readers. -> Whitelist-parse the hash and render enumerated names only; one slow low-contrast pulse; the ring sits on a dark panel in both colour schemes; a real phase table and aria-live updates (mustFixInSpec items 11 and 13 to 15).",
+      "minor: Day one of the site is a niche in-joke: visitors who never played the game bounce unless the first minute teaches chips times mult and rail order in plain words, and the full-sync reward is rare (see the first risk), so most visitors would never see the share moment. -> Scripted first minute and a reward ladder so most visitors see a payoff (mustFixInSpec item 12)."
+    ],
+    "mustFixInSpec": [
+      "1. FACTS POLICY for the About panel. Only these third-party statements appear, each dated 'as of 2026-10-10': (a) community guides (Destructoid, Prima Games) describe joker effects as resolving left to right, with exceptions for effects that fire when a card scores, and one uncontrolled forum report disagrees; (b) the Kuramoto model is the textbook toy for coupled phase oscillators (Complexity Explorables, 'ride my kuramotocycle'); (c) a 2025 APS March Meeting abstract, 'Relating the Kuramoto model to data from immobile firefly swarms', relates a Kuramoto variant to flash data from one firefly swarm; (d) optional: pulse-coupled models (Mirollo and Strogatz, SIAM 1990) are the other classic way to model fireflies, no link needed. Never write that fireflies 'are' Kuramoto oscillators. State that the engine is a simplified concept with invented numbers, and name authors only if a search result you saw shows them.",
+      "2. NO THIRD-PARTY NUMBERS. Do not reproduce the 26-versus-42 or the 6,966 examples or credit any guide for a worked example (the dossier's Prima Games attribution of 26 versus 42 is unsupported; my searches point to Inverse and no guide host would open). Show the page's own computed left-to-right example, tagged 'computed by this page'. Do not use the real game's base chips and mult table: choose distinct invented numbers so the 'invented' label is true.",
+      "3. SOURCE LIST: at most 5 links (Destructoid, Prima Games, the APS abstract, Complexity Explorables, and the Steamodded repository only if modding is mentioned at all). Drop Nexus Mods pages 887 and 909 (never opened, third-party mod pages), the Mistigris, Community College Pack, Blueprint/Brainstorm and abakcus entries, and the Georgia Tech PDF. Say 'search-only' where that is the evidence. Do not claim the idea is new to the genre: a vanilla joker with a hands-played cycle exists (Loyalty Card, X4 every 6th hand, per several search results).",
+      "4. LABELS AND TRADE DRESS. One visible line in the first viewport at 360x640 and 1280x800, for example: 'Unofficial fan concept in the style of joker-deck roguelikes such as Balatro. Not affiliated with or endorsed by its developer or publisher. No game art, fonts, logos or audio are used; numbers and art are invented.' The game's name appears only there, in the About panel, in project.json and in tags, never in the H1, the document title or large display text. Own visual identity: no CRT or scanline shader, no pixel art, no green felt, no blue-chips/red-mult colour pairing, no card-back pattern, no mascot, system font stack only. Avoid the game's own vocabulary (Blind, Ante, Voucher, Tarot, Planet, Spectral, Stake); use 'target' and 'par'.",
+      "5. NO WAGER VOCABULARY. Chips are score points. One line near the score: 'Chips here are score points, not money: nothing is bet, bought or won.' Ban bet, wager, ante, payout, pay out, jackpot, cash, coin, buy, shop, reroll and any currency symbol in UI copy, tooltips, the concept card and project.json; write 'adds' or 'scores' instead of 'pays out'.",
+      "6. POKER EVALUATOR. Define the categories (standard poker has nine: high card, pair, two pair, three of a kind, straight, flush, full house, four of a kind, straight flush; the dossier says eight, so say which is dropped and why). Ace plays high or low in a straight (A-2-3-4-5 counts, no wrap-around). Ship a headless Node test that enumerates all 2,598,960 five-card hands and asserts exactly: straight flush 40 (4 of them royal), four of a kind 624, full house 3,744, flush 5,108, straight 10,200, three of a kind 54,912, two pair 123,552, pair 1,098,240, high card 1,302,540 (flush and straight exclude straight flushes). I verified these by enumeration.",
+      "7. DETERMINISM. All randomness through the seeded mulberry32 (Math.random only for decoration); phases are integers (for example 0 to 1023 ticks per turn), coupling reads a literal integer sine table, and nothing that touches state or score calls Math.sin, cos, exp, pow or log (ECMA-262 leaves their results implementation-approximated; trig is for drawing only). Put 3 golden hash states with exact expected scores in the headless test and in the browser check.",
+      "8. SOLVABILITY BY CONSTRUCTION. The engine is a pure function (state, action) to (state, trace); the log and cascade render the trace and never recompute. A solver brute-forces every rail for the current seed (if the rail is set once, a few thousand arrangements, milliseconds; if it can be rearranged each hand, use a bounded beam search and call its output 'a working line', not 'the best'). Each shipped challenge uses a seed from a build-time search with a known par and a small share (roughly 1 to 10 percent) of rails reaching the lock; hash seeds outside the vetted set show 'best rail locks n of 3' and offer the next vetted seed; a hint button after three misses reveals one working rail.",
+      "9. DEPTH ACCEPTANCE (headless, per shipped challenge; thresholds are starting points): par is reachable; the best score is at least 1.5x the median rail; at least two distinct near-optimal rails exist; the best rail differs between at least two challenges; the best rail for the lock is not simply the best rail for left-to-right mult (state the tension). The SPEC must say whether the rail is set once or rearranged between hands, what minute ten teaches, how many jokers are in the pool (at least 8 for 5 slots), and use distance-decaying coupling so placements are not reduced to 7 adjacency patterns. Also define Handshake at the rail ends, the matching-phase tolerance including Pendulum versus Firefly, empty slots, and what happens after the last hand.",
+      "10. COUPLING KNOB is not a free slider. Fixed per challenge, or priced (stronger coupling reduces each Firefly's flash bonus), or three detents; in free sandbox mode it may be free but the full-sync reward is withheld.",
+      "11. PHASE DISPLAY AND FIRST FRAME. The ring and table show the phases that will score on the NEXT hand (a preview); animation only interpolates between discrete states and never shows a state the engine will not score. The first frame is a pre-played demo hand (ring, cascade and score visible) and sets window.__sedThumbReady. The phase ring sits on a dark 'night' panel in both colour schemes because the thumbnail is a light-mode screenshot.",
+      "12. FIRST MINUTE AND REWARD LADDER, in plain words for visitors who never played the game. 0 to 10 s: one-line premise and one glowing Play button. 10 to 30 s: guided hand with chips times mult explained. 30 to 50 s: prompt to swap two jokers and watch the score change. 50 to 70 s: first par reached with one swap. Fireflies arrive in challenge 2, Handshake in challenge 3. A full lock gives the gold concept card and one slow glow; two of three gives a silver card; the card preview and copy-link are available at any time.",
+      "13. HASH AND STATE SAFETY. Parse the hash with a whitelist (joker ids from an enum, integers clamped, unknown keys ignored), render only enumerated names via textContent, never free text from the hash on the card or in the page (content spoofing); a bad hash falls back to the default state with a small notice; localStorage in try/catch and the page correct without it.",
+      "14. INPUT, ACCESSIBILITY, MOBILE. Reordering works by drag, by tap-select then tap-slot or arrow buttons, and by keyboard (Space grabs, arrows move, Enter drops, Escape cancels) with aria-live announcements; five cards fit one row at 360 px (about 56 px each, no horizontal scroll); touch-action none only on the drag handle; the ring has role img with an aria-label updated each hand and a real table (also the reduced-motion view); phase is never encoded by colour alone; suits and joker glyphs are drawn as SVG or canvas paths, not emoji or Unicode card characters (they can render as colour emoji or in a mismatched font).",
+      "15. MOTION AND SOUND. The sync pulse is a single glow of at least 600 ms with under 10 percent relative-luminance change, not a flash; Firefly blinks combined stay under 2 per second over any large area; prefers-reduced-motion removes pulse, drift and blinks; audio starts muted, needs a user gesture, and failure to create an AudioContext is silent.",
+      "16. SCOPE AND CREDIT (premortem FM-83). The SPEC header states tier 1, a per-file line budget (aim 900 to 1,300 own lines, floor 700) and an ordered cut list that leaves a valid core if a scope-cut arrives: cut PNG export first, then audio, then the third challenge, then the free sandbox mode. Must survive: tested engine, rail with all input paths, ring plus table, cascade log, two solvable challenges, hash state, About panel, labels. Keep the 'Built by the Sonnet Every Day team' credit visible and use abstract geometric joker glyphs drawn in code, no character illustrations."
+    ],
+    "judgeWarnings": [
+      "safety: Fan concept of a commercial game: spec must label it unofficial, use no game art, fonts, logo or audio, mark chips as simulated play money, and omit the unverified Blueprint, Community College Pack and Mistigris claims."
+    ],
+    "unscoredMandatory": []
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "i04",
+      "title": "Jokers In Phase",
+      "total": 74.5,
+      "eligible": true
+    },
+    {
+      "rank": 2,
+      "id": "i01",
+      "title": "Second Pick Wins",
+      "total": 70.6,
+      "eligible": true
+    },
+    {
+      "rank": 3,
+      "id": "i08",
+      "title": "The Waiting Hum",
+      "total": 66.3,
+      "eligible": true
+    },
+    {
+      "rank": 4,
+      "id": "i10",
+      "title": "Seven Riffles",
+      "total": 64.5,
+      "eligible": true
+    },
+    {
+      "rank": 5,
+      "id": "i07",
+      "title": "Curb Verdict",
+      "total": 63.3,
+      "eligible": true
+    },
+    {
+      "rank": 6,
+      "id": "i05",
+      "title": "Cabinet of Opinions",
+      "total": 59.7,
+      "eligible": true
+    },
+    {
+      "rank": 7,
+      "id": "i02",
+      "title": "Clause And Effect",
+      "total": 57,
+      "eligible": true
+    },
+    {
+      "rank": 8,
+      "id": "i03",
+      "title": "The Overtoaster",
+      "total": 65.7,
+      "eligible": false
+    },
+    {
+      "rank": 9,
+      "id": "i06",
+      "title": "Starter Pack Syntax",
+      "total": 60.2,
+      "eligible": false
+    },
+    {
+      "rank": 10,
+      "id": "i09",
+      "title": "The Wrong Window",
+      "total": 57.8,
+      "eligible": false
+    }
+  ]
+}

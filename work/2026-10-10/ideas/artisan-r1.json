@@ -1,0 +1,283 @@
+{
+  "schema": 1,
+  "agent": "artisan",
+  "lens": "anti-lens-dud-rescue",
+  "candidates": [
+    {
+      "id": "artisan-r1-1",
+      "title": "Thirty Percent Chance",
+      "pitch": "A stone rain-spout creature on a cathedral corner needs a forecaster: each morning the visitor reads simple sky clues (barometer needle, cloud thickness, swallow height, wind vane), dials in a chance of rain, and watches the spout either gush or stay dry. A stained-glass rose window slowly fills with the visitor's honesty record, showing in plain colour whether their 30 percent days really rain about 3 days in 10, and a second mode lets them set confidence and coverage on a county map to see why the official number is a product of two things.",
+      "whyNow": "Timeless: weather small talk is the most ignored subject on earth, and the interactive turns it into a game about calibration, which is the skill behind every good forecast, poker read and bet.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "anti-lens-dud-rescue"
+      },
+      "fingerprint": {
+        "category": "education-explainer",
+        "mechanic": "game",
+        "tone": ["playful", "serene", "analytical"],
+        "tech": ["svg", "canvas2d", "webaudio", "procedural-audio", "localstorage"],
+        "tags": ["weather", "probability", "calibration", "forecasting", "brier-score", "rain", "stained-glass", "small-talk"],
+        "keywords": ["chance-of-rain", "reliability-diagram", "proper-scoring", "rose-window", "rain-spout", "seeded-weather", "calibration-game"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Weather outlets explain that a chance-of-rain number is the forecaster's confidence that rain happens somewhere in the area multiplied by the share of the area that gets measurable rain, and that it means nothing without a time window; most people misread it. Forecast-verification references describe the Brier score (lower is better, decomposed into reliability, resolution and uncertainty) and the reliability diagram, which plots how often something happened against the probability announced. Architectural references agree a gargoyle is, strictly, a carved rainwater spout, which gives the page a natural mascot and a natural hero animation. All weather in the game is simulated by a bundled seeded generator and labelled so.",
+        "sources": [
+          {
+            "title": "What does a 30% chance of rain really mean",
+            "url": "https://www.ksat.com/weather/2023/09/18/what-does-a-30-chance-of-rain-really-mean",
+            "date": "2023-09-18",
+            "snippet": "Local TV weather explainer on how a rain percentage combines forecaster confidence with how much of the area gets wet, and on common misreadings.",
+            "via": "search",
+            "note": "PoP is confidence times coverage; misreadings are common",
+            "verified": true
+          },
+          {
+            "title": "What does the probability of precipitation mean exactly",
+            "url": "https://chairlift.opensnow.com/news/post/what-does-the-probability-of-precipitation-mean-exactly",
+            "date": "",
+            "snippet": "Independent weather-site explainer of the same chance-of-precipitation definition, including the need for a stated time period.",
+            "via": "search",
+            "note": "Second independent explainer of PoP = C x A and the time-window caveat",
+            "verified": true
+          },
+          {
+            "title": "Scoring rules: Brier",
+            "url": "https://metricgate.com/docs/scoring-rules-brier/",
+            "date": "",
+            "snippet": "Documentation page on the Brier score as a proper scoring rule for probability forecasts, where lower values are better.",
+            "via": "search",
+            "note": "Brier score is proper and lower-is-better",
+            "verified": true
+          },
+          {
+            "title": "ECMWF forecast verification page (reliability and Brier score)",
+            "url": "https://confluence.ecmwf.int/x/-PWHEw",
+            "date": "",
+            "snippet": "Forecast-centre documentation touching on reliability diagrams and the Brier score decomposition into reliability, resolution and uncertainty.",
+            "via": "search",
+            "note": "Independent second description of Brier and reliability diagrams",
+            "verified": true
+          },
+          {
+            "title": "Gargoyle - Designing Buildings",
+            "url": "https://www.designingbuildings.co.uk/wiki/Gargoyle",
+            "date": "",
+            "snippet": "Building-reference entry describing gargoyles as carved spouts that throw roof rainwater clear of the walls.",
+            "via": "search",
+            "note": "A gargoyle is a rainwater spout",
+            "verified": true
+          },
+          {
+            "title": "gargoyle (etymology) - Online Etymology Dictionary",
+            "url": "https://www.etymonline.com/word/gargoyle",
+            "date": "",
+            "snippet": "Word history: from Old French gargole, meaning throat and also a carved downspout, tied to gargle and gurgle.",
+            "via": "search",
+            "note": "Word origin; agrees on the spout meaning",
+            "verified": true
+          },
+          {
+            "title": "Reliability of Subjective Probability Forecasts of Precipitation and Temperature (Murphy and Winkler, 1977)",
+            "url": "https://ideas.repec.org/a/bla/jorssc/v26y1977i1p41-47.html",
+            "date": "1977",
+            "snippet": "Index listing of a 1977 journal paper on operational and experimental forecasts; later literature cites it for forecasters being reasonably well calibrated.",
+            "via": "search",
+            "note": "Background on forecaster calibration; page not opened",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-10, weather-outlet explainers describe the official chance-of-precipitation figure as forecaster confidence multiplied by the fraction of the area expected to get measurable precipitation, and note it needs a stated time period to mean anything.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The Brier score is a proper scoring rule for probability forecasts: lower is better, and it can be decomposed into reliability, resolution and uncertainty terms.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Strictly, a gargoyle is a carved rainwater spout; purely decorative carvings are called grotesques. The English word comes from Old French gargole, meaning throat.",
+            "sourceIndex": 5,
+            "alsoIn": [4],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Later literature cites a 1977 Murphy and Winkler paper as evidence that experienced weather forecasters are, on the whole, well calibrated (seen in a search summary only; not opened).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "reliability diagrams in forecast verification",
+          "calibration trainers for forecasters and poker players",
+          "gothic rose windows",
+          "rain-sound apps"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each simulated morning shows four sky clues drawn from a hidden but learnable weather model; the visitor sets a rain probability on a stone dial, the day resolves (the spout gushes or stays dry), and the Brier score, running calibration and one petal of the rose window update. Over a 60-day season the visitor learns which clues matter and, more importantly, learns to say 70 only when it rains about 7 times in 10; a daily seed makes a shareable season and the second minute and the tenth differ because overconfidence is punished and hedging at the base rate is shown to be a lazy baseline.",
+        "sophisticationHooks": [
+          "Rose window as a live reliability diagram: ten petals, one per probability bin, whose fill level versus the ideal ring shows over- and under-confidence at a glance",
+          "Proper scoring made tangible: a confident miss visibly cracks a pane, and the page shows the score against a 'always say the base rate' baseline (skill score)",
+          "County-map mode where the visitor sets confidence and coverage separately and sees why their product is the number on the dial, with a point query at a house to show what the number means",
+          "Procedural rain-lullaby audio that starts muted and thickens with the true rain intensity of the day"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: seeded weather generator with 4 clue channels and a small logistic hidden model, dial input (pointer, touch, arrow keys), day-resolution animation, Brier and skill score, rose-window reliability diagram in SVG, county-map confidence-and-coverage mode on a 6 by 6 grid, WebAudio rain (muted by default), URL-hash seed and result sharing, about/making-of panel, light and dark, reduced motion. Cut: real weather feeds, multi-region play, leaderboards, difficulty ladders beyond three seasons.",
+        "risks": [
+          "Probability teaching can feel dry; mitigation is that the first screen is a wet-or-dry stone creature, not a chart",
+          "Murphy and Winkler 1977 claim stays unverified: the page will not state it, or shows it as 'as of 2026-10-10, per a journal index listing'",
+          "Weather data is fully simulated: the page labels it as invented and does not give real forecasting advice",
+          "Resembles generic calibration trainers only in scoring; the cathedral, window and map mode are the differentiators"
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "artisan-r1-2",
+      "title": "Septin Versus September",
+      "pitch": "A grinning autoformat gremlin lives inside a spreadsheet grid and, on every import, helpfully rewrites whatever it thinks it understands: gene symbols become dates, ZIP codes lose their leading zeros, long ID numbers melt into zeros. The visitor, a harried data clerk, receives shipments of columns and must place a limited set of format locks so the right things stay text and the right things stay numeric, then watch a split-flap import run that either preserves every record or strikes through the casualties.",
+      "whyNow": "Timeless: the spreadsheet-ate-my-data problem is real and famous (a gene-naming committee renamed genes in 2020 to dodge it), and the page makes a dull format menu into a clever puzzle with a villain.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "anti-lens-dud-rescue"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "puzzle",
+        "tone": ["playful", "absurd", "nerdy"],
+        "tech": ["dom-ui", "svg", "web-animations", "localstorage", "pointer-events"],
+        "tags": ["spreadsheet", "data-hygiene", "autoformat", "type-inference", "gene-names", "leading-zeros", "puzzle", "gremlin"],
+        "keywords": ["format-locks", "csv-import", "data-loss", "split-flap", "dates-from-text", "scientific-notation", "clerk-game"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "In 2020 the human gene-naming committee renamed about 27 genes (for example MARCH1 became MARCHF1 and SEPT1 became SEPTIN1) because spreadsheet programs kept converting their symbols into dates. A 2016 Genome Biology study of supplementary files from thousands of genetics papers found roughly a fifth contained such conversion errors. Vendor help pages also document two other classic losses that fuel the levels: leading zeros vanish from digit-only entries, and numbers beyond 15 significant digits are rounded to zeros. The game uses a simplified, invented set of guessing rules, openly labelled as a generic model rather than any product's exact behaviour.",
+        "sources": [
+          {
+            "title": "The name of a human gene is forced to change because of Excel's annoyance",
+            "url": "https://www.gigazine.net/gsc_news/en/20200807-genes-rename-microsoft-excel",
+            "date": "2020-08-07",
+            "snippet": "News report that human genes were renamed because spreadsheet software read symbols like SEPT2 and MARCH1 as dates.",
+            "via": "search",
+            "note": "Gene symbols to dates, naming committee response, 2020",
+            "verified": true
+          },
+          {
+            "title": "Scientists Forced To Change Names Of Human Genes Because Of Microsoft's Failure To Patch Excel",
+            "url": "https://www.techdirt.com/tag/spreadsheets/",
+            "date": "2020-08",
+            "snippet": "Tech-blog coverage of the same gene renaming episode, independent of the Japanese outlet, with the MARCH1 to MARCHF1 and SEPT1 to SEPTIN1 examples.",
+            "via": "search",
+            "note": "Independent second report of the renaming and examples",
+            "verified": true
+          },
+          {
+            "title": "Genes renamed to stop Microsoft Excel from mistaking them for dates",
+            "url": "https://interestingengineering.com/genes-renamed-to-stop-microsoft-excel-from-mistaking-them-for-dates",
+            "date": "2020",
+            "snippet": "Engineering-news piece reporting the rule change for gene symbols and roughly 27 genes renamed in a year.",
+            "via": "search",
+            "note": "Third outlet agreeing on the renaming",
+            "verified": true
+          },
+          {
+            "title": "Gene name errors are widespread in the scientific literature (Ziemann, Eren, El-Osta, Genome Biology 2016)",
+            "url": "https://findanexpert.unimelb.edu.au/scholarlywork/1292976-gene-name-errors-are-widespread-in-the-scientific-literature",
+            "date": "2016",
+            "snippet": "University research-profile record of the 2016 paper reporting that about a fifth of papers with supplementary gene lists had conversion errors.",
+            "via": "search",
+            "note": "The 2016 study and its roughly one-in-five finding",
+            "verified": true
+          },
+          {
+            "title": "Gene name errors are widespread in the scientific literature (university news release)",
+            "url": "https://www.uni-wuerzburg.de/aktuelles/pressemitteilungen/single/news/gene-name-errors-are-widespread-in-the-scientific-literature/",
+            "date": "2016",
+            "snippet": "A second university posting about the same paper and its finding of widespread gene-name conversion errors.",
+            "via": "search",
+            "note": "Second independent listing of the 2016 study",
+            "verified": true
+          },
+          {
+            "title": "Format numbers as text (vendor support page)",
+            "url": "https://support.microsoft.com/en-US/Excel/format-numbers-as-text",
+            "date": "",
+            "snippet": "Vendor help page: numbers are limited to 15 digits of precision and extra digits become zeros, so long codes should be stored as text.",
+            "via": "search",
+            "note": "15-digit limit and text-storage workaround",
+            "verified": true
+          },
+          {
+            "title": "Why is Benchling truncating / rounding off my numbers with 16+ digits?",
+            "url": "https://help.benchling.com/hc/en-us/articles/24949181613069-Why-is-Benchling-truncating-rounding-off-my-numbers-with-16-digits",
+            "date": "",
+            "snippet": "A different software vendor's help article describing the same 15-digit precision limit and a text workaround.",
+            "via": "search",
+            "note": "Independent confirmation of the 15-digit limit",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In 2020 the human gene-naming committee renamed roughly 27 genes because spreadsheet software converted their symbols into dates; MARCH1 became MARCHF1 and SEPT1 became SEPTIN1.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "A 2016 Genome Biology study (Ziemann, Eren, El-Osta) reported that about one fifth of papers with supplementary gene lists contained gene names mangled by automatic conversion (sources disagree slightly on the paper count, so the page quotes only the fraction).",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Spreadsheet programs keep about 15 significant digits; digits beyond the 15th are replaced by zeros, so 16-digit or longer codes need to be stored as text before entry.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Digit-only entries lose their leading zeros by default unless stored as text or shown with a custom number format (vendor help guidance, seen in search results).",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "puzzle games about rule systems",
+          "split-flap departure boards",
+          "data-cleaning horror stories",
+          "paper-form clerk games"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each level delivers a shipment of 5 to 9 columns with a stated job (total the invoices, mail the parcels, publish the gene list). The visitor spends a small budget of format locks (text, number, date, keep-raw) on columns, runs the import, and a split-flap animation shows which cells survived; failures are struck through with the original value and the rule that killed it. The budget forces trade-offs because over-locking breaks the sum or sort a column needs, and later levels mix columns whose values trip several rules at once.",
+        "sophisticationHooks": [
+          "A small deterministic guesser engine of about eight named rules (leading-zero strip, 15-digit round-off, month-abbreviation-plus-number to date, two-number-with-slash to date, exponent form to number, and so on) with a rule log that teaches by showing which rule struck each cell",
+          "Sandbox bench: type or paste any value and see the guesser's verdict live, with shareable URL-hash state for a puzzle or a bench entry",
+          "Hand-made levels from famous failure shapes (gene list, ZIP list, 18-digit ticket IDs, fractions, part codes) plus a finale where a 14-row rhyme-scheme column of an original sonnet is rescued",
+          "Tactile split-flap import animation and a gremlin drawn in SVG with expression states that react to locks, with reduced-motion fallbacks"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: rules engine (about 250 lines), 12 hand-written levels with data as JSON in the page, grid UI with keyboard and touch lock placement, split-flap animation via Web Animations, sandbox bench, hash-state sharing, about/making-of panel, light and dark, reduced motion. Cut: file upload and real CSV import, user-authored levels, sound, any claim about a specific product's exact current behaviour.",
+        "risks": [
+          "Real products change behaviour over time, so the page labels the engine as a simplified generic model and never claims a specific product does exactly this today",
+          "Only vendor help pages and news coverage were seen, no page was opened; claims are limited to those with two independent search results, and the leading-zero claim rests on one result and will be shown as 'as of 2026-10-10, per vendor help'",
+          "The paper count in the 2016 study differs between sources, so the page uses only the one-fifth fraction",
+          "Niche audience risk: mitigated by tutorial level using birthdays and ZIP codes before any biology appears"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

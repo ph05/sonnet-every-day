@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ph05.github.io/sonnet-every-day/sitemap.xml

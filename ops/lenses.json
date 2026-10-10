@@ -1,0 +1,741 @@
+{
+  "schema": 1,
+  "kinds": {
+    "interest": "The owner's standing passions: poker and GTO, Balatro and mods, hockey, Reddit-born ideas, game design.",
+    "current": "Anchored to what is happening this week: pop culture, hockey tonight, tech chatter, the calendar.",
+    "humor": "Jokes with mechanics: absurdist, satirical, deadpan, word-driven.",
+    "wildcard": "Anything else worth a day: science, math, music, art, tools, language, life, plus the anti-lenses.",
+    "craft": "A quality lens: how to make the idea deep, tactile and shareable rather than what it is about."
+  },
+  "lenses": [
+    {
+      "id": "poker-ranges",
+      "name": "Range Architect",
+      "kind": "interest",
+      "brief": "Preflop grids, 13x13 hand matrices, combos and blockers, the whole vocabulary of GTO play. Build something where a player feels why a range is shaped the way it is: paint a range and watch equity against a villain range move, or watch a flop texture reshuffle who is ahead. Simulated chips only, never real money.",
+      "sourceHints": [
+        "r/poker and r/poker_theory weekly strategy threads",
+        "Wikipedia: Texas hold 'em starting hands, Poker probability, Pot odds",
+        "arXiv cs.GT papers on counterfactual regret minimization and imperfect-information games",
+        "Concepts worth teaching: minimum defense frequency, range advantage, blockers, equity realization"
+      ]
+    },
+    {
+      "id": "poker-icm-bubble",
+      "name": "Bubble Math",
+      "kind": "interest",
+      "brief": "Tournament poker is a game where chips are worth less than they look. Make the Independent Chip Model tangible: a bubble-pressure meter, a final-table payout slider, a decision trainer that shows why a call that is correct in cash is a disaster with three players left to the money.",
+      "sourceHints": [
+        "r/poker bubble and final-table hand discussions",
+        "Wikipedia: Independent Chip Model, Nash equilibrium",
+        "r/dataisbeautiful posts on payout structures",
+        "Hacker News threads on game-theory solvers"
+      ]
+    },
+    {
+      "id": "poker-tells-and-bluffs",
+      "name": "Bluff Lab",
+      "kind": "interest",
+      "brief": "Bluffing is arithmetic wearing a mask. Build a toy that teaches bluff-to-value ratios, why a balanced player is unreadable, or how exploitative play beats a solver-shaped opponent that never adapts. Give the opponent a personality and a leak the player can discover.",
+      "sourceHints": [
+        "r/poker, r/Poker_Theory, r/WSOP discussions of bluff frequency",
+        "Wikipedia: Bluff (poker), Game theory, Rock paper scissors strategy",
+        "arXiv: poker AI and opponent modeling",
+        "r/gamedev threads on writing bots with personality"
+      ]
+    },
+    {
+      "id": "balatro-mod-ideas",
+      "name": "Joker Modder",
+      "kind": "interest",
+      "brief": "Invent the mod that the Balatro community does not know it wants: a new joker family, a deck with a twisted rule, a blind that attacks a specific strategy, a stake that changes what winning means. Ship a tiny scoring engine plus a concept sandbox so the idea can be played with, not just described.",
+      "sourceHints": [
+        "r/balatro top of the week and mod-showcase threads",
+        "Balatro modding community Discord write-ups and public mod lists (concepts only, no copied assets)",
+        "r/gamedev postmortems about balancing scoring systems",
+        "itch.io deckbuilder jam entries"
+      ]
+    },
+    {
+      "id": "balatro-score-math",
+      "name": "Chips Times Mult",
+      "kind": "interest",
+      "brief": "Chips multiplied by mult is a tiny algebra that explodes: additive terms, multiplicative terms, retriggers, ordering effects, exponents. Make that math visible: an order-of-operations optimizer, a scoring-tree visualizer, a what-if explorer that finds the best joker order for a given hand.",
+      "sourceHints": [
+        "r/balatro build-guide and high-score threads",
+        "r/dataisbeautiful and r/mathpics for ways to show combinatorial growth",
+        "Wikipedia: Combinatorics, Permutation, Exponential growth",
+        "Hacker News posts on game balance and numbers-go-up design"
+      ]
+    },
+    {
+      "id": "deckbuilder-systems",
+      "name": "Deckbuilder Systems Lab",
+      "kind": "interest",
+      "brief": "Deckbuilders hide a probability engine: thinning, draw odds, synergy graphs, the quiet tyranny of a bad starter card. Build the instrument panel the genre never shipped: simulate ten thousand runs of a tiny invented deck and show which choices actually mattered.",
+      "sourceHints": [
+        "r/slaythespire, r/balatro and r/roguelikes strategy threads",
+        "r/gamedev and itch.io deckbuilder jam postmortems",
+        "Wikipedia: Hypergeometric distribution, Monte Carlo method",
+        "r/boardgames design discussions on engine building"
+      ]
+    },
+    {
+      "id": "card-dice-odds",
+      "name": "Odds and Ends",
+      "kind": "interest",
+      "brief": "Dice, cards and shuffles produce answers that feel wrong until you watch them happen ten million times. Pick one counterintuitive result, such as a rigged-looking streak, a shuffle that is not random enough, or a probability paradox, and build a simulator that lets the visitor lose an argument with arithmetic.",
+      "sourceHints": [
+        "r/probabilitytheory and r/statistics curiosities",
+        "Wikipedia: List of probability paradoxes, Birthday problem, Riffle shuffle",
+        "r/dataisbeautiful posts on simulation results",
+        "Numberphile-style puzzle write-ups described in your own words"
+      ]
+    },
+    {
+      "id": "hockey-history-nerd",
+      "name": "Hockey Archivist",
+      "kind": "interest",
+      "brief": "Hockey has a century of odd records, vanished teams, scoring eras and rule changes that quietly reshaped the game. Build a time machine: compare eras fairly, replay a forgotten franchise, or show how the neutral zone, the red line or the goalie mask changed everything. Date every claim.",
+      "sourceHints": [
+        "Hockey-Reference.com season and franchise summaries (public stats pages)",
+        "Wikipedia: History of the National Hockey League, Defunct NHL teams, Hockey rules timeline",
+        "r/hockey history and 'on this day' threads",
+        "Hockey Hall of Fame public timeline pages"
+      ]
+    },
+    {
+      "id": "hockey-fan-toys",
+      "name": "Rink Rat Toys",
+      "kind": "interest",
+      "brief": "Fans are a folklore: playoff beards, hat tricks, superstitions, the goal horn, chirps from the cheap seats, the sacred rituals of a long road trip. Build a toy that treats one of these rituals as a game mechanic. A superstition simulator, a chirp builder, a penalty-box confessional.",
+      "sourceHints": [
+        "r/hockey game threads and post-game threads",
+        "r/nhl_mascots, r/hockeyplayers and r/leafs-style team subreddit culture (patterns, never individuals)",
+        "Wikipedia: Hat trick, Playoff beard, Octopus throwing",
+        "r/Damnthatsinteresting hockey clips"
+      ]
+    },
+    {
+      "id": "hockey-analytics-lab",
+      "name": "Shot Map Lab",
+      "kind": "interest",
+      "brief": "Expected goals, shot maps, line combinations, power-play shapes, faceoff geometry. Turn a bundled snapshot of public NHL numbers into something you can touch: draw a shot and see its xG, build a power-play and watch it work, or ask what a better line deployment would have been.",
+      "sourceHints": [
+        "NHL.com public stats pages: standings, game logs, play-by-play, shift charts",
+        "Hockey-Reference.com and public analytics write-ups",
+        "r/hockeyanalytics and r/hockey stat threads",
+        "arXiv sports-analytics papers on expected goals"
+      ]
+    },
+    {
+      "id": "reddit-hot-threads",
+      "name": "Front Page Alchemy",
+      "kind": "interest",
+      "brief": "Every day Reddit produces a few threads whose central question is secretly a toy waiting to be built: a joke with a mechanic, an argument that wants a calculator, a 'someone should make' that nobody did. Find one, extract the idea (never the people), and build the thing the thread was asking for.",
+      "sourceHints": [
+        "r/InternetIsBeautiful, r/dataisbeautiful, r/webdev, r/gamedev top of the day and week",
+        "r/Damnthatsinteresting, r/MapPorn, r/Showerthoughts, r/AskReddit",
+        "r/balatro, r/hockey, r/poker, r/boardgames hot threads",
+        "r/OutOfTheLoop for what the internet is talking about"
+      ]
+    },
+    {
+      "id": "reddit-tool-requests",
+      "name": "Someone Should Build This",
+      "kind": "interest",
+      "brief": "People keep asking the internet for a small tool that does exactly one weird thing. Mine those requests: Is there a site that does X? Build the one that should exist, with better design than the question deserved, and a delightful detail nobody asked for.",
+      "sourceHints": [
+        "r/SideProject, r/software and r/webdev Showoff Saturday threads",
+        "r/InternetIsBeautiful top posts",
+        "Hacker News Ask HN: what small tool do you wish existed",
+        "r/tipofmytongue-style requests for the exact utility someone needs"
+      ]
+    },
+    {
+      "id": "game-design-experiment",
+      "name": "Rules Lab",
+      "kind": "interest",
+      "brief": "One rule twist applied to a familiar game can create an entirely new one: chess where pieces age, tic-tac-toe on a torus, solitaire with a ticking clock. Run a design experiment with a complete loop, a way to lose, and a reason to play again. The twist is the product.",
+      "sourceHints": [
+        "itch.io game jam entries and jam themes",
+        "r/gamedev Feedback Friday and r/boardgames design threads",
+        "r/incremental_games and r/roguelikedev",
+        "Wikipedia: Game mechanics, Abstract strategy game"
+      ]
+    },
+    {
+      "id": "sports-anywhere",
+      "name": "The Other Rinks",
+      "kind": "interest",
+      "brief": "Hockey is the home team, but every sport has stats that want to be a toy: cricket run rates, curling hammer odds, a racing pit-stop dilemma, a one-over-par putting model. Build a sport sim or stats explorer in the same spirit as the hockey tools, with a clear idea about what the numbers mean.",
+      "sourceHints": [
+        "r/sports, r/soccer, r/formula1, r/curling and r/baseball stat threads",
+        "Wikipedia: Sabermetrics, Duckworth-Lewis-Stern, Elo rating system",
+        "r/dataisbeautiful sports posts",
+        "Public open-data sports stats pages"
+      ]
+    },
+    {
+      "id": "hockey-now",
+      "name": "Tonight on the Ice",
+      "kind": "current",
+      "brief": "What is the NHL talking about right now? A playoff race, a scoring streak, a hot goalie, a rule dispute, a rivalry, a rookie. Turn the live storyline into something playable or explorable, with a bundled dated snapshot of the numbers so it still works offline and every fact carries its date.",
+      "sourceHints": [
+        "NHL.com public scores, standings and stats pages",
+        "r/hockey daily and post-game threads, top of the week",
+        "Hockey-Reference.com current season pages",
+        "Wikipedia: current NHL season article"
+      ]
+    },
+    {
+      "id": "pop-culture-pulse",
+      "name": "Pop Pulse",
+      "kind": "current",
+      "brief": "A trailer lands, an album drops, a show ends, an award race heats up, a format goes viral. Build a playful interactive take on the cultural moment, focused on the work or the trend and never on private individuals. Draw and synthesize; borrow ideas, not assets.",
+      "sourceHints": [
+        "Wikipedia: Current events, 2026 in film, 2026 in music, 2026 in television",
+        "r/movies, r/television, r/Music and r/popculturechat top of the week",
+        "r/OutOfTheLoop explanations of what is trending",
+        "Release calendars for games, films and albums"
+      ]
+    },
+    {
+      "id": "hn-front-page",
+      "name": "Hacker News Hot",
+      "kind": "current",
+      "brief": "The front page is a weather report for tech curiosity: a new compression trick, a terrifying postmortem, an old essay resurrected, a clever Show HN. Take one idea from it and make a more playable, more visual or more honest version, built from scratch in a day.",
+      "sourceHints": [
+        "Hacker News front page, Show HN and Ask HN",
+        "Hacker News 'best' list for the past week",
+        "Lobsters and Simon Willison-style weblog roundups",
+        "arXiv listings that HN is discussing"
+      ]
+    },
+    {
+      "id": "wikipedia-current-events",
+      "name": "Current Events Portal",
+      "kind": "current",
+      "brief": "Wikipedia's Current events portal is a daily slate of things the world did. Skip the grim headline and look for the strange, scientific, sporting or cultural one that can become a toy or explorer. Politics is allowed rarely and only as playful satire, never advocacy.",
+      "sourceHints": [
+        "Wikipedia: Portal:Current events, In the news",
+        "r/worldnews and r/todayilearned for sidebars worth exploring",
+        "NASA, ESA and CERN public news pages",
+        "Wikipedia: 2026 in sports and the monthly Current events archive"
+      ]
+    },
+    {
+      "id": "on-this-day",
+      "name": "On This Day",
+      "kind": "current",
+      "brief": "Every calendar date has a pile of anniversaries: inventions, eclipses, first flights, game releases, rule changes. Build the timeline toy for today's date that makes the past feel like the same Tuesday: a then-and-now explorer, a what-else-happened slider, a day-in-history game.",
+      "sourceHints": [
+        "Wikipedia: Main Page 'On this day' and the date article (for example October 9)",
+        "r/todayilearned and r/history top of the week",
+        "Public domain archives and museum open-access collections",
+        "Hockey-Reference.com 'this day in hockey' style pages"
+      ]
+    },
+    {
+      "id": "arxiv-fresh",
+      "name": "Fresh From arXiv",
+      "kind": "current",
+      "brief": "New preprints land every morning, and some have a figure or idea that can be played with. Pick a paper whose core mechanism fits in a browser and rebuild the intuition as an interactive, without claiming results you did not reproduce. Cite the abstract, show the toy, mark what is simplified.",
+      "sourceHints": [
+        "arXiv new listings: cs.GT, cs.AI, cs.GR, physics.soc-ph, q-bio.PE, math.CO",
+        "r/MachineLearning and r/science weekly paper threads",
+        "Quanta Magazine and similar science journalism for context",
+        "Hacker News discussions of preprints"
+      ]
+    },
+    {
+      "id": "github-trending",
+      "name": "Trending Repos",
+      "kind": "current",
+      "brief": "GitHub trending is a snapshot of what builders are excited about: a new rendering trick, a terminal toy, a solver, a formal language. Reimagine the spark as a web toy from scratch. Never copy code; extract the idea and make it playable.",
+      "sourceHints": [
+        "GitHub Trending (today and this week), filtered by JavaScript, Rust, Python",
+        "Hacker News Show HN threads linking repos",
+        "r/programming and r/opensource weekly roundups",
+        "r/coolgithubprojects"
+      ]
+    },
+    {
+      "id": "data-story",
+      "name": "Data Story",
+      "kind": "current",
+      "brief": "A good dataset is a story with the narrator removed. Pick a public dataset that has something to say right now, such as game logs, weather, transit, space, population or prices, hand-simplify and bundle a snapshot, and tell the story through interaction. State the date and source of every number.",
+      "sourceHints": [
+        "r/dataisbeautiful top of the month",
+        "Public NHL stats pages, NOAA, NASA open data, Our World in Data style public datasets",
+        "Wikipedia tables with CC licenses",
+        "data.gov-style open data portals"
+      ]
+    },
+    {
+      "id": "itch-jam-watch",
+      "name": "Jam Watch",
+      "kind": "current",
+      "brief": "Game jams put a theme on the table and let thousands of people interpret it. Pick the theme that is live this week and interpret it better than the average entry: a complete tiny game with a real mechanic, juicy feedback, and an ending. Credit the theme, not any particular entry.",
+      "sourceHints": [
+        "itch.io jams calendar and featured jams",
+        "Ludum Dare and other open jam theme announcements",
+        "r/gamedev jam threads, r/WebGames",
+        "r/incremental_games"
+      ]
+    },
+    {
+      "id": "meme-anatomy",
+      "name": "Meme Anatomy",
+      "kind": "current",
+      "brief": "A meme format is a tiny grammar: slots, rhythm, a punchline structure. Dissect the format that is everywhere this week and build a generator, an evolution viewer, or a field guide that makes the grammar explicit. Formats and patterns only; no real people, no real photos.",
+      "sourceHints": [
+        "r/OutOfTheLoop, r/memes and r/MemeEconomy top of the week",
+        "Wikipedia: List of Internet phenomena, Image macro",
+        "Know-Your-Meme-style format histories (describe in your own words)",
+        "r/InternetIsBeautiful"
+      ]
+    },
+    {
+      "id": "season-and-sky",
+      "name": "Calendar Hooks",
+      "kind": "current",
+      "brief": "The week has a shape: a season turning, a holiday, a meteor shower, an equinox, daylight saving, a playoff calendar. Build the thing that only makes sense this week and still works when it is not: a seasonal toy with a good reason to exist today.",
+      "sourceHints": [
+        "NASA skywatching and Sky and Telescope public event calendars",
+        "Wikipedia: List of observances, current month article",
+        "timeanddate-style public astronomy tables (derive your own)",
+        "r/space and r/astronomy weekly posts"
+      ]
+    },
+    {
+      "id": "absurdist-interactive",
+      "name": "Straight-Faced Nonsense",
+      "kind": "humor",
+      "brief": "Commit to an impossible premise with complete seriousness and give it real mechanics. A simulator for something that should not need one, an instrument panel for a feeling, a mastery curve for doing nothing. The joke should be sustained by depth, not a single punchline.",
+      "sourceHints": [
+        "r/Showerthoughts, r/ProgrammerHumor and r/CrappyDesign",
+        "itch.io absurdist and 'no one asked for this' jam entries",
+        "The Onion-style structure studied for form (never copy)",
+        "r/webdev 'I built something useless' threads"
+      ]
+    },
+    {
+      "id": "word-play",
+      "name": "Pun Engine",
+      "kind": "humor",
+      "brief": "Language is a machine with loose parts. Build a toy that plays with them: anagram finders with taste, spoonerism makers, rhyme ladders, text rebranders that transform a paragraph into a different register. The wordplay needs real rules so the output keeps surprising.",
+      "sourceHints": [
+        "r/wordplay, r/words, r/etymology and r/linguistics",
+        "Wikipedia: Spoonerism, Anagram, Pangram, Oulipo",
+        "r/InternetIsBeautiful word toys",
+        "Public domain word lists and corpora"
+      ]
+    },
+    {
+      "id": "fake-product-satire",
+      "name": "Fictional Gadget Co.",
+      "kind": "humor",
+      "brief": "Build the product page, the control panel and the manual of a gadget that cannot exist and should not, with one working gimmick at its core. Parody the genre of product pages, never a real company, and label it clearly fictional with invented names and logos.",
+      "sourceHints": [
+        "r/ProgrammerHumor, r/CrappyDesign and r/Design_Critiques for genre tropes",
+        "Wikipedia: Satire, Parody, Mockumentary",
+        "Old infomercial and catalog structure (in your own words)",
+        "r/InternetIsBeautiful"
+      ]
+    },
+    {
+      "id": "mundane-epic",
+      "name": "Mundane Epic",
+      "kind": "humor",
+      "brief": "Take an everyday chore and score it like an epic quest: laundry as a siege, commuting as a roguelike, an inbox as a hydra. Real progression, real stakes, honest jokes about modern life. The best versions end up quietly useful.",
+      "sourceHints": [
+        "r/CasualConversation and r/mildlyinteresting for everyday texture",
+        "r/incremental_games and r/roguelikes for progression design",
+        "Wikipedia: Gamification, Hero's journey",
+        "itch.io 'life sim' jam entries"
+      ]
+    },
+    {
+      "id": "rube-goldberg-tool",
+      "name": "Gloriously Overengineered",
+      "kind": "humor",
+      "brief": "Solve a trivial problem with a ludicrous pipeline: forty configurable steps to pick a lunch, a distributed consensus protocol for choosing a movie. Every stage must actually do something, and the final answer should be correct enough to be annoying.",
+      "sourceHints": [
+        "r/ProgrammerHumor and r/programming 'overengineering' threads",
+        "Wikipedia: Rube Goldberg machine, Consensus (computer science)",
+        "Hacker News Show HN: ridiculous solutions",
+        "r/Damnthatsinteresting machines"
+      ]
+    },
+    {
+      "id": "bureaucracy-sim",
+      "name": "Form 27-B",
+      "kind": "humor",
+      "brief": "Queues, forms, stamps, and a department that sends you to the other department. Turn bureaucracy into a puzzle game or an orienteering course with emergent loopholes. Fictional agencies only, with a human-warmth joke buried in every rule.",
+      "sourceHints": [
+        "r/CrappyDesign and r/mildlyinfuriating for institutional absurdity",
+        "Wikipedia: Red tape, Catch-22, Parkinson's law",
+        "Papers, Please-style design talks and postmortems (study the mechanic, don't copy)",
+        "r/gamedev bureaucracy sim threads"
+      ]
+    },
+    {
+      "id": "tiny-grievances",
+      "name": "Petty Grievances",
+      "kind": "humor",
+      "brief": "The small things that annoy everyone: the loud chewer, the reply-all, the shared fridge. Make a toy that measures, translates or ritualizes minor suffering. A grievance meter, an apology-to-meaning translator, a passive-aggressive note generator with sincere settings.",
+      "sourceHints": [
+        "r/mildlyinfuriating, r/CasualConversation and r/Showerthoughts",
+        "Wikipedia: Pet peeve, Politeness theory",
+        "r/ProgrammerHumor workplace threads",
+        "r/InternetIsBeautiful"
+      ]
+    },
+    {
+      "id": "confident-machine",
+      "name": "The Confidently Wrong Machine",
+      "kind": "humor",
+      "brief": "A contraption that explains, predicts or classifies with total conviction and delightfully bad reasoning, but with a consistent internal logic you can learn. Parody the tone of automated certainty, not any real product. The player's goal is to understand how it thinks.",
+      "sourceHints": [
+        "r/ProgrammerHumor and r/ChatGPT-style absurd-output threads (the pattern, not specific outputs)",
+        "Wikipedia: Pareidolia, Apophenia, Expert system",
+        "r/InternetIsBeautiful toy oracles",
+        "arXiv humor-and-failure case papers"
+      ]
+    },
+    {
+      "id": "deadpan-docs",
+      "name": "Deadpan Documentation",
+      "kind": "humor",
+      "brief": "Field guides, manuals and taxonomies for things that do not exist, written with great precision and designed like real reference material: a searchable index, a diagram that holds together, cross-references that eventually contradict each other. Information design as comedy.",
+      "sourceHints": [
+        "r/Design_Critiques, r/typography and r/InternetIsBeautiful",
+        "Wikipedia: Mockumentary, Pataphysics, Field guide",
+        "Old technical manuals and public domain catalogs",
+        "r/worldbuilding"
+      ]
+    },
+    {
+      "id": "science-sim",
+      "name": "Lab Bench",
+      "kind": "wildcard",
+      "brief": "Complex behavior from simple rules: flocking, reaction chemistry, ecosystems, epidemics, orbital dynamics, phase transitions. Build the simulation with honest physics, expose the parameters that matter, and let the visitor find the regime where everything breaks. Say what is simplified.",
+      "sourceHints": [
+        "arXiv physics, q-bio and nlin listings",
+        "r/Physics, r/chemistry, r/biology and r/dataisbeautiful",
+        "Wikipedia: Cellular automaton, Lotka-Volterra equations, Boids",
+        "Hacker News science threads"
+      ]
+    },
+    {
+      "id": "music-instrument",
+      "name": "Instrument Maker",
+      "kind": "wildcard",
+      "brief": "WebAudio makes the browser a synthesizer. Build an instrument or a composition engine with a distinctive way of playing: a physical-model string you pluck by drawing, a tuning-system explorer, a drum machine that evolves, a generative score that never repeats.",
+      "sourceHints": [
+        "r/synthesizers, r/WeAreTheMusicMakers, r/musictheory",
+        "Wikipedia: Just intonation, Karplus-Strong string synthesis, Euclidean rhythm",
+        "Hacker News posts on WebAudio and procedural music",
+        "r/InternetIsBeautiful instruments"
+      ]
+    },
+    {
+      "id": "generative-art",
+      "name": "Algorithmic Atelier",
+      "kind": "wildcard",
+      "brief": "Procedural art with a point of view: reaction-diffusion, L-systems, flow fields, shader sculpture, packed circles. Give the visitor meaningful controls, a seed they can share, and a reason to keep turning the knob. A poster-worthy default matters more than any option.",
+      "sourceHints": [
+        "r/generative, r/creativecoding and r/proceduralgeneration",
+        "Wikipedia: Reaction-diffusion system, L-system, Perlin noise",
+        "Are.na channels on generative art",
+        "Hacker News creative-coding posts"
+      ]
+    },
+    {
+      "id": "retro-computing",
+      "name": "Beige Box",
+      "kind": "wildcard",
+      "brief": "Old computers had personalities: boot screens, BASIC prompts, tracker music, 16-color palettes, floppy sounds. Build a piece of computing nostalgia that works: a tiny emulated machine, a bootable-looking terminal with a real command set, a demoscene effect, a cracked-intro maker. Invented systems, no copyrighted ROMs.",
+      "sourceHints": [
+        "r/retrocomputing, r/vintagecomputing and r/demoscene",
+        "Wikipedia: Demoscene, BASIC, 6502 microprocessor",
+        "Hacker News retro threads",
+        "itch.io fantasy-console jam entries"
+      ]
+    },
+    {
+      "id": "tiny-tools",
+      "name": "Pocket Tool",
+      "kind": "wildcard",
+      "brief": "One genuinely useful thing, done better than anything else on the web: a converter, a scheduler, a calculator, a planner. The test is whether someone bookmarks it for Tuesday morning. Great defaults, instant feedback, URL-shareable state, and a delight the spreadsheet never had.",
+      "sourceHints": [
+        "r/SideProject, r/InternetIsBeautiful and r/webdev",
+        "Hacker News Ask HN: tools you built for yourself",
+        "r/productivity and r/lifehacks recurring needs",
+        "Wikipedia: Unit conversion, Scheduling (production processes)"
+      ]
+    },
+    {
+      "id": "weird-web",
+      "name": "Weird Web",
+      "kind": "wildcard",
+      "brief": "The early-web spirit: strange sites that exist because someone had to make them. Build something form-breaking and art-adjacent, such as a page that reads you back, an interface that is also the content, or a cursor with a story. Not random for its own sake; it needs a rule you can feel.",
+      "sourceHints": [
+        "Are.na channels on weird web and net art",
+        "r/InternetIsBeautiful and r/web_design",
+        "Hacker News Show HN: strange websites",
+        "Wikipedia: Net.art, Esoteric programming language"
+      ]
+    },
+    {
+      "id": "math-visual",
+      "name": "Math Made Visible",
+      "kind": "wildcard",
+      "brief": "Pick one beautiful idea from number theory, geometry, topology or combinatorics and make it so tactile that the proof feels obvious. Tilings, primes spiraling, fractal dimension, knots, the shape of an infinite sum. Show the insight, not only the pretty picture.",
+      "sourceHints": [
+        "r/math, r/mathpics and r/numbertheory",
+        "Wikipedia: Penrose tiling, Ulam spiral, Collatz conjecture, Voronoi diagram",
+        "arXiv math.CO and math.HO",
+        "Hacker News math posts"
+      ]
+    },
+    {
+      "id": "linguistics-lab",
+      "name": "Language Lab",
+      "kind": "wildcard",
+      "brief": "Writing systems, phonetics, constructed languages, etymology maps, translation drift. Build a toy that lets the visitor feel how language works: invent a script, hear a sound change roll through a thousand years, watch a word travel across a map.",
+      "sourceHints": [
+        "r/linguistics, r/conlangs and r/etymology",
+        "Wikipedia: Great Vowel Shift, International Phonetic Alphabet, Proto-Indo-European",
+        "r/MapPorn language maps",
+        "Public domain texts and open dictionaries"
+      ]
+    },
+    {
+      "id": "kitchen-lab",
+      "name": "Kitchen Lab",
+      "kind": "wildcard",
+      "brief": "Cooking is applied chemistry with a deadline. Build something for the kitchen that respects both: a recipe scaler that understands baking ratios, a ferment tracker, a flavor-pairing graph, a timing planner that gets six dishes to the table hot. Only claim what you can source.",
+      "sourceHints": [
+        "r/Cooking, r/AskCulinary, r/Breadit and r/fermentation",
+        "Wikipedia: Maillard reaction, Baker's percentage, Food safety",
+        "r/dataisbeautiful food data posts",
+        "Public domain cookbooks"
+      ]
+    },
+    {
+      "id": "household-systems",
+      "name": "Household Systems",
+      "kind": "wildcard",
+      "brief": "The small machinery of life: a garden bed that must be planned, a trip with too many constraints, a crafting pattern that must close, a tidy-the-garage puzzle. Make one of these a pleasure to work through. Simulated money and honest assumptions only; no advice presented as authoritative.",
+      "sourceHints": [
+        "r/gardening, r/knitting, r/DIY and r/travel",
+        "Wikipedia: Companion planting, Knitting, Travelling salesman problem",
+        "r/lifehacks and r/InternetIsBeautiful",
+        "Open government planting-zone and climate data"
+      ]
+    },
+    {
+      "id": "sky-and-space",
+      "name": "Look Up",
+      "kind": "wildcard",
+      "brief": "Orbits, eclipses, star charts, planetary scale models, rocket staging, the geometry of a transit. Build the version of astronomy that makes the visitor go outside: a what-is-up-tonight window, a scale model that takes forever to cross, a gravity slingshot you can fail at.",
+      "sourceHints": [
+        "r/space, r/astronomy and r/AskScience",
+        "NASA public data and image libraries (open license only)",
+        "Wikipedia: Orbital mechanics, Kepler's laws, Lagrange point",
+        "arXiv astro-ph new listings"
+      ]
+    },
+    {
+      "id": "maps-and-places",
+      "name": "Cartography Corner",
+      "kind": "wildcard",
+      "brief": "Maps are arguments. Build a map toy where the projection, the scale or the data tells a story: distort a country by population, draw the isochrone of an old railway, compare where daylight falls on one date. Hand-simplify and bundle geometry; no tile services.",
+      "sourceHints": [
+        "r/MapPorn, r/geography and r/dataisbeautiful maps",
+        "Wikipedia: Map projection, Cartogram, Natural Earth data",
+        "Natural Earth public-domain data",
+        "Hacker News cartography posts"
+      ]
+    },
+    {
+      "id": "type-and-color",
+      "name": "Type and Color",
+      "kind": "wildcard",
+      "brief": "Typography and color are craft with measurable physics: contrast, kerning, readability, perceptual uniformity. Build a tool or toy that makes the invisible rules visible: a palette generator with a point of view, a kerning game, a typeface built from geometry in code.",
+      "sourceHints": [
+        "r/typography, r/Design_Critiques, r/web_design",
+        "Wikipedia: Color space, CIELAB, Kerning, WCAG contrast",
+        "Are.na channels on type and color",
+        "r/InternetIsBeautiful design toys"
+      ]
+    },
+    {
+      "id": "puzzle-forge",
+      "name": "Puzzle Forge",
+      "kind": "wildcard",
+      "brief": "Don't just ship a puzzle: ship the generator, the solver and the difficulty rating. Nonograms, logic grids, mazes with a twist, a new sudoku variant. The best forge teaches itself, then lets the visitor design a puzzle and see whether it has a unique solution.",
+      "sourceHints": [
+        "r/puzzles, r/sudoku, r/nonograms and r/logicpuzzles",
+        "Wikipedia: Constraint satisfaction, Exact cover, Dancing Links",
+        "Hacker News posts on puzzle generation",
+        "itch.io puzzle jam entries"
+      ]
+    },
+    {
+      "id": "accessibility-delight",
+      "name": "Everyone's Toy",
+      "kind": "wildcard",
+      "brief": "Make accessibility the creative engine rather than a checklist: a visual toy that is fully playable by ear, a color tool built for every kind of vision, a game that works with one switch. The inclusive version should be the best version, not the compromise.",
+      "sourceHints": [
+        "r/accessibility, r/blind, r/deaf and r/gamedev accessibility threads",
+        "Wikipedia: Sonification, Color blindness, Universal design",
+        "Game Accessibility Guidelines (public)",
+        "Hacker News accessibility threads"
+      ]
+    },
+    {
+      "id": "anti-lens-opposite",
+      "name": "Anti-Lens: The Opposite",
+      "kind": "wildcard",
+      "brief": "Write down the most obvious idea for any topic of the day, then build its exact opposite. A calculator that refuses to give answers, a game about losing well, a map of nowhere, a visualization that hides data on purpose. It must still be good: opposites are a method, not an excuse.",
+      "sourceHints": [
+        "Any hot thread, inverted",
+        "Wikipedia: Oblique Strategies, Reverse psychology, Negative space",
+        "r/InternetIsBeautiful top posts, then flip the premise",
+        "Are.na channels on anti-design"
+      ]
+    },
+    {
+      "id": "anti-lens-constraint-roulette",
+      "name": "Anti-Lens: Constraint Roulette",
+      "kind": "wildcard",
+      "brief": "Draw a ridiculous constraint and let it dictate the design: one button, no text, a single color, only vertical motion, a hundred-year timeline, no randomness. The constraint must be felt in the first ten seconds and respected for the whole experience.",
+      "sourceHints": [
+        "Wikipedia: Oulipo, Dogme 95, Constrained writing, Oblique Strategies",
+        "itch.io 'one button' and 'one color' jam entries",
+        "r/gamedev constraint-jam threads",
+        "Are.na channels on constraints"
+      ]
+    },
+    {
+      "id": "anti-lens-dud-rescue",
+      "name": "Anti-Lens: Rescue the Dud",
+      "kind": "wildcard",
+      "brief": "Pick a subject everyone would reject as boring: parking regulations, spreadsheets, weather small talk, tax forms, queue theory. Make it irresistible with a real mechanic, fierce clarity and a joke that serves the learning. Turning dust into a lantern.",
+      "sourceHints": [
+        "r/AskReddit boring-topic threads",
+        "Wikipedia: Queueing theory, Parking, Standardization",
+        "r/dataisbeautiful unglamorous datasets",
+        "Hacker News posts about mundane infrastructure"
+      ]
+    },
+    {
+      "id": "craft-depth",
+      "name": "Depth Over Breadth",
+      "kind": "craft",
+      "brief": "One mechanic, a thousand layers. Choose the single interaction at the heart of the idea and give it enough depth that the hundredth minute is more interesting than the first: counterplay, emergence, mastery curves, secrets that reward curiosity. Cut features until the core has room to breathe.",
+      "sourceHints": [
+        "r/gamedev design-depth postmortems",
+        "Wikipedia: Emergent gameplay, Flow (psychology)",
+        "Hacker News game design essays",
+        "itch.io jam postmortems on scope"
+      ]
+    },
+    {
+      "id": "craft-juice",
+      "name": "Juice and Feel",
+      "kind": "craft",
+      "brief": "The difference between a prototype and a pleasure is feedback: easing curves, screen shake with restraint, sound that answers every action, microcopy with a voice. Design the touch first, then the idea that rides on it. Every click should feel a little bit good.",
+      "sourceHints": [
+        "r/gamedev 'game feel' and 'juice' talks and threads",
+        "Wikipedia: Easing, Spring (mathematics), Game feel",
+        "r/web_design micro-interaction collections",
+        "r/InternetIsBeautiful best-feeling toys"
+      ]
+    },
+    {
+      "id": "craft-one-more-turn",
+      "name": "One More Turn",
+      "kind": "craft",
+      "brief": "Design the loop before anything else: the small decision, the quick payoff, the escalating stakes, the reason to say just once more. Sketch the first five minutes and the fifth hour, and make sure a visitor can feel both. Include a way to end well.",
+      "sourceHints": [
+        "r/incremental_games, r/roguelikes and r/gamedesign",
+        "Wikipedia: Compulsion loop, Skinner box (as a warning), Variable ratio schedule",
+        "GDC-style talks on retention (summarize in your own words)",
+        "Hacker News game-loop threads"
+      ]
+    },
+    {
+      "id": "craft-shareable",
+      "name": "Shareable Seeds",
+      "kind": "craft",
+      "brief": "Design for the screenshot and the link: a seeded world, a daily challenge, a URL hash that reconstructs the exact state, a result card people want to send. The idea works alone but is better when passed around; make the share artifact beautiful and spoiler-safe.",
+      "sourceHints": [
+        "r/InternetIsBeautiful and r/WebGames shareable toys",
+        "Wikipedia: Procedural generation, Seed (random number generation)",
+        "Hacker News posts on daily-puzzle design",
+        "r/gamedev discussions on daily challenges"
+      ]
+    },
+    {
+      "id": "craft-teach-by-play",
+      "name": "Teach By Playing",
+      "kind": "craft",
+      "brief": "No tutorial screens. The first minute teaches the rules by letting the visitor poke the system and fail safely. Build the onboarding as a mechanic: a gentle sequence of discoveries, each answered by the interface, with an about panel for those who want the theory.",
+      "sourceHints": [
+        "r/gamedesign onboarding discussions",
+        "Wikipedia: Scaffolding (education), Zone of proximal development",
+        "Explorable-explanations essays (describe in your own words)",
+        "r/InternetIsBeautiful explainers"
+      ]
+    },
+    {
+      "id": "craft-systems-miniature",
+      "name": "Systems in Miniature",
+      "kind": "craft",
+      "brief": "Model a real system at the smallest scale that still bites: a supply chain in a shoebox, an ecosystem in a petri dish, a stock market with ten traders. Expose feedback loops, delays and surprises. The visitor should leave with a mental model they did not have before.",
+      "sourceHints": [
+        "r/systems, r/complexsystems and r/dataisbeautiful",
+        "Wikipedia: System dynamics, Feedback, Bullwhip effect",
+        "arXiv nlin and physics.soc-ph listings",
+        "Hacker News systems-thinking essays"
+      ]
+    }
+  ],
+  "provocationWords": [
+    "glass", "tempo", "ledger", "lantern", "static", "orbit", "velvet", "gravel", "tide", "kiln", "mosaic",
+    "threshold", "echo", "ember", "harbor", "quartz", "ribbon", "compass", "thunder", "origami", "pendulum",
+    "lattice", "meadow", "fossil", "carousel", "periscope", "marble", "anvil", "tangle", "sprout", "bellows",
+    "mirage", "pigment", "cascade", "relay", "alchemy", "tundra", "bonfire", "labyrinth", "sundial", "scaffold",
+    "paperwork", "monsoon", "cinder", "chorus", "hinge", "eclipse", "fathom", "gambit", "harvest", "horizon",
+    "inkwell", "jigsaw", "kaleidoscope", "lullaby", "metronome", "nectar", "obsidian", "parade", "quilt",
+    "riddle", "sediment", "tapestry", "umbrella", "vortex", "whistle", "zenith", "abacus", "beacon", "cobweb",
+    "dowry", "estuary", "filament", "gargoyle", "hourglass", "isthmus", "juggler", "kettle", "lighthouse",
+    "magnet", "nomad", "overture", "prism", "quiver", "rhythm", "silhouette", "turbine", "undertow", "vignette",
+    "wanderer", "yarn", "zeppelin", "avalanche", "brigade", "catalyst", "driftwood", "equinox", "forge",
+    "granite", "hammock", "iceberg", "jubilee", "keystone", "lagoon", "monolith", "nocturne", "outpost", "puddle",
+    "quarry", "rubble", "spindle", "trapdoor", "upstream", "volley", "weathervane", "xylophone", "yesterday",
+    "zigzag", "aquarium", "bramble", "canopy", "dynamo", "elevator", "foghorn", "gazebo", "headland", "intercom",
+    "junkyard", "knothole", "mantle", "nutshell", "orchard", "pavilion", "quicksand", "rooftop", "stairwell",
+    "tollbooth", "underpass", "vestibule", "waterwheel", "afterglow", "boomerang", "cartridge", "dovetail",
+    "emporium", "flywheel", "greenhouse", "handshake", "inertia", "jamboree", "kinetic", "limelight", "mimicry",
+    "nightshift", "outbreak", "pinwheel", "quorum", "ricochet", "semaphore", "tinderbox", "ultraviolet",
+    "vending", "windfall", "yawn", "zero", "arcade", "bazaar", "confetti", "daybreak", "ferment", "gossip",
+    "hush", "ignite", "jostle", "ladder", "murmur", "nibble", "ooze", "pounce", "quiet", "ramble", "swirl",
+    "tumble", "unravel", "vanish", "wobble", "yearn", "zoom", "backlog", "cipher", "detour", "encore", "fallout",
+    "grindstone", "hiccup", "interlude", "jackpot", "knockout", "layover", "mishap", "napkin", "overtime",
+    "penalty", "quirk", "rematch", "shortcut", "timeout", "upset", "variance", "walkout", "yardstick", "bluff",
+    "tell", "river", "flop", "blind", "ante", "chip", "stack", "pivot", "hustle", "crease", "breakaway",
+    "forecheck", "backcheck", "faceoff", "icing", "dasher", "slapshot", "wraparound", "deke", "joker", "voucher",
+    "tarot", "booster", "reroll", "discard", "cassette", "floppy", "phosphor", "modem", "dialup", "pixel",
+    "tracker", "glitch", "cardigan", "pantry", "teacup", "doorbell", "drawer", "windowsill", "porch", "blanket",
+    "toaster", "meteor", "comet", "nebula", "perihelion", "syzygy", "quasar", "regolith", "aurora", "umbra",
+    "apogee", "moss", "lichen", "mycelium", "tadpole", "hornet", "heron", "otter", "badger", "cricket", "firefly",
+    "sonnet", "limerick", "haiku", "palindrome", "spoonerism", "acrostic", "anagram", "pun", "riff", "refrain",
+    "timetable", "receipt", "stamp", "notary", "queue", "turnstile", "clipboard", "memo", "filing", "bitmap",
+    "teleprinter", "flask", "ledge", "bellwether", "cobblestone", "parchment", "trellis"
+  ]
+}

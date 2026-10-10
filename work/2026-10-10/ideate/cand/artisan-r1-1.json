@@ -1,0 +1,171 @@
+{
+  "id": "artisan-r1-1",
+  "title": "Thirty Percent Chance",
+  "pitch": "A stone rain-spout creature on a cathedral corner needs a forecaster: each morning the visitor reads simple sky clues (barometer needle, cloud thickness, swallow height, wind vane), dials in a chance of rain, and watches the spout either gush or stay dry. A stained-glass rose window slowly fills with the visitor's honesty record, showing in plain colour whether their 30 percent days really rain about 3 days in 10, and a second mode lets them set confidence and coverage on a county map to see why the official number is a product of two things.",
+  "whyNow": "Timeless: weather small talk is the most ignored subject on earth, and the interactive turns it into a game about calibration, which is the skill behind every good forecast, poker read and bet.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "anti-lens-dud-rescue"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "serene",
+      "analytical"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "webaudio",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "weather",
+      "probability",
+      "calibration",
+      "forecasting",
+      "brier-score",
+      "rain",
+      "stained-glass",
+      "small-talk"
+    ],
+    "keywords": [
+      "chance-of-rain",
+      "reliability-diagram",
+      "proper-scoring",
+      "rose-window",
+      "rain-spout",
+      "seeded-weather",
+      "calibration-game"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Weather outlets explain that a chance-of-rain number is the forecaster's confidence that rain happens somewhere in the area multiplied by the share of the area that gets measurable rain, and that it means nothing without a time window; most people misread it. Forecast-verification references describe the Brier score (lower is better, decomposed into reliability, resolution and uncertainty) and the reliability diagram, which plots how often something happened against the probability announced. Architectural references agree a gargoyle is, strictly, a carved rainwater spout, which gives the page a natural mascot and a natural hero animation. All weather in the game is simulated by a bundled seeded generator and labelled so.",
+    "sources": [
+      {
+        "title": "What does a 30% chance of rain really mean",
+        "url": "https://www.ksat.com/weather/2023/09/18/what-does-a-30-chance-of-rain-really-mean",
+        "date": "2023-09-18",
+        "snippet": "Local TV weather explainer on how a rain percentage combines forecaster confidence with how much of the area gets wet, and on common misreadings.",
+        "via": "search",
+        "note": "PoP is confidence times coverage; misreadings are common",
+        "verified": true
+      },
+      {
+        "title": "What does the probability of precipitation mean exactly",
+        "url": "https://chairlift.opensnow.com/news/post/what-does-the-probability-of-precipitation-mean-exactly",
+        "date": "",
+        "snippet": "Independent weather-site explainer of the same chance-of-precipitation definition, including the need for a stated time period.",
+        "via": "search",
+        "note": "Second independent explainer of PoP = C x A and the time-window caveat",
+        "verified": true
+      },
+      {
+        "title": "Scoring rules: Brier",
+        "url": "https://metricgate.com/docs/scoring-rules-brier/",
+        "date": "",
+        "snippet": "Documentation page on the Brier score as a proper scoring rule for probability forecasts, where lower values are better.",
+        "via": "search",
+        "note": "Brier score is proper and lower-is-better",
+        "verified": true
+      },
+      {
+        "title": "ECMWF forecast verification page (reliability and Brier score)",
+        "url": "https://confluence.ecmwf.int/x/-PWHEw",
+        "date": "",
+        "snippet": "Forecast-centre documentation touching on reliability diagrams and the Brier score decomposition into reliability, resolution and uncertainty.",
+        "via": "search",
+        "note": "Independent second description of Brier and reliability diagrams",
+        "verified": true
+      },
+      {
+        "title": "Gargoyle - Designing Buildings",
+        "url": "https://www.designingbuildings.co.uk/wiki/Gargoyle",
+        "date": "",
+        "snippet": "Building-reference entry describing gargoyles as carved spouts that throw roof rainwater clear of the walls.",
+        "via": "search",
+        "note": "A gargoyle is a rainwater spout",
+        "verified": true
+      },
+      {
+        "title": "gargoyle (etymology) - Online Etymology Dictionary",
+        "url": "https://www.etymonline.com/word/gargoyle",
+        "date": "",
+        "snippet": "Word history: from Old French gargole, meaning throat and also a carved downspout, tied to gargle and gurgle.",
+        "via": "search",
+        "note": "Word origin; agrees on the spout meaning",
+        "verified": true
+      },
+      {
+        "title": "Reliability of Subjective Probability Forecasts of Precipitation and Temperature (Murphy and Winkler, 1977)",
+        "url": "https://ideas.repec.org/a/bla/jorssc/v26y1977i1p41-47.html",
+        "date": "1977",
+        "snippet": "Index listing of a 1977 journal paper on operational and experimental forecasts; later literature cites it for forecasters being reasonably well calibrated.",
+        "via": "search",
+        "note": "Background on forecaster calibration; page not opened",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, weather-outlet explainers describe the official chance-of-precipitation figure as forecaster confidence multiplied by the fraction of the area expected to get measurable precipitation, and note it needs a stated time period to mean anything.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Brier score is a proper scoring rule for probability forecasts: lower is better, and it can be decomposed into reliability, resolution and uncertainty terms.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Strictly, a gargoyle is a carved rainwater spout; purely decorative carvings are called grotesques. The English word comes from Old French gargole, meaning throat.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Later literature cites a 1977 Murphy and Winkler paper as evidence that experienced weather forecasters are, on the whole, well calibrated (seen in a search summary only; not opened).",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "reliability diagrams in forecast verification",
+      "calibration trainers for forecasters and poker players",
+      "gothic rose windows",
+      "rain-sound apps"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each simulated morning shows four sky clues drawn from a hidden but learnable weather model; the visitor sets a rain probability on a stone dial, the day resolves (the spout gushes or stays dry), and the Brier score, running calibration and one petal of the rose window update. Over a 60-day season the visitor learns which clues matter and, more importantly, learns to say 70 only when it rains about 7 times in 10; a daily seed makes a shareable season and the second minute and the tenth differ because overconfidence is punished and hedging at the base rate is shown to be a lazy baseline.",
+    "sophisticationHooks": [
+      "Rose window as a live reliability diagram: ten petals, one per probability bin, whose fill level versus the ideal ring shows over- and under-confidence at a glance",
+      "Proper scoring made tangible: a confident miss visibly cracks a pane, and the page shows the score against a 'always say the base rate' baseline (skill score)",
+      "County-map mode where the visitor sets confidence and coverage separately and sees why their product is the number on the dial, with a point query at a house to show what the number means",
+      "Procedural rain-lullaby audio that starts muted and thickens with the true rain intensity of the day"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: seeded weather generator with 4 clue channels and a small logistic hidden model, dial input (pointer, touch, arrow keys), day-resolution animation, Brier and skill score, rose-window reliability diagram in SVG, county-map confidence-and-coverage mode on a 6 by 6 grid, WebAudio rain (muted by default), URL-hash seed and result sharing, about/making-of panel, light and dark, reduced motion. Cut: real weather feeds, multi-region play, leaderboards, difficulty ladders beyond three seasons.",
+    "risks": [
+      "Probability teaching can feel dry; mitigation is that the first screen is a wet-or-dry stone creature, not a chart",
+      "Murphy and Winkler 1977 claim stays unverified: the page will not state it, or shows it as 'as of 2026-10-10, per a journal index listing'",
+      "Weather data is fully simulated: the page labels it as invented and does not give real forecasting advice",
+      "Resembles generic calibration trainers only in scoring; the cathedral, window and map mode are the differentiators"
+    ]
+  },
+  "durable": true
+}

@@ -1,0 +1,209 @@
+{
+  "id": "jester-1",
+  "title": "Cabinet of Opinions",
+  "pitch": "A deadpan product page, control panel and manual for an invented smart filing cabinet whose drawers slam shut according to a secret rule. The visitor feeds it absurd little documents, watches which drawer it picks, and deduces the rule from the slams and the cryptic manual; then a tide gauge turns and the cabinet silently switches rules, so the second minute is about noticing you are being stubborn. A seeded daily rule set and a shareable result card make the tenth minute different from the first.",
+  "whyNow": "Timeless. Hidden-rule deduction games are well loved and rare on the web, and wrapping one in a product-page parody makes the rule the punchline.",
+  "origin": {
+    "agent": "jester",
+    "lens": "fake-product-satire"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "puzzle",
+    "tone": [
+      "absurd",
+      "satirical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage"
+    ],
+    "tags": [
+      "fake-product",
+      "hidden-rule",
+      "filing-cabinet",
+      "deduction",
+      "manual-parody",
+      "rule-switching",
+      "office-satire",
+      "daily-puzzle"
+    ],
+    "keywords": [
+      "inductive-reasoning",
+      "product-page-parody",
+      "control-panel",
+      "tide-gauge",
+      "drawers",
+      "seeded-daily",
+      "perseveration"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Two established hidden-rule formats shape the mechanic: a Zendo-style game where a master's rule is inferred from marked examples, and the Wisconsin card sorting task where the sorting rule changes without warning and the main measure is clinging to the old rule. The tide gauge borrows the real roughly 12 h 25 min semidiurnal tide period as the cycle on which the cabinet swaps rules. Filing-cabinet history (disputed invention, Library Bureau a leading name) supplies the fictional company's mock heritage page. Parody-genre sources say the humour comes from a deadpan narrator who reveals too much, which fixes the voice. No real company or product is parodied; the genre of product pages is.",
+    "sources": [
+      {
+        "title": "Zendo (game)",
+        "url": "https://en.wikipedia.org/wiki/Zendo_(game)",
+        "date": "",
+        "snippet": "Describes Zendo as a game of inductive logic: a master sets a rule, students build example structures, and each is marked as following the rule or not until someone names the rule.",
+        "via": "search",
+        "note": "Establishes the hidden-rule-from-examples mechanic and the white/black marker feedback.",
+        "verified": true
+      },
+      {
+        "title": "Zendo rules (Looney Labs)",
+        "url": "https://www.looneylabs.com/sites/default/files/rules/Zendo.pdf",
+        "date": "",
+        "snippet": "Publisher rules for Zendo; advice for rule makers is to keep rules simple and avoid compound or obscure-math conditions.",
+        "via": "search",
+        "note": "Second independent description of the format and the rule-difficulty guidance used for the rule bank.",
+        "verified": true
+      },
+      {
+        "title": "Wisconsin Card Sorting Test (WCST)",
+        "url": "https://www.lancaster.ac.uk/fas/psych/glossary/wisconsin_card_sorting_test_-wcst/",
+        "date": "",
+        "snippet": "University glossary entry: cards are sorted by colour, form or number, the active category is never announced, and only right or wrong feedback is given.",
+        "via": "search",
+        "note": "Establishes the silent rule switch and feedback-only learning.",
+        "verified": true
+      },
+      {
+        "title": "Wisconsin Card Sorting Task (HED task page)",
+        "url": "https://www.hedtags.org/hed-task/tasks/hedtsk_wisconsin_card_sorting.html",
+        "date": "",
+        "snippet": "Task description page: the sorting rule changes without warning and the participant must infer the new one from feedback alone.",
+        "via": "search",
+        "note": "Independent agreement on the unannounced rule change.",
+        "verified": true
+      },
+      {
+        "title": "Tide",
+        "url": "https://en.wikipedia.org/wiki/Tide",
+        "date": "",
+        "snippet": "Encyclopedia article on tides, including the semidiurnal pattern of two highs and two lows per lunar day.",
+        "via": "search",
+        "note": "Background for the tide-gauge cycle.",
+        "verified": true
+      },
+      {
+        "title": "The Period of Lunar Tides (Wolfram Demonstrations)",
+        "url": "https://demonstrations.wolfram.com/ThePeriodOfLunarTides/",
+        "date": "",
+        "snippet": "Interactive demonstration of why the main lunar tide repeats about every 12 hours 25 minutes, half a tidal lunar day.",
+        "via": "search",
+        "note": "Second source for the 12 h 25 min figure.",
+        "verified": true
+      },
+      {
+        "title": "Filing cabinet",
+        "url": "https://en.wikipedia.org/wiki/Filing_cabinet",
+        "date": "",
+        "snippet": "Says the invention of the vertical file is an unsolved puzzle, with a Library Bureau patent filed in 1902 as the strongest documented claim.",
+        "via": "search",
+        "note": "Mock-heritage material for the fictional manufacturer; origin is disputed.",
+        "verified": true
+      },
+      {
+        "title": "How filing cabinets changed the world (History Nebraska)",
+        "url": "https://history.nebraska.gov/blog/how-filing-cabinets-changed-world",
+        "date": "",
+        "snippet": "State history blog on filing cabinets; gives a Buffalo charity secretary's 1892 idea built as a prototype by the Library Bureau, while other accounts differ.",
+        "via": "search",
+        "note": "Independent account showing the origin story varies.",
+        "verified": true
+      },
+      {
+        "title": "Eleusis (card game)",
+        "url": "https://en.wikipedia.org/wiki/Eleusis_(card_game)",
+        "date": "",
+        "snippet": "Article on a card game in which the dealer writes a secret rule and players infer it from which plays are accepted; reportedly 1950s origin.",
+        "via": "search",
+        "note": "Inspiration only. The origin year was seen in one search summary, so it stays unverified and is not stated on the page.",
+        "verified": false
+      },
+      {
+        "title": "Parody assignment (University of Minnesota Duluth course page)",
+        "url": "https://www.d.umn.edu/~cstroupe/f09/1506/parody.html",
+        "date": "",
+        "snippet": "Course page on parodying a digital genre by adopting a narrator voice that unintentionally gives itself away.",
+        "via": "search",
+        "note": "Voice guidance for the deadpan product copy. Single source, so unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Zendo is a game of inductive logic in which one player's hidden rule is inferred by the others from examples marked as following it or not.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Wisconsin card sorting task asks people to sort by colour, form or number without being told which, gives only right or wrong feedback, and changes the rule without warning.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The main lunar tide repeats about every 12 hours 25 minutes, which is half a tidal lunar day.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Accounts of who invented the vertical filing cabinet differ, and the Library Bureau appears in both an encyclopedia and a state-history account.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Eleusis, a hidden-rule card game, is reported to date from the 1950s (reported, unconfirmed).",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Zendo",
+      "Eleusis",
+      "Wisconsin card sorting task",
+      "Petals Around the Rose",
+      "flat-pack instruction booklets",
+      "infomercial problem-demo-offer structure",
+      "corporate About-Us pages"
+    ]
+  },
+  "design": {
+    "coreLoop": "A document with four or five visible traits (ink colour, length, subject, stamp, age) arrives; the visitor drops it into a drawer or lets the cabinet auto-file; the cabinet either accepts with a satisfied thunk or ejects it with a deadpan complaint. The visitor records hypotheses in a notebook of rule chips and can switch to prediction mode, calling the drawer before the slam. After a streak the tide gauge turns and the rule silently swaps, and a special catalyst document can force an early swap. Each round is a fresh rule pair from a seeded bank, so the loop stays a puzzle rather than a memorised trick.",
+    "sophisticationHooks": [
+      "A composable rule engine of roughly two dozen attribute rules (parity, comparisons, unless-clauses) with a solvability check so every rule is distinguishable from the document stream",
+      "Tide gauge that drives silent rule changes on a 12 h 25 min-inspired cycle scaled to filings, plus catalyst documents; a joke metric for clinging to the old rule",
+      "Three-in-one shell: product page, live control panel and manual whose troubleshooting table holds oblique, literally true hints that cost paperwork points",
+      "Seeded daily rule pair, URL-hash share of the result card, hand-drawn SVG cabinet with synthesized thunks"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: SVG cabinet with 6 drawers and animations, document generator from a small hand-made grammar, rule bank and checker, notebook and prediction mode, tide gauge, product-page and manual sections, daily seed and share card, light/dark, reduced motion, keyboard and touch, about panel. Cut: sound beyond a few synthesized thunks, accounts, multiplayer, rule editor.",
+    "risks": [
+      "A rule too hard or too easy ruins the loop; mitigate with a curated, tested rule bank and a visible difficulty tier.",
+      "Jokes must not bury the instructions; mitigate with a plain-language how-to-play line in the first view and in the manual.",
+      "Eleusis origin year is unverified and the 12 h 25 min figure is a simplification; the page states neither as fact beyond 'about'.",
+      "The fictional manufacturer must use an invented name and drawn mark and be labelled fictional in the header and about panel."
+    ]
+  },
+  "durable": true
+}

@@ -1,0 +1,46 @@
+// Importing this module isolates git from the machine it runs on (signing programs, identity, hooks,
+// system config) for the whole test process, and offers fixed-instant helpers for America/New_York.
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { localParts } from '../../scripts/lib/common.mjs';
+
+const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-test-gitcfg-'));
+export const GIT_GLOBAL_CONFIG = path.join(dir, 'gitconfig');
+fs.writeFileSync(
+  GIT_GLOBAL_CONFIG,
+  '[user]\n\tname = SED Test\n\temail = sed-test@example.invalid\n[init]\n\tdefaultBranch = main\n[commit]\n\tgpgsign = false\n[advice]\n\tdetachedHead = false\n',
+);
+process.env.GIT_CONFIG_GLOBAL = GIT_GLOBAL_CONFIG;
+process.env.GIT_CONFIG_NOSYSTEM = '1';
+process.env.GIT_TERMINAL_PROMPT = '0';
+process.env.GIT_AUTHOR_NAME = 'SED Test';
+process.env.GIT_AUTHOR_EMAIL = 'sed-test@example.invalid';
+process.env.GIT_COMMITTER_NAME = 'SED Test';
+process.env.GIT_COMMITTER_EMAIL = 'sed-test@example.invalid';
+delete process.env.SED_ROOT;
+delete process.env.SED_NOW;
+delete process.env.SED_NO_SLEEP;
+delete process.env.SED_HB_DIR;
+
+export const TZ = 'America/New_York';
+
+/** The real instant at which it is `hhmm` local time on `date` in America/New_York (DST aware). */
+export function etInstant(date, hhmm) {
+  const [h, m] = hhmm.split(':').map(Number);
+  for (const offsetHours of [4, 5]) {
+    const d = new Date(`${date}T00:00:00Z`);
+    d.setUTCHours(h + offsetHours, m, 0, 0);
+    const lp = localParts(d, TZ);
+    if (lp.date === date && lp.time === hhmm) return d;
+  }
+  throw new Error(`no such local time ${date} ${hhmm}`);
+}
+export const etIso = (date, hhmm) => etInstant(date, hhmm).toISOString();
+
+/** `minutes` after the instant `iso`. */
+export const plusMinutes = (iso, minutes) => new Date(Date.parse(iso) + minutes * 60_000).toISOString();
+
+export function tmpDir(prefix = 'sed-test-') {
+  return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+}

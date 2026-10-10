@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QA Clean Sample</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><a class="sed-back" href="../../">&larr; Sonnet Every Day</a></header>
+<main id="main">
+  <h1>Clean sample</h1>
+  <p class="tagline">A tiny well-behaved page for the QA harness.</p>
+  <section class="panel">
+    <h2>Counter</h2>
+    <button id="inc" type="button">Add one</button>
+    <button id="reset" type="button" aria-label="Reset the counter">&#8635;</button>
+    <output id="count" aria-live="polite">0</output>
+    <label for="note">Note</label>
+    <input id="note" type="text" maxlength="40">
+    <a href="#about">About this page</a>
+  </section>
+  <canvas id="stage" width="360" height="160" role="img" aria-label="Animated dots"></canvas>
+  <img alt="A purple square" width="48" height="48" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Crect width='48' height='48' fill='%234b32d6'/%3E%3C/svg%3E">
+  <details id="about"><summary>About</summary><p>Everything here is local.</p></details>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

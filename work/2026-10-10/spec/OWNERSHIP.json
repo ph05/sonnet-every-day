@@ -1,0 +1,14 @@
+{
+  "index.html": "artisan",
+  "css/style.css": "artisan",
+  "js/ui.js": "artisan",
+  "js/ring.js": "artisan",
+  "js/art.js": "artisan",
+  "js/main.js": "engineer",
+  "js/game.js": "engineer",
+  "js/engine.js": "engineer",
+  "js/solver.js": "engineer",
+  "data/tables.js": "engineer",
+  "data/challenges.js": "engineer",
+  "test/engine.test.mjs": "engineer"
+}

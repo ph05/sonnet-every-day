@@ -1,0 +1,192 @@
+{
+  "id": "architect-2",
+  "title": "Clause And Effect",
+  "pitch": "The visitor is the lone clerk of an Amendments Desk facing a knot of red tape: offices drawn as nodes, requirements as strands, and queues of citizens stuck because permit A needs B and B needs A. With a small budget of amendment clauses (an exemption, a sunset clause, a grandfather clause, a deemed-approved-after-N-days rule, a brand-new office) the visitor pulls strands loose and then runs a simulated crowd through the system, watching who still gets stuck. Parkinson-style side effects punish lazy fixes, since every new office spawns paperwork for its neighbours, so the tidiest unravelled desk wins.",
+  "whyNow": "Timeless. It turns a real piece of computer science (deadlock and circular wait) into a joke-rich puzzle that rewards seeing the structure of a mess.",
+  "origin": {
+    "agent": "architect",
+    "lens": "bureaucracy-sim"
+  },
+  "fingerprint": {
+    "category": "math-puzzle",
+    "mechanic": "puzzle",
+    "tone": [
+      "analytical",
+      "satirical",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "bureaucracy",
+      "deadlock",
+      "graph-puzzle",
+      "queue-simulation",
+      "catch-22",
+      "red-tape",
+      "amendments",
+      "dependency-graph"
+    ],
+    "keywords": [
+      "circular-wait",
+      "strongly-connected",
+      "clause",
+      "exemption",
+      "sunset",
+      "throughput",
+      "parkinson",
+      "knot"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Deadlock theory gives the puzzle a precise spine: a system can deadlock only when four conditions hold together, circular wait among them, and the standard cures (break a condition, impose an ordering on resources) map neatly onto bureaucratic amendments. Where each resource has a single instance, a cycle in the wait graph means deadlock, so a strongly-connected-component pass can show the player exactly which knot is the Catch-22. Parkinson's satirical observation that the number of officials grows regardless of the work supplies the side-effect rule that stops brute-force fixing. All offices, permits and citizens are invented.",
+    "sources": [
+      {
+        "title": "Deadlock lecture notes (UC Riverside CS153)",
+        "url": "https://www.cs.ucr.edu/~nael/cs153/lectures/lec12.pdf",
+        "date": "",
+        "snippet": "Course lecture listing the four conditions needed for deadlock (mutual exclusion, hold and wait, no preemption, circular wait) and handling strategies including prevention, avoidance and detection.",
+        "via": "search",
+        "note": "Four conditions and handling strategies.",
+        "verified": true
+      },
+      {
+        "title": "Deadlock chapter (Illinois CS341 coursebook)",
+        "url": "https://cs341.cs.illinois.edu/coursebook/Deadlock",
+        "date": "",
+        "snippet": "Coursebook chapter on deadlock covering the necessary conditions, resource allocation graphs and ordering resources as a prevention approach.",
+        "via": "search",
+        "note": "Independent second description of the conditions and prevention by ordering.",
+        "verified": true
+      },
+      {
+        "title": "Deadlock reading (University of Virginia)",
+        "url": "https://www.cs.virginia.edu/~cr4bd/3130/F2023/readings/deadlock.html",
+        "date": "",
+        "snippet": "Reading defining deadlock and the wait graph, noting that with one instance per resource a cycle means deadlock, with graph traversal as the usual detection method.",
+        "via": "search",
+        "note": "Cycle means deadlock for single-instance resources.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 (logic) (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+        "date": "",
+        "snippet": "The term comes from Heller's 1961 novel; asking to be grounded for insanity shows sanity. Now means a trap of mutually dependent conditions.",
+        "via": "search",
+        "note": "The cultural name for a circular-wait knot.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 meaning and origin (Phrase Finder)",
+        "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+        "date": "",
+        "snippet": "Phrase reference giving the 1961 novel origin and the modern meaning of a no-win bind of conflicting rules.",
+        "via": "search",
+        "note": "Independent second result for Catch-22.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's law (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Parkinson%27s_law",
+        "date": "",
+        "snippet": "Entry on Parkinson's satirical law, first published as an essay in The Economist in 1955 and expanded in a 1958 book, arguing that the number of officials is unrelated to the work done.",
+        "via": "search",
+        "note": "Basis of the work-multiplication side effect.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's Law (essay reprint, cat-v archive)",
+        "url": "https://doc.cat-v.org/economics/parkinsons-law",
+        "date": "",
+        "snippet": "Reprint of the essay: the rise in the number of staff follows its own law and would be much the same whether the work grew, shrank or vanished.",
+        "via": "search",
+        "note": "Independent second result for the essay's central claim.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's Law blog post (Fabrice Grinda)",
+        "url": "https://fabricegrinda.com/parkinsons-law-is-so-true",
+        "date": "",
+        "snippet": "A blog attributes to Parkinson a staff growth rate of 5 to 7 percent a year regardless of work; not confirmed against the original essay in the results seen.",
+        "via": "search",
+        "note": "Only source for the percentage; unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Deadlock needs four conditions at once (mutual exclusion, hold and wait, no preemption, circular wait); the Coffman conditions date to a 1971 paper.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "In a wait graph where each resource has a single instance, a cycle means deadlock; prevention of circular wait is usually done by acquiring resources in a fixed total order.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          0,
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Catch-22 (Heller, 1961) names a trap made of mutually dependent conditions.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Parkinson's law began as a 1955 essay in The Economist (book 1958) arguing that the number of officials is independent of the amount of work.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per a blog by Fabrice Grinda, Parkinson's essay is said to give a staff growth rate of 5 to 7 percent a year; unconfirmed, so the page will not state it as fact and will use an invented rate labelled as fiction.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Papers, Please",
+      "Catch-22",
+      "Banker's algorithm diagrams",
+      "Parkinson's Law",
+      "Opus Magnum style optimisation scoring",
+      "Mini Metro"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each level presents a dependency knot of offices, permits and a stream of citizens. The clerk inspects strands to find the circular-wait loops, spends a limited clause budget on amendments, and runs a seeded crowd simulation to see who is still stuck and how long the queues grow. Parkinson side effects and a tape-length score make cheap fixes backfire, so replays chase fewer clauses, shorter queues and a tidier knot.",
+    "sophisticationHooks": [
+      "Strongly-connected-component detection highlights each Catch-22 knot as a Loop Finder lens and doubles as the hint system",
+      "Deterministic discrete-event queue simulation in a worker, seeded so a solution hash replays identically",
+      "Verlet-style red tape strands drawn on canvas that visibly slacken and unravel when an amendment lands",
+      "Twelve hand-authored levels plus a daily generated knot, with a solution encoded in the URL hash so a friend can load and beat it"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: graph model and SCC pass, five amendment types, simulation worker, canvas strand renderer with drag and tap interaction, level select, 12 authored levels plus daily generator, scoring, about and making-of panel, keyboard and touch support, light and dark, reduced motion. Cut: level editor, multiplayer, user-uploaded levels, live data.",
+    "risks": [
+      "Abstract graph puzzles can feel dry; mitigation is the joke-dense clerk dialogue on each amendment and an early funny failure state",
+      "Generated levels must be solvable within the clause budget; mitigation is a brute-force checker over amendment combinations at generation time with a fallback to authored levels",
+      "The 5 to 7 percent Parkinson figure is unverified; the page uses an invented, labelled rate instead",
+      "Canvas strand physics plus worker simulation is the heaviest integration; the cut-list drops physics to a spring-eased curve if behind"
+    ]
+  },
+  "durable": true
+}

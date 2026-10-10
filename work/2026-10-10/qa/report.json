@@ -1,0 +1,323 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "revision": 0,
+  "tier": 2,
+  "verdict": "revise",
+  "counts": {
+    "S1": 0,
+    "S2": 1,
+    "S3": 11,
+    "S4": 8
+  },
+  "browser": {
+    "ok": true,
+    "error": null
+  },
+  "degraded": false,
+  "degradedWhy": [],
+  "unreviewed": false,
+  "summary": "Jokers In Phase is a strong, honest, very robust tier-2 page with one real S2. No S1. I played it in real Chromium 141 via Playwright: desktop, tablet, 390/360/320 phones, light, dark, reduced motion, touch, keyboard-only, drag, hostile hashes, blocked or corrupt storage, failed audio and clipboard, CPU throttling, and 2,500 seeded random UI actions in four configurations (zero console or page errors, zero invariant breaks, zero overflow). I re-ran the harness browser-check (ok=true, no errors or warnings), ran the 44 engine tests (all pass), re-ran the validator on a scratch copy (only the not-yet-made thumbnail is missing), and read every file and opened every screenshot. All nine SPEC reference lines reproduce on screen (for example #c=2&l=hnz = 2,003 with Gold lock, #c=1&l=hra = 1,864 = the exact solver's best), and the numbers match the dossier: the five About sources are all ver...",
+  "scores": [
+    {
+      "dimension": "core loop and depth",
+      "score": 8.5,
+      "note": "26 swaps over 3 windows = 17,576 lines per deal, solved exactly; on C2 the top-scoring rail (2,706) is not the gold-lock rail (2,003), so minute ten is a real lock hunt with coupling and Handshake interacting."
+    },
+    {
+      "dimension": "correctness and robustness",
+      "score": 9,
+      "note": "All nine reference lines reproduce in Chromium, 44/44 tests, 27 hostile hashes and 5 corrupt-storage cases degrade gracefully, 2,500 fuzzed actions with zero errors; only small gaps (silent hint undo, focus drop after Next/Retry)."
+    },
+    {
+      "dimension": "visual design",
+      "score": 8.5,
+      "note": "Moonlit lab-notebook identity with warm paper, an always-dark canvas scope, consistent tokens in light and dark and shape-plus-letter phase dots; the 1200x630 frame screenshots well."
+    },
+    {
+      "dimension": "interaction and feel",
+      "score": 7.5,
+      "note": "FLIP swaps, Play-chip preview, tile pop, one-shot glow and optional sound feel good, but the signature cascade plays off-screen (d01) and touch swipes over the rail are hijacked (d03)."
+    },
+    {
+      "dimension": "responsiveness and accessibility",
+      "score": 7.5,
+      "note": "No overflow at 320/360/390, AA contrast everywhere, roving tabindex with grab/drop and live announcements, reduced motion leaves 0 animations; docked for jokers below the phone fold (d02), coach layout shift (d04), focus loss (d09) and single-key shortcuts (d10)."
+    },
+    {
+      "dimension": "copy, voice and honesty",
+      "score": 8.5,
+      "note": "Dry, friendly voice with helpful microcopy; About says 'per search results only', sources match the dossier, fan line and play-money line are visible; small unit and ambiguity nits (d07)."
+    },
+    {
+      "dimension": "performance and offline integrity",
+      "score": 8.5,
+      "note": "About 190 KB, zero off-origin requests or CSP violations, swap and play 5 ms (26 ms at 4x CPU), ring frame 0.2 ms median, 442 DOM nodes; a roughly 60 ms boot long task from the exact solve (d12)."
+    },
+    {
+      "dimension": "first impression and shareability",
+      "score": 8,
+      "note": "Desktop first frame and gold share cards sell it and shared lines replay exactly; phones open on text with no jokers (d02) and the cascade is invisible (d01)."
+    }
+  ],
+  "highlights": [
+    "Swap-and-preview is instantly legible: tapping Twofold then Steady moves the Play chip from 180 to 330 points before you commit, and the step log explains every joker; playing the best C1 line (h, r, a) through real taps gave 1,864, equal to the exact solver's best.",
+    "Everything replays from the URL: all nine SPEC reference lines reproduce in Chromium (for example #c=2&l=hnz is 2,003 with Gold lock, #c=3&l=uxm is 2,785 silver), and 27 hostile or malformed hashes degrade to a fresh deal with a polite notice and no XSS surface.",
+    "The engine is hard to break: 44 tests including an exhaustive count of all 2,598,960 five-card hands, a naive-rules cross-check on 6,000 random configurations and solver-equals-play on all 17,576 lines; 2,500 fuzzed UI actions gave zero errors, and blocked or corrupt storage, a throwing AudioContext and a missing clipboard all fail quietly.",
+    "A real identity: warm-paper board plus an always-dark canvas phase scope, phase dots told apart by shape and letter and never colour alone, AA contrast on 165-176 text nodes in ten light, dark and finished states, and a 1200x630 first frame (title, coach, four hand tiles, rail, ring) that sells the page.",
+    "The gold-lock moment lands: three Fireflies in step give a Gold lock badge, a restrained one-shot glow (at most 12 percent overlay, never twice in 4 s), a gold concept card and a share link, it also fires when a friend's link is opened, and reduced motion swaps it for a static badge with zero running animations.",
+    "An honest About panel: dated 'as of 2026-10-10, per search results only (the pages were not opened)', all five sources verified:true in the dossier, the unofficial-fan line in the first viewport, 'Points are only a score: nothing here costs or pays anything', and a computed 72 versus 48 example that is arithmetically right."
+  ],
+  "exercisedInBrowser": true,
+  "defects": [
+    {
+      "source": "critic",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Scoring cascade and total play below the fold",
+      "detail": "The signature beat of the loop (press Play, watch each joker add to points x mult, see the total land) plays out in #steps-panel and .score, far below Play. DESIGN.md's first-frame brief says the cascade list 'sits under the rail'; in the build it starts 318 px under Play on every desktop width and 1,025 px under it on a 390 px phone. After tapping Play the visitor sees only the hand tile fill, the ring tween and the Play chip change; the per-joker explanation and the big Total never enter the viewport. The coach also says 'watch If you play now', a label that exists only in .score (y>=858) and the tab (y>=1100), so it points at something off-screen. What is fine and in view: the Play-chi...",
+      "evidence": "Chromium 141, 1280x800, light, fresh #c=1: #btn-play y=700-752, .score y=858-1054, #steps-panel y=1070-1444 (identical at 1440x900 and 1920x1080, where the fold is about 900-950). Tap Twofold, tap Steady, click Play, screenshot at +500 ms (work/2026-10-10/qa/critic-tmp/shots/p2-mid-cascade.png): no cascade row and no Total in view while 28 WAAPI animations run off-screen. 390x844: Play y=1160-1212, .score 1345-1529, #scope 1545-2221, #steps-panel 2237-2600. Observed: the cascade is never visi...",
+      "suggestedFix": "In js/ui.js startCascade() mirror the rows it already animates into an aria-hidden, pointer-events:none toast (#cascade-toast, position:fixed, bottom:12px, centred, width:min(92vw,420px)): one row per step using stepText(s) and the running 'pts x mult' at the same delays, then '= score'; keep it about 1.2 s after finishCascade() and drop it on any key, tap or new state (reduced motion: show it statically for 2.5 s). Also make the copy point at something on screen: change the Play chip to 'If ...",
+      "id": "d01"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Phones and iPad landscape open with no jokers in view",
+      "detail": "The hook of the page, the rail of jokers, is not in the first viewport on phones or on a landscape tablet. A 5-line fan note, the 2x2 nav, a description line, a 4-line coach and the 2x2 hand tiles come first, so the coach says 'Tap one joker, then another' while no joker is on screen. Everything is reachable by scrolling and the desktop first frame is excellent, so this is polish, but it is the first thing a mobile visitor feels.",
+      "evidence": "Chromium, light, fresh #c=1, document y of the #rail top: 390x844 = 907, 360x640 = 946, 320x568 = 983, 1024x768 (two-column layout, iPad landscape) = 908; all below the fold. The harness shot qa/run/shots/mobile-light.png ends mid hand tiles. Expected: the rail is at least partly visible on first paint.",
+      "suggestedFix": "For max-width:767px reorder with CSS only: .rig{order:5} so the rail and bench sit right under the coach and the hand tiles follow as context; or compress .deal to a one-row 4-up strip (category and score only, card faces hidden) and shorten the first-run coach to two lines at 360 px. For 768-1099 px also move the hand tiles below the rail or cut the 3-line .joker-info and .bench-note block above Play. Acceptance: at 390x844 the rail and bench are fully inside the first viewport and at 360x64...",
+      "id": "d02"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Swiping over the rail swaps jokers instead of scrolling",
+      "detail": "Every joker slot has touch-action:none, so on a phone a finger that lands on the rail or bench cannot scroll the page, and an ordinary scroll flick is read as a drag: it shows the drag ghost, grabs the joker and, if the finger ends over another slot, swaps the two. The rail and bench rows are 76 px each and full width, so roughly a fifth of the screen is a scroll dead zone while the board is in view. The swap is undoable and limited to one per beat, which is why this is S3, but a visitor scrolling to find Play can rearrange the rail without meaning to.",
+      "evidence": "Chromium 390x844 touch, scrollY=650, CDP Input.dispatchTouchEvent. (a) Swipe up 300 px starting on rail slot 3: scrollY stays 650, drag ghost visible, one slot has aria-pressed=true. (b) A 115 px upward flick starting on bench slot B2 and ending over the rail row: the page does not scroll and vm.changed=[1,5,6] (a rail-bench swap happened). A swipe starting on the text under the rail scrolls normally (650 to 1084).",
+      "suggestedFix": "For coarse pointers set .slot{touch-action:pan-y} and start a drag in onPointerMove only when the first 8 px of movement are horizontal-dominant (|dx|>|dy|); vertical flicks then scroll and arrive as pointercancel, which endDrag(ev,false) already handles. Rail-to-bench moves on touch stay available through tap-select (the info line already tells people to tap two jokers). Acceptance: the flick in (b) scrolls the page and leaves vm.changed empty.",
+      "id": "d03"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Coach box resizes after the first swap on phones",
+      "detail": "The coach box reserves three lines under 768 px (min-height calc(4.8em + 26px)), but its first-run message wraps to 4 lines at 375-430 px and 5 lines at 360 px and below, then shrinks to 2-3 lines after the first swap or play; .joker-info also shrinks when a one-line description replaces the two-line hint. Everything below the coach, rail and Play included, jumps up under the visitor's finger. Chrome's scroll anchoring hides the jump (scrollY 700 to 674 in a touch test) but iOS Safari has no scroll anchoring. The integration log says the coach reserves the line count its longest message needs; that holds from 768 px up, not below.",
+      "evidence": "Chromium with overflow-anchor:none to mimic Safari, fresh #c=1, tap slot 2 then slot 5: 390x844 coach 128 px to 103, #rail top 907 to 881, #btn-play 1160 to 1126. 360x640 coach 154 to 103, rail 946 to 895, Play 1200 to 1140. 320x568 rail 983 to 932, Play 1237 to 1177. No shift from 1100 px up; 768 px shifts Play by 9 px (joker-info).",
+      "suggestedFix": "Reserve the real maximum per breakpoint: below 768 px .coach{min-height:calc(6.4em + 26px)} and below 361 px calc(8em + 26px); or shorten the first-run line so it fits three lines at 320 px ('Hand 1 played itself. Order matters: tap one joker, then another, to swap them.'). Give .joker-info min-height:4.4em under 768 px. Acceptance: #rail and #btn-play tops are identical before and after the first swap at 320, 360, 390 and 768 px with overflow-anchor:none.",
+      "id": "d04"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Rail-bench swap marks four slots as changed",
+      "detail": "The bench always re-sorts into catalog order, so a rail-bench swap changes up to four positions in vm.changed and renderSlots marks every one with the dashed outline and diamond (and 'Moved this beat' in the aria-label). The visitor moved two jokers and sees three or four slots flagged; a Pendulum that merely slid along the bench looks touched. 'One swap per beat' is hard to read when four things look changed, and the best C1 line itself uses this kind of move.",
+      "evidence": "Chromium 1280x800, fresh #c=1: tap Twofold, tap Steady, Play; then tap rail slot 3 (Ember) and bench B1 (Pendulum): vm.changed=[2,5,6,7], so slot 3, B1, B2 and B3 all show .is-changed. In C3 (#c=3&l=ux) swapping rail slot 1 with B2 flags slot 1, B1 and B2, including the untouched Pendulum. Expected: exactly the two jokers that moved are flagged.",
+      "suggestedFix": "In js/ui.js keep basePos, a copy of v.pos taken whenever v.changed.length===0 or the deal or hand changes. Set .is-changed (and the 'Moved this beat' label) only when a joker's old or new position is on the rail (<5) and the two differ, so bench-only reshuffles are ignored. Acceptance: any single swap flags exactly two slots.",
+      "id": "d05"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Hint silently discards the visitor's pending swap",
+      "detail": "Pressing Hint (or H) while a swap is pending first puts the swap back (game.js undoes it so hint positions match the arrangement on screen) but nothing says so: the dashed 'changed' marks, the Undo state and the preview all reset and the visitor sees only 'Try swapping slot 2 with slot 5.' The engine behaviour is deliberate and documented; the silence is the problem, because it reads as the page losing the move they just made.",
+      "evidence": "Chromium, fresh #c=1: tap Spark then Twofold (vm.changed=[0,1], preview updates), click Hint: vm.changed=[], hint {a:1,b:4}, #hint-text 'Try swapping slot 2 with slot 5.', and #live holds only that hint text. Expected: a sentence saying the pending swap was put back.",
+      "suggestedFix": "In js/ui.js (renderButtons and describe) detect prev.changed.length>0 && !v.changed.length && v.hint and prefix both the visible #hint-text and the #live announcement with 'Your swap was put back first.' Keep the game.js behaviour.",
+      "id": "d06"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Copy: missing unit, ambiguous claim, Mac shortcut",
+      "detail": "Small copy tightening. (1) The sync note reads 'Locks at 92. Right now: 96%.' and the coach says '92 or more is a lock': the threshold has no unit while the neighbour has one. (2) The result line 'The best rail on this deal locks 3 of 3' reads as the top-scoring rail, but on C2 the top-scoring line (2,706) has lock 0 and the best lock-3 line scores 2,003. (3) The clipboard fallback says 'Press Ctrl+C', wrong on macOS. (4) The tagline and C1 description talk about Fireflies but nothing outside the tap-info line says Lantern, Ember and Spark are the Fireflies. (5) The About panel repeats the sentence about 64-step phases and seeded shuffles in both 'The short version' and 'How it works'.",
+      "evidence": "Chromium: sync note 'Locks at 92.' beside 'Right now: 96%.' (g1 screenshot); #c=2&l=hnz result shows 'Best possible on this deal: 2,706' then 'The best rail on this deal locks 3 of 3.' while #c=2&l=hqa (2,706) has lock 0; ui.js copyLink sets 'Press Ctrl+C'; About panel text.",
+      "suggestedFix": "Write 'Locks at 92%' and '92% or more is a lock'; change the result line to 'The most in-step rail on this deal locks 3 of 3.'; use 'Press Ctrl+C (Cmd+C on a Mac)'; add 'Lantern, Ember and Spark are the Fireflies.' to the C1 description or the bench note; delete the duplicate sentence from 'How it works'.",
+      "id": "d07"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Sandbox deal controls are far from the Sandbox button",
+      "detail": "Tapping Sandbox deals a new seed at once, but the controls for choosing a deal number or coupling live in #sandbox, far from the button: 2,780 px below the nav on a 390 px phone (under the card panel) and below the fold under the 685 px scope at 1280x800. Nothing on screen says the controls exist, so the visitor can only press S or Sandbox again to reroll blind.",
+      "evidence": "Chromium 390x844, tap Sandbox: #sandbox top y=3148 (Sandbox button bottom y=364, document height 3727), scrollY stays 0. 1280x800: #sandbox y=890-1227, fold at 800.",
+      "suggestedFix": "In sandbox mode append a 'Change deal' button to #challenge-desc that calls #sandbox.scrollIntoView({block:'start'}) and focuses #sandbox-seed; on phones also give .sandbox{order:5} while the mode is active so it sits under the coach. Acceptance: one tap from the description reaches the seed field at 390x844.",
+      "id": "d08"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Keyboard focus drops to body after Next or Retry",
+      "detail": "ui.js repairs focus only when the focused button becomes disabled (renderButtons). The result panel's 'Next: ...' and 'Retry round' buttons are hidden by the next render, which drops keyboard focus to <body>; the next Tab restarts at the skip link, about eight stops from the rail. Nav buttons, Undo and Play behave. Challenge 1 is still completable by keyboard alone.",
+      "evidence": "Chromium, #c=1&l=hra: focus #btn-next, press Enter: challenge becomes 2 and document.activeElement is BODY. Same result for #btn-result-retry. #btn-c2 + Enter keeps focus; Undo hands focus to Play.",
+      "suggestedFix": "At the end of render() in js/ui.js, if the previously focused element is no longer connected, is disabled or sits inside [hidden], focus the roving rail slot E.slots[focusPos] (or #btn-play). Acceptance: Enter on #btn-next or #btn-result-retry leaves document.activeElement on a rail slot or Play, never BODY.",
+      "id": "d09"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Single-key shortcuts fire from anywhere, including Retry",
+      "detail": "P U R H M 1 2 3 S act whenever the event target is not a text input; focus on a link, the About summary or the page body all count. R, 1, 2, 3 and S throw away the round in progress with no confirmation or undo. WCAG 2.1.4 (Character Key Shortcuts, level A) asks that single-key shortcuts can be turned off, remapped, or are active only while a component has focus; speech-input and screen-reader users hit these by accident. Every action also has a button, so the shortcuts are an extra, not the only path.",
+      "evidence": "Chromium, #c=1&l=hr (hand 3, total 1,474): focus the About summary and press r: hand 1, total 280, hash #c=1, no notice. Focus the About summary and press s: sandbox deal 37721. Focus the back link and press 2: challenge 2.",
+      "suggestedFix": "In onGlobalKey (js/ui.js) act on these keys only when document.activeElement is inside #app (or after an explicit 'Keyboard shortcuts' toggle saved in jip.v1.ui), ignore A, SUMMARY and anything inside .sed-about or .sed-footer, and require a second press within 2 s for R, 1, 2, 3 and S when round.hand>1 and the round is unfinished (announce 'Press R again to restart').",
+      "id": "d10"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "jester",
+      "file": "index.html (About, p.sed-making-of) vs /home/user/sonnet-every-day/work/2026-10-10/spec/PROJECT.json (makingOf)",
+      "title": "inconsistency: Index text: '...such as Balatro. It is not affiliated with or endorsed by that gam...",
+      "detail": "inconsistency: Index text: '...such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented.' PROJECT.json: '...roguelikes; it is not affiliated with or endorsed by the game's developer or publisher, and all numbers and art are invented.'",
+      "evidence": "Search index.html (About, p.sed-making-of) vs /home/user/sonnet-every-day/work/2026-10-10/spec/PROJECT.json (makingOf) for the text.",
+      "suggestedFix": "Make the two makingOf texts identical (copy one into the other). The task said they were already equal, and they are not. Keep the research sentence unchanged either way.",
+      "id": "d11"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "jester",
+      "file": "js/ui.js (NOTICE 'no-hint', line 14)",
+      "title": "inconsistency: 'Hints unlock after three rounds below par.'",
+      "detail": "inconsistency: 'Hints unlock after three rounds below par.'",
+      "evidence": "Search js/ui.js (NOTICE 'no-hint', line 14) for the text.",
+      "suggestedFix": "Text does not match game.js. First Beat always has hints (hintReady is true for cid <= 1), and Sandbox never unlocks them because settle() returns early for cid 0, so misses[0] never grows. Suggested copy: 'Hints open in Soft Pull and Shake On It after three rounds below par. Sandbox has none.'",
+      "id": "d12"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Joker names and card ranks render at 8.5 to 11 px",
+      "detail": "Joker names (the only visible label on a token) and the card ranks on the hand tiles are very small. Names are 11 px from 768 to 1280 px and fall to 10.9, 10.1 and 9.4 px at 390, 360 and 320 px; card rank text is about 9 px at 1280 px and 8.5 px at 1100 and 320 px. Contrast passes and tokens carry full aria-labels, so this is legibility only.",
+      "evidence": "Computed font-size of .jname and card-face width x 15/40 in Chromium: 1280 px names 11, ranks 9.1; 1100 px ranks 8.5; 390 px names 10.92, ranks 11.2; 360 px names 10.08, ranks 10; 320 px names 9.44, ranks 8.5.",
+      "suggestedFix": "Raise the .jname floor to 11 px (shrink the glyph or slot padding instead of the text) and enlarge the rank font in cardFace() from 15 to 18 in the 40x56 viewBox.",
+      "id": "d13"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "engineer",
+      "file": "js/game.js",
+      "title": "Exact solve runs before first render each deal",
+      "detail": "launch() runs the exact 17,576-line solve synchronously before the first app:state, on every start, challenge switch and sandbox deal, although the three shipped challenges already carry best and par in data/challenges.js. It is inside the SPEC's 100 ms at normal speed but it is the long task in every load and the slowest input on a slow phone.",
+      "evidence": "browser-check report: one long task of 51-66 ms per pass. Chromium with CPU throttling, actions dispatched in-page: 1x sandbox deals 11-24 ms, challenge switch 11-14 ms; 4x sandbox deals 43-77 ms and the first Challenge 2 switch 89 ms; 6x first sandbox deal 121 ms plus an 82 ms long task.",
+      "suggestedFix": "For challenges 1-3 emit from CHALLENGES (best, par) with maxLock added to data/challenges.js and run solve() in setTimeout(0) after the first emission; keep the synchronous solve only for sandbox deals the visitor asks for, and make sure solve has finished before a round can end or a hint is read. Acceptance: first app:state under 20 ms at 4x throttle.",
+      "id": "d14"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Source links have never been opened by the team",
+      "detail": "Five source links appear in the About panel and project.json. Each is verified:true only through search results; nobody on the team opened a page (dossier evidence 'search-only', and the About text says so). That is honest and within policy, but a dead or redirected link, for example the destructoid.com/?p=478541 short form, cannot be ruled out and QA had no research tool to check it.",
+      "evidence": "state/ideas/2026-10-10.json i04.verification.evidence is 'search-only'; sources 0, 1, 2, 4 and 8 each note 'page not opened' or 'found again by search'; index.html lines 383-387.",
+      "suggestedFix": "At packaging let the link-check clerk request the five URLs; drop any that fail from index.html and project.json together (the two lists must stay identical) and keep the 'pages were not opened' sentence unless a page really was opened.",
+      "id": "d15"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json (sources)",
+      "title": "unreachable-link: https://destructoid.com/?p=478541 returned 000",
+      "detail": "unreachable-link: https://destructoid.com/?p=478541 returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json (sources) for the text.",
+      "suggestedFix": "Not a dead link as far as this check shows. Recheck from a network that is not restricted before publishing.",
+      "id": "d16"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json (sources)",
+      "title": "unreachable-link: https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro ret...",
+      "detail": "unreachable-link: https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json (sources) for the text.",
+      "suggestedFix": "Not a dead link as far as this check shows. Recheck from a network that is not restricted before publishing.",
+      "id": "d17"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json (sources)",
+      "title": "unreachable-link: https://meetings-archive.aps.org/smt/2025/mar-m58/7 returned 000",
+      "detail": "unreachable-link: https://meetings-archive.aps.org/smt/2025/mar-m58/7 returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json (sources) for the text.",
+      "suggestedFix": "Not a dead link as far as this check shows. Recheck from a network that is not restricted before publishing.",
+      "id": "d18"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json (sources)",
+      "title": "unreachable-link: https://complexity-explorables.org/explorables/ride-my-kuramotocycle returned 000",
+      "detail": "unreachable-link: https://complexity-explorables.org/explorables/ride-my-kuramotocycle returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json (sources) for the text.",
+      "suggestedFix": "Not a dead link as far as this check shows. Recheck from a network that is not restricted before publishing.",
+      "id": "d19"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json (sources)",
+      "title": "unreachable-link: https://github.com/Steamodded/smods returned 403",
+      "detail": "unreachable-link: https://github.com/Steamodded/smods returned 403",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json (sources) for the text.",
+      "suggestedFix": "Not a dead link as far as this check shows. Recheck from a network that is not restricted before publishing.",
+      "id": "d20"
+    }
+  ],
+  "browserCheck": {
+    "ran": true,
+    "errors": [],
+    "warnings": [],
+    "shots": [
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/desktop-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/desktop-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/mobile-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/mobile-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/mobile-320.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/reduced-motion.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/monkey-desktop-end.png",
+      "/home/user/sonnet-every-day/work/2026-10-10/qa/run/shots/monkey-mobile-end.png"
+    ],
+    "reportPath": "work/2026-10-10/qa/run/report.json"
+  },
+  "validate": {
+    "ran": true,
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "note": ""
+  },
+  "proofread": {
+    "linksChecked": 5,
+    "linksOk": 0,
+    "issues": 7,
+    "notes": "Proofread of index.html, data/, js/ strings and PROJECT.json: no leftover placeholders, and all five sources are verified:true in the idea's research with no unverified claims shown. Four links answered 000 and one 403, which looks like a restricted sandbox network, so I did not retry; one line was added to kaizen/notes-clerk.md."
+  }
+}

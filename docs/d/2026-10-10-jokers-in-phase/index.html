@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Jokers In Phase</title>
+<meta name="description" content="An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-prose { max-width: 68ch; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="css/style.css">
+<script>
+(function () {
+  window.__sedThumbReady = new Promise(function (resolve) { window.__sedThumbResolve = resolve; });
+  function reveal() {
+    var box = document.getElementById('fatal');
+    if (box) box.hidden = false;
+  }
+  function fail() {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', reveal);
+    else reveal();
+    window.__sedThumbResolve();
+  }
+  window.addEventListener('error', function (ev) {
+    if (ev && typeof ev.message === 'string' && ev.message.indexOf('ResizeObserver') === 0) return;
+    fail();
+  }, true);
+  window.addEventListener('unhandledrejection', fail);
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (t && t.closest && t.closest('#btn-reload')) location.reload();
+  });
+})();
+</script>
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 1 &middot; 2026-10-10</p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Jokers In Phase</h1>
+  <p class="sed-tagline">Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.</p>
+  <p id="fan-note" class="fan-note">Unofficial fan concept in the style of joker-deck roguelikes such as Balatro. Not affiliated with or endorsed by its developer or publisher. No game art, fonts, logos or audio are used; numbers and art are invented.</p>
+
+  <div id="app" class="app">
+    <div id="fatal" class="fatal" role="alert" hidden>
+      <p>Something jammed the machinery. Reload to deal again.</p>
+      <button id="btn-reload" class="sed-btn" type="button">Reload</button>
+    </div>
+
+    <div class="grid">
+      <div class="pane pane-l">
+        <nav id="challenge-nav" class="seg" aria-label="Challenges">
+          <button id="btn-c1" class="seg-btn" type="button" data-challenge="1" aria-keyshortcuts="1"><span class="seg-n" aria-hidden="true">1</span>First Beat</button>
+          <button id="btn-c2" class="seg-btn" type="button" data-challenge="2" aria-keyshortcuts="2"><span class="seg-n" aria-hidden="true">2</span>Soft Pull</button>
+          <button id="btn-c3" class="seg-btn" type="button" data-challenge="3" aria-keyshortcuts="3"><span class="seg-n" aria-hidden="true">3</span>Shake On It</button>
+          <button id="btn-sandbox" class="seg-btn" type="button" data-challenge="0" aria-keyshortcuts="S"><span class="seg-n" aria-hidden="true">S</span>Sandbox</button>
+        </nav>
+        <p id="challenge-desc" class="challenge-desc"></p>
+        <p id="coach" class="coach">Dealing the cards</p>
+        <ol id="deal" class="deal" aria-label="The four hands">
+          <li class="hand" data-hand="1" data-status="waiting"><span class="hand-head"><b>Hand 1</b><span class="hand-tag"></span></span><span class="hand-cards"></span><span class="hand-name"></span><span class="hand-foot"><span class="hand-base"></span><span class="hand-score"></span></span></li>
+          <li class="hand" data-hand="2" data-status="waiting"><span class="hand-head"><b>Hand 2</b><span class="hand-tag"></span></span><span class="hand-cards"></span><span class="hand-name"></span><span class="hand-foot"><span class="hand-base"></span><span class="hand-score"></span></span></li>
+          <li class="hand" data-hand="3" data-status="waiting"><span class="hand-head"><b>Hand 3</b><span class="hand-tag"></span></span><span class="hand-cards"></span><span class="hand-name"></span><span class="hand-foot"><span class="hand-base"></span><span class="hand-score"></span></span></li>
+          <li class="hand" data-hand="4" data-status="waiting"><span class="hand-head"><b>Hand 4</b><span class="hand-tag"></span></span><span class="hand-cards"></span><span class="hand-name"></span><span class="hand-foot"><span class="hand-base"></span><span class="hand-score"></span></span></li>
+        </ol>
+
+        <div class="rig">
+          <h2 class="lab" id="rail-lab">Rail <span>scored left to right</span></h2>
+          <div id="rail" class="rail" role="group" aria-labelledby="rail-lab">
+            <button class="slot" type="button" data-pos="0" data-joker="" aria-pressed="false" tabindex="0"><span class="pos" aria-hidden="true">1</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+            <button class="slot" type="button" data-pos="1" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">2</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+            <button class="slot" type="button" data-pos="2" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">3</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+            <button class="slot" type="button" data-pos="3" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">4</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+            <button class="slot" type="button" data-pos="4" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">5</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+          </div>
+          <h2 class="lab" id="bench-lab">Bench <span>sits out</span></h2>
+          <div class="bench-row">
+            <div id="bench" class="bench" role="group" aria-labelledby="bench-lab">
+              <button class="slot" type="button" data-pos="5" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">B1</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+              <button class="slot" type="button" data-pos="6" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">B2</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+              <button class="slot" type="button" data-pos="7" data-joker="" aria-pressed="false" tabindex="-1"><span class="pos" aria-hidden="true">B3</span><span class="tok"><span class="glyph"></span><span class="jname"></span></span></button>
+            </div>
+            <p class="bench-note">Benched jokers do not score, but benched Fireflies keep time.</p>
+          </div>
+          <p id="joker-info" class="joker-info" aria-hidden="true">Tap a joker to read what it does, then tap another to swap them.</p>
+        </div>
+
+        <div class="actions">
+          <button id="btn-play" class="sed-btn play" type="button" aria-keyshortcuts="P" disabled>Play hand</button>
+          <button id="btn-undo" class="sed-btn is-quiet" type="button" aria-keyshortcuts="U" disabled>Undo swap</button>
+          <button id="btn-retry" class="sed-btn is-quiet" type="button" aria-keyshortcuts="R">Retry round</button>
+          <button id="btn-hint" class="sed-btn is-quiet" type="button" aria-keyshortcuts="H">Hint</button>
+          <button id="btn-sound" class="sed-btn is-quiet" type="button" aria-keyshortcuts="M" aria-pressed="false">Sound off</button>
+        </div>
+        <p id="hint-text" class="hint-text"></p>
+        <p id="notice" class="notice" role="status"></p>
+        <p class="keys">Keys: <kbd>P</kbd> play, <kbd>U</kbd> undo, <kbd>R</kbd> retry, <kbd>H</kbd> hint, <kbd>M</kbd> sound, <kbd>1</kbd> to <kbd>3</kbd> challenges, <kbd>S</kbd> sandbox.</p>
+
+        <section class="score" aria-label="Score">
+          <p class="stat stat-total"><span class="stat-l">Total</span><span id="score-total" class="stat-v" data-value="0">0</span></p>
+          <p class="stat"><span class="stat-l">Last hand</span><span id="score-hand" class="stat-v">0</span></p>
+          <p class="stat"><span class="stat-l">If you play now</span><span id="score-next" class="stat-v">0</span></p>
+          <p class="stat"><span class="stat-l">Par</span><span id="score-par" class="stat-v">0</span></p>
+          <div id="score-bar" class="bar" role="progressbar" aria-label="Progress to par" aria-valuemin="0" aria-valuemax="1" aria-valuenow="0"><span class="bar-fill"></span></div>
+          <p id="score-best" class="fine" hidden></p>
+          <p class="fine">Points are only a score: nothing here costs or pays anything.</p>
+        </section>
+
+        <div id="steps-panel" class="steps-panel">
+          <div class="tabs" role="tablist" aria-label="Scoring log">
+            <button id="tab-last" class="tab" type="button" role="tab" aria-selected="false" aria-controls="steps-body" tabindex="-1">Last hand</button>
+            <button id="tab-next" class="tab" type="button" role="tab" aria-selected="true" aria-controls="steps-body" tabindex="0">If you play now</button>
+          </div>
+          <div id="steps-body" class="steps-body" role="tabpanel" aria-labelledby="tab-next">
+            <p id="steps-title" class="steps-title"></p>
+            <ol id="steps" class="steps"></ol>
+          </div>
+        </div>
+      </div>
+
+      <div class="pane pane-r">
+        <section id="scope" class="scope" aria-labelledby="scope-h" data-lock="0">
+          <div class="scope-head">
+            <h2 id="scope-h">Phase scope</h2>
+            <span id="lock-badge" class="badge" hidden></span>
+          </div>
+          <p id="coupling-line" class="scope-sub"></p>
+          <canvas id="ring" class="ring" width="340" height="340" role="img" aria-label="Phase ring, 64 steps, loading"></canvas>
+          <div id="sync-meter" class="sync" role="meter" aria-label="Sync" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="No sync yet">
+            <span class="sync-l">Sync</span>
+            <span class="sync-track"><span class="sync-fill"></span><span class="sync-mark"></span></span>
+            <span id="sync-val" class="sync-v">&ndash;</span>
+          </div>
+          <p id="sync-note" class="scope-sub">locks at 92</p>
+          <table id="phase-table" class="phase-table">
+            <caption>Phases on a 64-step cycle, 0 at the top, clockwise</caption>
+            <thead><tr><th scope="col">Joker</th><th scope="col">Now</th><th scope="col">If you play</th><th scope="col">Place</th></tr></thead>
+            <tbody>
+              <tr data-id="lantern"><th scope="row">Lantern</th><td></td><td></td><td></td></tr>
+              <tr data-id="ember"><th scope="row">Ember</th><td></td><td></td><td></td></tr>
+              <tr data-id="spark"><th scope="row">Spark</th><td></td><td></td><td></td></tr>
+              <tr data-id="pendulum"><th scope="row">Pendulum</th><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="result" class="result" aria-labelledby="result-h" hidden>
+          <h2 id="result-h">Round over</h2>
+          <p id="result-lines" class="result-lines"></p>
+          <div class="result-actions">
+            <button id="btn-next" class="sed-btn" type="button" hidden>Next challenge</button>
+            <button id="btn-result-retry" class="sed-btn is-quiet" type="button">Retry round</button>
+          </div>
+        </section>
+
+        <section id="card-panel" class="card-panel" aria-labelledby="card-h">
+          <h2 id="card-h">Concept card</h2>
+          <div id="card-host" class="card-host"></div>
+          <p id="card-caption" class="scope-sub card-caption"></p>
+          <div class="share">
+            <label for="share-url">Share link</label>
+            <input id="share-url" type="text" readonly spellcheck="false" autocomplete="off">
+            <button id="btn-copy" class="sed-btn is-quiet" type="button">Copy link</button>
+          </div>
+        </section>
+
+        <section id="sandbox" class="sandbox" aria-labelledby="sandbox-h" hidden>
+          <h2 id="sandbox-h">Sandbox deal</h2>
+          <p class="scope-sub">Free deal: no cards, but the exact best score is still shown.</p>
+          <div class="field">
+            <label for="sandbox-seed">Deal number (1 to 99999)</label>
+            <input id="sandbox-seed" type="number" min="1" max="99999" step="1" inputmode="numeric">
+          </div>
+          <fieldset class="coupling">
+            <legend>Coupling</legend>
+            <label class="pick"><input type="radio" name="k" value="0"><span>Off</span></label>
+            <label class="pick"><input type="radio" name="k" value="1"><span>Soft</span></label>
+            <label class="pick"><input type="radio" name="k" value="2"><span>Medium</span></label>
+            <label class="pick"><input type="radio" name="k" value="3"><span>Firm</span></label>
+          </fieldset>
+          <p class="scope-sub">Flash bonus +6, +5, +4, +3 for Off, Soft, Medium, Firm.</p>
+          <div class="result-actions">
+            <button id="btn-deal" class="sed-btn" type="button">Deal</button>
+            <button id="btn-newseed" class="sed-btn is-quiet" type="button">New seed</button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="live" class="sed-visually-hidden" aria-live="polite"></div>
+  </div>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <h2>The short version</h2>
+      <p class="sed-making-of">Jokers In Phase is an unofficial fan concept in the style of joker-deck roguelikes such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented. Two community guides say joker effects resolve left to right, so the page uses that rule as the guides describe it. The Firefly joker is a simplified, integer-only cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies. Phases are whole numbers on a 64-step cycle, deals use a seeded shuffle, and an exhaustive solver checks all 17,576 swap lines, so a shared link replays the same scores in any browser. The research was read from search results only; the pages were not opened.</p>
+      <h2>How it works</h2>
+      <p>Score = points &times; mult. Each hand starts from a base (a pair is 6 points &times; 2 mult), then the five jokers act from the left slot to the right slot. Computed by this page: a pair with Steady (+4 mult) then Twofold (&times;2) gives 6 &times; 12 = 72, and with Twofold then Steady it gives 6 &times; 8 = 48. Points are only a score: nothing here costs or pays anything. The rules and numbers are invented for this concept.</p>
+      <p>Phases are whole numbers on a 64-step cycle with a fixed sine table, deals use a seeded shuffle, and the solver tries all 17,576 swap lines, so a shared link reproduces the same scores in any browser.</p>
+      <h2>Research</h2>
+      <p>As of 2026-10-10, per search results only (the pages were not opened): two community guides, Destructoid and Prima Games, state that joker effects resolve left to right, so additive mult belongs before multiplying mult. This page uses that rule as the guides describe it, not as a developer statement. The Kuramoto model is described as a model of phase-coupled oscillators, each with its own natural frequency plus a coupling term (Complexity Explorables, &ldquo;ride my kuramotocycle&rdquo;). A 2025 APS March Meeting abstract, &ldquo;Relating the Kuramoto model to data from immobile firefly swarms&rdquo;, tests a Kuramoto variant on swarm data. The Firefly rule here is a simplified invented cousin chosen for play, not a model of real fireflies.</p>
+      <p>A Lua mod loader and API layer for the game exists (the Steamodded repository); this page is a standalone web toy and ships no mod files. No claim is made that timing-based jokers are new to the genre.</p>
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://destructoid.com/?p=478541" rel="noopener noreferrer">Destructoid joker order guide</a>: a community guide stating that joker effects resolve left to right.</li>
+        <li><a href="https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro" rel="noopener noreferrer">Prima Games, &ldquo;Four Things I Wish I Knew When Starting Balatro&rdquo;</a>: a second guide putting additive mult before multiplying mult.</li>
+        <li><a href="https://meetings-archive.aps.org/smt/2025/mar-m58/7" rel="noopener noreferrer">APS March Meeting 2025 abstract</a>: a Kuramoto variant tested on firefly swarm data.</li>
+        <li><a href="https://complexity-explorables.org/explorables/ride-my-kuramotocycle" rel="noopener noreferrer">Complexity Explorables, &ldquo;ride my kuramotocycle&rdquo;</a>: the Kuramoto model as phase-coupled oscillators with natural frequencies.</li>
+        <li><a href="https://github.com/Steamodded/smods" rel="noopener noreferrer">Steamodded (smods) repository</a>: a Lua mod loader and API layer for the game.</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by the Sonnet Every Day team</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

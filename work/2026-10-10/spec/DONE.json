@@ -1,0 +1,34 @@
+{
+  "phase": "spec",
+  "ok": true,
+  "date": "2026-10-10",
+  "ideaId": "i04",
+  "tier": 2,
+  "compact": true,
+  "slug": "jokers-in-phase",
+  "title": "Jokers In Phase",
+  "owners": {
+    "artisan": [
+      "index.html",
+      "css/style.css",
+      "js/ui.js",
+      "js/ring.js",
+      "js/art.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/game.js",
+      "js/engine.js",
+      "js/solver.js",
+      "data/tables.js",
+      "data/challenges.js",
+      "test/engine.test.mjs"
+    ]
+  },
+  "files": 12,
+  "warnings": [],
+  "openIssues": [
+    "drop procedural-audio from PROJECT.json fingerprint tech if sound is cut"
+  ],
+  "by": "orchestrator"
+}

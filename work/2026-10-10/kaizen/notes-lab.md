@@ -1,0 +1,3 @@
+Search snippets rarely carry dates, so every source lands with an empty date field; a one-line hint in the scout prompt on where to look for dates would save a second query per claim.
+Lab: both of my WebFetch tries died on DNS before reaching any page; a probe that lists which science and reference hosts resolve would save every scout a wasted try, and a note on how to cite search-only evidence would help.
+Judging distinctness: a tag-overlap count per idea in the shortlist (e.g. bureaucracy, queue, fake-product) would show sibling clusters instantly instead of by reading ten dossiers.

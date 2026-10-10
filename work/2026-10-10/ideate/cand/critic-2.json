@@ -1,0 +1,182 @@
+{
+  "id": "critic-2",
+  "title": "Format Drift",
+  "pitch": "The visitor writes one tiny joke into an original drawn template (a two-panel contrast, an escalating four-tier ladder, a three-figure triangle or a plan-goes-wrong strip) and releases it into a simulated gossip chain. Each retelling mutates the joke in a small, named way (a role swap, an extra rung, an ironic flip, a literalised word, a topic substitution), growing a layered tree of variants whose edit distance from the original is shown on every branch. The visitor then acts as the audience and chooses which variants survive to be retold, steering the lineage until the final descendant is barely recognisable beside the original.",
+  "whyNow": "Timeless rather than news-bound: published studies reconstruct descent trees of meme variants, and the expanding-brain ladder and three-figure labelling formats are still reused constantly. Evolution as a toy is novel for the studio and gives a screenshot-worthy side-by-side of ancestor and descendant.",
+  "origin": {
+    "agent": "critic",
+    "lens": "meme-anatomy"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "simulator",
+    "tone": [
+      "absurd",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "web-animations",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "meme-evolution",
+      "mutation",
+      "telephone-game",
+      "lineage-tree",
+      "selection",
+      "format-grammar",
+      "edit-distance",
+      "original-art"
+    ],
+    "keywords": [
+      "meme-anatomy",
+      "gossip-chain",
+      "phylogeny",
+      "escalation-ladder",
+      "irony-flip",
+      "slot-roles",
+      "variant-tree",
+      "shareable-hash"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Researchers have repeatedly modelled memes as things that mutate when copied. A study of thousands of Facebook meme variants builds ancestor-to-descendant trees and reports that edit distance grows along copy chains, while two other arXiv papers build trees of image-macro variants and a dendrogram of frog-meme clusters. The expanding-brain format started in a Reddit joke called Whomst and is a four-image escalation; the three-figure labelling format has role slots that people relabel for any topic. Those documented structures become the mutation operators. The simulation is invented and labelled as such; it does not claim to reproduce any measurement.",
+    "sources": [
+      {
+        "title": "Information Evolution in Social Networks",
+        "url": "https://ar5iv.labs.arxiv.org/html/1402.6792",
+        "date": "",
+        "snippet": "Facebook study tracking thousands of meme variants; builds variant trees, reports that variants further apart in a chain differ more in edit distance, and cautions that the genetic analogy is open.",
+        "via": "search",
+        "note": "Mutation along copy chains with edit distance.",
+        "verified": true
+      },
+      {
+        "title": "MemeSequencer: Sparse Matching for Embedding Image Macros",
+        "url": "https://arxiv.org/pdf/1802.04936",
+        "date": "",
+        "snippet": "Builds a tree from pairwise distances between image macros of one template, linking children by shared imagery or shared text.",
+        "via": "search",
+        "note": "Independent paper that arranges meme variants as a descent tree.",
+        "verified": true
+      },
+      {
+        "title": "Towards Understanding the Information Ecosystem Through the Lens of Multiple Web Communities",
+        "url": "https://arxiv.org/pdf/1911.10517",
+        "date": "",
+        "snippet": "Builds a dendrogram of frog-meme clusters (525 clusters across 23 memes) using a custom distance metric.",
+        "via": "search",
+        "note": "Third independent tree-of-variants study.",
+        "verified": true
+      },
+      {
+        "title": "Galaxy Brain (Know Your Meme)",
+        "url": "https://knowyourmeme.com/memes/galaxy-brain",
+        "date": "",
+        "snippet": "Says the escalating-brain series grew out of the Whomst joke, with an early popular version on a Reddit meme forum on 31 January 2017, and is often used ironically to imply the opposite ranking.",
+        "via": "search",
+        "note": "Origin of the escalation ladder; the irony remark and the January 2017 date rest on this page alone and are shown only as reported.",
+        "verified": true
+      },
+      {
+        "title": "Dictionary.com's Top 10 Memes To Know How To Use",
+        "url": "https://www.dictionary.com/e/?p=115213",
+        "date": "",
+        "snippet": "Says the original had four images, from a small brain beside 'who' up to a glowing head beside 'whomst'd'.",
+        "via": "search",
+        "note": "Independent confirmation of the Whomst origin and four-step shape.",
+        "verified": true
+      },
+      {
+        "title": "distracted boyfriend meme (Daily Dot)",
+        "url": "https://dailydot.com/unclick/distracted-boyfriend-meme/",
+        "date": "",
+        "snippet": "Reads the three figures as 'you', the thing you should focus on, and the passing distraction.",
+        "via": "search",
+        "note": "Role slots of the three-figure format.",
+        "verified": true
+      },
+      {
+        "title": "Distracted boyfriend meet stars meme summer (Hollywood Reporter)",
+        "url": "https://www.hollywoodreporter.com/lifestyle/lifestyle-news/distracted-boyfriend-meet-stars-meme-summer-1033623/",
+        "date": "",
+        "snippet": "Notes that the tempting figure was relabelled with everything from natural events to drinks to ideologies.",
+        "via": "search",
+        "note": "Independent confirmation that the slots are relabelled freely.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Published studies arrange meme variants as descent trees or dendrograms built from pairwise distances (Facebook meme study, MemeSequencer, frog-meme clustering).",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Facebook meme study reports that variants further apart in a copy chain differ more in edit distance, and notes the biological analogy is only partly established.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The expanding-brain ladder began as an escalating four-image series from the Whomst joke, as covered by both Know Your Meme and Dictionary.com.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per Know Your Meme, the escalating-brain format is often used ironically to imply the opposite of its literal ranking (single source, shown as reported).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The three-figure labelling format has role slots (the person, the current focus, the tempting alternative) that are relabelled for arbitrary topics.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Telephone game",
+      "Phylogenetic trees",
+      "Cellular-automaton toys",
+      "Spore-style creature breeding",
+      "Expanding-brain ladder",
+      "Three-figure labelling meme"
+    ]
+  },
+  "design": {
+    "coreLoop": "Write a seed joke into a template, release it for three retellings, read each new variant with its mutation named, pick survivors, and repeat for up to eight generations. Operators interact (an irony flip after an extra rung reads differently from before), the tree shows divergence at a glance, and players learn which mutation each template is most vulnerable to.",
+    "sophisticationHooks": [
+      "Five or six named mutation operators acting on structured slots: role swap, add rung, drop rung, irony flip, literalise, topic substitute via a hand-made neighbour graph of about 150 concepts",
+      "Selection pressure: the visitor's pick decides survivors; an auto-select 'algorithmic feed' mode favours the most extreme variants and visibly collapses diversity, to show what selection does",
+      "Layered tree view as a canopy of nodes, each a mini rendered panel, with edit distance on each edge and a final ancestor-versus-descendant side-by-side card",
+      "Original art only: four stick-figure and glyph templates drawn in SVG, with URL-hash state holding template, seed words and the chosen path so lineages are shareable"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: four templates, the operator engine with seeded random so hashes replay exactly, the concept neighbour graph and ladder dataset (about 25 ladders of four rungs), tree and side-by-side views, feed-mode toggle, keyboard navigation, light and dark, reduced motion, about panel listing only verified sources and labelling the simulation as invented. Cut: free-form text mutation, image upload, real templates or photos, any claim of measured accuracy.",
+    "risks": [
+      "Quality of mutated text depends on the hand-made graph and ladders; the engine should degrade to structure-only mutations when typed words are unknown",
+      "Mutations may yield flat jokes; mitigate by curating operator outputs with templates tested on the 25 ladders before the build freeze",
+      "The page must say clearly that the simulation is invented and not a replication of the cited studies",
+      "Know Your Meme irony claim is single-source and is shown only as 'per Know Your Meme' if at all",
+      "The three-figure template is described by original drawings, never the stock photo or any real person"
+    ]
+  },
+  "durable": true
+}

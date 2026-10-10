@@ -1,0 +1,204 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "status": "published",
+  "targetTier": 2,
+  "tier": 2,
+  "phase": "done",
+  "phasesDone": [
+    {
+      "phase": "preflight",
+      "at": "2026-10-10T05:50:22.985Z",
+      "by": "manual",
+      "note": "preflight ok"
+    },
+    {
+      "phase": "ideate",
+      "at": "2026-10-10T06:33:41.640Z",
+      "by": "manual",
+      "note": "10 ideas, carryover none (resumed after script size-check bug, see events)"
+    },
+    {
+      "phase": "select",
+      "at": "2026-10-10T06:52:17.398Z",
+      "by": "manual",
+      "note": "chose jokers-in-phase"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-10-10T09:29:36.151Z",
+      "by": "manual",
+      "note": "spec ok (compact, tier 2)"
+    },
+    {
+      "phase": "build",
+      "at": "2026-10-10T10:54:36.035Z",
+      "by": "manual",
+      "note": "build ok, trial validate ok (tier 2, 3804 own lines)"
+    },
+    {
+      "phase": "qa",
+      "at": "2026-10-10T11:32:36.746Z",
+      "by": "manual",
+      "note": "qa verdict revise S1=0 S2=1 S3=11 S4=8"
+    },
+    {
+      "phase": "revise",
+      "at": "2026-10-10T11:32:37.273Z",
+      "by": "manual",
+      "note": "skipped: compact tier, S1=0, S2 shipped as known issue"
+    },
+    {
+      "phase": "package",
+      "at": "2026-10-10T11:33:49.095Z",
+      "by": "manual",
+      "note": "packaged jokers-in-phase tier 2"
+    },
+    {
+      "phase": "kaizen",
+      "at": "2026-10-10T12:56:10.847Z",
+      "by": "manual",
+      "note": "5 applied, 0 rejected, 1 proposed, 3 skipped (phase time)"
+    },
+    {
+      "phase": "done",
+      "at": "2026-10-10T12:56:10.847Z",
+      "by": "manual",
+      "note": "kaizen closed the day"
+    }
+  ],
+  "attempts": {
+    "preflight": 1,
+    "ideate": 1,
+    "select": 1,
+    "spec": 1,
+    "build": 1,
+    "qa": 1,
+    "revise": 1,
+    "package": 1,
+    "publish": 1,
+    "kaizen": 1
+  },
+  "phaseStartedAt": {
+    "preflight": "2026-10-10T05:50:16.803Z",
+    "ideate": "2026-10-10T05:50:32.853Z",
+    "select": "2026-10-10T06:33:51.469Z",
+    "spec": "2026-10-10T06:52:25.025Z",
+    "build": "2026-10-10T09:29:45.380Z",
+    "qa": "2026-10-10T10:54:42.815Z",
+    "revise": "2026-10-10T11:32:36.746Z",
+    "package": "2026-10-10T11:32:45.308Z",
+    "publish": "2026-10-10T11:34:16.800Z",
+    "kaizen": "2026-10-10T11:34:33.859Z",
+    "done": "2026-10-10T12:56:10.847Z"
+  },
+  "lease": {
+    "holder": "manual",
+    "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
+    "acquiredAt": "2026-10-10T05:50:02.392Z",
+    "heartbeatAt": "2026-10-10T12:56:10.847Z",
+    "phase": "kaizen"
+  },
+  "directives": [
+    {
+      "kind": "scope-cut",
+      "tier": 2,
+      "by": "manual",
+      "at": "2026-10-10T09:29:33.750Z",
+      "ack": true
+    }
+  ],
+  "chosen": {
+    "ideaId": "i04",
+    "slug": "jokers-in-phase",
+    "title": "Jokers In Phase"
+  },
+  "throttle": "balanced",
+  "spend": {
+    "outputTokens": 2176147,
+    "agentCalls": 132,
+    "byPhase": {
+      "ideate": {
+        "outputTokens": 799455,
+        "agentCalls": 62
+      },
+      "select": {
+        "outputTokens": 175799,
+        "agentCalls": 14
+      },
+      "spec": {
+        "outputTokens": 190000,
+        "agentCalls": 3
+      },
+      "build": {
+        "outputTokens": 661469,
+        "agentCalls": 10
+      },
+      "qa": {
+        "outputTokens": 261664,
+        "agentCalls": 9
+      },
+      "package": {
+        "outputTokens": 27500,
+        "agentCalls": 0
+      },
+      "kaizen": {
+        "outputTokens": 60260,
+        "agentCalls": 34
+      }
+    }
+  },
+  "publishedAt": "2026-10-10T11:34:17.509Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-10-jokers-in-phase/",
+  "createdAt": "2026-10-10T05:50:02.392Z",
+  "events": [
+    {
+      "at": "2026-10-10T05:50:02.392Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "run created by manual (cse_01PCQqwBwwn3hmGCSxhnfg3r) targeting tier 1"
+    },
+    {
+      "at": "2026-10-10T05:50:17.870Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "agent slots: 2 (nproc 4)"
+    },
+    {
+      "at": "2026-10-10T05:50:22.436Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "premortem skipped: genesis day, no reports or handoff to read"
+    },
+    {
+      "at": "2026-10-10T06:20:45.875Z",
+      "by": "manual",
+      "kind": "error",
+      "msg": "ideate returned no-ideas: normalize size check failed (clerk decoded unicode escapes, 9892 vs 9912 bytes). Resuming run wf_8a970aeb-46c with a scratchpad copy of ideate.js with byte tolerance 40; repo file untouched"
+    },
+    {
+      "at": "2026-10-10T09:29:33.750Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "scope-cut directive (tier 2) issued by manual"
+    },
+    {
+      "at": "2026-10-10T09:29:35.020Z",
+      "by": "manual",
+      "kind": "degrade",
+      "msg": "spec went compact: mini-spec, tier 2 from here (only 2 agent slots on this 4-CPU machine; spec workflow stalled after architect interrupt, orchestrator finished OWNERSHIP and PROJECT via one architect agent and DONE.json)"
+    },
+    {
+      "at": "2026-10-10T11:34:17.509Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "published at tier 2"
+    },
+    {
+      "at": "2026-10-10T11:51:22.482Z",
+      "by": "manual",
+      "kind": "error",
+      "msg": "kaizen blocked: suites red at HEAD (1 failing test of 1393 in the tests suite); full npm test passes afterwards (1587 pass), so likely transient; retrying the round once without the heartbeat loop"
+    }
+  ]
+}

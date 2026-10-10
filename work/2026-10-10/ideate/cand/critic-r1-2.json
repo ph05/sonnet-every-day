@@ -1,0 +1,223 @@
+{
+  "id": "critic-r1-2",
+  "title": "Backyard Rink Keeper",
+  "pitch": "The visitor tends a backyard hockey rink through one invented winter: reading a five-day forecast fan, choosing when to lay the liner, flood thin layers or one deep pour, scrape and resurface, and when to lace up. A cut-away canvas shows the ice growing in banded layers, trapped air, a thaw crack, snow insulating the surface, and ground frost as hard as granite beneath the liner. The season ends with a receipt of skating nights, puck-drop evenings and ice sins, and the seed in the URL lets a friend replay the same winter and compare.",
+  "whyNow": "Hockey season opened on Sept 29, 2026, the first outdoor game of the year is the Oct 25 Heritage Classic, and backyard rink builders start prepping before the first hard freeze. It still works in any month because every winter is seeded.",
+  "origin": {
+    "agent": "critic",
+    "lens": "season-and-sky"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "simulator",
+    "tone": [
+      "cozy",
+      "nerdy",
+      "competitive"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "backyard-rink",
+      "hockey",
+      "ice-growth",
+      "winter",
+      "seasonal",
+      "weather",
+      "flooding",
+      "stefan-law"
+    ],
+    "keywords": [
+      "freezing-degree-days",
+      "forecast-fan",
+      "liner",
+      "thaw",
+      "resurface",
+      "ice-layers",
+      "seeded-winter",
+      "season-receipt",
+      "cross-section"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Ice thickness under cold air grows roughly with the square root of accumulated freezing degree-days (Stefan's relation), which gives the sim a real engine: early cold nights add ice fast, later ones slowly, and a thaw stalls or reverses growth. Backyard rink guides give practical targets such as about 4 inches (10 cm) finished and more for adults, wait for several consecutive days below about -4 C before the first flood, and test the surface before skating; they disagree on whether to flood in thin layers or in one pour, which becomes a strategy choice in the game. The hockey calendar supplies the hook: the NHL season opened Sept 29, 2026 and an outdoor Heritage Classic game is set for Oct 25. Practical rink guidance is reported by single sources and is shown as reported, not confirmed.",
+    "sources": [
+      {
+        "title": "Stefan's equation",
+        "url": "https://en.wikipedia.org/wiki/Stefan%27s_equation",
+        "date": "",
+        "snippet": "Describes how ice-cover thickness depends on temperature history, with expected accretion proportional to the square root of accumulated degree-days below freezing.",
+        "via": "search",
+        "note": "Square-root growth law behind the ice engine",
+        "verified": true
+      },
+      {
+        "title": "Propagation of Uncertainty (ice thickness exercise, TU Delft)",
+        "url": "https://mude.citg.tudelft.nl/workbook-2025/assignments/GA1.6/icey_dicey.html",
+        "date": "",
+        "snippet": "Course exercise using squared thickness growing linearly with freezing time and temperature difference, plus a term for starting thickness.",
+        "via": "search",
+        "note": "Independent statement of the same law, including an initial-thickness term for re-flooding",
+        "verified": true
+      },
+      {
+        "title": "How to build a natural outdoor rink (Innisfil)",
+        "url": "https://innisfil.ca/en/recreation-parks-and-culture/resources/Documents/How-to-build-a-natural-outdoor-rink.pdf",
+        "date": "",
+        "snippet": "Municipal guide advising waiting for several days of sustained cold, reported as 7 to 10 days at or below -10 C, before completing the first flood.",
+        "via": "search",
+        "note": "First-flood timing rule of thumb (single source, host attribution of the number is likely, not certain)",
+        "verified": false
+      },
+      {
+        "title": "Puck drop instructions (Canadian Tire rink kit guide)",
+        "url": "https://media-www.canadiantire.ca/banners/promo-content/2022/01/en-puck-drop-instructions-final-en.pdf",
+        "date": "",
+        "snippet": "Retail kit instructions suggesting at least 4 inches (10 cm) of finished ice, 6 inches for adults, and pressing on the surface to test it.",
+        "via": "search",
+        "note": "Thickness targets for the game's skate-ready threshold (single source)",
+        "verified": false
+      },
+      {
+        "title": "Ice Skating at Veterans Field (Town of Sunapee)",
+        "url": "https://www.town.sunapee.nh.us/node/1049",
+        "date": "",
+        "snippet": "Town page tip: the less water laid on at one time, the better the ice, with night flooding preferred.",
+        "via": "search",
+        "note": "Thin-layer school of flooding (attribution to this page likely, not certain)",
+        "verified": false
+      },
+      {
+        "title": "Ice Rink Building Tips (HockeyShot)",
+        "url": "https://hockeyshot.com/blogs/news/ice-rink-building-tips",
+        "date": "",
+        "snippet": "Retail blog of rink-building advice; one result in the same search cluster recommended a single deep fill on a liner rather than layers.",
+        "via": "search",
+        "note": "Possible source of the one-pour school; the guides disagree and the exact host is not confirmed",
+        "verified": false
+      },
+      {
+        "title": "2026-27 NHL season to start on Sept. 29",
+        "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+        "date": "",
+        "snippet": "League news item placing the opening night of the 2026-27 season on Sept 29, 2026.",
+        "via": "search",
+        "note": "Season start date",
+        "verified": true
+      },
+      {
+        "title": "When does NHL season start? What to know about 2026-27 season",
+        "url": "https://sports.yahoo.com/articles/does-nhl-season-start-know-163037357.html",
+        "date": "",
+        "snippet": "Season preview that agrees on the Sept 29 opening.",
+        "via": "search",
+        "note": "Independent second source for the season start",
+        "verified": true
+      },
+      {
+        "title": "Jets to host Canadiens in 2026 Heritage Classic",
+        "url": "https://www.nhl.com/news/winnipeg-jets-to-host-montreal-canadiens-in-2026-tim-hortons-nhl-heritage-classic",
+        "date": "",
+        "snippet": "Announces the outdoor game for Sunday Oct 25, 2026 at a Winnipeg stadium.",
+        "via": "search",
+        "note": "Outdoor-hockey calendar hook",
+        "verified": true
+      },
+      {
+        "title": "Jets to host Canadiens in 2026 NHL Heritage Classic (Daily Faceoff)",
+        "url": "https://www.dailyfaceoff.com/news/winnipeg-jets-host-montreal-canadiens-2026-nhl-heritage-classic",
+        "date": "",
+        "snippet": "Independent hockey outlet reporting the same Oct 25 outdoor game.",
+        "via": "search",
+        "note": "Second source for the Heritage Classic date",
+        "verified": true
+      },
+      {
+        "title": "How to Build a Backyard Ice Rink",
+        "url": "https://www.pwice.com/how-to-build-a-backyard-ice-rink/",
+        "date": "",
+        "snippet": "Guide that points to early November builds before the ground freezes hard, white liners, and bracing the boards against water pressure.",
+        "via": "search",
+        "note": "Seasonal build timing and liner advice (single source)",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Ice thickness grows approximately in proportion to the square root of accumulated freezing degree-days (Stefan's relation); thaws stall or reverse growth.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The 2026-27 NHL season opened on 2026-09-29.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "An outdoor Heritage Classic game between two Canadian clubs is scheduled for Sunday 2026-10-25 in Winnipeg.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per the Canadian Tire kit guide, a finished backyard rink should have at least about 4 inches (10 cm) of ice, with about 6 inches suggested for adults (reported by one source, unconfirmed).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per the Innisfil municipal guide, the first flood is best delayed until several consecutive cold days, reported as 7 to 10 days at or below -10 C (single source, unconfirmed).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, rink guides reportedly disagree on flooding in thin layers (Sunapee page) versus a single deep pour on a liner (other retail guides); neither school is confirmed by two independent sources.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "backyard rink building traditions",
+      "weather-management and farming sims",
+      "ice-fishing and pond-hockey culture",
+      "season receipt and scorecard formats"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each in-game day the visitor reads a temperature forecast drawn as a widening fan, then chooses an action: set the liner, flood a thin layer, make a deep pour, shovel snow, scrape and hot-water resurface, or skate. A Stefan-style growth engine turns each night's freezing degree-days into new ice for the water that was laid down, while warm spells, snow insulation, wind and overuse add flaws such as bumps, air gaps and cracks that show in the cut-away. Skating on good ice earns the points that matter and wears the surface; skating on thin or bumpy ice costs ice quality. The choice between thin layers and a single pour has a real tradeoff, and forecast uncertainty makes each night a small gamble. The second and tenth winters differ because seeds change the cold snaps, the January thaw and the snow timing.",
+    "sophisticationHooks": [
+      "Physics-flavoured engine: square-root freezing-degree-day growth per layer with a re-flood starting-thickness term, snow-cover insulation, thaw stall, and a toy coefficient derived from standard ice constants then tuned for feel",
+      "Seeded synthetic winters (autocorrelated temperature, cold snaps, a mid-season thaw, snow events) with a forecast-fan whose error grows with lead time, so planning under uncertainty is the core skill",
+      "Cut-away canvas of ground frost, liner, banded ice layers and bubbles, plus a yard view with boards, light and puck-scuff trails drawn procedurally",
+      "Season receipt with grades and a URL hash (seed, difficulty, final score) for replaying the same winter against a friend; procedural audio for scrape, pour and skate"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: seeded weather generator, ice growth and quality model, forecast fan chart, action bar with keyboard shortcuts and touch buttons, cut-away and yard canvases, 3 difficulty presets, season receipt, hash state, about panel with the sourced facts shown as dated, light/dark, reduced-motion static redraw. Cut: real weather data, geolocation, multi-yard maps, multiplayer, any real team art.",
+    "risks": [
+      "Practical rink advice (4 inch target, 7 to 10 cold days, thin layers versus one pour) is single-source and unverified; the page shows these as 'as of 2026-10-10, per <guide>' or leaves them out, and the sim's thresholds are labelled game settings.",
+      "Ice-thickness coefficient is tuned for play, not measured; the page states clearly that this is a toy and must never be used to judge whether real ice is safe.",
+      "Winters are invented and seeded, never a forecast of any real place; label every temperature as simulated.",
+      "Management sims can turn into spreadsheet clicking; the cut-away visuals, forecast gamble and receipt voice must carry delight in the first two minutes.",
+      "Team and venue names appear only as dated references in the about panel and no logos or art are used."
+    ]
+  },
+  "durable": true
+}

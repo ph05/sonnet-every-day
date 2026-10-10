@@ -1,0 +1,714 @@
+{
+ "schema": 1,
+ "generatedAt": "2026-10-31T09:12:44.000Z",
+ "site": {
+  "name": "Sonnet Every Day",
+  "tagline": "One new, slightly ridiculous, surprisingly sophisticated thing on the web every morning.",
+  "url": "https://example.invalid/sonnet-every-day/",
+  "startDate": "2026-10-09"
+ },
+ "stats": {
+  "days": 21,
+  "projects": 21,
+  "streak": 8,
+  "categories": {
+   "data-viz": 1,
+   "weird-experimental": 1,
+   "news-politics": 1,
+   "life-food-craft": 1,
+   "finance-economics": 1,
+   "education-explainer": 1,
+   "retro-tech": 1,
+   "games-arcade": 1,
+   "tools-utility": 2,
+   "generative-art": 2,
+   "language-text": 1,
+   "music-audio": 1,
+   "math-puzzle": 1,
+   "science-sim": 1,
+   "humor-satire": 1,
+   "pop-culture": 1,
+   "modding-games": 1,
+   "hockey-sports": 1,
+   "cards-odds": 1
+  },
+  "firstDate": "2026-10-09",
+  "lastDate": "2026-10-31",
+  "missingDates": [
+   "2026-10-14",
+   "2026-10-23"
+  ]
+ },
+ "kaizen": {
+  "latest": {
+   "date": "2026-10-31",
+   "agent": "cards",
+   "title": "Explain \"GTO\" in the first screen of any poker page"
+  },
+  "count": 16
+ },
+ "days": [
+  {
+   "n": 23,
+   "date": "2026-10-31",
+   "slug": "eleven-years-of-overtime",
+   "path": "d/2026-10-31-eleven-years-of-overtime/",
+   "title": "Eleven Years of Overtime",
+   "tagline": "A scrolling data essay about the sudden-death minutes that decide seasons.",
+   "description": "Bundled game data, one long scroll, and a handful of annotated charts about how overtime actually ends.",
+   "tier": 1,
+   "category": "data-viz",
+   "mechanic": "visualizer",
+   "tone": [
+    "analytical",
+    "dramatic"
+   ],
+   "tech": [
+    "svg",
+    "canvas2d"
+   ],
+   "tags": [
+    "hockey",
+    "overtime",
+    "charts",
+    "data-essay"
+   ],
+   "palette": [
+    "#141834",
+    "#4259f0",
+    "#c36ef7"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23141834'/%3E%3Cpath d='M0 200 Q 300 149 600 220 T 1200 200 V 700 H 0Z' fill='%23c36ef7' opacity='.3'/%3E%3Cpath d='M0 270 Q 300 241 600 280 T 1200 270 V 700 H 0Z' fill='%234259f0' opacity='.4'/%3E%3Cpath d='M0 340 Q 300 274 600 340 T 1200 340 V 700 H 0Z' fill='%23c36ef7' opacity='.5'/%3E%3Cpath d='M0 410 Q 300 355 600 400 T 1200 410 V 700 H 0Z' fill='%234259f0' opacity='.6'/%3E%3Cpath d='M0 480 Q 300 429 600 460 T 1200 480 V 700 H 0Z' fill='%23c36ef7' opacity='.7'/%3E%3Cpath d='M0 550 Q 300 409 600 520 T 1200 550 V 700 H 0Z' fill='%234259f0' opacity='.3'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 22,
+   "date": "2026-10-30",
+   "slug": "the-unbuttoned-page",
+   "path": "d/2026-10-30-the-unbuttoned-page/",
+   "title": "The Unbuttoned Page",
+   "tagline": "A web page that politely refuses to behave.",
+   "description": "Every control on this page does something adjacent to what it says. A study in expectation, with a secret ending.",
+   "tier": 1,
+   "category": "weird-experimental",
+   "mechanic": "toy",
+   "tone": [
+    "chaotic",
+    "absurd"
+   ],
+   "tech": [
+    "dom-ui",
+    "pointer-events"
+   ],
+   "tags": [
+    "weird",
+    "ui",
+    "expectation",
+    "secret"
+   ],
+   "palette": [
+    "#d7f1f4",
+    "#2395e7",
+    "#a5281d"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23d7f1f4'/%3E%3Crect x='-40' y='-20' width='46' height='700' fill='%23a5281d' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='50' y='-20' width='46' height='700' fill='%232395e7' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='140' y='-20' width='46' height='700' fill='%232395e7' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='230' y='-20' width='46' height='700' fill='%23a5281d' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='320' y='-20' width='46' height='700' fill='%232395e7' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='410' y='-20' width='46' height='700' fill='%232395e7' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='500' y='-20' width='46' height='700' fill='%23a5281d' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='590' y='-20' width='46' height='700' fill='%232395e7' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='680' y='-20' width='46' height='700' fill='%232395e7' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='770' y='-20' width='46' height='700' fill='%23a5281d' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='860' y='-20' width='46' height='700' fill='%232395e7' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='950' y='-20' width='46' height='700' fill='%232395e7' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='1040' y='-20' width='46' height='700' fill='%23a5281d' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='1130' y='-20' width='46' height='700' fill='%232395e7' opacity='.7' transform='rotate(18 600 315)'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 21,
+   "date": "2026-10-29",
+   "slug": "headline-bingo-satire-edition",
+   "path": "d/2026-10-29-headline-bingo-satire-edition/",
+   "title": "Headline Bingo, Satire Edition",
+   "tagline": "A playful, clearly fictional bingo card for every news cycle.",
+   "description": "Generates absurd, obviously invented headlines and lets you mark them off. Parody only, no real names, never partisan.",
+   "tier": 1,
+   "category": "news-politics",
+   "mechanic": "game",
+   "tone": [
+    "satirical",
+    "playful"
+   ],
+   "tech": [
+    "dom-ui"
+   ],
+   "tags": [
+    "bingo",
+    "satire",
+    "headlines",
+    "fiction"
+   ],
+   "palette": [
+    "#14341d",
+    "#42f076",
+    "#6ef0f7"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%2314341d'/%3E%3Ccircle cx='406' cy='455' r='116' fill='none' stroke='%236ef0f7' stroke-width='8'/%3E%3Ccircle cx='1060' cy='387' r='61' fill='none' stroke='%2342f076' stroke-width='8'/%3E%3Ccircle cx='495' cy='215' r='57' fill='none' stroke='%236ef0f7' stroke-width='9'/%3E%3Ccircle cx='565' cy='512' r='183' fill='none' stroke='%2342f076' stroke-width='20'/%3E%3Ccircle cx='317' cy='113' r='124' fill='none' stroke='%236ef0f7' stroke-width='18'/%3E%3Ccircle cx='611' cy='423' r='77' fill='none' stroke='%2342f076' stroke-width='20'/%3E%3Ccircle cx='921' cy='369' r='184' fill='none' stroke='%236ef0f7' stroke-width='21'/%3E%3Ccircle cx='520' cy='216' r='100' fill='none' stroke='%2342f076' stroke-width='7'/%3E%3Ccircle cx='589' cy='74' r='141' fill='none' stroke='%236ef0f7' stroke-width='21'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 20,
+   "date": "2026-10-28",
+   "slug": "pantry-chess",
+   "path": "d/2026-10-28-pantry-chess/",
+   "title": "Pantry Chess",
+   "tagline": "Plan a week of dinners from what is already in the cupboard.",
+   "description": "Tell it what you have; it searches for a week of meals that uses it all before it expires, and explains each trade-off.",
+   "tier": 1,
+   "category": "life-food-craft",
+   "mechanic": "solver",
+   "tone": [
+    "cozy",
+    "analytical"
+   ],
+   "tech": [
+    "dom-ui",
+    "localstorage"
+   ],
+   "tags": [
+    "cooking",
+    "planning",
+    "pantry",
+    "solver"
+   ],
+   "palette": [
+    "#233414",
+    "#96f042",
+    "#6ef792"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23233414'/%3E%3Cpath d='M134 640 l-226 -499 l318 0z' fill='%236ef792' opacity='.85'/%3E%3Cpath d='M706 640 l-221 -275 l249 0z' fill='%2396f042' opacity='.85'/%3E%3Cpath d='M107 640 l-215 -504 l310 0z' fill='%236ef792' opacity='.85'/%3E%3Cpath d='M1064 640 l-264 -331 l324 0z' fill='%2396f042' opacity='.85'/%3E%3Cpath d='M441 640 l-254 -367 l263 0z' fill='%236ef792' opacity='.85'/%3E%3Cpath d='M1139 640 l-236 -481 l236 0z' fill='%2396f042' opacity='.85'/%3E%3Cpath d='M673 640 l-351 -207 l240 0z' fill='%236ef792' opacity='.85'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 19,
+   "date": "2026-10-27",
+   "slug": "ruin-odds",
+   "path": "d/2026-10-27-ruin-odds/",
+   "title": "Ruin Odds",
+   "tagline": "How long does a bankroll last? Simulate ten thousand lifetimes.",
+   "description": "A risk-of-ruin visualizer for made-up money: pick a win rate and a bet size and watch the fan of possible futures.",
+   "tier": 1,
+   "category": "finance-economics",
+   "mechanic": "simulator",
+   "tone": [
+    "analytical",
+    "dramatic"
+   ],
+   "tech": [
+    "canvas2d",
+    "worker"
+   ],
+   "tags": [
+    "risk",
+    "probability",
+    "bankroll",
+    "monte-carlo"
+   ],
+   "palette": [
+    "#342b14",
+    "#f0c142",
+    "#b5f76e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23342b14'/%3E%3Ccircle cx='777' cy='330' r='230' fill='%23f0c142'/%3E%3Ccircle cx='437' cy='290' r='120' fill='%23b5f76e'/%3E%3Crect x='0' y='430' width='1200' height='14' fill='%23342b14' opacity='.8'/%3E%3Crect x='0' y='470' width='1200' height='12' fill='%23342b14' opacity='.8'/%3E%3Crect x='0' y='510' width='1200' height='10' fill='%23342b14' opacity='.8'/%3E%3Crect x='0' y='550' width='1200' height='8' fill='%23342b14' opacity='.8'/%3E%3Crect x='0' y='590' width='1200' height='6' fill='%23342b14' opacity='.8'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 18,
+   "date": "2026-10-26",
+   "slug": "how-compound-interest-lies",
+   "path": "d/2026-10-26-how-compound-interest-lies/",
+   "title": "How Compound Interest Lies",
+   "tagline": "A calm explainer about why the last decade is worth more than the first three.",
+   "description": "Interactive curves that show exactly where intuition fails: slide the rate, the time and the fees. Simulated money only.",
+   "tier": 1,
+   "category": "education-explainer",
+   "mechanic": "explorer",
+   "tone": [
+    "analytical",
+    "serene"
+   ],
+   "tech": [
+    "svg",
+    "dom-ui"
+   ],
+   "tags": [
+    "interest",
+    "exponential",
+    "explainer",
+    "fees"
+   ],
+   "palette": [
+    "#f4d7d9",
+    "#e75a23",
+    "#1da59e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23f4d7d9'/%3E%3Ccircle cx='40' cy='40' r='10' fill='%231da59e'/%3E%3Ccircle cx='120' cy='40' r='30' fill='%23e75a23'/%3E%3Ccircle cx='280' cy='40' r='27' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='40' r='26' fill='%231da59e'/%3E%3Ccircle cx='520' cy='40' r='23' fill='%231da59e'/%3E%3Ccircle cx='600' cy='40' r='11' fill='%23e75a23'/%3E%3Ccircle cx='680' cy='40' r='23' fill='%231da59e'/%3E%3Ccircle cx='840' cy='40' r='14' fill='%231da59e'/%3E%3Ccircle cx='920' cy='40' r='28' fill='%23e75a23'/%3E%3Ccircle cx='1000' cy='40' r='24' fill='%231da59e'/%3E%3Ccircle cx='1080' cy='40' r='8' fill='%23e75a23'/%3E%3Ccircle cx='1160' cy='40' r='31' fill='%231da59e'/%3E%3Ccircle cx='120' cy='120' r='30' fill='%231da59e'/%3E%3Ccircle cx='200' cy='120' r='16' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='120' r='6' fill='%23e75a23'/%3E%3Ccircle cx='440' cy='120' r='24' fill='%231da59e'/%3E%3Ccircle cx='520' cy='120' r='27' fill='%23e75a23'/%3E%3Ccircle cx='600' cy='120' r='28' fill='%231da59e'/%3E%3Ccircle cx='680' cy='120' r='13' fill='%23e75a23'/%3E%3Ccircle cx='840' cy='120' r='18' fill='%23e75a23'/%3E%3Ccircle cx='920' cy='120' r='24' fill='%231da59e'/%3E%3Ccircle cx='120' cy='200' r='28' fill='%23e75a23'/%3E%3Ccircle cx='200' cy='200' r='8' fill='%231da59e'/%3E%3Ccircle cx='280' cy='200' r='15' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='200' r='16' fill='%231da59e'/%3E%3Ccircle cx='440' cy='200' r='30' fill='%23e75a23'/%3E%3Ccircle cx='520' cy='200' r='26' fill='%231da59e'/%3E%3Ccircle cx='1080' cy='200' r='15' fill='%23e75a23'/%3E%3Ccircle cx='1160' cy='200' r='17' fill='%231da59e'/%3E%3Ccircle cx='120' cy='280' r='9' fill='%231da59e'/%3E%3Ccircle cx='200' cy='280' r='11' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='280' r='30' fill='%23e75a23'/%3E%3Ccircle cx='440' cy='280' r='12' fill='%231da59e'/%3E%3Ccircle cx='520' cy='280' r='8' fill='%23e75a23'/%3E%3Ccircle cx='600' cy='280' r='7' fill='%231da59e'/%3E%3Ccircle cx='760' cy='280' r='22' fill='%231da59e'/%3E%3Ccircle cx='1080' cy='280' r='8' fill='%231da59e'/%3E%3Ccircle cx='40' cy='360' r='20' fill='%231da59e'/%3E%3Ccircle cx='120' cy='360' r='8' fill='%23e75a23'/%3E%3Ccircle cx='200' cy='360' r='14' fill='%231da59e'/%3E%3Ccircle cx='280' cy='360' r='22' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='360' r='21' fill='%231da59e'/%3E%3Ccircle cx='440' cy='360' r='14' fill='%23e75a23'/%3E%3Ccircle cx='520' cy='360' r='9' fill='%231da59e'/%3E%3Ccircle cx='600' cy='360' r='13' fill='%23e75a23'/%3E%3Ccircle cx='680' cy='360' r='25' fill='%231da59e'/%3E%3Ccircle cx='760' cy='360' r='28' fill='%23e75a23'/%3E%3Ccircle cx='920' cy='360' r='30' fill='%23e75a23'/%3E%3Ccircle cx='1000' cy='360' r='27' fill='%231da59e'/%3E%3Ccircle cx='1080' cy='360' r='28' fill='%23e75a23'/%3E%3Ccircle cx='1160' cy='360' r='22' fill='%231da59e'/%3E%3Ccircle cx='40' cy='440' r='8' fill='%23e75a23'/%3E%3Ccircle cx='120' cy='440' r='13' fill='%231da59e'/%3E%3Ccircle cx='360' cy='440' r='6' fill='%23e75a23'/%3E%3Ccircle cx='440' cy='440' r='8' fill='%231da59e'/%3E%3Ccircle cx='680' cy='440' r='30' fill='%23e75a23'/%3E%3Ccircle cx='760' cy='440' r='7' fill='%231da59e'/%3E%3Ccircle cx='840' cy='440' r='8' fill='%23e75a23'/%3E%3Ccircle cx='920' cy='440' r='13' fill='%231da59e'/%3E%3Ccircle cx='1000' cy='440' r='18' fill='%23e75a23'/%3E%3Ccircle cx='1160' cy='440' r='15' fill='%23e75a23'/%3E%3Ccircle cx='40' cy='520' r='12' fill='%231da59e'/%3E%3Ccircle cx='120' cy='520' r='15' fill='%23e75a23'/%3E%3Ccircle cx='200' cy='520' r='27' fill='%231da59e'/%3E%3Ccircle cx='280' cy='520' r='30' fill='%23e75a23'/%3E%3Ccircle cx='360' cy='520' r='27' fill='%231da59e'/%3E%3Ccircle cx='440' cy='520' r='14' fill='%23e75a23'/%3E%3Ccircle cx='520' cy='520' r='13' fill='%231da59e'/%3E%3Ccircle cx='600' cy='520' r='19' fill='%23e75a23'/%3E%3Ccircle cx='760' cy='520' r='24' fill='%23e75a23'/%3E%3Ccircle cx='1000' cy='520' r='11' fill='%231da59e'/%3E%3Ccircle cx='1160' cy='520' r='15' fill='%231da59e'/%3E%3Ccircle cx='40' cy='600' r='6' fill='%23e75a23'/%3E%3Ccircle cx='120' cy='600' r='22' fill='%231da59e'/%3E%3Ccircle cx='200' cy='600' r='30' fill='%23e75a23'/%3E%3Ccircle cx='280' cy='600' r='28' fill='%231da59e'/%3E%3Ccircle cx='360' cy='600' r='12' fill='%23e75a23'/%3E%3Ccircle cx='440' cy='600' r='18' fill='%231da59e'/%3E%3Ccircle cx='520' cy='600' r='29' fill='%23e75a23'/%3E%3Ccircle cx='600' cy='600' r='27' fill='%231da59e'/%3E%3Ccircle cx='680' cy='600' r='20' fill='%23e75a23'/%3E%3Ccircle cx='1000' cy='600' r='20' fill='%23e75a23'/%3E%3Ccircle cx='1160' cy='600' r='21' fill='%23e75a23'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 17,
+   "date": "2026-10-25",
+   "slug": "green-phosphor-terminal",
+   "path": "d/2026-10-25-green-phosphor-terminal/",
+   "title": "Green Phosphor Terminal",
+   "tagline": "A 1980s mainframe that only runs text adventures about its own uptime.",
+   "description": "A faithful-feeling terminal emulator with a scanline shader, a fake filesystem and a game hidden in the man pages.",
+   "tier": 1,
+   "category": "retro-tech",
+   "mechanic": "story",
+   "tone": [
+    "nerdy",
+    "cozy"
+   ],
+   "tech": [
+    "canvas2d",
+    "shaders"
+   ],
+   "tags": [
+    "terminal",
+    "retro",
+    "adventure",
+    "crt"
+   ],
+   "palette": [
+    "#34142e",
+    "#f042d3",
+    "#f76e79"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%2334142e'/%3E%3Cpath d='M0 200 Q 300 144 600 220 T 1200 200 V 700 H 0Z' fill='%23f76e79' opacity='.3'/%3E%3Cpath d='M0 270 Q 300 201 600 280 T 1200 270 V 700 H 0Z' fill='%23f042d3' opacity='.4'/%3E%3Cpath d='M0 340 Q 300 310 600 340 T 1200 340 V 700 H 0Z' fill='%23f76e79' opacity='.5'/%3E%3Cpath d='M0 410 Q 300 319 600 400 T 1200 410 V 700 H 0Z' fill='%23f042d3' opacity='.6'/%3E%3Cpath d='M0 480 Q 300 375 600 460 T 1200 480 V 700 H 0Z' fill='%23f76e79' opacity='.7'/%3E%3Cpath d='M0 550 Q 300 491 600 520 T 1200 550 V 700 H 0Z' fill='%23f042d3' opacity='.3'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 16,
+   "date": "2026-10-24",
+   "slug": "gravel-rally",
+   "path": "d/2026-10-24-gravel-rally/",
+   "title": "Gravel Rally",
+   "tagline": "A one-thumb rally game with tire physics you can feel.",
+   "description": "Top-down gravel racing with weight transfer, handbrake slides and five hand-drawn stages. Keyboard, touch and gamepad.",
+   "tier": 1,
+   "category": "games-arcade",
+   "mechanic": "game",
+   "tone": [
+    "competitive",
+    "chaotic"
+   ],
+   "tech": [
+    "canvas2d",
+    "gamepad"
+   ],
+   "tags": [
+    "racing",
+    "arcade",
+    "physics",
+    "rally"
+   ],
+   "palette": [
+    "#201434",
+    "#8542f0",
+    "#f76ee5"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23201434'/%3E%3Crect x='-40' y='-20' width='46' height='700' fill='%23f76ee5' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='50' y='-20' width='46' height='700' fill='%238542f0' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='140' y='-20' width='46' height='700' fill='%238542f0' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='230' y='-20' width='46' height='700' fill='%23f76ee5' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='320' y='-20' width='46' height='700' fill='%238542f0' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='410' y='-20' width='46' height='700' fill='%238542f0' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='500' y='-20' width='46' height='700' fill='%23f76ee5' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='590' y='-20' width='46' height='700' fill='%238542f0' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='680' y='-20' width='46' height='700' fill='%238542f0' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='770' y='-20' width='46' height='700' fill='%23f76ee5' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='860' y='-20' width='46' height='700' fill='%238542f0' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='950' y='-20' width='46' height='700' fill='%238542f0' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='1040' y='-20' width='46' height='700' fill='%23f76ee5' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='1130' y='-20' width='46' height='700' fill='%238542f0' opacity='.7' transform='rotate(18 600 315)'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 14,
+   "date": "2026-10-22",
+   "slug": "receipt-roulette",
+   "path": "d/2026-10-22-receipt-roulette/",
+   "title": "Receipt Roulette",
+   "tagline": "Split any bill fairly, or dramatically.",
+   "description": "Paste a receipt, pick a mood, and settle the tab with fair shares, weighted dice, or a tiny round of poker for the appetizers.",
+   "tier": 1,
+   "category": "tools-utility",
+   "mechanic": "calculator",
+   "tone": [
+    "playful",
+    "competitive"
+   ],
+   "tech": [
+    "dom-ui",
+    "localstorage"
+   ],
+   "tags": [
+    "bills",
+    "split",
+    "dice",
+    "utility"
+   ],
+   "palette": [
+    "#142034",
+    "#4288f0",
+    "#9e6ef7"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23142034'/%3E%3Ccircle cx='760' cy='498' r='129' fill='none' stroke='%239e6ef7' stroke-width='11'/%3E%3Ccircle cx='268' cy='279' r='40' fill='none' stroke='%234288f0' stroke-width='20'/%3E%3Ccircle cx='1183' cy='513' r='166' fill='none' stroke='%239e6ef7' stroke-width='10'/%3E%3Ccircle cx='1000' cy='25' r='67' fill='none' stroke='%234288f0' stroke-width='7'/%3E%3Ccircle cx='484' cy='95' r='44' fill='none' stroke='%239e6ef7' stroke-width='11'/%3E%3Ccircle cx='712' cy='545' r='51' fill='none' stroke='%234288f0' stroke-width='6'/%3E%3Ccircle cx='1027' cy='553' r='43' fill='none' stroke='%239e6ef7' stroke-width='13'/%3E%3Ccircle cx='227' cy='485' r='151' fill='none' stroke='%234288f0' stroke-width='21'/%3E%3Ccircle cx='36' cy='428' r='81' fill='none' stroke='%239e6ef7' stroke-width='13'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 13,
+   "date": "2026-10-21",
+   "slug": "postcard-from-the-21st",
+   "path": "d/2026-10-21-postcard-from-the-21st/",
+   "title": "Postcard from the 21st",
+   "tagline": "No build today. Here is a sky instead.",
+   "description": "A stand-in edition: a generative postcard made from nothing but the date. Same date, same sky, every time.",
+   "tier": 4,
+   "category": "generative-art",
+   "mechanic": "generator",
+   "tone": [
+    "serene"
+   ],
+   "tech": [
+    "canvas2d"
+   ],
+   "tags": [
+    "postcard",
+    "generative",
+    "date-seed"
+   ],
+   "palette": [
+    "#d7f4ee",
+    "#23c9e7",
+    "#a51d36"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23d7f4ee'/%3E%3Cpath d='M412 640 l-230 -283 l266 0z' fill='%23a51d36' opacity='.85'/%3E%3Cpath d='M7 640 l-305 -413 l327 0z' fill='%2323c9e7' opacity='.85'/%3E%3Cpath d='M982 640 l-391 -448 l337 0z' fill='%23a51d36' opacity='.85'/%3E%3Cpath d='M152 640 l-231 -331 l306 0z' fill='%2323c9e7' opacity='.85'/%3E%3Cpath d='M1196 640 l-396 -496 l289 0z' fill='%23a51d36' opacity='.85'/%3E%3Cpath d='M823 640 l-323 -261 l378 0z' fill='%2323c9e7' opacity='.85'/%3E%3Cpath d='M622 640 l-279 -286 l236 0z' fill='%23a51d36' opacity='.85'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 12,
+   "date": "2026-10-20",
+   "slug": "pun-foundry",
+   "path": "d/2026-10-20-pun-foundry/",
+   "title": "Pun Foundry",
+   "tagline": "Feed it a word, receive an unreasonable number of puns.",
+   "description": "A phoneme-aware wordplay engine with a groan meter. Bundled pronunciation data, no network, many regrets.",
+   "tier": 1,
+   "category": "language-text",
+   "mechanic": "generator",
+   "tone": [
+    "playful",
+    "absurd"
+   ],
+   "tech": [
+    "dom-ui",
+    "worker"
+   ],
+   "tags": [
+    "puns",
+    "wordplay",
+    "phonemes",
+    "groans"
+   ],
+   "palette": [
+    "#143415",
+    "#42f048",
+    "#6ef7da"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23143415'/%3E%3Ccircle cx='416' cy='330' r='230' fill='%2342f048'/%3E%3Ccircle cx='769' cy='290' r='120' fill='%236ef7da'/%3E%3Crect x='0' y='430' width='1200' height='14' fill='%23143415' opacity='.8'/%3E%3Crect x='0' y='470' width='1200' height='12' fill='%23143415' opacity='.8'/%3E%3Crect x='0' y='510' width='1200' height='10' fill='%23143415' opacity='.8'/%3E%3Crect x='0' y='550' width='1200' height='8' fill='%23143415' opacity='.8'/%3E%3Crect x='0' y='590' width='1200' height='6' fill='%23143415' opacity='.8'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 11,
+   "date": "2026-10-19",
+   "slug": "moire-garden",
+   "path": "d/2026-10-19-moire-garden/",
+   "title": "Moire Garden",
+   "tagline": "Two lattices, one slider, endless flowers.",
+   "description": "A compact build: overlay rotating line gratings and harvest the interference patterns as wallpapers.",
+   "tier": 2,
+   "category": "generative-art",
+   "mechanic": "toy",
+   "tone": [
+    "serene"
+   ],
+   "tech": [
+    "canvas2d",
+    "shaders"
+   ],
+   "tags": [
+    "moire",
+    "patterns",
+    "wallpaper"
+   ],
+   "palette": [
+    "#2c3414",
+    "#c4f042",
+    "#6ef76e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%232c3414'/%3E%3Ccircle cx='40' cy='40' r='9' fill='%236ef76e'/%3E%3Ccircle cx='200' cy='40' r='10' fill='%236ef76e'/%3E%3Ccircle cx='280' cy='40' r='13' fill='%23c4f042'/%3E%3Ccircle cx='360' cy='40' r='9' fill='%236ef76e'/%3E%3Ccircle cx='440' cy='40' r='20' fill='%23c4f042'/%3E%3Ccircle cx='680' cy='40' r='21' fill='%236ef76e'/%3E%3Ccircle cx='840' cy='40' r='25' fill='%236ef76e'/%3E%3Ccircle cx='920' cy='40' r='20' fill='%23c4f042'/%3E%3Ccircle cx='1000' cy='40' r='17' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='120' r='23' fill='%23c4f042'/%3E%3Ccircle cx='280' cy='120' r='7' fill='%236ef76e'/%3E%3Ccircle cx='520' cy='120' r='21' fill='%23c4f042'/%3E%3Ccircle cx='600' cy='120' r='17' fill='%236ef76e'/%3E%3Ccircle cx='680' cy='120' r='18' fill='%23c4f042'/%3E%3Ccircle cx='760' cy='120' r='14' fill='%236ef76e'/%3E%3Ccircle cx='920' cy='120' r='14' fill='%236ef76e'/%3E%3Ccircle cx='1000' cy='120' r='17' fill='%23c4f042'/%3E%3Ccircle cx='1080' cy='120' r='29' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='200' r='28' fill='%236ef76e'/%3E%3Ccircle cx='200' cy='200' r='29' fill='%236ef76e'/%3E%3Ccircle cx='280' cy='200' r='28' fill='%23c4f042'/%3E%3Ccircle cx='360' cy='200' r='22' fill='%236ef76e'/%3E%3Ccircle cx='600' cy='200' r='22' fill='%23c4f042'/%3E%3Ccircle cx='680' cy='200' r='13' fill='%236ef76e'/%3E%3Ccircle cx='840' cy='200' r='10' fill='%236ef76e'/%3E%3Ccircle cx='1000' cy='200' r='12' fill='%236ef76e'/%3E%3Ccircle cx='1160' cy='200' r='10' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='280' r='25' fill='%23c4f042'/%3E%3Ccircle cx='200' cy='280' r='32' fill='%23c4f042'/%3E%3Ccircle cx='280' cy='280' r='10' fill='%236ef76e'/%3E%3Ccircle cx='440' cy='280' r='22' fill='%236ef76e'/%3E%3Ccircle cx='520' cy='280' r='29' fill='%23c4f042'/%3E%3Ccircle cx='600' cy='280' r='26' fill='%236ef76e'/%3E%3Ccircle cx='760' cy='280' r='27' fill='%236ef76e'/%3E%3Ccircle cx='1080' cy='280' r='16' fill='%236ef76e'/%3E%3Ccircle cx='120' cy='360' r='29' fill='%23c4f042'/%3E%3Ccircle cx='200' cy='360' r='8' fill='%236ef76e'/%3E%3Ccircle cx='280' cy='360' r='9' fill='%23c4f042'/%3E%3Ccircle cx='360' cy='360' r='29' fill='%236ef76e'/%3E%3Ccircle cx='440' cy='360' r='14' fill='%23c4f042'/%3E%3Ccircle cx='520' cy='360' r='15' fill='%236ef76e'/%3E%3Ccircle cx='600' cy='360' r='12' fill='%23c4f042'/%3E%3Ccircle cx='680' cy='360' r='18' fill='%236ef76e'/%3E%3Ccircle cx='760' cy='360' r='24' fill='%23c4f042'/%3E%3Ccircle cx='840' cy='360' r='30' fill='%236ef76e'/%3E%3Ccircle cx='1000' cy='360' r='7' fill='%236ef76e'/%3E%3Ccircle cx='1080' cy='360' r='9' fill='%23c4f042'/%3E%3Ccircle cx='1160' cy='360' r='14' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='440' r='25' fill='%23c4f042'/%3E%3Ccircle cx='120' cy='440' r='25' fill='%236ef76e'/%3E%3Ccircle cx='280' cy='440' r='14' fill='%236ef76e'/%3E%3Ccircle cx='360' cy='440' r='25' fill='%23c4f042'/%3E%3Ccircle cx='440' cy='440' r='20' fill='%236ef76e'/%3E%3Ccircle cx='520' cy='440' r='15' fill='%23c4f042'/%3E%3Ccircle cx='600' cy='440' r='14' fill='%236ef76e'/%3E%3Ccircle cx='680' cy='440' r='27' fill='%23c4f042'/%3E%3Ccircle cx='920' cy='440' r='26' fill='%236ef76e'/%3E%3Ccircle cx='1000' cy='440' r='25' fill='%23c4f042'/%3E%3Ccircle cx='1080' cy='440' r='18' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='520' r='11' fill='%236ef76e'/%3E%3Ccircle cx='120' cy='520' r='19' fill='%23c4f042'/%3E%3Ccircle cx='200' cy='520' r='13' fill='%236ef76e'/%3E%3Ccircle cx='360' cy='520' r='32' fill='%236ef76e'/%3E%3Ccircle cx='440' cy='520' r='18' fill='%23c4f042'/%3E%3Ccircle cx='600' cy='520' r='26' fill='%23c4f042'/%3E%3Ccircle cx='840' cy='520' r='32' fill='%236ef76e'/%3E%3Ccircle cx='920' cy='520' r='12' fill='%23c4f042'/%3E%3Ccircle cx='1000' cy='520' r='19' fill='%236ef76e'/%3E%3Ccircle cx='1160' cy='520' r='30' fill='%236ef76e'/%3E%3Ccircle cx='40' cy='600' r='28' fill='%23c4f042'/%3E%3Ccircle cx='120' cy='600' r='26' fill='%236ef76e'/%3E%3Ccircle cx='280' cy='600' r='23' fill='%236ef76e'/%3E%3Ccircle cx='360' cy='600' r='16' fill='%23c4f042'/%3E%3Ccircle cx='440' cy='600' r='13' fill='%236ef76e'/%3E%3Ccircle cx='520' cy='600' r='21' fill='%23c4f042'/%3E%3Ccircle cx='600' cy='600' r='19' fill='%236ef76e'/%3E%3Ccircle cx='680' cy='600' r='26' fill='%23c4f042'/%3E%3Ccircle cx='920' cy='600' r='20' fill='%236ef76e'/%3E%3Ccircle cx='1080' cy='600' r='23' fill='%236ef76e'/%3E%3Ccircle cx='1160' cy='600' r='28' fill='%23c4f042'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 10,
+   "date": "2026-10-18",
+   "slug": "basement-orchestra",
+   "path": "d/2026-10-18-basement-orchestra/",
+   "title": "Basement Orchestra",
+   "tagline": "Eleven synthetic instruments, one cursed room, zero rehearsal.",
+   "description": "A pointer-driven ensemble: each instrument is a few lines of WebAudio, tuned by the room you draw around them.",
+   "tier": 1,
+   "category": "music-audio",
+   "mechanic": "instrument",
+   "tone": [
+    "dramatic",
+    "chaotic"
+   ],
+   "tech": [
+    "webaudio",
+    "procedural-audio"
+   ],
+   "tags": [
+    "music",
+    "synth",
+    "ensemble",
+    "room"
+   ],
+   "palette": [
+    "#342314",
+    "#f09342",
+    "#daf76e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23342314'/%3E%3Cpath d='M0 200 Q 300 195 600 220 T 1200 200 V 700 H 0Z' fill='%23daf76e' opacity='.3'/%3E%3Cpath d='M0 270 Q 300 161 600 280 T 1200 270 V 700 H 0Z' fill='%23f09342' opacity='.4'/%3E%3Cpath d='M0 340 Q 300 241 600 340 T 1200 340 V 700 H 0Z' fill='%23daf76e' opacity='.5'/%3E%3Cpath d='M0 410 Q 300 294 600 400 T 1200 410 V 700 H 0Z' fill='%23f09342' opacity='.6'/%3E%3Cpath d='M0 480 Q 300 346 600 460 T 1200 480 V 700 H 0Z' fill='%23daf76e' opacity='.7'/%3E%3Cpath d='M0 550 Q 300 439 600 520 T 1200 550 V 700 H 0Z' fill='%23f09342' opacity='.3'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 9,
+   "date": "2026-10-17",
+   "slug": "tangled-tangrams",
+   "path": "d/2026-10-17-tangled-tangrams/",
+   "title": "Tangled Tangrams",
+   "tagline": "Seven shapes, one silhouette, and a solver that sighs.",
+   "description": "Drag, rotate and flip the classic seven pieces to fill daily silhouettes. A backtracking solver reveals one piece at a time if you ask nicely.",
+   "tier": 1,
+   "category": "math-puzzle",
+   "mechanic": "puzzle",
+   "tone": [
+    "cozy",
+    "nerdy"
+   ],
+   "tech": [
+    "svg",
+    "pointer-events"
+   ],
+   "tags": [
+    "tangram",
+    "geometry",
+    "puzzle",
+    "solver"
+   ],
+   "palette": [
+    "#f4d7e0",
+    "#e72623",
+    "#1da57a"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23f4d7e0'/%3E%3Crect x='-40' y='-20' width='46' height='700' fill='%231da57a' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='50' y='-20' width='46' height='700' fill='%23e72623' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='140' y='-20' width='46' height='700' fill='%23e72623' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='230' y='-20' width='46' height='700' fill='%231da57a' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='320' y='-20' width='46' height='700' fill='%23e72623' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='410' y='-20' width='46' height='700' fill='%23e72623' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='500' y='-20' width='46' height='700' fill='%231da57a' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='590' y='-20' width='46' height='700' fill='%23e72623' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='680' y='-20' width='46' height='700' fill='%23e72623' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='770' y='-20' width='46' height='700' fill='%231da57a' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='860' y='-20' width='46' height='700' fill='%23e72623' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='950' y='-20' width='46' height='700' fill='%23e72623' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='1040' y='-20' width='46' height='700' fill='%231da57a' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='1130' y='-20' width='46' height='700' fill='%23e72623' opacity='.7' transform='rotate(18 600 315)'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 8,
+   "date": "2026-10-16",
+   "slug": "ideas-day-ten-pitches-no-build",
+   "path": "d/2026-10-16-ideas-day-ten-pitches-no-build/",
+   "title": "Ideas Day: Ten Pitches, No Build",
+   "tagline": "Today the build slipped, so here are the ten ideas that almost were.",
+   "description": "A stand-in edition. The shortlist for the day, with sources and scores, and a note on the idea that should have shipped.",
+   "tier": 3,
+   "category": "tools-utility",
+   "mechanic": "explorer",
+   "tone": [
+    "analytical"
+   ],
+   "tech": [
+    "dom-ui"
+   ],
+   "tags": [
+    "ideas",
+    "shortlist",
+    "research"
+   ],
+   "palette": [
+    "#311434",
+    "#de42f0",
+    "#f76e9e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23311434'/%3E%3Ccircle cx='1086' cy='591' r='198' fill='none' stroke='%23f76e9e' stroke-width='15'/%3E%3Ccircle cx='929' cy='100' r='167' fill='none' stroke='%23de42f0' stroke-width='18'/%3E%3Ccircle cx='856' cy='140' r='53' fill='none' stroke='%23f76e9e' stroke-width='15'/%3E%3Ccircle cx='863' cy='218' r='94' fill='none' stroke='%23de42f0' stroke-width='23'/%3E%3Ccircle cx='880' cy='569' r='48' fill='none' stroke='%23f76e9e' stroke-width='22'/%3E%3Ccircle cx='959' cy='270' r='52' fill='none' stroke='%23de42f0' stroke-width='23'/%3E%3Ccircle cx='918' cy='427' r='158' fill='none' stroke='%23f76e9e' stroke-width='7'/%3E%3Ccircle cx='250' cy='382' r='112' fill='none' stroke='%23de42f0' stroke-width='9'/%3E%3Ccircle cx='535' cy='428' r='174' fill='none' stroke='%23f76e9e' stroke-width='9'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 7,
+   "date": "2026-10-15",
+   "slug": "tidepool-clocks",
+   "path": "d/2026-10-15-tidepool-clocks/",
+   "title": "Tidepool Clocks",
+   "tagline": "A tiny ecosystem that keeps time by the moon.",
+   "description": "Anemones, crabs and one smug starfish respond to a lunar tide table. Drag the moon to fast-forward a season and see who survives.",
+   "tier": 1,
+   "category": "science-sim",
+   "mechanic": "simulator",
+   "tone": [
+    "serene",
+    "cozy"
+   ],
+   "tech": [
+    "canvas2d",
+    "web-animations"
+   ],
+   "tags": [
+    "tides",
+    "ecology",
+    "moon",
+    "cozy"
+   ],
+   "palette": [
+    "#171434",
+    "#5742f0",
+    "#e56ef7"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23171434'/%3E%3Cpath d='M970 640 l-358 -468 l349 0z' fill='%23e56ef7' opacity='.85'/%3E%3Cpath d='M199 640 l-202 -361 l380 0z' fill='%235742f0' opacity='.85'/%3E%3Cpath d='M1150 640 l-377 -526 l314 0z' fill='%23e56ef7' opacity='.85'/%3E%3Cpath d='M149 640 l-201 -327 l331 0z' fill='%235742f0' opacity='.85'/%3E%3Cpath d='M341 640 l-208 -226 l257 0z' fill='%23e56ef7' opacity='.85'/%3E%3Cpath d='M921 640 l-217 -363 l248 0z' fill='%235742f0' opacity='.85'/%3E%3Cpath d='M1029 640 l-237 -423 l370 0z' fill='%23e56ef7' opacity='.85'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 5,
+   "date": "2026-10-13",
+   "slug": "the-committee-of-pigeons",
+   "path": "d/2026-10-13-the-committee-of-pigeons/",
+   "title": "The Committee of Pigeons",
+   "tagline": "Run a city council made entirely of pigeons. Motions pass by seed.",
+   "description": "A bureaucratic farce with real procedure: agendas, points of order, and a bread subsidy that must be balanced against the park budget.",
+   "tier": 1,
+   "category": "humor-satire",
+   "mechanic": "game",
+   "tone": [
+    "absurd",
+    "playful"
+   ],
+   "tech": [
+    "dom-ui",
+    "localstorage"
+   ],
+   "tags": [
+    "pigeons",
+    "council",
+    "satire",
+    "sim"
+   ],
+   "palette": [
+    "#142934",
+    "#42b6f0",
+    "#796ef7"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23142934'/%3E%3Ccircle cx='505' cy='330' r='230' fill='%2342b6f0'/%3E%3Ccircle cx='686' cy='290' r='120' fill='%23796ef7'/%3E%3Crect x='0' y='430' width='1200' height='14' fill='%23142934' opacity='.8'/%3E%3Crect x='0' y='470' width='1200' height='12' fill='%23142934' opacity='.8'/%3E%3Crect x='0' y='510' width='1200' height='10' fill='%23142934' opacity='.8'/%3E%3Crect x='0' y='550' width='1200' height='8' fill='%23142934' opacity='.8'/%3E%3Crect x='0' y='590' width='1200' height='6' fill='%23142934' opacity='.8'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 4,
+   "date": "2026-10-12",
+   "slug": "thread-weather",
+   "path": "d/2026-10-12-thread-weather/",
+   "title": "Thread Weather",
+   "tagline": "The mood of a comment thread, drawn as a weather map.",
+   "description": "Paste a thread, get a forecast: pressure fronts for arguments, sunshine for compliments, and a small hurricane for the word \"actually\".",
+   "tier": 1,
+   "category": "pop-culture",
+   "mechanic": "visualizer",
+   "tone": [
+    "playful",
+    "satirical"
+   ],
+   "tech": [
+    "canvas2d"
+   ],
+   "tags": [
+    "reddit",
+    "sentiment",
+    "weather",
+    "threads"
+   ],
+   "palette": [
+    "#d7f4e7",
+    "#23e7d0",
+    "#a51d5a"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23d7f4e7'/%3E%3Ccircle cx='40' cy='40' r='27' fill='%23a51d5a'/%3E%3Ccircle cx='200' cy='40' r='8' fill='%23a51d5a'/%3E%3Ccircle cx='360' cy='40' r='14' fill='%23a51d5a'/%3E%3Ccircle cx='520' cy='40' r='15' fill='%23a51d5a'/%3E%3Ccircle cx='680' cy='40' r='20' fill='%23a51d5a'/%3E%3Ccircle cx='760' cy='40' r='32' fill='%2323e7d0'/%3E%3Ccircle cx='840' cy='40' r='26' fill='%23a51d5a'/%3E%3Ccircle cx='920' cy='40' r='8' fill='%2323e7d0'/%3E%3Ccircle cx='1000' cy='40' r='26' fill='%23a51d5a'/%3E%3Ccircle cx='1160' cy='40' r='17' fill='%23a51d5a'/%3E%3Ccircle cx='40' cy='120' r='7' fill='%2323e7d0'/%3E%3Ccircle cx='200' cy='120' r='21' fill='%2323e7d0'/%3E%3Ccircle cx='360' cy='120' r='30' fill='%2323e7d0'/%3E%3Ccircle cx='440' cy='120' r='25' fill='%23a51d5a'/%3E%3Ccircle cx='520' cy='120' r='14' fill='%2323e7d0'/%3E%3Ccircle cx='600' cy='120' r='23' fill='%23a51d5a'/%3E%3Ccircle cx='760' cy='120' r='11' fill='%23a51d5a'/%3E%3Ccircle cx='840' cy='120' r='14' fill='%2323e7d0'/%3E%3Ccircle cx='920' cy='120' r='19' fill='%23a51d5a'/%3E%3Ccircle cx='1080' cy='120' r='12' fill='%23a51d5a'/%3E%3Ccircle cx='1160' cy='120' r='27' fill='%2323e7d0'/%3E%3Ccircle cx='40' cy='200' r='23' fill='%23a51d5a'/%3E%3Ccircle cx='120' cy='200' r='28' fill='%2323e7d0'/%3E%3Ccircle cx='200' cy='200' r='26' fill='%23a51d5a'/%3E%3Ccircle cx='360' cy='200' r='31' fill='%23a51d5a'/%3E%3Ccircle cx='440' cy='200' r='25' fill='%2323e7d0'/%3E%3Ccircle cx='520' cy='200' r='27' fill='%23a51d5a'/%3E%3Ccircle cx='600' cy='200' r='15' fill='%2323e7d0'/%3E%3Ccircle cx='760' cy='200' r='25' fill='%2323e7d0'/%3E%3Ccircle cx='840' cy='200' r='22' fill='%23a51d5a'/%3E%3Ccircle cx='920' cy='200' r='10' fill='%2323e7d0'/%3E%3Ccircle cx='1160' cy='200' r='8' fill='%23a51d5a'/%3E%3Ccircle cx='40' cy='280' r='20' fill='%2323e7d0'/%3E%3Ccircle cx='120' cy='280' r='13' fill='%23a51d5a'/%3E%3Ccircle cx='440' cy='280' r='21' fill='%23a51d5a'/%3E%3Ccircle cx='520' cy='280' r='11' fill='%2323e7d0'/%3E%3Ccircle cx='600' cy='280' r='30' fill='%23a51d5a'/%3E%3Ccircle cx='680' cy='280' r='25' fill='%2323e7d0'/%3E%3Ccircle cx='760' cy='280' r='7' fill='%23a51d5a'/%3E%3Ccircle cx='1080' cy='280' r='16' fill='%23a51d5a'/%3E%3Ccircle cx='1160' cy='280' r='8' fill='%2323e7d0'/%3E%3Ccircle cx='40' cy='360' r='29' fill='%23a51d5a'/%3E%3Ccircle cx='280' cy='360' r='19' fill='%2323e7d0'/%3E%3Ccircle cx='440' cy='360' r='27' fill='%2323e7d0'/%3E%3Ccircle cx='520' cy='360' r='24' fill='%23a51d5a'/%3E%3Ccircle cx='600' cy='360' r='13' fill='%2323e7d0'/%3E%3Ccircle cx='680' cy='360' r='19' fill='%23a51d5a'/%3E%3Ccircle cx='920' cy='360' r='22' fill='%2323e7d0'/%3E%3Ccircle cx='1080' cy='360' r='18' fill='%2323e7d0'/%3E%3Ccircle cx='1160' cy='360' r='17' fill='%23a51d5a'/%3E%3Ccircle cx='40' cy='440' r='31' fill='%2323e7d0'/%3E%3Ccircle cx='200' cy='440' r='22' fill='%2323e7d0'/%3E%3Ccircle cx='280' cy='440' r='18' fill='%23a51d5a'/%3E%3Ccircle cx='520' cy='440' r='10' fill='%2323e7d0'/%3E%3Ccircle cx='840' cy='440' r='12' fill='%2323e7d0'/%3E%3Ccircle cx='1000' cy='440' r='20' fill='%2323e7d0'/%3E%3Ccircle cx='1080' cy='440' r='20' fill='%23a51d5a'/%3E%3Ccircle cx='1160' cy='440' r='6' fill='%2323e7d0'/%3E%3Ccircle cx='40' cy='520' r='9' fill='%23a51d5a'/%3E%3Ccircle cx='360' cy='520' r='21' fill='%23a51d5a'/%3E%3Ccircle cx='600' cy='520' r='21' fill='%2323e7d0'/%3E%3Ccircle cx='680' cy='520' r='17' fill='%23a51d5a'/%3E%3Ccircle cx='760' cy='520' r='18' fill='%2323e7d0'/%3E%3Ccircle cx='920' cy='520' r='27' fill='%2323e7d0'/%3E%3Ccircle cx='40' cy='600' r='20' fill='%2323e7d0'/%3E%3Ccircle cx='120' cy='600' r='23' fill='%23a51d5a'/%3E%3Ccircle cx='280' cy='600' r='6' fill='%23a51d5a'/%3E%3Ccircle cx='440' cy='600' r='28' fill='%23a51d5a'/%3E%3Ccircle cx='600' cy='600' r='26' fill='%23a51d5a'/%3E%3Ccircle cx='760' cy='600' r='13' fill='%23a51d5a'/%3E%3Ccircle cx='920' cy='600' r='12' fill='%23a51d5a'/%3E%3Ccircle cx='1080' cy='600' r='21' fill='%23a51d5a'/%3E%3Ccircle cx='1160' cy='600' r='31' fill='%2323e7d0'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 3,
+   "date": "2026-10-11",
+   "slug": "joker-fold",
+   "path": "d/2026-10-11-joker-fold/",
+   "title": "Joker Fold",
+   "tagline": "Design a scoring joker, watch the chain reaction, break the game politely.",
+   "description": "A mod-concept editor for a deckbuilder: compose triggers and effects, then run 1,000 seeded hands to see whether your joker is a delight or a crime.",
+   "tier": 1,
+   "category": "modding-games",
+   "mechanic": "editor",
+   "tone": [
+    "nerdy",
+    "playful"
+   ],
+   "tech": [
+    "dom-ui",
+    "worker"
+   ],
+   "tags": [
+    "balatro-style",
+    "mods",
+    "scoring",
+    "design"
+   ],
+   "palette": [
+    "#1b3414",
+    "#6bf042",
+    "#6ef7b5"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%231b3414'/%3E%3Cpath d='M0 200 Q 300 166 600 220 T 1200 200 V 700 H 0Z' fill='%236ef7b5' opacity='.3'/%3E%3Cpath d='M0 270 Q 300 195 600 280 T 1200 270 V 700 H 0Z' fill='%236bf042' opacity='.4'/%3E%3Cpath d='M0 340 Q 300 303 600 340 T 1200 340 V 700 H 0Z' fill='%236ef7b5' opacity='.5'/%3E%3Cpath d='M0 410 Q 300 370 600 400 T 1200 410 V 700 H 0Z' fill='%236bf042' opacity='.6'/%3E%3Cpath d='M0 480 Q 300 392 600 460 T 1200 480 V 700 H 0Z' fill='%236ef7b5' opacity='.7'/%3E%3Cpath d='M0 550 Q 300 437 600 520 T 1200 550 V 700 H 0Z' fill='%236bf042' opacity='.3'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 2,
+   "date": "2026-10-10",
+   "slug": "glass-tempo",
+   "path": "d/2026-10-10-glass-tempo/",
+   "title": "Glass Tempo",
+   "tagline": "Shift-by-shift line changes, where fatigue is the real opponent.",
+   "description": "A hockey bench simulator. Juggle three lines through a 60-minute game and watch tempo, fatigue and momentum trade places.",
+   "tier": 1,
+   "category": "hockey-sports",
+   "mechanic": "simulator",
+   "tone": [
+    "competitive",
+    "dramatic"
+   ],
+   "tech": [
+    "svg",
+    "dom-ui"
+   ],
+   "tags": [
+    "hockey",
+    "simulation",
+    "lines",
+    "tempo"
+   ],
+   "palette": [
+    "#343314",
+    "#f0ed42",
+    "#92f76e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23343314'/%3E%3Crect x='-40' y='-20' width='46' height='700' fill='%2392f76e' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='50' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='140' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='230' y='-20' width='46' height='700' fill='%2392f76e' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='320' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='410' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='500' y='-20' width='46' height='700' fill='%2392f76e' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='590' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='680' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='770' y='-20' width='46' height='700' fill='%2392f76e' opacity='.7' transform='rotate(18 600 315)'/%3E%3Crect x='860' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.8' transform='rotate(18 600 315)'/%3E%3Crect x='950' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.9' transform='rotate(18 600 315)'/%3E%3Crect x='1040' y='-20' width='46' height='700' fill='%2392f76e' opacity='.6' transform='rotate(18 600 315)'/%3E%3Crect x='1130' y='-20' width='46' height='700' fill='%23f0ed42' opacity='.7' transform='rotate(18 600 315)'/%3E%3C/svg%3E"
+  },
+  {
+   "n": 1,
+   "date": "2026-10-09",
+   "slug": "pocket-rockets-range-atlas",
+   "path": "d/2026-10-09-pocket-rockets-range-atlas/",
+   "title": "Pocket Rockets Range Atlas",
+   "tagline": "A 13x13 preflop grid you can paint, then stress-test against a solver.",
+   "description": "Paint opening ranges by position, then let a tiny equity engine tell you which hands you are overfolding. Ships with five bundled spots.",
+   "tier": 1,
+   "category": "cards-odds",
+   "mechanic": "solver",
+   "tone": [
+    "analytical",
+    "nerdy"
+   ],
+   "tech": [
+    "canvas2d",
+    "worker"
+   ],
+   "tags": [
+    "poker",
+    "gto",
+    "ranges",
+    "preflop"
+   ],
+   "palette": [
+    "#341a14",
+    "#f06542",
+    "#f7f06e"
+   ],
+   "thumb": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Crect width='1200' height='630' fill='%23341a14'/%3E%3Ccircle cx='342' cy='321' r='144' fill='none' stroke='%23f7f06e' stroke-width='18'/%3E%3Ccircle cx='789' cy='114' r='142' fill='none' stroke='%23f06542' stroke-width='24'/%3E%3Ccircle cx='309' cy='65' r='129' fill='none' stroke='%23f7f06e' stroke-width='16'/%3E%3Ccircle cx='1071' cy='560' r='147' fill='none' stroke='%23f06542' stroke-width='11'/%3E%3Ccircle cx='110' cy='505' r='142' fill='none' stroke='%23f7f06e' stroke-width='21'/%3E%3Ccircle cx='1168' cy='250' r='146' fill='none' stroke='%23f06542' stroke-width='9'/%3E%3Ccircle cx='428' cy='327' r='145' fill='none' stroke='%23f7f06e' stroke-width='18'/%3E%3Ccircle cx='612' cy='164' r='144' fill='none' stroke='%23f06542' stroke-width='21'/%3E%3Ccircle cx='1056' cy='574' r='187' fill='none' stroke='%23f7f06e' stroke-width='19'/%3E%3C/svg%3E"
+  }
+ ]
+}
