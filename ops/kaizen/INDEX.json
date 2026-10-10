@@ -11,7 +11,7 @@
       "files": [
         "ops/workflows/ideate.js"
       ],
-      "sha": null,
+      "sha": "3281efd4d79fc96a80ff702dd4686eb905be871e",
       "status": "applied",
       "linesChanged": 4,
       "question": "Should checkWritten in the other workflows (build, qa, select, spec, revise) also be proven free of escape sequences in shipped programs, or should the byte slack cover .mjs too?",
