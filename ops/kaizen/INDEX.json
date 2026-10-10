@@ -43,7 +43,7 @@
       "files": [
         "ops/PLAYBOOK.md"
       ],
-      "sha": null,
+      "sha": "1c20ee88e165ab5f394607034e100eaa62f5681f",
       "status": "applied",
       "linesChanged": 1,
       "question": "Could a stalled workflow be detected from the run file alone, for example a phase-start older than phaseBudgetMinutes with a fresh heartbeat, and surfaced by state.mjs status instead of by a human noticing?",
