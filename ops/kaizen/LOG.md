@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-10 report: ideate lost both normalize rounds (about 540k tokens, 29 min) because a clerk decoded unicode escapes in shipped program text and the byte check failed by 20. Cards fixed the one regex; nothing stopped the next one. Grep of ops/workflows/*.js shows only the host-side asciiJson line has escapes now, so a playbook.test.mjs line scan (13 lines) passes today and fails on any new escape.
 - category: prevention · lines changed: 11 · files: tests/playbook.test.mjs
+- commit: c62f6046bb
 - question: Spec stalled after an interrupted architect and never returned: could a workflow older than its phase budget be detected from the run file alone, without a new watchdog?
 
 ## 2026-10-10 · cards · applied · ideate: build sanitizer CTRL regex from code points so clerk copy cannot change its bytes

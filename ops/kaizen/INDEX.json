@@ -27,7 +27,7 @@
       "files": [
         "tests/playbook.test.mjs"
       ],
-      "sha": null,
+      "sha": "c62f6046bba1340d1d227c5a54ff9257b5099f53",
       "status": "applied",
       "linesChanged": 11,
       "question": "Spec stalled after an interrupted architect and never returned: could a workflow older than its phase budget be detected from the run file alone, without a new watchdog?",
