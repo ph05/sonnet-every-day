@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "date": "2026-10-10",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 2,
-  "tier": null,
-  "phase": "publish",
+  "tier": 2,
+  "phase": "kaizen",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -63,7 +63,8 @@
     "build": 1,
     "qa": 1,
     "revise": 1,
-    "package": 1
+    "package": 1,
+    "publish": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-10T05:50:16.803Z",
@@ -74,13 +75,14 @@
     "qa": "2026-10-10T10:54:42.815Z",
     "revise": "2026-10-10T11:32:36.746Z",
     "package": "2026-10-10T11:32:45.308Z",
-    "publish": "2026-10-10T11:33:49.095Z"
+    "publish": "2026-10-10T11:34:16.800Z",
+    "kaizen": "2026-10-10T11:34:17.509Z"
   },
   "lease": {
     "holder": "manual",
     "session": "cse_01PCQqwBwwn3hmGCSxhnfg3r",
     "acquiredAt": "2026-10-10T05:50:02.392Z",
-    "heartbeatAt": "2026-10-10T11:33:49.095Z"
+    "heartbeatAt": "2026-10-10T11:34:16.800Z"
   },
   "directives": [
     {
@@ -127,8 +129,8 @@
       }
     }
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-10T11:34:17.509Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-10-jokers-in-phase/",
   "createdAt": "2026-10-10T05:50:02.392Z",
   "events": [
     {
@@ -166,6 +168,12 @@
       "by": "manual",
       "kind": "degrade",
       "msg": "spec went compact: mini-spec, tier 2 from here (only 2 agent slots on this 4-CPU machine; spec workflow stalled after architect interrupt, orchestrator finished OWNERSHIP and PROJECT via one architect agent and DONE.json)"
+    },
+    {
+      "at": "2026-10-10T11:34:17.509Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "published at tier 2"
     }
   ]
 }
