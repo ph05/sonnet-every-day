@@ -1,0 +1,209 @@
+{
+  "id": "architect-1",
+  "title": "The Wrong Window",
+  "pitch": "The visitor is a citizen inside a tiny invented Ministry of seven counters, holding one goal (for example, a Licence to Keep One Goose) and a pocket of forms. Each counter's rulebook entry is a readable rule about what it wants, what it stamps and when it closes, and the visitor plans a route, queues, gets sent to the other department, and slowly discovers loopholes that emerge when rules combine (a photocopier that clones stamps, a pneumatic underpass between floors, a clerk who relaxes for cake). A daily seed, a shareable route receipt covered in tilted ink stamps, and a count of loopholes found make the second and tenth run feel different.",
+  "whyNow": "Timeless. Papers, Please (2013) showed that a bureaucratic frame makes it easy to author many gameplay rules; this is a warm, fictional, no-politics rule-reading puzzle where the rules compose and a built-in solver names the loopholes.",
+  "origin": {
+    "agent": "architect",
+    "lens": "bureaucracy-sim"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "cozy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "webaudio",
+      "localstorage"
+    ],
+    "tags": [
+      "bureaucracy",
+      "forms",
+      "stamps",
+      "queue",
+      "rule-engine",
+      "route-planning",
+      "daily-seed",
+      "loopholes",
+      "fictional-agency"
+    ],
+    "keywords": [
+      "red-tape",
+      "catch-22",
+      "counter",
+      "clerk",
+      "permit",
+      "rulebook",
+      "receipt",
+      "pneumatic-tube",
+      "cake"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "The genre anchor is the document-checking puzzle in which a rulebook grows and the tension comes from speed against accuracy; the designer of Papers, Please said the bureaucratic frame made it easy to author a complex set of gameplay rules. A small jam prototype about stamping and delivering forms exists (single listing, unconfirmed beyond that), so the pitch makes no claim about how it differs. Cultural material for the jokes is checkable: Catch-22 as a trap of mutually dependent conditions from Heller's 1961 novel, and red tape as the literal tape once used to bind official papers, with a Maryland law of 1696 to 1715 cited as the earliest reference found by Phrase Finder. Every agency, clerk and form in the page is invented.",
+    "sources": [
+      {
+        "title": "Designing the bleak genius of Papers, Please (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-i-",
+        "date": "",
+        "snippet": "Design feature: the player is a border inspector who processes as many travelers as possible each day while admitting only those whose increasingly complicated documents are in order; Pope says the bureaucratic structure made it easy to fill out complex gameplay rules.",
+        "via": "search",
+        "note": "Found again by a claim-based search; the result text matches the genre engine of speed versus accuracy and an escalating rulebook. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Papers, Please (Giant Bomb)",
+        "url": "https://giantbomb.com/wiki/Games/Papers_Please",
+        "date": "",
+        "snippet": "Game wiki entry: 2013 game by solo developer Lucas Pope, released 2013-08-08 for PC and Mac, in which you decide from travelers' documents who is admitted.",
+        "via": "search",
+        "note": "Independent second result for the release year, designer and document-checking loop; replaces the Wikipedia entry, whose host cannot be opened here.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 meaning and origin (Phrase Finder)",
+        "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+        "date": "",
+        "snippet": "Phrase reference: coined in the 1961 novel by Joseph Heller, popularised more widely after the 1970 film; now a situation where any move leads to trouble.",
+        "via": "search",
+        "note": "Returned again by an independent claim search on the Catch-22 origin.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 (logic) (Wikipedia)",
+        "url": "https://www.Wikipedia.com/wiki/Catch-22_(logic)",
+        "date": "",
+        "snippet": "Term from Heller's 1961 satirical novel: a pilot who requests to be grounded for insanity shows sanity by asking, so is denied; now a dilemma with mutually conflicting or dependent conditions.",
+        "via": "search",
+        "note": "Independent second result for the origin and meaning; seen as a search result only, not opened.",
+        "verified": true
+      },
+      {
+        "title": "Red tape (Phrase Finder)",
+        "url": "https://phrases.org.uk/meanings/red-tape.html",
+        "date": "",
+        "snippet": "Says legal and official documents have been bound with red tape since the 17th century and gives the 1696 to 1715 Maryland Laws as the first reference it found.",
+        "via": "search",
+        "note": "Found again by claim search. Its figurative-use date of 1838 is contradicted by another result (1736), so the page will not state a date for the figurative sense.",
+        "verified": true
+      },
+      {
+        "title": "Red tape (Word Origins)",
+        "url": "https://www.wordorigins.org/big-list-entries/red-tape",
+        "date": "",
+        "snippet": "Word history entry dating the literal Maryland use of red tape on public land records to a law of 1696.",
+        "via": "search",
+        "note": "Independent second result for the literal documents-bound-with-red-tape custom; replaces the Dictionary.com entry, which did not come back in any result.",
+        "verified": true
+      },
+      {
+        "title": "Holding It Together: From Red Tape to Grommets (US National Archives, Prologue blog)",
+        "url": "https://prologue.blogs.archives.gov/?p=33732",
+        "date": "",
+        "snippet": "Describes red tape as a narrow dyed cotton or linen ribbon used by government clerks to tie bundles of papers together and to seal documents and envelopes.",
+        "via": "search",
+        "note": "Third result supporting the physical tape custom; seen as a search result only.",
+        "verified": true
+      },
+      {
+        "title": "Ministerio Simulator (itch.io)",
+        "url": "https://juanrod707.itch.io/ministeriosim",
+        "date": "",
+        "snippet": "Prototype for Windows made in about 30 hours at the Uruguay Winter Game Jam 2017; local multiplayer for up to four with a controller; players pick up forms, stamp and copy them, and deliver them to a front desk.",
+        "via": "search",
+        "note": "Page appears in one search result only and cannot be opened (itch.io is a failed host today). The scout's claim that stamp order does not matter is not supported by anything seen and has been removed.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Papers, Please is a 2013 document-checking game by Lucas Pope (released 2013-08-08 for PC and Mac) in which the player compares travelers' papers with a rulebook and decides who is admitted.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Per a Game Developer feature, Papers, Please asks the player to process as many travelers as possible each day while admitting only those with documents in order, and Lucas Pope said the bureaucratic setting made it easy to fill out a complex set of gameplay rules.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The term Catch-22 comes from Joseph Heller's 1961 novel: a pilot who asks to be grounded as insane shows he is sane by asking, so cannot be grounded; it now means a trap of mutually dependent conditions.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Official and legal papers were bound with red tape in the 17th century; Phrase Finder and Word Origins both cite a Maryland law from 1696 (Phrase Finder gives the range 1696 to 1715) as the earliest literal reference found.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Government clerks used a narrow dyed cotton or linen ribbon called red tape to tie bundles of papers and to seal documents, per the US National Archives.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per an itch.io listing seen in one search result, a 2017 jam prototype called Ministerio Simulator has up to four local players picking up, stamping and copying forms for a front desk (reported, single result, not confirmed).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Papers, Please",
+      "Catch-22",
+      "Ministerio Simulator",
+      "text adventures with inventory puzzles",
+      "pneumatic tube post offices"
+    ]
+  },
+  "design": {
+    "coreLoop": "The citizen reads a small rulebook (each counter: needs, stamps, closing time, queue length, one human quirk), plans a route on a floor map, then walks it, spending clock time, patience and biscuits. Wrong windows, lunch closures and circular requirements force replanning, and combining rules produces loopholes the built-in solver recognises and names. A run ends in a stamped receipt scored on time, patience and loopholes found; a fresh seed or the daily seed restarts it with a different ministry.",
+    "sophisticationHooks": [
+      "Declarative rule engine (needs, consumes, stamps, forbids, opens-at) with a breadth-first solver over inventory states that proves every seeded ministry is solvable, computes par, and flags a player route shorter than the intended one as a named loophole",
+      "Seeded procedural ministry generator built from about a dozen hand-written counter templates: invented departments, clerk quirks and a goal permit, with daily seed and URL-hash state so a friend replays the same office",
+      "Shareable route receipt drawn with SVG tilted ink stamps and procedural WebAudio thumps, plus a loophole journal that persists in localStorage",
+      "Every rule carries a human-warmth joke: clerks relax for cake, a stamp is waived if the visitor asks after a cat, the underpass is kept open by a night-shift tea trolley"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build order: (1) rule engine, solver and generator as one pure module with a self-test of many seeds; (2) SVG floor map with clickable counters, a simple queue animation and the rulebook panel; (3) receipt and sound; (4) about and making-of panel, keyboard and touch play, light and dark, reduced motion. Scope is trimmed to seven counters per ministry, three goal permits, about a dozen counter templates, and a short guided first office; loopholes are detected only as solver paths shorter than par. Cut: multiplayer, user-authored ministries, more than one goal per run, canvas effects, any live data.",
+    "risks": [
+      "Rule composition can produce unsolvable or trivially solved ministries; mitigation is the solver gate in the generator with a regenerate-on-fail loop and a hand-authored fallback seed",
+      "Reading rules can feel like homework; mitigation is a 90-second guided first office and a hint action that costs patience",
+      "The Ministerio Simulator prior-art claim is single-source and unverified, so the about panel shows it only as 'as of 2026-10-10, per an itch.io listing' or omits it, and makes no claim about how it differs",
+      "Sources disagree on when red tape first appeared in figurative use (1736 versus 1838), so the page states no date for the figurative sense and cites only the literal 17th-century custom",
+      "Tone must stay fictional and non-partisan: no real agencies, forms or logos; Papers, Please is named as a reference only, with no art or audio borrowed",
+      "Solver plus generator plus map is the heaviest part of the day; the rule engine must be finished and self-tested before any rendering work is judged"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Genre, Catch-22 and red tape facts were each found again by independent search results; the game-jam prototype is single-source and its order-does-not-matter claim could not be supported, so it was removed. Feasible if scoped to seven counters and a dozen templates, with the solver module built and tested first."
+  }
+}

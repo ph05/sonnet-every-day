@@ -1,0 +1,271 @@
+{
+  "id": "pulse-1",
+  "title": "Slab Sundial Workshop",
+  "pitch": "The visitor carves a virtual granite sundial: picks a city, sets the dial plate and the gnomon, and watches hour lines and a live shadow appear. Scrubbing the calendar makes the shadow tip trace its yearly figure-eight, and a 'Dial vs Watch' round asks them to read the shadow, guess what the wall clock says, then see why the two disagree by a different amount every week. Each round ends in an itemised correction receipt (longitude, equation of time, the daylight-saving hour) that is the screenshot moment.",
+  "whyNow": "UK and EU clocks fall back on Sunday 2026-10-25 and US clocks on Sunday 2026-11-01, which moves wall time an hour closer to sun time just as autumn sunsets come early. The mechanic is astronomy, so it stays good in March and in any season.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "season-and-sky"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": [
+      "playful",
+      "nerdy",
+      "serene"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "dom-ui",
+      "pointer-events",
+      "web-animations",
+      "localstorage"
+    ],
+    "tags": [
+      "sundial",
+      "daylight-saving",
+      "equation-of-time",
+      "analemma",
+      "astronomy",
+      "seasons",
+      "granite",
+      "receipt",
+      "shadow",
+      "latitude"
+    ],
+    "keywords": [
+      "gnomon",
+      "solar-noon",
+      "fall-back",
+      "clock-change",
+      "hour-lines",
+      "longitude-correction",
+      "autumn"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "As of 2026-10-10, repeated independent search results agree that US daylight saving ends Sunday 2026-11-01 at 2 a.m. local time and that UK and EU summer time end Sunday 2026-10-25. Several independent weather and reference sites explain that the earliest sunset of the year falls before the winter solstice because sundial time and clock time drift apart (the equation of time). That gives the page a true, checkable surprise: the shadow, the longitude offset, the equation of time and the daylight-saving hour are separate corrections stacked on one wall clock. All astronomy is computed in the page from standard low-precision formulas, so no download is needed; only a small hand-made city table (rounded coordinates plus clock rule) is bundled and labelled approximate. This re-check rested on search results only; no page could be opened.",
+    "sources": [
+      {
+        "title": "Daylight Saving Time Ends 2026: Clocks Go Back",
+        "url": "https://www.almanac.com/daylight-saving-time-ends",
+        "date": "",
+        "snippet": "Gives Sunday 2026-11-01 as the end of US daylight saving time, with clocks moving from 2:00 a.m. back to 1:00 a.m.",
+        "via": "search",
+        "note": "US fall-back date and time; found again by an independent search for the claim",
+        "verified": true
+      },
+      {
+        "title": "Daylight Saving Time 2026: When Do Clocks Fall Back and Could Congress Cancel It",
+        "url": "https://www.farmersalmanac.com/?p=440838",
+        "date": "",
+        "snippet": "Search result for the same claim: clocks fall back on the first Sunday in November under current US law; the dossier's original farmersalmanac URL did not come back, this one did.",
+        "via": "search",
+        "note": "US rule (first Sunday in November), URL corrected to the one seen in results",
+        "verified": true
+      },
+      {
+        "title": "Daylight Saving Time 2026: When do clocks fall back? (AccuWeather)",
+        "url": "https://www.accuweather.com/en/weather-news/daylight-saving-time-2026-when-do-clocks-fall-back/1936642",
+        "date": "",
+        "snippet": "Not found again in this check.",
+        "via": "search",
+        "note": "Unfindable in my searches, so unverified; the US date does not depend on it",
+        "verified": false
+      },
+      {
+        "title": "From Sunday 25th of October end of summer time in Europe",
+        "url": "https://tuenews.de/en/from-sunday-25th-of-october-end-of-summer-time-in-europe/",
+        "date": "2026-07-23",
+        "snippet": "Not found again in this check.",
+        "via": "search",
+        "note": "Unfindable in my searches, so unverified; the EU date is carried by other sources",
+        "verified": false
+      },
+      {
+        "title": "Why do the clocks change twice a year (Government of the Netherlands FAQ)",
+        "url": "https://www.government.nl/faq/european-union/why-do-the-clocks-change-twice-a-year",
+        "date": "",
+        "snippet": "Found again by search: Dutch government FAQ saying that on Sunday 25 October 2026 at 03.00 the clock goes back one hour, under EU Directive 2000/84/EC.",
+        "via": "search",
+        "note": "Official EU rule and 2026 fall-back date",
+        "verified": true
+      },
+      {
+        "title": "Earliest sunset (timeanddate)",
+        "url": "https://www.timeanddate.com/astronomy/earliest-sunset.html",
+        "date": "",
+        "snippet": "Found again by search. Explains that the earliest sunset comes before the winter solstice because of the equation of time; latitude changes the exact dates. WebFetch of the host failed, so not opened.",
+        "via": "search",
+        "note": "Why the shortest day and earliest sunset differ",
+        "verified": true
+      },
+      {
+        "title": "Later sunsets begin this week in Minnesota",
+        "url": "https://mprnews.org/story/2024/12/10/later-sunsets-begin-this-week-in-minnesota",
+        "date": "2024-12-10",
+        "snippet": "The article turned up in search, but only its headline and intro came back, so its definition of the equation of time was not seen on this page.",
+        "via": "search",
+        "note": "Unverified as a page; related MPR pieces and other sites carry the same explanation",
+        "verified": false
+      },
+      {
+        "title": "Daylight saving time ends 2026 (Time Out USA)",
+        "url": "https://www.timeout.com/usa/news/when-do-the-clocks-go-back-in-2026-heres-when-daylight-saving-time-officially-ends-100626",
+        "date": "",
+        "snippet": "Search result for the claim that US clocks go back on 2026-11-01.",
+        "via": "search",
+        "note": "Independent second result for the US date",
+        "verified": true
+      },
+      {
+        "title": "UK clocks will go back in October 2026 (Express and Star)",
+        "url": "https://www.expressandstar.com/news/uk-clocks-will-go-back-in-october-2026-heres-what-you-need-to-know-9019390",
+        "date": "",
+        "snippet": "Search result: UK clocks go back Sunday 25 October 2026, 2am to 1am, ending British Summer Time.",
+        "via": "search",
+        "note": "UK fall-back date",
+        "verified": true
+      },
+      {
+        "title": "When do the clocks go back in 2026 (The Scotsman)",
+        "url": "https://www.scotsman.com/lifestyle/exact-time-clocks-go-back-uk-2026-bst-ends-8955708",
+        "date": "",
+        "snippet": "Search result agreeing on the UK date of 25 October 2026 and that British Summer Time always ends on the last Sunday of October.",
+        "via": "search",
+        "note": "Independent second UK result",
+        "verified": true
+      },
+      {
+        "title": "Sunrise, Sunset and the Equation of Time (UConn Extension)",
+        "url": "https://extension.uconn.edu/?p=4282",
+        "date": "",
+        "snippet": "Search result: the earliest sunset comes before the winter solstice; the equation of time is the difference between apparent (sundial) solar time and mean solar (clock) time.",
+        "via": "search",
+        "note": "Independent explanation of the equation of time",
+        "verified": true
+      },
+      {
+        "title": "Why are earliest sunsets upon us now despite being more than 2 weeks from winter solstice (Fox Weather)",
+        "url": "https://foxweather.com/learn/earliest-sunsets-not-on-winter-solstice",
+        "date": "",
+        "snippet": "Search result: earliest sunsets come before the solstice; the orbit's ellipse plays a part and timing differs by location.",
+        "via": "search",
+        "note": "Another independent result for the earliest-sunset claim",
+        "verified": true
+      },
+      {
+        "title": "States without daylight saving time (History.com)",
+        "url": "https://www.history.com/articles/states-without-daylight-savings-time",
+        "date": "",
+        "snippet": "Search result on which US places do not change clocks; only the title and URL were seen.",
+        "via": "search",
+        "note": "One of three results agreeing that Arizona and Hawaii stay on standard time",
+        "verified": true
+      },
+      {
+        "title": "Daylight savings: the US states not changing clocks (Newsweek)",
+        "url": "https://newsweek.com/daylight-savings-the-us-states-not-changing-clocks-11631542",
+        "date": "",
+        "snippet": "Search result on the states that do not change clocks; only the title and URL were seen.",
+        "via": "search",
+        "note": "Second independent result for Arizona and Hawaii",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "US daylight saving time ends on Sunday 2026-11-01, when clocks go from 2:00 a.m. back to 1:00 a.m. (first Sunday in November rule).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "UK summer time ends Sunday 2026-10-25 (2:00 a.m. BST back to 1:00 a.m. GMT); the Netherlands, following the EU rule, goes back at 03:00 the same day.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          8,
+          9
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The EU and UK summer-time rule ends on the last Sunday of October (and starts on the last Sunday of March); the EU's 2019 vote to end clock changes has not taken effect.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          9,
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The earliest sunset of the year arrives before the winter solstice, and the exact date depends on latitude.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          10,
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The equation of time is the difference between apparent (sundial) solar time and mean solar (clock) time.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          5,
+          11
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Arizona (apart from the Navajo Nation) and Hawaii do not change their clocks; the Navajo Nation does.",
+        "sourceIndex": 12,
+        "alsoIn": [
+          13,
+          1
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "horizontal sundial calculators",
+      "analemma photographs",
+      "paper receipt printers as UI",
+      "almanac correction tables"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick a city and date, shape the dial (plate tilt, gnomon height), read the shadow against the hour lines, guess the wall-clock time, reveal the answer as an itemised receipt (longitude offset, equation of time, daylight-saving hour), then change the date or city and watch each line item move. The second minute rewards scrubbing the calendar to see the line items change shape; the tenth rewards the 'Dial vs Watch' streak and the fall-back lever, where the shadow stays put while the clock jumps an hour.",
+    "sophisticationHooks": [
+      "Real solar geometry computed in the page: declination, equation of time, hour-line angles for the chosen latitude, and the analemma traced by the shadow tip across the year",
+      "Clock-rule engine for US, EU/UK and no-change zones, checked in-page against the dates 2026-10-25 and 2026-11-01",
+      "Dial vs Watch guessing game with a streak and a share-by-URL-hash receipt",
+      "Procedural granite slab texture and engraved hour numerals drawn in SVG, no external assets"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: SVG slab and gnomon scene, solar math module (about 200 lines), clock-rule module for three rule sets (US, EU/UK, none), city picker with about 24 northern-hemisphere cities bundled as a rounded table, calendar scrubber with analemma trace, Dial vs Watch mode with streak, receipt view, hash state, about panel with sources, light and dark, reduced motion, keyboard and touch. Cut: vertical and equatorial dial types, southern-hemisphere cities and clock rules, live geolocation, printing to PDF. Estimated 900 to 1200 lines across 8 builders, leaving slack for QA.",
+    "risks": [
+      "City coordinates and clock rules are hand-made and rounded; the page labels them approximate and the content builder should double-check each against a source seen during the build.",
+      "A claim that the US House passed a permanent daylight saving bill in July 2026 appeared in one search summary only and is unverified; the page leaves it out, or shows it only as 'as of 2026-10-10, per the Farmers' Almanac, reported'.",
+      "Two cited pages (AccuWeather, tuenews) and the 2024 MPR article could not be found again; the page cites only the verified sources in its about panel.",
+      "Not a navigation or timekeeping authority: the page needs a 'for fun, accuracy within a few minutes' note.",
+      "Sun-time maths in the page (equation of time size, hour-line angles) is the builders' own computation, not a sourced fact; the page presents it as computed by the page and approximate.",
+      "Sunday fall-back dates are 2026 facts; the clock rules are generic so the page stays correct in later years, but any text naming 2026 dates should read as 'as of 2026-10-10'."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The 2026 fall-back dates and the earliest-sunset/equation-of-time explanation were each found again in several independent search results; no page opened (timeanddate WebFetch failed on DNS). Three original sources could not be found again and one bill claim stays unverified; scope trimmed to a northern-hemisphere horizontal dial with about 24 cities."
+  }
+}

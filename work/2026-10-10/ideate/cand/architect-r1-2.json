@@ -1,0 +1,214 @@
+{
+  "id": "architect-r1-2",
+  "title": "Fine Print Jokers",
+  "pitch": "A joker family for a poker roguelike where every joker is a contract: a big boon now, and a clause that bills you later in score. The visitor assembles a five-joker rack of IOU jokers, balloon-payment jokers and co-signing pairs that split each other's debts, then plays a four-hand round against a blind and watches a ledger waterfall show each bill landing. A worker simulates thousands of seeded rounds to reveal exactly when borrowing against your future score beats playing it clean, and when it ends in a stamped default notice.",
+  "whyNow": "Timeless: a debt economy is a rule family the community has not claimed, and the break-even curve is the sort of result people screenshot and argue about. Nothing like it has shipped here yet.",
+  "origin": {
+    "agent": "architect",
+    "lens": "balatro-mod-ideas"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "simulator",
+    "tone": [
+      "playful",
+      "satirical",
+      "analytical"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "worker",
+      "canvas2d",
+      "localstorage"
+    ],
+    "tags": [
+      "balatro-mod-concept",
+      "joker-family",
+      "debt-mechanic",
+      "monte-carlo",
+      "scoring-engine",
+      "ledger",
+      "seeded-deals",
+      "leverage"
+    ],
+    "keywords": [
+      "fine-print",
+      "iou-jokers",
+      "co-sign",
+      "default-notice",
+      "break-even",
+      "balloon-payment",
+      "ledger-waterfall",
+      "win-rate"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Base-game scoring is chips times mult with jokers resolving left to right, and the genre already uses debt-adjacent ideas: one joker lets the player spend below zero, and a harder stake adds rented jokers that charge every round (the latter reported in beta coverage and left unconfirmed here). Starting decks already bend rules (one trades a hand for a joker slot, one pays for unused hands), which shows deck and joker families with trade-offs are a natural mod unit. A big unbalanced mod proves the audience wants strange rule families. No existing joker family is built around deferred score debt with transferable bills, so the angle is open. The page uses only invented chip debts and says it is a simulation, not financial advice.",
+    "sources": [
+      {
+        "title": "Balatro: Every Joker with Full Description (kosgames)",
+        "url": "https://kosgames.com/?p=53298",
+        "date": "",
+        "snippet": "Joker reference listing the Credit Card joker as letting the player go up to 20 dollars into debt.",
+        "via": "search",
+        "note": "Debt already exists as a joker idea; basis for the debt framing.",
+        "verified": true
+      },
+      {
+        "title": "Steam community discussion on Credit Card joker and debt",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4329727037117813191",
+        "date": "",
+        "snippet": "Community posts describing that the Credit Card joker lets you buy items even with no money.",
+        "via": "search",
+        "note": "Independent community confirmation of the debt behavior.",
+        "verified": true
+      },
+      {
+        "title": "balatro deck list how to unlock (dotesports)",
+        "url": "https://dotesports.com/indies/news/balatro-deck-list-how-to-unlock",
+        "date": "",
+        "snippet": "Deck guide: Black deck trades one hand per round for an extra joker slot; Green deck pays out for unused hands and discards; Magic deck starts with a voucher and two copies of one consumable.",
+        "via": "search",
+        "note": "Decks already ship trade-off rules; a debt family fits.",
+        "verified": true
+      },
+      {
+        "title": "Tips and tricks for unlockable decks in Balatro (Blizzard Watch)",
+        "url": "https://blizzardwatch.com/2025/02/10/tips-tricks-unlockable-deck-balatro/",
+        "date": "2025-02-10",
+        "snippet": "Second outlet covering the unlockable decks and their rule trade-offs.",
+        "via": "search",
+        "note": "Independent source that decks carry trade-off rules.",
+        "verified": true
+      },
+      {
+        "title": "destructoid.com (Balatro joker order guide)",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "Guide says joker effects trigger left to right, so additive-mult jokers go before multiplying ones.",
+        "via": "search",
+        "note": "Left-to-right resolution is the order the ledger engine follows.",
+        "verified": true
+      },
+      {
+        "title": "balatro tips for scoring big (Inverse)",
+        "url": "https://www.inverse.com/gaming/balatro-tips-for-scoring-big",
+        "date": "",
+        "snippet": "Scoring tips article; results agreed joker placement changes the final score.",
+        "via": "search",
+        "note": "Independent second outlet on joker placement.",
+        "verified": true
+      },
+      {
+        "title": "the latest balatro update has some massive changes that should make winning easier (press-start)",
+        "url": "https://press-start.com.au/news/2024/04/08/the-latest-balatro-update-has-some-massive-changes-that-should-make-winning-easier/",
+        "date": "2024-04-08",
+        "snippet": "Beta coverage reporting a higher stake replacing a pack-cost penalty with rental jokers that charge a fee every round.",
+        "via": "search",
+        "note": "Rent-style recurring cost precedent; single source and beta-era, so unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "A New Player's Primer to Balatro (games.gg economy guide)",
+        "url": "https://games.gg/balatro/guides/balatro-economy-guide/",
+        "date": "",
+        "snippet": "Guide on the money system, mentioning interest paid on held cash up to a cap per round.",
+        "via": "search",
+        "note": "Interest rule seen in one place only; the page invents its own rates.",
+        "verified": false
+      },
+      {
+        "title": "Cryptid: an unbalanced Balatro mod (GitTrend, SpectralPack/Cryptid)",
+        "url": "https://gittrend.io/repo/SpectralPack/Cryptid",
+        "date": "",
+        "snippet": "Project summary calls it a mod that ignores game balance with overpowered content; needs Steamodded and a helper for big numbers.",
+        "via": "search",
+        "note": "Audience appetite for odd rule families.",
+        "verified": true
+      },
+      {
+        "title": "r/balatro: The Cryptid experience (mirror)",
+        "url": "https://redlib.belloworld.it/r/balatro/comments/1fa20ru/the_cryptid_experience",
+        "date": "Sep 06 '24",
+        "snippet": "Thread where commenters debate whether a deliberately unbalanced mod is fun; some call it intended to be broken.",
+        "via": "search",
+        "note": "Independent community view.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, a guide and community posts agree that a base-game joker (Credit Card) lets the player go into debt, up to 20 dollars per the guide.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Base-game starting decks already trade one resource for another, for example one deck gives an extra joker slot at the cost of one hand each round.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Community guides agree that jokers resolve left to right, so order changes the final score.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Cryptid mod describes itself as ignoring balance, and commenters in a Sep 2024 thread describe it as intentionally broken.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported unconfirmed: a 2024 beta patch described a stake whose rental jokers charge a fee every round, per one outlet.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported unconfirmed: the base game pays interest on held cash up to a per-round cap, per one guide.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Balatro jokers and the Credit Card idea",
+      "rental-joker stake",
+      "Cryptid-style rule-breaking mods",
+      "payday-loan and balloon-mortgage shapes (as satire of legalese)",
+      "bankroll risk-of-ruin charts from poker"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick contract jokers for the rack, set the round target, and play a seeded four-hand round: each hand scores with the boon, then the ledger collects any bills that fall due. Read the waterfall, tweak order or swap a clause, and press the simulate button to see the win rate across thousands of seeded rounds versus a clean build. The break-even slider on target difficulty keeps rewarding experiments because leverage only wins in a specific band.",
+    "sophisticationHooks": [
+      "A scoring and ledger engine: chips times mult resolved left to right, with five contract types (net-due IOU, escalating bill, balloon payment, revolving minimum, handshake co-sign that splits two neighbours' bills) and a default rule that rolls unpaid bills forward with a penalty",
+      "A worker Monte Carlo that plays a greedy bot through thousands of seeded rounds and draws win-rate, score histogram and the leverage break-even curve against target difficulty",
+      "A waterfall chart of the round (boons rising, bills falling due) drawn in SVG, with a stamped default notice and receipt-style share card as the moment of delight",
+      "Seeded audit challenges (for example beat target N using at most two contracts) and a URL-hash build code so friends can compare racks"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: engine and contract data, seeded deck and hand dealer, bot, worker simulation, rack builder with keyboard and drag, waterfall and histogram charts, break-even sweep, daily audit seed, hash state, about panel. Cut: full run structure with shops, more than five contract types, animated repo scenes beyond a single stamp, any art from the real game.",
+    "risks": [
+      "Debt vocabulary must read as playful and simulated: chips only, a visible 'simulated, not financial advice' line, no real-money framing or gambling prompts.",
+      "The rental and interest facts are single-source and stay unverified, so the page cites them as 'as of 2026-10-10, per <source>' or omits them; the engine uses invented rates.",
+      "Contract interactions could make balance opaque; mitigation: cap the clause types at five and test the engine against a hand-computed ledger table.",
+      "Greedy bot may under-represent skilled play; the page labels the win rate as 'for a simple bot' and also offers a hand-play mode."
+    ]
+  },
+  "durable": true
+}

@@ -1,0 +1,220 @@
+{
+  "id": "lab-r1-2",
+  "title": "The Lukewarm Mug",
+  "pitch": "A fictional product page, control panel and manual for the Meh-Therm Mug from the invented firm Tepidyne Labs: a smart mug engineered to hold coffee at the exact temperature of mild indifference. The visitor tunes three dials (proportional, integral, derivative) against a live thermal simulation with cooling, heater lag and sensor noise, then survives surprise disturbances such as an opened window, a stirring spoon or a Catalyst Pod accessory that changes the mug's dynamics. The best tuning earns a ridiculous certificate and a shareable spec sheet.",
+  "whyNow": "Timeless: smart-gadget excess is a standing joke, and the page quietly teaches real feedback control. Autumn coffee season helps.",
+  "origin": {
+    "agent": "lab",
+    "lens": "fake-product-satire"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": [
+      "satirical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "webaudio",
+      "localstorage"
+    ],
+    "tags": [
+      "fake-product",
+      "pid-control",
+      "smart-mug",
+      "newtons-cooling",
+      "feedback-loop",
+      "product-page-parody",
+      "tuning-game",
+      "spec-sheet"
+    ],
+    "keywords": [
+      "thermal-model",
+      "overshoot",
+      "setpoint",
+      "control-panel",
+      "disturbance",
+      "certificate",
+      "fictional-brand",
+      "deadpan-manual"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Newton's law of cooling says the gap between a hot object and its surroundings shrinks exponentially, which is the passive heat loss of the coffee; three independent educational sources give the same form. Plain on-off thermostats overshoot and cycle, while PID adds integral action (removes steady offset, risks overshoot and windup) and derivative action (damps overshoot, amplifies noise); several sources agree. That gives a real, tunable loop: heater power with first-order lag, the cooling law, sensor noise and scripted disturbances. A classic tuning recipe (ultimate gain and period) exists but only one source was seen, so the page shows it as reported, not confirmed. The parody layer rests on the well-worn trope that not every appliance needs a network connection (a security vendor podcast and a webcomic both riff on it) and on documented dark patterns such as confirmshaming and fake countdown timers, which the product page can lampoon with invented wording. Limits: a lumped single-node thermal model with invented constants; no fluid mixing, evaporation or ceramic wall dynamics; not a real appliance design.",
+    "sources": [
+      {
+        "title": "Newton's Law of Cooling (Illustrative Mathematics task)",
+        "url": "https://tasks.illustrativemathematics.org/content-standards/tasks/382",
+        "date": "",
+        "snippet": "Teaching task presenting coffee temperature as room temperature plus an exponentially decaying difference, with a rate constant fitted to a covered cup.",
+        "via": "search",
+        "note": "Exponential approach to ambient temperature.",
+        "verified": true
+      },
+      {
+        "title": "Newton Law of Cooling (UMN open textbook handout)",
+        "url": "https://open.lib.umn.edu/app/uploads/sites/230/2020/08/Newton-Law-of-Cooling.pdf",
+        "date": "2020-08",
+        "snippet": "Handout stating that the temperature difference to the surroundings decays exponentially, with worked examples.",
+        "via": "search",
+        "note": "Independent agreement on the cooling law.",
+        "verified": true
+      },
+      {
+        "title": "Cooling Coffee (UF mechanical engineering note)",
+        "url": "https://web.mae.ufl.edu/uhk/COOLING-COFFEE.pdf",
+        "date": "",
+        "snippet": "Engineering note analysing how a cup of coffee cools, relevant to choosing a realistic loss rate.",
+        "via": "search",
+        "note": "Third source on coffee cooling; only the title and topic seen.",
+        "verified": false
+      },
+      {
+        "title": "PID Temperature Controllers - What's that About?",
+        "url": "https://tutco.com/conductive/pid-controllers",
+        "date": "",
+        "snippet": "Explains that simple on-off heating overshoots and fluctuates, that integral action removes steady error, and that derivative action tempers overshoot.",
+        "via": "search",
+        "note": "Roles of P, I, D in a heater loop.",
+        "verified": true
+      },
+      {
+        "title": "Control types (University of Exeter feedback teaching notes)",
+        "url": "https://newton.ex.ac.uk/teaching/cdhw/Feedback/ControlTypes.html",
+        "date": "",
+        "snippet": "Teaching notes on proportional, integral and derivative control, stating integral removes steady-state error at the cost of stability margin and derivative amplifies high-frequency noise.",
+        "via": "search",
+        "note": "Independent agreement on P/I/D trade-offs including noise amplification.",
+        "verified": true
+      },
+      {
+        "title": "Coffea Arabica Machina 101: PID, part 1 (La Marzocco)",
+        "url": "https://lamarzoccousa.com/news/blog/prof-john-blackwell-coffea-arabica-machina-101-pid-part-1/",
+        "date": "",
+        "snippet": "Espresso-machine engineer explains that a plain thermostat overshoots because the element keeps heating after switch-off, and PID anticipates and corrects.",
+        "via": "search",
+        "note": "Third independent voice that on-off overshoots and PID mitigates it.",
+        "verified": true
+      },
+      {
+        "title": "Lab 8: Ziegler-Nichols PID tuning method (Cal Poly Pomona handout)",
+        "url": "https://cpp.edu/faculty/fkhoshnoud/lab-8-zieglernichols-pid-tuning-method.pdf",
+        "date": "",
+        "snippet": "Lab handout describing the ultimate-gain tuning method and rule-of-thumb gain formulas, which tend to give noticeable overshoot.",
+        "via": "search",
+        "note": "Classic tuning recipe; single source seen.",
+        "verified": false
+      },
+      {
+        "title": "Talos Takes episode 53",
+        "url": "https://blog.talosintelligence.com/talos-takes-ep-53-/",
+        "date": "",
+        "snippet": "Security-vendor podcast page discussing a vulnerability in a network-connected air fryer and the broader point that not everything needs an internet connection.",
+        "via": "search",
+        "note": "Evidence for the over-connected-appliance trope.",
+        "verified": true
+      },
+      {
+        "title": "xkcd #3109: Dehumidifier (community mirror)",
+        "url": "https://lemmy.cleberg.net/post/117439",
+        "date": "",
+        "snippet": "Discussion post of a webcomic in which a salesman pitches built-in wifi for remote updates on a dehumidifier.",
+        "via": "search",
+        "note": "Independent example of the same trope.",
+        "verified": true
+      },
+      {
+        "title": "Types of dark patterns (Innovation, Science and Economic Development Canada)",
+        "url": "https://www.ised-isde.canada.ca/site/office-consumer-affairs/en/node/269",
+        "date": "",
+        "snippet": "Government consumer-affairs page listing manipulative design patterns including confirmshaming, with guilt-trip decline buttons as the example.",
+        "via": "search",
+        "note": "Names dark patterns the page can lampoon with invented copy.",
+        "verified": true
+      },
+      {
+        "title": "Public Report ICPEN Dark Patterns Sweep",
+        "url": "https://icpen.org/sites/default/files/2024-07/Public%20Report%20ICPEN%20Dark%20Patterns%20Sweep.pdf",
+        "date": "2024-07",
+        "snippet": "International consumer-protection sweep that classes fake countdown timers and low-stock banners as urgency practices.",
+        "via": "search",
+        "note": "Independent agreement that fake urgency timers are a recognised pattern.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Newton's law of cooling: the difference between an object's temperature and its surroundings decays exponentially over time, so a coffee cools fastest at first and approaches room temperature.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Simple on-off heater control overshoots and fluctuates around the setpoint; PID control uses integral action to remove steady offset and derivative action to reduce overshoot.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Derivative action amplifies high-frequency sensor noise, and aggressive integral action can cause overshoot and reduced stability margin.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The idea that not every appliance needs an internet connection is a recurring joke and security talking point (air fryer vulnerability episode, dehumidifier webcomic).",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Confirmshaming and fake countdown timers are recognised dark patterns documented by consumer-protection agencies.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "PID tuning playgrounds",
+      "smart-appliance satire",
+      "espresso machine PID debates",
+      "dark-pattern checkout parodies",
+      "mock spec sheets"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick a target temperature, tune the P, I and D dials, press Brew and watch the mug temperature trace against the setpoint while the simulator throws disturbances (window gust, spoon stir, cold refill, Catalyst Pod swapping the heater gain and lag). Score blends rise time, overshoot, settling and noise jitter; a better tuning unlocks harder cups. Stays interesting because retuning for each plant change teaches real intuition, and the leaderboard-free par scores invite one more try.",
+    "sophisticationHooks": [
+      "Honest thermal model: first-order loss to ambient, heater with transport lag, quantised noisy sensor, anti-windup toggle, fixed-step integration",
+      "Live trace chart with ghost run of the previous tuning plus an auto-tune helper that finds the oscillation point and proposes gains",
+      "Product page written as dark-pattern parody (invented confirmshaming and urgency copy, cancel-the-subscription maze that is a decorative joke) leading to a working control panel",
+      "Spec-sheet and certificate generator with the user's own numbers in the URL hash for sharing"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: pure simulation module with init, step, state and reset; canvas strip chart; three dials and presets; four disturbance types; scoring; product page and manual sections; light and dark, reduced motion, keyboard and touch, hash state, about panel. Cut: real hardware specs, multiple mug models beyond three presets, online leaderboards.",
+    "risks": [
+      "The Ziegler-Nichols rule values were seen in one handout only; the auto-tune helper labels them 'classic rule of thumb, reported' and tests them in simulation rather than asserting them.",
+      "Thermal constants are invented; the page labels them as a toy model, not an appliance or safety design (no hot-liquid safety advice offered).",
+      "PID tuning can feel abstract; mitigated by presets, a hint ghost run and instant visual feedback.",
+      "Dark-pattern parody must stay invented and general with no real company copy or logos.",
+      "Brand names Meh-Therm and Tepidyne Labs are invented; builders must check they resemble no real company before shipping."
+    ]
+  },
+  "durable": true
+}

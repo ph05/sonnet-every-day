@@ -1,0 +1,202 @@
+{
+  "id": "artisan-2",
+  "title": "Blind Foundry",
+  "pitch": "A boss-blind design bench for an invented poker roguelike. The visitor snaps together rule bricks (silence a suit, forbid repeating a hand type, cap hand size, halve base values, or a swinging rule that alternates each hand) and a Monte Carlo lab instantly runs five toy bot archetypes through hundreds of seeded rounds, drawing a win-rate bar per strategy. Puzzle cards set goals such as 'shut down the flush farmer while sparing everyone else', and a final twist lets the visitor swap what winning means, for example finishing close to the target instead of far above it.",
+  "whyNow": "Timeless for the genre: boss blinds are the part of a poker-roguelike designed to punish a single strategy, and community mods keep adding new ones. The lab turns the vague feeling 'this blind is unfair' into a visible number, using toy bots and invented numbers.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "balatro-mod-ideas"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "simulator",
+    "tone": ["analytical", "competitive", "nerdy"],
+    "tech": ["worker", "canvas2d", "dom-ui", "localstorage", "pointer-events"],
+    "tags": ["boss-blind", "monte-carlo", "game-balance", "mod-concept", "poker-hands", "strategy-archetypes", "puzzle-cards", "roguelike"],
+    "keywords": ["win-rate", "rule-bricks", "bot-archetypes", "seeded-runs", "balance-lab", "counter-strategy", "win-condition"],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Boss blinds in poker-roguelikes such as Balatro attack a specific plan, which is why community mods add many new ones (mod-index listings seen in search show 64 in one mod, 10 in another). The page uses invented blind names and rules, and mentions vanilla blinds only as 'as of 2026-10-10, per fan posts' for the one rule that two results mention (no repeated hand types). Scoring order in the toy engine follows the widely repeated community understanding that joker effects resolve left to right; sources disagree on whether additive mult always comes first, so the engine documents its own order as a design choice. Claims that these games need heavy playtesting, and a 'halve base values' vanilla blind, were not confirmed by this check and are not presented as fact.",
+    "sources": [
+      {
+        "title": "destructoid.com Balatro joker order guide",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones.",
+        "via": "search",
+        "note": "Re-found by a claim-worded search on 2026-10-10; agrees with Steam community threads in the same results.",
+        "verified": true
+      },
+      {
+        "title": "Four Things I Wish I Knew When Starting Balatro",
+        "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+        "date": "",
+        "snippet": "Said to explain that mult is totalled in order before it multiplies chips.",
+        "via": "search",
+        "note": "Not found again by the verifier's searches; replaced as second source by the Steam thread at index 10.",
+        "verified": false
+      },
+      {
+        "title": "All in Jest mod listing (mod index)",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/Survivalaiden@AllinJest/description.md",
+        "date": "2025",
+        "snippet": "A mod listing that advertises 64 new boss blinds.",
+        "via": "search",
+        "note": "Found again on 2026-10-10 in a search for mods that add boss blinds; the result text states 64 new boss blinds. The 'blue stake rework' detail was not re-checked and is dropped.",
+        "verified": true
+      },
+      {
+        "title": "Lost Edition (mod index mirror)",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/media/branch/main/mods/Danitskkj@Lost_Edition/description.md",
+        "date": "",
+        "snippet": "A mod index listing for a vanilla-plus expansion that includes 10 new boss blinds plus jokers, decks and vouchers.",
+        "via": "search",
+        "note": "Replaces the Kotaku listing, which was not found again; this listing was seen in the verifier's search results.",
+        "verified": true
+      },
+      {
+        "title": "my balatro mods (betmma)",
+        "url": "https://github.com/betmma/my_balatro_mods",
+        "date": "",
+        "snippet": "A collection of small mods, said to include an overpowered-boss challenge in which every boss blind halves base chips and mult.",
+        "via": "search",
+        "note": "Not re-found; single source from the scout, unverified.",
+        "verified": false
+      },
+      {
+        "title": "Roguelike deck-building game",
+        "url": "https://en.wikipedia.org/wiki/Roguelike_deck-building_game",
+        "date": "",
+        "snippet": "Overview page returned for a search on playtesting and randomness in roguelike deck-builders.",
+        "via": "search",
+        "note": "The page was returned in results but no supporting text about intensive playtesting was visible and the host cannot be opened today; claim unverified.",
+        "verified": false
+      },
+      {
+        "title": "Balatro-Style Poker Deckbuilder (template page)",
+        "url": "https://www.summerengine.com/templates/strategy/deckbuilder/balatro-style",
+        "date": "",
+        "snippet": "A vendor template page that pitches a scoring prototype for testing multiplier stacking and finding broken combos before players do.",
+        "via": "search",
+        "note": "Seen in two searches; it is vendor marketing, so it supports only that such prototypes are pitched this way, not any general claim about the genre.",
+        "verified": true
+      },
+      {
+        "title": "V3 - Learning how to balance a scoring system",
+        "url": "https://unbreaded.itch.io/tictactic/devlog/782040/v3-learning-how-to-balance-a-scoring-system",
+        "date": "",
+        "snippet": "A solo developer's devlog on expected value in a scoring system.",
+        "via": "search",
+        "note": "Not re-found; single source, unverified.",
+        "verified": false
+      },
+      {
+        "title": "Balatro: Top 10 Most Challenging Bosses to Blind",
+        "url": "https://thefilibusterblog.com/balatro-top-10-most-challenging-bosses-to-blind/",
+        "date": "",
+        "snippet": "A fan ranking of tough boss blinds.",
+        "via": "search",
+        "note": "Returned again in two searches but its text on specific blind rules was not visible, so it is not used as proof of any rule.",
+        "verified": false
+      },
+      {
+        "title": "Nintendo Life: Balatro first major update",
+        "url": "https://nintendolife.com/news/2024/04/balatro-is-getting-its-first-major-update",
+        "date": "2024-04",
+        "snippet": "News piece said to summarise an April 2024 experimental patch.",
+        "via": "search",
+        "note": "Not re-found; the page does not quote vanilla stake numbers, so it is left out of the facts.",
+        "verified": false
+      },
+      {
+        "title": "Steam community thread on Balatro joker ordering",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4334231842063363125",
+        "date": "",
+        "snippet": "A forum thread whose reply gives the example (10 + 8) x 5 versus (10 x 5) + 8 and concludes add-mult jokers go left of multiplying ones because jokers trigger left to right.",
+        "via": "search",
+        "note": "Independent community statement of the same ordering, seen in the verifier's search results; forum posts, so they count as agreement and not as an authority.",
+        "verified": true
+      },
+      {
+        "title": "Steam community thread on the repeat-hand-type boss blind",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4346606879521850576",
+        "date": "",
+        "snippet": "A forum thread where players describe a boss blind that will not let the same hand type be played twice in a round.",
+        "via": "search",
+        "note": "Seen in two verifier searches; a single community source for the vanilla rule, so the page shows it only as a fan report.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, mod-index listings seen in search show boss blinds are a common mod target: one mod lists 64 new boss blinds and another lists 10, and further mods in the same results add one or more.",
+        "sourceIndex": 2,
+        "alsoIn": [3],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, a Destructoid guide and Steam community posts both state that joker effects resolve left to right, so additive mult jokers are advised to sit left of multiplying ones.",
+        "sourceIndex": 0,
+        "alsoIn": [10],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, sources disagree on whether all additive mult is always applied first; one forum poster reports an uncontrolled test where multipliers seemed to go first, so the toy engine states its own fixed order instead of claiming to copy the real game.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per a vendor template page (marketing, not independent), Balatro-style scoring prototypes are pitched as a way to test multiplier stacking and find broken combos early.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Unconfirmed: as of 2026-10-10, per fan posts on Steam, a vanilla boss blind bars repeating a hand type within a round; the page shows this only as a fan report, and uses invented blind names.",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "boss blinds that counter one build",
+      "modded boss-blind packs",
+      "balance spreadsheets and Monte Carlo playtesting",
+      "puzzle-card challenge decks",
+      "tower-defence wave designers"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick or build a blind from rule bricks, press run, and read a win-rate bar for each of five bot archetypes over a few hundred seeded rounds. The goal cards ask for a specific shape of result (one archetype crushed, others untouched, or a fairness budget of total brick cost), so every tweak is a hypothesis and the lab is the experiment. The tenth minute is discovering that bricks interact: a suit silence is weak alone but lethal beside a halved base.",
+    "sophisticationHooks": [
+      "Small deterministic engine shared by the UI and a Web Worker: seeded decks, eight hand types, chips times mult, a documented left-to-right scoring order, so thousands of simulated rounds run in a blink.",
+      "Five transparent greedy bot archetypes (flush farmer, pair spammer, high-card scaler, straight runner, mult tower) with inspectable heuristics.",
+      "Brick cost budget and goal cards (kill one archetype, spare the rest) turn open-ended tinkering into a puzzle with par scores; a swinging brick alternates its rule each hand.",
+      "Win-condition selector (beat target, land within a narrow band, or survive N hands) shows how redefining victory changes which strategies survive; shareable blind card encoded in the URL hash."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: engine (seeded RNG, 8 hand types, chips x mult), inline-blob Web Worker runner with a main-thread chunked fallback, 8 to 10 rule bricks with invented names, five greedy bot archetypes, stacked-bar results chart on canvas with a text table, 5 to 6 goal cards, three win-condition modes, URL-hash share card, about/making-of listing only the verified sources. Cut to stretch only: single-run replay and variance whiskers. Cut: real joker shop, full run simulation, learned bots, importing real mod files, vanilla art or text.",
+    "risks": [
+      "Toy bots are not real players; mitigation: label every result as 'toy bots, concept numbers, simulated' and show run counts and variance.",
+      "Vanilla blind rules are unconfirmed beyond one fan report; the page uses invented blind names and rules, and shows any real-game rule only as 'as of 2026-10-10, per fan posts'.",
+      "The 'heavy playtesting is needed' claim and the 'halve base values' vanilla blind stay unverified; the page omits them or shows them as 'as of 2026-10-10, per one source, unconfirmed'.",
+      "The real game's exact scoring order is disputed; the page states its own order as a design choice and does not claim to reproduce the real game.",
+      "Game name is a reference only: no vanilla art, logos, card faces, fonts or text; cards and suits are drawn with canvas shapes.",
+      "Scope creep in bot logic; mitigation: archetypes are greedy one-liners over the shared engine.",
+      "Chart-heavy page must stay readable at 360px; mitigation: stacked horizontal bars with numeric labels and a text table fallback.",
+      "The Web Worker must be created from an inline blob under the page-shell CSP (worker-src 'self' blob:); mitigation: keep the main-thread chunked fallback."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Mod boss-blind counts and left-to-right joker order were found again in independent search results; the playtesting claim and most vanilla blind rules were not confirmed and are softened, and the idea itself rests on invented rules and bundled toy bots so it needs no live data."
+  }
+}

@@ -1,0 +1,359 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "season-and-sky",
+  "candidates": [
+    {
+      "id": "pulse-1",
+      "title": "Slab Sundial Workshop",
+      "pitch": "The visitor carves a virtual granite sundial: picks a city, tilts the dial plate, sets the gnomon, and watches hour lines and a live shadow appear. Scrubbing the calendar makes the shadow tip trace its yearly figure-eight, and a 'Dial vs Watch' round asks them to read the shadow, guess what the wall clock says, then see why the two disagree by a different amount every week. Each round ends in an itemised correction receipt (longitude, equation of time, the daylight-saving hour) that is the screenshot moment.",
+      "whyNow": "US clocks fall back on Sunday 2026-11-01 and UK/EU clocks on Sunday 2026-10-25, so the gap between sun time and wall time is about to jump by an hour while autumn sunsets race earlier. The mechanic is astronomy, so it stays good in March and in any season.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "season-and-sky"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "simulator",
+        "tone": [
+          "playful",
+          "nerdy",
+          "serene"
+        ],
+        "tech": [
+          "svg",
+          "canvas2d",
+          "dom-ui",
+          "pointer-events",
+          "web-animations",
+          "localstorage"
+        ],
+        "tags": [
+          "sundial",
+          "daylight-saving",
+          "equation-of-time",
+          "analemma",
+          "astronomy",
+          "seasons",
+          "granite",
+          "receipt",
+          "shadow",
+          "latitude"
+        ],
+        "keywords": [
+          "gnomon",
+          "solar-noon",
+          "fall-back",
+          "clock-change",
+          "hour-lines",
+          "longitude-correction",
+          "autumn"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "As of 2026-10-10, several independent outlets agree US daylight saving ends Sunday 2026-11-01 at 2 a.m. local time, and UK/EU summer time ends Sunday 2026-10-25. Independent pages (timeanddate, public radio) explain that the earliest sunset of the year falls before the winter solstice because sundial time and clock time drift apart (the equation of time). That gives the page a true, checkable surprise to teach: the shadow, the longitude offset, the equation of time and the daylight-saving hour are separate corrections stacked on one wall clock. All astronomy is computed in the page from standard low-precision formulas, so no download is needed; only a small hand-made city table (rounded coordinates plus clock rule) is bundled and labelled approximate.",
+        "sources": [
+          {
+            "title": "Daylight Saving Time Ends 2026: Clocks Go Back",
+            "url": "https://www.almanac.com/daylight-saving-time-ends",
+            "date": "",
+            "snippet": "Gives Sunday 2026-11-01 as the end of US daylight saving time, with clocks moving from 2:00 a.m. back to 1:00 a.m.",
+            "via": "search",
+            "note": "US fall-back date and time",
+            "verified": true
+          },
+          {
+            "title": "Daylight Saving Time 2026: When the Clocks Change",
+            "url": "https://www.farmersalmanac.com/daylight-saving-time-change",
+            "date": "",
+            "snippet": "States the change falls on the first Sunday in November under the federal schedule and notes some places, such as Arizona (except the Navajo Nation) and Hawaii, do not observe it.",
+            "via": "search",
+            "note": "US rule (first Sunday in November)",
+            "verified": true
+          },
+          {
+            "title": "Daylight Saving Time 2026: When do clocks fall back?",
+            "url": "https://www.accuweather.com/en/weather-news/daylight-saving-time-2026-when-do-clocks-fall-back/1936642",
+            "date": "",
+            "snippet": "Confirms the 2026-11-01 fall-back and says many phones update automatically while older clocks need a manual change.",
+            "via": "search",
+            "note": "Independent confirmation of the US date",
+            "verified": true
+          },
+          {
+            "title": "From Sunday 25th of October end of summer time in Europe",
+            "url": "https://tuenews.de/en/from-sunday-25th-of-october-end-of-summer-time-in-europe/",
+            "date": "2026-07-23",
+            "snippet": "German news site places the end of European summer time on Sunday 25 October 2026, with clocks going back from 3:00 to 2:00 CEST.",
+            "via": "search",
+            "note": "EU fall-back date",
+            "verified": true
+          },
+          {
+            "title": "Why do the clocks change twice a year (Government of the Netherlands FAQ)",
+            "url": "https://www.government.nl/faq/european-union/why-do-the-clocks-change-twice-a-year",
+            "date": "",
+            "snippet": "Dutch government FAQ describes the EU summer-time rule (last Sunday in March to last Sunday in October) and the winter-time change on 25 October 2026.",
+            "via": "search",
+            "note": "Official EU rule and 2026 date, independent of the news site",
+            "verified": true
+          },
+          {
+            "title": "Earliest sunset (timeanddate)",
+            "url": "https://www.timeanddate.com/astronomy/earliest-sunset.html",
+            "date": "",
+            "snippet": "Explains that the earliest sunset comes before the winter solstice (and before the June solstice in the south) because of the equation of time; latitude changes the exact dates.",
+            "via": "search",
+            "note": "Why the shortest day and earliest sunset differ",
+            "verified": true
+          },
+          {
+            "title": "Later sunsets begin this week in Minnesota",
+            "url": "https://mprnews.org/story/2024/12/10/later-sunsets-begin-this-week-in-minnesota",
+            "date": "2024-12-10",
+            "snippet": "Public radio piece defining the equation of time as the gap between sundial time and clock time, which is why sunsets start getting later before the solstice.",
+            "via": "search",
+            "note": "Independent explanation of the equation of time",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "US daylight saving time ends on Sunday 2026-11-01, when clocks go from 2:00 a.m. back to 1:00 a.m. (first Sunday in November rule).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "UK and EU summer time end on Sunday 2026-10-25; the EU rule runs from the last Sunday in March to the last Sunday in October.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The earliest sunset of the year arrives before the winter solstice because of the equation of time (the gap between sundial time and clock time), and the exact date depends on latitude.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "horizontal sundial calculators",
+          "analemma photographs",
+          "paper receipt printers as UI",
+          "almanac correction tables"
+        ]
+      },
+      "design": {
+        "coreLoop": "Pick a city and date, shape the dial (tilt, gnomon height), read the shadow against the hour lines, guess the wall-clock time, reveal the answer as an itemised receipt (longitude offset, equation of time, daylight-saving hour), then change the date or city and watch each line item move. The second minute rewards scrubbing the calendar to see the line items change shape; the tenth rewards the 'Dial vs Watch' streak and the fall-back lever, where the shadow stays put while the clock jumps an hour.",
+        "sophisticationHooks": [
+          "Real solar geometry computed in the page: declination, equation of time, hour-line angles for the chosen latitude, and the analemma traced by the shadow tip across the year",
+          "Clock-rule engine for US, EU/UK and no-change zones, unit-tested in-page against the dossier dates (2026-10-25 and 2026-11-01)",
+          "Dial vs Watch guessing game with a streak and a share-by-URL-hash receipt",
+          "Procedural granite slab texture and engraved hour numerals drawn in SVG, no external assets"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: SVG slab and gnomon scene, solar math module (about 200 lines), clock-rule module for three rule sets, city picker with about 40 bundled cities, calendar scrubber, Dial vs Watch mode, receipt view, hash state, about panel, light and dark, reduced motion. Cut: vertical and equatorial dial types beyond one extra, southern-hemisphere clock rules, live geolocation, printing to PDF.",
+        "risks": [
+          "City coordinates and clock rules are hand-made and rounded; the page labels them approximate and the content builder should double-check each against a source seen during the build.",
+          "A US Senate and House bill about permanent daylight saving time was reported by one search result only (AccuWeather) and is unverified; the page should leave it out or show it as 'as of 2026-10-10, per AccuWeather, reported'.",
+          "Not a navigation or timekeeping authority: the page needs a 'for fun, accuracy within a few minutes' note.",
+          "Arizona and Hawaii have no clock change per one source (Farmers' Almanac); mark as reported or omit."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "pulse-2",
+      "title": "Small Sample Rink",
+      "pitch": "The 84-game NHL season opened on 2026-09-29, so every fan is currently staring at records like 3-0-1. The visitor dials in a fictional team's start and games played, and a worker grows an orchard of thousands of simulated seasons, each one a fruit hanging at its final point total, so the spread shows what a hot or cold start really means. A 'regression receipt' itemises how many points of the start are likely luck, and a Call the Season game scores the visitor's gut against the simulation.",
+      "whyNow": "The season opened 2026-09-29 and is a record 84 games per team, so early-season hot takes are everywhere this week. The sampling mechanic works on any season length and any start, so it stays useful all winter.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "season-and-sky"
+      },
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "simulator",
+        "tone": [
+          "analytical",
+          "playful",
+          "competitive"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "dom-ui",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "hockey",
+          "nhl-season",
+          "monte-carlo",
+          "small-sample",
+          "standings",
+          "regression-to-mean",
+          "orchard",
+          "points-pace",
+          "receipt"
+        ],
+        "keywords": [
+          "84-game-season",
+          "playoff-odds",
+          "overtime-loss",
+          "variance",
+          "hot-start",
+          "points-percentage",
+          "sample-size"
+        ],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "As of 2026-10-10, the NHL's own news pages and ESPN report that the 2026-27 regular season began Tuesday 2026-09-29 and is a league-record 84 games per team (1,344 games total, ending 2027-04-10). Two independent explainers agree on the points rule (2 for a win, 1 for an overtime or shootout loss, 0 for a regulation loss, in place since 1999-2000), which creates the extra variance the simulator needs to model. One analytics write-up (single source, unverified) reports that after the first month, teams in the top 10 by points percentage made the playoffs far more often than the bottom 10 over 2014-15 to 2023-24, which frames the 'how much does a start tell you' question. The model is deliberately fictional: invented teams, adjustable talent and overtime assumptions, all labelled as simulation rather than league data.",
+        "sources": [
+          {
+            "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+            "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+            "date": "",
+            "snippet": "League news page saying the 2026-27 season starts Sept. 29 with a national tripleheader and a Canadian doubleheader.",
+            "via": "search",
+            "note": "Season start date",
+            "verified": true
+          },
+          {
+            "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+            "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+            "date": "",
+            "snippet": "ESPN report on the expanded 84-game schedule for 2026-27.",
+            "via": "search",
+            "note": "84 games per team, independent of the league site",
+            "verified": true
+          },
+          {
+            "title": "NHL Unveils Expanded 84-Game 2026-27 Schedule - Pollstar News",
+            "url": "https://news.pollstar.com/2026/07/17/nhl-unveils-expanded-84-game-2026-27-schedule/",
+            "date": "2026-07-17",
+            "snippet": "Trade outlet coverage of the 84-game schedule released in mid-July 2026.",
+            "via": "search",
+            "note": "Third outlet on the 84-game schedule",
+            "verified": true
+          },
+          {
+            "title": "NHL releases 2026-27 regular-season schedule",
+            "url": "https://www.nhl.com/news/nhl-releases-2026-27-regular-season-schedule",
+            "date": "",
+            "snippet": "League release describing the 1,344-game regular season ending April 10, 2027, with 42 home and 42 road games per team.",
+            "via": "search",
+            "note": "Total games, end date, home and road split",
+            "verified": true
+          },
+          {
+            "title": "NHL standings explanation (Deseret News)",
+            "url": "https://www.deseret.com/sports/2024/10/23/nhl-standings-explanation/",
+            "date": "2024-10-23",
+            "snippet": "Explains two points for a win, one for an overtime or shootout loss, zero for a regulation loss, and the games-played and regulation-wins tiebreakers.",
+            "via": "search",
+            "note": "Points rule for the simulator",
+            "verified": true
+          },
+          {
+            "title": "How NHL Standings are Determined (Sofascore)",
+            "url": "https://www.sofascore.com/news/how-nhl-standings-are-determined",
+            "date": "",
+            "snippet": "Explainer on the NHL points scheme with the extra point for reaching overtime, in use since 1999-2000.",
+            "via": "search",
+            "note": "Independent confirmation of the points rule",
+            "verified": true
+          },
+          {
+            "title": "How important is a strong start in the NHL (The Hockey Writers, Substack)",
+            "url": "https://thehockeywriters.substack.com/p/how-important-is-strong-start-nhl",
+            "date": "",
+            "snippet": "Reports that of 100 top-10 first-month teams (2014-15 to 2023-24) 79 made the playoffs, versus 28 of 100 bottom-10 teams; small samples, single outlet.",
+            "via": "search",
+            "note": "Frames the sample-size question; only one outlet, so unverified",
+            "verified": false
+          },
+          {
+            "title": "When Does the 2026-27 NHL Season Start? Opening Night Date, Schedule and Key Details",
+            "url": "https://thesportscast.net/2026/09/28/when-does-the-2026-27-nhl-season-start-opening-night-date-schedule-and-key-details/",
+            "date": "2026-09-28",
+            "snippet": "Fan-site explainer posted the day before opening night giving Tuesday 2026-09-29 as the season start and listing the opening-night games.",
+            "via": "search",
+            "note": "Independent confirmation of the start date",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The 2026-27 NHL regular season began on Tuesday 2026-09-29.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Each of 32 teams plays 84 games in 2026-27 (1,344 games in total, 42 home and 42 road per team), with the regular season ending 2027-04-10.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "NHL standings award 2 points for a win, 1 for an overtime or shootout loss and 0 for a regulation loss, a scheme in place since 1999-2000.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              5
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Reported, single source: in 2014-15 to 2023-24, 79 of 100 top-10 first-month teams and 28 of 100 bottom-10 first-month teams made the playoffs (as of 2026-10-10, per The Hockey Writers Substack).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "points-pace tables on standings pages",
+          "playoff odds trackers",
+          "dot-plot orchards of simulated outcomes",
+          "receipt-style stat summaries"
+        ]
+      },
+      "design": {
+        "coreLoop": "Enter a record (wins, overtime losses, regulation losses) and the number of games played, adjust a belief slider for how much of the start is real talent, and a worker simulates thousands of remaining seasons. Fruit on a branch show the final-points spread, a playoff-line slider shows odds, and the regression receipt itemises luck versus skill. Scrubbing games played from 4 to 40 shows how slowly the spread narrows, which is the surprise that rewards the tenth minute; a Call the Season mode scores guesses against fresh synthetic starts with a streak.",
+        "sophisticationHooks": [
+          "Monte Carlo in a web worker with a four-outcome game model (regulation win, overtime win, overtime loss, regulation loss) and a talent prior that shrinks toward the league middle as the sample grows",
+          "Orchard visual: each simulated season as a fruit at its final points, with density rings and a playoff-line cut",
+          "Regression receipt and a hash-encoded share link of a team's start",
+          "Call the Season prediction game with calibration scoring and a streak"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: simulation worker, canvas orchard, controls with keyboard and touch, receipt view, prediction game, season-length selector (82 and 84), hash state, about panel, light and dark, reduced motion. Cut: real team rosters, live standings, real schedules, strength-of-schedule modelling.",
+        "risks": [
+          "No live standings are bundled; the optional preset for a real team's record is unverified (one search result only) and should be dropped or labelled 'as of 2026-10-08, reported'.",
+          "The overtime share, talent spread and default playoff line are model assumptions, not NHL data, and the page must label them as such.",
+          "The first-month playoff study is single-source and unverified: show as 'reported, unconfirmed' or omit.",
+          "Real team names are fine as references but no logos or art; fictional teams keep the page clear of brand issues.",
+          "Other scouts may also propose a hockey simulator, so the orchard-and-receipt framing is the distinguishing angle."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

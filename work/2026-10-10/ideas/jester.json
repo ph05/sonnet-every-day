@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "agent": "jester",
+  "lens": "fake-product-satire",
+  "candidates": [
+    {
+      "id": "jester-1",
+      "title": "Cabinet of Opinions",
+      "pitch": "A deadpan product page, control panel and manual for an invented smart filing cabinet whose drawers slam shut according to a secret rule. The visitor feeds it absurd little documents, watches which drawer it picks, and deduces the rule from the slams and the cryptic manual; then a tide gauge turns and the cabinet silently switches rules, so the second minute is about noticing you are being stubborn. A seeded daily rule set and a shareable result card make the tenth minute different from the first.",
+      "whyNow": "Timeless. Hidden-rule deduction games are well loved and rare on the web, and wrapping one in a product-page parody makes the rule the punchline.",
+      "origin": {
+        "agent": "jester",
+        "lens": "fake-product-satire"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "puzzle",
+        "tone": ["absurd", "satirical", "playful", "nerdy"],
+        "tech": ["dom-ui", "svg", "web-animations", "localstorage"],
+        "tags": ["fake-product", "hidden-rule", "filing-cabinet", "deduction", "manual-parody", "rule-switching", "office-satire", "daily-puzzle"],
+        "keywords": ["inductive-reasoning", "product-page-parody", "control-panel", "tide-gauge", "drawers", "seeded-daily", "perseveration"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Two established hidden-rule formats shape the mechanic: a Zendo-style game where a master's rule is inferred from marked examples, and the Wisconsin card sorting task where the sorting rule changes without warning and the main measure is clinging to the old rule. The tide gauge borrows the real roughly 12 h 25 min semidiurnal tide period as the cycle on which the cabinet swaps rules. Filing-cabinet history (disputed invention, Library Bureau a leading name) supplies the fictional company's mock heritage page. Parody-genre sources say the humour comes from a deadpan narrator who reveals too much, which fixes the voice. No real company or product is parodied; the genre of product pages is.",
+        "sources": [
+          {
+            "title": "Zendo (game)",
+            "url": "https://en.wikipedia.org/wiki/Zendo_(game)",
+            "date": "",
+            "snippet": "Describes Zendo as a game of inductive logic: a master sets a rule, students build example structures, and each is marked as following the rule or not until someone names the rule.",
+            "via": "search",
+            "note": "Establishes the hidden-rule-from-examples mechanic and the white/black marker feedback.",
+            "verified": true
+          },
+          {
+            "title": "Zendo rules (Looney Labs)",
+            "url": "https://www.looneylabs.com/sites/default/files/rules/Zendo.pdf",
+            "date": "",
+            "snippet": "Publisher rules for Zendo; advice for rule makers is to keep rules simple and avoid compound or obscure-math conditions.",
+            "via": "search",
+            "note": "Second independent description of the format and the rule-difficulty guidance used for the rule bank.",
+            "verified": true
+          },
+          {
+            "title": "Wisconsin Card Sorting Test (WCST)",
+            "url": "https://www.lancaster.ac.uk/fas/psych/glossary/wisconsin_card_sorting_test_-wcst/",
+            "date": "",
+            "snippet": "University glossary entry: cards are sorted by colour, form or number, the active category is never announced, and only right or wrong feedback is given.",
+            "via": "search",
+            "note": "Establishes the silent rule switch and feedback-only learning.",
+            "verified": true
+          },
+          {
+            "title": "Wisconsin Card Sorting Task (HED task page)",
+            "url": "https://www.hedtags.org/hed-task/tasks/hedtsk_wisconsin_card_sorting.html",
+            "date": "",
+            "snippet": "Task description page: the sorting rule changes without warning and the participant must infer the new one from feedback alone.",
+            "via": "search",
+            "note": "Independent agreement on the unannounced rule change.",
+            "verified": true
+          },
+          {
+            "title": "Tide",
+            "url": "https://en.wikipedia.org/wiki/Tide",
+            "date": "",
+            "snippet": "Encyclopedia article on tides, including the semidiurnal pattern of two highs and two lows per lunar day.",
+            "via": "search",
+            "note": "Background for the tide-gauge cycle.",
+            "verified": true
+          },
+          {
+            "title": "The Period of Lunar Tides (Wolfram Demonstrations)",
+            "url": "https://demonstrations.wolfram.com/ThePeriodOfLunarTides/",
+            "date": "",
+            "snippet": "Interactive demonstration of why the main lunar tide repeats about every 12 hours 25 minutes, half a tidal lunar day.",
+            "via": "search",
+            "note": "Second source for the 12 h 25 min figure.",
+            "verified": true
+          },
+          {
+            "title": "Filing cabinet",
+            "url": "https://en.wikipedia.org/wiki/Filing_cabinet",
+            "date": "",
+            "snippet": "Says the invention of the vertical file is an unsolved puzzle, with a Library Bureau patent filed in 1902 as the strongest documented claim.",
+            "via": "search",
+            "note": "Mock-heritage material for the fictional manufacturer; origin is disputed.",
+            "verified": true
+          },
+          {
+            "title": "How filing cabinets changed the world (History Nebraska)",
+            "url": "https://history.nebraska.gov/blog/how-filing-cabinets-changed-world",
+            "date": "",
+            "snippet": "State history blog on filing cabinets; gives a Buffalo charity secretary's 1892 idea built as a prototype by the Library Bureau, while other accounts differ.",
+            "via": "search",
+            "note": "Independent account showing the origin story varies.",
+            "verified": true
+          },
+          {
+            "title": "Eleusis (card game)",
+            "url": "https://en.wikipedia.org/wiki/Eleusis_(card_game)",
+            "date": "",
+            "snippet": "Article on a card game in which the dealer writes a secret rule and players infer it from which plays are accepted; reportedly 1950s origin.",
+            "via": "search",
+            "note": "Inspiration only. The origin year was seen in one search summary, so it stays unverified and is not stated on the page.",
+            "verified": false
+          },
+          {
+            "title": "Parody assignment (University of Minnesota Duluth course page)",
+            "url": "https://www.d.umn.edu/~cstroupe/f09/1506/parody.html",
+            "date": "",
+            "snippet": "Course page on parodying a digital genre by adopting a narrator voice that unintentionally gives itself away.",
+            "via": "search",
+            "note": "Voice guidance for the deadpan product copy. Single source, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Zendo is a game of inductive logic in which one player's hidden rule is inferred by the others from examples marked as following it or not.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The Wisconsin card sorting task asks people to sort by colour, form or number without being told which, gives only right or wrong feedback, and changes the rule without warning.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The main lunar tide repeats about every 12 hours 25 minutes, which is half a tidal lunar day.",
+            "sourceIndex": 5,
+            "alsoIn": [4],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Accounts of who invented the vertical filing cabinet differ, and the Library Bureau appears in both an encyclopedia and a state-history account.",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Eleusis, a hidden-rule card game, is reported to date from the 1950s (reported, unconfirmed).",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["Zendo", "Eleusis", "Wisconsin card sorting task", "Petals Around the Rose", "flat-pack instruction booklets", "infomercial problem-demo-offer structure", "corporate About-Us pages"]
+      },
+      "design": {
+        "coreLoop": "A document with four or five visible traits (ink colour, length, subject, stamp, age) arrives; the visitor drops it into a drawer or lets the cabinet auto-file; the cabinet either accepts with a satisfied thunk or ejects it with a deadpan complaint. The visitor records hypotheses in a notebook of rule chips and can switch to prediction mode, calling the drawer before the slam. After a streak the tide gauge turns and the rule silently swaps, and a special catalyst document can force an early swap. Each round is a fresh rule pair from a seeded bank, so the loop stays a puzzle rather than a memorised trick.",
+        "sophisticationHooks": [
+          "A composable rule engine of roughly two dozen attribute rules (parity, comparisons, unless-clauses) with a solvability check so every rule is distinguishable from the document stream",
+          "Tide gauge that drives silent rule changes on a 12 h 25 min-inspired cycle scaled to filings, plus catalyst documents; a joke metric for clinging to the old rule",
+          "Three-in-one shell: product page, live control panel and manual whose troubleshooting table holds oblique, literally true hints that cost paperwork points",
+          "Seeded daily rule pair, URL-hash share of the result card, hand-drawn SVG cabinet with synthesized thunks"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: SVG cabinet with 6 drawers and animations, document generator from a small hand-made grammar, rule bank and checker, notebook and prediction mode, tide gauge, product-page and manual sections, daily seed and share card, light/dark, reduced motion, keyboard and touch, about panel. Cut: sound beyond a few synthesized thunks, accounts, multiplayer, rule editor.",
+        "risks": [
+          "A rule too hard or too easy ruins the loop; mitigate with a curated, tested rule bank and a visible difficulty tier.",
+          "Jokes must not bury the instructions; mitigate with a plain-language how-to-play line in the first view and in the manual.",
+          "Eleusis origin year is unverified and the 12 h 25 min figure is a simplification; the page states neither as fact beyond 'about'.",
+          "The fictional manufacturer must use an invented name and drawn mark and be labelled fictional in the header and about panel."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "jester-2",
+      "title": "The Overtoaster",
+      "pitch": "The product page, control panel and manual of an invented heater-grid toaster that burns pictures onto bread, with a real two-stage heat and moisture simulation underneath. The visitor sets power per heating cell, watches the slice dry out first and only then brown, and tries to match a daily target design without charring the crust, while the product's absurd subscription tiers and pop-ups pester the page in the margins. The finished slice is a screenshot-ready piece of burnt art with a deadpan review.",
+      "whyNow": "Timeless. Appliances that hide features behind paywalls and apps are a lasting genre to lampoon, and a toaster is the oldest joke in connected gadgets.",
+      "origin": {
+        "agent": "jester",
+        "lens": "fake-product-satire"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "simulator",
+        "tone": ["satirical", "playful", "absurd"],
+        "tech": ["canvas2d", "web-animations", "procedural-audio", "localstorage"],
+        "tags": ["fake-product", "toaster", "heat-diffusion", "maillard", "subscription-satire", "burnt-art", "product-page-parody", "daily-target"],
+        "keywords": ["heating-grid", "moisture-map", "browning-model", "firmware-tiers", "stencil", "control-panel", "share-hash"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Food-science and patent sources agree on the physics that shapes the mechanic: bread surface water holds the surface near 100 C, so toasting is a drying stage followed by browning, and browning chemistry is reported to start somewhere from about 120 to 155 C depending on the source. That makes the simulator two coupled fields (moisture and temperature) with a latent-heat plateau, so patience visibly matters. Real patents and older gadgets already print or select browning patterns, so the page is a genre parody rather than a novelty claim. Consumer-group and tech-press pieces on features locked behind subscriptions justify the satirical tier-and-pop-up layer, which targets the practice, not any company.",
+        "sources": [
+          {
+            "title": "Why Does Bread Turn So Crispy And Tasty When Toasted?",
+            "url": "https://www.scienceabc.com/pure-sciences/why-does-bread-turn-so-crispy-and-tasty-when-toasted-maillard-reaction.html",
+            "date": "",
+            "snippet": "Popular-science explainer saying the browning reaction begins once the surface passes roughly 140 C, with dry heat driving off remaining water.",
+            "via": "search",
+            "note": "One browning-onset figure.",
+            "verified": true
+          },
+          {
+            "title": "Canadian patent summary 2915995 (Canadian Patent Database)",
+            "url": "https://brevets-patents.ic.gc.ca/opic-cipo/cpd/fra/brevet/2915995/sommaire.html",
+            "date": "",
+            "snippet": "Patent summary placing the browning reactions at roughly 120 to 150 C and noting that surface water must evaporate first.",
+            "via": "search",
+            "note": "Second onset range; agrees on the moisture stage.",
+            "verified": true
+          },
+          {
+            "title": "Toast (food)",
+            "url": "https://en.wikipedia.org/wiki/Toast_(food)",
+            "date": "",
+            "snippet": "Encyclopedia article stating the browning reaction needs surface temperatures above about 155 C and toasting finishes between roughly 155 and 190 C.",
+            "via": "search",
+            "note": "Third onset figure; sources differ, so the sim uses a band.",
+            "verified": true
+          },
+          {
+            "title": "The science behind perfect toast (Consumer NZ)",
+            "url": "https://www.consumer.org.nz/articles/making-the-perfect-toast",
+            "date": "",
+            "snippet": "Consumer article: browning is slow below 100 C and the water in bread keeps the surface from getting hotter until it dries.",
+            "via": "search",
+            "note": "Independent support for the drying-then-browning stages.",
+            "verified": true
+          },
+          {
+            "title": "US10682014B2 - Apparatus for heating food",
+            "url": "https://patents.google.com/patent/US10682014",
+            "date": "",
+            "snippet": "Patent describing toasting as drying the surface first and then browning, because surface water holds the temperature below 100 C.",
+            "via": "search",
+            "note": "Source for the two-stage model.",
+            "verified": true
+          },
+          {
+            "title": "US7290482B2 - Toaster with removable imaging plates",
+            "url": "https://patents.google.com/patent/US7290482",
+            "date": "",
+            "snippet": "Patent for a toaster with swappable plates that block heat in a pattern so an image browns onto bread.",
+            "via": "search",
+            "note": "Shows image-browning toasters are an existing genre.",
+            "verified": true
+          },
+          {
+            "title": "Scan Toaster article (The Register)",
+            "url": "https://www.theregister.com/2008/09/11/wacky_toaster/",
+            "date": "2008-09-11",
+            "snippet": "2008 piece on a designer's PC-connected toaster with movable heated modules that forms an image such as weather or headlines on the bread.",
+            "via": "search",
+            "note": "Earlier example of a data-driven, image-toasting gadget.",
+            "verified": true
+          },
+          {
+            "title": "Toasteroid smart toaster (Fatherly)",
+            "url": "https://www.fatherly.com/gear/tosteroid-smart-toaster",
+            "date": "",
+            "snippet": "Gear article on an app-driven toaster that browns chosen images onto bread; its current availability is unclear from the result.",
+            "via": "search",
+            "note": "Third example of the genre; status unknown, so only cited as existing coverage.",
+            "verified": true
+          },
+          {
+            "title": "Unsubscribe: Refusing to pay to use what we own (PIRG)",
+            "url": "https://pirg.org/articles/unsubscribe-refusing-to-pay-to-use-what-we-own/",
+            "date": "",
+            "snippet": "Consumer-advocacy article on products whose features sit behind recurring fees, noting the trend may be spreading to appliances.",
+            "via": "search",
+            "note": "Grounds the subscription-tier satire.",
+            "verified": true
+          },
+          {
+            "title": "Snoo smart bassinet sees key features paywalled (Techdirt)",
+            "url": "https://www.techdirt.com/tag/dont-own-what-you-buy/",
+            "date": "",
+            "snippet": "Tech-press tag page covering hardware that loses features without a subscription, including a baby bassinet.",
+            "via": "search",
+            "note": "Independent press example of feature paywalls.",
+            "verified": true
+          },
+          {
+            "title": "Garage door opener paywall coverage (Torque News)",
+            "url": "https://www.torquenews.com/17998/honda-paywalls-garage-door-opener-previously-came-standard-owners-are-not-pleased",
+            "date": "",
+            "snippet": "Auto-news piece reporting a previously standard feature moving behind a paid plan and owners objecting.",
+            "via": "search",
+            "note": "Third outlet on the same practice. Names a real company, so the page will not.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Sources differ on when toast browning starts: about 120 to 150 C in a patent summary, about 140 C in a science explainer, above about 155 C in an encyclopedia article.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Water in the bread surface holds the surface near or below 100 C until it evaporates, so toasting runs as a drying stage and then a browning stage.",
+            "sourceIndex": 4,
+            "alsoIn": [3, 1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Toasters that brown images or selected patterns onto bread have been patented or built, including a patent for heat-blocking plates and a 2008 PC-connected design.",
+            "sourceIndex": 5,
+            "alsoIn": [6, 7],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Consumer groups and tech press report hardware features being moved behind recurring subscriptions, with appliances named as a possible next area.",
+            "sourceIndex": 8,
+            "alsoIn": [9, 10],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["infomercial gadget pages", "subscription-locked hardware complaints", "smart-toaster running gag", "pixel-art on toast", "flat-pack manuals", "cookie-consent banners"]
+      },
+      "design": {
+        "coreLoop": "The visitor picks a bread slice and a target design, sets power on a heater grid of cells (paint, drag or choose presets) and a timer, and presses start. A 2D simulation heats the slice, dries it, then browns it, with a heat-map overlay and a scrubbable replay. Score compares the finished slice to the target and penalises char; a deadpan review and a screenshot card close the round. A seeded daily target and tightening limits (fewer cells, shorter time) keep later attempts different, while the satire layer adds playful interruptions such as a tier upsell that never blocks controls.",
+        "sophisticationHooks": [
+          "Coupled moisture and temperature fields with a drying plateau near 100 C, browning accumulating in a 120 to 155 C band and char beyond it, so the physics itself teaches patience",
+          "Heater-grid painter with a live heat-map overlay and replay scrubber",
+          "Deadpan satire shell: product page with invented firmware tiers, a cookie-consent banner about the crust, a manual and a generated review of your toast",
+          "Seeded daily target drawn in code, URL-hash share of the power map, canvas export of the finished slice and synthesized crackle and ding"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: 48 by 36 field simulation on canvas, heater-grid editor, about 20 code-drawn target stencils, scoring, replay scrubber, product page, manual, tier and consent parody that never block controls, daily seed and hash share, light/dark, reduced motion, keyboard and touch, about panel. Cut: image upload, multi-slice batches, extended audio, any real electrical-safety advice.",
+        "risks": [
+          "Image-toasting gadgets already exist, so novelty rests on the physics sim and the satire shell, not the idea of toast art.",
+          "Browning thresholds vary by source; the page presents them as a simplified toy band labelled as an estimate, not as science advice.",
+          "Pop-up satire must not obstruct the controls or hide instructions; mitigate with non-modal, dismissible, keyboard-reachable gags.",
+          "Subscription satire targets the practice only; no real company, product or logo appears on the page, and the fictional maker is labelled as such.",
+          "Frame rate on small phones; mitigate with a small grid and fixed-step update."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

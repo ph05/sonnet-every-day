@@ -1,0 +1,198 @@
+{
+  "id": "lab-r1-1",
+  "title": "Lunar Filing Cabinet",
+  "pitch": "A one-page product site, control panel and manual for an invented gadget, the Highwater 5-Drawer Cabinet by the fictional firm Brinewick Office Systems, whose drawers unlock only when a simulated harbour's tide is at the right height. The visitor files their own absurd documents (receipts, grudges, unfinished plans) into drawers, then watches a live tide curve built from five real tidal constituents decide when each can be retrieved. Retrieval windows shift between spring and neap weeks, and a deadpan manual turns the physics into office policy.",
+  "whyNow": "Timeless parody of smart-office product pages with a real harmonic tide model at the core; autumn is a fine season for a gadget that makes you wait for the sea.",
+  "origin": {
+    "agent": "lab",
+    "lens": "fake-product-satire"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "simulator",
+    "tone": [
+      "satirical",
+      "absurd",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "fake-product",
+      "tides",
+      "filing-cabinet",
+      "harmonic-analysis",
+      "product-page-parody",
+      "office-satire",
+      "manual",
+      "spring-neap"
+    ],
+    "keywords": [
+      "tide-model",
+      "drawers",
+      "retrieval-window",
+      "control-panel",
+      "fictional-brand",
+      "moon-phase",
+      "deadpan-manual"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Real tide prediction is a sum of cosines, one per tidal constituent, each with its own amplitude, phase and angular speed (M2, S2, N2, K1, O1 are the usual workhorses). Two sources agree on that form, so a small bundled model for an invented harbour is honest and cheap. Spring tides come near new and full moon (larger range) and neap tides near the quarter moons (smaller range), which gives the cabinet a two-week rhythm: drawers open generously in spring weeks and stingily in neap weeks. Real tide clocks run a tide hand on the roughly 24 h 50 min lunar day and only give averages, which is the exact gap the parody exploits. The genre skeleton (problem, demo, value stack, bonus, price turn, guarantee) is described by marketing write-ups and gives the product page its structure. Limits: the page uses five constituents with made-up amplitudes and phases for a fictional harbour, ignores nodal corrections (a few percent), weather surge and shallow-water effects, and says so; it is never usable for real tide planning.",
+    "sources": [
+      {
+        "title": "Harmonic Analysis and Prediction of Tides",
+        "url": "https://math.stonybrook.edu/~tony/tides/harmonic.html",
+        "date": "",
+        "snippet": "University page that writes tide height as a sum of cosine terms per constituent and tabulates speeds in degrees per hour (M2 about 28.98, S2 30.00, K1 about 15.04, O1 about 13.94) with a worked port example.",
+        "via": "search",
+        "note": "Establishes harmonic-sum form and constituent speeds (WebFetch to this host failed, search snippet only).",
+        "verified": true
+      },
+      {
+        "title": "L6 Harmonic analysis and prediction (INCOIS lecture slides)",
+        "url": "https://iioe-2.incois.gov.in/documents/ITCOocean/ITC001/ppts/L6-Harmonic%20analysis%20and%20prediction.pdf",
+        "date": "",
+        "snippet": "Lecture slides giving each tidal term as amplitude times cosine of speed times time minus phase, with nodal corrections of a few percent for M2.",
+        "via": "search",
+        "note": "Independent agreement on the harmonic form; also states the nodal-correction size that the page will omit and label.",
+        "verified": true
+      },
+      {
+        "title": "NOAA Ocean Service: What is a spring tide?",
+        "url": "https://oceanservice.noaa.gov/facts/springtide.html",
+        "date": "",
+        "snippet": "Spring tides occur around new and full moon when sun and moon pull together, giving higher highs and lower lows; neap tides come near the quarter moons when the pulls partly cancel. Unrelated to the season.",
+        "via": "search",
+        "note": "Primary agency statement of spring/neap behaviour.",
+        "verified": true
+      },
+      {
+        "title": "Spring and neap tides: two different monthly tidal range patterns",
+        "url": "https://www.surfertoday.com/surfing/spring-and-neap-tides-explained",
+        "date": "",
+        "snippet": "Explainer that spring tides give the largest tidal range around new and full moon and neap tides the smallest around the quarters, each happening twice a lunar month.",
+        "via": "search",
+        "note": "Second independent source for spring/neap pattern.",
+        "verified": true
+      },
+      {
+        "title": "Tide Clocks",
+        "url": "https://seaandsoulcharts.com/?p=15781",
+        "date": "",
+        "snippet": "Retail explainer: a tide clock's tide hand follows the lunar day, about 50 minutes longer than the solar day, so it lags the ordinary hands daily, and it shows average rather than exact timing.",
+        "via": "search",
+        "note": "Lunar day offset and the average-not-exact limitation of tide clocks.",
+        "verified": true
+      },
+      {
+        "title": "Operating Instructions for Time and Tide",
+        "url": "https://billsclockworks.com/merchandise/instruction-sheet.html/33",
+        "date": "",
+        "snippet": "Clock-maker instruction sheet stating the tidal day is about 50 minutes longer than the 24 hour solar day the ordinary hands are geared to.",
+        "via": "search",
+        "note": "Independent agreement on the roughly 50 minute lunar-day offset.",
+        "verified": true
+      },
+      {
+        "title": "Faux Film Festival | Mocumentaries",
+        "url": "https://www.desktop-documentaries.com/faux-film-festival-mocumentaries.html",
+        "date": "",
+        "snippet": "Festival page that defines a faux commercial as an advertisement for a product or service that does not exist, and separates it from a spoof of a real product.",
+        "via": "search",
+        "note": "Frames the safe form of the parody: invented product, no real brand.",
+        "verified": false
+      },
+      {
+        "title": "But wait, there's more (Farnam Street)",
+        "url": "https://fs.blog/2011/11/but-wait-theres-more/",
+        "date": "2011-11",
+        "snippet": "Essay on how infomercials work, noting that repeating a message with small script changes is powerful, in the context of demo-and-offer structure.",
+        "via": "search",
+        "note": "Infomercial structure and repetition.",
+        "verified": true
+      },
+      {
+        "title": "What Type of Outline Do Most TV Infomercials Use?",
+        "url": "https://climbtheladder.com/what-type-of-outline-do-most-tv-infomercials-use/",
+        "date": "",
+        "snippet": "Generic summary of the infomercial outline: problem, product reveal, demonstration, value stacking, bonus, price reveal, urgency and guarantee.",
+        "via": "search",
+        "note": "Second description of the same sequence; marketing-blog quality, structure only.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Harmonic tide prediction writes water height as a sum of cosine terms, one per tidal constituent, each with its own amplitude, phase and angular speed (as seen 2026-10-10 in search results).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Spring tides occur around new and full moon with a larger tidal range; neap tides occur near the first and third quarter moons with a smaller range; both happen twice per lunar month.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The tidal (lunar) day is about 50 minutes longer than the 24 hour solar day, so tide clocks run a separate hand that lags the ordinary hands by that amount each day.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Tide clocks give average, not exact, tide timing; real tides vary with the sun and moon geometry.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Infomercials commonly follow a problem, demonstration, value stack, bonus, price reveal, urgency, guarantee sequence.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "tide clocks",
+      "infomercial structure",
+      "xkcd-style deadpan product satire",
+      "spreadsheet-brained office gadgets",
+      "mock user manuals"
+    ]
+  },
+  "design": {
+    "coreLoop": "Write a filing (pick or type a document title and a retrieval urgency), slot it in a drawer, then scrub or run the simulated calendar to watch the tide curve cross each drawer's unlock threshold. Each drawer has a different height rule and a hold time, so the player juggles retrieval deadlines against the spring-neap cycle, adjusts the constituent dials on the control panel, and collects deadpan consequences when a deadline falls in a neap trough. Stays interesting because the two-week envelope keeps changing which drawers are generous.",
+    "sophisticationHooks": [
+      "Pure harmonic tide core: five constituents with fixed-step time, seeded invented harbour, spring-neap beating emerging from S2 versus M2",
+      "Control panel with constituent amplitude and phase dials, a live curve, a 30-day envelope view and a lunar-day tide-clock face",
+      "Procedurally written product page in infomercial order (problem, demo, value stack, bonus drawer, price turn, guarantee) plus a generated deadpan manual and error codes",
+      "Shareable URL hash holding filed documents and dial settings; a printable-looking retrieval slip as the screenshot moment"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: tide engine (about 150 lines), canvas tide and calendar views, drawer UI with keyboard and touch, three-section page (product, panel, manual), light and dark, reduced motion, hash state, about panel. Cut: real harbour data, nodal corrections, audio beyond one drawer click, multiple harbours.",
+    "risks": [
+      "Tide constants are invented, so the page must label the harbour and numbers as fictional simulation and never as navigation or planning advice.",
+      "Constituent speeds come from a single table (Stony Brook) in a search snippet; the page shows them as reported 'as of 2026-10-10, per that source' or keeps them clearly as model parameters.",
+      "The faux-commercial definition source is unverified; the page does not cite it as fact.",
+      "Risk of reading as a lookup table: mitigated by a live curve driven by editable constituents.",
+      "Brand name Brinewick Office Systems is invented; builders must check it resembles no real company before shipping."
+    ]
+  },
+  "durable": true
+}

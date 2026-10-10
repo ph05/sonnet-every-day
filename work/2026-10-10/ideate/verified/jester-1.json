@@ -1,0 +1,249 @@
+{
+  "id": "jester-1",
+  "title": "Cabinet of Opinions",
+  "pitch": "A deadpan product page, control panel and manual for an invented smart filing cabinet whose drawers slam shut according to a secret rule. The visitor feeds it absurd little documents, watches which drawer it picks, and deduces the rule from the slams and the cryptic manual; then a tide gauge turns and the cabinet silently switches rules, so the second minute is about noticing you are being stubborn. A seeded daily rule set and a shareable result card make the tenth minute different from the first.",
+  "whyNow": "Timeless. Hidden-rule deduction games such as Zendo and Eleusis have a long-standing following, and wrapping one in a product-page parody makes the rule the punchline.",
+  "origin": {
+    "agent": "jester",
+    "lens": "fake-product-satire"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "puzzle",
+    "tone": [
+      "absurd",
+      "satirical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage",
+      "web-audio"
+    ],
+    "tags": [
+      "fake-product",
+      "hidden-rule",
+      "filing-cabinet",
+      "deduction",
+      "manual-parody",
+      "rule-switching",
+      "office-satire",
+      "daily-puzzle"
+    ],
+    "keywords": [
+      "inductive-reasoning",
+      "product-page-parody",
+      "control-panel",
+      "tide-gauge",
+      "drawers",
+      "seeded-daily",
+      "perseveration"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Two established hidden-rule formats shape the mechanic: a Zendo-style game where a master's rule is inferred from marked examples, and the Wisconsin card sorting task where the sorting rule changes without warning (reported to follow a run of ten correct sorts) and the main measure is clinging to the old rule. Eleusis is a further hidden-rule card game that Martin Gardner wrote up in Scientific American in 1959. The tide gauge borrows the roughly 12 h 25 min period of the main semidiurnal lunar tide as the cycle on which the cabinet swaps rules. Filing-cabinet history is disputed (the Library Bureau is the most credible claimant; early date claims lack substantiation), which supplies mock heritage for a fictional manufacturer. No real company or product is parodied; the genre of product pages is.",
+    "sources": [
+      {
+        "title": "Zendo (game)",
+        "url": "https://en.wikipedia.org/wiki/Zendo_(game)",
+        "date": "",
+        "snippet": "Zendo is a game of inductive logic by Kory Heath: a master sets a secret rule, students build example structures (koans), and each is marked as following the rule or not until someone names the rule.",
+        "via": "search",
+        "note": "Re-found on 2026-10-10 by an independent claim search; the result summary agrees with the Looney Labs rules. Page not opened (host failed today).",
+        "verified": true
+      },
+      {
+        "title": "Zendo rules (Looney Labs)",
+        "url": "https://www.looneylabs.com/sites/default/files/rules/Zendo.pdf",
+        "date": "",
+        "snippet": "Publisher rules for Zendo; a secret rule, koans marked with white or black stones, beginner masters are advised to keep rules simple.",
+        "via": "search",
+        "note": "Re-found in the same claim search together with the Icehouse wiki; independent of Wikipedia. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Wisconsin Card Sorting Test (WCST)",
+        "url": "https://www.lancaster.ac.uk/fas/psych/glossary/wisconsin_card_sorting_test_-wcst/",
+        "date": "",
+        "snippet": "University glossary entry: cards sorted by colour, form or number, the active category is not announced, feedback is only right or wrong, the rule changes after a run of correct sorts, and perseveration errors are the key score.",
+        "via": "search",
+        "note": "Re-found by a claim search on rule changes and perseverative errors. WebFetch on this host failed (DNS), so the page was not opened.",
+        "verified": true
+      },
+      {
+        "title": "Wisconsin Card Sorting Task (HED task page)",
+        "url": "https://www.hedtags.org/hed-task/tasks/hedtsk_wisconsin_card_sorting.html",
+        "date": "",
+        "snippet": "Task description: the sorting rule changes without warning after ten consecutive correct sorts and the participant must infer the new one from feedback; perseverative errors are sorting by the previous rule.",
+        "via": "search",
+        "note": "Independent agreement with the Lancaster glossary on the unannounced switch. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Tide",
+        "url": "https://en.wikipedia.org/wiki/Tide",
+        "date": "",
+        "snippet": "Encyclopedia article on tides, including the semidiurnal pattern of two highs and two lows per lunar day and the roughly 12 hour 25 minute principal lunar period.",
+        "via": "search",
+        "note": "Top result of the claim search for the semidiurnal period; agrees with the Wolfram demonstration. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "The Period of Lunar Tides (Wolfram Demonstrations)",
+        "url": "https://demonstrations.wolfram.com/ThePeriodOfLunarTides/",
+        "date": "",
+        "snippet": "Demonstration: a lunar day is about 24 h 50 min, and with two water bulges high or low tide recurs about every 12 h 25 min.",
+        "via": "search",
+        "note": "Second source for the 12 h 25 min figure, found again in the claim search. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Filing cabinet",
+        "url": "https://en.wikipedia.org/wiki/Filing_cabinet",
+        "date": "",
+        "snippet": "Says the invention of the vertical file is an unsolved puzzle, with a Library Bureau patent filed in 1902 as the strongest documented claim.",
+        "via": "search",
+        "note": "Re-found as the top result for the invention-history claim search. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "How filing cabinets changed the world (History Nebraska)",
+        "url": "https://history.nebraska.gov/blog/how-filing-cabinets-changed-world",
+        "date": "",
+        "snippet": "State history blog on filing cabinets, reportedly giving a Buffalo charity secretary's 1892 idea built as a prototype by the Library Bureau.",
+        "via": "search",
+        "note": "Not found again in the verifier's claim search, so it is unverified and no longer relied on; the Early Office Museum entry below replaces it. The 1892 account appeared only as a secondary-source claim.",
+        "verified": false
+      },
+      {
+        "title": "Eleusis (card game)",
+        "url": "https://en.wikipedia.org/wiki/Eleusis_(card_game)",
+        "date": "",
+        "snippet": "Article on a card game in which the dealer writes a secret rule and players infer it from which plays are accepted; Robert Abbott is credited as inventor.",
+        "via": "search",
+        "note": "Found again by a claim search on origin; agrees with Britannica on the 1959 Scientific American write-up. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Parody assignment (University of Minnesota Duluth course page)",
+        "url": "https://www.d.umn.edu/~cstroupe/f09/1506/parody.html",
+        "date": "",
+        "snippet": "Course page on parodying a digital genre by adopting a narrator voice that unintentionally gives itself away.",
+        "via": "search",
+        "note": "Single source and not re-found by the verifier, so unverified. It is only voice inspiration and no fact depends on it.",
+        "verified": false
+      },
+      {
+        "title": "Antique Filing Cabinets (Early Office Museum)",
+        "url": "https://officemuseum.com/filing_equipment_cabinets.htm",
+        "date": "",
+        "snippet": "Early Office Museum page: earliest advertisement found for a vertical letter file is in the 1900 Library Bureau catalog; a 1902 Library Bureau patent credits David E. Hunter; no evidence found for the claimed 1893 World's Fair medal.",
+        "via": "search",
+        "note": "Seen in the verifier's invention-history search result list. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Eleusis (Britannica)",
+        "url": "https://britannica.com/print/article/1232765",
+        "date": "",
+        "snippet": "Encyclopedia entry saying the game was first described in Martin Gardner's Mathematical Games column in Scientific American in July 1959.",
+        "via": "search",
+        "note": "Independent of Wikipedia; Wikipedia says June 1959, so the month is disputed and the page should say only 1959. Not opened.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Zendo is a game of inductive logic by Kory Heath in which a master's secret rule is inferred by the students from example structures marked as following it or not.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The Wisconsin card sorting task has people sort cards by colour, form or number without being told which, gives only right or wrong feedback, and changes the rule without warning, reportedly after ten consecutive correct sorts.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "In the Wisconsin task the key score is perseveration, meaning continued sorting by the old rule after the rule has changed.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The main lunar tide repeats about every 12 hours 25 minutes, which is half of a tidal lunar day of about 24 hours 50 minutes.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Who invented the vertical filing cabinet is disputed; the Library Bureau is the most credible claimant, with a patent filed in 1902 and an earliest known catalog advertisement from 1900, while earlier 1892 and 1893 stories rest on secondary sources the Early Office Museum could not substantiate.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Eleusis, a card game in which players infer a secret rule from which plays are accepted, was written up by Martin Gardner in Scientific American in 1959 (June or July, sources differ).",
+        "sourceIndex": 8,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Zendo",
+      "Eleusis",
+      "Wisconsin card sorting task",
+      "Petals Around the Rose",
+      "flat-pack instruction booklets",
+      "infomercial problem-demo-offer structure",
+      "corporate About-Us pages"
+    ]
+  },
+  "design": {
+    "coreLoop": "A document with four or five visible traits (ink colour, length, subject, stamp, age) arrives; the visitor drops it into one of the drawers or lets the cabinet auto-file; the cabinet either files it with a satisfied thunk or slams a drawer and ejects it with a deadpan complaint, according to the hidden rule, which maps each document to a correct drawer. The visitor records hypotheses in a notebook of rule chips and can switch to prediction mode, calling the drawer before the slam. After a streak the tide gauge turns and the rule silently swaps, and a special catalyst document can force an early swap. Each round is a fresh rule pair from a seeded bank, so the loop stays a puzzle rather than a memorised trick.",
+    "sophisticationHooks": [
+      "A composable rule engine of about a dozen to eighteen attribute rules (parity, comparisons, unless-clauses) with a solvability check so every rule is distinguishable from the document stream",
+      "Tide gauge that drives silent rule changes after a streak, with a cycle inspired by the roughly 12 h 25 min tide period and scaled to filings, plus catalyst documents; a joke metric for clinging to the old rule",
+      "Three-in-one shell: product page, live control panel and manual whose troubleshooting table holds oblique, literally true hints that cost paperwork points",
+      "Seeded daily rule pair, URL-hash share of the result card, hand-drawn SVG cabinet with a few synthesized thunks"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: SVG cabinet with 5 drawers and animations, document generator from a small hand-made grammar, a bank of about 14 curated rules in three difficulty tiers with a simple solvability checker, notebook of rule chips and prediction mode, tide gauge with one silent switch per round, product-page and manual sections (short, with plain how-to-play first), daily seed and text share card via URL hash, light/dark, reduced motion, keyboard and touch, about panel with the fictional label. Cut: catalyst documents unless time remains, sound beyond two or three synthesized thunks, accounts, multiplayer, rule editor, more than 5 drawers. The rule engine and its test harness must be the first thing built and checked, because every other part depends on it.",
+    "risks": [
+      "A rule too hard or too easy ruins the loop; mitigate with a curated, tested rule bank, a visible difficulty tier and an automated solvability check.",
+      "Jokes must not bury the instructions; mitigate with a plain-language how-to-play line in the first view and in the manual.",
+      "The 12 h 25 min tide period is a simplification used only as inspiration for the cycle; the page says 'about' and does not claim the gauge shows real tides.",
+      "The exact month of the 1959 Eleusis write-up differs between sources and the filing-cabinet origin is disputed; the page states only 'in 1959' and 'accounts differ' or omits them, and shows the unverified 1892 story, if used at all, as 'as of 2026-10-10, per a secondary account'.",
+      "The fictional manufacturer must use an invented name and drawn mark and be labelled fictional in the header and about panel.",
+      "Scope is wide for one morning (rule engine, SVG cabinet, three page sections, share card); the cut list in scopeForOneDay is the fallback and the rule engine ships first.",
+      "The rule must map documents to drawers clearly enough that a prediction can be made; the spec should define the rule output as one of the 5 drawers (or reject) so prediction mode and the slam feedback share one model."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Zendo, the Wisconsin task, the 12 h 25 min tide period, filing-cabinet disputes and Eleusis were each found again by claim searches with independent agreeing results, but no page opened (the one WebFetch try failed at DNS). The History Nebraska source and the parody course page stay unverified; scope is trimmed to 5 drawers and about 14 rules with the rule engine built first."
+  }
+}

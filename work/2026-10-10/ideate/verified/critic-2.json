@@ -1,0 +1,156 @@
+{
+  "id": "critic-2",
+  "title": "Format Drift",
+  "pitch": "The visitor writes one tiny joke into an original drawn template (a two-panel contrast, an escalating four-tier ladder, a three-figure triangle or a plan-goes-wrong strip) and releases it into a simulated gossip chain. Each retelling mutates the joke in a small, named way (a role swap, an extra rung, an ironic flip, a literalised word, a topic substitution), growing a layered tree of variants whose edit distance from the original is shown on every branch. The visitor then acts as the audience and chooses which variants survive to be retold, steering the lineage until the final descendant is barely recognisable beside the original.",
+  "whyNow": "Timeless rather than news-bound: a published Facebook study measured how copied text memes drift in edit distance along copy chains, and escalation-ladder and three-figure labelling formats are long-lived joke grammars with obvious slots. Evolution as a toy is novel for the studio and gives a screenshot-worthy side-by-side of ancestor and descendant.",
+  "origin": {
+    "agent": "critic",
+    "lens": "meme-anatomy"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "simulator",
+    "tone": ["absurd", "playful", "nerdy"],
+    "tech": ["svg", "dom-ui", "web-animations", "pointer-events", "localstorage"],
+    "tags": ["meme-evolution", "mutation", "telephone-game", "lineage-tree", "selection", "format-grammar", "edit-distance", "original-art"],
+    "keywords": ["meme-anatomy", "gossip-chain", "phylogeny", "escalation-ladder", "irony-flip", "slot-roles", "variant-tree", "shareable-hash"],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "A 2014 study of Facebook text memes reports that variants further apart in a copy chain differ more in edit distance, which motivates showing edit distance on every branch. A separate image-meme study builds a custom distance metric to reveal relationships between meme clusters. The escalating-brain format grew out of a 'whomst' joke, with a widely cited early version on a Reddit meme forum dated 31 January 2017 per Know Your Meme, and the three-figure labelling format has role slots (you, what you should focus on, the tempting alternative) that people relabel for any topic. Those structures become the mutation operators. The simulation is invented and labelled as such; it does not reproduce any measurement. Claims about trees or dendrograms in two other papers, an ironic-use remark and a specific list of relabelled topics could not be re-found and are left out.",
+    "sources": [
+      {
+        "title": "Information Evolution in Social Networks",
+        "url": "https://arxiv.org/pdf/1402.6792",
+        "date": "2014",
+        "snippet": "Study of thousands of Facebook text memes: variants further apart in the diffusion cascade have greater edit distance, as expected for an iterative, imperfect copy process.",
+        "via": "search",
+        "note": "Found again by claim search across several mirrors of the paper; the ar5iv.labs host did not open.",
+        "verified": true
+      },
+      {
+        "title": "Towards Understanding the Information Ecosystem Through the Lens of Multiple Web Communities",
+        "url": "https://arxiv.org/abs/1805.12512v3",
+        "date": "2018",
+        "snippet": "Clusters meme images using perceptual hashing and designs a custom distance metric based on hashes and Know Your Meme metadata, said to reveal relationships between image clusters.",
+        "via": "search",
+        "note": "Found again by several results. The dossier's 'dendrogram of frog memes, 525 clusters across 23 memes' was not found; this paper's cluster graph covers fringe-community memes, so the page does not cite it beyond the distance idea.",
+        "verified": true
+      },
+      {
+        "title": "MemeSequencer: Sparse Matching for Embedding Image Macros",
+        "url": "https://arxiv.org/pdf/1802.04936",
+        "date": "2018",
+        "snippet": "Embeds image macros for clustering, retrieval, topic and virality prediction.",
+        "via": "search",
+        "note": "The dossier's claim that it builds a descent tree linking children by shared imagery or text did not appear in any result, so it is unverified and not used.",
+        "verified": false
+      },
+      {
+        "title": "Galaxy Brain (Know Your Meme)",
+        "url": "https://knowyourmeme.com/memes/galaxy-brain",
+        "date": "2017-01-31",
+        "snippet": "Early widely cited version posted to a Reddit meme forum on 31 January 2017, growing out of the 'whomst' joke.",
+        "via": "search",
+        "note": "Date and origin agree across Know Your Meme, Daily Dot and meme.com results. The remark that it is often used ironically did not reappear and is unverified.",
+        "verified": true
+      },
+      {
+        "title": "Memes dictionary (Dictionary.com)",
+        "url": "https://dictionary.com/e/?p=110673",
+        "date": "",
+        "snippet": "Describes the original as four images, a small brain beside 'who' up to larger glowing brains beside 'whom', 'whomst' and 'whomst'd'.",
+        "via": "search",
+        "note": "Seen in a search result only; the four-image shape rests on this page alone, so it is shown as 'per Dictionary.com'.",
+        "verified": false
+      },
+      {
+        "title": "distracted boyfriend meme history (Daily Dot)",
+        "url": "https://dailydot.com/distracted-boyfriend-meme-history",
+        "date": "",
+        "snippet": "Labels go on three figures: you or whoever is choosing badly, the thing you should attend to, and the appealing distraction.",
+        "via": "search",
+        "note": "Role mapping found again in several independent results.",
+        "verified": true
+      },
+      {
+        "title": "Distracted Boyfriend (meme.com)",
+        "url": "https://meme.com/memes/distracted-boyfriend",
+        "date": "",
+        "snippet": "Describes labels on all three figures as a metaphor for being drawn to a tempting alternative; the 2017 capitalism versus socialism labelling is a cited example.",
+        "via": "search",
+        "note": "Agrees with the Daily Dot result on role slots and free relabelling. The Hollywood Reporter page and a 'drinks' example were not found.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A 2014 study of thousands of Facebook text memes reports that variants further apart in a copy cascade have greater edit distance.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "An image-meme study (Zannettou et al., 2018) designs a custom distance metric from perceptual hashes and Know Your Meme metadata to reveal relationships between meme-image clusters.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The galaxy-brain series grew out of the 'whomst' joke, with a widely cited early version on a Reddit meme forum on 31 January 2017.",
+        "sourceIndex": 3,
+        "alsoIn": [4],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per Dictionary.com, the original galaxy-brain series had four images, from 'who' up to 'whomst'd' (single source).",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The three-figure labelling format has role slots (the chooser, the thing they should attend to, the tempting alternative) that are relabelled for arbitrary topics.",
+        "sourceIndex": 5,
+        "alsoIn": [6],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Telephone game",
+      "Phylogenetic trees",
+      "Spore-style creature breeding",
+      "Escalation-ladder joke formats",
+      "Three-figure labelling joke format"
+    ]
+  },
+  "design": {
+    "coreLoop": "Write a seed joke into a template, release it for three retellings, read each new variant with its mutation named, pick survivors, and repeat for up to six generations. Operators interact (an irony flip after an extra rung reads differently from before), the tree shows divergence at a glance, and players learn which mutation each template is most vulnerable to.",
+    "sophisticationHooks": [
+      "Five named mutation operators acting on structured slots: role swap, add rung, irony flip, literalise, topic substitute via a hand-made neighbour graph of about 80 concepts",
+      "Selection pressure: the visitor's pick decides survivors; an auto-select 'algorithmic feed' mode favours the most extreme variants and visibly collapses diversity, to show what selection does",
+      "Layered tree view as a canopy of nodes, each a mini rendered panel, with edit distance on each edge and a final ancestor-versus-descendant side-by-side card",
+      "Original art only: four stick-figure and glyph templates drawn in SVG, with URL-hash state holding template, seed words and the chosen path so lineages are shareable"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: four templates (can ship three if time is short), five operators with a seeded random so hashes replay exactly, a concept neighbour graph of about 80 concepts and about 12 curated four-rung ladders, tree and side-by-side views, feed-mode toggle, keyboard navigation, light and dark, reduced motion, an about panel listing only verified sources and labelling the simulation as invented. Pre-seeded example jokes so the page is fun without typing. Cut: drop-rung operator, free-form text mutation, image upload, real templates or photos, any claim of measured accuracy.",
+    "risks": [
+      "Quality of mutated text depends on the hand-made graph and ladders; the engine should degrade to structure-only mutations when typed words are unknown, and typed words are never sent anywhere",
+      "Mutations may yield flat jokes; mitigate by curating operator outputs against the ladders before the build freeze and by offering pre-seeded jokes",
+      "The page must say clearly that the simulation is invented and not a replication of the cited studies",
+      "Know Your Meme date and origin are shown as 'per Know Your Meme'; the four-image shape is shown as 'as of 2026-10-10, per Dictionary.com' or omitted; the ironic-use remark and the MemeSequencer tree claim stay unverified and are omitted",
+      "The three-figure template is described by original drawings, never the stock photo or any real person",
+      "The curated concept graph and example jokes must avoid partisan ideologies, real people and brands, so the capitalism versus socialism style of example is not used",
+      "The 'algorithmic feed' mode is a toy and must be labelled as a simplified invention, not a claim about real platforms"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Searches re-found the edit-distance study, the custom-distance image study, the galaxy-brain origin and the three-figure role slots, but the MemeSequencer tree, frog dendrogram numbers, ironic-use remark and Hollywood Reporter page could not be re-found and were removed or flagged; scope trimmed to about 80 concepts, 12 ladders and 6 generations."
+  }
+}

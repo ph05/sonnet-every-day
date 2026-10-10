@@ -1,0 +1,432 @@
+{
+  "schema": 1,
+  "agent": "cards",
+  "lens": "generative-art",
+  "candidates": [
+    {
+      "id": "cards-r1-1",
+      "title": "Crock of Spots",
+      "pitch": "A glowing crock of two simulated chemicals. The visitor picks feed and kill rates from a small atlas and paints them onto the dish with a brush, so spots, worms and coral grow side by side and fight at their borders. A blacklight toggle swaps daylight pigments for fluorescent ones, a spill button drops a seeded accident into the culture, and every dish freezes into a poster with a shareable seed code.",
+      "whyNow": "Timeless: reaction-diffusion is the poster-worthy corner of procedural art, and no generative piece has shipped yet. The spatially painted parameter field is the twist that gives a reason to keep turning the knob.",
+      "origin": {
+        "agent": "cards",
+        "lens": "generative-art"
+      },
+      "fingerprint": {
+        "category": "generative-art",
+        "mechanic": "toy",
+        "tone": [
+          "serene",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "webgl",
+          "shaders",
+          "pointer-events"
+        ],
+        "tags": [
+          "reaction-diffusion",
+          "gray-scott",
+          "turing-patterns",
+          "morphogenesis",
+          "poster",
+          "seeded",
+          "blacklight",
+          "parameter-map"
+        ],
+        "keywords": [
+          "feed-rate",
+          "kill-rate",
+          "spots",
+          "stripes",
+          "coral",
+          "petri-dish",
+          "shareable-seed",
+          "field-guide"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "The Gray-Scott model has two chemicals on a grid: A is added at a feed rate f and B is removed at a kill rate k, and small changes to f and k give very different patterns (spots, worms, coral, mazes). The map of those patterns over (f,k) was charted by Pearson in 1993 and extended by Munafo, which makes a clickable atlas natural. Explorers exist (one browser tool lets you pick f,k from a map), but none that paint different f,k onto different regions of one dish, which is the new angle. The update step is cheap (explicit Euler, 3x3 Laplacian with weights -1, 0.2, 0.05), so a deterministic CPU worker is enough; seeds that reproduce output exactly are standard practice in generative art platforms.",
+        "sources": [
+          {
+            "title": "reaction-diffusion tutorial (Karl Sims)",
+            "url": "https://www.karlsims.com/rd.html",
+            "date": "",
+            "snippet": "Describes chemical A fed at a rate and B removed at a rate; small changes to the two numbers give a wide range of results. Typical values near f=0.055, k=0.062, DA=1, DB=0.5.",
+            "via": "search",
+            "note": "Model definition and typical parameters",
+            "verified": true
+          },
+          {
+            "title": "49 reaction diffusion patterns (GameDev.net)",
+            "url": "https://gamedev.net/shaderlab/49-reaction-diffusion-patterns/",
+            "date": "",
+            "snippet": "A shader write-up of the model producing organic spots, stripes and coral, using a wrapped grid, double buffer and a weighted 3x3 Laplacian.",
+            "via": "search",
+            "note": "Independent confirmation of pattern variety and of the Laplacian weights",
+            "verified": true
+          },
+          {
+            "title": "Morphe (itch.io page)",
+            "url": "https://matthodges.itch.io/morphe",
+            "date": "",
+            "snippet": "A generator page listing spots, worms, coral and maze-like patterns from the same feed and kill mechanism.",
+            "via": "search",
+            "note": "Third independent listing of pattern families",
+            "verified": true
+          },
+          {
+            "title": "pearson classes (mrob.com)",
+            "url": "https://mrob.com/pub/comp/xmorphia/pearson-classes.html",
+            "date": "",
+            "snippet": "Munafo's page extends Pearson's Greek-letter classification of Gray-Scott patterns; notes Pearson used one starting pattern and missed some types.",
+            "via": "search",
+            "note": "Parameter-space atlas exists and was extended",
+            "verified": true
+          },
+          {
+            "title": "Exploring complex pattern formation with convolutional neural networks",
+            "url": "https://arxiv.org/pdf/2110.07306",
+            "date": "",
+            "snippet": "A 2021 paper using the same model says pattern classes run from alpha to nu, plus two uniform steady states, following Pearson's 1993 map.",
+            "via": "search",
+            "note": "Independent confirmation of the Pearson classification",
+            "verified": true
+          },
+          {
+            "title": "How the leopard got its spots: Revisiting Turing's Chemical Basis of Morphogenesis (Springer Nature Communities)",
+            "url": "https://communities.springernature.com/posts/how-the-leopard-got-its-spots-revisiting-turing-s-chemical-basis-of-morphogenesis",
+            "date": "",
+            "snippet": "Turing's 1952 paper proposed that interacting reacting and diffusing chemicals could self-organise into stripes and spots from a uniform start.",
+            "via": "search",
+            "note": "Historical frame for the about panel",
+            "verified": true
+          },
+          {
+            "title": "The Mathematics of Pattern Formation (Maths Careers)",
+            "url": "https://www.mathscareers.org.uk/?p=7847",
+            "date": "",
+            "snippet": "Secondary account of Turing's two-morphogen idea and its link to animal coat markings.",
+            "via": "search",
+            "note": "Second independent source for the Turing frame",
+            "verified": true
+          },
+          {
+            "title": "Using Randomness Correctly (fxhash docs)",
+            "url": "https://fxhash.notion.site/Using-Randomness-Correctly-12b5d7a78b5248648f8598baef17382d",
+            "date": "",
+            "snippet": "Docs stress that a piece must give identical output for the same input hash.",
+            "via": "search",
+            "note": "Seed-determinism convention for shareable seeds",
+            "verified": true
+          },
+          {
+            "title": "What is Art Blocks Engine? (Art Blocks docs)",
+            "url": "https://docs.artblocks.io/creator-onboarding/engine-partners/what-is-engine.md",
+            "date": "",
+            "snippet": "Says a token hash acts as the seed so the same seed gives the same output.",
+            "via": "search",
+            "note": "Second independent platform agreeing on seed determinism",
+            "verified": true
+          },
+          {
+            "title": "RDTool example Reaction-Diffusion Explorer Tool (Karl Sims)",
+            "url": "https://www.karlsims.com/rdtool-help.html",
+            "date": "",
+            "snippet": "Help page for a browser explorer: choose f,k from a pattern map, regrow from a central seed; needs WebGL 2.",
+            "via": "search",
+            "note": "Prior art and the differentiator (single global f,k)",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In the Gray-Scott model chemical A is fed at rate f and chemical B removed at rate k, and small changes to f and k yield a wide range of patterns including spots, worms, coral and mazes (as seen in search results on 2026-10-10).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Pearson's 1993 work mapped Gray-Scott patterns over (f,k) with Greek-letter classes, and Munafo's xmorphia site extended the classification.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Turing's 1952 paper proposed two interacting morphogens that react and diffuse, producing stripes or spots from a uniform start.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "A standard discrete update is explicit Euler with a 3x3 Laplacian (centre -1, edge neighbours 0.2, diagonals 0.05) and typical DA=1.0, DB=0.5.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Generative-art platforms treat same seed gives same output as the core rule for seeded pieces.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "A browser Gray-Scott explorer exists that picks f,k from a pattern map and needs WebGL 2 (single search snippet, not confirmed).",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "Karl Sims' reaction-diffusion tutorial",
+          "xmorphia atlas",
+          "Turing coat-pattern lore",
+          "fxhash and Art Blocks seed culture",
+          "kombucha pellicles and sourdough crumb as visual language"
+        ]
+      },
+      "design": {
+        "coreLoop": "Choose a recipe from the f,k atlas, paint it onto part of the dish, watch it grow for a few seconds, then disturb it (stir, spill, switch brush recipe) and see where regimes collide. Each named regime you coax into existence ticks off a field-guide checklist (second minute); boundary design between regimes and composing a poster worth keeping is the tenth-minute game. Freeze and bottle the dish to a PNG poster plus a seed code.",
+        "sophisticationHooks": [
+          "Spatially varying f,k field painted with a brush, so one dish holds several regimes and fronts between them",
+          "Deterministic worker simulation: seed plus a stroke list plus a step count reproduces the exact dish from the URL hash on any device",
+          "Field guide of named regimes whose f,k ranges we measure ourselves with node runs and label as our own survey",
+          "Daylight and blacklight palettes via a colour ramp over the B concentration, plus poster export with an invented culture-number caption"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "About 900 lines: Float32 CPU worker (about 192 to 256 square, several steps per frame), brush and atlas UI with keyboard-accessible controls, palettes, hash encode and decode, spill events from a seeded PRNG, field guide, poster PNG export, about panel. Cut: WebGL path, audio, animation recording.",
+        "risks": [
+          "Phone performance: drop to a smaller grid and fewer steps per frame on narrow screens, show a pause control",
+          "Regime ranges in the field guide are our own measurements, labelled as such; Pearson letter-to-region details are shown only as reported by sources and class counts are left out because sources disagree",
+          "The RD Tool prior-art snippet is a single unconfirmed search result, so the page will say as of 2026-10-10 per that source or leave it out",
+          "Floating-point determinism across engines: use only add and multiply in Float32, avoid transcendental functions in the step"
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "cards-r1-2",
+      "title": "Misprint Press",
+      "pitch": "Design the back of a card deck from layered spirograph curves, then run a simulated four-ink press and print a sheet of 54. The press has wear, humidity and ink dials that change the exact odds of registration slips, starved ink, double strikes, blank albino cards and miscuts, and the page shows those odds as exact combinatorics. Hunt the flawed cards with a loupe and a UV lamp that reveals a hidden mark, then keep the finds in a binder and share the seed.",
+      "whyNow": "Timeless. The deckbuilder skin-mod scene and the error-card hobby both love flawed cards, and no card-adjacent or generative piece has shipped yet. The mishap-as-feature angle turns a design tool into a hunt.",
+      "origin": {
+        "agent": "cards",
+        "lens": "generative-art"
+      },
+      "fingerprint": {
+        "category": "modding-games",
+        "mechanic": "generator",
+        "tone": [
+          "playful",
+          "nerdy",
+          "cozy"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "card-backs",
+          "guilloche",
+          "misprint",
+          "deck-skin",
+          "spirograph",
+          "seeded",
+          "uv-layer",
+          "inspection"
+        ],
+        "keywords": [
+          "hypotrochoid",
+          "registration-error",
+          "albino-card",
+          "moire",
+          "binder",
+          "odds-panel",
+          "print-run",
+          "loupe"
+        ],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Guilloche patterns are mathematically generated curve families built on spirograph-style hypotrochoids and sums of sinusoids, so a rich card-back generator needs only a few parameters. Fine line work and moire are why guilloche resists copying, which gives a natural loupe interaction. Fluorescent ink visible only under UV is a real document security feature, giving the hidden-layer lamp. Card-collecting communities sort printing errors into registration shifts, missing or faded ink, albino cards and miscuts versus ordinary off-centering, a ready taxonomy of mishaps with probabilities we can model exactly. Deck and texture skin mods are a visible modding scene for deckbuilders. All odds on the page are our own model, labelled simulated, with no prices or money values.",
+        "sources": [
+          {
+            "title": "GuillochePattern (MathWorld)",
+            "url": "https://mathworld.wolfram.com/GuillochePattern.html",
+            "date": "",
+            "snippet": "Frames guilloche as curves between inner and outer envelopes, buildable from nested sums and products of sinusoids.",
+            "via": "search",
+            "note": "Maths of the pattern generator",
+            "verified": true
+          },
+          {
+            "title": "Guilloche (Wikipedia mirror)",
+            "url": "https://en.wikipedia.com/wiki/Guilloche",
+            "date": "",
+            "snippet": "Describes the spirograph, a hypotrochoid traced by a point on a circle rolling inside a fixed circle, as the basis of guilloche.",
+            "via": "search",
+            "note": "Independent confirmation of the hypotrochoid basis",
+            "verified": true
+          },
+          {
+            "title": "Guilloches (Regula glossary)",
+            "url": "https://regulaforensics.com/glossary/banknotes/guilloches/",
+            "date": "",
+            "snippet": "Notes that guilloches use subtle interwoven thin lines and that such patterns need to be rebuilt from mathematics, not traced.",
+            "via": "search",
+            "note": "Why fine lines and moire matter for the loupe",
+            "verified": false
+          },
+          {
+            "title": "Fluorescence in Banknotes and Passports (Axiom Optics)",
+            "url": "https://www.axiomoptics.com/blog/using-portable-fluorescence-spectrometers-to-enhance-document-security/",
+            "date": "",
+            "snippet": "Fluorescent inks are invisible in daylight and visible under UV, used on passports and banknotes to authenticate them.",
+            "via": "search",
+            "note": "Hidden UV layer is a real security feature",
+            "verified": true
+          },
+          {
+            "title": "Shine Bright Like a Banknote (PMG)",
+            "url": "https://www.pmgnotes.com/news/article/6549/Shine-Bright-Like-a-Banknote/",
+            "date": "",
+            "snippet": "Article on fluorescence features visible under UV light on banknotes.",
+            "via": "search",
+            "note": "Second independent source on UV ink",
+            "verified": true
+          },
+          {
+            "title": "A Beginner's Guide to Understanding Magic: The Gathering Misprints (Beckett)",
+            "url": "https://www.beckett.com/news/a-beginners-guide-to-understanding-magic-the-gathering-misprints/",
+            "date": "",
+            "snippet": "Explains misprint types such as registration problems, missing ink including albino cards, and miscuts, and separates them from common off-centering.",
+            "via": "search",
+            "note": "Error taxonomy for the mishap engine",
+            "verified": true
+          },
+          {
+            "title": "How Pokemon Card Print Errors Happen (misprint.com)",
+            "url": "https://www.misprint.com/posts/how-pokemon-card-print-errors-happen",
+            "date": "",
+            "snippet": "Sorts errors into ink not laying down, colour off-register, design and text errors, and notes corrected versions within a run.",
+            "via": "search",
+            "note": "Independent confirmation of the mishap categories",
+            "verified": true
+          },
+          {
+            "title": "Understanding MTG Misprints (Draftsim)",
+            "url": "https://draftsim.com/mtg-misprints/",
+            "date": "",
+            "snippet": "Third guide covering misprint categories for trading cards.",
+            "via": "search",
+            "note": "Third independent taxonomy source",
+            "verified": true
+          },
+          {
+            "title": "A downloadable balatro texture pack (itch.io)",
+            "url": "https://aplovestudio.itch.io/aplove-balatro-deck",
+            "date": "",
+            "snippet": "A community texture pack with new art for playing cards, tarot cards, planet cards and edition backgrounds, installable via a mod loader.",
+            "via": "search",
+            "note": "Deckbuilder skin-mod scene exists",
+            "verified": true
+          },
+          {
+            "title": "Balatro mods (Nexus Mods)",
+            "url": "https://www.nexusmods.com/balatro/mods/887",
+            "date": "",
+            "snippet": "A mod page for a large deck skin collection with many skin options.",
+            "via": "search",
+            "note": "Second independent site showing deck-skin mods",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Guilloche patterns are mathematically generated curves, with the spirograph hypotrochoid as the basic family and sums of sinusoids as a construction (seen 2026-10-10).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Fluorescent inks that are invisible in ordinary light and visible under UV are used to authenticate documents such as passports and banknotes.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Card collectors classify printing mishaps into registration (colour plate shift), missing or faded ink including albino cards, and miscuts, and treat plain off-centering as a separate, common condition.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Very fine line work and moire are why guilloche patterns are hard to copy (one vendor glossary; a forensics survey result also describes thin interwoven lines).",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Community texture and deck-skin mods for a popular deckbuilder are distributed on itch.io and Nexus Mods pages.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "Spirograph and guilloche engine turning",
+          "Error-card and misprint collecting",
+          "Deckbuilder deck-skin mods such as Balatro texture packs",
+          "Blacklight security-ink reveals",
+          "Spot-the-difference inspection games"
+        ]
+      },
+      "design": {
+        "coreLoop": "Shape a card back with a few dials (rosette, ring count, moire phase, four ink colours), set the press (plate wear, paper humidity, ink flow), print 54 cards, then inspect: loupe for registration slips and starved ink, UV lamp for the hidden mark. Flag the flawed cards, reveal how many you caught against the true list, and file keepers in a binder. Each new press setting changes which mishaps appear, so the tenth run is a hunt for a perfect press or a wonder sheet.",
+        "sophisticationHooks": [
+          "Exact odds panel: per-card mishap probabilities from the dials, and run-level chances like at least one albino in 54 as 1-(1-p)^54, plus expected counts, all computed in closed form",
+          "Four-plate rendering model: each ink plate is its own guilloche layer with an offset, alpha and double-strike option, composited on canvas",
+          "Limited-charge UV lamp reveals a seed-derived hidden glyph, so inspection has a tradeoff",
+          "Seed and press settings in the URL hash reproduce the identical sheet with a seeded PRNG and no hidden randomness"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "About 850 lines: hypotrochoid and rosette layer generator, 4-plate compositor on canvas2d, press model and exact odds, sheet view with loupe zoom and UV lamp, inspector mode with scoring, binder in localStorage with try/catch, hash state, about panel. Cut: card faces, trading, animation of the press, sound.",
+        "risks": [
+          "Looks like banknote art: use invented card frames, no currency motifs, no real deck art or brand names",
+          "Gambling-funnel reading: no packs, no prices or market values, no purchases; rarity is shown only as simulated odds and labelled simulated",
+          "Moire on high-density patterns can shimmer: cap line density and honour reduced motion",
+          "Collector terms differ between sources, so the page uses its own plain definitions"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

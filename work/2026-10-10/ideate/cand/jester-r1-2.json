@@ -1,0 +1,209 @@
+{
+  "id": "jester-r1-2",
+  "title": "Whistle Tribunal",
+  "pitch": "You are the clerk at the video-review desk of an invented pond-hockey league: scrub through a short canvas replay of dots and a puck, then rule by citing a clause card (a race to the faceoff dot decides icing, a puck lofted straight out of play is an automatic delay minor, and so on). Every ruling is filed as precedent that binds later look-alike clips, the league adds a new amendment each period, and sooner or later two clauses demand opposite calls and you must find the loophole that lets you distinguish your own case law. You are scored on consistency, not on truth, and the season ends with an appeals-court verdict and a shareable stat sheet.",
+  "whyNow": "Timeless: hockey fans argue about rulebook edge cases all year, and precedent plus an ever-growing rulebook is a bureaucracy joke that doubles as a mechanic. It fills the owed hockey and interest slot without needing live data.",
+  "origin": {
+    "agent": "jester",
+    "lens": "bureaucracy-sim"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "satirical",
+      "nerdy",
+      "competitive",
+      "absurd"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "rulebook",
+      "precedent",
+      "video-review",
+      "referee",
+      "bureaucracy",
+      "amendments",
+      "fictional-league",
+      "case-law"
+    ],
+    "keywords": [
+      "hybrid-icing",
+      "faceoff-dot",
+      "puck-over-glass",
+      "delay-of-game",
+      "stare-decisis",
+      "consistency-score",
+      "appeals",
+      "replay-scrubber",
+      "clause-cards"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Hockey's real rulebook is a ready-made bureaucracy: hybrid icing replaced a race to the end boards with a race to the faceoff dots from the 2013-14 season, so a single rule is decided by a measurable arrival order that a canvas replay can show, and the puck-over-glass delay minor is automatic regardless of intent, a famous source of fan complaints. Parkinson's essay satirised officials making work for each other, which maps onto an amendment-every-period rulebook. Stare decisis gives the precedent mechanic a real model: courts follow earlier decisions, can distinguish cases on the facts, and can overrule. The game uses invented league and clause text inspired by these ideas, with no real league names or art.",
+    "sources": [
+      {
+        "title": "New hybrid icing rule a sensible change (The Hockey News)",
+        "url": "https://thehockeynews.com/news/new-hybrid-icing-rule-a-sensible-change",
+        "date": "",
+        "snippet": "Explains hybrid icing: the official judges a race to the faceoff dots, calling icing if the defender wins or the race is close, and playing on if the attacker is ahead.",
+        "via": "search",
+        "note": "Establishes the dot-race rule used as a clause and as a replay test.",
+        "verified": true
+      },
+      {
+        "title": "NHL players approve hybrid icing, safety trumps subjectivity (Yahoo Sports Puck Daddy)",
+        "url": "https://sports.yahoo.com/blogs/nhl-puck-daddy/nhl-players-approve-hybrid-icing-safety-trumps-subjectivity-231456246--nhl.html",
+        "date": "2013",
+        "snippet": "Coverage of players approving hybrid icing, which took effect for the start of the 2013-14 regular season and was aimed at reducing injuries.",
+        "via": "search",
+        "note": "Independent second source for the rule and its start season.",
+        "verified": true
+      },
+      {
+        "title": "What is icing in hockey? (HockeyAnswered)",
+        "url": "https://hockeyanswered.com/what-is-icing-in-hockey-with-pictures/",
+        "date": "",
+        "snippet": "Explainer with diagrams of icing and its exceptions, including the dot-race variant.",
+        "via": "search",
+        "note": "Third explainer to check clause wording against; used for diagrams concept only.",
+        "verified": true
+      },
+      {
+        "title": "Delay of game (ice hockey)",
+        "url": "https://en.wikipedia.org/wiki/Delay_of_game_(ice_hockey)",
+        "date": "",
+        "snippet": "Describes the delay-of-game minor for shooting the puck out of play over the glass from the defensive zone.",
+        "via": "search",
+        "note": "Establishes the puck-over-glass delay rule.",
+        "verified": true
+      },
+      {
+        "title": "Delay of Game in Hockey (Hockey Monkey)",
+        "url": "https://www.hockeymonkey.com/learn/hockey-delay-of-game-nhl",
+        "date": "",
+        "snippet": "States the two-minute minor for shooting the puck directly over the glass from the defensive zone, with exceptions for deflections.",
+        "via": "search",
+        "note": "Independent second source for the delay rule and the deflection exception.",
+        "verified": true
+      },
+      {
+        "title": "Is the Puck-Over-Glass Rule the Dumbest Regulation in Sports? (Grantland)",
+        "url": "https://grantland.com/the-triangle/is-the-puck-over-glass-rule-the-dumbest-regulation-in-sports",
+        "date": "",
+        "snippet": "Opinion piece whose title shows the puck-over-glass rule is a lightning rod for fan complaints.",
+        "via": "search",
+        "note": "Only the title was seen; evidence that the rule sparks debate, held unverified.",
+        "verified": false
+      },
+      {
+        "title": "Parkinson's Law (Wayword Radio)",
+        "url": "https://waywordradio.org/parkinsons-law/",
+        "date": "",
+        "snippet": "Notes that the phrase comes from a humorous 1955 Economist essay by C. Northcote Parkinson satirising government bureaucracy.",
+        "via": "search",
+        "note": "Establishes the satirical origin and the officials-make-work-for-each-other idea.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's Law (Etymonline)",
+        "url": "https://www.etymonline.com/word/Parkinson%27s%20Law",
+        "date": "",
+        "snippet": "Dates the term to the Economist of 19 November 1955 and names Parkinson as originator.",
+        "via": "search",
+        "note": "Independent second source for the 1955 origin.",
+        "verified": true
+      },
+      {
+        "title": "Precedent",
+        "url": "https://en.wikipedia.org/wiki/Precedent",
+        "date": "",
+        "snippet": "Explains that courts follow earlier decisions on closely related issues and that precedent can be distinguished or overruled.",
+        "via": "search",
+        "note": "Model for the ruling-as-precedent mechanic.",
+        "verified": true
+      },
+      {
+        "title": "Stare decisis (EBSCO Research Starters)",
+        "url": "https://www.ebsco.com/research-starters/social-sciences-and-humanities/stare-decisis",
+        "date": "",
+        "snippet": "Summarises the doctrine that like cases are treated alike, applying to the holding and not every argument, with room to overrule.",
+        "via": "search",
+        "note": "Independent second source for how precedent binds and bends.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Hybrid icing, which decides icing by a race to the faceoff dots rather than the end boards, took effect at the start of the 2013-14 NHL regular season after players approved it.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Shooting the puck directly over the glass from the defensive zone draws an automatic two-minute delay-of-game minor, regardless of intent; deflections off a player or post are exempt.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The phrase Parkinson's Law comes from a satirical essay in The Economist in November 1955 by C. Northcote Parkinson, aimed at bureaucracy.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Under stare decisis courts generally follow earlier rulings on the same issue, but may distinguish a case on its facts or overrule an earlier decision.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "hybrid icing dot race",
+      "puck-over-glass delay minor",
+      "Parkinson's Law",
+      "common-law precedent",
+      "Papers, Please",
+      "Baba Is You",
+      "replay review desks"
+    ]
+  },
+  "design": {
+    "coreLoop": "A clip arrives; scrub the canvas replay to read the facts (who reached the dot first, did the puck deflect, was it a lofted clear), pick the clause that governs it, and file a ruling. The ruling becomes precedent keyed to the clip features the clause reads, so a later look-alike clip is checked against your own case law; a new amendment lands each period, and when clauses collide you spend limited distinguish tokens to carve a principled exception. Consistency scoring means the tenth minute is about managing your own precedent web rather than spotting the obvious call.",
+    "sophisticationHooks": [
+      "Parametric replay engine: roughly 14 clip templates (dot race, lofted clear, deflection, crease contact, line change) with seeded jitter so facts differ per clip, drawn on canvas with a keyboard-and-touch scrubber.",
+      "Clause engine with predicates over clip features plus a precedent ledger that matches new clips by the features each clause reads; contradictions between old precedent and a new amendment are detected and surfaced as a dilemma.",
+      "Season arc with escalating amendments (rulebook creep), limited distinguish tokens, and an appeals-court end screen that lists reversed rulings and a consistency grade; seeded season in the URL hash.",
+      "Original clause copy in a deadpan legal voice with one warm human line per clause; text-only share sheet of the season."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "About 1000 to 1200 lines of own code: replay templates and canvas renderer with scrubber (about 300), clause and precedent engine with conflict detection (about 250), season and amendment director with scoring (about 150), UI with responsive layout, light and dark, reduced motion, hash state and share text (about 200), copy module with clause cards, ledger lines and verdict jokes (about 150), about and making-of panel. Cut: real teams, players or logos, audio beyond an optional synthesized whistle, multiplayer, live data.",
+    "risks": [
+      "Non-fans may bounce: each clause card must be self-contained and the opening clips must teach by example; test the first three clips with no hockey knowledge.",
+      "Rule accuracy: the league, clause text and art are invented and labelled as inspired by, not copied from, real rules; only the dated facts above are quoted as fact.",
+      "Scoring has to feel fair: define consistency precisely (same governing clause plus same read features gives same ruling), unit-test it, and explain it in the about panel.",
+      "Canvas replays could eat time: keep tracks as short keyframe lists with simple easing and cut crowd and bench detail first.",
+      "The Grantland source was seen by title only and stays unverified; the page does not cite it as fact."
+    ]
+  },
+  "durable": true
+}

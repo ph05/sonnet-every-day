@@ -1,0 +1,183 @@
+{
+  "id": "pulse-2",
+  "title": "Small Sample Rink",
+  "pitch": "The 84-game NHL season opened on 2026-09-29, so every fan is currently staring at records like 3-0-1. The visitor dials in a fictional team's start and games played, and a worker grows an orchard of thousands of simulated seasons, each one a fruit hanging at its final point total, so the spread shows what a hot or cold start really means. A 'regression receipt' itemises how many points of the start are likely luck, and a Call the Season game scores the visitor's gut against the simulation.",
+  "whyNow": "The season opened 2026-09-29 and is a record 84 games per team, so early-season hot takes are everywhere this week. The sampling mechanic works on any season length and any start, so it stays useful all winter.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "season-and-sky"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "simulator",
+    "tone": [
+      "analytical",
+      "playful",
+      "competitive"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "nhl-season",
+      "monte-carlo",
+      "small-sample",
+      "standings",
+      "regression-to-mean",
+      "orchard",
+      "points-pace",
+      "receipt"
+    ],
+    "keywords": [
+      "84-game-season",
+      "playoff-odds",
+      "overtime-loss",
+      "variance",
+      "hot-start",
+      "points-percentage",
+      "sample-size"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "As of 2026-10-10, the NHL's own news pages and ESPN report that the 2026-27 regular season began Tuesday 2026-09-29 and is a league-record 84 games per team (1,344 games total, ending 2027-04-10). Two independent explainers agree on the points rule (2 for a win, 1 for an overtime or shootout loss, 0 for a regulation loss, in place since 1999-2000), which creates the extra variance the simulator needs to model. One analytics write-up (single source, unverified) reports that after the first month, teams in the top 10 by points percentage made the playoffs far more often than the bottom 10 over 2014-15 to 2023-24, which frames the 'how much does a start tell you' question. The model is deliberately fictional: invented teams, adjustable talent and overtime assumptions, all labelled as simulation rather than league data.",
+    "sources": [
+      {
+        "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+        "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+        "date": "",
+        "snippet": "League news page saying the 2026-27 season starts Sept. 29 with a national tripleheader and a Canadian doubleheader.",
+        "via": "search",
+        "note": "Season start date",
+        "verified": true
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "ESPN report on the expanded 84-game schedule for 2026-27.",
+        "via": "search",
+        "note": "84 games per team, independent of the league site",
+        "verified": true
+      },
+      {
+        "title": "NHL Unveils Expanded 84-Game 2026-27 Schedule - Pollstar News",
+        "url": "https://news.pollstar.com/2026/07/17/nhl-unveils-expanded-84-game-2026-27-schedule/",
+        "date": "2026-07-17",
+        "snippet": "Trade outlet coverage of the 84-game schedule released in mid-July 2026.",
+        "via": "search",
+        "note": "Third outlet on the 84-game schedule",
+        "verified": true
+      },
+      {
+        "title": "NHL releases 2026-27 regular-season schedule",
+        "url": "https://www.nhl.com/news/nhl-releases-2026-27-regular-season-schedule",
+        "date": "",
+        "snippet": "League release describing the 1,344-game regular season ending April 10, 2027, with 42 home and 42 road games per team.",
+        "via": "search",
+        "note": "Total games, end date, home and road split",
+        "verified": true
+      },
+      {
+        "title": "NHL standings explanation (Deseret News)",
+        "url": "https://www.deseret.com/sports/2024/10/23/nhl-standings-explanation/",
+        "date": "2024-10-23",
+        "snippet": "Explains two points for a win, one for an overtime or shootout loss, zero for a regulation loss, and the games-played and regulation-wins tiebreakers.",
+        "via": "search",
+        "note": "Points rule for the simulator",
+        "verified": true
+      },
+      {
+        "title": "How NHL Standings are Determined (Sofascore)",
+        "url": "https://www.sofascore.com/news/how-nhl-standings-are-determined",
+        "date": "",
+        "snippet": "Explainer on the NHL points scheme with the extra point for reaching overtime, in use since 1999-2000.",
+        "via": "search",
+        "note": "Independent confirmation of the points rule",
+        "verified": true
+      },
+      {
+        "title": "How important is a strong start in the NHL (The Hockey Writers, Substack)",
+        "url": "https://thehockeywriters.substack.com/p/how-important-is-strong-start-nhl",
+        "date": "",
+        "snippet": "Reports that of 100 top-10 first-month teams (2014-15 to 2023-24) 79 made the playoffs, versus 28 of 100 bottom-10 teams; small samples, single outlet.",
+        "via": "search",
+        "note": "Frames the sample-size question; only one outlet, so unverified",
+        "verified": false
+      },
+      {
+        "title": "When Does the 2026-27 NHL Season Start? Opening Night Date, Schedule and Key Details",
+        "url": "https://thesportscast.net/2026/09/28/when-does-the-2026-27-nhl-season-start-opening-night-date-schedule-and-key-details/",
+        "date": "2026-09-28",
+        "snippet": "Fan-site explainer posted the day before opening night giving Tuesday 2026-09-29 as the season start and listing the opening-night games.",
+        "via": "search",
+        "note": "Independent confirmation of the start date",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026-27 NHL regular season began on Tuesday 2026-09-29.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Each of 32 teams plays 84 games in 2026-27 (1,344 games in total, 42 home and 42 road per team), with the regular season ending 2027-04-10.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "NHL standings award 2 points for a win, 1 for an overtime or shootout loss and 0 for a regulation loss, a scheme in place since 1999-2000.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported, single source: in 2014-15 to 2023-24, 79 of 100 top-10 first-month teams and 28 of 100 bottom-10 first-month teams made the playoffs (as of 2026-10-10, per The Hockey Writers Substack).",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "points-pace tables on standings pages",
+      "playoff odds trackers",
+      "dot-plot orchards of simulated outcomes",
+      "receipt-style stat summaries"
+    ]
+  },
+  "design": {
+    "coreLoop": "Enter a record (wins, overtime losses, regulation losses) and the number of games played, adjust a belief slider for how much of the start is real talent, and a worker simulates thousands of remaining seasons. Fruit on a branch show the final-points spread, a playoff-line slider shows odds, and the regression receipt itemises luck versus skill. Scrubbing games played from 4 to 40 shows how slowly the spread narrows, which is the surprise that rewards the tenth minute; a Call the Season mode scores guesses against fresh synthetic starts with a streak.",
+    "sophisticationHooks": [
+      "Monte Carlo in a web worker with a four-outcome game model (regulation win, overtime win, overtime loss, regulation loss) and a talent prior that shrinks toward the league middle as the sample grows",
+      "Orchard visual: each simulated season as a fruit at its final points, with density rings and a playoff-line cut",
+      "Regression receipt and a hash-encoded share link of a team's start",
+      "Call the Season prediction game with calibration scoring and a streak"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: simulation worker, canvas orchard, controls with keyboard and touch, receipt view, prediction game, season-length selector (82 and 84), hash state, about panel, light and dark, reduced motion. Cut: real team rosters, live standings, real schedules, strength-of-schedule modelling.",
+    "risks": [
+      "No live standings are bundled; the optional preset for a real team's record is unverified (one search result only) and should be dropped or labelled 'as of 2026-10-08, reported'.",
+      "The overtime share, talent spread and default playoff line are model assumptions, not NHL data, and the page must label them as such.",
+      "The first-month playoff study is single-source and unverified: show as 'reported, unconfirmed' or omit.",
+      "Real team names are fine as references but no logos or art; fictional teams keep the page clear of brand issues.",
+      "Other scouts may also propose a hockey simulator, so the orchard-and-receipt framing is the distinguishing angle."
+    ]
+  },
+  "durable": true
+}

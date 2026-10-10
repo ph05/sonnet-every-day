@@ -1,0 +1,191 @@
+{
+  "id": "architect-2",
+  "title": "Clause And Effect",
+  "pitch": "The visitor is the lone clerk of an Amendments Desk facing a knot of red tape: offices drawn as nodes, requirements as strands, and queues of citizens stuck because permit A needs B and B needs A. With a small budget of amendment clauses (an exemption, a sunset clause, a grandfather clause, a deemed-approved-after-N-days rule) the visitor pulls strands loose and then runs a simulated crowd through the system, watching who still gets stuck. Side effects in the spirit of Parkinson's satire punish lazy fixes, since every new office spawns paperwork for its neighbours, so the tidiest unravelled desk wins.",
+  "whyNow": "Timeless. It turns a real piece of computer science (deadlock and circular wait) into a joke-rich puzzle that rewards seeing the structure of a mess.",
+  "origin": {
+    "agent": "architect",
+    "lens": "bureaucracy-sim"
+  },
+  "fingerprint": {
+    "category": "math-puzzle",
+    "mechanic": "puzzle",
+    "tone": [
+      "analytical",
+      "satirical",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "bureaucracy",
+      "deadlock",
+      "graph-puzzle",
+      "queue-simulation",
+      "catch-22",
+      "red-tape",
+      "amendments",
+      "dependency-graph"
+    ],
+    "keywords": [
+      "circular-wait",
+      "strongly-connected",
+      "clause",
+      "exemption",
+      "sunset",
+      "throughput",
+      "parkinson",
+      "knot"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Operating-systems course notes describe deadlock as needing four conditions together (mutual exclusion, hold and wait, no preemption, circular wait), and say prevention works by breaking any one of them. Where each resource has a single instance, a cycle in the resource-allocation or wait-for graph means deadlock; with several instances a cycle only signals possible deadlock. That gives the puzzle a precise rule: every permit is a single-instance resource, so a strongly-connected-component pass can show the player exactly which knot is the Catch-22. Catch-22 (Heller, 1961) is the cultural name for a trap of mutually dependent or conflicting rules. Parkinson's satire of bureaucratic growth (essay 1955, book 1958) supplies the idea that offices make work for each other, which is the side-effect rule that stops brute-force fixing. All offices, permits and citizens are invented, and any growth rate shown on the page is an invented number labelled as fiction.",
+    "sources": [
+      {
+        "title": "Deadlock (Yale CS course wiki)",
+        "url": "https://www.cs.yale.edu/homes/aspnes/pinewiki/Deadlock.html",
+        "date": "",
+        "snippet": "Course notes listing the four conditions for deadlock and noting that with multiple resource instances a cycle is not necessarily a deadlock.",
+        "via": "search",
+        "note": "Seen in a WebSearch result this run; supporting statement came from the search answer, page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Operating Systems lecture 6 (NYU)",
+        "url": "https://cs.nyu.edu/~gottlieb/courses/2000s/2006-07-fall/os2250/lectures/lecture-06.html",
+        "date": "",
+        "snippet": "Lecture notes describing the deadlock conditions as necessary but not sufficient.",
+        "via": "search",
+        "note": "Independent second description of the four conditions; seen in search results, not opened.",
+        "verified": true
+      },
+      {
+        "title": "Deadlocks (UIC operating systems course notes)",
+        "url": "https://www.cs.uic.edu/~jbell/CourseNotes/OperatingSystems/7_Deadlocks",
+        "date": "",
+        "snippet": "Course notes on resource-allocation graphs: with one instance per resource category a cycle means deadlock; with several instances a cycle only indicates possible deadlock.",
+        "via": "search",
+        "note": "Appeared in the result set for the single-instance cycle query alongside UConn, Bucknell and NTHU notes that agree; the supporting statement was in the search answer, not mapped to one URL, page not opened.",
+        "verified": true
+      },
+      {
+        "title": "catch 22 (Phrase Finder)",
+        "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+        "date": "",
+        "snippet": "Phrase reference giving the 1961 novel origin and the meaning of a no-escape bind of conflicting rules.",
+        "via": "search",
+        "note": "Found again by an independent search for the claim.",
+        "verified": true
+      },
+      {
+        "title": "Catch 22 (Online Etymology Dictionary)",
+        "url": "https://www.etymonline.com/word/Catch-22",
+        "date": "",
+        "snippet": "Etymology entry for the phrase from Heller's novel.",
+        "via": "search",
+        "note": "Independent second result for Catch-22; seen in search results, page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's law (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Parkinson%27s_law",
+        "date": "",
+        "snippet": "Entry on Parkinson's satirical law: essay in The Economist in 1955, book in 1958, with the observation that the number of officials tends to grow regardless of the work to be done.",
+        "via": "search",
+        "note": "Found again in search results; the timeline and the officials observation came from the search answer; host cannot be fetched.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's Law (essay reprint, cat-v archive)",
+        "url": "https://doc.cat-v.org/economics/parkinsons-law",
+        "date": "",
+        "snippet": "Reprint of the essay on the rise in the number of staff.",
+        "via": "search",
+        "note": "Found again in search results as a reprint of the essay; the supporting passage itself was not seen by the verifier, so it only backs the fact as a second listing.",
+        "verified": true
+      },
+      {
+        "title": "Parkinson's Law blog post (Fabrice Grinda)",
+        "url": "https://fabricegrinda.com/parkinsons-law-is-so-true",
+        "date": "",
+        "snippet": "A blog attributes to Parkinson a staff growth rate of 5 to 7 percent a year regardless of work.",
+        "via": "search",
+        "note": "Only source for the percentage; a targeted search for a 5.75 percent figure found nothing, so it stays unverified and is not used as fact.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Course notes list four conditions that must hold together for deadlock: mutual exclusion, hold and wait, no preemption and circular wait; they are necessary but not sufficient, and prevention works by breaking any one of them.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "When every resource has a single instance, a cycle in the resource-allocation graph means deadlock; with multiple instances a cycle only signals possible deadlock, because a process outside the cycle may release an instance.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The term Catch-22 comes from Joseph Heller's 1961 novel and now means a bind made of mutually dependent or conflicting rules, often applied to bureaucracy.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Parkinson's law began as a 1955 essay in The Economist, was collected in a 1958 book, and satirises the idea that the number of officials grows regardless of the work to be done.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Catch-22",
+      "Banker's algorithm diagrams",
+      "Parkinson's Law",
+      "Optimisation-scored logistics puzzles",
+      "Network-routing line games"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each level presents a dependency knot of offices, permits and a stream of citizens. The clerk inspects strands to find the circular-wait loops, spends a limited clause budget on amendments, and runs a seeded crowd simulation to see who is still stuck and how long the queues grow. Parkinson-style side effects and a tape-length score make cheap fixes backfire, so replays chase fewer clauses, shorter queues and a tidier knot.",
+    "sophisticationHooks": [
+      "Strongly-connected-component detection highlights each Catch-22 knot as a Loop Finder lens and doubles as the hint system",
+      "Deterministic discrete-event queue simulation, seeded so a solution hash replays identically",
+      "Red tape strands drawn on canvas that visibly slacken and unravel when an amendment lands (spring-eased curves, not full physics)",
+      "Eight hand-authored levels with a solution encoded in the URL hash so a friend can load and beat it"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: graph model and SCC pass (single-instance permits only, so cycle means stuck), four amendment types (exemption, sunset clause, grandfather clause, deemed-approved-after-N-days), deterministic simulation on the main thread in small steps, canvas strand renderer with spring-eased curves and tap or drag interaction, level select, 8 authored levels with a brute-force solvability check run during QA, scoring, short about panel, keyboard and touch support, light and dark, reduced motion. Cut: worker, Verlet physics, daily generator, new-office amendment, level editor, multiplayer, user-uploaded levels, live data.",
+    "risks": [
+      "Abstract graph puzzles can feel dry; mitigation is joke-dense clerk dialogue on each amendment and an early funny failure state",
+      "Every authored level must be solvable within the clause budget; mitigation is a brute-force checker over amendment combinations run once during build and QA, with a visible par score",
+      "The 5 to 7 percent Parkinson growth figure is unverified; the page omits it or shows an invented rate labelled as fiction, and any real-world claim is shown as 'as of 2026-10-10, per' its source",
+      "The 1971 date and authorship often given for the four deadlock conditions was seen in only one search result, so the page does not state it as fact",
+      "The deadlock rules hold for single-instance resources only; the page keeps every permit single-instance and says so in the about panel so it does not overclaim"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The deadlock, Catch-22 and Parkinson basics are corroborated by several independent search results, but no page opened (the one fetch failed on DNS), the original UCR, Illinois and Virginia pages were not found again so they were replaced, and the 1971 date and the 5 to 7 percent figure stay unverified. Scope was cut to 8 authored levels, 4 amendments and no worker or physics to fit one morning."
+  }
+}

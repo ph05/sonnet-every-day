@@ -1,0 +1,186 @@
+{
+  "id": "lab-1",
+  "title": "Culture Plate",
+  "pitch": "A glowing petri dish under a blacklight holds a live Gray-Scott reaction-diffusion culture. The visitor inoculates it with a fingertip, then steers its chemistry by dragging a marker across a hand-labelled feed/kill map whose regions are named like pantry items (spots, worms, coral, bubbling, mitosis). A slow drift mode lets the culture ferment from one regime to the next, and a poster mode stamps the result with a museum-style specimen label and a shareable seed.",
+  "whyNow": "Timeless: reaction-diffusion is the most photogenic bit of mathematics on the web, and an autumn-dark ultraviolet palette with a lab-specimen framing gives it a point of view that differs from the stock demos.",
+  "origin": {
+    "agent": "lab",
+    "lens": "generative-art"
+  },
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "toy",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "pointer-events",
+      "shaders"
+    ],
+    "tags": [
+      "reaction-diffusion",
+      "gray-scott",
+      "turing-patterns",
+      "petri-dish",
+      "blacklight",
+      "parameter-map",
+      "procedural-art",
+      "shareable-seed",
+      "poster-export"
+    ],
+    "keywords": [
+      "gray-scott",
+      "feed-kill-map",
+      "specimen-label",
+      "inoculate",
+      "ferment-drift",
+      "contamination-brush",
+      "pattern-formation",
+      "ultraviolet-palette"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Gray-Scott is a two-chemical model on a grid: chemical A is fed in at rate f, chemical B is removed at rate k, and B converts A. Per Karl Sims's tutorial, a 3x3 Laplacian with weights -1 centre, 0.2 edges, 0.05 corners (summing to zero) is enough, and typical values are DA=1.0, DB=0.5, f=0.055, k=0.062. The (f, k) plane is a known map of regimes: spots, stripes, waves, worms, solitons, solid regions. Exact coordinates differ between implementations (grid size, step, diffusion constants), so the page will calibrate its own map and label presets as this page's calibration. Prior art exists (Sims's RD Tool, a Google experiment, a Frankfurt applet), so the value lies in the point of view: the named map, drift mode, contamination brush, specimen-label poster and shareable seed. Model limits: a toy two-species chemistry on a flat grid, not real fermentation; Turing-type mechanisms are plausible for fish pigment stripes but evidence elsewhere (for example digits) is mostly simulation-based.",
+    "sources": [
+      {
+        "title": "Reaction-Diffusion Tutorial (Karl Sims)",
+        "url": "https://www.karlsims.com/rd.html",
+        "date": "",
+        "snippet": "Tutorial describing chemical A fed at rate f and chemical B removed at rate k on a grid, with a 3x3 Laplacian kernel and suggested starting values for diffusion, feed and kill.",
+        "via": "search",
+        "note": "Primary reference for the update rule and kernel weights",
+        "verified": true
+      },
+      {
+        "title": "Reaction Diffusion: The Gray-Scott Algorithm (Algosome)",
+        "url": "https://algosome.com/articles/reaction-diffusion-gray-scott.html",
+        "date": "",
+        "snippet": "Independent write-up giving the same 3x3 kernel (centre -1, edges 0.2, corners 0.05) and explaining the multiply-and-sum step per neighbour.",
+        "via": "search",
+        "note": "Second independent source agreeing on the Laplacian kernel",
+        "verified": true
+      },
+      {
+        "title": "Pearson classes (Robert Munafo, xmorphia)",
+        "url": "https://mrob.com/pub/comp/xmorphia/pearson-classes.html",
+        "date": "",
+        "snippet": "Describes the feed/kill map: moving along the kill axis at fixed feed shifts the culture between solid regions, stripes and spots; very low feed is too chaotic.",
+        "via": "search",
+        "note": "Establishes that the (f,k) plane is a map of pattern regimes",
+        "verified": true
+      },
+      {
+        "title": "Pattern formation in reaction-diffusion systems using the Gray-Scott model (Univ. Frankfurt student project)",
+        "url": "https://itp.uni-frankfurt.de/~gros/StudentProjects/Projects_2020/projekt_lichuan_zheng/",
+        "date": "2020",
+        "snippet": "Student project listing example (F,k) pairs and their outcomes such as spots, loops, solitons, waves and worms.",
+        "via": "search",
+        "note": "Independent confirmation that named regimes exist at specific f,k pairs; numbers vary by implementation",
+        "verified": true
+      },
+      {
+        "title": "RDTool example Reaction-Diffusion Explorer Tool (Karl Sims)",
+        "url": "https://www.karlsims.com/rdtool-help.html",
+        "date": "",
+        "snippet": "Help page for an interactive Gray-Scott explorer with presets and drawing controls; needs WebGL 2 with a float colour-buffer extension.",
+        "via": "search",
+        "note": "Prior art to differentiate from; shows the GPU route needs a CPU/worker fallback",
+        "verified": true
+      },
+      {
+        "title": "Gray-Scott Simulation (Google Experiments)",
+        "url": "https://experiments.withgoogle.com/gray-scott-simulation",
+        "date": "",
+        "snippet": "A published interactive Gray-Scott experiment where feed and kill rates can be adjusted.",
+        "via": "search",
+        "note": "Second independent piece of prior art",
+        "verified": true
+      },
+      {
+        "title": "Turing patterns in biology review (PMC3303118)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3303118",
+        "date": "2011",
+        "snippet": "Review stating reaction-diffusion simulations reproduce zebrafish stripes, digits, teeth and shells, while noting experimental tests are scarce and much support is resemblance.",
+        "via": "search",
+        "note": "Supports a cautious 'plausible in nature' about-panel line",
+        "verified": true
+      },
+      {
+        "title": "Turing bifurcation and zebrafish stripes (Nature Communications)",
+        "url": "https://link.springer.com/article/10.1038/ncomms7971",
+        "date": "2015",
+        "snippet": "Paper arguing zebrafish pigment patterns arise from a Turing bifurcation driven by differential growth.",
+        "via": "search",
+        "note": "Independent second source on zebrafish stripes",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In the Gray-Scott model one chemical is fed in at rate f and the other removed at rate k; the common discrete Laplacian is a 3x3 kernel with centre -1, edges 0.2 and corners 0.05, which sums to zero (as of 2026-10-10).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The feed and kill rates decide which regime appears (spots, stripes, waves, worms, solitons, solid regions); exact coordinates differ between implementations, so presets are examples.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Interactive Gray-Scott explorers already exist, including a WebGL 2 tool with presets and a Google experiment with adjustable feed and kill rates.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Zebrafish stripe patterns are treated as Turing-type systems in the literature, though the molecular basis is still debated and much other evidence is simulation-based.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Karl Sims reaction-diffusion tutorial",
+      "xmorphia pattern atlas",
+      "RD Tool",
+      "museum specimen labels",
+      "sourdough starter jars",
+      "blacklight posters"
+    ]
+  },
+  "design": {
+    "coreLoop": "Seed a dish with a fingertip, pick a spot on the feed/kill map, watch the culture settle into a regime, then nudge, drift or contaminate it to see it transform. The map is the second-minute reward (each region behaves differently and has a name), drift mode and the contamination brush are the tenth-minute reward (staged mishaps make new hybrids), and the poster button gives a keepable specimen print with a seed in the URL hash.",
+    "sophisticationHooks": [
+      "Hand-calibrated feed/kill map with named regimes and a draggable marker, plus a ferment-drift mode that slowly walks the marker along a path across regimes",
+      "Brush tools that act locally on chemistry: inoculate (add B), nutrient spill (add A), poison (raise kill), so mishaps become compositional tools",
+      "Specimen-poster export: ultraviolet palette, generated catalogue number and Latin-style name derived deterministically from f, k and seed, with the full state in the URL hash",
+      "Pure numerical core (init, step, state, reset) running fixed timesteps with seeded noise in a worker, a mass-conservation-style sanity clamp and no NaN reaching the canvas"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: Gray-Scott core on a 256x256 grid in a worker (about 8 steps per frame), canvas2d palette renderer with 3 colour ramps, feed/kill map canvas with about 12 named regions, brushes, drift mode, hash state (f, k, seed, palette, painted dots), PNG poster export, light/dark and reduced-motion handling, about/making-of panel. Cut: WebGL path, 3D view, audio, saving galleries.",
+    "risks": [
+      "Preset f,k coordinates vary between implementations; the page labels regions as its own calibration and tests each by running the core headless before shipping.",
+      "Pearson's Greek-letter class labels were not confirmed in a source seen today, so the page uses its own names and does not cite Pearson's letters.",
+      "CPU simulation on low-end phones: cap grid at 256x256 and drop to 192 if frame time exceeds budget.",
+      "Prior art exists, so differentiation depends on the named map, drift mode, brushes and poster polish rather than on the simulation itself.",
+      "Biology line in the about panel must stay cautious (plausible, partly simulation-based) and the page must say it is a toy chemistry, not real fermentation."
+    ]
+  },
+  "durable": true
+}

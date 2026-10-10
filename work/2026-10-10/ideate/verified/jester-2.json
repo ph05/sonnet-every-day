@@ -1,0 +1,240 @@
+{
+  "id": "jester-2",
+  "title": "The Overtoaster",
+  "pitch": "The product page, control panel and manual of an invented heater-grid toaster that burns pictures onto bread, with a real two-stage heat and moisture simulation underneath. The visitor sets power per heating cell, watches the slice dry out first and only then brown, and tries to match a daily target design without charring the crust, while the product's absurd subscription tiers and pop-ups pester the page in the margins. The finished slice is a screenshot-ready piece of burnt art with a deadpan review.",
+  "whyNow": "Timeless. Appliances that hide features behind paywalls and apps are a lasting genre to lampoon, and a toaster is the oldest joke in connected gadgets.",
+  "origin": {
+    "agent": "jester",
+    "lens": "fake-product-satire"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": [
+      "satirical",
+      "playful",
+      "absurd"
+    ],
+    "tech": [
+      "canvas2d",
+      "web-animations",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "fake-product",
+      "toaster",
+      "heat-diffusion",
+      "maillard",
+      "subscription-satire",
+      "burnt-art",
+      "product-page-parody",
+      "daily-target"
+    ],
+    "keywords": [
+      "heating-grid",
+      "moisture-map",
+      "browning-model",
+      "firmware-tiers",
+      "stencil",
+      "control-panel",
+      "share-hash"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Search re-checks agree on the physics that shapes the mechanic: bread surface water holds the surface near or below 100 C, so toasting is a drying stage followed by a browning stage. Sources disagree on when browning starts (about 120 to 150 C in a patent summary, about 140 C in a science explainer, above about 155 C in an encyclopedia article), so the sim uses a labelled toy band. Patents and older gadgets already print or select browning patterns, including heat-blocking plates and a PC-connected 2008 concept, so the page is a genre parody and not a novelty claim. Press and commentary pages describe hardware features moved behind subscriptions (a car-maker garage opener, a baby bassinet), which grounds the tier-and-pop-up satire; the page targets the practice and names no company.",
+    "sources": [
+      {
+        "title": "Why Does Bread Turn So Crispy And Tasty When Toasted?",
+        "url": "https://www.scienceabc.com/pure-sciences/why-does-bread-turn-so-crispy-and-tasty-when-toasted-maillard-reaction.html",
+        "date": "",
+        "snippet": "Popular-science explainer: the browning reaction kicks in once the surface passes about 140 C.",
+        "via": "search",
+        "note": "Re-found by claim search on 2026-10-10; one browning-onset figure.",
+        "verified": true
+      },
+      {
+        "title": "Canadian patent summary 2915995 (Canadian Patent Database)",
+        "url": "https://brevets-patents.ic.gc.ca/opic-cipo/cpd/fra/brevet/2915995/sommaire.html",
+        "date": "",
+        "snippet": "Patent text: Maillard reactions at roughly 120 to 150 C; surface water holds the surface below 100 C and drying can take minutes.",
+        "via": "search",
+        "note": "Re-found by search on 2026-10-10 with the same wording as US10682014; likely the same patent family, so it is not counted as independent of source 4.",
+        "verified": true
+      },
+      {
+        "title": "Toast (food)",
+        "url": "https://en.wikipedia.org/wiki/Toast_(food)",
+        "date": "",
+        "snippet": "Encyclopedia article: Maillard browning above about 155 C; toasting usually finishes at 155 to 190 C surface temperature.",
+        "via": "search",
+        "note": "Re-found by search on 2026-10-10. Its 'only occurs' wording is stricter than other sources, so the sim uses a band.",
+        "verified": true
+      },
+      {
+        "title": "The science behind perfect toast (Consumer NZ)",
+        "url": "https://consumer.org.nz/articles/making-the-perfect-toast",
+        "date": "2019-09-23",
+        "snippet": "Consumer article: browning is slow below 100 C and the water in bread stops the surface rising above that.",
+        "via": "search",
+        "note": "Independent of the patents; re-found by claim search on 2026-10-10.",
+        "verified": true
+      },
+      {
+        "title": "US10682014B2 - Apparatus for heating food",
+        "url": "https://patents.google.com/patent/US10682014",
+        "date": "",
+        "snippet": "Patent text: surface water holds the surface below 100 C; first stage drying, second stage Maillard browning.",
+        "via": "search",
+        "note": "Re-found by search on 2026-10-10 (also listed at the USPTO print service). Source for the two-stage model.",
+        "verified": true
+      },
+      {
+        "title": "US7290482B2 - Toaster with removable imaging plates",
+        "url": "https://patents.google.com/patent/US7290482",
+        "date": "",
+        "snippet": "Patent: swappable metal plates between heating element and food block heat in a pattern so a design browns onto one side.",
+        "via": "search",
+        "note": "Re-found by claim search on 2026-10-10; the same search also listed older pattern-toaster patents (US6112648, US5943948, US4656927).",
+        "verified": true
+      },
+      {
+        "title": "Scan Toaster article (The Register)",
+        "url": "https://www.theregister.com/2008/09/11/wacky_toaster/",
+        "date": "2008-09-11",
+        "snippet": "2008 piece on a designer's PC-connected toaster with movable heated modules that burn weather or headlines onto bread.",
+        "via": "search",
+        "note": "Re-found on 2026-10-10 together with a TechCrunch post on the same device; coverage describes a concept, not a shipped product.",
+        "verified": true
+      },
+      {
+        "title": "Toasteroid smart toaster (Home and Decor, New Atlas)",
+        "url": "https://newatlas.com/toasteroid/44808/",
+        "date": "",
+        "snippet": "Search results from two outlets name Toasteroid as an app-controlled toaster that burns chosen images onto bread.",
+        "via": "search",
+        "note": "Replaces the original Fatherly link, which did not come back in any search. Availability today is unknown, so cited only as existing coverage.",
+        "verified": true
+      },
+      {
+        "title": "Honda paywalls its garage door opener (Boing Boing)",
+        "url": "https://boingboing.net/?p=1109759",
+        "date": "",
+        "snippet": "Post on a car-maker turning a simple garage opener feature into an app, login and subscription; also recalls a pay-to-heat-the-seat episode.",
+        "via": "search",
+        "note": "Replaces the PIRG source, which no search returned. Names real companies, so the page will not.",
+        "verified": true
+      },
+      {
+        "title": "Proprietary subscriptions (GNU project)",
+        "url": "https://gnu.org/proprietary/po/proprietary-subscriptions.pt-br-diff.html",
+        "date": "",
+        "snippet": "Commentary page listing devices whose advanced functions were put behind a subscription, including a baby bassinet.",
+        "via": "search",
+        "note": "Replaces the Techdirt tag page, which no search returned. Opinion page, used only as a second example of the practice.",
+        "verified": true
+      },
+      {
+        "title": "Internet-connected toaster burns news into bread (TechCrunch)",
+        "url": "https://techcrunch.com/2008/09/11/internet-connected-toaster-burns-news-into-bread/amp/",
+        "date": "2008-09-11",
+        "snippet": "2008 post on the same PC-connected toaster concept.",
+        "via": "search",
+        "note": "Independent second outlet for the Scan Toaster.",
+        "verified": true
+      },
+      {
+        "title": "US6323467 - Method and apparatus for selectively applying heat using an addressable array",
+        "url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6323467",
+        "date": "",
+        "snippet": "Result title and a summary describe an addressable array of heating elements chosen to produce a browning pattern.",
+        "via": "search",
+        "note": "Seen in one search result only; not used for any fact.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Sources differ on when toast browning starts: about 120 to 150 C in a patent summary, about 140 C in a science explainer, above about 155 C in an encyclopedia article.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Water in the bread surface holds the surface at or below about 100 C until it evaporates, so toasting runs as a drying stage and then a browning stage; the patent says the drying can take minutes.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          3,
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Pattern-browning toasters have been patented, including a swappable heat-blocking plate design (US7290482) and older pattern-plate patents.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The 2008 Scan Toaster was a PC-connected design concept, covered by The Register and TechCrunch, that used movable heated modules to burn weather or headlines onto bread; no mass production was reported in that coverage.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Press and commentary pages describe hardware features moved behind subscriptions, with a car-maker garage opener and a baby bassinet as examples.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "infomercial gadget pages",
+      "subscription-locked hardware complaints",
+      "smart-toaster running gag",
+      "pixel-art on toast",
+      "flat-pack manuals",
+      "cookie-consent banners"
+    ]
+  },
+  "design": {
+    "coreLoop": "The visitor picks a bread slice and a target design, sets power on a heater grid of cells (paint, drag or choose presets) and a timer, and presses start. A 2D simulation heats the slice, dries it, then browns it, with a heat-map overlay and a scrubbable replay. Score compares the finished slice to the target and penalises char; a deadpan review and a screenshot card close the round. A seeded daily target and tightening limits (fewer cells, shorter time) keep later attempts different, while the satire layer adds playful interruptions such as a tier upsell that never blocks the controls.",
+    "sophisticationHooks": [
+      "Coupled moisture and temperature fields with a drying plateau near 100 C, browning accumulating in a 120 to 155 C band and char beyond it, so the physics itself teaches patience",
+      "Heater-grid painter with a live heat-map overlay and replay scrubber",
+      "Deadpan satire shell: product page with invented firmware tiers, a cookie-consent banner about the crust, a manual and a generated review of your toast",
+      "Seeded daily target drawn in code, URL-hash share of the power map, canvas export of the finished slice and synthesized crackle and ding"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: about 40 by 30 field simulation on canvas with fixed-step update, heater-grid editor with presets, about 12 code-drawn target stencils, scoring with char penalty, replay scrubber from stored frames, product page, manual, tier and consent parody that never block controls, daily seed and hash share, light/dark, reduced motion, keyboard and touch, about panel. Cut: image upload, multi-slice batches, extended audio (one crackle and one ding only), any real electrical-safety advice. Fallback if time runs short: drop the replay scrubber and keep the final heat-map.",
+    "risks": [
+      "Image-toasting gadgets and patents (heat-blocking plates, a 2008 PC-connected concept, an app-controlled toaster) already exist, so novelty rests on the physics sim and the satire shell, not on toast art.",
+      "Browning thresholds vary by source (about 120 to 155 C); the page presents a simplified toy band labelled as an estimate, not science advice.",
+      "Claim not verified: whether any appliance maker is moving toaster-class features behind subscriptions. The page will not state it; the tiers are plainly invented, and any mention is shown as 'as of 2026-10-10, per the Boing Boing post' or omitted.",
+      "Claim not verified: the current availability of the Toasteroid and any owner backlash over the garage opener. The page omits both.",
+      "Pop-up satire must not obstruct the controls or hide instructions; mitigate with non-modal, dismissible, keyboard-reachable gags.",
+      "Subscription satire targets the practice only; no real company, product or logo appears on the page, and the fictional maker is labelled as such.",
+      "Frame rate on small phones; mitigate with a small grid, fixed-step update and a reduced grid on narrow screens."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-10",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Physics and genre-prior-art claims were found again by claim searches (WebFetch of patents.google.com failed on DNS); four sources (Fatherly, PIRG, Techdirt, Torque News) did not come back and were replaced or dropped, and the unverified appliance-subscription claim was removed. Scope was trimmed to a 40 by 30 grid and about 12 stencils to leave room for QA."
+  }
+}

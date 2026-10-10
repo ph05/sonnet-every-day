@@ -1,0 +1,185 @@
+{
+  "id": "architect-1",
+  "title": "The Wrong Window",
+  "pitch": "The visitor is a citizen inside a tiny invented Ministry of nine counters, holding one goal (for example, a Licence to Keep One Goose) and a pocket of forms. Each counter's rulebook entry is a readable rule about what it wants, what it stamps and when it closes, and the visitor plans a route, queues, gets sent to the other department, and slowly discovers loopholes that emerge when rules combine (a photocopier that clones stamps, a pneumatic underpass between floors, a clerk who relaxes for cake). A daily seed, a shareable route receipt covered in tilted ink stamps, and a count of loopholes found make the second and tenth run feel different.",
+  "whyNow": "Timeless. The Papers, Please style of rule-reading puzzle has stayed popular for years, and a warm, fictional, no-politics version with composable rules and a built-in solver is an open niche.",
+  "origin": {
+    "agent": "architect",
+    "lens": "bureaucracy-sim"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "cozy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "canvas2d",
+      "webaudio",
+      "localstorage"
+    ],
+    "tags": [
+      "bureaucracy",
+      "forms",
+      "stamps",
+      "queue",
+      "rule-engine",
+      "route-planning",
+      "daily-seed",
+      "loopholes",
+      "fictional-agency"
+    ],
+    "keywords": [
+      "red-tape",
+      "catch-22",
+      "counter",
+      "clerk",
+      "permit",
+      "rulebook",
+      "receipt",
+      "pneumatic-tube",
+      "cake"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "The genre anchor is the document-checking puzzle where a rulebook grows day by day and the tension comes from speed against accuracy, with the bureaucratic frame making it easy to author many gameplay rules. Small stamp-and-deliver jam games exist, but in the one seen the order of stamping does not matter, so a game where rules compose, order matters and a solver proves solvability and finds unintended shortcuts is a different design. Cultural material for the jokes is real and checkable: Catch-22 as a loop of mutually dependent rules, red tape as the literal ribbon once used to bind official papers, and Parkinson's satirical laws of officials making work for each other. Every agency, clerk and form in the page is invented.",
+    "sources": [
+      {
+        "title": "Designing the bleak genius of Papers, Please (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-",
+        "date": "",
+        "snippet": "Design feature describing the player as an inspector who must process as many travelers as possible each day while admitting only those whose increasingly complicated documents are in order; special regulations pile up.",
+        "via": "search",
+        "note": "Established the speed versus accuracy tension and escalating rulebook as the genre engine.",
+        "verified": true
+      },
+      {
+        "title": "Papers, Please (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Papers,_Please",
+        "date": "",
+        "snippet": "Encyclopedia entry: a 2013 game by Lucas Pope in which an immigration inspector checks documents against an ever-growing list of rules, and each day brings new rules; pay depends on accuracy.",
+        "via": "search",
+        "note": "Second independent description of the daily-rules and approve/deny loop.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 (logic) (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+        "date": "",
+        "snippet": "The term comes from Heller's 1961 novel; a pilot who asks to be grounded for insanity shows he is sane and so cannot be grounded. Now means a trap made of mutually dependent conditions.",
+        "via": "search",
+        "note": "Origin and meaning of the loop-of-rules joke.",
+        "verified": true
+      },
+      {
+        "title": "Catch-22 meaning and origin (Phrase Finder)",
+        "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+        "date": "",
+        "snippet": "Phrase reference giving the same origin: coined in the 1961 novel, popularised more widely after the 1970 film; now a situation where any move leads to trouble.",
+        "via": "search",
+        "note": "Independent second result for the Catch-22 origin.",
+        "verified": true
+      },
+      {
+        "title": "Red tape meaning and origin (Phrase Finder)",
+        "url": "https://phrases.org.uk/meanings/red-tape.html",
+        "date": "",
+        "snippet": "Says legal and official documents were bound with red tape from the 17th century, citing an early Maryland law, and that the fully figurative use appears by 1838.",
+        "via": "search",
+        "note": "Literal origin of red tape for the page's flavour text.",
+        "verified": true
+      },
+      {
+        "title": "Red tape (Dictionary.com)",
+        "url": "https://dictionary.com/browse/Red_tape",
+        "date": "",
+        "snippet": "Defines red tape as excessive formality before official action and says the phrase alludes to the former British custom of tying official documents with red ribbon.",
+        "via": "search",
+        "note": "Independent second result for the ribbon origin.",
+        "verified": true
+      },
+      {
+        "title": "Ministerio Simulator (itch.io)",
+        "url": "https://juanrod707.itch.io/ministeriosim",
+        "date": "",
+        "snippet": "A multiplayer prototype made in a roughly 30-hour jam in 2017 where players take forms from a desk, stamp them and deliver them to a front desk; the order of stamping or copying does not matter.",
+        "via": "search",
+        "note": "Shows the stamp-forms niche exists and leaves rule-composition open.",
+        "verified": false
+      },
+      {
+        "title": "Off the AppStore: Droning bureaucracy in The Registry (Pocket Gamer)",
+        "url": "https://www.pocketgamer.com/off-the-appstore/the-registry/",
+        "date": "",
+        "snippet": "Title seen in a search result only; a mobile game feature about a bureaucracy-themed title. Body text not seen.",
+        "via": "search",
+        "note": "Adjacent prior art, details unseen.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Papers, Please (released 2013) is a document-checking game in which the player compares travelers' papers to a rulebook and approves or denies them; new rules arrive each in-game day and speed is traded against accuracy.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Catch-22 was coined in Joseph Heller's 1961 novel: a pilot who asks to be grounded as insane demonstrates sanity and therefore stays on duty.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "The phrase red tape comes from the custom of binding official documents with red tape or ribbon, which Phrase Finder traces to the 17th century.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, per an itch.io listing, a 2017 jam prototype called Ministerio Simulator has players stamp and deliver forms where stamp order does not matter (reported, single result).",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Papers, Please",
+      "Catch-22",
+      "StampHere",
+      "Ministerio Simulator",
+      "text adventures with inventory puzzles",
+      "pneumatic tube post offices"
+    ]
+  },
+  "design": {
+    "coreLoop": "The citizen reads a small rulebook (each counter: needs, stamps, closing time, queue length, one human quirk), plans a route on a floor map, then walks it, spending clock time, patience and biscuits. Wrong windows, lunch closures and circular requirements force replanning, and combining rules produces loopholes the built-in solver recognises and names. A run ends in a stamped receipt scored on time, patience and loopholes found; a fresh seed or the daily seed restarts it with a different ministry.",
+    "sophisticationHooks": [
+      "Declarative rule engine (needs, consumes, stamps, forbids, opens-at) with a breadth-first solver over inventory states that proves every seeded ministry is solvable, computes par, and flags a player route shorter than the intended one as a named loophole",
+      "Seeded procedural ministry generator: invented departments, clerk quirks and a goal permit, with daily seed and URL-hash state so a friend replays the same office",
+      "Shareable route receipt drawn with SVG tilted ink stamps and procedural WebAudio thumps, plus a loophole journal that persists in localStorage",
+      "Every rule carries a human-warmth joke: clerks relax for cake, a stamp is waived if the visitor asks after a cat, the underpass is kept open by a night-shift tea trolley"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: rule engine and solver module, generator, floor-map renderer with queue animation, rulebook panel, receipt generator, sound, about and making-of panel, keyboard and touch play, light and dark, reduced motion. Cut: multiplayer, user-authored ministries, more than one goal per run, any live data.",
+    "risks": [
+      "Rule composition can produce unsolvable or trivially solved ministries; mitigation is the solver gate in the generator with a regenerate-on-fail loop and a hand-authored fallback seed",
+      "Reading rules can feel like homework; mitigation is a 90-second guided first office and a hint action that costs patience",
+      "The Ministerio Simulator prior-art claim is single-source and unverified, so the about panel presents it only as reported, or omits it",
+      "Tone must stay fictional and non-partisan: no real agencies, forms or logos"
+    ]
+  },
+  "durable": true
+}

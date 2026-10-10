@@ -1,0 +1,3064 @@
+[
+  {
+    "id": "pulse-1",
+    "title": "Slab Sundial Workshop",
+    "pitch": "The visitor carves a virtual granite sundial: picks a city, tilts the dial plate, sets the gnomon, and watches hour lines and a live shadow appear. Scrubbing the calendar makes the shadow tip trace its yearly figure-eight, and a 'Dial vs Watch' round asks them to read the shadow, guess what the wall clock says, then see why the two disagree by a different amount every week. Each round ends in an itemised correction receipt (longitude, equation of time, the daylight-saving hour) that is the screenshot moment.",
+    "whyNow": "US clocks fall back on Sunday 2026-11-01 and UK/EU clocks on Sunday 2026-10-25, so the gap between sun time and wall time is about to jump by an hour while autumn sunsets race earlier. The mechanic is astronomy, so it stays good in March and in any season.",
+    "origin": {
+      "agent": "pulse",
+      "lens": "season-and-sky"
+    },
+    "fingerprint": {
+      "category": "science-sim",
+      "mechanic": "simulator",
+      "tone": [
+        "playful",
+        "nerdy",
+        "serene"
+      ],
+      "tech": [
+        "svg",
+        "canvas2d",
+        "dom-ui",
+        "pointer-events",
+        "web-animations",
+        "localstorage"
+      ],
+      "tags": [
+        "sundial",
+        "daylight-saving",
+        "equation-of-time",
+        "analemma",
+        "astronomy",
+        "seasons",
+        "granite",
+        "receipt",
+        "shadow",
+        "latitude"
+      ],
+      "keywords": [
+        "gnomon",
+        "solar-noon",
+        "fall-back",
+        "clock-change",
+        "hour-lines",
+        "longitude-correction",
+        "autumn"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "As of 2026-10-10, several independent outlets agree US daylight saving ends Sunday 2026-11-01 at 2 a.m. local time, and UK/EU summer time ends Sunday 2026-10-25. Independent pages (timeanddate, public radio) explain that the earliest sunset of the year falls before the winter solstice because sundial time and clock time drift apart (the equation of time). That gives the page a true, checkable surprise to teach: the shadow, the longitude offset, the equation of time and the daylight-saving hour are separate corrections stacked on one wall clock. All astronomy is computed in the page from standard low-precision formulas, so no download is needed; only a small hand-made city table (rounded coordinates plus clock rule) is bundled and labelled approximate.",
+      "sources": [
+        {
+          "title": "Daylight Saving Time Ends 2026: Clocks Go Back",
+          "url": "https://www.almanac.com/daylight-saving-time-ends",
+          "date": "",
+          "snippet": "Gives Sunday 2026-11-01 as the end of US daylight saving time, with clocks moving from 2:00 a.m. back to 1:00 a.m.",
+          "via": "search",
+          "note": "US fall-back date and time",
+          "verified": true
+        },
+        {
+          "title": "Daylight Saving Time 2026: When the Clocks Change",
+          "url": "https://www.farmersalmanac.com/daylight-saving-time-change",
+          "date": "",
+          "snippet": "States the change falls on the first Sunday in November under the federal schedule and notes some places, such as Arizona (except the Navajo Nation) and Hawaii, do not observe it.",
+          "via": "search",
+          "note": "US rule (first Sunday in November)",
+          "verified": true
+        },
+        {
+          "title": "Daylight Saving Time 2026: When do clocks fall back?",
+          "url": "https://www.accuweather.com/en/weather-news/daylight-saving-time-2026-when-do-clocks-fall-back/1936642",
+          "date": "",
+          "snippet": "Confirms the 2026-11-01 fall-back and says many phones update automatically while older clocks need a manual change.",
+          "via": "search",
+          "note": "Independent confirmation of the US date",
+          "verified": true
+        },
+        {
+          "title": "From Sunday 25th of October end of summer time in Europe",
+          "url": "https://tuenews.de/en/from-sunday-25th-of-october-end-of-summer-time-in-europe/",
+          "date": "2026-07-23",
+          "snippet": "German news site places the end of European summer time on Sunday 25 October 2026, with clocks going back from 3:00 to 2:00 CEST.",
+          "via": "search",
+          "note": "EU fall-back date",
+          "verified": true
+        },
+        {
+          "title": "Why do the clocks change twice a year (Government of the Netherlands FAQ)",
+          "url": "https://www.government.nl/faq/european-union/why-do-the-clocks-change-twice-a-year",
+          "date": "",
+          "snippet": "Dutch government FAQ describes the EU summer-time rule (last Sunday in March to last Sunday in October) and the winter-time change on 25 October 2026.",
+          "via": "search",
+          "note": "Official EU rule and 2026 date, independent of the news site",
+          "verified": true
+        },
+        {
+          "title": "Earliest sunset (timeanddate)",
+          "url": "https://www.timeanddate.com/astronomy/earliest-sunset.html",
+          "date": "",
+          "snippet": "Explains that the earliest sunset comes before the winter solstice (and before the June solstice in the south) because of the equation of time; latitude changes the exact dates.",
+          "via": "search",
+          "note": "Why the shortest day and earliest sunset differ",
+          "verified": true
+        },
+        {
+          "title": "Later sunsets begin this week in Minnesota",
+          "url": "https://mprnews.org/story/2024/12/10/later-sunsets-begin-this-week-in-minnesota",
+          "date": "2024-12-10",
+          "snippet": "Public radio piece defining the equation of time as the gap between sundial time and clock time, which is why sunsets start getting later before the solstice.",
+          "via": "search",
+          "note": "Independent explanation of the equation of time",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "US daylight saving time ends on Sunday 2026-11-01, when clocks go from 2:00 a.m. back to 1:00 a.m. (first Sunday in November rule).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "UK and EU summer time end on Sunday 2026-10-25; the EU rule runs from the last Sunday in March to the last Sunday in October.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The earliest sunset of the year arrives before the winter solstice because of the equation of time (the gap between sundial time and clock time), and the exact date depends on latitude.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "horizontal sundial calculators",
+        "analemma photographs",
+        "paper receipt printers as UI",
+        "almanac correction tables"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick a city and date, shape the dial (tilt, gnomon height), read the shadow against the hour lines, guess the wall-clock time, reveal the answer as an itemised receipt (longitude offset, equation of time, daylight-saving hour), then change the date or city and watch each line item move. The second minute rewards scrubbing the calendar to see the line items change shape; the tenth rewards the 'Dial vs Watch' streak and the fall-back lever, where the shadow stays put while the clock jumps an hour.",
+      "sophisticationHooks": [
+        "Real solar geometry computed in the page: declination, equation of time, hour-line angles for the chosen latitude, and the analemma traced by the shadow tip across the year",
+        "Clock-rule engine for US, EU/UK and no-change zones, unit-tested in-page against the dossier dates (2026-10-25 and 2026-11-01)",
+        "Dial vs Watch guessing game with a streak and a share-by-URL-hash receipt",
+        "Procedural granite slab texture and engraved hour numerals drawn in SVG, no external assets"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: SVG slab and gnomon scene, solar math module (about 200 lines), clock-rule module for three rule sets, city picker with about 40 bundled cities, calendar scrubber, Dial vs Watch mode, receipt view, hash state, about panel, light and dark, reduced motion. Cut: vertical and equatorial dial types beyond one extra, southern-hemisphere clock rules, live geolocation, printing to PDF.",
+      "risks": [
+        "City coordinates and clock rules are hand-made and rounded; the page labels them approximate and the content builder should double-check each against a source seen during the build.",
+        "A US Senate and House bill about permanent daylight saving time was reported by one search result only (AccuWeather) and is unverified; the page should leave it out or show it as 'as of 2026-10-10, per AccuWeather, reported'.",
+        "Not a navigation or timekeeping authority: the page needs a 'for fun, accuracy within a few minutes' note.",
+        "Arizona and Hawaii have no clock change per one source (Farmers' Almanac); mark as reported or omit."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "pulse-2",
+    "title": "Small Sample Rink",
+    "pitch": "The 84-game NHL season opened on 2026-09-29, so every fan is currently staring at records like 3-0-1. The visitor dials in a fictional team's start and games played, and a worker grows an orchard of thousands of simulated seasons, each one a fruit hanging at its final point total, so the spread shows what a hot or cold start really means. A 'regression receipt' itemises how many points of the start are likely luck, and a Call the Season game scores the visitor's gut against the simulation.",
+    "whyNow": "The season opened 2026-09-29 and is a record 84 games per team, so early-season hot takes are everywhere this week. The sampling mechanic works on any season length and any start, so it stays useful all winter.",
+    "origin": {
+      "agent": "pulse",
+      "lens": "season-and-sky"
+    },
+    "fingerprint": {
+      "category": "hockey-sports",
+      "mechanic": "simulator",
+      "tone": [
+        "analytical",
+        "playful",
+        "competitive"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "dom-ui",
+        "pointer-events",
+        "localstorage"
+      ],
+      "tags": [
+        "hockey",
+        "nhl-season",
+        "monte-carlo",
+        "small-sample",
+        "standings",
+        "regression-to-mean",
+        "orchard",
+        "points-pace",
+        "receipt"
+      ],
+      "keywords": [
+        "84-game-season",
+        "playoff-odds",
+        "overtime-loss",
+        "variance",
+        "hot-start",
+        "points-percentage",
+        "sample-size"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "research": {
+      "summary": "As of 2026-10-10, the NHL's own news pages and ESPN report that the 2026-27 regular season began Tuesday 2026-09-29 and is a league-record 84 games per team (1,344 games total, ending 2027-04-10). Two independent explainers agree on the points rule (2 for a win, 1 for an overtime or shootout loss, 0 for a regulation loss, in place since 1999-2000), which creates the extra variance the simulator needs to model. One analytics write-up (single source, unverified) reports that after the first month, teams in the top 10 by points percentage made the playoffs far more often than the bottom 10 over 2014-15 to 2023-24, which frames the 'how much does a start tell you' question. The model is deliberately fictional: invented teams, adjustable talent and overtime assumptions, all labelled as simulation rather than league data.",
+      "sources": [
+        {
+          "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+          "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+          "date": "",
+          "snippet": "League news page saying the 2026-27 season starts Sept. 29 with a national tripleheader and a Canadian doubleheader.",
+          "via": "search",
+          "note": "Season start date",
+          "verified": true
+        },
+        {
+          "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+          "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+          "date": "",
+          "snippet": "ESPN report on the expanded 84-game schedule for 2026-27.",
+          "via": "search",
+          "note": "84 games per team, independent of the league site",
+          "verified": true
+        },
+        {
+          "title": "NHL Unveils Expanded 84-Game 2026-27 Schedule - Pollstar News",
+          "url": "https://news.pollstar.com/2026/07/17/nhl-unveils-expanded-84-game-2026-27-schedule/",
+          "date": "2026-07-17",
+          "snippet": "Trade outlet coverage of the 84-game schedule released in mid-July 2026.",
+          "via": "search",
+          "note": "Third outlet on the 84-game schedule",
+          "verified": true
+        },
+        {
+          "title": "NHL releases 2026-27 regular-season schedule",
+          "url": "https://www.nhl.com/news/nhl-releases-2026-27-regular-season-schedule",
+          "date": "",
+          "snippet": "League release describing the 1,344-game regular season ending April 10, 2027, with 42 home and 42 road games per team.",
+          "via": "search",
+          "note": "Total games, end date, home and road split",
+          "verified": true
+        },
+        {
+          "title": "NHL standings explanation (Deseret News)",
+          "url": "https://www.deseret.com/sports/2024/10/23/nhl-standings-explanation/",
+          "date": "2024-10-23",
+          "snippet": "Explains two points for a win, one for an overtime or shootout loss, zero for a regulation loss, and the games-played and regulation-wins tiebreakers.",
+          "via": "search",
+          "note": "Points rule for the simulator",
+          "verified": true
+        },
+        {
+          "title": "How NHL Standings are Determined (Sofascore)",
+          "url": "https://www.sofascore.com/news/how-nhl-standings-are-determined",
+          "date": "",
+          "snippet": "Explainer on the NHL points scheme with the extra point for reaching overtime, in use since 1999-2000.",
+          "via": "search",
+          "note": "Independent confirmation of the points rule",
+          "verified": true
+        },
+        {
+          "title": "How important is a strong start in the NHL (The Hockey Writers, Substack)",
+          "url": "https://thehockeywriters.substack.com/p/how-important-is-strong-start-nhl",
+          "date": "",
+          "snippet": "Reports that of 100 top-10 first-month teams (2014-15 to 2023-24) 79 made the playoffs, versus 28 of 100 bottom-10 teams; small samples, single outlet.",
+          "via": "search",
+          "note": "Frames the sample-size question; only one outlet, so unverified",
+          "verified": false
+        },
+        {
+          "title": "When Does the 2026-27 NHL Season Start? Opening Night Date, Schedule and Key Details",
+          "url": "https://thesportscast.net/2026/09/28/when-does-the-2026-27-nhl-season-start-opening-night-date-schedule-and-key-details/",
+          "date": "2026-09-28",
+          "snippet": "Fan-site explainer posted the day before opening night giving Tuesday 2026-09-29 as the season start and listing the opening-night games.",
+          "via": "search",
+          "note": "Independent confirmation of the start date",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The 2026-27 NHL regular season began on Tuesday 2026-09-29.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Each of 32 teams plays 84 games in 2026-27 (1,344 games in total, 42 home and 42 road per team), with the regular season ending 2027-04-10.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "NHL standings award 2 points for a win, 1 for an overtime or shootout loss and 0 for a regulation loss, a scheme in place since 1999-2000.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported, single source: in 2014-15 to 2023-24, 79 of 100 top-10 first-month teams and 28 of 100 bottom-10 first-month teams made the playoffs (as of 2026-10-10, per The Hockey Writers Substack).",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "points-pace tables on standings pages",
+        "playoff odds trackers",
+        "dot-plot orchards of simulated outcomes",
+        "receipt-style stat summaries"
+      ]
+    },
+    "design": {
+      "coreLoop": "Enter a record (wins, overtime losses, regulation losses) and the number of games played, adjust a belief slider for how much of the start is real talent, and a worker simulates thousands of remaining seasons. Fruit on a branch show the final-points spread, a playoff-line slider shows odds, and the regression receipt itemises luck versus skill. Scrubbing games played from 4 to 40 shows how slowly the spread narrows, which is the surprise that rewards the tenth minute; a Call the Season mode scores guesses against fresh synthetic starts with a streak.",
+      "sophisticationHooks": [
+        "Monte Carlo in a web worker with a four-outcome game model (regulation win, overtime win, overtime loss, regulation loss) and a talent prior that shrinks toward the league middle as the sample grows",
+        "Orchard visual: each simulated season as a fruit at its final points, with density rings and a playoff-line cut",
+        "Regression receipt and a hash-encoded share link of a team's start",
+        "Call the Season prediction game with calibration scoring and a streak"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: simulation worker, canvas orchard, controls with keyboard and touch, receipt view, prediction game, season-length selector (82 and 84), hash state, about panel, light and dark, reduced motion. Cut: real team rosters, live standings, real schedules, strength-of-schedule modelling.",
+      "risks": [
+        "No live standings are bundled; the optional preset for a real team's record is unverified (one search result only) and should be dropped or labelled 'as of 2026-10-08, reported'.",
+        "The overtime share, talent spread and default playoff line are model assumptions, not NHL data, and the page must label them as such.",
+        "The first-month playoff study is single-source and unverified: show as 'reported, unconfirmed' or omit.",
+        "Real team names are fine as references but no logos or art; fictional teams keep the page clear of brand issues.",
+        "Other scouts may also propose a hockey simulator, so the orchard-and-receipt framing is the distinguishing angle."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "cards-1",
+    "title": "Seven Riffles",
+    "pitch": "A night-shift dealer swears three riffles is plenty. The visitor shuffles a drawn 52-card deck with a hand-made riffle (cut, then release), watches 'rising sequences' fan out like strands, and sees an exact meter of how far the deck still sits from truly random. Then they audit: run ten million seeded shuffles at 1 to 10 riffles and watch the chart show 'new deck order' and 'sorted suits' survive until the shuffle count nears seven.",
+    "whyNow": "Timeless: the seven-shuffles slogan is half-known and widely misquoted, and it is a good argument to lose. Nothing similar has shipped.",
+    "origin": {
+      "agent": "cards",
+      "lens": "card-dice-odds"
+    },
+    "fingerprint": {
+      "category": "cards-odds",
+      "mechanic": "simulator",
+      "tone": [
+        "playful",
+        "nerdy",
+        "analytical"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "dom-ui",
+        "localstorage"
+      ],
+      "tags": [
+        "shuffle",
+        "riffle",
+        "probability",
+        "cutoff-phenomenon",
+        "cards",
+        "randomness",
+        "simulation",
+        "combinatorics"
+      ],
+      "keywords": [
+        "riffle-shuffle",
+        "gilbert-shannon-reeds",
+        "rising-sequences",
+        "total-variation",
+        "52-cards",
+        "seeded-monte-carlo",
+        "deck-audit"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "research": {
+      "summary": "The Gilbert-Shannon-Reeds model cuts a deck at a binomially distributed point and interleaves the two piles with probability proportional to pile sizes. Bayer and Diaconis showed the chance of any deck order after m riffles depends only on its number of rising sequences, so the distance from uniform for 52 cards can be computed EXACTLY (no sampling) and compared with Monte Carlo. Distance stays near 1 for about four to five riffles, then collapses (cutoff), and is under 0.5 at seven. The slogan depends on the metric: an entropy-based argument by other authors says five to six may do. That argument is the game: the visitor picks a yardstick and watches the verdict change. The uniqueness of every well-mixed deck (52 factorial is about 8.07e67) gives the closing line.",
+      "sources": [
+        {
+          "title": "Gilbert-Shannon-Reeds model",
+          "url": "https://en.wikipedia.org/wiki/Gilbert%E2%80%93Shannon%E2%80%93Reeds_model",
+          "date": "",
+          "snippet": "Defines the riffle model and reports that for 52 cards five riffles leave total variation distance near 1 while seven bring it to about 0.334.",
+          "via": "search",
+          "note": "Model definition and the 5 versus 7 riffle numbers",
+          "verified": true
+        },
+        {
+          "title": "How many times should you shuffle the cards 2",
+          "url": "https://blogs.mathworks.com/cleve/2016/02/15/how-many-times-should-you-shuffle-the-cards-2/",
+          "date": "2016-02-15",
+          "snippet": "Computes total variation for 52 cards: close to 1 for the first four shuffles, below 0.5 at seven, below 0.1 by around nine; the sharp drop is called the cutoff.",
+          "via": "search",
+          "note": "Independent computation of the cutoff curve",
+          "verified": true
+        },
+        {
+          "title": "Lecture 36 notes on riffle shuffles",
+          "url": "https://faculty.uml.edu/rmontenegro/8843/notes/lecture36.pdf",
+          "date": "",
+          "snippet": "University lecture notes tabulating total variation distance for 52 cards: about 0.924 after five riffles, 0.614 after six, 0.334 after seven.",
+          "via": "search",
+          "note": "Second independent source for the 0.334 figure at seven riffles",
+          "verified": true
+        },
+        {
+          "title": "Disorder in the Deck",
+          "url": "https://www.sciencenews.org/article/disorder-deck-0",
+          "date": "",
+          "snippet": "Magazine report on the shuffling debate; says the Trefethens argued for the Royal Society that five shuffles do a reasonable job and six make mixing practically certain.",
+          "via": "search",
+          "note": "The alternative-metric dispute (reported, not independently confirmed)",
+          "verified": false
+        },
+        {
+          "title": "Bayer and Diaconis, Trailing the dovetail shuffle to its lair",
+          "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/bayer_diaconis.pdf",
+          "date": "",
+          "snippet": "Primary paper linking the probability of a deck arrangement after m riffles to its count of rising sequences and giving the 3/2 log2 n mixing rate.",
+          "via": "search",
+          "note": "Primary source for the exact formula; paper not opened",
+          "verified": false
+        },
+        {
+          "title": "Factorial 52: A Stirling Problem",
+          "url": "https://thatsmaths.com/2015/12/24/factorial-52-a-stirling-problem/",
+          "date": "2015-12-24",
+          "snippet": "Discusses the size of 52 factorial, about 8.07 times ten to the 67th, and how to approximate it.",
+          "via": "search",
+          "note": "Size of the deck space",
+          "verified": true
+        },
+        {
+          "title": "Each Shuffle of a Deck of Cards is Probably Unique in History",
+          "url": "https://puzzlewocky.com/brain-teasers/probability-puzzles/every-shuffle-of-a-deck-of-cards-is-probably-unique-in-history/",
+          "date": "",
+          "snippet": "Puzzle write-up giving 52 factorial as about 8.0658e67 and arguing a thoroughly shuffled order has almost certainly never occurred before, with caveats on shuffle quality.",
+          "via": "search",
+          "note": "Second source for 52 factorial and the uniqueness framing",
+          "verified": true
+        },
+        {
+          "title": "Riffle shuffle permutation",
+          "url": "https://en.wikipedia.org/wiki/Riffle_shuffle_permutation",
+          "date": "",
+          "snippet": "Describes riffle permutations: one riffle gives the identity or exactly two rising sequences, so m riffles give at most 2 to the m.",
+          "via": "search",
+          "note": "Rising-sequence structure (the build re-derives it by enumeration)",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "For a 52-card deck under the Gilbert-Shannon-Reeds model, total variation distance from uniform is near 1 after five riffles and about 0.334 after seven (lecture notes: about 0.924 at five, 0.614 at six).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The distance stays close to 1 for the first four riffles, then drops sharply (cutoff); it is below 0.5 at seven riffles.",
+          "sourceIndex": 1,
+          "alsoIn": [
+            0,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The number of orderings of a 52-card deck is 52 factorial, about 8.07e67.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Bayer and Diaconis relate the probability of a deck order after m riffles to its number of rising sequences, enabling exact computation instead of sampling.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported as of 2026-10-10 by Science News: an entropy-style argument says five to six riffles are enough, so the 'seven' slogan depends on the metric.",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "the cutoff phenomenon in Markov chains",
+        "Numb3rs-style deck demonstrations",
+        "magician's faro and riffle control moves",
+        "card-counting shuffle tracking lore"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick an opening deck (new-deck order, suits-grouped, a lightly pre-shuffled deck), riffle it yourself by dragging a cut and releasing, or press auto-riffle; read the rising-sequence strands and the live distance-from-random meter; try to find the smallest riffle count where a 'test' (e.g. how often the top card is an ace after a cut, or card-guessing score) stops betraying the original order. Daily challenge seeds give a shareable puzzle. It stays interesting because the meter, the exact formula and a Monte Carlo audit disagree in instructive ways until the visitor learns why.",
+      "sophisticationHooks": [
+        "Exact total-variation distance for 52 cards via rising-sequence counts (Eulerian numbers), cross-checked by a seeded Monte Carlo of up to ten million riffles in a worker, with stated sample size and error bar",
+        "Yardstick switch: total variation, separation-style worst case, and an entropy-style meter, so the visitor sees the verdict move",
+        "A card-guessing duel: the page guesses each next card by exploiting residual order, scoring how well it beats chance after k riffles",
+        "Hand riffle by pointer drag with keyboard equivalent, and a URL hash carrying seed, deck, riffle count"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Build: GSR sampler, exact distance via Eulerian counts, canvas deck renderer with riffle animation (reduced-motion static fallback), worker Monte Carlo, guessing duel, hash state, about panel. Cut: other shuffle types (overhand, faro) beyond one comparison toggle, sound.",
+      "risks": [
+        "The 0.334 and per-riffle distance figures vary slightly across sources; the page computes them itself and labels them as 'computed here', citing sources only for the slogan",
+        "Entropy-metric dispute (five to six riffles) rests on a single report; show as 'as of 2026-10-10, per Science News' or leave out",
+        "Exact computation for 52 cards needs big-number or log-space arithmetic; the cards specialist writes node self-checks against small n (n=3,4 brute force)",
+        "Scope: riffle animation art could eat the morning; mitigate with a simple two-pile slide animation"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "cards-2",
+    "title": "Second Pick Wins",
+    "pitch": "Choose a three-flip coin pattern; a smug bot picks its own after seeing yours, and a flip-by-flip race decides who sees their pattern first. The visitor loses far more than half the time, for any pattern they try, then cranks the race to ten million flips and watches the bot's edge settle on exact fractions like 2 to 1, and finally flips the table by taking the second pick themselves. A red-and-black card mode with tricks turns the cascade of flips into a visible deck.",
+    "whyNow": "Timeless. The result is a clean argument-loser: the game is fair in each pick yet rigged by order of choice, and nothing like it has shipped.",
+    "origin": {
+      "agent": "cards",
+      "lens": "card-dice-odds"
+    },
+    "fingerprint": {
+      "category": "math-puzzle",
+      "mechanic": "game",
+      "tone": [
+        "playful",
+        "competitive",
+        "nerdy"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "dom-ui",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "penney-game",
+        "coin-flip",
+        "paradox",
+        "non-transitive",
+        "probability",
+        "patterns",
+        "markov-chain",
+        "cards"
+      ],
+      "keywords": [
+        "pattern-race",
+        "second-mover-advantage",
+        "leading-number",
+        "waiting-time",
+        "red-black-deck",
+        "payoff-matrix",
+        "exact-odds"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "In Penney's game two players each pick a short heads-tails pattern and the one that appears first in a fair coin sequence wins. Because picking is sequential, the second picker can always choose a reply that beats the first pick; for every three-flip pattern a better reply exists. A short rule builds the reply, and Conway's leading-number method gives exact odds. A card version (red/black cards, collecting tricks) exists. The page can show the full payoff matrix of lengths 3 to 5, the exact Markov-chain odds next to a ten-million-flip seeded Monte Carlo, and expected waiting times, where the winning pattern is not always the quicker one on average, which is what makes the loss feel unfair.",
+      "sources": [
+        {
+          "title": "Penney's game",
+          "url": "https://en.wikipedia.org/wiki/Penney%27s_game",
+          "date": "",
+          "snippet": "Overview of the pattern-race game: because players choose in order, the second mover has an advantage and can pick a better reply to any three-flip pattern.",
+          "via": "search",
+          "note": "Game definition and second-mover edge",
+          "verified": true
+        },
+        {
+          "title": "Penney Ante",
+          "url": "https://blogsarchive.sites.haverford.edu/mathproblemsolving/files/2011/06/Penney-Ante.pdf",
+          "date": "2011",
+          "snippet": "Problem-solving write-up deriving that HHT precedes HTH about two thirds of the time and stating the reply rule.",
+          "via": "search",
+          "note": "Worked pair and the reply rule",
+          "verified": true
+        },
+        {
+          "title": "Penney's Game Odds From No-Arbitrage",
+          "url": "https://arxiv.org/pdf/1904.09888",
+          "date": "2019",
+          "snippet": "Paper giving a no-arbitrage proof of Conway's leading-number odds formula; notes any three-flip pattern has a strictly better reply.",
+          "via": "search",
+          "note": "Exact odds method and generality",
+          "verified": true
+        },
+        {
+          "title": "The Humble-Nishiyama Randomness Game",
+          "url": "https://futilitycloset.com/2016/12/31/humble-nishiyama-randomness-game",
+          "date": "2016-12-31",
+          "snippet": "Card version using red and black cards; players claim three-colour sequences and collect tricks; the reply rule is to change the middle colour, put it first and drop the last.",
+          "via": "search",
+          "note": "Card-deck variant and its reply rule",
+          "verified": true
+        },
+        {
+          "title": "Penney's Game (Stanford notes)",
+          "url": "https://crypto.stanford.edu/~blynn/pr/penney.html",
+          "date": "",
+          "snippet": "A further explanatory page on Penney's game returned for the topic.",
+          "via": "search",
+          "note": "Extra reference; not read in detail",
+          "verified": false
+        },
+        {
+          "title": "Penney-game paper on pattern outcomes (Theory and Decision)",
+          "url": "https://link.springer.com/article/10.1007/s11238-026-10123-w",
+          "date": "2026",
+          "snippet": "Journal article stating that for any three-flip pattern another pattern is strictly more likely to occur first, and that its formula matches Conway's leading numbers.",
+          "via": "search",
+          "note": "Independent confirmation of the any-pattern-has-a-counter claim",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "In Penney's game the second chooser has an advantage: for any pattern of three flips there is another three-flip pattern strictly more likely to appear first.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            5,
+            0
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Conway's leading-number algorithm gives the odds between two patterns; a no-arbitrage proof was published in 2019.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reply rule: against a first pick, flip the second symbol, put it in front, and drop the last symbol; HTH is answered by HHT.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "A card variant with red and black cards (Humble-Nishiyama) uses the same logic, with tricks collected instead of single wins.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            0
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported by one write-up: HHT precedes HTH about two thirds of the time; the page computes this exactly itself.",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Numberphile-style coin pattern puzzles",
+        "non-transitive Efron dice",
+        "magician's red-black deck bets",
+        "bar-bet probability traps"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick a pattern (length 3, later 4 or 5); the bot answers; run one live race flip by flip with a bar-chart tension, then batches of 1,000 or 10 million; track the running win rate converging to the exact fraction. Modes: you pick first (you lose), the bot picks first (you find the reply and win), and a puzzle mode where you must find the pattern with the best guaranteed odds. Replay value comes from lengths 4 and 5, the card-deck mode where depletion changes the odds, and a streak of 'argument' challenges.",
+      "sophisticationHooks": [
+        "Exact odds via Markov-chain absorption (Conway leading numbers cross-checked), versus seeded worker Monte Carlo with error bars",
+        "Payoff matrix heatmap for all patterns of length 3 to 5 with the best-reply path highlighted, plus a cycle view showing the non-transitive loop",
+        "Expected waiting time panel showing the pattern that arrives later on average still wins the race",
+        "Red/black deck mode played without replacement with tricks, so the visitor sees the effect survive in a real deck; hash state with seed and picks"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Build: pattern picker, bot reply engine, race animation, exact solver, worker Monte Carlo, payoff matrix, waiting-time panel, card mode, about panel, hash state. Cut: lengths above 5, multiplayer, sound.",
+      "risks": [
+        "The 2 to 3 odds numbers beyond the sources are computed by the page and labelled 'computed here'",
+        "The ten-million-flip race must stay responsive: chunked in a worker with a progress bar",
+        "Card-mode odds differ from coin odds; both computed exactly by enumeration or DP and shown separately, never mixed",
+        "Plain Penney content is common online; the matrix, deck mode and waiting-time angle give it a distinct feel"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "lab-1",
+    "title": "Culture Plate",
+    "pitch": "A glowing petri dish under a blacklight holds a live Gray-Scott reaction-diffusion culture. The visitor inoculates it with a fingertip, then steers its chemistry by dragging a marker across a hand-labelled feed/kill map whose regions are named like pantry items (spots, worms, coral, bubbling, mitosis). A slow drift mode lets the culture ferment from one regime to the next, and a poster mode stamps the result with a museum-style specimen label and a shareable seed.",
+    "whyNow": "Timeless: reaction-diffusion is the most photogenic bit of mathematics on the web, and an autumn-dark ultraviolet palette with a lab-specimen framing gives it a point of view that differs from the stock demos.",
+    "origin": {
+      "agent": "lab",
+      "lens": "generative-art"
+    },
+    "fingerprint": {
+      "category": "generative-art",
+      "mechanic": "toy",
+      "tone": [
+        "serene",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "pointer-events",
+        "shaders"
+      ],
+      "tags": [
+        "reaction-diffusion",
+        "gray-scott",
+        "turing-patterns",
+        "petri-dish",
+        "blacklight",
+        "parameter-map",
+        "procedural-art",
+        "shareable-seed",
+        "poster-export"
+      ],
+      "keywords": [
+        "gray-scott",
+        "feed-kill-map",
+        "specimen-label",
+        "inoculate",
+        "ferment-drift",
+        "contamination-brush",
+        "pattern-formation",
+        "ultraviolet-palette"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Gray-Scott is a two-chemical model on a grid: chemical A is fed in at rate f, chemical B is removed at rate k, and B converts A. Per Karl Sims's tutorial, a 3x3 Laplacian with weights -1 centre, 0.2 edges, 0.05 corners (summing to zero) is enough, and typical values are DA=1.0, DB=0.5, f=0.055, k=0.062. The (f, k) plane is a known map of regimes: spots, stripes, waves, worms, solitons, solid regions. Exact coordinates differ between implementations (grid size, step, diffusion constants), so the page will calibrate its own map and label presets as this page's calibration. Prior art exists (Sims's RD Tool, a Google experiment, a Frankfurt applet), so the value lies in the point of view: the named map, drift mode, contamination brush, specimen-label poster and shareable seed. Model limits: a toy two-species chemistry on a flat grid, not real fermentation; Turing-type mechanisms are plausible for fish pigment stripes but evidence elsewhere (for example digits) is mostly simulation-based.",
+      "sources": [
+        {
+          "title": "Reaction-Diffusion Tutorial (Karl Sims)",
+          "url": "https://www.karlsims.com/rd.html",
+          "date": "",
+          "snippet": "Tutorial describing chemical A fed at rate f and chemical B removed at rate k on a grid, with a 3x3 Laplacian kernel and suggested starting values for diffusion, feed and kill.",
+          "via": "search",
+          "note": "Primary reference for the update rule and kernel weights",
+          "verified": true
+        },
+        {
+          "title": "Reaction Diffusion: The Gray-Scott Algorithm (Algosome)",
+          "url": "https://algosome.com/articles/reaction-diffusion-gray-scott.html",
+          "date": "",
+          "snippet": "Independent write-up giving the same 3x3 kernel (centre -1, edges 0.2, corners 0.05) and explaining the multiply-and-sum step per neighbour.",
+          "via": "search",
+          "note": "Second independent source agreeing on the Laplacian kernel",
+          "verified": true
+        },
+        {
+          "title": "Pearson classes (Robert Munafo, xmorphia)",
+          "url": "https://mrob.com/pub/comp/xmorphia/pearson-classes.html",
+          "date": "",
+          "snippet": "Describes the feed/kill map: moving along the kill axis at fixed feed shifts the culture between solid regions, stripes and spots; very low feed is too chaotic.",
+          "via": "search",
+          "note": "Establishes that the (f,k) plane is a map of pattern regimes",
+          "verified": true
+        },
+        {
+          "title": "Pattern formation in reaction-diffusion systems using the Gray-Scott model (Univ. Frankfurt student project)",
+          "url": "https://itp.uni-frankfurt.de/~gros/StudentProjects/Projects_2020/projekt_lichuan_zheng/",
+          "date": "2020",
+          "snippet": "Student project listing example (F,k) pairs and their outcomes such as spots, loops, solitons, waves and worms.",
+          "via": "search",
+          "note": "Independent confirmation that named regimes exist at specific f,k pairs; numbers vary by implementation",
+          "verified": true
+        },
+        {
+          "title": "RDTool example Reaction-Diffusion Explorer Tool (Karl Sims)",
+          "url": "https://www.karlsims.com/rdtool-help.html",
+          "date": "",
+          "snippet": "Help page for an interactive Gray-Scott explorer with presets and drawing controls; needs WebGL 2 with a float colour-buffer extension.",
+          "via": "search",
+          "note": "Prior art to differentiate from; shows the GPU route needs a CPU/worker fallback",
+          "verified": true
+        },
+        {
+          "title": "Gray-Scott Simulation (Google Experiments)",
+          "url": "https://experiments.withgoogle.com/gray-scott-simulation",
+          "date": "",
+          "snippet": "A published interactive Gray-Scott experiment where feed and kill rates can be adjusted.",
+          "via": "search",
+          "note": "Second independent piece of prior art",
+          "verified": true
+        },
+        {
+          "title": "Turing patterns in biology review (PMC3303118)",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3303118",
+          "date": "2011",
+          "snippet": "Review stating reaction-diffusion simulations reproduce zebrafish stripes, digits, teeth and shells, while noting experimental tests are scarce and much support is resemblance.",
+          "via": "search",
+          "note": "Supports a cautious 'plausible in nature' about-panel line",
+          "verified": true
+        },
+        {
+          "title": "Turing bifurcation and zebrafish stripes (Nature Communications)",
+          "url": "https://link.springer.com/article/10.1038/ncomms7971",
+          "date": "2015",
+          "snippet": "Paper arguing zebrafish pigment patterns arise from a Turing bifurcation driven by differential growth.",
+          "via": "search",
+          "note": "Independent second source on zebrafish stripes",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "In the Gray-Scott model one chemical is fed in at rate f and the other removed at rate k; the common discrete Laplacian is a 3x3 kernel with centre -1, edges 0.2 and corners 0.05, which sums to zero (as of 2026-10-10).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The feed and kill rates decide which regime appears (spots, stripes, waves, worms, solitons, solid regions); exact coordinates differ between implementations, so presets are examples.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Interactive Gray-Scott explorers already exist, including a WebGL 2 tool with presets and a Google experiment with adjustable feed and kill rates.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Zebrafish stripe patterns are treated as Turing-type systems in the literature, though the molecular basis is still debated and much other evidence is simulation-based.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Karl Sims reaction-diffusion tutorial",
+        "xmorphia pattern atlas",
+        "RD Tool",
+        "museum specimen labels",
+        "sourdough starter jars",
+        "blacklight posters"
+      ]
+    },
+    "design": {
+      "coreLoop": "Seed a dish with a fingertip, pick a spot on the feed/kill map, watch the culture settle into a regime, then nudge, drift or contaminate it to see it transform. The map is the second-minute reward (each region behaves differently and has a name), drift mode and the contamination brush are the tenth-minute reward (staged mishaps make new hybrids), and the poster button gives a keepable specimen print with a seed in the URL hash.",
+      "sophisticationHooks": [
+        "Hand-calibrated feed/kill map with named regimes and a draggable marker, plus a ferment-drift mode that slowly walks the marker along a path across regimes",
+        "Brush tools that act locally on chemistry: inoculate (add B), nutrient spill (add A), poison (raise kill), so mishaps become compositional tools",
+        "Specimen-poster export: ultraviolet palette, generated catalogue number and Latin-style name derived deterministically from f, k and seed, with the full state in the URL hash",
+        "Pure numerical core (init, step, state, reset) running fixed timesteps with seeded noise in a worker, a mass-conservation-style sanity clamp and no NaN reaching the canvas"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: Gray-Scott core on a 256x256 grid in a worker (about 8 steps per frame), canvas2d palette renderer with 3 colour ramps, feed/kill map canvas with about 12 named regions, brushes, drift mode, hash state (f, k, seed, palette, painted dots), PNG poster export, light/dark and reduced-motion handling, about/making-of panel. Cut: WebGL path, 3D view, audio, saving galleries.",
+      "risks": [
+        "Preset f,k coordinates vary between implementations; the page labels regions as its own calibration and tests each by running the core headless before shipping.",
+        "Pearson's Greek-letter class labels were not confirmed in a source seen today, so the page uses its own names and does not cite Pearson's letters.",
+        "CPU simulation on low-end phones: cap grid at 256x256 and drop to 192 if frame time exceeds budget.",
+        "Prior art exists, so differentiation depends on the named map, drift mode, brushes and poster polish rather than on the simulation itself.",
+        "Biology line in the about panel must stay cautious (plausible, partly simulation-based) and the page must say it is a toy chemistry, not real fermentation."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "lab-2",
+    "title": "Unreliable Plotter",
+    "pitch": "A virtual pen plotter draws a generative poster line by line on screen: flow-field ribbons, L-system shrubs or spiral-packed circles, each in two or three pens. The twist is a mishap dial that lets the machine misbehave in physically motivated ways (a pen drying out and skipping, a blot on touchdown, paper creeping between pen swaps), narrated by a deadpan operator log. The visitor hunts for the dial setting where the imperfections make the poster better than the ideal version, then shares the seed or saves the layered SVG.",
+    "whyNow": "Timeless: pen-plotter flow-field art is a recognised craft scene, and treating machine error as a creative parameter is a fresh angle on a familiar genre.",
+    "origin": {
+      "agent": "lab",
+      "lens": "generative-art"
+    },
+    "fingerprint": {
+      "category": "generative-art",
+      "mechanic": "generator",
+      "tone": [
+        "playful",
+        "nerdy",
+        "absurd"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "svg",
+        "pointer-events"
+      ],
+      "tags": [
+        "pen-plotter",
+        "flow-field",
+        "l-system",
+        "perlin-noise",
+        "procedural-art",
+        "shareable-seed",
+        "svg-export",
+        "ink-simulation",
+        "poster-art"
+      ],
+      "keywords": [
+        "plotter-log",
+        "ink-reservoir",
+        "paper-creep",
+        "pen-swap",
+        "ideal-vs-actual",
+        "layered-svg",
+        "seeded-random",
+        "flow-ribbons"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "A flow field is a grid of direction vectors, usually angles taken from Perlin noise, along which particles are traced to produce smooth curves; the technique is widely used and suits plotters because each curve is one continuous pen stroke. Plotter workflows separate artwork into SVG layers that map to pens. The mishap model is stylised: ordinary pens skip when the tip clogs or the paper is rough or very absorbent, and one forum report describes paper drifting during long plots, but none of this is calibrated to a specific machine. The page therefore labels the physics as an approximation and keeps the ideal SVG export honest. Perlin noise was formally described in a 1985 SIGGRAPH paper; sources disagree on whether it was first developed in 1982 or 1983, so the page leaves that date out.",
+      "sources": [
+        {
+          "title": "Flow Fields (Tyler Hobbs)",
+          "url": "https://www.tylerxhobbs.com/words/flow-fields",
+          "date": "2020",
+          "snippet": "Widely cited essay on flow fields; reported to note that Perlin noise is the usual way to initialise the vectors.",
+          "via": "search",
+          "note": "Primary essay on the technique, seen as a search result only",
+          "verified": true
+        },
+        {
+          "title": "Getting Creative with Perlin Noise Fields (Sighack)",
+          "url": "https://sighack.com/post/getting-creative-with-perlin-noise-fields",
+          "date": "",
+          "snippet": "Processing write-up explaining Perlin noise fields as a force field that steers particles, with source code and GIFs.",
+          "via": "search",
+          "note": "Independent agreement that noise fields steer particle paths",
+          "verified": true
+        },
+        {
+          "title": "Noise in Creative Coding (Varun Ferreira)",
+          "url": "https://varun.ca/noise/",
+          "date": "",
+          "snippet": "Tutorial covering the three steps of a noise-based vector field, particles dropped on it and traced paths, with damping.",
+          "via": "search",
+          "note": "Third independent description of the flow-field mechanism",
+          "verified": true
+        },
+        {
+          "title": "Executing Generative Art with a Plotter (Tyler Hobbs)",
+          "url": "https://tylerxhobbs.com/essays/2018/executing-generative-art-with-a-plotter",
+          "date": "2018",
+          "snippet": "Essay on plotter work; reported to stress that a plotter only draws lines and cannot cover earlier ink, which constrains layering order.",
+          "via": "search",
+          "note": "Single-source claim about plotter constraints; not independently confirmed",
+          "verified": false
+        },
+        {
+          "title": "vfab (PyPI)",
+          "url": "https://pypi.org/project/vfab/",
+          "date": "",
+          "snippet": "Plotter workflow tool that detects SVG layers and offers pen mapping for multi-layer designs.",
+          "via": "search",
+          "note": "Layers map to pens in plotter workflows",
+          "verified": true
+        },
+        {
+          "title": "christmas2023 (GitHub project)",
+          "url": "https://github.com/sihil/christmas2023",
+          "date": "2023",
+          "snippet": "An artist's pipeline generates SVGs, post-processes them with a plotter-vector tool and keeps layers separate for different pens.",
+          "via": "search",
+          "note": "Independent confirmation of the layers-per-pen workflow",
+          "verified": true
+        },
+        {
+          "title": "How to stop a rollerball pen from skipping (Scriveiner)",
+          "url": "https://scriveiner.com/en-au/blogs/scriveiner-blog/how-to-stop-a-rollerball-pen-from-skipping-and-restore-smooth-ink-flow",
+          "date": "",
+          "snippet": "Explains skipping as caused by clogged tips from dried ink or paper fibres, and by paper surface affecting ink flow.",
+          "via": "search",
+          "note": "Ordinary-pen physics for ink skipping; not plotter-specific",
+          "verified": true
+        },
+        {
+          "title": "Troubleshooting Fountain Pen Flow and Skipping (Ferris Wheel Press)",
+          "url": "https://ferriswheelpress.com/blogs/ferris-wheel-press-blog/fountain-pen-flow-skipping-troubleshooting",
+          "date": "",
+          "snippet": "Lists dried ink, debris and paper type among causes of skipping and poor flow.",
+          "via": "search",
+          "note": "Independent agreement on skipping causes",
+          "verified": true
+        },
+        {
+          "title": "graphtec 8600 drawing pen with new paper type (Signs101 forum)",
+          "url": "https://www.signs101.com/threads/graphtec-8600-drawing-pen-with-new-paper-type.162292",
+          "date": "",
+          "snippet": "Forum thread in which a long plot shifts sideways, attributed to paper sliding through the rollers.",
+          "via": "search",
+          "note": "Single forum report of paper creep; unverified anecdote",
+          "verified": false
+        },
+        {
+          "title": "Perlin noise (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Perlin_noise",
+          "date": "",
+          "snippet": "Encyclopedia article on the noise function Ken Perlin developed after working on a 1982 film, later described in a 1985 SIGGRAPH paper.",
+          "via": "search",
+          "note": "Background and 1985 paper date; development year differs in other results",
+          "verified": true
+        },
+        {
+          "title": "Noise (The Book of Shaders)",
+          "url": "https://thebookofshaders.com/11/",
+          "date": "",
+          "snippet": "Shader tutorial noting that Perlin introduced gradient noise in 1985 to reduce the blocky look of value noise.",
+          "via": "search",
+          "note": "Independent agreement on 1985",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A flow field is a grid of direction vectors; particles dropped onto it and traced along it produce smooth curves, and Perlin noise is the common way to set the vector angles (as of 2026-10-10).",
+          "sourceIndex": 1,
+          "alsoIn": [
+            0,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Plotter workflows keep artwork in separate SVG layers that are mapped to different pens.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Ordinary pens skip when the tip is clogged by dried ink or fibres and when the paper surface hampers ink flow; the page borrows this as a stylised model, not a plotter calibration.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Perlin's gradient noise was described in a 1985 SIGGRAPH paper.",
+          "sourceIndex": 9,
+          "alsoIn": [
+            10
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported but unconfirmed: a plotter can only draw lines and cannot cover earlier ink, so layer order matters (per Tyler Hobbs's plotter essay, seen in a search result only).",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "pen plotter flow-field posters",
+        "Fidenza-style ribbon compositions",
+        "vpype layered SVG workflow",
+        "teletype operator logs",
+        "The Algorithmic Beauty of Plants"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick a composition and a seed, press plot, and watch the pen draw in real time while the operator log narrates events. The mishap dial changes how often ink skips, blots appear, the paper creeps or a pen swap lands slightly off. An ideal-versus-actual ghost toggle shows what the machine meant to draw, so each seed becomes a small experiment and the dial setting that flatters a given composition is the thing to find.",
+      "sophisticationHooks": [
+        "Three seeded composition engines (flow-field ribbons with spacing control, L-system shrubs, spiral-packed circles) split across 2 to 3 pen layers",
+        "Stylised machine model: ink reservoir that depletes with distance and recovers on re-dip, touchdown blots, cumulative paper creep that misregisters later layers, with all randomness drawn from the seed so the URL reproduces the same plot",
+        "Operator log with deadpan one-line entries per event and an ideal-versus-actual ghost overlay",
+        "Exports: layered SVG of the ideal paths (labelled as ideal) and a PNG of the as-plotted poster with a plot-number caption"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: pure path generators and plotter-state model in a worker, canvas2d renderer with per-pen ink look, playback controls (speed, pause, skip to end), mishap dial plus 4 individual toggles, hash state (composition, seed, pens, dial), SVG and PNG export through Blob downloads, light/dark paper themes, reduced-motion path (instant draw), about/making-of panel. Cut: real G-code, stepper-motor audio, user-drawn input paths, more than 3 composition engines.",
+      "risks": [
+        "The mishap physics is stylised and not calibrated to a real machine; the UI says so and the dossier keeps the plotter-constraint claim flagged as reported, unconfirmed.",
+        "Ordinary-pen skipping sources are not plotter-specific, so the about panel presents them as inspiration only.",
+        "Performance: long plots can reach tens of thousands of segments, so segments are batched, capped (about 60k) and drawn incrementally to a backing canvas.",
+        "Dial and toggle count could crowd a 360px layout; the controls fold into a drawer on small screens.",
+        "Flow-field ribbons are a very familiar look; differentiation relies on the machine-error layer and log, which needs strong writing and visible payoffs."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "jester-1",
+    "title": "Cabinet of Opinions",
+    "pitch": "A deadpan product page, control panel and manual for an invented smart filing cabinet whose drawers slam shut according to a secret rule. The visitor feeds it absurd little documents, watches which drawer it picks, and deduces the rule from the slams and the cryptic manual; then a tide gauge turns and the cabinet silently switches rules, so the second minute is about noticing you are being stubborn. A seeded daily rule set and a shareable result card make the tenth minute different from the first.",
+    "whyNow": "Timeless. Hidden-rule deduction games are well loved and rare on the web, and wrapping one in a product-page parody makes the rule the punchline.",
+    "origin": {
+      "agent": "jester",
+      "lens": "fake-product-satire"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "puzzle",
+      "tone": [
+        "absurd",
+        "satirical",
+        "playful",
+        "nerdy"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations",
+        "localstorage"
+      ],
+      "tags": [
+        "fake-product",
+        "hidden-rule",
+        "filing-cabinet",
+        "deduction",
+        "manual-parody",
+        "rule-switching",
+        "office-satire",
+        "daily-puzzle"
+      ],
+      "keywords": [
+        "inductive-reasoning",
+        "product-page-parody",
+        "control-panel",
+        "tide-gauge",
+        "drawers",
+        "seeded-daily",
+        "perseveration"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Two established hidden-rule formats shape the mechanic: a Zendo-style game where a master's rule is inferred from marked examples, and the Wisconsin card sorting task where the sorting rule changes without warning and the main measure is clinging to the old rule. The tide gauge borrows the real roughly 12 h 25 min semidiurnal tide period as the cycle on which the cabinet swaps rules. Filing-cabinet history (disputed invention, Library Bureau a leading name) supplies the fictional company's mock heritage page. Parody-genre sources say the humour comes from a deadpan narrator who reveals too much, which fixes the voice. No real company or product is parodied; the genre of product pages is.",
+      "sources": [
+        {
+          "title": "Zendo (game)",
+          "url": "https://en.wikipedia.org/wiki/Zendo_(game)",
+          "date": "",
+          "snippet": "Describes Zendo as a game of inductive logic: a master sets a rule, students build example structures, and each is marked as following the rule or not until someone names the rule.",
+          "via": "search",
+          "note": "Establishes the hidden-rule-from-examples mechanic and the white/black marker feedback.",
+          "verified": true
+        },
+        {
+          "title": "Zendo rules (Looney Labs)",
+          "url": "https://www.looneylabs.com/sites/default/files/rules/Zendo.pdf",
+          "date": "",
+          "snippet": "Publisher rules for Zendo; advice for rule makers is to keep rules simple and avoid compound or obscure-math conditions.",
+          "via": "search",
+          "note": "Second independent description of the format and the rule-difficulty guidance used for the rule bank.",
+          "verified": true
+        },
+        {
+          "title": "Wisconsin Card Sorting Test (WCST)",
+          "url": "https://www.lancaster.ac.uk/fas/psych/glossary/wisconsin_card_sorting_test_-wcst/",
+          "date": "",
+          "snippet": "University glossary entry: cards are sorted by colour, form or number, the active category is never announced, and only right or wrong feedback is given.",
+          "via": "search",
+          "note": "Establishes the silent rule switch and feedback-only learning.",
+          "verified": true
+        },
+        {
+          "title": "Wisconsin Card Sorting Task (HED task page)",
+          "url": "https://www.hedtags.org/hed-task/tasks/hedtsk_wisconsin_card_sorting.html",
+          "date": "",
+          "snippet": "Task description page: the sorting rule changes without warning and the participant must infer the new one from feedback alone.",
+          "via": "search",
+          "note": "Independent agreement on the unannounced rule change.",
+          "verified": true
+        },
+        {
+          "title": "Tide",
+          "url": "https://en.wikipedia.org/wiki/Tide",
+          "date": "",
+          "snippet": "Encyclopedia article on tides, including the semidiurnal pattern of two highs and two lows per lunar day.",
+          "via": "search",
+          "note": "Background for the tide-gauge cycle.",
+          "verified": true
+        },
+        {
+          "title": "The Period of Lunar Tides (Wolfram Demonstrations)",
+          "url": "https://demonstrations.wolfram.com/ThePeriodOfLunarTides/",
+          "date": "",
+          "snippet": "Interactive demonstration of why the main lunar tide repeats about every 12 hours 25 minutes, half a tidal lunar day.",
+          "via": "search",
+          "note": "Second source for the 12 h 25 min figure.",
+          "verified": true
+        },
+        {
+          "title": "Filing cabinet",
+          "url": "https://en.wikipedia.org/wiki/Filing_cabinet",
+          "date": "",
+          "snippet": "Says the invention of the vertical file is an unsolved puzzle, with a Library Bureau patent filed in 1902 as the strongest documented claim.",
+          "via": "search",
+          "note": "Mock-heritage material for the fictional manufacturer; origin is disputed.",
+          "verified": true
+        },
+        {
+          "title": "How filing cabinets changed the world (History Nebraska)",
+          "url": "https://history.nebraska.gov/blog/how-filing-cabinets-changed-world",
+          "date": "",
+          "snippet": "State history blog on filing cabinets; gives a Buffalo charity secretary's 1892 idea built as a prototype by the Library Bureau, while other accounts differ.",
+          "via": "search",
+          "note": "Independent account showing the origin story varies.",
+          "verified": true
+        },
+        {
+          "title": "Eleusis (card game)",
+          "url": "https://en.wikipedia.org/wiki/Eleusis_(card_game)",
+          "date": "",
+          "snippet": "Article on a card game in which the dealer writes a secret rule and players infer it from which plays are accepted; reportedly 1950s origin.",
+          "via": "search",
+          "note": "Inspiration only. The origin year was seen in one search summary, so it stays unverified and is not stated on the page.",
+          "verified": false
+        },
+        {
+          "title": "Parody assignment (University of Minnesota Duluth course page)",
+          "url": "https://www.d.umn.edu/~cstroupe/f09/1506/parody.html",
+          "date": "",
+          "snippet": "Course page on parodying a digital genre by adopting a narrator voice that unintentionally gives itself away.",
+          "via": "search",
+          "note": "Voice guidance for the deadpan product copy. Single source, so unverified.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Zendo is a game of inductive logic in which one player's hidden rule is inferred by the others from examples marked as following it or not.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The Wisconsin card sorting task asks people to sort by colour, form or number without being told which, gives only right or wrong feedback, and changes the rule without warning.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The main lunar tide repeats about every 12 hours 25 minutes, which is half a tidal lunar day.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Accounts of who invented the vertical filing cabinet differ, and the Library Bureau appears in both an encyclopedia and a state-history account.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Eleusis, a hidden-rule card game, is reported to date from the 1950s (reported, unconfirmed).",
+          "sourceIndex": 8,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Zendo",
+        "Eleusis",
+        "Wisconsin card sorting task",
+        "Petals Around the Rose",
+        "flat-pack instruction booklets",
+        "infomercial problem-demo-offer structure",
+        "corporate About-Us pages"
+      ]
+    },
+    "design": {
+      "coreLoop": "A document with four or five visible traits (ink colour, length, subject, stamp, age) arrives; the visitor drops it into a drawer or lets the cabinet auto-file; the cabinet either accepts with a satisfied thunk or ejects it with a deadpan complaint. The visitor records hypotheses in a notebook of rule chips and can switch to prediction mode, calling the drawer before the slam. After a streak the tide gauge turns and the rule silently swaps, and a special catalyst document can force an early swap. Each round is a fresh rule pair from a seeded bank, so the loop stays a puzzle rather than a memorised trick.",
+      "sophisticationHooks": [
+        "A composable rule engine of roughly two dozen attribute rules (parity, comparisons, unless-clauses) with a solvability check so every rule is distinguishable from the document stream",
+        "Tide gauge that drives silent rule changes on a 12 h 25 min-inspired cycle scaled to filings, plus catalyst documents; a joke metric for clinging to the old rule",
+        "Three-in-one shell: product page, live control panel and manual whose troubleshooting table holds oblique, literally true hints that cost paperwork points",
+        "Seeded daily rule pair, URL-hash share of the result card, hand-drawn SVG cabinet with synthesized thunks"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: SVG cabinet with 6 drawers and animations, document generator from a small hand-made grammar, rule bank and checker, notebook and prediction mode, tide gauge, product-page and manual sections, daily seed and share card, light/dark, reduced motion, keyboard and touch, about panel. Cut: sound beyond a few synthesized thunks, accounts, multiplayer, rule editor.",
+      "risks": [
+        "A rule too hard or too easy ruins the loop; mitigate with a curated, tested rule bank and a visible difficulty tier.",
+        "Jokes must not bury the instructions; mitigate with a plain-language how-to-play line in the first view and in the manual.",
+        "Eleusis origin year is unverified and the 12 h 25 min figure is a simplification; the page states neither as fact beyond 'about'.",
+        "The fictional manufacturer must use an invented name and drawn mark and be labelled fictional in the header and about panel."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "jester-2",
+    "title": "The Overtoaster",
+    "pitch": "The product page, control panel and manual of an invented heater-grid toaster that burns pictures onto bread, with a real two-stage heat and moisture simulation underneath. The visitor sets power per heating cell, watches the slice dry out first and only then brown, and tries to match a daily target design without charring the crust, while the product's absurd subscription tiers and pop-ups pester the page in the margins. The finished slice is a screenshot-ready piece of burnt art with a deadpan review.",
+    "whyNow": "Timeless. Appliances that hide features behind paywalls and apps are a lasting genre to lampoon, and a toaster is the oldest joke in connected gadgets.",
+    "origin": {
+      "agent": "jester",
+      "lens": "fake-product-satire"
+    },
+    "fingerprint": {
+      "category": "science-sim",
+      "mechanic": "simulator",
+      "tone": [
+        "satirical",
+        "playful",
+        "absurd"
+      ],
+      "tech": [
+        "canvas2d",
+        "web-animations",
+        "procedural-audio",
+        "localstorage"
+      ],
+      "tags": [
+        "fake-product",
+        "toaster",
+        "heat-diffusion",
+        "maillard",
+        "subscription-satire",
+        "burnt-art",
+        "product-page-parody",
+        "daily-target"
+      ],
+      "keywords": [
+        "heating-grid",
+        "moisture-map",
+        "browning-model",
+        "firmware-tiers",
+        "stencil",
+        "control-panel",
+        "share-hash"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Food-science and patent sources agree on the physics that shapes the mechanic: bread surface water holds the surface near 100 C, so toasting is a drying stage followed by browning, and browning chemistry is reported to start somewhere from about 120 to 155 C depending on the source. That makes the simulator two coupled fields (moisture and temperature) with a latent-heat plateau, so patience visibly matters. Real patents and older gadgets already print or select browning patterns, so the page is a genre parody rather than a novelty claim. Consumer-group and tech-press pieces on features locked behind subscriptions justify the satirical tier-and-pop-up layer, which targets the practice, not any company.",
+      "sources": [
+        {
+          "title": "Why Does Bread Turn So Crispy And Tasty When Toasted?",
+          "url": "https://www.scienceabc.com/pure-sciences/why-does-bread-turn-so-crispy-and-tasty-when-toasted-maillard-reaction.html",
+          "date": "",
+          "snippet": "Popular-science explainer saying the browning reaction begins once the surface passes roughly 140 C, with dry heat driving off remaining water.",
+          "via": "search",
+          "note": "One browning-onset figure.",
+          "verified": true
+        },
+        {
+          "title": "Canadian patent summary 2915995 (Canadian Patent Database)",
+          "url": "https://brevets-patents.ic.gc.ca/opic-cipo/cpd/fra/brevet/2915995/sommaire.html",
+          "date": "",
+          "snippet": "Patent summary placing the browning reactions at roughly 120 to 150 C and noting that surface water must evaporate first.",
+          "via": "search",
+          "note": "Second onset range; agrees on the moisture stage.",
+          "verified": true
+        },
+        {
+          "title": "Toast (food)",
+          "url": "https://en.wikipedia.org/wiki/Toast_(food)",
+          "date": "",
+          "snippet": "Encyclopedia article stating the browning reaction needs surface temperatures above about 155 C and toasting finishes between roughly 155 and 190 C.",
+          "via": "search",
+          "note": "Third onset figure; sources differ, so the sim uses a band.",
+          "verified": true
+        },
+        {
+          "title": "The science behind perfect toast (Consumer NZ)",
+          "url": "https://www.consumer.org.nz/articles/making-the-perfect-toast",
+          "date": "",
+          "snippet": "Consumer article: browning is slow below 100 C and the water in bread keeps the surface from getting hotter until it dries.",
+          "via": "search",
+          "note": "Independent support for the drying-then-browning stages.",
+          "verified": true
+        },
+        {
+          "title": "US10682014B2 - Apparatus for heating food",
+          "url": "https://patents.google.com/patent/US10682014",
+          "date": "",
+          "snippet": "Patent describing toasting as drying the surface first and then browning, because surface water holds the temperature below 100 C.",
+          "via": "search",
+          "note": "Source for the two-stage model.",
+          "verified": true
+        },
+        {
+          "title": "US7290482B2 - Toaster with removable imaging plates",
+          "url": "https://patents.google.com/patent/US7290482",
+          "date": "",
+          "snippet": "Patent for a toaster with swappable plates that block heat in a pattern so an image browns onto bread.",
+          "via": "search",
+          "note": "Shows image-browning toasters are an existing genre.",
+          "verified": true
+        },
+        {
+          "title": "Scan Toaster article (The Register)",
+          "url": "https://www.theregister.com/2008/09/11/wacky_toaster/",
+          "date": "2008-09-11",
+          "snippet": "2008 piece on a designer's PC-connected toaster with movable heated modules that forms an image such as weather or headlines on the bread.",
+          "via": "search",
+          "note": "Earlier example of a data-driven, image-toasting gadget.",
+          "verified": true
+        },
+        {
+          "title": "Toasteroid smart toaster (Fatherly)",
+          "url": "https://www.fatherly.com/gear/tosteroid-smart-toaster",
+          "date": "",
+          "snippet": "Gear article on an app-driven toaster that browns chosen images onto bread; its current availability is unclear from the result.",
+          "via": "search",
+          "note": "Third example of the genre; status unknown, so only cited as existing coverage.",
+          "verified": true
+        },
+        {
+          "title": "Unsubscribe: Refusing to pay to use what we own (PIRG)",
+          "url": "https://pirg.org/articles/unsubscribe-refusing-to-pay-to-use-what-we-own/",
+          "date": "",
+          "snippet": "Consumer-advocacy article on products whose features sit behind recurring fees, noting the trend may be spreading to appliances.",
+          "via": "search",
+          "note": "Grounds the subscription-tier satire.",
+          "verified": true
+        },
+        {
+          "title": "Snoo smart bassinet sees key features paywalled (Techdirt)",
+          "url": "https://www.techdirt.com/tag/dont-own-what-you-buy/",
+          "date": "",
+          "snippet": "Tech-press tag page covering hardware that loses features without a subscription, including a baby bassinet.",
+          "via": "search",
+          "note": "Independent press example of feature paywalls.",
+          "verified": true
+        },
+        {
+          "title": "Garage door opener paywall coverage (Torque News)",
+          "url": "https://www.torquenews.com/17998/honda-paywalls-garage-door-opener-previously-came-standard-owners-are-not-pleased",
+          "date": "",
+          "snippet": "Auto-news piece reporting a previously standard feature moving behind a paid plan and owners objecting.",
+          "via": "search",
+          "note": "Third outlet on the same practice. Names a real company, so the page will not.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Sources differ on when toast browning starts: about 120 to 150 C in a patent summary, about 140 C in a science explainer, above about 155 C in an encyclopedia article.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Water in the bread surface holds the surface near or below 100 C until it evaporates, so toasting runs as a drying stage and then a browning stage.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            3,
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Toasters that brown images or selected patterns onto bread have been patented or built, including a patent for heat-blocking plates and a 2008 PC-connected design.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6,
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Consumer groups and tech press report hardware features being moved behind recurring subscriptions, with appliances named as a possible next area.",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9,
+            10
+          ],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "infomercial gadget pages",
+        "subscription-locked hardware complaints",
+        "smart-toaster running gag",
+        "pixel-art on toast",
+        "flat-pack manuals",
+        "cookie-consent banners"
+      ]
+    },
+    "design": {
+      "coreLoop": "The visitor picks a bread slice and a target design, sets power on a heater grid of cells (paint, drag or choose presets) and a timer, and presses start. A 2D simulation heats the slice, dries it, then browns it, with a heat-map overlay and a scrubbable replay. Score compares the finished slice to the target and penalises char; a deadpan review and a screenshot card close the round. A seeded daily target and tightening limits (fewer cells, shorter time) keep later attempts different, while the satire layer adds playful interruptions such as a tier upsell that never blocks controls.",
+      "sophisticationHooks": [
+        "Coupled moisture and temperature fields with a drying plateau near 100 C, browning accumulating in a 120 to 155 C band and char beyond it, so the physics itself teaches patience",
+        "Heater-grid painter with a live heat-map overlay and replay scrubber",
+        "Deadpan satire shell: product page with invented firmware tiers, a cookie-consent banner about the crust, a manual and a generated review of your toast",
+        "Seeded daily target drawn in code, URL-hash share of the power map, canvas export of the finished slice and synthesized crackle and ding"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: 48 by 36 field simulation on canvas, heater-grid editor, about 20 code-drawn target stencils, scoring, replay scrubber, product page, manual, tier and consent parody that never block controls, daily seed and hash share, light/dark, reduced motion, keyboard and touch, about panel. Cut: image upload, multi-slice batches, extended audio, any real electrical-safety advice.",
+      "risks": [
+        "Image-toasting gadgets already exist, so novelty rests on the physics sim and the satire shell, not the idea of toast art.",
+        "Browning thresholds vary by source; the page presents them as a simplified toy band labelled as an estimate, not as science advice.",
+        "Pop-up satire must not obstruct the controls or hide instructions; mitigate with non-modal, dismissible, keyboard-reachable gags.",
+        "Subscription satire targets the practice only; no real company, product or logo appears on the page, and the fictional maker is labelled as such.",
+        "Frame rate on small phones; mitigate with a small grid and fixed-step update."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "architect-1",
+    "title": "The Wrong Window",
+    "pitch": "The visitor is a citizen inside a tiny invented Ministry of nine counters, holding one goal (for example, a Licence to Keep One Goose) and a pocket of forms. Each counter's rulebook entry is a readable rule about what it wants, what it stamps and when it closes, and the visitor plans a route, queues, gets sent to the other department, and slowly discovers loopholes that emerge when rules combine (a photocopier that clones stamps, a pneumatic underpass between floors, a clerk who relaxes for cake). A daily seed, a shareable route receipt covered in tilted ink stamps, and a count of loopholes found make the second and tenth run feel different.",
+    "whyNow": "Timeless. The Papers, Please style of rule-reading puzzle has stayed popular for years, and a warm, fictional, no-politics version with composable rules and a built-in solver is an open niche.",
+    "origin": {
+      "agent": "architect",
+      "lens": "bureaucracy-sim"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "game",
+      "tone": [
+        "absurd",
+        "cozy",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "canvas2d",
+        "webaudio",
+        "localstorage"
+      ],
+      "tags": [
+        "bureaucracy",
+        "forms",
+        "stamps",
+        "queue",
+        "rule-engine",
+        "route-planning",
+        "daily-seed",
+        "loopholes",
+        "fictional-agency"
+      ],
+      "keywords": [
+        "red-tape",
+        "catch-22",
+        "counter",
+        "clerk",
+        "permit",
+        "rulebook",
+        "receipt",
+        "pneumatic-tube",
+        "cake"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "The genre anchor is the document-checking puzzle where a rulebook grows day by day and the tension comes from speed against accuracy, with the bureaucratic frame making it easy to author many gameplay rules. Small stamp-and-deliver jam games exist, but in the one seen the order of stamping does not matter, so a game where rules compose, order matters and a solver proves solvability and finds unintended shortcuts is a different design. Cultural material for the jokes is real and checkable: Catch-22 as a loop of mutually dependent rules, red tape as the literal ribbon once used to bind official papers, and Parkinson's satirical laws of officials making work for each other. Every agency, clerk and form in the page is invented.",
+      "sources": [
+        {
+          "title": "Designing the bleak genius of Papers, Please (Game Developer)",
+          "url": "https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-",
+          "date": "",
+          "snippet": "Design feature describing the player as an inspector who must process as many travelers as possible each day while admitting only those whose increasingly complicated documents are in order; special regulations pile up.",
+          "via": "search",
+          "note": "Established the speed versus accuracy tension and escalating rulebook as the genre engine.",
+          "verified": true
+        },
+        {
+          "title": "Papers, Please (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Papers,_Please",
+          "date": "",
+          "snippet": "Encyclopedia entry: a 2013 game by Lucas Pope in which an immigration inspector checks documents against an ever-growing list of rules, and each day brings new rules; pay depends on accuracy.",
+          "via": "search",
+          "note": "Second independent description of the daily-rules and approve/deny loop.",
+          "verified": true
+        },
+        {
+          "title": "Catch-22 (logic) (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+          "date": "",
+          "snippet": "The term comes from Heller's 1961 novel; a pilot who asks to be grounded for insanity shows he is sane and so cannot be grounded. Now means a trap made of mutually dependent conditions.",
+          "via": "search",
+          "note": "Origin and meaning of the loop-of-rules joke.",
+          "verified": true
+        },
+        {
+          "title": "Catch-22 meaning and origin (Phrase Finder)",
+          "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+          "date": "",
+          "snippet": "Phrase reference giving the same origin: coined in the 1961 novel, popularised more widely after the 1970 film; now a situation where any move leads to trouble.",
+          "via": "search",
+          "note": "Independent second result for the Catch-22 origin.",
+          "verified": true
+        },
+        {
+          "title": "Red tape meaning and origin (Phrase Finder)",
+          "url": "https://phrases.org.uk/meanings/red-tape.html",
+          "date": "",
+          "snippet": "Says legal and official documents were bound with red tape from the 17th century, citing an early Maryland law, and that the fully figurative use appears by 1838.",
+          "via": "search",
+          "note": "Literal origin of red tape for the page's flavour text.",
+          "verified": true
+        },
+        {
+          "title": "Red tape (Dictionary.com)",
+          "url": "https://dictionary.com/browse/Red_tape",
+          "date": "",
+          "snippet": "Defines red tape as excessive formality before official action and says the phrase alludes to the former British custom of tying official documents with red ribbon.",
+          "via": "search",
+          "note": "Independent second result for the ribbon origin.",
+          "verified": true
+        },
+        {
+          "title": "Ministerio Simulator (itch.io)",
+          "url": "https://juanrod707.itch.io/ministeriosim",
+          "date": "",
+          "snippet": "A multiplayer prototype made in a roughly 30-hour jam in 2017 where players take forms from a desk, stamp them and deliver them to a front desk; the order of stamping or copying does not matter.",
+          "via": "search",
+          "note": "Shows the stamp-forms niche exists and leaves rule-composition open.",
+          "verified": false
+        },
+        {
+          "title": "Off the AppStore: Droning bureaucracy in The Registry (Pocket Gamer)",
+          "url": "https://www.pocketgamer.com/off-the-appstore/the-registry/",
+          "date": "",
+          "snippet": "Title seen in a search result only; a mobile game feature about a bureaucracy-themed title. Body text not seen.",
+          "via": "search",
+          "note": "Adjacent prior art, details unseen.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Papers, Please (released 2013) is a document-checking game in which the player compares travelers' papers to a rulebook and approves or denies them; new rules arrive each in-game day and speed is traded against accuracy.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Catch-22 was coined in Joseph Heller's 1961 novel: a pilot who asks to be grounded as insane demonstrates sanity and therefore stays on duty.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The phrase red tape comes from the custom of binding official documents with red tape or ribbon, which Phrase Finder traces to the 17th century.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, per an itch.io listing, a 2017 jam prototype called Ministerio Simulator has players stamp and deliver forms where stamp order does not matter (reported, single result).",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Papers, Please",
+        "Catch-22",
+        "StampHere",
+        "Ministerio Simulator",
+        "text adventures with inventory puzzles",
+        "pneumatic tube post offices"
+      ]
+    },
+    "design": {
+      "coreLoop": "The citizen reads a small rulebook (each counter: needs, stamps, closing time, queue length, one human quirk), plans a route on a floor map, then walks it, spending clock time, patience and biscuits. Wrong windows, lunch closures and circular requirements force replanning, and combining rules produces loopholes the built-in solver recognises and names. A run ends in a stamped receipt scored on time, patience and loopholes found; a fresh seed or the daily seed restarts it with a different ministry.",
+      "sophisticationHooks": [
+        "Declarative rule engine (needs, consumes, stamps, forbids, opens-at) with a breadth-first solver over inventory states that proves every seeded ministry is solvable, computes par, and flags a player route shorter than the intended one as a named loophole",
+        "Seeded procedural ministry generator: invented departments, clerk quirks and a goal permit, with daily seed and URL-hash state so a friend replays the same office",
+        "Shareable route receipt drawn with SVG tilted ink stamps and procedural WebAudio thumps, plus a loophole journal that persists in localStorage",
+        "Every rule carries a human-warmth joke: clerks relax for cake, a stamp is waived if the visitor asks after a cat, the underpass is kept open by a night-shift tea trolley"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: rule engine and solver module, generator, floor-map renderer with queue animation, rulebook panel, receipt generator, sound, about and making-of panel, keyboard and touch play, light and dark, reduced motion. Cut: multiplayer, user-authored ministries, more than one goal per run, any live data.",
+      "risks": [
+        "Rule composition can produce unsolvable or trivially solved ministries; mitigation is the solver gate in the generator with a regenerate-on-fail loop and a hand-authored fallback seed",
+        "Reading rules can feel like homework; mitigation is a 90-second guided first office and a hint action that costs patience",
+        "The Ministerio Simulator prior-art claim is single-source and unverified, so the about panel presents it only as reported, or omits it",
+        "Tone must stay fictional and non-partisan: no real agencies, forms or logos"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "architect-2",
+    "title": "Clause And Effect",
+    "pitch": "The visitor is the lone clerk of an Amendments Desk facing a knot of red tape: offices drawn as nodes, requirements as strands, and queues of citizens stuck because permit A needs B and B needs A. With a small budget of amendment clauses (an exemption, a sunset clause, a grandfather clause, a deemed-approved-after-N-days rule, a brand-new office) the visitor pulls strands loose and then runs a simulated crowd through the system, watching who still gets stuck. Parkinson-style side effects punish lazy fixes, since every new office spawns paperwork for its neighbours, so the tidiest unravelled desk wins.",
+    "whyNow": "Timeless. It turns a real piece of computer science (deadlock and circular wait) into a joke-rich puzzle that rewards seeing the structure of a mess.",
+    "origin": {
+      "agent": "architect",
+      "lens": "bureaucracy-sim"
+    },
+    "fingerprint": {
+      "category": "math-puzzle",
+      "mechanic": "puzzle",
+      "tone": [
+        "analytical",
+        "satirical",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "pointer-events",
+        "localstorage"
+      ],
+      "tags": [
+        "bureaucracy",
+        "deadlock",
+        "graph-puzzle",
+        "queue-simulation",
+        "catch-22",
+        "red-tape",
+        "amendments",
+        "dependency-graph"
+      ],
+      "keywords": [
+        "circular-wait",
+        "strongly-connected",
+        "clause",
+        "exemption",
+        "sunset",
+        "throughput",
+        "parkinson",
+        "knot"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Deadlock theory gives the puzzle a precise spine: a system can deadlock only when four conditions hold together, circular wait among them, and the standard cures (break a condition, impose an ordering on resources) map neatly onto bureaucratic amendments. Where each resource has a single instance, a cycle in the wait graph means deadlock, so a strongly-connected-component pass can show the player exactly which knot is the Catch-22. Parkinson's satirical observation that the number of officials grows regardless of the work supplies the side-effect rule that stops brute-force fixing. All offices, permits and citizens are invented.",
+      "sources": [
+        {
+          "title": "Deadlock lecture notes (UC Riverside CS153)",
+          "url": "https://www.cs.ucr.edu/~nael/cs153/lectures/lec12.pdf",
+          "date": "",
+          "snippet": "Course lecture listing the four conditions needed for deadlock (mutual exclusion, hold and wait, no preemption, circular wait) and handling strategies including prevention, avoidance and detection.",
+          "via": "search",
+          "note": "Four conditions and handling strategies.",
+          "verified": true
+        },
+        {
+          "title": "Deadlock chapter (Illinois CS341 coursebook)",
+          "url": "https://cs341.cs.illinois.edu/coursebook/Deadlock",
+          "date": "",
+          "snippet": "Coursebook chapter on deadlock covering the necessary conditions, resource allocation graphs and ordering resources as a prevention approach.",
+          "via": "search",
+          "note": "Independent second description of the conditions and prevention by ordering.",
+          "verified": true
+        },
+        {
+          "title": "Deadlock reading (University of Virginia)",
+          "url": "https://www.cs.virginia.edu/~cr4bd/3130/F2023/readings/deadlock.html",
+          "date": "",
+          "snippet": "Reading defining deadlock and the wait graph, noting that with one instance per resource a cycle means deadlock, with graph traversal as the usual detection method.",
+          "via": "search",
+          "note": "Cycle means deadlock for single-instance resources.",
+          "verified": true
+        },
+        {
+          "title": "Catch-22 (logic) (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+          "date": "",
+          "snippet": "The term comes from Heller's 1961 novel; asking to be grounded for insanity shows sanity. Now means a trap of mutually dependent conditions.",
+          "via": "search",
+          "note": "The cultural name for a circular-wait knot.",
+          "verified": true
+        },
+        {
+          "title": "Catch-22 meaning and origin (Phrase Finder)",
+          "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+          "date": "",
+          "snippet": "Phrase reference giving the 1961 novel origin and the modern meaning of a no-win bind of conflicting rules.",
+          "via": "search",
+          "note": "Independent second result for Catch-22.",
+          "verified": true
+        },
+        {
+          "title": "Parkinson's law (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Parkinson%27s_law",
+          "date": "",
+          "snippet": "Entry on Parkinson's satirical law, first published as an essay in The Economist in 1955 and expanded in a 1958 book, arguing that the number of officials is unrelated to the work done.",
+          "via": "search",
+          "note": "Basis of the work-multiplication side effect.",
+          "verified": true
+        },
+        {
+          "title": "Parkinson's Law (essay reprint, cat-v archive)",
+          "url": "https://doc.cat-v.org/economics/parkinsons-law",
+          "date": "",
+          "snippet": "Reprint of the essay: the rise in the number of staff follows its own law and would be much the same whether the work grew, shrank or vanished.",
+          "via": "search",
+          "note": "Independent second result for the essay's central claim.",
+          "verified": true
+        },
+        {
+          "title": "Parkinson's Law blog post (Fabrice Grinda)",
+          "url": "https://fabricegrinda.com/parkinsons-law-is-so-true",
+          "date": "",
+          "snippet": "A blog attributes to Parkinson a staff growth rate of 5 to 7 percent a year regardless of work; not confirmed against the original essay in the results seen.",
+          "via": "search",
+          "note": "Only source for the percentage; unverified.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Deadlock needs four conditions at once (mutual exclusion, hold and wait, no preemption, circular wait); the Coffman conditions date to a 1971 paper.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "In a wait graph where each resource has a single instance, a cycle means deadlock; prevention of circular wait is usually done by acquiring resources in a fixed total order.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            0,
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Catch-22 (Heller, 1961) names a trap made of mutually dependent conditions.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Parkinson's law began as a 1955 essay in The Economist (book 1958) arguing that the number of officials is independent of the amount of work.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, per a blog by Fabrice Grinda, Parkinson's essay is said to give a staff growth rate of 5 to 7 percent a year; unconfirmed, so the page will not state it as fact and will use an invented rate labelled as fiction.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Papers, Please",
+        "Catch-22",
+        "Banker's algorithm diagrams",
+        "Parkinson's Law",
+        "Opus Magnum style optimisation scoring",
+        "Mini Metro"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each level presents a dependency knot of offices, permits and a stream of citizens. The clerk inspects strands to find the circular-wait loops, spends a limited clause budget on amendments, and runs a seeded crowd simulation to see who is still stuck and how long the queues grow. Parkinson side effects and a tape-length score make cheap fixes backfire, so replays chase fewer clauses, shorter queues and a tidier knot.",
+      "sophisticationHooks": [
+        "Strongly-connected-component detection highlights each Catch-22 knot as a Loop Finder lens and doubles as the hint system",
+        "Deterministic discrete-event queue simulation in a worker, seeded so a solution hash replays identically",
+        "Verlet-style red tape strands drawn on canvas that visibly slacken and unravel when an amendment lands",
+        "Twelve hand-authored levels plus a daily generated knot, with a solution encoded in the URL hash so a friend can load and beat it"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: graph model and SCC pass, five amendment types, simulation worker, canvas strand renderer with drag and tap interaction, level select, 12 authored levels plus daily generator, scoring, about and making-of panel, keyboard and touch support, light and dark, reduced motion. Cut: level editor, multiplayer, user-uploaded levels, live data.",
+      "risks": [
+        "Abstract graph puzzles can feel dry; mitigation is the joke-dense clerk dialogue on each amendment and an early funny failure state",
+        "Generated levels must be solvable within the clause budget; mitigation is a brute-force checker over amendment combinations at generation time with a fallback to authored levels",
+        "The 5 to 7 percent Parkinson figure is unverified; the page uses an invented, labelled rate instead",
+        "Canvas strand physics plus worker simulation is the heaviest integration; the cut-list drops physics to a spring-eased curve if behind"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "artisan-1",
+    "title": "Jokers In Phase",
+    "pitch": "A concept mod for a poker roguelike: a new joker family whose bonuses depend on timing instead of just position. A Pendulum joker swings between flat mult and multiplied mult hand by hand, Firefly jokers blink on their own beat and slowly nudge their neighbours into step, and Handshake jokers pay out only when the two jokers beside them are in matching phase. The visitor arranges a five-slot rail, plays seeded hands through a tiny chips-times-mult engine, and watches a phase ring show who is in sync; a fully synchronised rail makes the whole page pulse once and drops a screenshot-worthy score card.",
+    "whyNow": "Timeless for the modding community: joker ordering is the core puzzle of the genre and no vanilla joker cares about rhythm, so the family opens a new axis of play. The page is a self-contained sandbox that works offline, so it stays good for weeks.",
+    "origin": {
+      "agent": "artisan",
+      "lens": "balatro-mod-ideas"
+    },
+    "fingerprint": {
+      "category": "modding-games",
+      "mechanic": "toy",
+      "tone": [
+        "playful",
+        "nerdy",
+        "serene"
+      ],
+      "tech": [
+        "canvas2d",
+        "dom-ui",
+        "web-animations",
+        "pointer-events",
+        "procedural-audio",
+        "localstorage"
+      ],
+      "tags": [
+        "balatro",
+        "joker-mod",
+        "mod-concept",
+        "scoring-engine",
+        "synchronization",
+        "oscillators",
+        "deckbuilder",
+        "sandbox"
+      ],
+      "keywords": [
+        "joker-order",
+        "phase-ring",
+        "chips-times-mult",
+        "coupled-oscillators",
+        "seeded-hands",
+        "concept-card",
+        "share-hash"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "research": {
+      "summary": "Community guides agree on the evaluation rule that makes joker order matter: effects resolve left to right, with flat mult before multiplying mult. That ordering is the hook the new family bends: instead of only where a joker sits, when it fires also changes its value. Fireflies are a well-studied case of many weakly coupled rhythms locking together (the Kuramoto family of models, with a 2025 abstract testing it on swarm data), which gives the Firefly joker a real, recomputable rule: each blink nudges neighbours' phases a little. The mod scene already runs on a common loader and injector pair, and mod listings show that vanilla-feeling joker packs are what many modders aim for, so the concept ships with a rail that mimics that scale. All scoring numbers in the page are invented for the concept and labelled as such.",
+      "sources": [
+        {
+          "title": "destructoid.com Balatro joker order guide",
+          "url": "https://destructoid.com/?p=478541",
+          "date": "",
+          "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones; its example reordering of three jokers roughly doubled the score.",
+          "via": "search",
+          "note": "Joker evaluation order and why placement matters.",
+          "verified": true
+        },
+        {
+          "title": "Four Things I Wish I Knew When Starting Balatro",
+          "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+          "date": "",
+          "snippet": "Explains that mult is totalled in order before it multiplies chips, so a multiplying joker placed early lowers the final result; a worked example gains from moving it to the end.",
+          "via": "search",
+          "note": "Independent second statement of the left-to-right, additive-before-multiplying rule.",
+          "verified": true
+        },
+        {
+          "title": "Relating the Kuramoto model to data from immobile firefly swarms",
+          "url": "https://meetings-archive.aps.org/smt/2025/mar-m58/7",
+          "date": "2025",
+          "snippet": "A 2025 physics meeting abstract that compares the Kuramoto coupled-oscillator model with data from stationary firefly swarms and reports network-style interaction and slow collective oscillation.",
+          "via": "search",
+          "note": "Fireflies are modelled as coupled phase oscillators; real swarms only approximate the model.",
+          "verified": true
+        },
+        {
+          "title": "fireflies synchronization",
+          "url": "https://abakcus.com/articles/fireflies-synchronization",
+          "date": "",
+          "snippet": "A popular-maths article on how fireflies with no leader adjust their flash timing after seeing others, linking it to the Kuramoto model of collective synchronisation.",
+          "via": "search",
+          "note": "Independent explainer agreeing that firefly sync is modelled with coupled oscillators.",
+          "verified": true
+        },
+        {
+          "title": "Steamodded smods repository",
+          "url": "https://github.com/Steamodded/smods",
+          "date": "",
+          "snippet": "Repository of a Lua mod loader and API layer for the game, built to run alongside the LOVE framework the game uses.",
+          "via": "search",
+          "note": "Mods are built on a community loader; the concept can speak the modders' vocabulary.",
+          "verified": true
+        },
+        {
+          "title": "Mistigris mod listing (mod index)",
+          "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/commit/118dcb4eaacdabeb7c129addefb3a67d029433e6/mods/Astrapboy@Mistigris/description.md",
+          "date": "2025",
+          "snippet": "A vanilla-style mod adding 36 jokers and one boss blind; the listing says it needs the Steamodded loader and the Lovely injector.",
+          "via": "search",
+          "note": "Second independent mention of the loader plus injector requirement.",
+          "verified": true
+        },
+        {
+          "title": "Balatro Community College Pack description (mod index)",
+          "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/gitea-sync/mods/BKM@BalatroCommunityCollegePack/description.md",
+          "date": "2025",
+          "snippet": "Describes a pack of 25+ new jokers meant to keep the base game's balance and vanilla feel.",
+          "via": "search",
+          "note": "Single-source evidence that modders aim for vanilla-feeling jokers.",
+          "verified": false
+        },
+        {
+          "title": "Balatro blueprint vs brainstorm guide (two average gamers)",
+          "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+          "date": "",
+          "snippet": "Strategy guide result in a search about copy jokers; the search summary said one copies the joker to its right and the other copies the leftmost joker.",
+          "via": "search",
+          "note": "Neighbour-aware vanilla jokers exist; per-result attribution was not clear, so unverified.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-10, two independent community guides (Destructoid and Prima Games) state that joker effects resolve left to right, so additive mult belongs before multiplying mult.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The Kuramoto model (introduced 1975) describes many coupled oscillators locking to a shared rhythm, and is the standard way to model firefly synchrony; a 2025 APS meeting abstract tests it against swarm data and finds real interaction closer to a network than to pure distance.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, Balatro mods commonly require the Steamodded loader together with the Lovely injector (Steamodded repository and the Mistigris listing agree).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Unconfirmed: as of 2026-10-10, per one mod-index listing, the Community College Pack aims for vanilla-like balance with 25+ jokers.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Unconfirmed: as of 2026-10-10, per one guide, Blueprint copies the joker to its right and Brainstorm copies the leftmost joker.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Blueprint and Brainstorm neighbour-copy jokers",
+        "Kuramoto firefly synchronisation demos",
+        "Newton's cradle and double-pendulum desk toys",
+        "Steamodded joker packs",
+        "tabletop deck-builder concept cards"
+      ]
+    },
+    "design": {
+      "coreLoop": "Arrange five joker slots, play a seeded hand, read the phase ring and the line-by-line score cascade, then rearrange or retune coupling to chase a target score. Each played hand advances every oscillator one step, so the same rail scores differently on hand one than on hand four, and the best order changes with the beat. The second minute teaches that sync is worth more than raw power; the tenth minute is hunting the rail that locks all three Fireflies on the final hand.",
+      "sophisticationHooks": [
+        "Real discrete Kuramoto update for Firefly phases: each hand, a firefly's phase advances at its own rate and is pulled toward neighbours; coupling strength is a knob, and an order parameter meter shows how in-sync the rail is.",
+        "A tiny but honest scoring engine: seeded 52-card deck, eight hand types, chips times mult, left-to-right joker resolution with a step-by-step cascade animation and a log that explains every number.",
+        "Phase scope: a canvas ring shows each joker's phase as a dot on a circle, pendulum swing as an arc, handshake links as glowing bridges; a locked rail triggers a restrained synchronised pulse.",
+        "Shareable concept card: rail order, seed and coupling are encoded in the URL hash and rendered as a printable-looking joker card with invented art drawn in SVG."
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: engine (hands, scoring, three joker behaviours plus 5 plain filler jokers), rail with drag and keyboard reordering, phase ring canvas, score cascade, three challenge targets with par, URL-hash state, muted WebAudio ticks, about/making-of panel with verified sources only. Cut: shop, consumables, editions, a full run, saving mods as real Lua files.",
+      "risks": [
+        "Mechanic must be explainable in one screen; mitigation: a 20-second guided first hand and plain-language tooltips.",
+        "Scoring numbers are invented and not from the real game; the page labels them as concept values and uses no game art, names or audio of its own.",
+        "Firefly coupling must stay deterministic for sharing; mitigation: fixed-step phase update seeded by the hash.",
+        "Blueprint/Brainstorm behaviour is unconfirmed (single source); the page shows it only as 'as of 2026-10-10, per one guide' or omits it.",
+        "Dense motion could hurt reduced-motion users; mitigation: a static phase table replaces the animated ring."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "artisan-2",
+    "title": "Blind Foundry",
+    "pitch": "A boss-blind design bench for a poker roguelike. The visitor snaps together rule bricks (silence a suit, forbid repeating a hand type, cap hand size, halve base values, or a swinging rule that alternates each hand) and a Monte Carlo lab instantly runs five bot archetypes through hundreds of seeded rounds, drawing a win-rate bar per strategy. Puzzle cards set goals such as 'shut down the flush farmer while sparing everyone else', and a final twist lets the visitor swap what winning means, for example finishing close to the target instead of far above it.",
+    "whyNow": "Timeless for the genre: boss blinds are the part of the game designed to punish a single strategy, and modders keep adding new ones. The lab turns the vague feeling 'this blind is unfair' into a visible number, which is exactly what balance discussions lack.",
+    "origin": {
+      "agent": "artisan",
+      "lens": "balatro-mod-ideas"
+    },
+    "fingerprint": {
+      "category": "cards-odds",
+      "mechanic": "simulator",
+      "tone": [
+        "analytical",
+        "competitive",
+        "nerdy"
+      ],
+      "tech": [
+        "worker",
+        "canvas2d",
+        "dom-ui",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "balatro",
+        "boss-blind",
+        "monte-carlo",
+        "game-balance",
+        "mod-concept",
+        "poker-hands",
+        "strategy-archetypes",
+        "puzzle-cards"
+      ],
+      "keywords": [
+        "win-rate",
+        "rule-bricks",
+        "bot-archetypes",
+        "seeded-runs",
+        "balance-lab",
+        "counter-strategy",
+        "win-condition"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "research": {
+      "summary": "Boss blinds in the source game attack a specific plan (for example banning repeated hand types, limiting a round to one hand type, debuffing a suit, or forcing five-card hands), which is why they are a favourite mod target: several community mods list dozens of new ones. Balance for scoring-multiplier games is hard because stacking can produce runaway combos, and sources on the genre say heavy playtesting is required, so a quick in-browser Monte Carlo of simple bots is a genuine, useful stand-in for a designer's first pass. The lab uses invented numbers and toy bots, clearly labelled, and the exact vanilla blind rules are shown only as 'per fan guides' because they were not confirmed against the developer's own text.",
+      "sources": [
+        {
+          "title": "destructoid.com Balatro joker order guide",
+          "url": "https://destructoid.com/?p=478541",
+          "date": "",
+          "snippet": "A guide stating that joker effects trigger left to right unless noted, so additive mult jokers belong left of multiplying ones.",
+          "via": "search",
+          "note": "Basis for the engine's evaluation order.",
+          "verified": true
+        },
+        {
+          "title": "Four Things I Wish I Knew When Starting Balatro",
+          "url": "https://primagames.com/tips/four-things-i-wish-i-knew-when-starting-balatro",
+          "date": "",
+          "snippet": "Explains that mult is totalled in order before it multiplies chips, so early multiplying jokers lower the result.",
+          "via": "search",
+          "note": "Independent second statement of the evaluation order.",
+          "verified": true
+        },
+        {
+          "title": "All in Jest mod listing (mod index)",
+          "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/Survivalaiden@AllinJest/description.md",
+          "date": "2025",
+          "snippet": "A mod listing that advertises 64 new boss blinds and a rework of the blue stake.",
+          "via": "search",
+          "note": "Boss blinds are a heavy mod target.",
+          "verified": true
+        },
+        {
+          "title": "Balatro Lost Edition",
+          "url": "https://kotaku.com/games/balatro-lost-edition",
+          "date": "",
+          "snippet": "A listing for a mod that adds 10+ challenging boss blinds plus decks, stakes, tags, vouchers and more.",
+          "via": "search",
+          "note": "Independent second mod with new boss blinds and stakes.",
+          "verified": true
+        },
+        {
+          "title": "my balatro mods (betmma)",
+          "url": "https://github.com/betmma/my_balatro_mods",
+          "date": "",
+          "snippet": "A collection of small mods, including an overpowered-boss challenge in which every boss blind halves base chips and mult.",
+          "via": "search",
+          "note": "Shows blinds used as a rule-twist challenge; single source.",
+          "verified": false
+        },
+        {
+          "title": "Roguelike deck-building game",
+          "url": "https://en.wikipedia.org/wiki/Roguelike_deck-building_game",
+          "date": "",
+          "snippet": "Overview stating these games generally need intensive playtesting because randomness touches so many systems.",
+          "via": "search",
+          "note": "Balance needs heavy testing.",
+          "verified": true
+        },
+        {
+          "title": "Balatro-Style Poker Deckbuilder (template page)",
+          "url": "https://www.summerengine.com/templates/strategy/deckbuilder/balatro-style",
+          "date": "",
+          "snippet": "Template page saying a scoring prototype lets developers test multiplier stacking and find broken combos before players do.",
+          "via": "search",
+          "note": "Independent agreement that testing multiplier stacking early is the practice.",
+          "verified": true
+        },
+        {
+          "title": "V3 - Learning how to balance a scoring system",
+          "url": "https://unbreaded.itch.io/tictactic/devlog/782040/v3-learning-how-to-balance-a-scoring-system",
+          "date": "",
+          "snippet": "A solo developer's devlog on expected value: a tile with a 10 percent chance of big damage averages out low, so averages alone can mislead.",
+          "via": "search",
+          "note": "Why the lab shows distributions and not only means; single source.",
+          "verified": false
+        },
+        {
+          "title": "Balatro: Top 10 Most Challenging Bosses to Blind",
+          "url": "https://thefilibusterblog.com/balatro-top-10-most-challenging-bosses-to-blind/",
+          "date": "",
+          "snippet": "A fan ranking of tough boss blinds; forum posts in the same search describe blinds that halve base values, allow one hand, or remove discards.",
+          "via": "search",
+          "note": "Fan descriptions of vanilla blinds; per-result attribution unclear, so unverified.",
+          "verified": false
+        },
+        {
+          "title": "Nintendo Life: Balatro first major update",
+          "url": "https://nintendolife.com/news/2024/04/balatro-is-getting-its-first-major-update",
+          "date": "2024-04",
+          "snippet": "News piece summarising an April 2024 experimental patch that changed the late stakes and reduced ante scaling on some early ones.",
+          "via": "search",
+          "note": "Stake rules drift between versions, so the page avoids quoting vanilla stake numbers.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-10, mod-index and news listings show boss blinds are a popular mod target: All in Jest lists 64 new boss blinds and Lost Edition lists 10+ alongside new stakes.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, two independent community guides (Destructoid and Prima Games) state that joker effects resolve left to right, with additive mult before multiplying mult.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Roguelike deck-builders need heavy playtesting to balance, and prototypes that test multiplier stacking help find broken combos early (Wikipedia overview and a template page agree in substance).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Unconfirmed: as of 2026-10-10, per fan guides, vanilla blinds include one that bans repeating a hand type, one that allows a single hand type, one that debuffs a suit, and one that halves base chips and mult.",
+          "sourceIndex": 8,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Unconfirmed: as of 2026-10-10, per one GitHub mod collection, an overpowered-boss challenge makes every boss blind halve base chips and mult.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Unconfirmed: as of 2024-04, per one news summary, stake modifiers changed between the original release and an experimental patch.",
+          "sourceIndex": 9,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "boss blinds that counter one build",
+        "modded boss-blind packs",
+        "balance spreadsheets and Monte Carlo playtesting",
+        "puzzle-card challenge decks",
+        "tower-defence wave designers"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick or build a blind from rule bricks, press run, and read a win-rate bar for each of five bot archetypes over a few hundred seeded rounds. The goal cards ask for a specific shape of result (one archetype crushed, others untouched, or a fairness budget of total brick cost), so every tweak is a hypothesis and the lab is the experiment. The tenth minute is discovering that bricks interact: a suit silence is weak alone but lethal beside a halved base.",
+      "sophisticationHooks": [
+        "Small deterministic engine shared by the UI and a Web Worker: seeded decks, eight hand types, chips times mult, left-to-right joker order, so thousands of simulated rounds run in a blink.",
+        "Five transparent greedy bot archetypes (flush farmer, pair spammer, high-card scaler, straight runner, mult tower) with inspectable heuristics, and a replay of any single run.",
+        "Brick cost budget and goal cards (kill one archetype, spare the rest) turn open-ended tinkering into a puzzle with par scores; a swinging brick alternates its rule each hand.",
+        "Win-condition selector (beat target, land within a narrow band, or survive N hands) shows how redefining victory changes which strategies survive; shareable blind card encoded in the URL hash."
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: engine, worker runner, 10 to 12 rule bricks, five bot archetypes, results chart on canvas, 6 goal cards, three win-condition modes, URL-hash share card, about/making-of with verified sources. Cut: real joker shop, full run simulation, learned bots, importing real mod files.",
+      "risks": [
+        "Toy bots are not real players; mitigation: label every result as 'toy bots, concept numbers' and show run counts and variance.",
+        "Vanilla blind rules are unconfirmed; the page shows them only as 'as of 2026-10-10, per fan guides', or uses invented blind names and rules only.",
+        "Scope creep in bot logic; mitigation: archetypes are greedy one-liners over the shared engine.",
+        "Chart-heavy page must stay readable at 360px; mitigation: stacked horizontal bars with numeric labels and a text table fallback."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "engineer-1",
+    "title": "Curb Verdict",
+    "pitch": "A pole of stacked parking plates stands on an invented street, a stone gargoyle perched on top, and the visitor must rule on each case: may this car, with this permit, at this day and hour, stay, and until when? Behind the jokes is a real rules engine that merges time windows, day masks, permits and street-cleaning slots into a week-long legality strip, so every wrong answer shows exactly which plate decided it. A second mode, Sign Smith, hands you a target pattern and a plate budget and scores how few plates reproduce it.",
+    "whyNow": "Timeless. Rescues a universally groaned-at subject (parking rules) by turning rule-reading into a deduction puzzle with a deadpan gargoyle judge.",
+    "origin": {
+      "agent": "engineer",
+      "lens": "anti-lens-dud-rescue"
+    },
+    "fingerprint": {
+      "category": "games-arcade",
+      "mechanic": "puzzle",
+      "tone": [
+        "playful",
+        "satirical",
+        "nerdy"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "parking-rules",
+        "rule-engine",
+        "interval-logic",
+        "deduction",
+        "daily-puzzle",
+        "bureaucracy",
+        "gargoyle-judge",
+        "seeded-generator"
+      ],
+      "keywords": [
+        "parking",
+        "signs",
+        "time-windows",
+        "permits",
+        "verdict",
+        "puzzle",
+        "bureaucracy-humor"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Search results show confusing stacked parking signs are a recurring complaint in several countries, and that phone apps now read photographed signs, yet no game or quiz about decoding them turned up. Reading guides describe layered plates of days, time windows, permit exceptions, street-cleaning slots and arrows. The page will use an invented municipal code and invented sign vocabulary (no real jurisdiction, no real signage), so the engine is fully specified by the page itself and the real-world sources only establish that the pain and the gap are real.",
+      "sources": [
+        {
+          "title": "how to read parking signs australia",
+          "url": "https://www.parkhound.com.au/blog/how-to-read-parking-signs-australia/",
+          "date": "",
+          "snippet": "A guide to reading layered parking plates: days first, then time windows, then permit wording, with arrows showing which way a rule applies.",
+          "via": "search",
+          "note": "Describes the layered-plate reading skill the game trains; single result for the specifics",
+          "verified": false
+        },
+        {
+          "title": "parking signs explained",
+          "url": "https://www.mynrma.com.au/open-road/advice-and-how-to/road-safety/parking-signs-explained",
+          "date": "",
+          "snippet": "Motoring-club explainer on how parking signs and combined plates are read.",
+          "via": "search",
+          "note": "Background on combined plates; specifics not individually confirmed",
+          "verified": false
+        },
+        {
+          "title": "Signs of confusion: Moves to end perplexing parking signs",
+          "url": "https://itv.com/news/2024-12-04/signs-of-confusion-moves-to-end-perplexing-parking-signs",
+          "date": "2024-12-04",
+          "snippet": "UK news report that many motorists find parking signs confusing and that some appeals to fines cite the signage.",
+          "via": "search",
+          "note": "Establishes that sign confusion is a reported problem (UK, Dec 2024)",
+          "verified": true
+        },
+        {
+          "title": "DC transportation officials receive hundreds of parking sign complaints",
+          "url": "https://nbcwashington.com/news/local/dc-transportation-officials-receive-hundreds-of-parking-sign-complaints/155128",
+          "date": "",
+          "snippet": "Local news on a US city agency fielding many complaints about conflicting or confusing parking signs.",
+          "via": "search",
+          "note": "Independent US report of the same problem",
+          "verified": true
+        },
+        {
+          "title": "No parking signs have West Side residents confused",
+          "url": "https://www.cbsnews.com/chicago/news/no-parking-signs-have-west-side-residents-confused",
+          "date": "",
+          "snippet": "Local TV report on residents puzzled by no-parking signs in a Chicago neighborhood.",
+          "via": "search",
+          "note": "Third independent report of sign confusion",
+          "verified": true
+        },
+        {
+          "title": "Montreal team develops app to help you decipher perplexing parking signs",
+          "url": "https://ctvnews.ca/montreal/article/montreal-team-develops-app-to-help-you-decipher-perplexing-parking-signs",
+          "date": "",
+          "snippet": "News item about a team building an app that interprets confusing parking signs for drivers.",
+          "via": "search",
+          "note": "Sign-decoding apps exist as utilities; shows demand",
+          "verified": true
+        },
+        {
+          "title": "Parky.AI - Intelligent Parking",
+          "url": "https://apps.apple.com/us/app/-/id6446705281",
+          "date": "",
+          "snippet": "App store listing for an app that reads one or more photographed signs and answers yes, no or not sure, with a note that it is not a legal guarantee.",
+          "via": "search",
+          "note": "A second independent decoder app; none found in game or quiz form",
+          "verified": true
+        },
+        {
+          "title": "Design impact on New York City parking signs",
+          "url": "https://benjamins.com/catalog/idj.17.2.04akw",
+          "date": "2009",
+          "snippet": "Information Design Journal article reporting user testing in which existing city signs clashed with drivers' mental models and clearer prototypes fared better.",
+          "via": "search",
+          "note": "Single catalog entry; used only as background",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-10, news reports from the UK (ITV, 2024-12-04) and US cities (Washington DC, Chicago) describe drivers and officials struggling with confusing parking signs.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3,
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, search found phone apps that decode photographed parking signs (a Montreal team's app, Parky.AI) but no game or quiz built around decoding them.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported by one guide, unconfirmed: stacked plates are read top to bottom, with day plates, time windows and permit wording each changing the answer.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported by one catalog entry, unconfirmed: a 2009 New York user study found existing signs mismatched drivers' mental models.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "parking sign decoder apps",
+        "Papers Please style rule-checking",
+        "Wordle-style daily puzzle",
+        "gargoyle judge on a cathedral roof"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each case shows a pole, a car with a permit type, and a day and time. The visitor chooses stay or leave and then the latest legal departure time on a week strip. The engine reveals the deciding plate and the full legality timeline, and the gargoyle comments. Cases escalate from one plate to six, with generated traps (exception plates, overnight windows that wrap midnight, cleaning slots that bite only on one weekday) so minute ten feels different from minute one. Sign Smith mode inverts it: build a stack to match a target legality pattern with the fewest plates.",
+      "sophisticationHooks": [
+        "Rules engine: each plate is {action, day mask, minute window (may wrap midnight), permit exceptions, limit}; the week is 10080 minutes, rules are compiled into merged intervals, and precedence is the most restrictive active plate, with an explain trace naming the deciding plate",
+        "Seeded case generator (mulberry32 from the date or a hash seed) that uses the solver to guarantee a unique answer and a difficulty score based on how often the naive top-plate reading is wrong",
+        "Sign Smith inverse mode: a small search (greedy plus bounded brute force over plate templates) computes the minimum plate count, so the visitor's score is relative to the optimum",
+        "Week legality strip and explain overlay that make the logic visible; shareable URL hash holds seed, mode and answers"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: pure rules module (compile, evaluate, explain, generate, solve), SVG pole and gargoyle art drawn by hand, Verdict mode with about 40 generated cases per seed, Sign Smith mode with 12 target patterns, share link, about/making-of panel, light/dark, reduced motion, keyboard play. Cut: multiple cities, real signage, sound beyond one soft stamp sound, accounts, streak sync.",
+      "risks": [
+        "Must use an invented jurisdiction and invented plate styling; no real sign designs, no legal advice, with a visible note that the in-game code is fictional",
+        "Rule-precedence ambiguity could make answers feel unfair; mitigated by printing the in-game municipal code and showing the explain trace",
+        "Reported guide specifics and the 2009 study remain unverified, so the page cites them only as 'as of 2026-10-10, per <source>' or omits them"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "engineer-2",
+    "title": "The Waiting Hum",
+    "pitch": "A calm little waiting room whose arrivals and departures are played as soft notes: run it at low load and it sounds like a slow lullaby, push the load toward capacity and the tune swells, stutters and collapses into a tangle. The visitor staffs the counters, chooses one shared line or separate lines, and tunes how erratic arrivals and service are, trying to keep the average wait under a target on a budget. A live panel compares the running simulation with the textbook formulas, so the famous knee in the waiting-time curve is something you hear and see.",
+    "whyNow": "Timeless. Queue theory is the textbook definition of a dud subject, rescued by letting the visitor hear a system approach saturation.",
+    "origin": {
+      "agent": "engineer",
+      "lens": "anti-lens-dud-rescue"
+    },
+    "fingerprint": {
+      "category": "education-explainer",
+      "mechanic": "simulator",
+      "tone": [
+        "serene",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "webaudio",
+        "procedural-audio",
+        "worker",
+        "localstorage"
+      ],
+      "tags": [
+        "queueing-theory",
+        "discrete-event-simulation",
+        "sonification",
+        "littles-law",
+        "utilization",
+        "lullaby-sound",
+        "seeded-random",
+        "pooling"
+      ],
+      "keywords": [
+        "queue",
+        "waiting",
+        "utilization",
+        "variability",
+        "servers",
+        "sonification",
+        "simulation"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Standard university sources agree on the M/M/1 results (mean number in system rho/(1-rho), time 1/(mu-lambda), both diverging as utilization approaches 1) and on Little's law holding regardless of distributions. Kingman's approximation adds a variability term that lets the page show why erratic arrivals or service inflate waits. Operations writing supports the pooled single line for reducing wait variability while noting people prefer it partly for fairness. Parameter-mapping sonification is an established technique with a known caution about quantizing to scales. The sim computes truth; the formulas run alongside as a check.",
+      "sources": [
+        {
+          "title": "Utilization and Littles Law",
+          "url": "https://www.se.rit.edu/~swen-549/performance/slides/Utilization%20and%20Littles%20Law.pdf",
+          "date": "",
+          "snippet": "Course slides: utilization is arrival rate over service rate, the system cannot keep up when it reaches 1, and Little's law ties average number to rate and time.",
+          "via": "search",
+          "note": "Utilization and Little's law",
+          "verified": true
+        },
+        {
+          "title": "queue 1 (UCF lecture notes)",
+          "url": "https://www.cs.ucf.edu/~czou/CDA6530-12/queue-1.pdf",
+          "date": "",
+          "snippet": "Lecture notes giving M/M/1 results and stability only when utilization is below 1.",
+          "via": "search",
+          "note": "Independent course agreeing on M/M/1 formulas",
+          "verified": true
+        },
+        {
+          "title": "MIT2 854F16 Mm1Queue",
+          "url": "https://ocw.mit.edu/courses/2-854-introduction-to-manufacturing-systems-fall-2016/927056a1af54772a587fd84ad4951e71_MIT2_854F16_Mm1Queue.pdf",
+          "date": "2016",
+          "snippet": "Open courseware notes on the M/M/1 queue in manufacturing systems.",
+          "via": "search",
+          "note": "Third independent course on M/M/1; page itself could not be opened (host failed)",
+          "verified": true
+        },
+        {
+          "title": "Kingman's formula",
+          "url": "https://en.wikipedia.org/wiki/Kingman%27s_formula",
+          "date": "",
+          "snippet": "Encyclopedia entry: an approximation of mean wait in a G/G/1 queue as a product of a utilization term, a variability term and a service-time term.",
+          "via": "search",
+          "note": "Variability term for the tuning knobs",
+          "verified": true
+        },
+        {
+          "title": "Queue & AI: When Faster Tasks Slow Down the Workflow",
+          "url": "https://arxiv.org/pdf/2605.27202",
+          "date": "2026",
+          "snippet": "Paper restating the approximation: wait grows with rho/(1-rho), the average of squared variability of arrivals and service, and mean service time.",
+          "via": "search",
+          "note": "Independent restatement of the Kingman form",
+          "verified": true
+        },
+        {
+          "title": "4.8.3 G/G/1 System",
+          "url": "https://web.mit.edu/course/other/urban_or_book/OldFiles/www/book/chapter4/4.8.3.html",
+          "date": "",
+          "snippet": "Operations research text section on the G/G/1 queue and heavy-traffic behavior.",
+          "via": "search",
+          "note": "Third source for the heavy-traffic blow-up",
+          "verified": true
+        },
+        {
+          "title": "When several lines are better than one",
+          "url": "https://penntoday.upenn.edu/news/when-several-lines-are-better-one",
+          "date": "",
+          "snippet": "University news summary of research on whether one pooled line or several lines is better and when pooling helps.",
+          "via": "search",
+          "note": "Pooled versus separate lines",
+          "verified": true
+        },
+        {
+          "title": "Single-Line Queues Vs Multiple-Line Queues: Which One Is Better?",
+          "url": "https://www.qminder.com/single-line-vs-multiple-line-queues",
+          "date": "",
+          "snippet": "Practitioner article weighing a single serpentine line against multiple lines, including fairness and space trade-offs.",
+          "via": "search",
+          "note": "Independent agreement on pooling trade-offs",
+          "verified": true
+        },
+        {
+          "title": "Erlang C",
+          "url": "https://www.techtarget.com/enterprise-software/definition/Erlang-C",
+          "date": "",
+          "snippet": "Glossary entry on the Erlang C model used to estimate staffing and the probability a caller must wait.",
+          "via": "search",
+          "note": "Multi-server wait probability; individual details not confirmed",
+          "verified": false
+        },
+        {
+          "title": "What is Erlang C Formula?",
+          "url": "https://www.nice.com/glossary/erlang-c-formula",
+          "date": "",
+          "snippet": "Vendor glossary entry on the Erlang C formula for contact-centre staffing.",
+          "via": "search",
+          "note": "Second result on the same topic; vendor source",
+          "verified": false
+        },
+        {
+          "title": "data2midi part1",
+          "url": "https://nbviewer.org/github/SYSTEMSounds/sonification-tutorials/tree/HEAD/data2midi-part1.ipynb",
+          "date": "",
+          "snippet": "Tutorial describing parameter-mapping sonification where discrete data points become musical notes.",
+          "via": "search",
+          "note": "Sonification technique background",
+          "verified": false
+        },
+        {
+          "title": "what is data mapping",
+          "url": "https://accessibleoceans.whoi.edu/what-is-data-mapping",
+          "date": "",
+          "snippet": "Explainer warning that forcing data onto a musical scale can distort what the data says.",
+          "via": "search",
+          "note": "Design caution for note mapping",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-10, course materials agree that an M/M/1 queue is stable only when utilization is below 1, with mean number in system rho/(1-rho) and mean time in system 1/(mu-lambda), both growing without bound as utilization nears 1.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, Kingman's approximation puts mean wait in a G/G/1 queue near rho/(1-rho) times the average of arrival and service squared variability times mean service time, and is most accurate near saturation.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4,
+            5
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, operations sources report that a single pooled line feeding several servers reduces wait variability, though separate lines can feel faster when one's own lane moves and pooling gains are weaker for people who can switch lanes.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported, unconfirmed: the Erlang C model gives the wait probability for N servers at offered load A and assumes Poisson arrivals, exponential service and no abandonment.",
+          "sourceIndex": 8,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reported, unconfirmed: parameter-mapping sonification maps data points to pitch, and quantizing to a scale can distort the data.",
+          "sourceIndex": 11,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "call-centre staffing calculators",
+        "supermarket checkout line choices",
+        "sonification of scientific data",
+        "generative ambient music"
+      ]
+    },
+    "design": {
+      "coreLoop": "Set arrival pressure, number of counters, line layout (pooled or separate), and variability, then run a seeded shift. Arrivals and service completions play notes while a canvas shows people queueing; at the end the page scores mean and 90th percentile wait against the target and the budget. Levels hand over constraints (a rush hour profile, a lunch break that removes a counter, a slow-service burst) so the visitor keeps learning why waits explode near full load and what variability and pooling buy.",
+      "sophisticationHooks": [
+        "Discrete-event simulation with a binary-heap event list, seeded mulberry32 RNG, exponential and tunable-variance service and arrival distributions, multi-server with pooled or join-shortest-line policies, run in a worker to stay smooth",
+        "Live theory overlay: M/M/1 and approximate Kingman curves and a Little's-law check (average number equals rate times average time) plotted against the running simulation so the visitor sees them converge",
+        "Sonification: arrivals and departures map to notes of a consonant scale, wait length to harmonic tension, with scale quantization declared in the making-of panel; a calm mode and a mute default for autoplay policy",
+        "Shift-profile challenges with a scoring rule and shareable URL hash (seed, servers, layout, variability)"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: pure sim core with tests-by-reasoning, worker wrapper, canvas queue scene, WebAudio synth with hand-made envelopes, theory overlay with two curves, 8 challenge shifts, share link, light/dark, reduced motion (no flashing, static chart fallback), keyboard controls, about/making-of panel. Cut: abandonment and priority classes beyond one toggle, exact multi-server Kingman, recorded audio, account scores.",
+      "risks": [
+        "Audio must start only after a user gesture and be muted-safe; a visual-only fallback of equal clarity is required",
+        "Erlang C specifics and sonification caveats remain unverified, so the page shows them as 'as of 2026-10-10, per <source>' or omits them; the simulation is the source of truth for all displayed numbers",
+        "Worker performance with long runs; mitigated by capping event counts and batching the posted frames"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "critic-1",
+    "title": "Starter Pack Syntax",
+    "pitch": "The visitor is dealt a subject card for a thing rather than a person (a rainy Monday, a rink snack bar at the second intermission, a first week with a new roguelike) and fills a cobblestone-style mosaic of six tiles from a tray of hand-drawn vector items. A live grammar linter labels every tile with its job (the unmistakable anchor, the niche specific, the filler, the ironic turn) and scores the pack on balance, recognisability and sting. A reverse mode shows a finished pack and asks which subject it was; any pack exports as a PNG and as a shareable link.",
+    "whyNow": "The starter pack is a Reddit-born format that has stayed active for years, so the grammar is timeless; the page also takes a seasonal subject deck keyed to the run date. I could not verify a single format that dominates this particular week (trend lists disagree), so the hook is the structure, not a news item.",
+    "origin": {
+      "agent": "critic",
+      "lens": "meme-anatomy"
+    },
+    "fingerprint": {
+      "category": "pop-culture",
+      "mechanic": "generator",
+      "tone": [
+        "playful",
+        "nerdy",
+        "analytical"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "canvas2d",
+        "pointer-events",
+        "localstorage"
+      ],
+      "tags": [
+        "meme-format",
+        "starter-pack",
+        "grammar",
+        "reddit-born",
+        "mosaic",
+        "linter",
+        "daily-subject",
+        "vector-icons"
+      ],
+      "keywords": [
+        "starter-pack",
+        "meme-anatomy",
+        "slots",
+        "anchor-item",
+        "ironic-turn",
+        "cobblestone-grid",
+        "png-export",
+        "shareable-hash"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "The starter pack is a well-documented, Reddit-centred collage format: a plain title plus a handful of images that together stand for a stereotype or situation. Wikipedia and Know Your Meme both trace it to a late September 2014 Twitter post, and the community later split off derivative templates where one image is swapped. Linguists have started treating memes as having rules of composition (labelled-object templates, multimodal grammar), which supports a page that makes the slots and roles explicit. Every subject in the page is a thing or situation, never a group of people or a private person, and all art is drawn in code. Trend lists for early October 2026 come from marketing blogs and do not agree on one dominant format, so no news claim is made.",
+      "sources": [
+        {
+          "title": "Starter pack (meme)",
+          "url": "https://en.wikipedia.org/wiki/Starter_pack_(meme)",
+          "date": "",
+          "snippet": "Describes the starter pack as a collage of several images under a plain title, traces it to a 27 September 2014 tweet, and says the format now lives mostly on Reddit.",
+          "via": "search",
+          "note": "Origin date and layout description.",
+          "verified": true
+        },
+        {
+          "title": "Starter Packs (Know Your Meme entry)",
+          "url": "https://knowyourmeme.com//memes//starter-packs",
+          "date": "",
+          "snippet": "Entry ties the first starter pack to a tweet timestamped 27 Sep 2014 and says dedicated curation accounts followed in mid-November 2014.",
+          "via": "search",
+          "note": "Independent confirmation of the 2014 origin date.",
+          "verified": true
+        },
+        {
+          "title": "Loyal But Dangerous (Know Your Meme)",
+          "url": "https://amp.knowyourmeme.com/memes/loyal-but-dangerous",
+          "date": "",
+          "snippet": "Says this spinoff first appeared on the starter pack subreddit in May 2021 and that later versions often swap out one image of the macro.",
+          "via": "search",
+          "note": "Shows a format branching by swapping one slot.",
+          "verified": false
+        },
+        {
+          "title": "Such Syntax, Much Meme: A Linguistic Analysis of Memes and Their Structural Syntax",
+          "url": "https://meme-syntax.obdurodon.org/Distracted_Boyfriend.xhtml",
+          "date": "",
+          "snippet": "Student project analysing the structure of text memes; calls the labelled-figures layout an Object Labeling template.",
+          "via": "search",
+          "note": "Memes can be analysed as structure with named slots.",
+          "verified": true
+        },
+        {
+          "title": "The Language of Memes (Cambridge University Press)",
+          "url": "https://resolve.cambridge.org/core/books/language-of-memes/A2842153D9F8B15D14CD3C318E656741",
+          "date": "",
+          "snippet": "Book listing arguing that memes are multimodal artifacts governed by rules of composition and interpretation.",
+          "via": "search",
+          "note": "Second independent source that memes have compositional rules.",
+          "verified": true
+        },
+        {
+          "title": "Top Trending Memes on Social Media (October 2026)",
+          "url": "https://napoleoncat.com/blog/trending-memes/",
+          "date": "",
+          "snippet": "Marketing blog listing early-October 2026 formats; commercial, mixed dates, no single agreed winner.",
+          "via": "search",
+          "note": "Context only; used to avoid claiming a dominant format this week.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The starter pack meme is traced by Wikipedia and Know Your Meme to a Twitter post dated 27 September 2014.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Researchers and a student project describe memes as structured artifacts with composition rules and labelled-slot templates, so slot roles can be named explicitly.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, per Know Your Meme, the Loyal But Dangerous spinoff began on the starter pack subreddit in May 2021 and later versions often replace one image (single source, shown as reported).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, trend lists from marketing blogs disagree on which meme format dominates early October 2026 (single commercial source, not presented as fact).",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "r/starterpacks",
+        "Loyal But Dangerous",
+        "Object Labeling meme templates",
+        "Mad-Libs",
+        "Wordle-style daily subject"
+      ]
+    },
+    "design": {
+      "coreLoop": "Draw a subject card, fill six tiles from a twelve-item tray, read the linter's verdict on each tile's role, swap items to fix balance and sting, then lock the pack. Repetition stays interesting because each subject has its own hand-authored item matrix (typicality plus role tags), the linter explains why a swap helps, and reverse mode flips the skill from composing to decoding.",
+      "sophisticationHooks": [
+        "Grammar linter: every item carries per-subject typicality 0 to 3 and a role tag (anchor, specific, filler, turn); rules flag two competing anchors, no turn, or all filler, and name the fix",
+        "Reverse mode: a finished pack is shown and the visitor picks the subject from four; distractor subjects are chosen to overlap on filler items so the specifics decide",
+        "Cobblestone mosaic layout: one large anchor tile and five irregular tiles packed with a mortar gap, rendered in SVG and exported to PNG through canvas",
+        "Daily subject seeded from the run date, 18 subjects, shareable URL hash holding subject plus six item ids, so a friend can open your exact pack"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: 18 subject cards, about 70 drawn SVG items (simple geometric glyphs), the per-subject matrix, linter rules and scoring, build mode, reverse mode, PNG export, hash state, light and dark, reduced motion, keyboard placement (arrow plus enter), about/making-of panel listing only verified sources. Cut: free-text item entry, user-uploaded images, any real photo, multiplayer.",
+      "risks": [
+        "Hand-authoring 18 by 70 typicality values is the main time sink; mitigate with tag-derived defaults and hand-tuning only the top three items per subject",
+        "Stereotype drift: subjects are restricted to things and situations, never groups or named people, and the about panel states the rule",
+        "The origin facts rest on Wikipedia and Know Your Meme, which may share lineage; the page presents them as 'per Wikipedia and Know Your Meme' and makes no claim about this week's trends",
+        "Scoring can feel arbitrary; the linter must show its reasons, and the score is labelled as a game score, not a verdict on humour"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "critic-2",
+    "title": "Format Drift",
+    "pitch": "The visitor writes one tiny joke into an original drawn template (a two-panel contrast, an escalating four-tier ladder, a three-figure triangle or a plan-goes-wrong strip) and releases it into a simulated gossip chain. Each retelling mutates the joke in a small, named way (a role swap, an extra rung, an ironic flip, a literalised word, a topic substitution), growing a layered tree of variants whose edit distance from the original is shown on every branch. The visitor then acts as the audience and chooses which variants survive to be retold, steering the lineage until the final descendant is barely recognisable beside the original.",
+    "whyNow": "Timeless rather than news-bound: published studies reconstruct descent trees of meme variants, and the expanding-brain ladder and three-figure labelling formats are still reused constantly. Evolution as a toy is novel for the studio and gives a screenshot-worthy side-by-side of ancestor and descendant.",
+    "origin": {
+      "agent": "critic",
+      "lens": "meme-anatomy"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "simulator",
+      "tone": [
+        "absurd",
+        "playful",
+        "nerdy"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "web-animations",
+        "pointer-events",
+        "localstorage"
+      ],
+      "tags": [
+        "meme-evolution",
+        "mutation",
+        "telephone-game",
+        "lineage-tree",
+        "selection",
+        "format-grammar",
+        "edit-distance",
+        "original-art"
+      ],
+      "keywords": [
+        "meme-anatomy",
+        "gossip-chain",
+        "phylogeny",
+        "escalation-ladder",
+        "irony-flip",
+        "slot-roles",
+        "variant-tree",
+        "shareable-hash"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Researchers have repeatedly modelled memes as things that mutate when copied. A study of thousands of Facebook meme variants builds ancestor-to-descendant trees and reports that edit distance grows along copy chains, while two other arXiv papers build trees of image-macro variants and a dendrogram of frog-meme clusters. The expanding-brain format started in a Reddit joke called Whomst and is a four-image escalation; the three-figure labelling format has role slots that people relabel for any topic. Those documented structures become the mutation operators. The simulation is invented and labelled as such; it does not claim to reproduce any measurement.",
+      "sources": [
+        {
+          "title": "Information Evolution in Social Networks",
+          "url": "https://ar5iv.labs.arxiv.org/html/1402.6792",
+          "date": "",
+          "snippet": "Facebook study tracking thousands of meme variants; builds variant trees, reports that variants further apart in a chain differ more in edit distance, and cautions that the genetic analogy is open.",
+          "via": "search",
+          "note": "Mutation along copy chains with edit distance.",
+          "verified": true
+        },
+        {
+          "title": "MemeSequencer: Sparse Matching for Embedding Image Macros",
+          "url": "https://arxiv.org/pdf/1802.04936",
+          "date": "",
+          "snippet": "Builds a tree from pairwise distances between image macros of one template, linking children by shared imagery or shared text.",
+          "via": "search",
+          "note": "Independent paper that arranges meme variants as a descent tree.",
+          "verified": true
+        },
+        {
+          "title": "Towards Understanding the Information Ecosystem Through the Lens of Multiple Web Communities",
+          "url": "https://arxiv.org/pdf/1911.10517",
+          "date": "",
+          "snippet": "Builds a dendrogram of frog-meme clusters (525 clusters across 23 memes) using a custom distance metric.",
+          "via": "search",
+          "note": "Third independent tree-of-variants study.",
+          "verified": true
+        },
+        {
+          "title": "Galaxy Brain (Know Your Meme)",
+          "url": "https://knowyourmeme.com/memes/galaxy-brain",
+          "date": "",
+          "snippet": "Says the escalating-brain series grew out of the Whomst joke, with an early popular version on a Reddit meme forum on 31 January 2017, and is often used ironically to imply the opposite ranking.",
+          "via": "search",
+          "note": "Origin of the escalation ladder; the irony remark and the January 2017 date rest on this page alone and are shown only as reported.",
+          "verified": true
+        },
+        {
+          "title": "Dictionary.com's Top 10 Memes To Know How To Use",
+          "url": "https://www.dictionary.com/e/?p=115213",
+          "date": "",
+          "snippet": "Says the original had four images, from a small brain beside 'who' up to a glowing head beside 'whomst'd'.",
+          "via": "search",
+          "note": "Independent confirmation of the Whomst origin and four-step shape.",
+          "verified": true
+        },
+        {
+          "title": "distracted boyfriend meme (Daily Dot)",
+          "url": "https://dailydot.com/unclick/distracted-boyfriend-meme/",
+          "date": "",
+          "snippet": "Reads the three figures as 'you', the thing you should focus on, and the passing distraction.",
+          "via": "search",
+          "note": "Role slots of the three-figure format.",
+          "verified": true
+        },
+        {
+          "title": "Distracted boyfriend meet stars meme summer (Hollywood Reporter)",
+          "url": "https://www.hollywoodreporter.com/lifestyle/lifestyle-news/distracted-boyfriend-meet-stars-meme-summer-1033623/",
+          "date": "",
+          "snippet": "Notes that the tempting figure was relabelled with everything from natural events to drinks to ideologies.",
+          "via": "search",
+          "note": "Independent confirmation that the slots are relabelled freely.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Published studies arrange meme variants as descent trees or dendrograms built from pairwise distances (Facebook meme study, MemeSequencer, frog-meme clustering).",
+          "sourceIndex": 1,
+          "alsoIn": [
+            0,
+            2
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The Facebook meme study reports that variants further apart in a copy chain differ more in edit distance, and notes the biological analogy is only partly established.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The expanding-brain ladder began as an escalating four-image series from the Whomst joke, as covered by both Know Your Meme and Dictionary.com.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "As of 2026-10-10, per Know Your Meme, the escalating-brain format is often used ironically to imply the opposite of its literal ranking (single source, shown as reported).",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The three-figure labelling format has role slots (the person, the current focus, the tempting alternative) that are relabelled for arbitrary topics.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Telephone game",
+        "Phylogenetic trees",
+        "Cellular-automaton toys",
+        "Spore-style creature breeding",
+        "Expanding-brain ladder",
+        "Three-figure labelling meme"
+      ]
+    },
+    "design": {
+      "coreLoop": "Write a seed joke into a template, release it for three retellings, read each new variant with its mutation named, pick survivors, and repeat for up to eight generations. Operators interact (an irony flip after an extra rung reads differently from before), the tree shows divergence at a glance, and players learn which mutation each template is most vulnerable to.",
+      "sophisticationHooks": [
+        "Five or six named mutation operators acting on structured slots: role swap, add rung, drop rung, irony flip, literalise, topic substitute via a hand-made neighbour graph of about 150 concepts",
+        "Selection pressure: the visitor's pick decides survivors; an auto-select 'algorithmic feed' mode favours the most extreme variants and visibly collapses diversity, to show what selection does",
+        "Layered tree view as a canopy of nodes, each a mini rendered panel, with edit distance on each edge and a final ancestor-versus-descendant side-by-side card",
+        "Original art only: four stick-figure and glyph templates drawn in SVG, with URL-hash state holding template, seed words and the chosen path so lineages are shareable"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: four templates, the operator engine with seeded random so hashes replay exactly, the concept neighbour graph and ladder dataset (about 25 ladders of four rungs), tree and side-by-side views, feed-mode toggle, keyboard navigation, light and dark, reduced motion, about panel listing only verified sources and labelling the simulation as invented. Cut: free-form text mutation, image upload, real templates or photos, any claim of measured accuracy.",
+      "risks": [
+        "Quality of mutated text depends on the hand-made graph and ladders; the engine should degrade to structure-only mutations when typed words are unknown",
+        "Mutations may yield flat jokes; mitigate by curating operator outputs with templates tested on the 25 ladders before the build freeze",
+        "The page must say clearly that the simulation is invented and not a replication of the cited studies",
+        "Know Your Meme irony claim is single-source and is shown only as 'per Know Your Meme' if at all",
+        "The three-figure template is described by original drawings, never the stock photo or any real person"
+      ]
+    },
+    "durable": true
+  }
+]

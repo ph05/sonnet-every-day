@@ -1,0 +1,341 @@
+{
+  "schema": 1,
+  "agent": "lab",
+  "lens": "fake-product-satire",
+  "candidates": [
+    {
+      "id": "lab-r1-1",
+      "title": "Lunar Filing Cabinet",
+      "pitch": "A one-page product site, control panel and manual for an invented gadget, the Highwater 5-Drawer Cabinet by the fictional firm Brinewick Office Systems, whose drawers unlock only when a simulated harbour's tide is at the right height. The visitor files their own absurd documents (receipts, grudges, unfinished plans) into drawers, then watches a live tide curve built from five real tidal constituents decide when each can be retrieved. Retrieval windows shift between spring and neap weeks, and a deadpan manual turns the physics into office policy.",
+      "whyNow": "Timeless parody of smart-office product pages with a real harmonic tide model at the core; autumn is a fine season for a gadget that makes you wait for the sea.",
+      "origin": {
+        "agent": "lab",
+        "lens": "fake-product-satire"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "simulator",
+        "tone": ["satirical", "absurd", "nerdy"],
+        "tech": ["canvas2d", "svg", "dom-ui", "localstorage"],
+        "tags": ["fake-product", "tides", "filing-cabinet", "harmonic-analysis", "product-page-parody", "office-satire", "manual", "spring-neap"],
+        "keywords": ["tide-model", "drawers", "retrieval-window", "control-panel", "fictional-brand", "moon-phase", "deadpan-manual"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Real tide prediction is a sum of cosines, one per tidal constituent, each with its own amplitude, phase and angular speed (M2, S2, N2, K1, O1 are the usual workhorses). Two sources agree on that form, so a small bundled model for an invented harbour is honest and cheap. Spring tides come near new and full moon (larger range) and neap tides near the quarter moons (smaller range), which gives the cabinet a two-week rhythm: drawers open generously in spring weeks and stingily in neap weeks. Real tide clocks run a tide hand on the roughly 24 h 50 min lunar day and only give averages, which is the exact gap the parody exploits. The genre skeleton (problem, demo, value stack, bonus, price turn, guarantee) is described by marketing write-ups and gives the product page its structure. Limits: the page uses five constituents with made-up amplitudes and phases for a fictional harbour, ignores nodal corrections (a few percent), weather surge and shallow-water effects, and says so; it is never usable for real tide planning.",
+      "sources": [
+        {
+          "title": "Harmonic Analysis and Prediction of Tides",
+          "url": "https://math.stonybrook.edu/~tony/tides/harmonic.html",
+          "date": "",
+          "snippet": "University page that writes tide height as a sum of cosine terms per constituent and tabulates speeds in degrees per hour (M2 about 28.98, S2 30.00, K1 about 15.04, O1 about 13.94) with a worked port example.",
+          "via": "search",
+          "note": "Establishes harmonic-sum form and constituent speeds (WebFetch to this host failed, search snippet only).",
+          "verified": true
+        },
+        {
+          "title": "L6 Harmonic analysis and prediction (INCOIS lecture slides)",
+          "url": "https://iioe-2.incois.gov.in/documents/ITCOocean/ITC001/ppts/L6-Harmonic%20analysis%20and%20prediction.pdf",
+          "date": "",
+          "snippet": "Lecture slides giving each tidal term as amplitude times cosine of speed times time minus phase, with nodal corrections of a few percent for M2.",
+          "via": "search",
+          "note": "Independent agreement on the harmonic form; also states the nodal-correction size that the page will omit and label.",
+          "verified": true
+        },
+        {
+          "title": "NOAA Ocean Service: What is a spring tide?",
+          "url": "https://oceanservice.noaa.gov/facts/springtide.html",
+          "date": "",
+          "snippet": "Spring tides occur around new and full moon when sun and moon pull together, giving higher highs and lower lows; neap tides come near the quarter moons when the pulls partly cancel. Unrelated to the season.",
+          "via": "search",
+          "note": "Primary agency statement of spring/neap behaviour.",
+          "verified": true
+        },
+        {
+          "title": "Spring and neap tides: two different monthly tidal range patterns",
+          "url": "https://www.surfertoday.com/surfing/spring-and-neap-tides-explained",
+          "date": "",
+          "snippet": "Explainer that spring tides give the largest tidal range around new and full moon and neap tides the smallest around the quarters, each happening twice a lunar month.",
+          "via": "search",
+          "note": "Second independent source for spring/neap pattern.",
+          "verified": true
+        },
+        {
+          "title": "Tide Clocks",
+          "url": "https://seaandsoulcharts.com/?p=15781",
+          "date": "",
+          "snippet": "Retail explainer: a tide clock's tide hand follows the lunar day, about 50 minutes longer than the solar day, so it lags the ordinary hands daily, and it shows average rather than exact timing.",
+          "via": "search",
+          "note": "Lunar day offset and the average-not-exact limitation of tide clocks.",
+          "verified": true
+        },
+        {
+          "title": "Operating Instructions for Time and Tide",
+          "url": "https://billsclockworks.com/merchandise/instruction-sheet.html/33",
+          "date": "",
+          "snippet": "Clock-maker instruction sheet stating the tidal day is about 50 minutes longer than the 24 hour solar day the ordinary hands are geared to.",
+          "via": "search",
+          "note": "Independent agreement on the roughly 50 minute lunar-day offset.",
+          "verified": true
+        },
+        {
+          "title": "Faux Film Festival | Mocumentaries",
+          "url": "https://www.desktop-documentaries.com/faux-film-festival-mocumentaries.html",
+          "date": "",
+          "snippet": "Festival page that defines a faux commercial as an advertisement for a product or service that does not exist, and separates it from a spoof of a real product.",
+          "via": "search",
+          "note": "Frames the safe form of the parody: invented product, no real brand.",
+          "verified": false
+        },
+        {
+          "title": "But wait, there's more (Farnam Street)",
+          "url": "https://fs.blog/2011/11/but-wait-theres-more/",
+          "date": "2011-11",
+          "snippet": "Essay on how infomercials work, noting that repeating a message with small script changes is powerful, in the context of demo-and-offer structure.",
+          "via": "search",
+          "note": "Infomercial structure and repetition.",
+          "verified": true
+        },
+        {
+          "title": "What Type of Outline Do Most TV Infomercials Use?",
+          "url": "https://climbtheladder.com/what-type-of-outline-do-most-tv-infomercials-use/",
+          "date": "",
+          "snippet": "Generic summary of the infomercial outline: problem, product reveal, demonstration, value stacking, bonus, price reveal, urgency and guarantee.",
+          "via": "search",
+          "note": "Second description of the same sequence; marketing-blog quality, structure only.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Harmonic tide prediction writes water height as a sum of cosine terms, one per tidal constituent, each with its own amplitude, phase and angular speed (as seen 2026-10-10 in search results).",
+          "sourceIndex": 0,
+          "alsoIn": [1],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Spring tides occur around new and full moon with a larger tidal range; neap tides occur near the first and third quarter moons with a smaller range; both happen twice per lunar month.",
+          "sourceIndex": 2,
+          "alsoIn": [3],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The tidal (lunar) day is about 50 minutes longer than the 24 hour solar day, so tide clocks run a separate hand that lags the ordinary hands by that amount each day.",
+          "sourceIndex": 4,
+          "alsoIn": [5],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Tide clocks give average, not exact, tide timing; real tides vary with the sun and moon geometry.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Infomercials commonly follow a problem, demonstration, value stack, bonus, price reveal, urgency, guarantee sequence.",
+          "sourceIndex": 7,
+          "alsoIn": [8],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": ["tide clocks", "infomercial structure", "xkcd-style deadpan product satire", "spreadsheet-brained office gadgets", "mock user manuals"]
+      },
+      "design": {
+        "coreLoop": "Write a filing (pick or type a document title and a retrieval urgency), slot it in a drawer, then scrub or run the simulated calendar to watch the tide curve cross each drawer's unlock threshold. Each drawer has a different height rule and a hold time, so the player juggles retrieval deadlines against the spring-neap cycle, adjusts the constituent dials on the control panel, and collects deadpan consequences when a deadline falls in a neap trough. Stays interesting because the two-week envelope keeps changing which drawers are generous.",
+        "sophisticationHooks": [
+          "Pure harmonic tide core: five constituents with fixed-step time, seeded invented harbour, spring-neap beating emerging from S2 versus M2",
+          "Control panel with constituent amplitude and phase dials, a live curve, a 30-day envelope view and a lunar-day tide-clock face",
+          "Procedurally written product page in infomercial order (problem, demo, value stack, bonus drawer, price turn, guarantee) plus a generated deadpan manual and error codes",
+          "Shareable URL hash holding filed documents and dial settings; a printable-looking retrieval slip as the screenshot moment"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: tide engine (about 150 lines), canvas tide and calendar views, drawer UI with keyboard and touch, three-section page (product, panel, manual), light and dark, reduced motion, hash state, about panel. Cut: real harbour data, nodal corrections, audio beyond one drawer click, multiple harbours.",
+        "risks": [
+          "Tide constants are invented, so the page must label the harbour and numbers as fictional simulation and never as navigation or planning advice.",
+          "Constituent speeds come from a single table (Stony Brook) in a search snippet; the page shows them as reported 'as of 2026-10-10, per that source' or keeps them clearly as model parameters.",
+          "The faux-commercial definition source is unverified; the page does not cite it as fact.",
+          "Risk of reading as a lookup table: mitigated by a live curve driven by editable constituents.",
+          "Brand name Brinewick Office Systems is invented; builders must check it resembles no real company before shipping."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "lab-r1-2",
+      "title": "The Lukewarm Mug",
+      "pitch": "A fictional product page, control panel and manual for the Meh-Therm Mug from the invented firm Tepidyne Labs: a smart mug engineered to hold coffee at the exact temperature of mild indifference. The visitor tunes three dials (proportional, integral, derivative) against a live thermal simulation with cooling, heater lag and sensor noise, then survives surprise disturbances such as an opened window, a stirring spoon or a Catalyst Pod accessory that changes the mug's dynamics. The best tuning earns a ridiculous certificate and a shareable spec sheet.",
+      "whyNow": "Timeless: smart-gadget excess is a standing joke, and the page quietly teaches real feedback control. Autumn coffee season helps.",
+      "origin": {
+        "agent": "lab",
+        "lens": "fake-product-satire"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "simulator",
+        "tone": ["satirical", "playful", "nerdy"],
+        "tech": ["canvas2d", "dom-ui", "webaudio", "localstorage"],
+        "tags": ["fake-product", "pid-control", "smart-mug", "newtons-cooling", "feedback-loop", "product-page-parody", "tuning-game", "spec-sheet"],
+        "keywords": ["thermal-model", "overshoot", "setpoint", "control-panel", "disturbance", "certificate", "fictional-brand", "deadpan-manual"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Newton's law of cooling says the gap between a hot object and its surroundings shrinks exponentially, which is the passive heat loss of the coffee; three independent educational sources give the same form. Plain on-off thermostats overshoot and cycle, while PID adds integral action (removes steady offset, risks overshoot and windup) and derivative action (damps overshoot, amplifies noise); several sources agree. That gives a real, tunable loop: heater power with first-order lag, the cooling law, sensor noise and scripted disturbances. A classic tuning recipe (ultimate gain and period) exists but only one source was seen, so the page shows it as reported, not confirmed. The parody layer rests on the well-worn trope that not every appliance needs a network connection (a security vendor podcast and a webcomic both riff on it) and on documented dark patterns such as confirmshaming and fake countdown timers, which the product page can lampoon with invented wording. Limits: a lumped single-node thermal model with invented constants; no fluid mixing, evaporation or ceramic wall dynamics; not a real appliance design.",
+      "sources": [
+        {
+          "title": "Newton's Law of Cooling (Illustrative Mathematics task)",
+          "url": "https://tasks.illustrativemathematics.org/content-standards/tasks/382",
+          "date": "",
+          "snippet": "Teaching task presenting coffee temperature as room temperature plus an exponentially decaying difference, with a rate constant fitted to a covered cup.",
+          "via": "search",
+          "note": "Exponential approach to ambient temperature.",
+          "verified": true
+        },
+        {
+          "title": "Newton Law of Cooling (UMN open textbook handout)",
+          "url": "https://open.lib.umn.edu/app/uploads/sites/230/2020/08/Newton-Law-of-Cooling.pdf",
+          "date": "2020-08",
+          "snippet": "Handout stating that the temperature difference to the surroundings decays exponentially, with worked examples.",
+          "via": "search",
+          "note": "Independent agreement on the cooling law.",
+          "verified": true
+        },
+        {
+          "title": "Cooling Coffee (UF mechanical engineering note)",
+          "url": "https://web.mae.ufl.edu/uhk/COOLING-COFFEE.pdf",
+          "date": "",
+          "snippet": "Engineering note analysing how a cup of coffee cools, relevant to choosing a realistic loss rate.",
+          "via": "search",
+          "note": "Third source on coffee cooling; only the title and topic seen.",
+          "verified": false
+        },
+        {
+          "title": "PID Temperature Controllers - What's that About?",
+          "url": "https://tutco.com/conductive/pid-controllers",
+          "date": "",
+          "snippet": "Explains that simple on-off heating overshoots and fluctuates, that integral action removes steady error, and that derivative action tempers overshoot.",
+          "via": "search",
+          "note": "Roles of P, I, D in a heater loop.",
+          "verified": true
+        },
+        {
+          "title": "Control types (University of Exeter feedback teaching notes)",
+          "url": "https://newton.ex.ac.uk/teaching/cdhw/Feedback/ControlTypes.html",
+          "date": "",
+          "snippet": "Teaching notes on proportional, integral and derivative control, stating integral removes steady-state error at the cost of stability margin and derivative amplifies high-frequency noise.",
+          "via": "search",
+          "note": "Independent agreement on P/I/D trade-offs including noise amplification.",
+          "verified": true
+        },
+        {
+          "title": "Coffea Arabica Machina 101: PID, part 1 (La Marzocco)",
+          "url": "https://lamarzoccousa.com/news/blog/prof-john-blackwell-coffea-arabica-machina-101-pid-part-1/",
+          "date": "",
+          "snippet": "Espresso-machine engineer explains that a plain thermostat overshoots because the element keeps heating after switch-off, and PID anticipates and corrects.",
+          "via": "search",
+          "note": "Third independent voice that on-off overshoots and PID mitigates it.",
+          "verified": true
+        },
+        {
+          "title": "Lab 8: Ziegler-Nichols PID tuning method (Cal Poly Pomona handout)",
+          "url": "https://cpp.edu/faculty/fkhoshnoud/lab-8-zieglernichols-pid-tuning-method.pdf",
+          "date": "",
+          "snippet": "Lab handout describing the ultimate-gain tuning method and rule-of-thumb gain formulas, which tend to give noticeable overshoot.",
+          "via": "search",
+          "note": "Classic tuning recipe; single source seen.",
+          "verified": false
+        },
+        {
+          "title": "Talos Takes episode 53",
+          "url": "https://blog.talosintelligence.com/talos-takes-ep-53-/",
+          "date": "",
+          "snippet": "Security-vendor podcast page discussing a vulnerability in a network-connected air fryer and the broader point that not everything needs an internet connection.",
+          "via": "search",
+          "note": "Evidence for the over-connected-appliance trope.",
+          "verified": true
+        },
+        {
+          "title": "xkcd #3109: Dehumidifier (community mirror)",
+          "url": "https://lemmy.cleberg.net/post/117439",
+          "date": "",
+          "snippet": "Discussion post of a webcomic in which a salesman pitches built-in wifi for remote updates on a dehumidifier.",
+          "via": "search",
+          "note": "Independent example of the same trope.",
+          "verified": true
+        },
+        {
+          "title": "Types of dark patterns (Innovation, Science and Economic Development Canada)",
+          "url": "https://www.ised-isde.canada.ca/site/office-consumer-affairs/en/node/269",
+          "date": "",
+          "snippet": "Government consumer-affairs page listing manipulative design patterns including confirmshaming, with guilt-trip decline buttons as the example.",
+          "via": "search",
+          "note": "Names dark patterns the page can lampoon with invented copy.",
+          "verified": true
+        },
+        {
+          "title": "Public Report ICPEN Dark Patterns Sweep",
+          "url": "https://icpen.org/sites/default/files/2024-07/Public%20Report%20ICPEN%20Dark%20Patterns%20Sweep.pdf",
+          "date": "2024-07",
+          "snippet": "International consumer-protection sweep that classes fake countdown timers and low-stock banners as urgency practices.",
+          "via": "search",
+          "note": "Independent agreement that fake urgency timers are a recognised pattern.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Newton's law of cooling: the difference between an object's temperature and its surroundings decays exponentially over time, so a coffee cools fastest at first and approaches room temperature.",
+          "sourceIndex": 0,
+          "alsoIn": [1],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Simple on-off heater control overshoots and fluctuates around the setpoint; PID control uses integral action to remove steady offset and derivative action to reduce overshoot.",
+          "sourceIndex": 3,
+          "alsoIn": [4, 5],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Derivative action amplifies high-frequency sensor noise, and aggressive integral action can cause overshoot and reduced stability margin.",
+          "sourceIndex": 4,
+          "alsoIn": [3],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "The idea that not every appliance needs an internet connection is a recurring joke and security talking point (air fryer vulnerability episode, dehumidifier webcomic).",
+          "sourceIndex": 7,
+          "alsoIn": [8],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Confirmshaming and fake countdown timers are recognised dark patterns documented by consumer-protection agencies.",
+          "sourceIndex": 9,
+          "alsoIn": [10],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": ["PID tuning playgrounds", "smart-appliance satire", "espresso machine PID debates", "dark-pattern checkout parodies", "mock spec sheets"]
+      },
+      "design": {
+        "coreLoop": "Pick a target temperature, tune the P, I and D dials, press Brew and watch the mug temperature trace against the setpoint while the simulator throws disturbances (window gust, spoon stir, cold refill, Catalyst Pod swapping the heater gain and lag). Score blends rise time, overshoot, settling and noise jitter; a better tuning unlocks harder cups. Stays interesting because retuning for each plant change teaches real intuition, and the leaderboard-free par scores invite one more try.",
+        "sophisticationHooks": [
+          "Honest thermal model: first-order loss to ambient, heater with transport lag, quantised noisy sensor, anti-windup toggle, fixed-step integration",
+          "Live trace chart with ghost run of the previous tuning plus an auto-tune helper that finds the oscillation point and proposes gains",
+          "Product page written as dark-pattern parody (invented confirmshaming and urgency copy, cancel-the-subscription maze that is a decorative joke) leading to a working control panel",
+          "Spec-sheet and certificate generator with the user's own numbers in the URL hash for sharing"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: pure simulation module with init, step, state and reset; canvas strip chart; three dials and presets; four disturbance types; scoring; product page and manual sections; light and dark, reduced motion, keyboard and touch, hash state, about panel. Cut: real hardware specs, multiple mug models beyond three presets, online leaderboards.",
+        "risks": [
+          "The Ziegler-Nichols rule values were seen in one handout only; the auto-tune helper labels them 'classic rule of thumb, reported' and tests them in simulation rather than asserting them.",
+          "Thermal constants are invented; the page labels them as a toy model, not an appliance or safety design (no hot-liquid safety advice offered).",
+          "PID tuning can feel abstract; mitigated by presets, a hint ghost run and instant visual feedback.",
+          "Dark-pattern parody must stay invented and general with no real company copy or logos.",
+          "Brand names Meh-Therm and Tepidyne Labs are invented; builders must check they resemble no real company before shipping."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

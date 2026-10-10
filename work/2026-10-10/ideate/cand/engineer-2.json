@@ -1,0 +1,223 @@
+{
+  "id": "engineer-2",
+  "title": "The Waiting Hum",
+  "pitch": "A calm little waiting room whose arrivals and departures are played as soft notes: run it at low load and it sounds like a slow lullaby, push the load toward capacity and the tune swells, stutters and collapses into a tangle. The visitor staffs the counters, chooses one shared line or separate lines, and tunes how erratic arrivals and service are, trying to keep the average wait under a target on a budget. A live panel compares the running simulation with the textbook formulas, so the famous knee in the waiting-time curve is something you hear and see.",
+  "whyNow": "Timeless. Queue theory is the textbook definition of a dud subject, rescued by letting the visitor hear a system approach saturation.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "anti-lens-dud-rescue"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "simulator",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "webaudio",
+      "procedural-audio",
+      "worker",
+      "localstorage"
+    ],
+    "tags": [
+      "queueing-theory",
+      "discrete-event-simulation",
+      "sonification",
+      "littles-law",
+      "utilization",
+      "lullaby-sound",
+      "seeded-random",
+      "pooling"
+    ],
+    "keywords": [
+      "queue",
+      "waiting",
+      "utilization",
+      "variability",
+      "servers",
+      "sonification",
+      "simulation"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Standard university sources agree on the M/M/1 results (mean number in system rho/(1-rho), time 1/(mu-lambda), both diverging as utilization approaches 1) and on Little's law holding regardless of distributions. Kingman's approximation adds a variability term that lets the page show why erratic arrivals or service inflate waits. Operations writing supports the pooled single line for reducing wait variability while noting people prefer it partly for fairness. Parameter-mapping sonification is an established technique with a known caution about quantizing to scales. The sim computes truth; the formulas run alongside as a check.",
+    "sources": [
+      {
+        "title": "Utilization and Littles Law",
+        "url": "https://www.se.rit.edu/~swen-549/performance/slides/Utilization%20and%20Littles%20Law.pdf",
+        "date": "",
+        "snippet": "Course slides: utilization is arrival rate over service rate, the system cannot keep up when it reaches 1, and Little's law ties average number to rate and time.",
+        "via": "search",
+        "note": "Utilization and Little's law",
+        "verified": true
+      },
+      {
+        "title": "queue 1 (UCF lecture notes)",
+        "url": "https://www.cs.ucf.edu/~czou/CDA6530-12/queue-1.pdf",
+        "date": "",
+        "snippet": "Lecture notes giving M/M/1 results and stability only when utilization is below 1.",
+        "via": "search",
+        "note": "Independent course agreeing on M/M/1 formulas",
+        "verified": true
+      },
+      {
+        "title": "MIT2 854F16 Mm1Queue",
+        "url": "https://ocw.mit.edu/courses/2-854-introduction-to-manufacturing-systems-fall-2016/927056a1af54772a587fd84ad4951e71_MIT2_854F16_Mm1Queue.pdf",
+        "date": "2016",
+        "snippet": "Open courseware notes on the M/M/1 queue in manufacturing systems.",
+        "via": "search",
+        "note": "Third independent course on M/M/1; page itself could not be opened (host failed)",
+        "verified": true
+      },
+      {
+        "title": "Kingman's formula",
+        "url": "https://en.wikipedia.org/wiki/Kingman%27s_formula",
+        "date": "",
+        "snippet": "Encyclopedia entry: an approximation of mean wait in a G/G/1 queue as a product of a utilization term, a variability term and a service-time term.",
+        "via": "search",
+        "note": "Variability term for the tuning knobs",
+        "verified": true
+      },
+      {
+        "title": "Queue & AI: When Faster Tasks Slow Down the Workflow",
+        "url": "https://arxiv.org/pdf/2605.27202",
+        "date": "2026",
+        "snippet": "Paper restating the approximation: wait grows with rho/(1-rho), the average of squared variability of arrivals and service, and mean service time.",
+        "via": "search",
+        "note": "Independent restatement of the Kingman form",
+        "verified": true
+      },
+      {
+        "title": "4.8.3 G/G/1 System",
+        "url": "https://web.mit.edu/course/other/urban_or_book/OldFiles/www/book/chapter4/4.8.3.html",
+        "date": "",
+        "snippet": "Operations research text section on the G/G/1 queue and heavy-traffic behavior.",
+        "via": "search",
+        "note": "Third source for the heavy-traffic blow-up",
+        "verified": true
+      },
+      {
+        "title": "When several lines are better than one",
+        "url": "https://penntoday.upenn.edu/news/when-several-lines-are-better-one",
+        "date": "",
+        "snippet": "University news summary of research on whether one pooled line or several lines is better and when pooling helps.",
+        "via": "search",
+        "note": "Pooled versus separate lines",
+        "verified": true
+      },
+      {
+        "title": "Single-Line Queues Vs Multiple-Line Queues: Which One Is Better?",
+        "url": "https://www.qminder.com/single-line-vs-multiple-line-queues",
+        "date": "",
+        "snippet": "Practitioner article weighing a single serpentine line against multiple lines, including fairness and space trade-offs.",
+        "via": "search",
+        "note": "Independent agreement on pooling trade-offs",
+        "verified": true
+      },
+      {
+        "title": "Erlang C",
+        "url": "https://www.techtarget.com/enterprise-software/definition/Erlang-C",
+        "date": "",
+        "snippet": "Glossary entry on the Erlang C model used to estimate staffing and the probability a caller must wait.",
+        "via": "search",
+        "note": "Multi-server wait probability; individual details not confirmed",
+        "verified": false
+      },
+      {
+        "title": "What is Erlang C Formula?",
+        "url": "https://www.nice.com/glossary/erlang-c-formula",
+        "date": "",
+        "snippet": "Vendor glossary entry on the Erlang C formula for contact-centre staffing.",
+        "via": "search",
+        "note": "Second result on the same topic; vendor source",
+        "verified": false
+      },
+      {
+        "title": "data2midi part1",
+        "url": "https://nbviewer.org/github/SYSTEMSounds/sonification-tutorials/tree/HEAD/data2midi-part1.ipynb",
+        "date": "",
+        "snippet": "Tutorial describing parameter-mapping sonification where discrete data points become musical notes.",
+        "via": "search",
+        "note": "Sonification technique background",
+        "verified": false
+      },
+      {
+        "title": "what is data mapping",
+        "url": "https://accessibleoceans.whoi.edu/what-is-data-mapping",
+        "date": "",
+        "snippet": "Explainer warning that forcing data onto a musical scale can distort what the data says.",
+        "via": "search",
+        "note": "Design caution for note mapping",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-10, course materials agree that an M/M/1 queue is stable only when utilization is below 1, with mean number in system rho/(1-rho) and mean time in system 1/(mu-lambda), both growing without bound as utilization nears 1.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, Kingman's approximation puts mean wait in a G/G/1 queue near rho/(1-rho) times the average of arrival and service squared variability times mean service time, and is most accurate near saturation.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          5
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "As of 2026-10-10, operations sources report that a single pooled line feeding several servers reduces wait variability, though separate lines can feel faster when one's own lane moves and pooling gains are weaker for people who can switch lanes.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported, unconfirmed: the Erlang C model gives the wait probability for N servers at offered load A and assumes Poisson arrivals, exponential service and no abandonment.",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Reported, unconfirmed: parameter-mapping sonification maps data points to pitch, and quantizing to a scale can distort the data.",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "call-centre staffing calculators",
+      "supermarket checkout line choices",
+      "sonification of scientific data",
+      "generative ambient music"
+    ]
+  },
+  "design": {
+    "coreLoop": "Set arrival pressure, number of counters, line layout (pooled or separate), and variability, then run a seeded shift. Arrivals and service completions play notes while a canvas shows people queueing; at the end the page scores mean and 90th percentile wait against the target and the budget. Levels hand over constraints (a rush hour profile, a lunch break that removes a counter, a slow-service burst) so the visitor keeps learning why waits explode near full load and what variability and pooling buy.",
+    "sophisticationHooks": [
+      "Discrete-event simulation with a binary-heap event list, seeded mulberry32 RNG, exponential and tunable-variance service and arrival distributions, multi-server with pooled or join-shortest-line policies, run in a worker to stay smooth",
+      "Live theory overlay: M/M/1 and approximate Kingman curves and a Little's-law check (average number equals rate times average time) plotted against the running simulation so the visitor sees them converge",
+      "Sonification: arrivals and departures map to notes of a consonant scale, wait length to harmonic tension, with scale quantization declared in the making-of panel; a calm mode and a mute default for autoplay policy",
+      "Shift-profile challenges with a scoring rule and shareable URL hash (seed, servers, layout, variability)"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: pure sim core with tests-by-reasoning, worker wrapper, canvas queue scene, WebAudio synth with hand-made envelopes, theory overlay with two curves, 8 challenge shifts, share link, light/dark, reduced motion (no flashing, static chart fallback), keyboard controls, about/making-of panel. Cut: abandonment and priority classes beyond one toggle, exact multi-server Kingman, recorded audio, account scores.",
+    "risks": [
+      "Audio must start only after a user gesture and be muted-safe; a visual-only fallback of equal clarity is required",
+      "Erlang C specifics and sonification caveats remain unverified, so the page shows them as 'as of 2026-10-10, per <source>' or omits them; the simulation is the source of truth for all displayed numbers",
+      "Worker performance with long runs; mitigated by capping event counts and batching the posted frames"
+    ]
+  },
+  "durable": true
+}

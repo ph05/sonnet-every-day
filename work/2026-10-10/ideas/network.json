@@ -1,0 +1,123 @@
+{
+  "schema": 1,
+  "date": "2026-10-10",
+  "note": "WebFetch is attempted at most once per host per day; hosts under failedHosts are skipped by every later agent. Use WebSearch results for them.",
+  "failedHosts": [
+    {
+      "host": "en.wikipedia.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND en.wikipedia.org"
+    },
+    {
+      "host": "www.reddit.com",
+      "by": "probe",
+      "error": "Claude Code is unable to fetch from www.reddit.com"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND news.ycombinator.com"
+    },
+    {
+      "host": "itch.io",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND itch.io"
+    },
+    {
+      "host": "www.nhl.com",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND www.nhl.com"
+    },
+    {
+      "host": "blogs.mathworks.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND blogs.mathworks.com"
+    },
+    {
+      "host": "www.pagat.com",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND www.pagat.com"
+    },
+    {
+      "host": "gereshes.com",
+      "by": "artisan",
+      "error": "getaddrinfo ENOTFOUND gereshes.com"
+    },
+    {
+      "host": "ocw.mit.edu",
+      "by": "engineer",
+      "error": "getaddrinfo ENOTFOUND ocw.mit.edu"
+    },
+    {
+      "host": "arxiv.org",
+      "by": "critic",
+      "error": "getaddrinfo ENOTFOUND arxiv.org"
+    },
+    {
+      "host": "patents.google.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND patents.google.com"
+    },
+    {
+      "host": "www.tylerxhobbs.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.tylerxhobbs.com"
+    },
+    {
+      "host": "www.cs.ucf.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.cs.ucf.edu"
+    },
+    {
+      "host": "www.lancaster.ac.uk",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.lancaster.ac.uk"
+    },
+    {
+      "host": "www.karlsims.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.karlsims.com"
+    },
+    {
+      "host": "cs341.cs.illinois.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND cs341.cs.illinois.edu"
+    },
+    {
+      "host": "ar5iv.labs.arxiv.org",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND ar5iv.labs.arxiv.org"
+    },
+    {
+      "host": "www.timeanddate.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.timeanddate.com"
+    },
+    {
+      "host": "www.espn.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.espn.com"
+    },
+    {
+      "host": "faculty.uml.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND faculty.uml.edu"
+    },
+    {
+      "host": "www.sciencenews.org",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.sciencenews.org"
+    },
+    {
+      "host": "www.stat.berkeley.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.stat.berkeley.edu"
+    },
+    {
+      "host": "knowyourmeme.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND knowyourmeme.com"
+    }
+  ],
+  "okHosts": []
+}

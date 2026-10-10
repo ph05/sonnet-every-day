@@ -1,0 +1,185 @@
+{
+  "id": "engineer-r1-2",
+  "title": "Guess the Grammar",
+  "pitch": "A hidden rule governs which fill-in captions count as a valid gag in a drawn template (an escalating ladder, a contrast pair, a three-way triangle). The visitor builds captions from a phrase tray, asks one of three gossips whether each one holds, and watches their ledger of yes and no specimens grow until they can state the rule as a structured sentence. The reveal draws the winning grammar as a diagram, names the format family it belongs to, and offers a shareable seed for the next puzzle.",
+  "whyNow": "Timeless: it turns the question every meme format poses (what exactly makes a caption fit?) into an inductive-logic game, and fits a week when new fill-in-the-blank formats keep appearing.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "meme-anatomy"
+  },
+  "fingerprint": {
+    "category": "language-text",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "nerdy",
+      "analytical"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage"
+    ],
+    "tags": [
+      "meme-format",
+      "rule-induction",
+      "hidden-rule",
+      "grammar",
+      "escalation",
+      "template",
+      "deduction",
+      "gossip"
+    ],
+    "keywords": [
+      "slot-grammar",
+      "caption-rule",
+      "inductive-logic",
+      "information-gain",
+      "phrase-features",
+      "specimen-ledger",
+      "format-family",
+      "seeded-puzzle"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Zendo, a published inductive-logic game, has a Master hide a rule and Students probe it by building examples that either follow or break it; the same loop fits meme formats, whose captions obey slot-level rules. Shifman's content, form and stance typology says memes share form and stance while content varies, which supports treating a format as structure over slots. Snowclones show the frame-plus-open-slot pattern in language. Escalation ladders and setup-then-punchline layouts are the common caption structures in the wild, though sources for them here are weak, so they are used only as design inspiration. The engine holds a space of rule predicates over phrase features and picks informative tests.",
+    "sources": [
+      {
+        "title": "Zendo (game) (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Zendo_(game)",
+        "date": "",
+        "snippet": "Inductive-logic game by Kory Heath: a Master invents a secret rule, Students build examples that follow or break it, first to state the rule wins.",
+        "via": "search",
+        "note": "Core loop precedent",
+        "verified": true
+      },
+      {
+        "title": "Zendo rules (Looney Labs)",
+        "url": "https://www.looneylabs.com/sites/default/files/rules/Zendo.pdf",
+        "date": "",
+        "snippet": "Publisher rules: the Master marks examples with white or black stones, and students guess the rule; simple rules are advised.",
+        "via": "search",
+        "note": "Second agreeing source on the rule-induction loop",
+        "verified": true
+      },
+      {
+        "title": "Limor Shifman (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Limor_Shifman",
+        "date": "",
+        "snippet": "Scholar who defines internet memes as groups of items sharing content, form or stance, made aware of each other and circulated and imitated by many.",
+        "via": "search",
+        "note": "Form-versus-content framing",
+        "verified": true
+      },
+      {
+        "title": "Memes in a Digital World: Reconciling with a Conceptual Troublemaker (Notre Dame Ethics at Work)",
+        "url": "https://ethicsatwork.nd.edu/resources/memes-in-a-digital-world-reconciling-with-a-conceptual-troublemaker/",
+        "date": "",
+        "snippet": "Discusses the three-dimension view of memes (content, form, stance) from the same scholarship.",
+        "via": "search",
+        "note": "Independent restatement of the typology",
+        "verified": true
+      },
+      {
+        "title": "Image macro (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Image_macro",
+        "date": "",
+        "snippet": "Describes picture-plus-caption memes where top text often sets up and bottom text delivers the punchline.",
+        "via": "search",
+        "note": "Setup-then-punchline convention (weakly confirmed)",
+        "verified": false
+      },
+      {
+        "title": "Galaxy Brain (meme.com)",
+        "url": "https://meme.com/memes/galaxy-brain/md",
+        "date": "",
+        "snippet": "Wiki-style entry describing a multi-panel format in which each tier escalates and the last tier is the overreach.",
+        "via": "search",
+        "note": "Escalation-ladder structure (weak source)",
+        "verified": false
+      },
+      {
+        "title": "Snowclone (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Snowclone",
+        "date": "",
+        "snippet": "A snowclone is a phrase template built on a cliche with substituted words.",
+        "via": "search",
+        "note": "Frame-plus-slot concept",
+        "verified": true
+      },
+      {
+        "title": "Language Log post on snowclones",
+        "url": "https://languagelog.ldc.upenn.edu/nll/?p=2094",
+        "date": "",
+        "snippet": "Linguistics blog discussing snowclones as customizable recognizable phrase frames.",
+        "via": "search",
+        "note": "Independent confirmation of the term",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Zendo is an inductive-logic game in which a Master hides a rule and players test it with examples that follow or break the rule.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Shifman's definition treats internet memes as groups of items sharing content, form and/or stance, created with awareness of each other and circulated by many users.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A snowclone is a phrasal template with a fixed frame and substituted words, named on Language Log in January 2004.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "By convention in image macros, top text sets up and bottom text delivers the punchline (as of 2026-10-10 per Wikipedia, single source, unconfirmed).",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Escalating-tier brain formats put the biggest overreach in the last tier (as of 2026-10-10 per meme.com, weak single source, unconfirmed).",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "Zendo",
+      "Eleusis-style rule discovery",
+      "Mastermind",
+      "format taxonomies in meme encyclopedias"
+    ]
+  },
+  "design": {
+    "coreLoop": "Receive a seeded puzzle: a drawn template with 3 to 5 slots and a phrase tray. Build a caption, ask a gossip (each knows one clause of the rule), get a hold or break verdict, and log it. Use the evidence to assemble a rule sentence from a structured builder; a guess equivalent to the hidden rule over the whole sample space is accepted. Replays stay fresh because rules combine relation types across difficulty levels, and the best hint is the test that splits remaining candidate rules most evenly.",
+    "sophisticationHooks": [
+      "Rule space: about 60 predicate templates (slot relations over size, formality, polarity, category, syllables, escalation) combinable with AND or OR, evaluated by a pure function over annotated phrases",
+      "Extensional equivalence checking: a guess is correct if it agrees with the hidden rule on a seeded sample of all caption fills, so differently worded but equal rules win",
+      "Information-gain hints: the engine ranks candidate specimens by how evenly they split the surviving hypotheses, with a limited hint budget",
+      "Reveal diagram: the winning grammar is drawn as an SVG with the format family named, plus a replay of the player's ledger"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: rule engine and equivalence check, 150 hand-annotated phrases, 4 drawn templates, ledger and rule builder UI, three gossip characters, hint ranking, seeded daily puzzle with hash sharing, about panel. Cut: user-authored rules, multiplayer, any real caption text or images.",
+    "risks": [
+      "Annotating phrases with consistent features needs care; limit features to six and write a validation script that rejects ties",
+      "A puzzle with ambiguous equivalent rules can frustrate; the equivalence check and a generation-time uniqueness test mitigate it",
+      "The fun of 'humor' is modest unless the phrase tray and gossip voices are funny; the writer lane must own the copy",
+      "Two claims about caption conventions are unverified, so the page cites them only as 'as of 2026-10-10, per Wikipedia' or omits them"
+    ]
+  },
+  "durable": true
+}

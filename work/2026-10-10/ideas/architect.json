@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "agent": "architect",
+  "lens": "bureaucracy-sim",
+  "candidates": [
+    {
+      "id": "architect-1",
+      "title": "The Wrong Window",
+      "pitch": "The visitor is a citizen inside a tiny invented Ministry of nine counters, holding one goal (for example, a Licence to Keep One Goose) and a pocket of forms. Each counter's rulebook entry is a readable rule about what it wants, what it stamps and when it closes, and the visitor plans a route, queues, gets sent to the other department, and slowly discovers loopholes that emerge when rules combine (a photocopier that clones stamps, a pneumatic underpass between floors, a clerk who relaxes for cake). A daily seed, a shareable route receipt covered in tilted ink stamps, and a count of loopholes found make the second and tenth run feel different.",
+      "whyNow": "Timeless. The Papers, Please style of rule-reading puzzle has stayed popular for years, and a warm, fictional, no-politics version with composable rules and a built-in solver is an open niche.",
+      "origin": {
+        "agent": "architect",
+        "lens": "bureaucracy-sim"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": ["absurd", "cozy", "playful"],
+        "tech": ["dom-ui", "svg", "canvas2d", "webaudio", "localstorage"],
+        "tags": ["bureaucracy", "forms", "stamps", "queue", "rule-engine", "route-planning", "daily-seed", "loopholes", "fictional-agency"],
+        "keywords": ["red-tape", "catch-22", "counter", "clerk", "permit", "rulebook", "receipt", "pneumatic-tube", "cake"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "The genre anchor is the document-checking puzzle where a rulebook grows day by day and the tension comes from speed against accuracy, with the bureaucratic frame making it easy to author many gameplay rules. Small stamp-and-deliver jam games exist, but in the one seen the order of stamping does not matter, so a game where rules compose, order matters and a solver proves solvability and finds unintended shortcuts is a different design. Cultural material for the jokes is real and checkable: Catch-22 as a loop of mutually dependent rules, red tape as the literal ribbon once used to bind official papers, and Parkinson's satirical laws of officials making work for each other. Every agency, clerk and form in the page is invented.",
+        "sources": [
+          {
+            "title": "Designing the bleak genius of Papers, Please (Game Developer)",
+            "url": "https://www.gamedeveloper.com/design/designing-the-bleak-genius-of-i-papers-please-",
+            "date": "",
+            "snippet": "Design feature describing the player as an inspector who must process as many travelers as possible each day while admitting only those whose increasingly complicated documents are in order; special regulations pile up.",
+            "via": "search",
+            "note": "Established the speed versus accuracy tension and escalating rulebook as the genre engine.",
+            "verified": true
+          },
+          {
+            "title": "Papers, Please (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Papers,_Please",
+            "date": "",
+            "snippet": "Encyclopedia entry: a 2013 game by Lucas Pope in which an immigration inspector checks documents against an ever-growing list of rules, and each day brings new rules; pay depends on accuracy.",
+            "via": "search",
+            "note": "Second independent description of the daily-rules and approve/deny loop.",
+            "verified": true
+          },
+          {
+            "title": "Catch-22 (logic) (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+            "date": "",
+            "snippet": "The term comes from Heller's 1961 novel; a pilot who asks to be grounded for insanity shows he is sane and so cannot be grounded. Now means a trap made of mutually dependent conditions.",
+            "via": "search",
+            "note": "Origin and meaning of the loop-of-rules joke.",
+            "verified": true
+          },
+          {
+            "title": "Catch-22 meaning and origin (Phrase Finder)",
+            "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+            "date": "",
+            "snippet": "Phrase reference giving the same origin: coined in the 1961 novel, popularised more widely after the 1970 film; now a situation where any move leads to trouble.",
+            "via": "search",
+            "note": "Independent second result for the Catch-22 origin.",
+            "verified": true
+          },
+          {
+            "title": "Red tape meaning and origin (Phrase Finder)",
+            "url": "https://phrases.org.uk/meanings/red-tape.html",
+            "date": "",
+            "snippet": "Says legal and official documents were bound with red tape from the 17th century, citing an early Maryland law, and that the fully figurative use appears by 1838.",
+            "via": "search",
+            "note": "Literal origin of red tape for the page's flavour text.",
+            "verified": true
+          },
+          {
+            "title": "Red tape (Dictionary.com)",
+            "url": "https://dictionary.com/browse/Red_tape",
+            "date": "",
+            "snippet": "Defines red tape as excessive formality before official action and says the phrase alludes to the former British custom of tying official documents with red ribbon.",
+            "via": "search",
+            "note": "Independent second result for the ribbon origin.",
+            "verified": true
+          },
+          {
+            "title": "Ministerio Simulator (itch.io)",
+            "url": "https://juanrod707.itch.io/ministeriosim",
+            "date": "",
+            "snippet": "A multiplayer prototype made in a roughly 30-hour jam in 2017 where players take forms from a desk, stamp them and deliver them to a front desk; the order of stamping or copying does not matter.",
+            "via": "search",
+            "note": "Shows the stamp-forms niche exists and leaves rule-composition open.",
+            "verified": false
+          },
+          {
+            "title": "Off the AppStore: Droning bureaucracy in The Registry (Pocket Gamer)",
+            "url": "https://www.pocketgamer.com/off-the-appstore/the-registry/",
+            "date": "",
+            "snippet": "Title seen in a search result only; a mobile game feature about a bureaucracy-themed title. Body text not seen.",
+            "via": "search",
+            "note": "Adjacent prior art, details unseen.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Papers, Please (released 2013) is a document-checking game in which the player compares travelers' papers to a rulebook and approves or denies them; new rules arrive each in-game day and speed is traded against accuracy.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Catch-22 was coined in Joseph Heller's 1961 novel: a pilot who asks to be grounded as insane demonstrates sanity and therefore stays on duty.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "The phrase red tape comes from the custom of binding official documents with red tape or ribbon, which Phrase Finder traces to the 17th century.",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "As of 2026-10-10, per an itch.io listing, a 2017 jam prototype called Ministerio Simulator has players stamp and deliver forms where stamp order does not matter (reported, single result).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["Papers, Please", "Catch-22", "StampHere", "Ministerio Simulator", "text adventures with inventory puzzles", "pneumatic tube post offices"]
+      },
+      "design": {
+        "coreLoop": "The citizen reads a small rulebook (each counter: needs, stamps, closing time, queue length, one human quirk), plans a route on a floor map, then walks it, spending clock time, patience and biscuits. Wrong windows, lunch closures and circular requirements force replanning, and combining rules produces loopholes the built-in solver recognises and names. A run ends in a stamped receipt scored on time, patience and loopholes found; a fresh seed or the daily seed restarts it with a different ministry.",
+        "sophisticationHooks": [
+          "Declarative rule engine (needs, consumes, stamps, forbids, opens-at) with a breadth-first solver over inventory states that proves every seeded ministry is solvable, computes par, and flags a player route shorter than the intended one as a named loophole",
+          "Seeded procedural ministry generator: invented departments, clerk quirks and a goal permit, with daily seed and URL-hash state so a friend replays the same office",
+          "Shareable route receipt drawn with SVG tilted ink stamps and procedural WebAudio thumps, plus a loophole journal that persists in localStorage",
+          "Every rule carries a human-warmth joke: clerks relax for cake, a stamp is waived if the visitor asks after a cat, the underpass is kept open by a night-shift tea trolley"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: rule engine and solver module, generator, floor-map renderer with queue animation, rulebook panel, receipt generator, sound, about and making-of panel, keyboard and touch play, light and dark, reduced motion. Cut: multiplayer, user-authored ministries, more than one goal per run, any live data.",
+        "risks": [
+          "Rule composition can produce unsolvable or trivially solved ministries; mitigation is the solver gate in the generator with a regenerate-on-fail loop and a hand-authored fallback seed",
+          "Reading rules can feel like homework; mitigation is a 90-second guided first office and a hint action that costs patience",
+          "The Ministerio Simulator prior-art claim is single-source and unverified, so the about panel presents it only as reported, or omits it",
+          "Tone must stay fictional and non-partisan: no real agencies, forms or logos"
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "architect-2",
+      "title": "Clause And Effect",
+      "pitch": "The visitor is the lone clerk of an Amendments Desk facing a knot of red tape: offices drawn as nodes, requirements as strands, and queues of citizens stuck because permit A needs B and B needs A. With a small budget of amendment clauses (an exemption, a sunset clause, a grandfather clause, a deemed-approved-after-N-days rule, a brand-new office) the visitor pulls strands loose and then runs a simulated crowd through the system, watching who still gets stuck. Parkinson-style side effects punish lazy fixes, since every new office spawns paperwork for its neighbours, so the tidiest unravelled desk wins.",
+      "whyNow": "Timeless. It turns a real piece of computer science (deadlock and circular wait) into a joke-rich puzzle that rewards seeing the structure of a mess.",
+      "origin": {
+        "agent": "architect",
+        "lens": "bureaucracy-sim"
+      },
+      "fingerprint": {
+        "category": "math-puzzle",
+        "mechanic": "puzzle",
+        "tone": ["analytical", "satirical", "playful"],
+        "tech": ["canvas2d", "worker", "pointer-events", "localstorage"],
+        "tags": ["bureaucracy", "deadlock", "graph-puzzle", "queue-simulation", "catch-22", "red-tape", "amendments", "dependency-graph"],
+        "keywords": ["circular-wait", "strongly-connected", "clause", "exemption", "sunset", "throughput", "parkinson", "knot"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Deadlock theory gives the puzzle a precise spine: a system can deadlock only when four conditions hold together, circular wait among them, and the standard cures (break a condition, impose an ordering on resources) map neatly onto bureaucratic amendments. Where each resource has a single instance, a cycle in the wait graph means deadlock, so a strongly-connected-component pass can show the player exactly which knot is the Catch-22. Parkinson's satirical observation that the number of officials grows regardless of the work supplies the side-effect rule that stops brute-force fixing. All offices, permits and citizens are invented.",
+        "sources": [
+          {
+            "title": "Deadlock lecture notes (UC Riverside CS153)",
+            "url": "https://www.cs.ucr.edu/~nael/cs153/lectures/lec12.pdf",
+            "date": "",
+            "snippet": "Course lecture listing the four conditions needed for deadlock (mutual exclusion, hold and wait, no preemption, circular wait) and handling strategies including prevention, avoidance and detection.",
+            "via": "search",
+            "note": "Four conditions and handling strategies.",
+            "verified": true
+          },
+          {
+            "title": "Deadlock chapter (Illinois CS341 coursebook)",
+            "url": "https://cs341.cs.illinois.edu/coursebook/Deadlock",
+            "date": "",
+            "snippet": "Coursebook chapter on deadlock covering the necessary conditions, resource allocation graphs and ordering resources as a prevention approach.",
+            "via": "search",
+            "note": "Independent second description of the conditions and prevention by ordering.",
+            "verified": true
+          },
+          {
+            "title": "Deadlock reading (University of Virginia)",
+            "url": "https://www.cs.virginia.edu/~cr4bd/3130/F2023/readings/deadlock.html",
+            "date": "",
+            "snippet": "Reading defining deadlock and the wait graph, noting that with one instance per resource a cycle means deadlock, with graph traversal as the usual detection method.",
+            "via": "search",
+            "note": "Cycle means deadlock for single-instance resources.",
+            "verified": true
+          },
+          {
+            "title": "Catch-22 (logic) (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Catch-22_(logic)",
+            "date": "",
+            "snippet": "The term comes from Heller's 1961 novel; asking to be grounded for insanity shows sanity. Now means a trap of mutually dependent conditions.",
+            "via": "search",
+            "note": "The cultural name for a circular-wait knot.",
+            "verified": true
+          },
+          {
+            "title": "Catch-22 meaning and origin (Phrase Finder)",
+            "url": "https://www.phrases.org.uk/meanings/catch-22.html",
+            "date": "",
+            "snippet": "Phrase reference giving the 1961 novel origin and the modern meaning of a no-win bind of conflicting rules.",
+            "via": "search",
+            "note": "Independent second result for Catch-22.",
+            "verified": true
+          },
+          {
+            "title": "Parkinson's law (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Parkinson%27s_law",
+            "date": "",
+            "snippet": "Entry on Parkinson's satirical law, first published as an essay in The Economist in 1955 and expanded in a 1958 book, arguing that the number of officials is unrelated to the work done.",
+            "via": "search",
+            "note": "Basis of the work-multiplication side effect.",
+            "verified": true
+          },
+          {
+            "title": "Parkinson's Law (essay reprint, cat-v archive)",
+            "url": "https://doc.cat-v.org/economics/parkinsons-law",
+            "date": "",
+            "snippet": "Reprint of the essay: the rise in the number of staff follows its own law and would be much the same whether the work grew, shrank or vanished.",
+            "via": "search",
+            "note": "Independent second result for the essay's central claim.",
+            "verified": true
+          },
+          {
+            "title": "Parkinson's Law blog post (Fabrice Grinda)",
+            "url": "https://fabricegrinda.com/parkinsons-law-is-so-true",
+            "date": "",
+            "snippet": "A blog attributes to Parkinson a staff growth rate of 5 to 7 percent a year regardless of work; not confirmed against the original essay in the results seen.",
+            "via": "search",
+            "note": "Only source for the percentage; unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Deadlock needs four conditions at once (mutual exclusion, hold and wait, no preemption, circular wait); the Coffman conditions date to a 1971 paper.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "In a wait graph where each resource has a single instance, a cycle means deadlock; prevention of circular wait is usually done by acquiring resources in a fixed total order.",
+            "sourceIndex": 2,
+            "alsoIn": [0, 1],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Catch-22 (Heller, 1961) names a trap made of mutually dependent conditions.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Parkinson's law began as a 1955 essay in The Economist (book 1958) arguing that the number of officials is independent of the amount of work.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "As of 2026-10-10, per a blog by Fabrice Grinda, Parkinson's essay is said to give a staff growth rate of 5 to 7 percent a year; unconfirmed, so the page will not state it as fact and will use an invented rate labelled as fiction.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": ["Papers, Please", "Catch-22", "Banker's algorithm diagrams", "Parkinson's Law", "Opus Magnum style optimisation scoring", "Mini Metro"]
+      },
+      "design": {
+        "coreLoop": "Each level presents a dependency knot of offices, permits and a stream of citizens. The clerk inspects strands to find the circular-wait loops, spends a limited clause budget on amendments, and runs a seeded crowd simulation to see who is still stuck and how long the queues grow. Parkinson side effects and a tape-length score make cheap fixes backfire, so replays chase fewer clauses, shorter queues and a tidier knot.",
+        "sophisticationHooks": [
+          "Strongly-connected-component detection highlights each Catch-22 knot as a Loop Finder lens and doubles as the hint system",
+          "Deterministic discrete-event queue simulation in a worker, seeded so a solution hash replays identically",
+          "Verlet-style red tape strands drawn on canvas that visibly slacken and unravel when an amendment lands",
+          "Twelve hand-authored levels plus a daily generated knot, with a solution encoded in the URL hash so a friend can load and beat it"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: graph model and SCC pass, five amendment types, simulation worker, canvas strand renderer with drag and tap interaction, level select, 12 authored levels plus daily generator, scoring, about and making-of panel, keyboard and touch support, light and dark, reduced motion. Cut: level editor, multiplayer, user-uploaded levels, live data.",
+        "risks": [
+          "Abstract graph puzzles can feel dry; mitigation is the joke-dense clerk dialogue on each amendment and an early funny failure state",
+          "Generated levels must be solvable within the clause budget; mitigation is a brute-force checker over amendment combinations at generation time with a fallback to authored levels",
+          "The 5 to 7 percent Parkinson figure is unverified; the page uses an invented, labelled rate instead",
+          "Canvas strand physics plus worker simulation is the heaviest integration; the cut-list drops physics to a spring-eased curve if behind"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

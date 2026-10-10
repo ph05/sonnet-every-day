@@ -1,0 +1,172 @@
+{
+  "id": "artisan-r1-2",
+  "title": "Septin Versus September",
+  "pitch": "A grinning autoformat gremlin lives inside a spreadsheet grid and, on every import, helpfully rewrites whatever it thinks it understands: gene symbols become dates, ZIP codes lose their leading zeros, long ID numbers melt into zeros. The visitor, a harried data clerk, receives shipments of columns and must place a limited set of format locks so the right things stay text and the right things stay numeric, then watch a split-flap import run that either preserves every record or strikes through the casualties.",
+  "whyNow": "Timeless: the spreadsheet-ate-my-data problem is real and famous (a gene-naming committee renamed genes in 2020 to dodge it), and the page makes a dull format menu into a clever puzzle with a villain.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "anti-lens-dud-rescue"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "absurd",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage",
+      "pointer-events"
+    ],
+    "tags": [
+      "spreadsheet",
+      "data-hygiene",
+      "autoformat",
+      "type-inference",
+      "gene-names",
+      "leading-zeros",
+      "puzzle",
+      "gremlin"
+    ],
+    "keywords": [
+      "format-locks",
+      "csv-import",
+      "data-loss",
+      "split-flap",
+      "dates-from-text",
+      "scientific-notation",
+      "clerk-game"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "In 2020 the human gene-naming committee renamed about 27 genes (for example MARCH1 became MARCHF1 and SEPT1 became SEPTIN1) because spreadsheet programs kept converting their symbols into dates. A 2016 Genome Biology study of supplementary files from thousands of genetics papers found roughly a fifth contained such conversion errors. Vendor help pages also document two other classic losses that fuel the levels: leading zeros vanish from digit-only entries, and numbers beyond 15 significant digits are rounded to zeros. The game uses a simplified, invented set of guessing rules, openly labelled as a generic model rather than any product's exact behaviour.",
+    "sources": [
+      {
+        "title": "The name of a human gene is forced to change because of Excel's annoyance",
+        "url": "https://www.gigazine.net/gsc_news/en/20200807-genes-rename-microsoft-excel",
+        "date": "2020-08-07",
+        "snippet": "News report that human genes were renamed because spreadsheet software read symbols like SEPT2 and MARCH1 as dates.",
+        "via": "search",
+        "note": "Gene symbols to dates, naming committee response, 2020",
+        "verified": true
+      },
+      {
+        "title": "Scientists Forced To Change Names Of Human Genes Because Of Microsoft's Failure To Patch Excel",
+        "url": "https://www.techdirt.com/tag/spreadsheets/",
+        "date": "2020-08",
+        "snippet": "Tech-blog coverage of the same gene renaming episode, independent of the Japanese outlet, with the MARCH1 to MARCHF1 and SEPT1 to SEPTIN1 examples.",
+        "via": "search",
+        "note": "Independent second report of the renaming and examples",
+        "verified": true
+      },
+      {
+        "title": "Genes renamed to stop Microsoft Excel from mistaking them for dates",
+        "url": "https://interestingengineering.com/genes-renamed-to-stop-microsoft-excel-from-mistaking-them-for-dates",
+        "date": "2020",
+        "snippet": "Engineering-news piece reporting the rule change for gene symbols and roughly 27 genes renamed in a year.",
+        "via": "search",
+        "note": "Third outlet agreeing on the renaming",
+        "verified": true
+      },
+      {
+        "title": "Gene name errors are widespread in the scientific literature (Ziemann, Eren, El-Osta, Genome Biology 2016)",
+        "url": "https://findanexpert.unimelb.edu.au/scholarlywork/1292976-gene-name-errors-are-widespread-in-the-scientific-literature",
+        "date": "2016",
+        "snippet": "University research-profile record of the 2016 paper reporting that about a fifth of papers with supplementary gene lists had conversion errors.",
+        "via": "search",
+        "note": "The 2016 study and its roughly one-in-five finding",
+        "verified": true
+      },
+      {
+        "title": "Gene name errors are widespread in the scientific literature (university news release)",
+        "url": "https://www.uni-wuerzburg.de/aktuelles/pressemitteilungen/single/news/gene-name-errors-are-widespread-in-the-scientific-literature/",
+        "date": "2016",
+        "snippet": "A second university posting about the same paper and its finding of widespread gene-name conversion errors.",
+        "via": "search",
+        "note": "Second independent listing of the 2016 study",
+        "verified": true
+      },
+      {
+        "title": "Format numbers as text (vendor support page)",
+        "url": "https://support.microsoft.com/en-US/Excel/format-numbers-as-text",
+        "date": "",
+        "snippet": "Vendor help page: numbers are limited to 15 digits of precision and extra digits become zeros, so long codes should be stored as text.",
+        "via": "search",
+        "note": "15-digit limit and text-storage workaround",
+        "verified": true
+      },
+      {
+        "title": "Why is Benchling truncating / rounding off my numbers with 16+ digits?",
+        "url": "https://help.benchling.com/hc/en-us/articles/24949181613069-Why-is-Benchling-truncating-rounding-off-my-numbers-with-16-digits",
+        "date": "",
+        "snippet": "A different software vendor's help article describing the same 15-digit precision limit and a text workaround.",
+        "via": "search",
+        "note": "Independent confirmation of the 15-digit limit",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In 2020 the human gene-naming committee renamed roughly 27 genes because spreadsheet software converted their symbols into dates; MARCH1 became MARCHF1 and SEPT1 became SEPTIN1.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "A 2016 Genome Biology study (Ziemann, Eren, El-Osta) reported that about one fifth of papers with supplementary gene lists contained gene names mangled by automatic conversion (sources disagree slightly on the paper count, so the page quotes only the fraction).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Spreadsheet programs keep about 15 significant digits; digits beyond the 15th are replaced by zeros, so 16-digit or longer codes need to be stored as text before entry.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-10"
+      },
+      {
+        "claim": "Digit-only entries lose their leading zeros by default unless stored as text or shown with a custom number format (vendor help guidance, seen in search results).",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-10"
+      }
+    ],
+    "inspirations": [
+      "puzzle games about rule systems",
+      "split-flap departure boards",
+      "data-cleaning horror stories",
+      "paper-form clerk games"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each level delivers a shipment of 5 to 9 columns with a stated job (total the invoices, mail the parcels, publish the gene list). The visitor spends a small budget of format locks (text, number, date, keep-raw) on columns, runs the import, and a split-flap animation shows which cells survived; failures are struck through with the original value and the rule that killed it. The budget forces trade-offs because over-locking breaks the sum or sort a column needs, and later levels mix columns whose values trip several rules at once.",
+    "sophisticationHooks": [
+      "A small deterministic guesser engine of about eight named rules (leading-zero strip, 15-digit round-off, month-abbreviation-plus-number to date, two-number-with-slash to date, exponent form to number, and so on) with a rule log that teaches by showing which rule struck each cell",
+      "Sandbox bench: type or paste any value and see the guesser's verdict live, with shareable URL-hash state for a puzzle or a bench entry",
+      "Hand-made levels from famous failure shapes (gene list, ZIP list, 18-digit ticket IDs, fractions, part codes) plus a finale where a 14-row rhyme-scheme column of an original sonnet is rescued",
+      "Tactile split-flap import animation and a gremlin drawn in SVG with expression states that react to locks, with reduced-motion fallbacks"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: rules engine (about 250 lines), 12 hand-written levels with data as JSON in the page, grid UI with keyboard and touch lock placement, split-flap animation via Web Animations, sandbox bench, hash-state sharing, about/making-of panel, light and dark, reduced motion. Cut: file upload and real CSV import, user-authored levels, sound, any claim about a specific product's exact current behaviour.",
+    "risks": [
+      "Real products change behaviour over time, so the page labels the engine as a simplified generic model and never claims a specific product does exactly this today",
+      "Only vendor help pages and news coverage were seen, no page was opened; claims are limited to those with two independent search results, and the leading-zero claim rests on one result and will be shown as 'as of 2026-10-10, per vendor help'",
+      "The paper count in the 2016 study differs between sources, so the page uses only the one-fifth fraction",
+      "Niche audience risk: mitigated by tutorial level using birthdays and ZIP codes before any biology appears"
+    ]
+  },
+  "durable": true
+}
