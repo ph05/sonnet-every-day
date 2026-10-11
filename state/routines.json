@@ -11,5 +11,20 @@
     "closerBackup": "session_01VWnvFvcvWLHoCGee3hqg18",
     "manual": "session_01PCQqwBwwn3hmGCSxhnfg3r"
   },
-  "triggers": {}
+  "triggers": {
+    "primary": "trig_01XsvBPAUDEBLN4wmuRCkEE2",
+    "wdA": "trig_018sP4JTqqVQjyqgP742nMDm",
+    "wdB": "trig_01UfwJ5fUB27hQTDPNfZW17S",
+    "closer": "trig_01Pwr9ybXUfVrLp3pKeW6tAM",
+    "closerBackup": "trig_01Vzvq3wgL8ktSRxQa62ngSA",
+    "manualButton": "trig_01BohXFYK9NiUVmcNau1NJZ4"
+  },
+  "createdAt": "2026-10-11T00:01:13Z",
+  "cron": {
+    "primary": "CRON_TZ=America/New_York 55 3 * * *",
+    "wdA": "CRON_TZ=America/New_York 32 5 * * *",
+    "wdB": "CRON_TZ=America/New_York 47 6 * * *",
+    "closer": "CRON_TZ=America/New_York 47 8 * * *",
+    "closerBackup": "CRON_TZ=America/New_York 37 9 * * *"
+  }
 }
