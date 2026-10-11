@@ -1963,6 +1963,12 @@ describe('qa.js', () => {
     } finally { s.clean(); }
   });
 
+  test('the quality rubric keeps output-in-view as a hard minimum (browser-check cannot see it; it shipped as an S2 on 2026-10-10 and 2026-10-11)', () => {
+    const text = fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'quality.md'), 'utf8');
+    const hard = text.slice(text.indexOf('## Hard minimums'), text.indexOf('## Dimensions'));
+    for (const must of ['stays in view while its controls are used', 'mouse.wheel']) assert.ok(hard.includes(must), `the hard minimums of quality.md lack "${must}"`);
+  });
+
   test('siteDir and seconds come from the args; compact QA uses 10 seconds', async () => {
     let s = makeSandbox();
     try {

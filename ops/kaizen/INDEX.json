@@ -96,6 +96,23 @@
       "linesChanged": 12,
       "question": "Should checkWritten name the byte difference and the likely cause in its size mismatch message? It lives in the prelude copied into 7 workflows, so it exceeds the 4 file cap for one kaizen.",
       "reason": null
+    },
+    {
+      "id": "2026-10-11-critic",
+      "date": "2026-10-11",
+      "agent": "critic",
+      "title": "quality.md: keep the main output in view with its controls (S2 shipped two days running)",
+      "observation": "Same S2 kind two days running; revise was skipped both days so both shipped. 2026-10-10 d01: scoring cascade 318 px below Play (1,025 px on a phone). 2026-10-11 qa/report.json: d02 map and sliders never on screen together at 390x844, d03 sticky column scroller crops the map under a wheel at 1366x768 and 1280x800, d04 card goal about 1,600 px above the card list. quality.md hard minimums named only horizontal overflow; browser-check.mjs shots are viewport-only and its monkey wheels assert nothing. Added one hard-minimum bullet with both probes and a selfcheck test pinning it.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/quality.md",
+        "ops/workflows/_selfcheck.mjs"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 7,
+      "question": "Proposal for protected browser-check.mjs: assert a wheel over the output moves scrollY and the first control shares 390x844 with it? Also 7 of 16 raw scout dossiers passed the 12-source cap and 11 of 98 facts lost their source: keep cited sources first?",
+      "reason": null
     }
   ]
 }

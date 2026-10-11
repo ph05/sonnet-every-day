@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-11 · critic · applied · quality.md: keep the main output in view with its controls (S2 shipped two days running)
+
+- observation: Same S2 kind two days running; revise was skipped both days so both shipped. 2026-10-10 d01: scoring cascade 318 px below Play (1,025 px on a phone). 2026-10-11 qa/report.json: d02 map and sliders never on screen together at 390x844, d03 sticky column scroller crops the map under a wheel at 1366x768 and 1280x800, d04 card goal about 1,600 px above the card list. quality.md hard minimums named only horizontal overflow; browser-check.mjs shots are viewport-only and its monkey wheels assert nothing. Added one hard-minimum bullet with both probes and a selfcheck test pinning it.
+- category: prevention · lines changed: 7 · files: ops/rubrics/quality.md, ops/workflows/_selfcheck.mjs
+- question: Proposal for protected browser-check.mjs: assert a wheel over the output moves scrollY and the first control shares 390x844 with it? Also 7 of 16 raw scout dossiers passed the 12-source cap and 11 of 98 facts lost their source: keep cited sources first?
+
 ## 2026-10-10 · engineer · applied · selfcheck: run the real checkWritten to prove a decoded escape passes in .json and fails in program
 
 - observation: 2026-10-10 report: ideate lost both normalize rounds because checkWritten rejected a clerk-decoded escape in .mjs text by 20 bytes. Lab added a source-line lint, but nothing ran checkWritten itself; selfcheck only compares the prelude text across scripts. New selfcheck test loads the real prelude functions in a vm and asserts: decoded escape in .json passes, in .mjs fails, unreported file fails. Passes today (12 lines).

@@ -10,6 +10,7 @@ The bar is CONTRACT section 11. A tier-1 project feels like something a person w
 * Works offline from a static server. The CSP meta from the page shell is intact. No external resources.
 * Keyboard and touch support for every action; visible focus; sensible tab order; `Escape`/`Enter`/`Space` behave as users expect.
 * Responsive down to 360px; follows `prefers-color-scheme`; honors `prefers-reduced-motion`.
+* At 1366x768 and 390x844 the main output stays in view while its controls are used, and the result of the main action appears without scrolling. No inner scroller crops the output: a wheel over it scrolls the page unless it zooms on purpose. `browser-check.mjs` shots are static and its monkey wheels assert nothing, so builders and QA test both with a Playwright script (scroll each control into view and compare element rects; `mouse.wheel` over the output and compare `scrollY`).
 * Deterministic where it should be (seeded randomness; same seed, same result). Shareable state in the URL hash where it makes sense, and the hash is validated defensively.
 * Empty, loading and error states exist and read well. Nothing says "TODO", "lorem", "placeholder", "example.com", "Project Title".
 * An "About & making of" panel with the day's research sources (only `verified:true` ones: a page really opened, or a claim two independent search results agree on), honest about what is simulated or unverified. A fact whose source is unverified appears as "as of <date>, per <source>" or not at all, never as plain fact.
