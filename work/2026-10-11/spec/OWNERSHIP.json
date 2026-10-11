@@ -1,0 +1,13 @@
+{
+  "index.html": "artisan",
+  "style.css": "artisan",
+  "js/ui.js": "artisan",
+  "js/render.js": "artisan",
+  "js/geodata.js": "artisan",
+  "js/main.js": "engineer",
+  "js/orbit.js": "engineer",
+  "js/coverage.js": "engineer",
+  "js/cards.js": "engineer",
+  "js/state.js": "engineer",
+  "js/selftest.js": "engineer"
+}

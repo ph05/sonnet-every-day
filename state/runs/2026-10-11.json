@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "spec",
+  "phase": "build",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -23,25 +23,33 @@
       "at": "2026-10-11T10:20:35.151Z",
       "by": "primary",
       "note": "chose orbital-knitwear"
+    },
+    {
+      "phase": "spec",
+      "at": "2026-10-11T10:47:33.217Z",
+      "by": "primary",
+      "note": "spec ok (compact, tier 2)"
     }
   ],
   "attempts": {
     "preflight": 1,
     "ideate": 1,
     "select": 1,
-    "spec": 1
+    "spec": 1,
+    "build": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-11T07:56:07.585Z",
     "ideate": "2026-10-11T07:56:52.904Z",
     "select": "2026-10-11T09:47:39.067Z",
-    "spec": "2026-10-11T10:20:40.590Z"
+    "spec": "2026-10-11T10:20:40.590Z",
+    "build": "2026-10-11T10:47:38.359Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T10:21:18.316Z",
+    "heartbeatAt": "2026-10-11T10:47:47.984Z",
     "phase": "select"
   },
   "directives": [
@@ -60,8 +68,8 @@
   },
   "throttle": "all-in",
   "spend": {
-    "outputTokens": 2107108,
-    "agentCalls": 37,
+    "outputTokens": 2299169,
+    "agentCalls": 43,
     "byPhase": {
       "ideate": {
         "outputTokens": 1667764,
@@ -70,6 +78,10 @@
       "select": {
         "outputTokens": 439344,
         "agentCalls": 15
+      },
+      "spec": {
+        "outputTokens": 192061,
+        "agentCalls": 6
       }
     }
   },
@@ -148,26 +160,34 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: spec attempt 1, due 2026-10-11T11:05:41.161Z (45 min: budget 35 + 10 margin)"
+    },
+    {
+      "at": "2026-10-11T10:47:38.874Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: build attempt 1, due 2026-10-11T12:17:38.874Z (90 min: budget 80 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "spec",
+    "phase": "build",
     "attempt": 1,
-    "armedAt": "2026-10-11T10:20:41.161Z",
-    "dueAt": "2026-10-11T11:05:41.161Z",
+    "armedAt": "2026-10-11T10:47:38.874Z",
+    "dueAt": "2026-10-11T12:17:38.874Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01Eawh9DB3xaHbGsintfzsX3",
-    "workflowTask": "wvwsz1z6k",
+    "triggerId": "trig_019CcaDY9NgofPf59ZKCLGHB",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 35,
-    "delayMinutes": 45,
+    "budgetMinutes": 80,
+    "delayMinutes": 90,
     "clamped": null,
     "arms": {
       "ideate": 1,
       "select": 1,
-      "spec": 1
+      "spec": 1,
+      "build": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T10:21:18.316Z"
+    "boundAt": "2026-10-11T10:47:47.984Z"
   }
 }

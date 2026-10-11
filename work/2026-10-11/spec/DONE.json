@@ -1,0 +1,37 @@
+{
+  "phase": "spec",
+  "ok": true,
+  "date": "2026-10-11",
+  "ideaId": "i04",
+  "tier": 2,
+  "compact": true,
+  "slug": "orbital-knitwear",
+  "title": "Orbital Knitwear",
+  "owners": {
+    "artisan": [
+      "index.html",
+      "style.css",
+      "js/ui.js",
+      "js/render.js",
+      "js/geodata.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/orbit.js",
+      "js/coverage.js",
+      "js/cards.js",
+      "js/state.js",
+      "js/selftest.js"
+    ]
+  },
+  "files": 11,
+  "warnings": [],
+  "openIssues": [
+    "Card pars are not baked yet: the spec gives prototype-calibrated pass thresholds and par seeds (SPEC 5.4), and the engineer must run the offline brute-force search, bake par setups into js/cards.js and lower any pass level the search cannot reach (floor(0.95*par)).",
+    "If the polar view is cut (cut-list item 1), packaging should drop the fingerprint tag polar-view and keyword azimuthal from project.json; PROJECT.json description and makingOf deliberately do not mention the polar view.",
+    "The sourced NASA tutorial figure of about 22.9 degrees of westward track shift per ISS pass differs from the model's 23.4 to 23.8 degrees at 370 to 460 km; the About text discloses this as a computed difference. If the engineer's model lands elsewhere, the About sentence and test vector must be updated together.",
+    "SPEC.md is far longer than the 900 to 1500 word guide (about 6k whitespace tokens, 42k characters) because an 11-file, two-owner interface contract with events, DOM ids, hash grammar and test vectors needed it; the spec lint has only minimum lengths. DESIGN.md is also over its 400-word guide (closed toast-copy list).",
+    "One source title is poor but kept verbatim from the idea file: 'pubs.usgs.gov' (USGS fact sheet). Packaging may rename it if the lint allows.",
+    "Dawn Patrol is season-asymmetric (dawn node -90 scores about 0.81, dusk node +90 about 0.41 at the equinox epoch); the card text only asks for sunrise and the hint says start longitude near -90."
+  ]
+}

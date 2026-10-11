@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "date": "2026-10-11",
+  "slug": "orbital-knitwear",
+  "title": "Orbital Knitwear",
+  "tagline": "Tune a satellite's orbit and knit the planet in wool, one pass at a time, while the flat map lies about the holes.",
+  "description": "Tune a satellite's height, tilt and orbit shape and watch its ground track knit a wool-textured world map, one ribbon of stitches per pass. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map's inflated poles cannot flatter you.",
+  "tier": 2,
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": ["cozy", "analytical", "playful"],
+    "tech": ["canvas2d", "dom-ui", "localstorage", "pointer-events"],
+    "tags": [
+      "orbits",
+      "ground-track",
+      "satellites",
+      "knitting",
+      "map-projections",
+      "sun-synchronous",
+      "coverage",
+      "polar-view",
+      "earth-observation",
+      "j2-precession"
+    ],
+    "keywords": [
+      "repeat-cycle",
+      "swath-width",
+      "dropped-stitch",
+      "pattern-card",
+      "local-solar-time",
+      "terminator",
+      "equirectangular",
+      "azimuthal",
+      "orbital-period",
+      "nodal-precession"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": ["#f3ede2", "#a8321f", "#2a7b82", "#a87408", "#2a2631", "#17151c", "#efe6d4", "#ff7a5c"],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    { "title": "GDC OrbitPrimer", "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf" },
+    { "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources", "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit" },
+    { "title": "Space Station Orbit Tutorial", "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm" },
+    { "title": "International Space Station Frequently Asked Questions - NASA", "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/" },
+    { "title": "Mission & Carrier Characteristics", "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm" },
+    { "title": "The Worldwide Reference System", "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system" },
+    { "title": "pubs.usgs.gov", "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf" }
+  ],
+  "makingOf": "Up to three satellites fly a two-body orbit with the J2 correction, so Earth's bulge turns each orbit's plane and perigee. Kepler's equation is solved by Newton iteration, a mean-sun model gives local time and the day-night line, and every pass is painted into a one-degree grid of stitches as wide as the satellite's swath. Scores weight each stitch by its true spherical area, so polar holes that look huge on a flat map count for little. The page is checked against figures from NASA, ESA and USGS pages found through search (cross-checked between results, not every page opened), and everything else is labelled: coastlines are hand-simplified, pars were found by brute-force search with this model, and tracks drift from real satellites over weeks.",
+  "stats": { "files": 0, "bytes": 0, "ownLoc": 0 },
+  "credits": "Built by the Sonnet Every Day team"
+}
