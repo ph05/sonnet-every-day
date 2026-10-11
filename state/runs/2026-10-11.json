@@ -25,7 +25,7 @@
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T09:22:46.097Z"
+    "heartbeatAt": "2026-10-11T09:38:25.541Z"
   },
   "directives": [
     {
@@ -97,15 +97,22 @@
       "by": "wdA",
       "kind": "note",
       "msg": "scope-cut directive (tier 2) issued by wdA"
+    },
+    {
+      "at": "2026-10-11T09:38:18.308Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-extended",
+      "msg": "phase watch extended: ideate attempt 1 was 0.7 min past 2026-10-11T09:37:38.250Z but a file under work/2026-10-11 changed 7 min ago; due 2026-10-11T09:53:18.308Z now (extension 2 of 2)"
     }
   ],
   "watch": {
     "phase": "ideate",
     "attempt": 1,
     "armedAt": "2026-10-11T07:56:53.400Z",
-    "dueAt": "2026-10-11T09:37:38.250Z",
+    "dueAt": "2026-10-11T09:53:18.308Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01FcTDUMYJMFekqDfJf752aK",
+    "triggerId": "trig_01M5QtSqRfxF6ktnjPd14aXR",
     "workflowTask": "wf677a9my",
     "role": "primary",
     "budgetMinutes": 75,
@@ -115,8 +122,8 @@
       "ideate": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T09:22:46.097Z",
-    "extensions": 1,
-    "extendedAt": "2026-10-11T09:22:38.250Z"
+    "boundAt": "2026-10-11T09:38:25.541Z",
+    "extensions": 2,
+    "extendedAt": "2026-10-11T09:38:18.308Z"
   }
 }
