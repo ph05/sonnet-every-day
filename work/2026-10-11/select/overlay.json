@@ -1,0 +1,242 @@
+{
+  "writeCarryover": false,
+  "scores": {
+    "i04": {
+      "sophistication": 8.8,
+      "delight": 7.1,
+      "distinctness": 7.2,
+      "feasibility": 5.3,
+      "timeliness": 6.9,
+      "interestFit": 4.8,
+      "polishPotential": 8.8,
+      "safety": 8.7
+    },
+    "i03": {
+      "sophistication": 7,
+      "delight": 8.6,
+      "distinctness": 5.4,
+      "feasibility": 7.1,
+      "timeliness": 4.2,
+      "interestFit": 7,
+      "polishPotential": 8.5,
+      "safety": 6.4
+    },
+    "i10": {
+      "sophistication": 6.8,
+      "delight": 5.3,
+      "distinctness": 4.5,
+      "feasibility": 8.5,
+      "timeliness": 8,
+      "interestFit": 8,
+      "polishPotential": 7.3,
+      "safety": 7.7
+    },
+    "i01": {
+      "sophistication": 4.8,
+      "delight": 7.4,
+      "distinctness": 3.6,
+      "feasibility": 9.3,
+      "timeliness": 8.5,
+      "interestFit": 6.6,
+      "polishPotential": 6.8,
+      "safety": 9
+    },
+    "i05": {
+      "sophistication": 6.5,
+      "delight": 5.9,
+      "distinctness": 7.9,
+      "feasibility": 6.3,
+      "timeliness": 3.4,
+      "interestFit": 5.2,
+      "polishPotential": 9.4,
+      "safety": 5.8
+    },
+    "i09": {
+      "sophistication": 7.6,
+      "delight": 7,
+      "distinctness": 3.2,
+      "feasibility": 7.7,
+      "timeliness": 6,
+      "interestFit": 9,
+      "polishPotential": 6.4,
+      "safety": 7.3
+    },
+    "i06": {
+      "sophistication": 5.8,
+      "delight": 8.9,
+      "distinctness": 4.2,
+      "feasibility": 7.3,
+      "timeliness": 5,
+      "interestFit": 6.8,
+      "polishPotential": 5.5,
+      "safety": 6.7
+    },
+    "i07": {
+      "sophistication": 7.3,
+      "delight": 7.9,
+      "distinctness": 8.3,
+      "feasibility": 4.7,
+      "timeliness": 7.4,
+      "interestFit": 5.3,
+      "polishPotential": 7.8,
+      "safety": 8.3
+    },
+    "i08": {
+      "sophistication": 8,
+      "delight": 6.5,
+      "distinctness": 9,
+      "feasibility": 4.9,
+      "timeliness": 7.2,
+      "interestFit": 4.7,
+      "polishPotential": 8.2,
+      "safety": 6.3
+    },
+    "i02": {
+      "sophistication": 9.3,
+      "delight": 4.2,
+      "distinctness": 6.5,
+      "feasibility": 3.2,
+      "timeliness": 9,
+      "interestFit": 5,
+      "polishPotential": 9,
+      "safety": 8
+    }
+  },
+  "totals": {
+    "i04": 72.2,
+    "i03": 68.8,
+    "i10": 67,
+    "i01": 67,
+    "i05": 65.9,
+    "i09": 65.3,
+    "i06": 63.1,
+    "i07": 71.5,
+    "i08": 70,
+    "i02": 64.3
+  },
+  "chosenId": "i04",
+  "carryoverOutId": "i03",
+  "rejectedNotes": [
+    {
+      "title": "Breaking Changes",
+      "reason": "Rank 2, 68.8/100. Weakest on timeliness (4.2): The only date tie is one itch.io page (Patch Notes v2.0, 'Systems Offline', 9-12 Oct 2026) that also says theme TBA, ends tomorrow and is flagged unverified;... Best on delight (8.6)."
+    },
+    {
+      "title": "Shuffle Sharp",
+      "reason": "Rank 3, 67/100. Weakest on distinctness (4.5): Riffle-shuffle card calling is the stronger twin of i01 (same game mechanic, wildcard slot, identical tone set, bot benchmark, exact curve beside seeded Mont... Best on feasibility (8.5)."
+    },
+    {
+      "title": "Second Pick Wins",
+      "reason": "Rank 4, 67/100. Weakest on distinctness (3.6): Penney's game is the weaker twin of i10: same game mechanic, wildcard slot, identical playful/competitive/nerdy tone set, a bot opponent, a red-black deck mo... Best on feasibility (9.3)."
+    },
+    {
+      "title": "Dead Reckoning",
+      "reason": "Rank 5, 65.9/100. Weakest on timeliness (3.4): Slotted as currentEvents but the hook is tenuous: the same unconfirmed 'Systems Offline' jam page, an LD60 date (16-19 Oct) from one unopened page (ldj.am) a... Best on polishPotential (9.4)."
+    },
+    {
+      "title": "Pick Autopsy",
+      "reason": "Rank 6, 65.3/100. Weakest on distinctness (3.2): A deckbuilder draft Monte Carlo with Shapley attribution lands in the interest slot straight after yesterday's Balatro/deckbuilder build (not an owed slot) a... Best on interestFit (9)."
+    },
+    {
+      "title": "Opt-Out Odyssey",
+      "reason": "Rank 7, 63.1/100. Weakest on distinctness (4.2): The consent-banner gauntlet is a fingerprint twin of i03 (humor-satire/game/humor, same satirical/chaotic/playful set), reuses the mundane-epic scaffold of i... Best on delight (8.9)."
+    },
+    {
+      "title": "Siege Of The Sink",
+      "reason": "Rank 8, 71.5/100. Gated: feasibility 4.7 < 5. Weakest on feasibility (4.7): Needs about 12 hand-drawn outline items with soil patches, a ray-cast spray simulator, tap/drag/rotate placement on two racks, an annealing Chef-Bot worker a... Best on distinctness (8.3)."
+    },
+    {
+      "title": "Eyes Only",
+      "reason": "Rank 9, 70/100. Gated: feasibility 4.9 < 5. Weakest on interestFit (4.7): Colour-vision lens plates (Machado-style matrices, severity dial, cipher mode, 32-reader studio solver) are a well-made science puzzle, but the clinical perc... Best on distinctness (9)."
+    },
+    {
+      "title": "Moon Ferry",
+      "reason": "Rank 10, 64.3/100. Gated: feasibility 3.2 < 5; blocker flag (feasibility: Must not be built as pitched: eight interlocking files with two Workers and six hand...). Weakest on feasibility (3.2): Heaviest stack on the list: tide model, potential-flow stream relaxation in one Worker, time-dependent Dijkstra with isochrones in another, six hand-authored... Best on sophistication (9.3)."
+    }
+  ],
+  "rationale": "Orbital Knitwear (i04) scored 72.2/100, rank 1 of 10. Strongest on sophistication (8.8): Physics-first sim: two-body plus J2 with Newton-Kepler makes sun-synchronous and Molniya-style orbits emerge, with a repeat-ground-track finder, cos(latitude) true-area scoring and brute-force card... Weakest on interestFit (4.8): Cozy ground-track knitting sim (J2 drift, Landsat 233-orbit repeat, flat versus polar toggle) is solid science but has no tie to the owner's four loves and a thin competitive loop, so just under ne... The critic check was skipped.",
+  "winnerNotes": {
+    "vetoed": false,
+    "vetoedId": null,
+    "headline": "",
+    "risks": [],
+    "mustFixInSpec": [],
+    "judgeWarnings": [
+      "feasibility: If built, the spec must pin a coarse stylised land set (about a dozen polygons written from memory, since no data may be downloaded), keep OffscreenCanvas optional, unit-test the J2 and ISS figures, and cut polar view and Molniya first.",
+      "safety: Minor framing: hand-drawn coastlines and city dots with no national borders (avoids disputed-territory politics), NASA, USGS and ESA as plain-text citations without logos or imagery, Molniya figures shown 'as of 2026-10-11, per arXiv 2007.04341', and a note that tracks drift from real satellites."
+    ],
+    "unscoredMandatory": []
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "i04",
+      "title": "Orbital Knitwear",
+      "total": 72.2,
+      "eligible": true
+    },
+    {
+      "rank": 2,
+      "id": "i03",
+      "title": "Breaking Changes",
+      "total": 68.8,
+      "eligible": true
+    },
+    {
+      "rank": 3,
+      "id": "i10",
+      "title": "Shuffle Sharp",
+      "total": 67,
+      "eligible": true
+    },
+    {
+      "rank": 4,
+      "id": "i01",
+      "title": "Second Pick Wins",
+      "total": 67,
+      "eligible": true
+    },
+    {
+      "rank": 5,
+      "id": "i05",
+      "title": "Dead Reckoning",
+      "total": 65.9,
+      "eligible": true
+    },
+    {
+      "rank": 6,
+      "id": "i09",
+      "title": "Pick Autopsy",
+      "total": 65.3,
+      "eligible": true
+    },
+    {
+      "rank": 7,
+      "id": "i06",
+      "title": "Opt-Out Odyssey",
+      "total": 63.1,
+      "eligible": true
+    },
+    {
+      "rank": 8,
+      "id": "i07",
+      "title": "Siege Of The Sink",
+      "total": 71.5,
+      "eligible": false
+    },
+    {
+      "rank": 9,
+      "id": "i08",
+      "title": "Eyes Only",
+      "total": 70,
+      "eligible": false
+    },
+    {
+      "rank": 10,
+      "id": "i02",
+      "title": "Moon Ferry",
+      "total": 64.3,
+      "eligible": false
+    }
+  ]
+}

@@ -1,0 +1,2842 @@
+{
+  "schema": 1,
+  "date": "2026-10-11",
+  "lenses": [
+    {
+      "agent": "pulse",
+      "lensId": "data-story",
+      "provocation": [
+        "cardigan",
+        "magnet",
+        "cricket"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lensId": "deckbuilder-systems",
+      "provocation": [
+        "porch",
+        "deke",
+        "hustle"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lensId": "anti-lens-opposite",
+      "provocation": [
+        "metronome",
+        "hornet",
+        "receipt"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lensId": "rube-goldberg-tool",
+      "provocation": [
+        "ember",
+        "anvil",
+        "vending"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lensId": "maps-and-places",
+      "provocation": [
+        "tide",
+        "tempo",
+        "ledge"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lensId": "itch-jam-watch",
+      "provocation": [
+        "periscope",
+        "pivot",
+        "phosphor"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lensId": "accessibility-delight",
+      "provocation": [
+        "ribbon",
+        "zigzag",
+        "orbit"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lensId": "mundane-epic",
+      "provocation": [
+        "outpost",
+        "obsidian",
+        "quicksand"
+      ]
+    }
+  ],
+  "carryoverIn": {
+    "id": "i01",
+    "title": "Second Pick Wins",
+    "pitch": "A visitor picks a three-flip coin pattern, a smug bot picks its own after seeing it, and a flip-by-flip race decides whose pattern shows up first. Every first pick loses at least two thirds of the time to the best reply, so the visitor runs ten million simulated races and watches the bot's edge settle on exact fractions such as 2 to 1. Then the visitor takes the second pick and the table flips; a red-and-black card mode with tricks shows the same effect in a real deck.",
+    "whyNow": "Timeless. The game is fair in each pick yet decided by the order of choosing, which makes it a durable argument-loser.",
+    "origin": {
+      "agent": "cards",
+      "lens": "card-dice-odds",
+      "scoutId": "cards-2"
+    },
+    "fingerprint": {
+      "category": "math-puzzle",
+      "mechanic": "game",
+      "tone": [
+        "playful",
+        "competitive",
+        "nerdy"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "dom-ui",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "penney-game",
+        "coin-flip",
+        "paradox",
+        "non-transitive",
+        "probability",
+        "patterns",
+        "markov-chain",
+        "cards"
+      ],
+      "keywords": [
+        "pattern-race",
+        "second-mover-advantage",
+        "leading-number",
+        "waiting-time",
+        "red-black-deck",
+        "payoff-matrix",
+        "exact-odds"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "In Penney's game two players each pick a short heads-tails pattern and the one that appears first in a fair coin sequence wins. Because picking is sequential, the second picker can answer any three-flip pattern with a reply that is strictly more likely to appear first (at least 2 to 1 for length 3, computed here from the leading-number formula). A short rule builds the reply, and Conway's leading-number method gives exact odds. A red/black card version with tricks (Humble-Nishiyama) exists. The page can show the payoff matrix for lengths 3 to 5, exact odds next to a seeded Monte Carlo, and expected waiting times. At length 3 the winning reply never has a longer average wait than the pattern it beats, but at length 4 it can (THTH, wait 20, beats HTHH, wait 18, with probability 9/14), which is where the loss feels unfair.",
+      "sources": [
+        {
+          "title": "Penney's game (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Penney%27s_game",
+          "date": "",
+          "snippet": "Appeared in several results for the claim; its text was not seen and the host failed to open today.",
+          "via": "search",
+          "note": "Not opened and no text seen; not relied on",
+          "verified": false
+        },
+        {
+          "title": "Penney Ante (Haverford problem-solving notes)",
+          "url": "https://blogsarchive.sites.haverford.edu/mathproblemsolving/files/2011/06/Penney-Ante.pdf",
+          "date": "2011",
+          "snippet": "Returned again for a search on the HHT versus HTH claim; independent sources agree HHT wins about two thirds of the time.",
+          "via": "search",
+          "note": "Worked pair HTH versus HHT; found by search, not opened",
+          "verified": true
+        },
+        {
+          "title": "Penney's Game Odds From No-Arbitrage (arXiv 1904.09888)",
+          "url": "https://arxiv.org/abs/1904.09888",
+          "date": "2019",
+          "snippet": "Returned for the leading-number query; no-arbitrage derivation of Conway's odds, odds for B over A are (AA-AB):(BB-BA).",
+          "via": "search",
+          "note": "Leading-number formula; same paper as source 5",
+          "verified": true
+        },
+        {
+          "title": "The Humble-Nishiyama Randomness Game (Futility Closet)",
+          "url": "https://futilitycloset.com/2016/12/31/humble-nishiyama-randomness-game",
+          "date": "2016-12-31",
+          "snippet": "Returned again for the card-game query: red/black cards, three-colour claims, tricks, reply RRB answered by BRR.",
+          "via": "search",
+          "note": "Card variant and its reply rule; its 1000-game simulation counts are single-source and not used",
+          "verified": true
+        },
+        {
+          "title": "Penney's Game (Stanford notes)",
+          "url": "https://crypto.stanford.edu/~blynn/pr/penney.html",
+          "date": "",
+          "snippet": "Returned twice; works the HTH versus HHT battle and finds the HHT player twice as likely to win.",
+          "via": "search",
+          "note": "HTH answered by HHT at 2 to 1",
+          "verified": true
+        },
+        {
+          "title": "Penney's Game Odds From No-Arbitrage (Theory and Decision)",
+          "url": "https://link.springer.com/article/10.1007/s11238-026-10123-w",
+          "date": "2026",
+          "snippet": "Returned twice; published version of the arXiv paper, states a different pattern is strictly more likely to appear first for any three-flip pattern.",
+          "via": "search",
+          "note": "Published form of source 2, same author, so not independent of it",
+          "verified": true
+        },
+        {
+          "title": "Recreational Mathematics Magazine paper on Penney's game",
+          "url": "https://reference-global.com/download/article/10.2478/rmm-2020-0002.pdf",
+          "date": "2020",
+          "snippet": "Returned in several results; example of a longer-waiting pattern winning, 20 flips versus 18 flips, probability 9/14.",
+          "via": "search",
+          "note": "Waiting time does not decide the winner; example also recomputed exactly here",
+          "verified": true
+        },
+        {
+          "title": "Code In Place project: The Humble-Nishiyama Randomness Game",
+          "url": "https://compedu.stanford.edu/codeinplace/public/projects/1342.html",
+          "date": "2020",
+          "snippet": "Returned for the card-game query; a project on the same game by this name.",
+          "via": "search",
+          "note": "Second result confirming the card game exists",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "In Penney's game the second chooser can answer any three-flip pattern with a pattern strictly more likely to appear first; HTH answered by HHT wins 2 to 1 (two thirds).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5,
+            1
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Conway's leading-number method gives the odds between two patterns: odds for B over A are (AA-AB):(BB-BA); a no-arbitrage derivation was published in 2019 and in Theory and Decision in 2026.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            5,
+            6
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Reply rule: take the opposite of the first pick's middle symbol, put it in front, and keep the first two symbols of the first pick; HTH is answered by HHT and RRB by BRR.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            1,
+            4
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "A red/black card version (Humble-Nishiyama) uses three-colour claims and collected tricks instead of single wins.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-10"
+        },
+        {
+          "claim": "Longer average wait does not decide the winner: THTH (average wait 20 flips) beats HTHH (average wait 18) with probability 9/14.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-10"
+        }
+      ],
+      "inspirations": [
+        "Numberphile-style coin pattern puzzles",
+        "non-transitive Efron dice",
+        "magician's red-black deck bets",
+        "bar-bet probability traps"
+      ]
+    },
+    "design": {
+      "coreLoop": "A pattern of length 3 (later 4 or 5) is picked, the bot answers, and one live race runs flip by flip with a tension bar, followed by batches of 1,000 or ten million simulated races while the running win rate converges to the exact fraction. Modes: visitor picks first and loses, bot picks first and the visitor finds the reply, and a puzzle mode that looks for the pattern with the best guaranteed odds. Replay value comes from lengths 4 and 5, the card-deck mode, and shareable argument challenges.",
+      "sophisticationHooks": [
+        "Exact odds via Markov-chain absorption (Conway leading numbers cross-checked), versus seeded worker Monte Carlo with error bars",
+        "Payoff matrix heatmap for all patterns of length 3 to 5 with the best-reply path highlighted, plus a cycle view showing the non-transitive loop",
+        "Expected waiting time panel showing the pattern that arrives later on average still wins the race",
+        "Red/black deck mode played without replacement with tricks, so the visitor sees the effect survive in a real deck; hash state with seed and picks"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Build: pattern picker for lengths 3 and 4 (matrix also shows 5), bot reply engine, race animation, exact solver by leading numbers cross-checked by Markov absorption, worker Monte Carlo in chunks, payoff matrix heatmap, waiting-time panel, red/black card mode with seeded Monte Carlo (exact deck odds only if the DP is quick), about panel, hash state. Cut: lengths above 5 in play, multiplayer, sound, cycle view if time is short.",
+      "risks": [
+        "All odds beyond the sourced 2 to 1 and 9/14 examples are computed by the page and labelled 'computed here'",
+        "The ten-million-race run must stay responsive: chunked in a worker with a progress bar and a cancel control",
+        "Card-mode trick odds differ from coin odds; the Futility Closet simulation counts (such as 995 of 1000) are single-source and unverified, so the page shows its own seeded results instead, or 'as of 2026-10-10, per Futility Closet' if quoted",
+        "At length 3 the winning reply never has a longer expected wait than the pattern it beats, so the waiting-time surprise only appears at length 4 and up; copy must not claim it for length 3",
+        "Plain Penney content is common online, so the matrix, deck mode and waiting-time angle carry the distinct feel; no uniqueness claim is made on the page"
+      ]
+    },
+    "durable": true,
+    "verification": {
+      "by": "verifier",
+      "at": "2026-10-10",
+      "evidence": "search-only",
+      "confidence": 7,
+      "feasibleInOneDay": true,
+      "notes": "Core premise and the 2 to 1 and 9/14 figures were found in several independent search results and recomputed exactly with the leading-number formula; no page was opened. Fixed the waiting-time claim, which only holds from length 4, and removed the unverifiable uniqueness claim."
+    },
+    "scores": {
+      "sophistication": 6.2,
+      "delight": 6.2,
+      "distinctness": 7,
+      "feasibility": 8.5,
+      "timeliness": 9,
+      "interestFit": 6.4,
+      "polishPotential": 5.5,
+      "safety": 8.2
+    },
+    "total": 70.6,
+    "noveltyCheck": {
+      "ok": true,
+      "conflicts": []
+    }
+  },
+  "ideas": [
+    {
+      "id": "i01",
+      "title": "Second Pick Wins",
+      "pitch": "A visitor picks a three-flip coin pattern, a smug bot picks its own after seeing it, and a flip-by-flip race decides whose pattern shows up first. Every first pick loses at least two thirds of the time to the best reply, so the visitor runs ten million simulated races and watches the bot's edge settle on exact fractions such as 2 to 1. Then the visitor takes the second pick and the table flips; a red-and-black card mode with tricks shows the same effect in a real deck.",
+      "whyNow": "Timeless. The game is fair in each pick yet decided by the order of choosing, which makes it a durable argument-loser.",
+      "origin": {
+        "agent": "carryover",
+        "lens": "card-dice-odds",
+        "scoutId": "carry-1",
+        "originalAgent": "cards",
+        "carriedFrom": "2026-10-11"
+      },
+      "fingerprint": {
+        "category": "math-puzzle",
+        "mechanic": "game",
+        "tone": [
+          "playful",
+          "competitive",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "dom-ui",
+          "localstorage",
+          "pointer-events"
+        ],
+        "tags": [
+          "penney-game",
+          "coin-flip",
+          "paradox",
+          "non-transitive",
+          "probability",
+          "patterns",
+          "markov-chain",
+          "cards"
+        ],
+        "keywords": [
+          "pattern-race",
+          "second-mover-advantage",
+          "leading-number",
+          "waiting-time",
+          "red-black-deck",
+          "payoff-matrix",
+          "exact-odds"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "In Penney's game two players each pick a short heads-tails pattern and the one that appears first in a fair coin sequence wins. Because picking is sequential, the second picker can answer any three-flip pattern with a reply that is strictly more likely to appear first (at least 2 to 1 for length 3, computed here from the leading-number formula). A short rule builds the reply, and Conway's leading-number method gives exact odds. A red/black card version with tricks (Humble-Nishiyama) exists. The page can show the payoff matrix for lengths 3 to 5, exact odds next to a seeded Monte Carlo, and expected waiting times. At length 3 the winning reply never has a longer average wait than the pattern it beats, but at length 4 it can (THTH, wait 20, beats HTHH, wait 18, with probability 9/14), which is where the loss feels unfair.",
+        "sources": [
+          {
+            "title": "Penney's game (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Penney%27s_game",
+            "date": "",
+            "snippet": "Appeared in several results for the claim; its text was not seen and the host failed to open today.",
+            "via": "search",
+            "note": "Not opened and no text seen; not relied on",
+            "verified": false
+          },
+          {
+            "title": "Penney Ante (Haverford problem-solving notes)",
+            "url": "https://blogsarchive.sites.haverford.edu/mathproblemsolving/files/2011/06/Penney-Ante.pdf",
+            "date": "2011",
+            "snippet": "Returned again for a search on the HHT versus HTH claim; independent sources agree HHT wins about two thirds of the time.",
+            "via": "search",
+            "note": "Worked pair HTH versus HHT; found by search, not opened",
+            "verified": true
+          },
+          {
+            "title": "Penney's Game Odds From No-Arbitrage (arXiv 1904.09888)",
+            "url": "https://arxiv.org/abs/1904.09888",
+            "date": "2019",
+            "snippet": "Returned for the leading-number query; no-arbitrage derivation of Conway's odds, odds for B over A are (AA-AB):(BB-BA).",
+            "via": "search",
+            "note": "Leading-number formula; same paper as source 5",
+            "verified": true
+          },
+          {
+            "title": "The Humble-Nishiyama Randomness Game (Futility Closet)",
+            "url": "https://futilitycloset.com/2016/12/31/humble-nishiyama-randomness-game",
+            "date": "2016-12-31",
+            "snippet": "Returned again for the card-game query: red/black cards, three-colour claims, tricks, reply RRB answered by BRR.",
+            "via": "search",
+            "note": "Card variant and its reply rule; its 1000-game simulation counts are single-source and not used",
+            "verified": true
+          },
+          {
+            "title": "Penney's Game (Stanford notes)",
+            "url": "https://crypto.stanford.edu/~blynn/pr/penney.html",
+            "date": "",
+            "snippet": "Returned twice; works the HTH versus HHT battle and finds the HHT player twice as likely to win.",
+            "via": "search",
+            "note": "HTH answered by HHT at 2 to 1",
+            "verified": true
+          },
+          {
+            "title": "Penney's Game Odds From No-Arbitrage (Theory and Decision)",
+            "url": "https://link.springer.com/article/10.1007/s11238-026-10123-w",
+            "date": "2026",
+            "snippet": "Returned twice; published version of the arXiv paper, states a different pattern is strictly more likely to appear first for any three-flip pattern.",
+            "via": "search",
+            "note": "Published form of source 2, same author, so not independent of it",
+            "verified": true
+          },
+          {
+            "title": "Recreational Mathematics Magazine paper on Penney's game",
+            "url": "https://reference-global.com/download/article/10.2478/rmm-2020-0002.pdf",
+            "date": "2020",
+            "snippet": "Returned in several results; example of a longer-waiting pattern winning, 20 flips versus 18 flips, probability 9/14.",
+            "via": "search",
+            "note": "Waiting time does not decide the winner; example also recomputed exactly here",
+            "verified": true
+          },
+          {
+            "title": "Code In Place project: The Humble-Nishiyama Randomness Game",
+            "url": "https://compedu.stanford.edu/codeinplace/public/projects/1342.html",
+            "date": "2020",
+            "snippet": "Returned for the card-game query; a project on the same game by this name.",
+            "via": "search",
+            "note": "Second result confirming the card game exists",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In Penney's game the second chooser can answer any three-flip pattern with a pattern strictly more likely to appear first; HTH answered by HHT wins 2 to 1 (two thirds).",
+            "sourceIndex": 4,
+            "alsoIn": [
+              5,
+              1
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Conway's leading-number method gives the odds between two patterns: odds for B over A are (AA-AB):(BB-BA); a no-arbitrage derivation was published in 2019 and in Theory and Decision in 2026.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              5,
+              6
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Reply rule: take the opposite of the first pick's middle symbol, put it in front, and keep the first two symbols of the first pick; HTH is answered by HHT and RRB by BRR.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              1,
+              4
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "A red/black card version (Humble-Nishiyama) uses three-colour claims and collected tricks instead of single wins.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-10"
+          },
+          {
+            "claim": "Longer average wait does not decide the winner: THTH (average wait 20 flips) beats HTHH (average wait 18) with probability 9/14.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-10"
+          }
+        ],
+        "inspirations": [
+          "Numberphile-style coin pattern puzzles",
+          "non-transitive Efron dice",
+          "magician's red-black deck bets",
+          "bar-bet probability traps"
+        ]
+      },
+      "design": {
+        "coreLoop": "A pattern of length 3 (later 4 or 5) is picked, the bot answers, and one live race runs flip by flip with a tension bar, followed by batches of 1,000 or ten million simulated races while the running win rate converges to the exact fraction. Modes: visitor picks first and loses, bot picks first and the visitor finds the reply, and a puzzle mode that looks for the pattern with the best guaranteed odds. Replay value comes from lengths 4 and 5, the card-deck mode, and shareable argument challenges.",
+        "sophisticationHooks": [
+          "Exact odds via Markov-chain absorption (Conway leading numbers cross-checked), versus seeded worker Monte Carlo with error bars",
+          "Payoff matrix heatmap for all patterns of length 3 to 5 with the best-reply path highlighted, plus a cycle view showing the non-transitive loop",
+          "Expected waiting time panel showing the pattern that arrives later on average still wins the race",
+          "Red/black deck mode played without replacement with tricks, so the visitor sees the effect survive in a real deck; hash state with seed and picks"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Build: pattern picker for lengths 3 and 4 (matrix also shows 5), bot reply engine, race animation, exact solver by leading numbers cross-checked by Markov absorption, worker Monte Carlo in chunks, payoff matrix heatmap, waiting-time panel, red/black card mode with seeded Monte Carlo (exact deck odds only if the DP is quick), about panel, hash state. Cut: lengths above 5 in play, multiplayer, sound, cycle view if time is short.",
+        "risks": [
+          "All odds beyond the sourced 2 to 1 and 9/14 examples are computed by the page and labelled 'computed here'",
+          "The ten-million-race run must stay responsive: chunked in a worker with a progress bar and a cancel control",
+          "Card-mode trick odds differ from coin odds; the Futility Closet simulation counts (such as 995 of 1000) are single-source and unverified, so the page shows its own seeded results instead, or 'as of 2026-10-10, per Futility Closet' if quoted",
+          "At length 3 the winning reply never has a longer expected wait than the pattern it beats, so the waiting-time surprise only appears at length 4 and up; copy must not claim it for length 3",
+          "Plain Penney content is common online, so the matrix, deck mode and waiting-time angle carry the distinct feel; no uniqueness claim is made on the page"
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 4.8,
+        "delight": 7.4,
+        "distinctness": 3.6,
+        "feasibility": 9.3,
+        "timeliness": 8.5,
+        "interestFit": 6.6,
+        "polishPotential": 6.8,
+        "safety": 9
+      },
+      "total": 67,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i02",
+      "title": "Moon Ferry",
+      "pitch": "A visitor skippers a slow ferry across an invented strait where the tidal stream outruns the engine. They scrub an hour-by-hour stream atlas, read the day's tide table, pick a departure time and drag waypoints, and the boat then sails the plan while the arrows swing round and a shoal ledge dries and floods. Afterwards a solver reveals the fastest possible passage as a ghost boat and paints arrival-time isochrones that lean with the stream, so the visitor sees which minutes the moon took.",
+      "whyNow": "October is king-tide season: station tables list a new-moon spring-tide window on Oct 10-11, 2026 and a larger perigean peak around Oct 26-28, so the autumn's strongest streams are due. The daily passage reads the real moon age, and the idea stays good all year because every coast keeps a tide table.",
+      "origin": {
+        "agent": "architect",
+        "lens": "maps-and-places",
+        "scoutId": "architect-1"
+      },
+      "fingerprint": {
+        "category": "games-arcade",
+        "mechanic": "puzzle",
+        "tone": [
+          "serene",
+          "nerdy",
+          "playful"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "dom-ui",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "tides",
+          "tidal-streams",
+          "nautical-chart",
+          "passage-planning",
+          "isochrones",
+          "time-optimal-routing",
+          "ferry",
+          "rule-of-twelfths",
+          "spring-neap",
+          "slack-water"
+        ],
+        "keywords": [
+          "stream-atlas",
+          "tide-table",
+          "set-and-drift",
+          "chart-datum",
+          "ghost-route",
+          "drying-ledge",
+          "potential-flow",
+          "daily-passage",
+          "aim-off"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Tidal navigation is a map that changes with the clock. Stream atlases print one chartlet per hour relative to high water at a standard port, with arrows whose paired numbers give neap and spring knots, and sailors turn tide tables into water depth with the rule of twelfths (1:2:3:3:2:1 of the range per hour). Tides repeat about every 12 h 25 min, so a tide table slides roughly 50 minutes a day. Tidal causeways such as Holy Island publish daily crossing windows that slide with the tide, the same timetable puzzle in real life. Minimum-time steering through a drifting current is Zermelo's problem; one 2019 arXiv paper reports analytic solutions can be unstable in turbulent flow (single source, unconfirmed), so the build searches a time-dependent grid instead. Station tables put the 2026 king-tide windows at Oct 10-11 and about Oct 26-28. The strait, ports and tide station are invented; the physics is simplified and labelled so.",
+        "sources": [
+          {
+            "title": "Rule of twelfths",
+            "url": "https://en.wikipedia.org/wiki/Rule_of_twelfths",
+            "date": "",
+            "snippet": "Reference article on estimating tide height between low and high water by taking 1, 2, 3, 3, 2, 1 twelfths of the range in successive hours. The host could not be opened today, so only its search listing was seen.",
+            "via": "search",
+            "note": "Title and URL name the rule; counted with two other separate results (casualnavigation, surfertoday) whose titles name the same rule. Search summary was blended and page text not seen.",
+            "verified": true
+          },
+          {
+            "title": "Easy Tidal Predictions: The Rule Of Twelfths",
+            "url": "https://casualnavigation.com/easy-tidal-predictions-the-rule-of-twelfths/",
+            "date": "",
+            "snippet": "Navigation blog post teaching the rule of twelfths for tide height between a tide table's high and low water.",
+            "via": "search",
+            "note": "Second separate result on the same rule; search summary also reported use for passing a sand bar or shallow harbour.",
+            "verified": true
+          },
+          {
+            "title": "the tidal rule of twelfths in surfing",
+            "url": "https://www.surfertoday.com/surfing/the-tidal-rule-of-twelfths-in-surfing",
+            "date": "",
+            "snippet": "Surf-magazine explainer applying the rule of twelfths to estimate how the tide changes hour by hour.",
+            "via": "search",
+            "note": "Third separate result on the rule, from an unrelated community, so the rule is not one site's claim.",
+            "verified": true
+          },
+          {
+            "title": "Admiralty Tidal Stream Atlas: The Solent and Adjacent Waters (NP337), 4th Edition 1993",
+            "url": "https://www.amnautical.com/products/tidal-stream-atlas-the-solent-and-adjacent-waters",
+            "date": "",
+            "snippet": "Retailer listing for a tidal stream atlas: hourly arrow diagrams tied to high water at a standard port, with mean neap and spring rates in tenths of a knot.",
+            "via": "search",
+            "note": "Retailer description named in the search summary for the standard-port reference and the neap/spring rate pairs.",
+            "verified": true
+          },
+          {
+            "title": "www.pbo.co.uk",
+            "url": "https://www.pbo.co.uk/?p=27019",
+            "date": "",
+            "snippet": "Boat-owner magazine article on reading a tidal stream atlas: one chartlet per hour relative to Dover high water, arrow weight shows rate, paired numbers such as 05,19 give neap and spring knots.",
+            "via": "search",
+            "note": "The search summary named this single article as the source of the how-to details, independent of the retailer listing that agrees on the structure.",
+            "verified": true
+          },
+          {
+            "title": "crossing times",
+            "url": "https://www.visitnorthumberland.com/coast/holy-island/crossing-times",
+            "date": "",
+            "snippet": "Tourist-board page for the Holy Island causeway: the safe crossing window depends on the tide and shifts every day.",
+            "via": "search",
+            "note": "Named in the search summary for the daily-shifting window; the host failed to open for WebFetch.",
+            "verified": true
+          },
+          {
+            "title": "IMPORTANT SAFETY NOTES:",
+            "url": "https://holyislandcrossingtimes.northumberland.gov.uk",
+            "date": "",
+            "snippet": "Northumberland County Council's table of safe crossing periods for the tidal road, with advice to allow extra time for wind and other variables.",
+            "via": "search",
+            "note": "Official publisher of the dated crossing windows, named in the search summary; independent of the tourist board.",
+            "verified": true
+          },
+          {
+            "title": "Zermelo's problem: Optimal point-to-point navigation in 2D turbulent flows using Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/1907.08591",
+            "date": "",
+            "snippet": "Research paper on minimum-time navigation of a vessel-like agent in a moving flow; the search summary says it finds analytic optimal solutions unstable in turbulent flow.",
+            "via": "search",
+            "note": "Title names the problem. The instability remark rests on this one result and stays unconfirmed.",
+            "verified": true
+          },
+          {
+            "title": "Optimal Routing Strategies for Autonomous Underwater Vehicles in Time-Varying Environment",
+            "url": "https://arxiv.org/pdf/2008.02115",
+            "date": "",
+            "snippet": "Paper on time-optimal routing of underwater vehicles through time-varying currents.",
+            "via": "search",
+            "note": "Separate group and year; title matches the time-varying routing problem. Search summary was blended and page text not seen.",
+            "verified": true
+          },
+          {
+            "title": "2026 OBX Tide Calendar - Spring, Neap & King Tide Dates",
+            "url": "https://obxtidecharts.com/tide-calendar-2026/",
+            "date": "",
+            "snippet": "Outer Banks calendar of 2026 spring tides; per the search summary it marks Oct 10 as a new-moon spring tide and Oct 26 as the peak perigean king tide.",
+            "via": "search",
+            "note": "Named in the search summary for both October windows.",
+            "verified": true
+          },
+          {
+            "title": "The SC King Tides Initiative",
+            "url": "https://mycoast.org/sc/king-tides",
+            "date": "",
+            "snippet": "South Carolina program page; per the search summary it gives Oct 10-11 as a predicted king tide window.",
+            "via": "search",
+            "note": "Independent program page agreeing on the early October window.",
+            "verified": true
+          },
+          {
+            "title": "US King Tides 2026 to 2027: Dates at 179 NOAA Tide Stations",
+            "url": "https://mywild.report/king-tides",
+            "date": "",
+            "snippet": "Station-by-station table of 2026-27 king tides; per the search summary the most common single peak date is Oct 27, 2026.",
+            "via": "search",
+            "note": "Agrees with the calendar on a late-October peak; station tables vary by place.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The rule of twelfths estimates tide height between low and high water as 1/12, 2/12, 3/12, 3/12, 2/12 and 1/12 of the range in successive hours for a roughly sinusoidal semidiurnal tide, and is used to judge when a shallow bar or ledge can be crossed.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A tidal stream atlas gives one chartlet per hour relative to high water at a standard port (Dover for the southern North Sea), with arrows whose paired numbers give neap and spring rates in knots, for example 05,19 meaning 0.5 and 1.9 knots.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              3
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Holy Island's tidal causeway has dated safe-crossing windows published by Northumberland County Council, and the windows shift from day to day with the tide.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              5
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Zermelo's problem is the minimum-time steering of a vessel through a moving current, studied for boats and underwater vehicles including time-varying flows.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, station tables list a king-tide window around the Oct 10 new moon (Oct 10-11 on US east-coast tables).",
+            "sourceIndex": 9,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, station tables put the larger perigean king-tide peak near the Oct 26 full moon, with the highest predicted tides mostly Oct 26-28.",
+            "sourceIndex": 11,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Semidiurnal tides recur about every 12 h 25 min because the lunar day lasts 24 h 50 min, so high water arrives roughly 50 minutes later each day.",
+            "sourceIndex": 12,
+            "alsoIn": [
+              13
+            ],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "tidal stream atlases",
+          "Holy Island causeway crossing tables",
+          "Zermelo's navigation problem",
+          "paper nautical chart conventions",
+          "ferry timetables"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each passage runs briefing, planning, sailing and review. The visitor studies the tide table, tide curve and stream atlas, picks a departure hour and up to five waypoints with an aim-off angle per leg, and sees a live prediction of the track update. Sailing plays the day at high speed while streams swing and the ledge floods or dries. Review overlays the solver ghost and arrival isochrones, scores efficiency against the optimum, and offers a harder strait or the seeded daily passage.",
+        "sophisticationHooks": [
+          "Tide model with a spring-neap beat: two lunar-solar constituents plus the real moon age set height, and stream strength follows the rate of change of height, so slack water lands near high and low water.",
+          "Stream field relaxed over the hand-drawn water mask in a Worker: depth-weighted potential flow makes streams quicken through narrows and round headlands, with hand-placed eddies added.",
+          "Solver ghost: time-dependent Dijkstra on an 80 by 60 grid with waiting allowed gives the earliest arrival at every cell, which yields both the optimal route and the isochrone contours.",
+          "A drying ledge opens only when charted depth plus tide height beats the draught, so departure time, route and the rule of twelfths interlock."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Eight disjoint files: tide model, stream-field solver (Worker), time-dependent route solver (Worker), boat kinematics, chart renderer, level data with a seeded daily passage, planner UI, app shell with hash state and about panel. Built: 6 invented straits, tide table and curve, atlas scrubber, ghost boat and isochrones, light and dark chart themes, reduced-motion mode. Left out: real coastlines, live tide data, wind, sound, accounts.",
+        "risks": [
+          "Potential-flow streams have no true overfalls or turbulence, so copy calls them stylised and hand-placed eddies add character.",
+          "A dense planner on a 360px screen is mitigated with a bottom sheet, tap-to-add waypoints and a list-and-keyboard alternative to dragging.",
+          "Difficulty across springs and neaps needs tuning; par times come from the solver at build time rather than guesses.",
+          "Single-sourced remarks (the 2019 finding that analytic Zermelo solutions can be unstable) stay off the page; king-tide dates vary by station, so copy says 'as of 2026-10-11, per US station tables' and the page makes no forecast.",
+          "A game, not a navigation aid: all places and stations are invented and the about panel says so."
+        ]
+      },
+      "durable": true,
+      "sanitizer": {
+        "redacted": [],
+        "trimmed": 2
+      },
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 9.3,
+        "delight": 4.2,
+        "distinctness": 6.5,
+        "feasibility": 3.2,
+        "timeliness": 9,
+        "interestFit": 5,
+        "polishPotential": 9,
+        "safety": 8
+      },
+      "total": 64.3,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i03",
+      "title": "Breaking Changes",
+      "pitch": "A plain grey brick-breaker ships as v0.1. Between waves the studio offers two release candidates written in marketing-speak, such as 'Improved ball responsiveness' or 'Ceiling deprecated to improve performance'. You decode the euphemism, pick one, and play the next wave under its real rules while a board of system lamps shows what just went offline. A codex records what each phrase actually meant, and by v1.0 your build is a loud, glorious, thoroughly broken thing you assembled yourself.",
+      "whyNow": "Timeless premise, since everyone has met a vague update note, with a jam-weekend nod: one jam page reportedly lists 'Systems Offline' as its theme (as of 2026-10-11, per itch.io, unconfirmed), and each patch here switches a game system off or on.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "itch-jam-watch",
+        "scoutId": "artisan-2"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": [
+          "satirical",
+          "playful",
+          "chaotic"
+        ],
+        "tech": [
+          "canvas2d",
+          "webaudio",
+          "pointer-events",
+          "localstorage",
+          "web-animations"
+        ],
+        "tags": [
+          "game-jam",
+          "patch-notes",
+          "brick-breaker",
+          "rule-mutation",
+          "roguelite",
+          "game-feel",
+          "juice",
+          "codex",
+          "release-notes",
+          "satire",
+          "systems-offline"
+        ],
+        "keywords": [
+          "changelog",
+          "release-candidate",
+          "verb-noun-grammar",
+          "hidden-effects",
+          "system-lamps",
+          "greybox",
+          "hit-stop",
+          "screenshake",
+          "rollback",
+          "version-number"
+        ],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own announcements found by search only show earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho showed how layers of feedback transform the feel of a plain game (its demo is reported, without a clear attribution in the results, to be a simple Breakout clone), which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
+        "sources": [
+          {
+            "title": "Patch Notes v2.0 - itch.io",
+            "url": "https://itch.io/jam/patch-notes",
+            "date": "",
+            "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+            "via": "search",
+            "note": "The jam-weekend nod. One site only and internally inconsistent; no independent mention of v2.0 was found. Show as reported, as of 2026-10-11, never as confirmed.",
+            "verified": false
+          },
+          {
+            "title": "indieformer.beehiiv.com",
+            "url": "https://indieformer.beehiiv.com/p/showcase0725",
+            "date": "",
+            "snippet": "Newsletter edition from the Patch Notes host, as summarized by search: it announced the host's first game jam, Patch Notes, in July 2025.",
+            "via": "search",
+            "note": "Shows the series is real and recurring. Same organization as the jam page, so not independent confirmation of v2.0.",
+            "verified": false
+          },
+          {
+            "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
+            "url": "https://itch.io/jam/patch-notes-v-1-1",
+            "date": "",
+            "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; search summaries gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
+            "via": "search",
+            "note": "Series context only; same organization as the other two entries.",
+            "verified": false
+          },
+          {
+            "title": "August 23, 2013",
+            "url": "https://www.gamedeveloper.com/design/video-is-your-game-juicy-enough-",
+            "date": "August 23, 2013",
+            "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
+            "via": "search",
+            "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and the tween-stretch-squeeze idea; the venue differs from the next entry, so the page says 2012 only. The Breakout-clone demo detail is reported, not confirmed.",
+            "verified": true
+          },
+          {
+            "title": "Juicy Break",
+            "url": "https://crcdng.itch.io/juicy-break",
+            "date": "",
+            "snippet": "Independent creator page titled Juicy Break that, per the search summary, refers to the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+            "via": "search",
+            "note": "Second, independent source for the talk's existence and year. Search only; whether the page is itself a remake of the demo was not visible.",
+            "verified": true
+          },
+          {
+            "title": "first unread message",
+            "url": "https://community.ebay.com/t5/Mobile-Apps/Meaningful-release-notes-for-app-updates/td-p/28639214/jump-to/first-unread-message",
+            "date": "",
+            "snippet": "Support-forum thread (slug: Meaningful-release-notes-for-app-updates) where a user asks for release notes that say what changed, arguing the stock phrase bug fixes and performance improvements tells them nothing.",
+            "via": "search",
+            "note": "Shows stock release-note wording draws complaints. Cite only as a source; the game never names any real company.",
+            "verified": true
+          },
+          {
+            "title": "meaningless release notes 6931757",
+            "url": "https://en.community.sonos.com/speakers-229128/meaningless-release-notes-6931757",
+            "date": "",
+            "snippet": "A second company's community-forum thread where a user calls update notes meaningless after two updates were described only as bug fixes and improved performance.",
+            "via": "search",
+            "note": "Independent second forum, different organization, same complaint. Cite only as a source; the game never names any real company.",
+            "verified": true
+          },
+          {
+            "title": "Mini Jam 219: Nocturne - itch.io",
+            "url": "https://itch.io/jam/mini-jam-219-nocturne",
+            "date": "",
+            "snippet": "Page for a biweekly jam series; per the search summary each jam announces a theme early and reveals a mandatory limitation at the start, and the theme is only inspiration while the limitation is what gets rated.",
+            "via": "search",
+            "note": "Inspires per-wave limitations delivered as patch notes. One site and summary-level only, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' showed how tweening, stretching and extra feedback make a plain game feel alive.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, public support forums carry user complaints that stock release-note wording such as 'bug fixes and performance improvements' says nothing about what changed (two separate organizations' forums).",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The Patch Notes jam series ran its v1.1 edition on itch.io from 16 to 26 January 2026 (per the page title; same organization as the v2.0 listing).",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A Mini Jam page is reported to say the theme is only inspiration while a mandatory limitation, revealed at the start, is what gets rated (single site, unconfirmed).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "The 2012 juice talk and its greybox-to-gold demo",
+          "Brick-breakers and their roguelite descendants",
+          "Rule-rewriting puzzle games",
+          "Stock app-store release-note phrases",
+          "Live-service balance patches and their notes"
+        ]
+      },
+      "design": {
+        "coreLoop": "Wave loop: you read two patch notes, pick one with 1 or 2 (or a tap), watch the system-lamp board change as its true effect applies, then play a 30 to 40 second brick-breaker wave under every rule accumulated so far. Clearing the wave or losing a ball ends the loop with a 'known issues' reveal that tells you what the euphemism really meant and files it in the codex. Notes follow a learnable grammar (improved means faster with a catch, rebalanced means nerfed, deprecated means removed with compensation, reimagined means shuffled), so minute two is decoding and minute ten is routing synergies, such as a sticky paddle with gravity, around your build's weak spots. Ten waves end in a v1.0 launch card; three rollbacks end the run early. The daily seed makes the offers identical for everyone.",
+        "sophisticationHooks": [
+          "A decodable grammar: eight verbs (improved, rebalanced, streamlined, reimagined, modernized, deprecated, added in beta, fixed) act on eight game systems (ball, paddle, ceiling, bricks, gravity, input, audio, juice), so a euphemism means the same kind of change everywhere. A codex fills in as you learn, which is what separates minute two from minute ten.",
+          "Generic modifier engine with synergy and clamps: about 40 valid verb-noun pairs stack, such as a sticky paddle with gravity or multiball with the ceiling deprecated, while a stall watchdog ships an in-fiction hotfix if no brick falls for 25 seconds.",
+          "The juice ladder: feedback layers (hit-stop, squash and stretch, trails, particles, shake, synthesized sound) arrive as patches, so the page shows game feel being built from silent grey boxes at v0.1 to a bright, noisy v1.0. Each layer has a reduced-motion twin and a shake toggle.",
+          "Hero moment: a board of system lamps clicks off or on when a patch lands, an installing-update wipe sweeps the playfield, and the same bricks that were flat grey rectangles burst into confetti by v1.0 while the changelog scrolls alongside."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: fixed-step brick-breaker with sub-stepped collisions, a verb-by-noun patch engine (8 verbs, 8 systems, about 40 valid pairs) with flavor text, two-card picker, system-lamp board, codex, juice ladder with reduced-motion twins, muted-by-default WebAudio blips, ten waves with rollbacks and a v1.0 launch card, URL-hash seed and share string, keyboard and touch controls, about panel with sources. Cut first: unlockable skins, boss wave, extra brick types. Not built: leaderboards, any backend.",
+        "risks": [
+          "Hook is single-sourced and inconsistent: the page shows 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io (unconfirmed); the game does not depend on it.",
+          "Brick-breakers are crowded: distinctness rides on the decodable verb grammar, the codex and the writing, so the spec should protect those before extra polish.",
+          "Soft-locks and balance: clamp every parameter, ship an in-fiction hotfix that reverts the last patch if no brick falls for 25 seconds, and let the QA monkey test random builds.",
+          "Humor stays generic: invented studio, patches and quotes; aim at the genre of vague release notes, never at a real company or product, and list the forum threads only as sources.",
+          "Motion and flashing: cap flashes below 3 per second, give every shake or flash a reduced-motion twin and a shake toggle, start audio muted.",
+          "Scope: a generic verb-by-noun engine avoids hand-coding dozens of patches; skins, boss waves and extra brick types are cut first."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 7,
+        "delight": 8.6,
+        "distinctness": 5.4,
+        "feasibility": 7.1,
+        "timeliness": 4.2,
+        "interestFit": 7,
+        "polishPotential": 8.5,
+        "safety": 6.4
+      },
+      "total": 68.8,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i04",
+      "title": "Orbital Knitwear",
+      "pitch": "A visitor tunes a satellite's height, tilt and orbit shape and watches its ground track unspool across a wool-textured world map, each pass adding a ribbon of stitches wherever the camera swath reaches. Pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, keeping a steady local time of day, or lingering over the far north. A flat-versus-polar toggle shows how the projection decides which holes look big, while the score counts true surface area.",
+      "whyNow": "Timeless: orbital geometry never goes stale. The knitting frame makes a nerdy subject cozy, and the projection toggle and daylight terminator put a map argument at the centre.",
+      "origin": {
+        "agent": "architect",
+        "lens": "maps-and-places",
+        "scoutId": "architect-2"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "simulator",
+        "tone": [
+          "cozy",
+          "analytical",
+          "playful"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "offscreen-canvas",
+          "dom-ui",
+          "localstorage"
+        ],
+        "tags": [
+          "orbits",
+          "ground-track",
+          "satellites",
+          "knitting",
+          "map-projections",
+          "sun-synchronous",
+          "coverage",
+          "polar-view",
+          "earth-observation",
+          "j2-precession"
+        ],
+        "keywords": [
+          "repeat-cycle",
+          "swath-width",
+          "dropped-stitch",
+          "pattern-card",
+          "local-solar-time",
+          "terminator",
+          "equirectangular",
+          "azimuthal",
+          "orbital-period",
+          "nodal-precession"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "A ground track is a map argument: one orbit is a sine wave on a flat map and a spiral seen from the pole. Research shapes the mechanic. Earth's bulge (J2) turns an orbit's plane, and at about 98 degrees and 600-700 km that turn matches the Sun's 0.9856 degrees per day, so a satellite keeps one local solar time; a two-body-plus-J2 calculation done here gives 97.79 degrees at 600 km and 98.19 degrees at 700 km, matching both sources. Landsat's 16-day cycle of 233 orbits is a literal knitting gauge: tracks about 172 km apart against a 185 km swath. The ISS inclination of 51.6 degrees fences its track and Earth's spin moves each pass about 23 degrees west. Scoring by true area matters: the band poleward of 60 degrees is a third of an equirectangular map but about 13 percent of the planet (computed here). The Molniya figures are single-sourced.",
+        "sources": [
+          {
+            "title": "GDC OrbitPrimer",
+            "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf",
+            "date": "",
+            "snippet": "NASA orbit primer; per the search summary it ties the sun-synchronous node rate to 0.9856 degrees per day and gives 98.2 degrees for a 700 km circular orbit.",
+            "via": "search",
+            "note": "Named in the search summary for the rate and the 700 km inclination; page not opened.",
+            "verified": true
+          },
+          {
+            "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources",
+            "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit",
+            "date": "",
+            "snippet": "Q&A resource explaining that J2 oblateness regresses the orbit node and that about 600 km sits near 97.8 degrees.",
+            "via": "search",
+            "note": "Independent of NASA; agrees on the J2 mechanism and the near-98-degree inclination. A local calculation also gives 97.79 degrees at 600 km.",
+            "verified": true
+          },
+          {
+            "title": "Space Station Orbit Tutorial",
+            "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm",
+            "date": "",
+            "snippet": "NASA Earth Observations tutorial; per the search summary it gives 51.6 degrees inclination, 90-93 minute orbits and a westward shift near 22.9 degrees of longitude per orbit.",
+            "via": "search",
+            "note": "Named in the search summary for all three numbers. WebFetch on this host failed with a DNS error.",
+            "verified": true
+          },
+          {
+            "title": "International Space Station Frequently Asked Questions - NASA",
+            "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/",
+            "date": "",
+            "snippet": "NASA FAQ; per a domain-filtered search summary it says the station's 51.6 degree inclination means it never goes farther north or south than 51.6 degrees latitude.",
+            "via": "search",
+            "note": "Named in the search summary for the inclination and the latitude limit. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "Mission & Carrier Characteristics",
+            "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm",
+            "date": "",
+            "snippet": "ESA publication table of space station characteristics; per the search summary it lists an altitude range of 370-460 km, consistent with the other results.",
+            "via": "search",
+            "note": "Independent agency (ESA) agreeing on the altitude range; the summary said inclination and period figures were consistent across NASA, ESA and an arXiv paper. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "The Worldwide Reference System",
+            "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system",
+            "date": "",
+            "snippet": "NASA Landsat page on the reference grid: 16-day cycle of 233 orbits, about 98.9 minute orbits, 705 km sun-synchronous orbit, tracks about 24.7 degrees (2752 km) apart at the equator.",
+            "via": "search",
+            "note": "Named in the search summary for the 233-orbit, 16-day cycle. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "pubs.usgs.gov",
+            "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf",
+            "date": "",
+            "snippet": "USGS fact sheet; per the search summary the satellites were designed for a 185 km swath from a 705 km sun-synchronous orbit.",
+            "via": "search",
+            "note": "Independent agency document agreeing with NASA on altitude and giving the 185 km swath. A catalogue record lists 183 km, so swath is treated as about 185 km.",
+            "verified": true
+          },
+          {
+            "title": "Dynamical properties of the Molniya satellite constellation: long-term evolution of orbital eccentricity",
+            "url": "https://arxiv.org/pdf/2007.04341",
+            "date": "",
+            "snippet": "Research paper; per the search summary it gives the Molniya critical inclination as arcsin(2/sqrt 5), about 63.4 degrees, and two apogees per day for a 12-hour period.",
+            "via": "search",
+            "note": "Single result for the specific figures; other Molniya results only described apogee dwell. Unverified.",
+            "verified": false
+          },
+          {
+            "title": "Getting Familiarised with the TLE object: Analysis of a Repeating Sun-Synchronous Orbit",
+            "url": "https://satmad.readthedocs.io/en/stable/tutorials/sso_analysis.html",
+            "date": "",
+            "snippet": "Open-source tutorial analysing a repeating sun-synchronous orbit; context for repeat ground tracks. Text not seen.",
+            "via": "search",
+            "note": "Context only, not used for any stated fact.",
+            "verified": false
+          },
+          {
+            "title": "J2 Perturbation |",
+            "url": "https://ai-solutions.com/_freeflyeruniversityguide/j2_perturbation.htm",
+            "date": "",
+            "snippet": "Tutorial page on the J2 perturbation of orbits, relevant to node regression. Text not seen.",
+            "via": "search",
+            "note": "Context for the J2 drift formula the engine implements; no figure taken from it.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day to hold one local solar time; Earth's J2 bulge supplies the drift, at about 98.2 degrees inclination for a 700 km circular orbit (NASA primer) and about 97.8 degrees near 600 km (second source).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The International Space Station orbits at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370-460 km altitude in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial).",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Landsat 4-9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits; an orbit takes about 98.9 minutes, successive tracks sit about 24.7 degrees (2752 km) apart at the equator, and the design swath is 185 km.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Computed here from the Landsat figures: 233 evenly spaced tracks put neighbours about 172 km apart at the equator (40,075 km divided by 233), so a 185 km swath overlaps its neighbour by about 13 km, roughly 7 percent.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Molniya orbits are reported to use a critical inclination of about 63.4 degrees with a 12-hour period and two apogees per day (single source, unconfirmed).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Worldwide Reference System tracks",
+          "space station pass trackers",
+          "knitting pattern charts",
+          "orbital mission-design games",
+          "equal-area map debates"
+        ]
+      },
+      "design": {
+        "coreLoop": "A round starts from a pattern card with a target and a par. The visitor sets up to three satellites (altitude, inclination, eccentricity, start longitude, swath), starts the clock and fast-forwards days of orbits while stitches fill the fabric. A live panel scores true-area coverage, dropped stitches, overlap waste, revisit time and local solar time under the satellite. Small altitude changes shift the track spacing, so a gappy weave snaps into a tight repeat; every setup is a shareable link.",
+        "sophisticationHooks": [
+          "Two-body propagation with J2 node and perigee drift, Kepler's equation by Newton iteration, Earth rotation and a sun model, so sun-synchronous and Molniya-style orbits emerge from physics instead of presets.",
+          "Repeat-ground-track finder: scans altitudes for k orbits in m days and marks stitch-perfect heights on the altitude slider, as in Landsat's 233 orbits per 16 days.",
+          "Projection honesty: one coverage grid renders in equirectangular and polar azimuthal views by inverse projection, while every score uses cos(latitude) area weights and a live readout shows map share versus planet share.",
+          "Pattern cards with par values from an in-page brute-force search, plus a day/night terminator so dawn-dusk orbits can ride the edge of night."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Eight disjoint files: orbit engine with J2, coverage grid (Worker), projections, land and city data, wool renderer, pattern cards with par search, planner UI, app shell with hash state and about panel. Built: 8 cards, flat and polar views, terminator, true-area scoring, light and dark themes, reduced-motion mode. Left out: real satellite catalogs, atmospheric drag, 3D globe, multiplayer.",
+        "risks": [
+          "Coastlines are hand-simplified from memory and may look crude; styling them as embroidered outlines with city dots keeps orientation honest.",
+          "The single-sourced Molniya figures show as 'as of 2026-10-11, per arXiv 2007.04341', though 63.4 degrees also follows from arcsin(2/sqrt 5).",
+          "Two-body plus J2 is not a precision propagator; the about panel says tracks drift from real satellites over weeks, and unit tests check the sourced figures within about 1 percent.",
+          "Pattern-card pars have to be solvable; the brute-force search verifies each card before it ships.",
+          "Wool texture at 1-degree resolution risks dropped frames on phones; an offscreen cached layer and a coarser grid on small screens mitigate this."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 8.8,
+        "delight": 7.1,
+        "distinctness": 7.2,
+        "feasibility": 5.3,
+        "timeliness": 6.9,
+        "interestFit": 4.8,
+        "polishPotential": 8.8,
+        "safety": 8.7
+      },
+      "total": 72.2,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i05",
+      "title": "Dead Reckoning",
+      "pitch": "A storm has killed every screen on the boat, so the instructor turns it into a drill: you get a periscope, a stopwatch and a grease pencil. You raise the scope for a few seconds, swing it onto an unmanned target barge, turn the handwheel until the two images of its mast meet to read the range, then drop below and pencil the fix on the chart. Two fixes reveal the barge's course and speed, you slide the aim point along its track until the practice round and the barge arrive together, and a dye splash tells you how good you were.",
+      "whyNow": "Jam season: two outlets report Ludum Dare winding down toward 2028, and Ludum Dare 60 is listed for 16-19 October (as of 2026-10-11, per its page). One weekend jam page also reportedly lists 'Systems Offline' as its theme (single source, unconfirmed). This is the analog answer to that prompt: when the systems go dark, do it by hand.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "itch-jam-watch",
+        "scoutId": "artisan-1"
+      },
+      "fingerprint": {
+        "category": "games-arcade",
+        "mechanic": "game",
+        "tone": [
+          "analytical",
+          "dramatic",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg",
+          "webaudio",
+          "pointer-events",
+          "localstorage",
+          "web-animations"
+        ],
+        "tags": [
+          "game-jam",
+          "systems-offline",
+          "periscope",
+          "stadimeter",
+          "dead-reckoning",
+          "intercept",
+          "bearing-plot",
+          "training-drill",
+          "analog-instruments",
+          "seeded-drills"
+        ],
+        "keywords": [
+          "range-finding",
+          "bearing",
+          "firing-solution",
+          "chart-table",
+          "uncertainty-wedge",
+          "mast-height",
+          "handwheel",
+          "exposure",
+          "phosphor-readout",
+          "grease-pencil"
+        ],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the same page also says theme TBA and a search for the host's own announcements found only earlier editions, so the page shows the theme as reported, not confirmed. What is verified shapes the mechanic: a periscope stadimeter converts the angle a mast subtends into range once the mast height is known, using two images offset by a handwheel, and accuracy depends on knowing the height, so the game needs a recognition book and several looks. Bearings alone from a stationary observer give no unique track, so the final drill removes the stadimeter and makes the player move the boat to build a baseline. Dead reckoning projects a fix forward from speed, heading and time, which is what the aim point does. Ludum Dare 60 is listed for 16-19 October and two outlets report the series ending in 2028.",
+        "sources": [
+          {
+            "title": "Patch Notes v2.0 - itch.io",
+            "url": "https://itch.io/jam/patch-notes",
+            "date": "",
+            "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+            "via": "search",
+            "note": "The hook. One site only and internally inconsistent; a search for the host's own announcements (newsletter, earlier jam pages) found nothing on v2.0. Show the theme as reported, as of 2026-10-11, never as confirmed.",
+            "verified": false
+          },
+          {
+            "title": "Submarine Torpedo Fire Control Manual",
+            "url": "https://legacy.maritime.org/doc/attack/index.php",
+            "date": "",
+            "snippet": "Historic training manual, as summarized by search: the stadimeter forms two identical images offset vertically by a handwheel; the observer lines up waterline and masthead and reads range against the masthead height entered; accuracy depends on observer skill and the height estimate.",
+            "via": "search",
+            "note": "Primary text for the ranging mechanic: stacked images, handwheel, accuracy limits. Seen through a search summary only (the manual page was not opened).",
+            "verified": true
+          },
+          {
+            "title": "Stadimeter",
+            "url": "https://en.wikipedia.org/wiki/Stadimeter",
+            "date": "",
+            "snippet": "Encyclopedia entry: an optical device that estimates range to an object of known height from the angle between its top and bottom; on a periscope the operator turns a knob until the top and bottom images align and reads range off the knob.",
+            "via": "search",
+            "note": "Independent statement of the same principle as the manual. Search only.",
+            "verified": true
+          },
+          {
+            "title": "Observability: Range-Only Versus Bearings-Only Target Motion Analysis When the Observer Maneuvers Smoothly",
+            "url": "https://hal-univ-tln.archives-ouvertes.fr/hal-03661187",
+            "date": "",
+            "snippet": "Research paper on bearings-only target motion analysis; search quotes say a single stationary observer cannot fix a unique target track and the observer has to maneuver to make range observable.",
+            "via": "search",
+            "note": "Shapes the final drill: with the stadimeter gone the player moves their own boat to build a baseline. Summary-level agreement with the patent entry; the quotes were not attributable to one entry.",
+            "verified": true
+          },
+          {
+            "title": "US5877998A - Recursive method for target motion analysis - Google Patents",
+            "url": "https://patents.google.com/patent/US5877998",
+            "date": "",
+            "snippet": "Patent on a recursive method for bearings-only target motion analysis; per the search summary it describes taking a bearing, changing to a known second velocity, taking another bearing and applying trigonometry to get range.",
+            "via": "search",
+            "note": "Independent of the papers (a patent office record). The summary said it did not fully verify the patent text, so only the maneuver-to-get-range idea is relied on.",
+            "verified": true
+          },
+          {
+            "title": "Dead reckoning",
+            "url": "https://en.wikipedia.org/wiki/Dead_reckoning",
+            "date": "",
+            "snippet": "Encyclopedia entry: dead reckoning estimates the current position from a previously determined position plus estimates of speed, heading and elapsed time.",
+            "via": "search",
+            "note": "Defines the term used in the title; the aim point is a dead-reckoned position.",
+            "verified": true
+          },
+          {
+            "title": "Dead reckoning",
+            "url": "https://technav.ieee.org/topic/dead-reckoning/",
+            "date": "",
+            "snippet": "Topic page from an engineering society's technology navigator, returned for the same definition: position estimated from a known start using speed, heading and time.",
+            "via": "search",
+            "note": "Independent second source for the definition. Search only.",
+            "verified": true
+          },
+          {
+            "title": "Ludum Dare 60 - October 16-19, 2026: dates, countdown, theme",
+            "url": "https://ldj.am/60",
+            "date": "",
+            "snippet": "Official page for Ludum Dare 60; the title shown in search gives 16-19 October 2026 and a countdown. A search summary said the theme is announced when the jam starts.",
+            "via": "search",
+            "note": "Primary but single source and not opened (the ldj.am fetch failed with a DNS error). Show as per its page, as of 2026-10-11.",
+            "verified": false
+          },
+          {
+            "title": "Ludum Dare Game Jam to end in 2028",
+            "url": "https://www.shacknews.com/article/148746/ludum-dare-game-jam-ending",
+            "date": "",
+            "snippet": "News article whose title says the Ludum Dare game jam will end in 2028.",
+            "via": "search",
+            "note": "One of two outlets reporting the wind-down; the title carries the claim.",
+            "verified": true
+          },
+          {
+            "title": "After 20 Years, Influential Game Jam Ludum Dare Will Wind Down",
+            "url": "https://aftermath.site/after-20-years-influential-game-jam-ludum-dare-will-wind-down/",
+            "date": "",
+            "snippet": "News article whose title says the influential Ludum Dare jam will wind down after twenty years.",
+            "via": "search",
+            "note": "Second outlet, independent of the first; the title carries the claim. The page was not opened (the aftermath.site fetch failed with a DNS error).",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A periscope stadimeter turns the angle a target's mast subtends into range once the mast height is known: two images offset by a handwheel or knob are lined up so the masthead meets the waterline, and range is read against the height entered. A wrong height means a wrong range.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "From bearings alone, a single stationary observer cannot determine a unique target track; the observer has to maneuver for range to become observable.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Dead reckoning estimates a current position from a previously determined position plus speed, heading and elapsed time; the result is an estimate, not a fix.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11 two outlets report that the long-running Ludum Dare game jam is winding down and will end in 2028.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Ludum Dare 60 is listed for 16-19 October 2026 on its official page (single source, as of 2026-10-11, per ldj.am).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Historic submarine periscope approach drills",
+          "Grease-pencil plotting boards and paper chart tables",
+          "Deduction-by-measurement games",
+          "Lead-the-target artillery games",
+          "Green phosphor oscilloscope readouts",
+          "Ship recognition books"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each drill sends one to three unmanned barges across a range at constant course and speed. You raise the scope (a spray timer limits each look), find a barge in low power, switch to high power, name its class from the recognition book and turn the handwheel until the stacked images meet to read range. You lower the scope and the fix is pencilled on the chart with bearing and clock time. You wait, look again, and the two marks give a track with an uncertainty wedge. You drag the aim point along the track until the practice round and the barge arrive together, then fire; the dye splash scores the miss distance, with bonuses for fewer looks and less exposure. Every extra look is a value-of-information bet: minute two is learning the handwheel, minute ten is choosing the gap between looks.",
+        "sophisticationHooks": [
+          "Real optics: a stacked-image handwheel (two copies of the target, offset until the mast tip meets the waterline) turns a known mast height into range. The player's alignment error and a mis-identified ship class both skew the fix, and low power finds targets while high power measures.",
+          "Estimation with honesty: two timed fixes give a velocity vector drawn with an uncertainty wedge that narrows as the gap between looks grows, so waiting longer buys accuracy at the price of a barge that may sail out of range.",
+          "Equal-arrival aiming: dragging the aim point along the predicted track races two phosphor timing bars (practice round against barge) and a lamp lights when they match. A final drill takes the stadimeter away so the player must move the boat to build a baseline, as bearings-only tracking requires.",
+          "Hero moment: the scope broaches and a brass-ringed lens rises through the waterline, spray beading and clearing, horizon swaying with the swell; when the dye lands it blooms across the hull while the green readout answers with a soft afterglow. Reduced motion swaps the sway and spray for fades."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: seeded sim core (kinematics, reading-error model, scoring), periscope canvas with low and high power and four invented ship silhouettes, recognition book, stacked-image handwheel, SVG chart table with pencil fixes and uncertainty wedge, equal-arrival aiming with two timing bars, six drills ending in a graduation certificate, URL-hash seeds, instructor lines, muted-by-default WebAudio, reduced-motion twin, keyboard and touch controls, about panel with sources. Cut first: the bearings-only final drill, then swell-hidden waterlines. Not built: night, weather, other weapons, leaderboards, any backend.",
+        "risks": [
+          "Hook is single-sourced and inconsistent: the page will show 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io, and the Ludum Dare 60 dates as per its official page; the game works without either.",
+          "Onboarding: optical ranging is unfamiliar. Drill 0 teaches it hands-on with a stationary barge, a Navigator's Assist toggle overlays the geometry, and the handwheel has keyboard steps.",
+          "Military flavour: keep it an exercise with unmanned barges and dye-marked practice rounds, invented ship classes, no insignia, no real vessel names, no casualties.",
+          "Realism: the model is simplified and the page says it is a game, not seamanship; historic details in the making-of come only from sources marked verified.",
+          "Precision on small screens: big hit areas, step buttons and assist rounding stop pixel-hunting at 360px.",
+          "Scope: the bearings-only final drill is cut first if the morning runs short."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 6.5,
+        "delight": 5.9,
+        "distinctness": 7.9,
+        "feasibility": 6.3,
+        "timeliness": 3.4,
+        "interestFit": 5.2,
+        "polishPotential": 9.4,
+        "safety": 5.8
+      },
+      "total": 65.9,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i06",
+      "title": "Opt-Out Odyssey",
+      "pitch": "A roguelike gauntlet of invented websites, each greeting the visitor with a procedurally composed consent banner full of named tricks: a grey sliver where Reject should be, a countdown that resets, switches that mean the opposite of their label. The visitor hunts for the least-tracking outcome in the fewest clicks, then reads a debrief with the room's friction ratio (clicks to accept versus clicks to refuse), the par found by a built-in solver, and a bestiary entry for every pattern that fired. Eight rooms and a 300-vendor boss make a run, and a daily seed gives everyone the same gauntlet.",
+      "whyNow": "Timeless: dismissing consent banners is a daily web chore (an observation, not a sourced statistic), and every figure on the page is dated and attributed, so nothing goes stale.",
+      "origin": {
+        "agent": "critic",
+        "lens": "mundane-epic",
+        "scoutId": "critic-2"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": [
+          "satirical",
+          "chaotic",
+          "playful"
+        ],
+        "tech": [
+          "dom-ui",
+          "web-animations",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "dark-patterns",
+          "consent-banners",
+          "roguelike",
+          "procedural-generation",
+          "ux-satire",
+          "privacy",
+          "gauntlet",
+          "bestiary",
+          "par-solver"
+        ],
+        "keywords": [
+          "friction-ratio",
+          "confirmshaming",
+          "roach-motel",
+          "tells",
+          "assist-mode",
+          "daily-seed",
+          "speedrun",
+          "trap-grammar"
+        ],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "A CHI 2020 paper (Nouwens and colleagues) analysed consent pop-ups from popular consent platforms on top UK websites and reported that only 11.8% met its minimal requirements based on European law; a later systematic review repeats the figure, and an MIT CSAIL news item headlines the finding. The denominator is unclear in the snippets, so the page would say 'in the study's sample'. Dark-pattern typologies are published by Canada's Office of Consumer Affairs and in a unified-taxonomy arXiv paper, giving named patterns for a bestiary. Cookie-banner games already exist (a Swiss broadcaster's browser game and a University of Luxembourg thesis game), so the edge is procedural variety, a solver-checked par and the friction ratio.",
+        "sources": [
+          {
+            "title": "Dark Patterns after the GDPR: Scraping Consent Pop-ups and Demonstrating their Influence",
+            "url": "https://arxiv.org/pdf/2001.02479",
+            "date": "",
+            "snippet": "Search summary: the study scraped the designs of the five most popular consent platforms on the top 10,000 UK websites (n=680) and reports that only 11.8% meet its minimal requirements based on European law.",
+            "via": "search",
+            "note": "Primary source for the 11.8% figure; the denominator is unclear in the snippets.",
+            "verified": true
+          },
+          {
+            "title": "Mapping the Empirical Evidence of the GDPR (In-)Effectiveness: A Systematic Review",
+            "url": "https://arxiv.org/pdf/2310.16735",
+            "date": "",
+            "snippet": "Search summary: a systematic review citing the study reports implicit consent at 32.5%, pre-ticked options at 30.3% to 56.2%, no reject-all button on 50.1%, and only 11.8% meeting minimal requirements.",
+            "via": "search",
+            "note": "Separate authors repeat the 11.8% figure; secondary, since it cites the primary study.",
+            "verified": true
+          },
+          {
+            "title": "Most websites don't follow European cookie consent laws",
+            "url": "https://www.csail.mit.edu/news/most-websites-dont-follow-european-cookie-consent-laws",
+            "date": "",
+            "snippet": "A university news item whose headline reports that most sites fall short of European cookie-consent rules. Only the headline and address were seen.",
+            "via": "search",
+            "note": "Press item on the same study as the primary source, so not an independent confirmation of the figure.",
+            "verified": true
+          },
+          {
+            "title": "Types of dark patterns",
+            "url": "https://ised-isde.canada.ca/site/office-consumer-affairs/en/types-dark-patterns",
+            "date": "",
+            "snippet": "A page from the Government of Canada's Office of Consumer Affairs listing types of dark patterns. Only the title and address were seen; the content is not relied on.",
+            "via": "search",
+            "note": "Shows a government consumer office publishes a typology of dark patterns.",
+            "verified": true
+          },
+          {
+            "title": "50 Shades of Deceptive Patterns: A Unified Taxonomy, Multimodal Detection, and Security Implications",
+            "url": "https://arxiv.org/pdf/2501.13351",
+            "date": "",
+            "snippet": "A research paper whose title announces a unified taxonomy of deceptive patterns. Only the title and address were seen.",
+            "via": "search",
+            "note": "Second independent typology source; also shows taxonomies overlap and differ.",
+            "verified": true
+          },
+          {
+            "title": "the dark patterns side of ux design",
+            "url": "https://www.deceptive.design/articles/the-dark-patterns-side-of-ux-design",
+            "date": "",
+            "snippet": "Search summaries describe an article on a design-ethics site covering the five-way grouping of dark patterns (nagging, obstruction, sneaking, interface interference, forced action) attributed to Gray and colleagues, 2018.",
+            "via": "search",
+            "note": "Typology detail for the bestiary; summaries were blended across results, so the five categories stay unverified.",
+            "verified": false
+          },
+          {
+            "title": "Zum Inhalt springen",
+            "url": "https://www.srf.ch/news/srf-data/datenschutz-und-dark-patterns-das-cookie-banner-spiel-trackt-mich-wenn-ihr-koennt",
+            "date": "",
+            "snippet": "The title as shown is a navigation label; the address names a cookie-banner game from a Swiss broadcaster. Per the search summary, players look for the most data-sparing setting using real examples.",
+            "via": "search",
+            "note": "Prior art: a broadcaster's cookie-banner browser game.",
+            "verified": true
+          },
+          {
+            "title": "Mater Thesis Dark Cookie",
+            "url": "https://orbilu.uni.lu/bitstream/10993/52802/1/Mater_Thesis___Dark_Cookie.pdf",
+            "date": "",
+            "snippet": "A University of Luxembourg master's thesis describing Dark Cookie, a five-level serious game that trains players to spot manipulative cookie banners, per the search summary.",
+            "via": "search",
+            "note": "Prior art: a thesis game; whether it is still playable was not checked.",
+            "verified": true
+          },
+          {
+            "title": "cant play wont play 5686393",
+            "url": "https://kotaku.com/cant-play-wont-play-5686393",
+            "date": "",
+            "snippet": "Result titled after the 2010 essay on pointsification; the search summary credits Margaret Robertson with arguing that points and badges are the least essential part of a game.",
+            "via": "search",
+            "note": "Design principle for this lens; one result and a blended summary, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-11, a CHI 2020 study (Nouwens and colleagues) of consent-platform pop-ups on top UK websites reported that only 11.8% met its minimal requirements based on European law; per the search summary the data are from 2019 and the denominator is unclear.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, typologies of dark patterns are published by Canada's Office of Consumer Affairs ('Types of dark patterns') and in an arXiv paper titled '50 Shades of Deceptive Patterns: A Unified Taxonomy, Multimodal Detection, and Security Implications'.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, cookie-banner games already exist: a Swiss broadcaster (SRF) published a browser game about finding the most data-sparing setting, and a University of Luxembourg master's thesis describes a five-level serious game called Dark Cookie.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per blended search summaries, a widely used 2018 typology (Gray and colleagues) groups dark patterns into five categories: nagging, obstruction, sneaking, interface interference and forced action. Unverified.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per one search result and its blended summary, the 2010 essay Can't Play, Won't Play by Margaret Robertson coined 'pointsification' for adding points and badges, which it calls the least essential part of games. Unverified.",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Papers, Please (bureaucratic interfaces as play)",
+          "Slay the Spire (relics and descent)",
+          "Cookie-banner games from a Swiss broadcaster and a university thesis (as contrast)",
+          "r/assholedesign and r/mildlyinfuriating as community mood (not searchable from here)",
+          "The Hero's Journey as the room-by-room arc"
+        ]
+      },
+      "design": {
+        "coreLoop": "Enter a room (an invented site with a seeded banner), read it under a patience timer, click through the layers to the lowest-tracking outcome, then read the debrief: trackers leaked, friction ratio, solver par and the named patterns that fired. Patience buys relics (contrast magnifier, one undo, tab-order sense) for the descent; every trap carries a visible tell, so each run sharpens the eye for the next, and bosses stack three patterns at once.",
+        "sophisticationHooks": [
+          "Banner grammar: a seed composes layout, button hierarchy, copy tone and about a dozen trap modules (hidden reject, confirmshaming, pre-ticked toggles, inverted switches, resetting countdown, fake close, cookie wall, nested vendor list, re-prompt); a breadth-first solver over each banner's state machine proves the room is solvable and computes par and the friction ratio.",
+          "Fair-trap rule: every trick carries a visible tell, and an assist mode, which doubles as the accessible path for keyboard and screen-reader players, narrates the tell in plain words.",
+          "Bestiary and debrief teach the named patterns and a real-world cheat sheet, so the quiet payoff is spotting the same tricks on real sites; dated study figures sit in the about panel beside their sources.",
+          "Roguelike layer and bends: quicksand rooms where each refusal opens another layer, an obsidian dark theme for the boss, a vendor list of hundreds of outposts, relics, a patience meter, a daily seed and a spoiler-free share receipt in the URL hash."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in the morning: the banner engine (spec, renderer, three visual themes, about twelve trap modules), the breadth-first solver for par and friction ratio, a run of eight rooms plus a boss, relics, bestiary, assist mode, daily seed and share receipt, and an about panel with dated sources. Cut: real-site lookalikes, any network call, audio beyond UI clicks, accounts and leaderboards.",
+        "risks": [
+          "Prior art: a Swiss broadcaster's browser game, a thesis game and similar teaching games exist. Planned mitigation: a credit line in the about panel and a pitch built on procedural variety, solver-checked par and the friction ratio rather than on the premise.",
+          "Accessibility: a game about hidden buttons can exclude people, so full keyboard play and the assist mode belong in the core spec, not the stretch list.",
+          "Safety framing: every site, brand and banner is invented and labelled parody; no real logos, no legal claims about real sites and no data collection; the page sets no cookies and says so, with localStorage used only for a best result inside try/catch.",
+          "Preachiness and repetition: the page needs a narrator with real jokes and enough copy and mutators that room ten still surprises, so copy writing starts first.",
+          "Unverified details: the five-category typology and the pointsification critique rest on blended or single results and appear only as 'as of 2026-10-11, per the named source' or not at all; the 11.8% figure is shown as 'in the study's sample' because the denominator is unclear."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 5.8,
+        "delight": 8.9,
+        "distinctness": 4.2,
+        "feasibility": 7.3,
+        "timeliness": 5,
+        "interestFit": 6.8,
+        "polishPotential": 5.5,
+        "safety": 6.7
+      },
+      "total": 63.1,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i07",
+      "title": "Siege Of The Sink",
+      "pitch": "Each night a seeded heap of dirty dishes besieges the kitchen, and the only fortress is a dishwasher drawn as a cross-section with two racks, a cutlery basket and a rotating spray arm. The visitor places and turns every item by tap, drag or arrow keys, starts the cycle, and watches simulated jets sweep the layout; surfaces the water never reached come out still crusted, and the debrief shows which item blocked which jet and how many minutes of hand-washing are now owed. A campaign of nastier piles, a daily seed and a built-in solver's best layout make the third attempt far smarter than the first.",
+      "whyNow": "Timeless chore with a seasonal edge: the hosting season is close (by the usual date rules, Canadian Thanksgiving is 2026-10-12 and US Thanksgiving is 2026-11-26; computed here, not sourced), and loading arguments are evergreen.",
+      "origin": {
+        "agent": "critic",
+        "lens": "mundane-epic",
+        "scoutId": "critic-1"
+      },
+      "fingerprint": {
+        "category": "life-food-craft",
+        "mechanic": "puzzle",
+        "tone": [
+          "cozy",
+          "playful",
+          "dramatic"
+        ],
+        "tech": [
+          "svg",
+          "canvas2d",
+          "worker",
+          "webaudio",
+          "pointer-events",
+          "web-animations"
+        ],
+        "tags": [
+          "dishwasher",
+          "chores",
+          "packing-puzzle",
+          "ray-casting",
+          "spray-simulation",
+          "household",
+          "daily-seed",
+          "siege",
+          "cozy-sim"
+        ],
+        "keywords": [
+          "spray-arm",
+          "occlusion",
+          "soil-map",
+          "nesting",
+          "hand-wash-debt",
+          "simulated-annealing",
+          "battle-report",
+          "loading-rules"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "CHOICE (Australia) and Which? (UK), searched one site at a time, give the same physical loading rules: dirtiest faces toward the centre, spray arms free to turn and unblocked, items not touching or nesting, cups and bowls angled so water drains, big items to the back and sides. The cutlery up-or-down question is a standing public debate (Which?, Ideal Home and CHOICE each ran a piece), so the model can leave that rule to the simulation. Tetris-style dishwasher games already exist, so this idea differs by modelling water reaching soil on drawn outlines rather than filling a grid. Design principle: the chore's own constraint is the mechanic and points only show progress, echoing the critique of pointsification (one search result, unverified).",
+        "sources": [
+          {
+            "title": "How to load your dishwasher the right way - CHOICE",
+            "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/how-to-load-a-dishwasher",
+            "date": "",
+            "snippet": "Search summary limited to this site: soiled surfaces should face the centre, spray arms must turn freely and not be blocked, items should not touch or nest, and deep items are angled so water drains instead of pooling.",
+            "via": "search",
+            "note": "Loading rules from an Australian consumer-testing organisation; agrees with Which?.",
+            "verified": true
+          },
+          {
+            "title": "How to load your dishwasher - Which? - Which.co.uk",
+            "url": "https://www.which.co.uk/reviews/dishwashers/article/how-to-load-your-dishwasher-and-what-s-dishwasher-safe-aTkf79u5rqyY",
+            "date": "",
+            "snippet": "Search summary limited to this site: the dirty side of each item faces the middle, the jets work like a sprinkler so they must not be blocked or face away, bowls go face down, leave gaps, big items go at the back and sides, alternate cutlery.",
+            "via": "search",
+            "note": "Independent UK source for the same loading rules; agrees with CHOICE.",
+            "verified": true
+          },
+          {
+            "title": "The big dishwasher debate: should cutlery go up or down? - Which?",
+            "url": "https://www.which.co.uk/news/article/the-big-dishwasher-debate-should-cutlery-go-up-or-down-aDUUK0j91iSo",
+            "date": "",
+            "snippet": "A consumer-organisation news piece framed around the cutlery up-or-down argument. Only the title and address were seen; the content is not relied on.",
+            "via": "search",
+            "note": "Title shows the cutlery orientation question is a recurring public debate.",
+            "verified": true
+          },
+          {
+            "title": "The big dishwasher debate - do you put cutlery up or down?",
+            "url": "https://www.idealhome.co.uk/news/how-to-load-cutlery-in-a-dishwasher-237318",
+            "date": "",
+            "snippet": "A home-magazine article framed around the same cutlery argument. Only the title and address were seen.",
+            "via": "search",
+            "note": "Second independent outlet framing cutlery orientation as a debate.",
+            "verified": true
+          },
+          {
+            "title": "Cutlery up or down? We solve the great dishwasher debate - CHOICE",
+            "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/should-you-place-your-cutlery-up-or-down-in-your-dishwasher",
+            "date": "",
+            "snippet": "A CHOICE article that sets out to settle the cutlery argument. Only the title and address were seen.",
+            "via": "search",
+            "note": "Third outlet, in another country, so the debate is not local.",
+            "verified": true
+          },
+          {
+            "title": "Organize Your Dishwasher Using Tetris",
+            "url": "https://tetris.com/article/73/organize-your-dishwasher-using-tetris",
+            "date": "",
+            "snippet": "An article on the Tetris company's own site about organising a dishwasher with Tetris-style thinking. Only the title and address were seen.",
+            "via": "search",
+            "note": "Prior art: dishwasher packing already has a grid-based brand tie-in.",
+            "verified": true
+          },
+          {
+            "title": "Ecover teams up with Tetris to release dishwasher game",
+            "url": "https://www.marketing-beat.co.uk/?p=80313",
+            "date": "",
+            "snippet": "A trade-press item reporting that a cleaning brand and the Tetris company released a free online dishwasher game with leaderboards, per the search summary.",
+            "via": "search",
+            "note": "Independent trade-press confirmation that a Tetris-style dishwasher game exists; used as contrast only.",
+            "verified": true
+          },
+          {
+            "title": "cant play wont play 5686393",
+            "url": "https://kotaku.com/cant-play-wont-play-5686393",
+            "date": "",
+            "snippet": "Result titled after the 2010 essay on pointsification; the search summary credits Margaret Robertson with arguing that points and badges are the least essential part of a game.",
+            "via": "search",
+            "note": "Design principle for this lens; one result and a blended summary, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-11, CHOICE (Australia) and Which? (UK) each advise facing the dirtiest surfaces toward the centre of the dishwasher and keeping the spray arms free to turn and unblocked.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              0
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, both CHOICE and Which? advise leaving gaps so items do not touch or nest, and angling or turning bowls and cups so water drains instead of pooling; Which? adds that big items go at the back and sides.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, Which? (UK), Ideal Home (UK) and CHOICE (Australia) each published a piece framed around the cutlery handles-up-or-down debate.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, Tetris-style dishwasher games exist: the Tetris company hosts an article on organising a dishwasher, and trade press reported a cleaning-brand and Tetris dishwasher game.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per one search result and its blended summary, the 2010 essay Can't Play, Won't Play by Margaret Robertson coined 'pointsification' for adding points and badges, which it calls the least essential part of games. Unverified.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Unpacking (placement as a cozy puzzle)",
+          "Tetris-style dishwasher tie-ins (as contrast)",
+          "r/incremental_games unlocks and prestige loops",
+          "The Hero's Journey as chapter structure",
+          "CHOICE and Which? loading guides"
+        ]
+      },
+      "design": {
+        "coreLoop": "A seeded pile arrives with soil marked on specific surfaces. The visitor racks and orients each item in the cross-section, runs the cycle, and watches rotating jets sweep through; unreached soil stays, and the debrief names the blocker, the facing or the pooled water behind each stubborn patch. Hand-wash minutes owed feed a siege meter across a 10-night campaign, and a shareable battle report closes each night.",
+        "sophisticationHooks": [
+          "Spray model: a side cross-section, a rotating arm whose nozzle positions sweep the plane, rays cast against item outlines with one splash bounce, and a stubbornness threshold per soil patch, so coverage turns into clean or crusted.",
+          "Emergent rules: dirty side to the centre, no nesting, bowls angled, arm free to turn and big items to the sides come out of the geometry instead of a checklist; contested cutlery orientation is left to the simulation.",
+          "Chef-Bot par: simulated annealing in a Web Worker searches layouts for each seed with the same simulator, giving a best-known score and a ghost layout revealed after the player's attempt.",
+          "Siege flavour: the sink is the forward outpost where unplaced items wait and add hand-wash debt, soil left overnight sets like quicksand and needs direct hits, and a black cast-iron pan is the obsidian decoy that loses the siege if loaded."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in the morning: about 12 hand-drawn SVG item outlines with soil patches, a two-rack cross-section, the spray simulator with heat-map reveal, tap, drag and arrow-key placement with rotation, a 10-night campaign plus daily seed, debrief overlay, the Chef-Bot worker, a share string in the URL hash and an about panel with sources. Cut: 3D, fluid dynamics, several machine models, custom dishes, any soundtrack beyond a simple procedural water hiss.",
+        "risks": [
+          "Fidelity: a 2D cross-section is a toy of a 3D machine. Planned mitigation: a visible toy-model label, tuning that favours the rules both consumer guides agree on, and no hygiene or sanitising claims anywhere.",
+          "Prior art: Tetris-style dishwasher games exist. Planned mitigation: no grid, drawn outlines, water as the mechanic, and a credit line in the about panel.",
+          "Art load: a dozen consistent silhouettes plus racks have to read in light and dark. Planned mitigation: flat vector shapes in one stroke style, with simpler shapes as the fallback if time runs short.",
+          "Touch at 360px: small items need tap-to-select then tap-to-place with large hit areas, and the keyboard path is a hard requirement of the spec.",
+          "Contested and unverified details: cutlery orientation varies by guide, so the page presents it as an open question; the pointsification critique rests on one search result and appears only as 'as of 2026-10-11, per' that source, or not at all."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 7.3,
+        "delight": 7.9,
+        "distinctness": 8.3,
+        "feasibility": 4.7,
+        "timeliness": 7.4,
+        "interestFit": 5.3,
+        "polishPotential": 7.8,
+        "safety": 8.3
+      },
+      "total": 71.5,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i08",
+      "title": "Eyes Only",
+      "pitch": "Each plate is a mosaic of colored dots hiding a creature or a letter, and each of five simulated eyes (typical, protan, deutan, tritan, achromat) reads a different part of the picture. The visitor flips lenses, with a severity dial for milder forms, to see what each eye reveals, decodes cipher words whose letters need different eyes, and builds plates in a studio where a solver tunes the dots until exactly the chosen eyes can read them. A real lab result, dichromats out-spotting trichromats on color-camouflaged texture, inspires the masked plates, so the eye most often called deficient is the one that cracks the code.",
+      "whyNow": "Timeless. About 1 in 12 men have a color vision deficiency (as of 2026-10-11, per NEI), and the science behind the plates (camouflage-breaking studies, a 2009 simulation model) is stable and citable.",
+      "origin": {
+        "agent": "engineer",
+        "lens": "accessibility-delight",
+        "scoutId": "engineer-2"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "puzzle",
+        "tone": [
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "dom-ui",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "color-vision",
+          "colorblind-friendly",
+          "camouflage",
+          "dot-mosaic",
+          "hidden-message",
+          "cone-contrast",
+          "perception",
+          "accessibility",
+          "lens-simulation",
+          "cipher"
+        ],
+        "keywords": [
+          "protan",
+          "deutan",
+          "tritan",
+          "achromat",
+          "machado-model",
+          "circle-packing",
+          "detectability",
+          "severity-dial"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "A 1992 study reported that dichromats beat trichromats at finding texture-defined targets hidden by random red-green coloring, and a later review states dichromats do better when color is irrelevant to the task; early stimuli were stylized, so the effect is real but task-dependent. A 2009 IEEE TVCG paper by Machado, Oliveira and Fernandes gives a physiologically based simulation model covering dichromacy and anomalous trichromacy. About 1 in 12 men have a color vision deficiency (NEI), and deuteranomaly, a milder form, is the most common type, which motivates a severity dial. A cone-opponent view (luminance, red-green, blue-yellow) explains what each lens keeps; one paper cautions that some dichromats keep residual red-green discrimination. The design splits plates into exact ones (pure channel signals that vanish after the lens by construction) and perceptual ones (masking, labeled as a model).",
+        "sources": [
+          {
+            "title": "Dichromats detect colour-camouflaged objects that are not detected by trichromats",
+            "url": "https://pubmed.ncbi.nlm.nih.gov/1354367/",
+            "date": "1992",
+            "snippet": "PubMed record of Morgan, Adam and Mollon (Proc. R. Soc. B). Per the search summary, random red-green coloring of texture elements made the target harder for trichromats but not for dichromats, who did better.",
+            "via": "search",
+            "note": "The core finding that inspires the masked plates. Not opened; the title states the finding and a later review agrees. Year 1992 comes from the search summary.",
+            "verified": true
+          },
+          {
+            "title": "Relative advantages of dichromatic and trichromatic color vision in camouflage breaking",
+            "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5873837/",
+            "date": "",
+            "snippet": "Review article. The search summary says it reports dichromats outperforming trichromats at finding camouflaged targets when color is irrelevant to the task, and that early stimuli were stylized shapes with extreme colors.",
+            "via": "search",
+            "note": "Independent review supporting the finding and its limits (stylized stimuli); the limit goes into the risks.",
+            "verified": true
+          },
+          {
+            "title": "A physiologically-based model for simulation of color vision deficiency",
+            "url": "https://lume.ufrgs.br/handle/10183/27630?show=full",
+            "date": "2009",
+            "snippet": "University repository record of the Machado, Oliveira and Fernandes paper (IEEE TVCG 15(6), 1291-1298). Per the abstract in the search summary, one model handles normal vision, anomalous trichromacy and dichromacy.",
+            "via": "search",
+            "note": "The simulation model behind the lens engine. The abstract was seen only through a search summary.",
+            "verified": true
+          },
+          {
+            "title": "dichromacy package references.bib (CTAN mirror; result title shown as 'ctan.csail.mit.edu')",
+            "url": "https://ctan.csail.mit.edu/macros/luatex/latex/dichromacy/references.bib",
+            "date": "",
+            "snippet": "A bibliography file in a package directory named dichromacy on a CTAN mirror; the search summary says its BibTeX entries list the same simulation paper.",
+            "via": "search",
+            "note": "Independent listing that confirms the paper's existence and publication details only.",
+            "verified": true
+          },
+          {
+            "title": "A physiologically-based model for simulation of color vision deficiency (library catalog record)",
+            "url": "https://katalog.dhi-paris.fr/vufind/Record/NLM192096095",
+            "date": "",
+            "snippet": "A library catalog record for the same paper in the search results.",
+            "via": "search",
+            "note": "Another independent listing of the paper's publication details only.",
+            "verified": true
+          },
+          {
+            "title": "Color Blindness",
+            "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/color-blindness",
+            "date": "",
+            "snippet": "National Eye Institute overview page. Per the search summary, its fact box says about 1 in 12 men have color vision deficiency, and women are less often affected because the common genes are X-linked.",
+            "via": "search",
+            "note": "Headline prevalence, attributed explicitly to NEI in the summary. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "About Colour Blindness - Colour Blind Awareness",
+            "url": "https://www.colourblindawareness.org/colour-blindness/",
+            "date": "",
+            "snippet": "Colour Blind Awareness page. Per the search summary, sources commonly give about 1 in 12 men (8 percent) and 1 in 200 women; that summary blended several results.",
+            "via": "search",
+            "note": "Second organization for the prevalence figure (blended summary, but the title matches the topic).",
+            "verified": true
+          },
+          {
+            "title": "Types of Color Vision Deficiency - National Eye Institute - NIH",
+            "url": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/color-blindness/types-color-vision-deficiency",
+            "date": "",
+            "snippet": "NEI page grouping deuteranomaly (the most common red-green type), protanomaly, protanopia and deuteranopia; blue-yellow forms are less common and complete color blindness is rare.",
+            "via": "search",
+            "note": "Names the lens types and shows that milder anomalous forms dominate, which motivates the severity dial.",
+            "verified": true
+          },
+          {
+            "title": "The evolution of concepts of color vision - PMC",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3095437/",
+            "date": "",
+            "snippet": "Review. The search summary says only a fraction of color-defective males are true dichromats (roughly 1 percent protanopes and 2 percent deuteranopes) and partial forms are much more common.",
+            "via": "search",
+            "note": "Independent review agreeing that milder forms dominate.",
+            "verified": true
+          },
+          {
+            "title": "Curing Color Blindness-Mice and Nonhuman Primates - PMC",
+            "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4208712/",
+            "date": "",
+            "snippet": "Review. Per the search summary, dichromats keep blue-yellow and black-white percepts and achromatic channels that carry brightness, but lack the normal sensations of red and green.",
+            "via": "search",
+            "note": "Supports the lens-channel model: luminance and blue-yellow survive for red-green dichromats.",
+            "verified": true
+          },
+          {
+            "title": "Why do Protan & Deutan look so similar?",
+            "url": "https://chromaphobe.com/why-do-protan-deutan-look-so-similar/",
+            "date": "",
+            "snippet": "Blog post. Per the search summary, luminance is the sum of the cone signals and the red-green channel compares red and green cone signals, so losing either cone type removes the red-green channel.",
+            "via": "search",
+            "note": "Secondary explanatory source agreeing with the review on the channel structure; a blog, so weighted lightly.",
+            "verified": true
+          },
+          {
+            "title": "escholarship.org (UC eScholarship PDF; result title shown as 'escholarship.org')",
+            "url": "https://escholarship.org/content/qt17v8624b/qt17v8624b.pdf",
+            "date": "",
+            "snippet": "Per the search summary, a paper reports protanopes and deuteranopes are believed unable to make small-field red-versus-green judgments but argues some residual red-green discrimination may exist.",
+            "via": "search",
+            "note": "Single-source caveat that the complete-loss view is contested; kept as a risk, not as a page fact.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Morgan, Adam and Mollon (Proc. R. Soc. B, 1992) reported that dichromats detected color-camouflaged texture targets that trichromats found harder, because random color interferes with texture-based segregation; a later review reports dichromats outperform trichromats when color is irrelevant to the task.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Machado, Oliveira and Fernandes published a physiologically based color vision deficiency simulation model in IEEE TVCG 15(6), 1291-1298 (2009); the abstract, seen through a search summary, says it covers normal vision, anomalous trichromacy and dichromacy.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "About 1 in 12 men have a color vision deficiency, and women are far less often affected (NEI; Colour Blind Awareness).",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Deuteranomaly, a milder anomalous form of red-green deficiency, is the most common type, and partial forms are more common than true dichromacy.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Red-green dichromats lose the red-green opponent signal but keep luminance (achromatic) and blue-yellow signals.",
+            "sourceIndex": 9,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, per a UC eScholarship paper (one source, unverified), some protanopes and deuteranopes may keep residual red-green discrimination, so a channel model is a simplification.",
+            "sourceIndex": 11,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Pseudoisochromatic test plates in the Ishihara tradition (named from memory, not verified here)",
+          "Camouflage-breaking experiments with dichromats (the 1992 study seen in search results)",
+          "Designer-facing color vision simulators (the Machado model is the one seen in search results)",
+          "Cone-isolating stimuli from vision science (named from memory, not verified here)"
+        ]
+      },
+      "design": {
+        "coreLoop": "A seeded plate packs about two thousand dots of mixed radii; a hidden figure is encoded as a small offset in chosen cone-contrast directions (L, M, S or luminance) with masking noise in others. The visitor switches among five lenses (keys 1 to 5) or drags a severity dial, moves a reticle to the figure, and receives a per-lens detectability readout plus a reveal card explaining which eyes could read the plate and why. Cipher mode spreads a word over plates, one letter per subset of eyes. Studio mode takes a target set of readers and runs a solver that tunes channel amplitudes and noise until the model's detectability meets the target, or reports the target infeasible. A map of all 32 reader subsets fills in as plates are made, with unreachable cells greyed out, which gives a collection goal for the tenth minute.",
+        "sophisticationHooks": [
+          "Lens engine: 3x3 linear-RGB simulation matrices in the Machado style with a severity dial from typical to full dichromacy (anomalous trichromacy included), an achromat luminance lens, and self-tests (neutral gray unchanged; red-green pairs collapse under deutan and protan; blue-yellow pairs collapse under tritan).",
+          "Plate generator: seeded blue-noise circle packing with mixed radii on a spatial hash grid, figure masks from signed-distance creature shapes and a 5x7 glyph set, dot colors sampled in a cone-contrast space with gamut-safe scaling, fully deterministic from the URL hash.",
+          "Detectability model: a d-prime style score per lens (figure versus ground difference over pooled noise in the channels the lens still has) plus a clutter term where chromatic noise masks luminance signals for lenses that still see it, the Morgan-style effect; exact plates (pure channel signals) are separated from perceptual plates (masking) and labeled.",
+          "Studio solver and feasibility map: coordinate-descent search with restarts over signal mix, amplitude and per-channel noise to hit any of the 32 reader subsets; subsets that violate the channel structure are shown infeasible under the model and greyed in the map."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: lens engine and self-tests (about 250 lines), generator and renderer (about 300), detectability model and solver (about 250), UI for Hunt, Cipher and Studio modes with keyboard reticle and touch, severity dial, reveal cards, 12 specimen shapes and the glyph set, 40 curated seeds, URL-hash sharing, about and making-of panel listing verified sources only. Cut if short: sonified plate (pitch from local detectability), image import, palette tool, per-lens custom mixing.",
+        "risks": [
+          "Perceptual claims: whether a typical eye misses a masked plate depends on the person and the display; the page grades by the model and labels those plates perceptual, while exact plates are true by construction.",
+          "The page is a puzzle and a model, not a vision test or diagnosis; the copy avoids telling any visitor what their own vision is.",
+          "Simulation caveats: disability-simulation critiques, residual red-green discrimination reported for some dichromats (one source, unverified), and varied displays; the about panel states them and shows the residual-discrimination point as 'as of 2026-10-11, per UC eScholarship'.",
+          "The camouflage advantage is documented for stylized stimuli and specific tasks (per a review in the search results), so the copy states it as a lab result and makes no general claim about colorblind people.",
+          "Matrix constants have to be reproduced from the published model without opening it; the fallback derives lenses from an LMS projection and the self-tests check neutrals and confusion-pair collapse.",
+          "A visual puzzle is not fully playable by blind visitors; text reveal cards and the optional sonified plate (cut if short) are the mitigation."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 8,
+        "delight": 6.5,
+        "distinctness": 9,
+        "feasibility": 4.9,
+        "timeliness": 7.2,
+        "interestFit": 4.7,
+        "polishPotential": 8.2,
+        "safety": 6.3
+      },
+      "total": 70,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i09",
+      "title": "Pick Autopsy",
+      "pitch": "A visitor drafts a deck of about ten cards for a tiny invented deckbuilder, choosing, skipping or trimming at four forks, and a worker then plays that deck ten thousand seeded runs, painting a 100-by-100 field of wins and losses in a blink. The autopsy replays every fork both ways and splits the win-rate change fairly across the four choices, so the visitor sees which pick carried the run, which was a decoy and which quietly cost points, each with an honest error bar. Ranking the forks before the reveal earns an intuition grade, and any pixel replays its run card by card.",
+      "whyNow": "Timeless. Deckbuilder folklore (skip rewards, thin the deck, trust the combo) tends to be argued from the runs a player happens to remember, and this page measures it for one invented game with ten thousand runs per fork. Genre backdrop, reported and unconfirmed: Slay the Spire 2 has been in Early Access since 2026-03-05 per the studio's news post.",
+      "origin": {
+        "agent": "cards",
+        "lens": "deckbuilder-systems",
+        "scoutId": "cards-1"
+      },
+      "fingerprint": {
+        "category": "cards-odds",
+        "mechanic": "simulator",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "dom-ui",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "deckbuilder",
+          "monte-carlo",
+          "draft-trainer",
+          "counterfactuals",
+          "shapley-value",
+          "draw-odds",
+          "deck-thinning",
+          "variance",
+          "seeded-simulation",
+          "card-games"
+        ],
+        "keywords": [
+          "pick-autopsy",
+          "skip-or-pick",
+          "starter-deck",
+          "hypergeometric",
+          "win-rate",
+          "error-bars",
+          "sample-size",
+          "regret-score",
+          "pixel-field",
+          "decoy-picks"
+        ],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Fan guides for Slay the Spire treat skipping card rewards and trimming starter Strikes and Defends as a deliberate way to keep a deck thin (one guide suggests staying under about 15 cards unless the deck leans on card draw); guides and forums reportedly disagree on the right size, per a blended search summary, so that point is shown as reported. Opening-hand and draw odds follow the hypergeometric distribution (several trading-card math pages). Deck testers say comparing win rates by hand needs far more games than people play. Methods: the Shapley value averages a choice's marginal contribution over all orderings and the parts sum exactly to the total, which for four forks needs only 16 deck variants; common random numbers are the textbook way to compare simulations. Derived by the scout in a throwaway seeded Node prototype of an invented game, not from the web: 10,000 runs took about 0.13 s, a 16-variant batch 2 to 3.5 s, Shapley parts summed to the total in 8 of 8 scenarios, and matched seeds cut variance only 2 to 24 percent for single-card swaps, so accuracy rests on run count.",
+        "sources": [
+          {
+            "title": "Slay The Spire guide: tips for topping the tower",
+            "url": "https://www.pcgamer.com/slay-the-spire-guide/",
+            "date": "",
+            "snippet": "The guide treats the skip option on card rewards as a deliberate tool for keeping the deck small and suggests trimming the starting Strikes and Defends.",
+            "via": "search",
+            "note": "Establishes skipping and trimming as a recognised tactic. Not opened: the fetch failed at DNS today, so the statement comes from the search result text.",
+            "verified": true
+          },
+          {
+            "title": "Understanding Card Rewards: When to Take, Skip, or Remove",
+            "url": "https://www.spirebuilds.com/guides/understanding-card-rewards",
+            "date": "",
+            "snippet": "A fan guide on when to take, skip or remove card rewards, with the argument that each added card lowers the odds of drawing the best ones.",
+            "via": "search",
+            "note": "Second independent guide agreeing on skipping. The search summary blended several guides whose suggested deck sizes differ (about 12-15, 15-25, 25-40 cards), so sizes are not tied to one URL.",
+            "verified": true
+          },
+          {
+            "title": "yu gi oh hypergeometric probability distribution function",
+            "url": "https://ygoprodeck.com/article/yu-gi-oh-hypergeometric-probability-distribution-function-15119",
+            "date": "",
+            "snippet": "A card-game math article maps the hypergeometric inputs to deck terms (deck as population, opening hand as sample, wanted cards as successes) with a 3-copies-in-40-cards example.",
+            "via": "search",
+            "note": "Establishes the draw-odds model. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Bad Opening Hands",
+            "url": "https://cardmarket.com/en/Insight/Articles/The-Mathematics-Behind-Building-Competitive-Decks",
+            "date": "",
+            "snippet": "A trading-card marketplace article on the mathematics behind building decks, covering the probability mass function behind opening-hand calculators.",
+            "via": "search",
+            "note": "Independent second source for the hypergeometric model. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Card Draw Math in Star Wars: Unlimited",
+            "url": "https://taketheinitiative.substack.com/p/card-draw-math-in-star-wars-unlimited",
+            "date": "",
+            "snippet": "A newsletter post uses a hypergeometric calculator for draw odds in another card game and notes that mulligans can be handled by enlarging the sample.",
+            "via": "search",
+            "note": "Third independent source for the draw-odds model. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "# COMPARING SYSTEMS",
+            "url": "https://www2.isye.gatech.edu/~sman/courses/6644/Module10-ComparingSystems-201128.pdf",
+            "date": "2020",
+            "snippet": "University lecture notes covering common random numbers, antithetic variates and paired intervals for comparing simulated systems.",
+            "via": "search",
+            "note": "Establishes common random numbers as the standard comparison method; the result summary credits the course to Goldsman. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Using Common Random Numbers and Control Variates in Multiple-Comparison Procedures",
+            "url": "https://pubsonline.informs.org/doi/epdf/10.1287/opre.39.4.583",
+            "date": "1991",
+            "snippet": "A 1991 Operations Research paper on refining multiple-comparison procedures for simulated systems with common random numbers and control variates.",
+            "via": "search",
+            "note": "Independent second source for common random numbers in simulation comparison. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "When Does Pairing Seeds Reduce Variance? Evidence from a Multi-Agent Economic Simulation",
+            "url": "https://arxiv.org/pdf/2512.24145",
+            "date": "2025",
+            "snippet": "A paper shows the variance of a paired estimator equals the unpaired variance minus a term that grows with the covariance between paired outcomes, so the gain depends on correlation.",
+            "via": "search",
+            "note": "Supports the caution that pairing seeds does not always help, which matches the scout's own measurement. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Shapley value",
+            "url": "https://en.wikipedia.org/wiki/Shapley_value",
+            "date": "",
+            "snippet": "The article defines a player's value as the average marginal contribution over all orderings and shows that the values add up to the grand coalition's total.",
+            "via": "search",
+            "note": "Establishes the definition and the efficiency property. Result text only; the host cannot be fetched from here.",
+            "verified": true
+          },
+          {
+            "title": "The Shapley Value Approach",
+            "url": "https://shapley-value-regression.readthedocs.io/mathematical-foundation/",
+            "date": "",
+            "snippet": "Documentation for Shapley value regression splits a model's total R-squared among predictors so the importances add up to the whole.",
+            "via": "search",
+            "note": "Independent second source for efficiency (parts sum to the total). Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Why did the distribution change?",
+            "url": "https://arxiv.org/pdf/2102.13384",
+            "date": "",
+            "snippet": "A paper states the efficiency axiom (individual values sum to the grand coalition's payoff) and notes that efficiency, symmetry, dummy player and linearity together fix the Shapley value.",
+            "via": "search",
+            "note": "Third source for the axioms of the Shapley value. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Are you a Quiet Speculation member?",
+            "url": "https://modernnexus.com/systematic-and-practical-testing-guidelines/",
+            "date": "",
+            "snippet": "A Modern-format testing guide (URL slug: systematic and practical testing guidelines) argues it is hard to gather enough matches for a deck comparison to pass a t-test at high confidence, since single cards change little and game variance is high.",
+            "via": "search",
+            "note": "Establishes that hand testing yields samples too small for win-rate comparisons. Page title as shown is a membership prompt; content seen only in the search result.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Opening-hand and draw odds in card games follow the hypergeometric distribution (draws without replacement); one worked example uses 3 copies in a 40-card deck and a 5-card hand.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, fan guides for Slay the Spire commonly advise skipping most card rewards and trimming starter cards to keep the deck small; one guide suggests staying under about 15 cards unless the deck relies on card draw.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Common random numbers (matched random inputs) are the standard way to compare simulated alternatives, and the variance reduction depends on how strongly the paired outcomes correlate.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The Shapley value gives each choice its average marginal contribution over all orderings and the values add up exactly to the total change (efficiency); for four choices that is 16 deck variants (2^4, counted by the scout).",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9,
+              10
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Deck testers report that comparing win rates by hand needs far more games than people play, because single cards change results only slightly and game variance is high.",
+            "sourceIndex": 11,
+            "alsoIn": [
+              12
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A Pokemon testing guide suggests at least 10 to 20 goldfish sessions as a rough convention (single source, unverified).",
+            "sourceIndex": 13,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A university project on card drafting for Slay the Spire exists (single source, findings not seen, unverified).",
+            "sourceIndex": 14,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Slay the Spire 2 launched into Steam Early Access on 2026-03-05 (reported; date read from the post URL; single source, unverified).",
+            "sourceIndex": 15,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "chess engine evaluation bars and move annotations",
+          "poker solver EV-loss trainers",
+          "skip-or-pick debates in roguelike deckbuilders",
+          "trading-card goldfishing",
+          "Shapley-value attribution in data science",
+          "Monte Carlo deck testing"
+        ]
+      },
+      "design": {
+        "coreLoop": "A visitor meets four forks (three pick-one-of-three-or-skip rewards and one trim-a-card shrine) and builds a deck of about ten cards, after ranking which fork they think will matter most. A worker plays the deck ten thousand seeded runs and paints a 100-by-100 field of wins and losses. The autopsy replays all 16 variants of the four forks, splits the win-rate change fairly across the choices and labels each as load-bearing, decoy or harmful with a 95 percent bar. Flipping any fork repaints the field in a fraction of a second, any pixel replays its run card by card, and the intuition grade makes the second and tenth draft each teach something new.",
+        "sophisticationHooks": [
+          "Exact Shapley attribution over the 16 deck variants of the four forks, parts summing exactly to the total change (verified in a scout prototype), with a 95 percent bar from per-run contributions",
+          "Honest uncertainty: binomial error bars, a how-many-runs-would-a-human-need panel, and a measured paired-versus-unpaired variance ratio shown on screen instead of an assumed benefit",
+          "Exact hypergeometric overlays (chance a key card is in the opening hand or seen by turn three) beside the simulated frequency so the two visibly agree",
+          "Deterministic keyed shuffles: any one of the ten thousand runs replays from its seed, and the URL hash restores the draft, seed and results"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "In one morning the team builds: the invented game (12 to 16 cards, three rooms, fixed greedy autopilot) and its seeded engine with node self-checks (hypergeometric counts, Shapley sum, determinism); the four-fork draft UI; worker batches with progress; the 100-by-100 canvas field with click-to-replay; the autopsy panel with bars and verdict labels; rewind by flipping a fork; the predict-then-reveal grade; an about panel with dated sources; hash state; light and dark; reduced motion. Cut: multiple card pools, relics, multi-act runs, animated fights, sound, daily leaderboards.",
+        "risks": [
+          "The pilot is a fixed greedy autopilot, so every number means this deck under this pilot; the page calls it a ruler, not an oracle, and makes no claim of optimal play.",
+          "Balance of the invented game decides everything: in the scout prototype single-card effects ranged from about minus 54 to plus 35 points in a harsh setting and minus 7 to plus 6 in a gentle one, with few near-zero decoys, so the card pool and enemies need tuning until decoys, synergies and traps all exist; a node harness can assert that spread.",
+          "Matched seeds were measured to help little (variance ratio 0.76 to 0.98 for single-card swaps in the prototype); the page shows its own measured ratio and relies on 10,000 runs per variant rather than an assumed gain.",
+          "A 16-variant batch of 10,000 runs took about 2 to 3.5 s in Node; a browser worker needs a progress bar, a cancel path and a lower run count (for example 4,000) on slow phones.",
+          "Unverified items stay flagged: the Slay the Spire 2 Early Access date, the 10 to 20 session rule of thumb, the Edinburgh drafting project and the reported disagreement on deck size each rest on one result or a blended summary, and the page shows them as 'as of 2026-10-11, per the named source' or omits them. Selection bias in pick-rate stats is the scout's own reasoning.",
+          "Safety framing: every card, enemy and name is invented, results are labelled simulated, nothing involves money or stakes, and no third-party art or audio is used."
+        ]
+      },
+      "durable": true,
+      "sanitizer": {
+        "redacted": [],
+        "trimmed": 4
+      },
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 7.6,
+        "delight": 7,
+        "distinctness": 3.2,
+        "feasibility": 7.7,
+        "timeliness": 6,
+        "interestFit": 9,
+        "polishPotential": 6.4,
+        "safety": 7.3
+      },
+      "total": 65.3,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i10",
+      "title": "Shuffle Sharp",
+      "pitch": "A lazy dealer riffles a fresh 52-card deck once or twice and a visitor, playing the sharp, calls each next card as it turns over. After a single idealised riffle about 31 cards can be called against 4.5 for blind guessing (the scout's seeded count), and each extra shuffle melts that edge until it is near half a card at seven riffles. A feint mode adds false shuffles and perfect faros that only look mixed, and an exact curve shows why seven is the magic number.",
+      "whyNow": "Timeless. A famous result becomes something felt in the fingers: exploiting a lazy shuffle is the card-table version of exploiting a strategy that mixes too little, and the curve is the plain-language picture of unexploitable play. In board-game deckbuilders every reshuffle of a hand-shuffled discard pile is a place where order can leak.",
+      "origin": {
+        "agent": "cards",
+        "lens": "deckbuilder-systems",
+        "scoutId": "cards-2"
+      },
+      "fingerprint": {
+        "category": "education-explainer",
+        "mechanic": "game",
+        "tone": [
+          "playful",
+          "competitive",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "worker",
+          "dom-ui",
+          "pointer-events",
+          "web-animations"
+        ],
+        "tags": [
+          "riffle-shuffle",
+          "card-guessing",
+          "permutations",
+          "rising-sequences",
+          "randomness",
+          "faro-shuffle",
+          "card-sharp",
+          "total-variation",
+          "exploit-versus-equilibrium",
+          "feedback-game"
+        ],
+        "keywords": [
+          "seven-shuffles",
+          "false-shuffle",
+          "mixing-time",
+          "edge-curve",
+          "dealer-tell",
+          "likelihood-ratio",
+          "reshuffle",
+          "discard-pile",
+          "bot-benchmark",
+          "perfect-shuffle"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "After k riffles a deck holds only arrangements with at most 2^k rising sequences, and the chance of an arrangement depends only on its rising-sequence count r as C(2^k + n - r, n) over 2^(kn); the scout checked this law by exhaustive enumeration for small decks. Exact 52-card total variation distance (computed by the scout from Eulerian numbers) is 1.000 through k=4, then 0.924, 0.614, 0.334, 0.167, 0.085, 0.043 for k=5 to 10, matching the often-cited rule of about seven riffles (Harvey Mudd, MathWorks, Science News, the Bayer-Diaconis paper). Card guessing with complete feedback after one riffle is studied in several papers; the scout's seeded count for 52 cards gives 31.1 correct for a heads-tracking guesser (an exact Bayes guesser for one riffle matches at 31.2) against 4.5 for blind guessing, then 19.6, 12.9, 8.8, 6.6, 5.5, 5.0, 4.8, 4.7, 4.6 for 2 to 10 riffles. Eight perfect out-faros restore 52 cards (several sources; scout recount agrees).",
+        "sources": [
+          {
+            "title": "Seven Shuffles",
+            "url": "https://math.hmc.edu/funfacts/seven-shuffles/",
+            "date": "",
+            "snippet": "A Harvey Mudd fun-facts page on the result that about seven riffle shuffles are needed to mix a 52-card deck.",
+            "via": "search",
+            "note": "Establishes the seven-shuffle headline. Not opened: the fetch failed at DNS today, so the text comes from the search result.",
+            "verified": true
+          },
+          {
+            "title": "how many times should you shuffle the cards 2",
+            "url": "https://blogs.mathworks.com/cleve/2016/02/15/how-many-times-should-you-shuffle-the-cards-2/",
+            "date": "2016-02-15",
+            "snippet": "A numerical-computing blog post on how many riffle shuffles randomise a deck; the search summary mentions a computation where total variation falls below one half at seven.",
+            "via": "search",
+            "note": "Second independent source for seven; date read from the URL path. The summary also mentioned an information-based measure with a minimum near six shuffles but did not show which result said so, so that point stays unconfirmed.",
+            "verified": true
+          },
+          {
+            "title": "bayer diaconis",
+            "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/bayer_diaconis.pdf",
+            "date": "",
+            "snippet": "A PDF copy of the 1992 paper on the dovetail (riffle) shuffle; its Theorem 1 gives the chance of an arrangement after m shuffles in terms of its number of rising sequences.",
+            "via": "search",
+            "note": "Primary source for the riffle law. The formula was garbled in the snippets, so the scout checked C(a+n-r,n)/a^n by exhaustive enumeration for small decks. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Rising Sequences in Card Shuffling",
+            "url": "https://math.hmc.edu/funfacts/?p=357",
+            "date": "",
+            "snippet": "A fun-facts page defining rising sequences, the maximal runs of cards that keep their original relative order in a shuffled deck.",
+            "via": "search",
+            "note": "Establishes the statistic that tracks how much order a riffled deck keeps. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Disorder in the Deck",
+            "url": "https://www.sciencenews.org/article/disorder-deck-0",
+            "date": "",
+            "snippet": "A popular article says that with five or fewer shuffles the deck's original order is strongly in evidence, and with more than seven it has virtually disappeared.",
+            "via": "search",
+            "note": "Independent popular-press confirmation of the five-to-seven range. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "On card guessing game with one time riffle shuffle and complete feedback",
+            "url": "https://ar5iv.labs.arxiv.org/html/1908.07718",
+            "date": "",
+            "snippet": "A paper gives an optimal strategy for guessing cards after one riffle shuffle with complete feedback, with maximum expected correct guesses of order n/2 plus a term of order the square root of n.",
+            "via": "search",
+            "note": "Establishes the game and the single-riffle result; the scout's seeded count for n=52 (31.2 correct) is consistent with it. The same paper appears on other hosts, which are not independent. arxiv.org itself failed to fetch at DNS.",
+            "verified": true
+          },
+          {
+            "title": "The card guessing game: A generating function approach",
+            "url": "https://repository.li.mahidol.ac.th/handle/123456789/81563",
+            "date": "",
+            "snippet": "A later paper gives an expression for the expected number of correct guesses with an arbitrary number of terms, improving on earlier results.",
+            "via": "search",
+            "note": "Independent second paper on the same game. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "Refutation of the Bayer-Diaconis-McGrath conjecture for the riffle shuffle card guessing game with feedback",
+            "url": "https://hal-confremo.archives-ouvertes.fr/THESES-UPMC/hal-03324629v1",
+            "date": "",
+            "snippet": "A thesis record says the conjectured strategy is optimal for a single riffle but not in general.",
+            "via": "search",
+            "note": "Third independent paper on the game. The optimal-for-one-riffle-only point rests on this single result, so the page calls its multi-riffle guesser a heuristic.",
+            "verified": true
+          },
+          {
+            "title": "Faro shuffle",
+            "url": "https://en.wikipedia.org/wiki/Faro_shuffle",
+            "date": "",
+            "snippet": "The article describes perfect in- and out-shuffles and notes that eight out-shuffles restore a 52-card deck.",
+            "via": "search",
+            "note": "Establishes the order-8 fact. Result text only; the host cannot be fetched from here.",
+            "verified": true
+          },
+          {
+            "title": "Diaconis Graham Kantor Perfect Shuffles",
+            "url": "https://www.enseignement.polytechnique.fr/informatique/INF411/TD/TD1/Diaconis_Graham_Kantor_Perfect-Shuffles.pdf",
+            "date": "",
+            "snippet": "A course copy of the 1983 paper on the group generated by perfect in- and out-shuffles.",
+            "via": "search",
+            "note": "Primary reference for perfect shuffles. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "By ALEX STONE",
+            "url": "https://fanchung.ucsd.edu/ron/mm_wsj.html",
+            "date": "",
+            "snippet": "A review of a book on magical mathematics states that eight perfect shuffles return a 52-card deck to its original order.",
+            "via": "search",
+            "note": "Independent confirmation of the order-8 fact; the scout's own permutation recount gives 8 for the out-shuffle and 52 for the in-shuffle. Not opened.",
+            "verified": true
+          },
+          {
+            "title": "wiki.dominionstrategy.com",
+            "url": "https://wiki.dominionstrategy.com/index.php/Shuffle",
+            "date": "",
+            "snippet": "The community wiki says a reshuffle turns over the discard pile and shuffles it to form the new draw deck.",
+            "via": "search",
+            "note": "Single source for the board-game deckbuilder rule; used as context only. Unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "About seven riffle shuffles are needed to mix a 52-card deck, measured by total variation distance (Bayer and Diaconis, 1992); with five or fewer, the original order is still plain to see.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2,
+              4
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "After one riffle a deck has at most two rising sequences and the maximum roughly doubles with each further riffle, so five riffles cannot reach every arrangement of 52 cards.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Card guessing with complete feedback after a single riffle has been analysed by several independent authors, and an optimal strategy is known for one riffle.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Eight perfect out-shuffles restore a 52-card deck to its original order; the scout's recount also gives 52 for the in-shuffle.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9,
+              10
+            ],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11 the community wiki for a board-game deckbuilder describes a reshuffle as shuffling the discard pile into a new draw deck (single source, unverified).",
+            "sourceIndex": 11,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "card-guessing experiments with feedback",
+          "stage-magic false shuffles and perfect faro shuffles",
+          "poker talk of exploitative versus unexploitable play",
+          "board-game deckbuilders that reshuffle a hand-shuffled discard pile",
+          "total variation mixing-time plots"
+        ]
+      },
+      "design": {
+        "coreLoop": "A lazy dealer riffles a fresh deck k times (k hidden at first) and the visitor calls each next card from a tray of the unseen cards in original order, with every reveal acting as feedback. After the round the page shows hits against blind chance and a heads-tracking bot on the same shuffle, plus an exact likelihood table over k from the deck's rising-sequence count. A feint mode adds false shuffles and perfect faros to be called out, and a sweep plots the edge against the number of riffles beside the exact distance-from-random curve so the point where the edge dies is visible.",
+        "sophisticationHooks": [
+          "Exact math in the page: the riffle law by rising-sequence count, 52-card total variation distance via Eulerian numbers in BigInt, and a posterior over the number of riffles after each round, all checked against enumeration for small decks",
+          "Seeded Monte Carlo edge curve (hits versus 1 to 10 riffles) in a worker with stated sample size and standard errors, drawn beside the exact distance curve",
+          "Bot honesty: an exact Bayes guesser for one riffle and a labelled heads-tracking heuristic for more, never described as optimal beyond one riffle",
+          "Feint mode: false shuffle and perfect faro (order 8 for 52 cards) versus real riffles, judged by the rising-sequence statistic; challenge links carry the seed in the URL hash"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "In one morning the team builds: the riffle sampler and exact formulas with node self-checks (small-deck enumeration, the TV table, faro orders, known guess averages); the card tray and reveal UI with keyboard and touch; a canvas riffle animation; a worker for the edge curve; the round report with likelihood table; feint mode; an about panel with dated sources; hash state for seed and settings; light and dark; reduced motion. Cut: sound, overhand and pile shuffles, multiplayer, any deckbuilder clump panel if time is short, decks other than 52 and a 24-card phone mini deck.",
+        "risks": [
+          "The seven-shuffles figure depends on the distance measure; a search summary mentioned another analysis with an information-based minimum near six shuffles, which is unconfirmed and not shown as fact. The page names total variation as its measure and plots the whole curve instead of declaring one magic number.",
+          "The riffle model is idealised; the claim that it fits real human shuffling is reported in the literature but rests on one unattributed search summary, so the page labels the model as idealised and shows that claim only as reported.",
+          "Calling cards among 52 on a 360px screen needs a compact tray design (rainbow-ordered tiles with unseen cards lit); a 24-card phone mini deck is the fallback.",
+          "Beyond one riffle the guesser is a heuristic, not a solver: its averages are computed by the page and labelled as such, and the literature suggests the best strategy is not settled in general (single result).",
+          "Framing: math and stage-magic lore only, with no money, chips, real casino or brand names; the false-shuffle content stays at the level of general knowledge about why order survives a shuffle.",
+          "Unverified items stay flagged: the Dominion-style reshuffle rule rests on one wiki result and appears as context only."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "none",
+        "at": "2026-10-11",
+        "status": "unverified",
+        "notes": "not verified: the verifier did not run or its output was unusable"
+      },
+      "scores": {
+        "sophistication": 6.8,
+        "delight": 5.3,
+        "distinctness": 4.5,
+        "feasibility": 8.5,
+        "timeliness": 8,
+        "interestFit": 8,
+        "polishPotential": 7.3,
+        "safety": 7.7
+      },
+      "total": 67,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    }
+  ],
+  "chosenId": "i04",
+  "carryoverOutId": "i03",
+  "rejectedNotes": [
+    {
+      "title": "Breaking Changes",
+      "reason": "Rank 2, 68.8/100. Weakest on timeliness (4.2): The only date tie is one itch.io page (Patch Notes v2.0, 'Systems Offline', 9-12 Oct 2026) that also says theme TBA, ends tomorrow and is flagged unverified;... Best on delight (8.6)."
+    },
+    {
+      "title": "Shuffle Sharp",
+      "reason": "Rank 3, 67/100. Weakest on distinctness (4.5): Riffle-shuffle card calling is the stronger twin of i01 (same game mechanic, wildcard slot, identical tone set, bot benchmark, exact curve beside seeded Mont... Best on feasibility (8.5)."
+    },
+    {
+      "title": "Second Pick Wins",
+      "reason": "Rank 4, 67/100. Weakest on distinctness (3.6): Penney's game is the weaker twin of i10: same game mechanic, wildcard slot, identical playful/competitive/nerdy tone set, a bot opponent, a red-black deck mo... Best on feasibility (9.3)."
+    },
+    {
+      "title": "Dead Reckoning",
+      "reason": "Rank 5, 65.9/100. Weakest on timeliness (3.4): Slotted as currentEvents but the hook is tenuous: the same unconfirmed 'Systems Offline' jam page, an LD60 date (16-19 Oct) from one unopened page (ldj.am) a... Best on polishPotential (9.4)."
+    },
+    {
+      "title": "Pick Autopsy",
+      "reason": "Rank 6, 65.3/100. Weakest on distinctness (3.2): A deckbuilder draft Monte Carlo with Shapley attribution lands in the interest slot straight after yesterday's Balatro/deckbuilder build (not an owed slot) a... Best on interestFit (9)."
+    },
+    {
+      "title": "Opt-Out Odyssey",
+      "reason": "Rank 7, 63.1/100. Weakest on distinctness (4.2): The consent-banner gauntlet is a fingerprint twin of i03 (humor-satire/game/humor, same satirical/chaotic/playful set), reuses the mundane-epic scaffold of i... Best on delight (8.9)."
+    },
+    {
+      "title": "Siege Of The Sink",
+      "reason": "Rank 8, 71.5/100. Gated: feasibility 4.7 < 5. Weakest on feasibility (4.7): Needs about 12 hand-drawn outline items with soil patches, a ray-cast spray simulator, tap/drag/rotate placement on two racks, an annealing Chef-Bot worker a... Best on distinctness (8.3)."
+    },
+    {
+      "title": "Eyes Only",
+      "reason": "Rank 9, 70/100. Gated: feasibility 4.9 < 5. Weakest on interestFit (4.7): Colour-vision lens plates (Machado-style matrices, severity dial, cipher mode, 32-reader studio solver) are a well-made science puzzle, but the clinical perc... Best on distinctness (9)."
+    },
+    {
+      "title": "Moon Ferry",
+      "reason": "Rank 10, 64.3/100. Gated: feasibility 3.2 < 5; blocker flag (feasibility: Must not be built as pitched: eight interlocking files with two Workers and six hand...). Weakest on feasibility (3.2): Heaviest stack on the list: tide model, potential-flow stream relaxation in one Worker, time-dependent Dijkstra with isochrones in another, six hand-authored... Best on sophistication (9.3)."
+    }
+  ],
+  "rationale": "Orbital Knitwear (i04) scored 72.2/100, rank 1 of 10. Strongest on sophistication (8.8): Physics-first sim: two-body plus J2 with Newton-Kepler makes sun-synchronous and Molniya-style orbits emerge, with a repeat-ground-track finder, cos(latitude) true-area scoring and brute-force card... Weakest on interestFit (4.8): Cozy ground-track knitting sim (J2 drift, Landsat 233-orbit repeat, flat versus polar toggle) is solid science but has no tie to the owner's four loves and a thin competitive loop, so just under ne... The critic check was skipped.",
+  "selectedAt": "2026-10-11T10:19:48.665Z",
+  "winnerNotes": {
+    "vetoed": false,
+    "vetoedId": null,
+    "headline": "",
+    "risks": [],
+    "mustFixInSpec": [],
+    "judgeWarnings": [
+      "feasibility: If built, the spec must pin a coarse stylised land set (about a dozen polygons written from memory, since no data may be downloaded), keep OffscreenCanvas optional, unit-test the J2 and ISS figures, and cut polar view and Molniya first.",
+      "safety: Minor framing: hand-drawn coastlines and city dots with no national borders (avoids disputed-territory politics), NASA, USGS and ESA as plain-text citations without logos or imagery, Molniya figures shown 'as of 2026-10-11, per arXiv 2007.04341', and a note that tracks drift from real satellites."
+    ],
+    "unscoredMandatory": []
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "i04",
+      "title": "Orbital Knitwear",
+      "total": 72.2,
+      "eligible": true
+    },
+    {
+      "rank": 2,
+      "id": "i03",
+      "title": "Breaking Changes",
+      "total": 68.8,
+      "eligible": true
+    },
+    {
+      "rank": 3,
+      "id": "i10",
+      "title": "Shuffle Sharp",
+      "total": 67,
+      "eligible": true
+    },
+    {
+      "rank": 4,
+      "id": "i01",
+      "title": "Second Pick Wins",
+      "total": 67,
+      "eligible": true
+    },
+    {
+      "rank": 5,
+      "id": "i05",
+      "title": "Dead Reckoning",
+      "total": 65.9,
+      "eligible": true
+    },
+    {
+      "rank": 6,
+      "id": "i09",
+      "title": "Pick Autopsy",
+      "total": 65.3,
+      "eligible": true
+    },
+    {
+      "rank": 7,
+      "id": "i06",
+      "title": "Opt-Out Odyssey",
+      "total": 63.1,
+      "eligible": true
+    },
+    {
+      "rank": 8,
+      "id": "i07",
+      "title": "Siege Of The Sink",
+      "total": 71.5,
+      "eligible": false
+    },
+    {
+      "rank": 9,
+      "id": "i08",
+      "title": "Eyes Only",
+      "total": 70,
+      "eligible": false
+    },
+    {
+      "rank": 10,
+      "id": "i02",
+      "title": "Moon Ferry",
+      "total": 64.3,
+      "eligible": false
+    }
+  ]
+}

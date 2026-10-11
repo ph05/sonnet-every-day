@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "select",
+  "phase": "spec",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -17,23 +17,31 @@
       "at": "2026-10-11T09:47:28.716Z",
       "by": "primary",
       "note": "10 ideas, carryover included (verifier unavailable; watch extended twice)"
+    },
+    {
+      "phase": "select",
+      "at": "2026-10-11T10:20:35.151Z",
+      "by": "primary",
+      "note": "chose orbital-knitwear"
     }
   ],
   "attempts": {
     "preflight": 1,
     "ideate": 1,
-    "select": 1
+    "select": 1,
+    "spec": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-11T07:56:07.585Z",
     "ideate": "2026-10-11T07:56:52.904Z",
-    "select": "2026-10-11T09:47:39.067Z"
+    "select": "2026-10-11T09:47:39.067Z",
+    "spec": "2026-10-11T10:20:40.590Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T09:48:35.201Z",
+    "heartbeatAt": "2026-10-11T10:20:52.147Z",
     "phase": "select"
   },
   "directives": [
@@ -45,15 +53,23 @@
       "ack": true
     }
   ],
-  "chosen": null,
+  "chosen": {
+    "ideaId": "i04",
+    "slug": "orbital-knitwear",
+    "title": "Orbital Knitwear"
+  },
   "throttle": "all-in",
   "spend": {
-    "outputTokens": 1667764,
-    "agentCalls": 22,
+    "outputTokens": 2107108,
+    "agentCalls": 37,
     "byPhase": {
       "ideate": {
         "outputTokens": 1667764,
         "agentCalls": 22
+      },
+      "select": {
+        "outputTokens": 439344,
+        "agentCalls": 15
       }
     }
   },
@@ -125,25 +141,33 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: select attempt 1, due 2026-10-11T10:27:39.568Z (40 min: budget 30 + 10 margin)"
+    },
+    {
+      "at": "2026-10-11T10:20:41.161Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: spec attempt 1, due 2026-10-11T11:05:41.161Z (45 min: budget 35 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "select",
+    "phase": "spec",
     "attempt": 1,
-    "armedAt": "2026-10-11T09:47:39.568Z",
-    "dueAt": "2026-10-11T10:27:39.568Z",
+    "armedAt": "2026-10-11T10:20:41.161Z",
+    "dueAt": "2026-10-11T11:05:41.161Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01EEwSpNXi9w7PpmPzCj8aEw",
-    "workflowTask": "we07zlb2b",
+    "triggerId": "trig_01Eawh9DB3xaHbGsintfzsX3",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 30,
-    "delayMinutes": 40,
+    "budgetMinutes": 35,
+    "delayMinutes": 45,
     "clamped": null,
     "arms": {
       "ideate": 1,
-      "select": 1
+      "select": 1,
+      "spec": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T09:48:35.201Z"
+    "boundAt": "2026-10-11T10:20:52.147Z"
   }
 }
