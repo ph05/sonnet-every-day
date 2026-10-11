@@ -1,0 +1,1 @@
+- Jam Watch hints lean on Reddit threads and itch.io pages, but WebSearch rejects reddit.com as a domain filter and WebFetch cannot resolve itch.io or the other jam hosts, so a live jam theme can only rest on one search summary; the lens hints should name search-friendly hosts and the scout prompt should say early that a second independent source for a live theme is unlikely.

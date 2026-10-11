@@ -23,7 +23,7 @@
         "political": false
       },
       "research": {
-        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the same page also says theme TBA and a search of the host's own newsletter found only earlier editions, so the page shows the theme as reported, not confirmed. What is verified shapes the mechanic: a periscope stadimeter converts the angle a mast subtends into range once the mast height is known, using two images offset by a handwheel, and accuracy depends on knowing the height, so the game needs a recognition book and several looks. Bearings alone from a stationary observer give no unique track, so the final drill removes the stadimeter and makes the player move the boat to build a baseline. Dead reckoning projects a fix forward from speed, heading and time, which is what the aim point does. Ludum Dare 60 is listed for 16-19 October and two outlets report the series ending in 2028.",
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the same page also says theme TBA and a search for the host's own announcements found only earlier editions, so the page shows the theme as reported, not confirmed. What is verified shapes the mechanic: a periscope stadimeter converts the angle a mast subtends into range once the mast height is known, using two images offset by a handwheel, and accuracy depends on knowing the height, so the game needs a recognition book and several looks. Bearings alone from a stationary observer give no unique track, so the final drill removes the stadimeter and makes the player move the boat to build a baseline. Dead reckoning projects a fix forward from speed, heading and time, which is what the aim point does. Ludum Dare 60 is listed for 16-19 October and two outlets report the series ending in 2028.",
         "sources": [
           {
             "title": "Patch Notes v2.0 - itch.io",
@@ -31,7 +31,7 @@
             "date": "",
             "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
             "via": "search",
-            "note": "The hook. One site only and internally inconsistent; a search of the host's own newsletter found nothing on v2.0. Show the theme as reported, as of 2026-10-11, never as confirmed.",
+            "note": "The hook. One site only and internally inconsistent; a search for the host's own announcements (newsletter, earlier jam pages) found nothing on v2.0. Show the theme as reported, as of 2026-10-11, never as confirmed.",
             "verified": false
           },
           {
@@ -204,7 +204,7 @@
         "political": false
       },
       "research": {
-        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own newsletter only shows earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho used a plain Breakout-style game to show how layers of feedback transform feel, which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own announcements found by search only show earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho showed how layers of feedback transform the feel of a plain game (its demo is reported, without a clear attribution in the results, to be a simple Breakout clone), which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
         "sources": [
           {
             "title": "Patch Notes v2.0 - itch.io",
@@ -219,7 +219,7 @@
             "title": "indieformer.beehiiv.com",
             "url": "https://indieformer.beehiiv.com/p/showcase0725",
             "date": "",
-            "snippet": "Newsletter from the Patch Notes host, as summarized by search: it announced its first game jam in July 2025 and later described v1.0 as a 3-day sprint with over 480 games and 5000 votes.",
+            "snippet": "Newsletter edition from the Patch Notes host, as summarized by search: it announced the host's first game jam, Patch Notes, in July 2025.",
             "via": "search",
             "note": "Shows the series is real and recurring. Same organization as the jam page, so not independent confirmation of v2.0.",
             "verified": false
@@ -228,7 +228,7 @@
             "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
             "url": "https://itch.io/jam/patch-notes-v-1-1",
             "date": "",
-            "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; a summary of the host's newsletter gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
+            "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; search summaries gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
             "via": "search",
             "note": "Series context only; same organization as the other two entries.",
             "verified": false
@@ -239,16 +239,16 @@
             "date": "August 23, 2013",
             "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
             "via": "search",
-            "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and its Breakout-style demo; the venue differs from the next entry, so the page says 2012 only.",
+            "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and the tween-stretch-squeeze idea; the venue differs from the next entry, so the page says 2012 only. The Breakout-clone demo detail is reported, not confirmed.",
             "verified": true
           },
           {
             "title": "Juicy Break",
             "url": "https://crcdng.itch.io/juicy-break",
             "date": "",
-            "snippet": "Independent creator page for a Breakout-style juice demo that, per the search summary, credits the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+            "snippet": "Independent creator page titled Juicy Break that, per the search summary, refers to the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
             "via": "search",
-            "note": "Second, independent source for the talk and its Breakout-style demo. Search only.",
+            "note": "Second, independent source for the talk's existence and year. Search only; whether the page is itself a remake of the demo was not visible.",
             "verified": true
           },
           {
@@ -281,7 +281,7 @@
         ],
         "facts": [
           {
-            "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' used a plain Breakout-style game to show how tweening, stretching and extra feedback make a game feel alive.",
+            "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' showed how tweening, stretching and extra feedback make a plain game feel alive.",
             "sourceIndex": 3,
             "alsoIn": [4],
             "asOf": "2026-10-11"
