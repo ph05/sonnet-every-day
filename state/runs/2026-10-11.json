@@ -33,7 +33,7 @@
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T09:47:49.785Z",
+    "heartbeatAt": "2026-10-11T09:48:35.201Z",
     "phase": "select"
   },
   "directives": [
@@ -134,7 +134,7 @@
     "dueAt": "2026-10-11T10:27:39.568Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "triggerId": "trig_01EEwSpNXi9w7PpmPzCj8aEw",
-    "workflowTask": null,
+    "workflowTask": "we07zlb2b",
     "role": "primary",
     "budgetMinutes": 30,
     "delayMinutes": 40,
@@ -144,6 +144,6 @@
       "select": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T09:47:49.785Z"
+    "boundAt": "2026-10-11T09:48:35.201Z"
   }
 }
