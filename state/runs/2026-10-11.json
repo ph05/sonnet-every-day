@@ -4,7 +4,7 @@
   "status": "published",
   "targetTier": 2,
   "tier": 2,
-  "phase": "kaizen",
+  "phase": "done",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -53,6 +53,18 @@
       "at": "2026-10-11T13:10:41.313Z",
       "by": "primary",
       "note": "packaged orbital-knitwear tier 2 (qa S1 false positive downgraded; revise skipped)"
+    },
+    {
+      "phase": "kaizen",
+      "at": "2026-10-11T14:30:33.058Z",
+      "by": "primary",
+      "note": "4 applied, 0 rejected, 0 proposed, 5 skipped (phase-time)"
+    },
+    {
+      "phase": "done",
+      "at": "2026-10-11T14:30:33.058Z",
+      "by": "primary",
+      "note": "kaizen closed the day"
     }
   ],
   "attempts": {
@@ -77,13 +89,14 @@
     "revise": "2026-10-11T13:08:45.702Z",
     "package": "2026-10-11T13:08:46.245Z",
     "publish": "2026-10-11T13:11:09.004Z",
-    "kaizen": "2026-10-11T13:11:29.574Z"
+    "kaizen": "2026-10-11T13:11:29.574Z",
+    "done": "2026-10-11T14:30:33.058Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T13:11:42.509Z",
+    "heartbeatAt": "2026-10-11T14:30:33.058Z",
     "phase": "kaizen"
   },
   "directives": [
@@ -102,8 +115,8 @@
   },
   "throttle": "all-in",
   "spend": {
-    "outputTokens": 3626973,
-    "agentCalls": 64,
+    "outputTokens": 3866749,
+    "agentCalls": 93,
     "byPhase": {
       "ideate": {
         "outputTokens": 1667764,
@@ -128,6 +141,10 @@
       "package": {
         "outputTokens": 20000,
         "agentCalls": 0
+      },
+      "kaizen": {
+        "outputTokens": 239776,
+        "agentCalls": 29
       }
     }
   },

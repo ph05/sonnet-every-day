@@ -1,8 +1,10 @@
 {
   "schema": 1,
   "skipped": [
-    "critic",
-    "clerk",
-    "pulse"
+    "jester",
+    "architect",
+    "artisan",
+    "engineer",
+    "cards"
   ]
 }
