@@ -1,0 +1,1 @@
+- Clerk 2026-10-11: all 7 source links answered 000 from the sandbox (network looks restricted, not the links); reported as unreachable-link, not retried.
