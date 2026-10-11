@@ -108,7 +108,7 @@
         "ops/rubrics/quality.md",
         "ops/workflows/_selfcheck.mjs"
       ],
-      "sha": null,
+      "sha": "80ebbdbfe3b0fb928d55efb2416630f85ec53e85",
       "status": "applied",
       "linesChanged": 7,
       "question": "Proposal for protected browser-check.mjs: assert a wheel over the output moves scrollY and the first control shares 390x844 with it? Also 7 of 16 raw scout dossiers passed the 12-source cap and 11 of 98 facts lost their source: keep cited sources first?",
