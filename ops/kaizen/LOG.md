@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-11 ideate on 2 slots (args maxAgents 2, phaseBudgetMinutes 75): 8 scouts at 2 candidates each finished about 105 min in (dossier mtimes 08:23 to 09:43), so timeFor(4) was false and every verify call returned null. All 10 shortlisted ideas are unverified, yet the shortlist note, run phase note and report all say verifier unavailable, and skipStage was never called for verify. Now it is listed as verify r0 with minutes used, notes and log say phase budget spent; a real outage keeps the old wording. New selfcheck test fails without the fix.
 - category: prevention · lines changed: 20 · files: ops/workflows/_selfcheck.mjs, ops/workflows/ideate.js
+- commit: 8fd8a73222
 - question: On 2 slots the 8 scouts at 2 candidates took about 105 of 75 min and 7 of 17 survivors were surplus: should the second candidate need ceil(8 / slots) waves of MINUTES.twoCandidates (so 1 candidate when they cannot fit) while the refill stays allowed, so verification still runs?
 
 ## 2026-10-11 · pulse · applied · ideate: tell scouts the 12-source cap so facts do not cite sources the sanitizer cuts

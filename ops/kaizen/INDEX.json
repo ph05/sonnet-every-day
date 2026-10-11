@@ -159,7 +159,7 @@
         "ops/workflows/_selfcheck.mjs",
         "ops/workflows/ideate.js"
       ],
-      "sha": null,
+      "sha": "8fd8a73222d360d067c6e4f70907973be25be074",
       "status": "applied",
       "linesChanged": 20,
       "question": "On 2 slots the 8 scouts at 2 candidates took about 105 of 75 min and 7 of 17 survivors were surplus: should the second candidate need ceil(8 / slots) waves of MINUTES.twoCandidates (so 1 candidate when they cannot fit) while the refill stays allowed, so verification still runs?",
