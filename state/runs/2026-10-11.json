@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "date": "2026-10-11",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 2,
-  "tier": null,
-  "phase": "publish",
+  "tier": 2,
+  "phase": "kaizen",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -63,7 +63,8 @@
     "build": 1,
     "qa": 1,
     "revise": 1,
-    "package": 1
+    "package": 1,
+    "publish": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-11T07:56:07.585Z",
@@ -74,13 +75,14 @@
     "qa": "2026-10-11T12:28:08.953Z",
     "revise": "2026-10-11T13:08:45.702Z",
     "package": "2026-10-11T13:08:46.245Z",
-    "publish": "2026-10-11T13:10:41.313Z"
+    "publish": "2026-10-11T13:11:09.004Z",
+    "kaizen": "2026-10-11T13:11:09.812Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T13:10:41.313Z",
+    "heartbeatAt": "2026-10-11T13:11:09.004Z",
     "phase": "select"
   },
   "directives": [
@@ -128,8 +130,8 @@
       }
     }
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-11T13:11:09.812Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-11-orbital-knitwear/",
   "createdAt": "2026-10-11T07:55:42.028Z",
   "events": [
     {
@@ -243,6 +245,12 @@
       "by": "primary",
       "kind": "note",
       "msg": "qa S1 d01 was a proofread false positive on the draft spec file; downgraded to S4 in qa report; revise skipped (no time); shipping tier 2 with S2 layout issues as known issues"
+    },
+    {
+      "at": "2026-10-11T13:11:09.812Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "published at tier 2"
     }
   ],
   "watch": {
