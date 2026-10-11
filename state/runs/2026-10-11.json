@@ -25,7 +25,7 @@
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T07:57:56.101Z"
+    "heartbeatAt": "2026-10-11T09:22:46.097Z"
   },
   "directives": [],
   "chosen": null,
@@ -76,15 +76,22 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: ideate attempt 1, due 2026-10-11T09:21:53.400Z (85 min: budget 75 + 10 margin)"
+    },
+    {
+      "at": "2026-10-11T09:22:38.250Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-extended",
+      "msg": "phase watch extended: ideate attempt 1 was 0.7 min past 2026-10-11T09:21:53.400Z but a file under work/2026-10-11 changed 0.3 min ago; due 2026-10-11T09:37:38.250Z now (extension 1 of 2)"
     }
   ],
   "watch": {
     "phase": "ideate",
     "attempt": 1,
     "armedAt": "2026-10-11T07:56:53.400Z",
-    "dueAt": "2026-10-11T09:21:53.400Z",
+    "dueAt": "2026-10-11T09:37:38.250Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01FToJKroe9VBAb2F2wMfVyw",
+    "triggerId": "trig_01FcTDUMYJMFekqDfJf752aK",
     "workflowTask": "wf677a9my",
     "role": "primary",
     "budgetMinutes": 75,
@@ -94,6 +101,8 @@
       "ideate": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T07:57:56.101Z"
+    "boundAt": "2026-10-11T09:22:46.097Z",
+    "extensions": 1,
+    "extendedAt": "2026-10-11T09:22:38.250Z"
   }
 }
