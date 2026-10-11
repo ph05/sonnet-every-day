@@ -1,0 +1,402 @@
+{
+  "schema": 1,
+  "date": "2026-10-11",
+  "revision": 0,
+  "tier": 2,
+  "verdict": "revise",
+  "counts": {
+    "S1": 0,
+    "S2": 4,
+    "S3": 11,
+    "S4": 12
+  },
+  "browser": {
+    "ok": true,
+    "error": null
+  },
+  "degraded": false,
+  "degradedWhy": [],
+  "unreviewed": false,
+  "summary": "Revise. Orbital Knitwear is correct and robust: 34 of 34 in-page physics checks pass in Chromium, an independent Monte Carlo agrees with the area-weighted planet share within 0.5 points, 25 hostile hashes, a 400-orbit engine fuzz, about 2,600 extra seeded monkey actions and an injected fault were all handled, there are zero console or page errors and no non-local request, the CSP is identical to the shell, and the validator is clean (ownLoc 5,016). What holds it back is layout and information architecture, not code. On phones the map can never be on screen together with a slider (d01). On 1280x800 to 1366x768 laptops the pinned left column is a hidden scroller that crops the map under the mouse wheel and hides the Repeat and Sun-synchronous readouts (d02). On desktop the card goal and result sit about 1,600 px above the card list (d03). All three are CSS and DOM moves in artisan files...",
+  "scores": [
+    {
+      "dimension": "Core loop and depth",
+      "score": 8.5,
+      "note": "J2 two-body physics, swath coverage, repeat-height finder, Snap and Tune helpers, three needles and eight par-scored cards interact; minute ten still teaches (the 233-in-16 weave, dawn-dusk orbits). Held back because the loop's feedback sits off screen on phones and on the desktop card flow (d01, d03)."
+    },
+    {
+      "dimension": "Correctness and robustness",
+      "score": 9,
+      "note": "34 of 34 in-page checks; Monte Carlo matches planet share within 0.5 points; 400 random orbits and 3,000 fuzzed hashes gave no NaN or throw; 25 hostile hashes degrade with a toast; 2,574 monkey actions and a forced fault recover via Frog it. Only label nits (d04, d07)."
+    },
+    {
+      "dimension": "Visual design",
+      "score": 9,
+      "note": "Linen cloth, wool-stitch texture, embroidered coastlines, Fair-Isle polar bands, glow, an equal-area polar view where a polar orbit becomes a radial star; one token set in light and dark; the thumbnail sells it. Unpinned, the left column is far shorter than the 3,200 px rail."
+    },
+    {
+      "dimension": "Interaction and feel",
+      "score": 8,
+      "note": "Every action answers (self-narrating toasts, ghost track, flash on changed outputs, unfurl banner, hover and long-press stitch readout with true area); mouse, touch and keyboard drag twins work in flat and polar. Loses points for the wheel crop (d02), silent restart and inert controls (d06) and off-screen goal feedback (d03)."
+    },
+    {
+      "dimension": "Responsiveness and accessibility",
+      "score": 7,
+      "note": "No overflow at 11 widths from 320 to 1920, 44 px targets, minimum contrast 5.74, sensible tab order, aria-valuetext on all sliders, live regions, reduced motion honoured, DOM audit clean. But the phone layout hides the map while tuning (d01), the reduced-motion announcement is wrong (d05), shortcuts cannot be switched off (d11)."
+    },
+    {
+      "dimension": "Copy, voice and honesty",
+      "score": 9,
+      "note": "Cozy, dry knitting voice with specific labels and units; the About panel separates sourced, computed here, reported unconfirmed and made up, dates its figures and admits not every page was opened. Nits: needle-limit toast (d04), bare hostname link text (d10), Day 4 beside Day 3 of 3 (d07)."
+    },
+    {
+      "dimension": "Performance and offline integrity",
+      "score": 9,
+      "note": "Zero non-local requests, CSP identical to the shell, 217 KB raw (about 65 KB gzipped), JS about 10 percent of a frame, 60 fps at desktop and phone sizes, slider input handler under 4 ms, no long task above 84 ms. About 8 percent over the spec's 200 KB budget (d09)."
+    },
+    {
+      "dimension": "First impression and shareability",
+      "score": 9,
+      "note": "Opens already knitted with Planet and Map chips and a one-line hook; the 1200x630 thumbnail generated on a scratch copy shows title, wool map and chips at their best; Copy link and the URL hash restore the exact setup after a reload."
+    }
+  ],
+  "highlights": [
+    "The physics holds up against the sources it cites: the engine reproduces sun-synchronous tilt 97.79 and 98.19 degrees at 600 and 700 km, 92.9 min at 420 km, and the 233-orbits-in-16-days repeat at 699.6 km against Landsat's 705 km (the About panel states the 0.8 percent gap), passes 34 of 34 checks in the browser, and an independent Monte Carlo agrees with the area-weighted coverage within 0.5 points.",
+    "The wool renderer is the page's identity: knit-stitch texture, fresh-stitch glow, embroidered dashed coastlines, Fair-Isle bands at the poles, and an equal-area polar view where a polar orbit turns into a radial star; crisp in light and dark, JS about 10 percent of a frame.",
+    "The central joke is playable: Planet versus Map twin meters, a flat and polar toggle, and eight cards whose pars replay exactly in the page (all eight re-verified in the browser, from First Swatch 97.4 to The Map Lies 13.7), with helpers that narrate themselves, for example 'Snapped to 699.6 km: 233 orbits in 16 days, tracks 172 km apart.'",
+    "Hostile-input robustness: 25 malformed hashes, 400 random orbits, 3,000 fuzzed hashes, 2,574 seeded monkey actions, a forced fault that shows 'The yarn snapped' and recovers with Frog it, and denied localStorage or clipboard that degrade to a toast.",
+    "The About panel is a model of honest making-of copy: sourced facts, 'Computed here', 'Reported, unconfirmed' for the single-source Molniya claim, 'Made up or hand-made', an admission that the team did not open every page, and a live physics self-check.",
+    "Input craft: drag-to-set-longitude works with mouse, touch and (as an angle about the pole) in the polar view, a long-press shows lat/lon, pass count and the stitch's true area, and every action has a keyboard or button twin with a clean tab order and ARIA audit."
+  ],
+  "exercisedInBrowser": true,
+  "defects": [
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "home/user/sonnet-every-day/work/2026-10-11/spec/PROJECT.json",
+      "title": "placeholder: 'stats': { 'files': 0, 'bytes': 0, 'ownLoc': 0 }",
+      "detail": "placeholder: 'stats': { 'files': 0, 'bytes': 0, 'ownLoc': 0 }",
+      "evidence": "Search home/user/sonnet-every-day/work/2026-10-11/spec/PROJECT.json for the text.",
+      "suggestedFix": "Zero values are unfilled draft placeholders. Fill them from the built site at packaging time.",
+      "id": "d01",
+      "operatorNote": "false positive: the proofread flagged the draft spec/PROJECT.json, which is not shipped; the packaged project.json carries the validator stats (filled at package time)"
+    },
+    {
+      "source": "critic",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "style.css",
+      "title": "Phone map scrolls out of view while tuning",
+      "detail": "Below 768 px the 2:1 map is the first block and every control sits far under it, so the page's central loop (drag a slider, watch the ribbons re-knit, read the Planet and Map chips and the ghost track) cannot be seen on a phone: the map and any slider are never on screen together. A visitor drags Height and only a number changes while the knitting happens about 900 px above. The architect logged this as S3 (no sticky mini-map), but it is the headline interaction on the device shared links mostly open on, so the page ships worse without a fix. Portrait tablets (768 to 1023 px) share the layout and the problem after the first slider.",
+      "evidence": "390x844, DPR 2, touch, light, default scene. Page y positions from getBoundingClientRect: #stage 218-397 (179 px tall), #ctl-alt 1275, #ctl-inc 1409, #ctl-swath 1904, #readouts 2357, page height 2926. To get the Height slider on screen scrollY must be at least 475, which puts the stage bottom 78 px above the viewport top; with the slider centred (scrollY 891) the map is 494 px off the top. Dragging Height changes only the '700 km' output and no map is visible. Expected: the map stays visible ...",
+      "suggestedFix": "In style.css add the three-rule block above for max-width 767px (stage-area becomes display:contents so the sticky stage's containing block is .kn-grid, the whole page). A pinned stage makes revealStage() a no-op, so in js/ui.js (revealStage, around line 808) scroll the .kn-goal panel into view on narrow layouts and give .kn-goal a scroll-margin-top equal to the stage height plus 8 px; picking a card from the Cards tab then still lands on the goal text, as it does today. Optional for 768-1023...",
+      "id": "d02"
+    },
+    {
+      "source": "critic",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "style.css",
+      "title": "Pinned column's inner scroller crops the map",
+      "detail": "From 1024 px wide and 600 px tall the left column is position:sticky with max-height:calc(100dvh - 24px) and overflow:hidden auto (style.css lines 126-139). Its content (stage, caption, playback bar and nine readout rows) is 883-941 px tall, so on every window shorter than about 960 px, which covers all common laptops, it becomes a hidden scroller. A mouse wheel over the map scrolls that scroller before the page: the map is chopped from the top behind a hard edge (the Planet and Map chips and the north polar band vanish), the page does not move, and the crop persists while the column stays pinned. Overlay scrollbars give no cue. The rows below the clip include Repeat, Farthest latitude an...",
+      "evidence": "Light, default scene, pointer at (400,400) over the map, Playwright mouse.wheel(0,100) steps 400 ms apart. 1366x768: step 1 gives window.scrollY 0 and .kn-left.scrollTop 120; step 2 gives scrollTop 178 (178 of the 428 px map, 42 percent, cropped, chips gone) with scrollY still 0; step 3 finally scrolls the page (scrollY 120) while the map stays cropped (screenshot /home/user/sonnet-every-day/work/2026-10-11/qa/critic-tmp/shots/l1366-wheel2.png). 1280x800: first step scrollTop 107, scrollY 0. ...",
+      "suggestedFix": "1) index.html: move the section with id readouts out of .kn-left into .kn-rail directly after #panel-orbit (phones keep order:5; at 768-1023 give it grid-column:1 / -1 so it stays full width under the stage). 2) style.css 1024+ pinned rule: keep position:sticky; top:12px; align-self:start but delete max-height, overflow, padding, margin and scrollbar-width, and raise the query to (min-height:700px). The pinned column becomes stage, caption and playback (about 626 px), no inner scroller exists...",
+      "id": "d03"
+    },
+    {
+      "source": "critic",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Card goal and result sit far above card list",
+      "detail": "At 1024 px and wider the rail starts with the goal panel (goal text, pass line, progress bar, result, Try again, Next card, Peek at par) and the Pattern cards list comes about 1,600 px lower, after the needles, seven sliders and four buttons. Picking a card keeps the page where it is (the map is already pinned, so revealStage() does nothing), so the visitor sees the map restart and a highlighted list item and, at the end, only a toast; the goal, pass line, hint and buttons are off screen. The list items carry just title, blurb and days, needles, par, so a card can be picked without ever reading what it asks. The eight cards are the puzzle layer, so this is a visible flaw in the core loop ...",
+      "evidence": "1280x800, light, default scene. Scroll #panel-cards into view (scrollY about 1829) and click the card Past the Station: #h-goal getBoundingClientRect().top is -1589 px. After the 3-day run the only visible text is the toast '80 points short of a pass. Pull a loose thread and try again.' with no hint; the goal 'Cover 85% of the area beyond 51.6 degrees latitude in 3 days (swath fixed at 300 km).' and the result box are never on screen unless the visitor scrolls up (screenshot /home/user/sonnet...",
+      "suggestedFix": "Smallest: in js/ui.js, where the app:state handler calls revealStage() for a user-picked card, on layouts of 768 px and up also scrollIntoView the .kn-goal panel (block start, behavior auto under reduced motion) when its top is above the viewport, and do the same the first time renderResult() shows a finished run. Better: in index.html move the .kn-goal section to sit directly above .kn-side (the cards) inside .kn-rail, keep order:2 for phones, give .kn-goal order:-1 and .kn-left order:-2 in ...",
+      "id": "d04"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "source-mismatch: 'The International Space Station flies at 51.6 degrees inclination ... at roughl...",
+      "detail": "source-mismatch: 'The International Space Station flies at 51.6 degrees inclination ... at roughly 370 to 460 km in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial).'",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "The research assigns the 370 to 460 km altitude range to the ESA table, not the NASA tutorial. Change the attribution to '(NASA tutorial; altitude range from ESA)'.",
+      "id": "d05"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Needle-limit toast names the wrong limit",
+      "detail": "main.js emits the maxSats toast whenever add-sat is refused, but the copy always says three needles. Seven of the eight cards allow one needle and Two-Needle Cable allows two, so the toast contradicts the card the visitor is on.",
+      "evidence": "Load #c=first-swatch (maxSats 1) and press N: toast reads 'Three needles is the most this frame holds.' Load #c=two-needle-cable (maxSats 2) and press N: the same text. Expected: the card's real limit.",
+      "suggestedFix": "In js/ui.js, where TOASTS.maxSats is rendered, pick the text from S.activeCard.maxSats (already delivered by app:cards): 1 gives 'This card knits with one needle.', 2 gives 'This card holds two needles.', otherwise the existing three-needle line. No main.js change is needed.",
+      "id": "d06"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Reduced-motion screen readers told page is knitting",
+      "detail": "On status ready the announcer always says the satellites are already knitting and to press Space to pause. With prefers-reduced-motion the page boots paused, so screen-reader users (who often also set reduced motion) are told something false and are not told to start it.",
+      "evidence": "Chromium with reducedMotion 'reduce', load the page: #sr-announcer text is 'Ready. The satellites are already knitting; press Space to pause.' while window.__sed.state().playing is false and the button reads Play. Expected: a message that matches the paused state.",
+      "suggestedFix": "In the app:status ready branch of js/ui.js (around line 587) choose the text by the reduced flag: when reduced, announce 'Ready. The map is paused at day 3; press Space or Play to start knitting.'",
+      "id": "d07"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "engineer",
+      "file": "js/main.js",
+      "title": "Free knit restarts silently; +1 day goes inert",
+      "detail": "Two controls misbehave quietly. Clicking Free knit while already in free mode (it shows aria-pressed true) runs pickCard('free'), which restarts the run with no toast, discarding the progress. And once a run is finished (a card horizon or day 365) stepDays() returns early, so +1 day and the D key do nothing while the button still looks live.",
+      "evidence": "1280x900, hash #sp=4, wait until day 13: click #btn-free: window.__sed.metrics().day goes 13.27 to 3 and no toast appears. Finish any card or the 365-day free run, click #btn-step or press D: day stays at its final value and nothing is announced.",
+      "suggestedFix": "In js/main.js pickCard, return early when id is 'free' and state.card is already 'free'. In stepDays, when finished, either restart like togglePlay does or emit a state so js/ui.js renderPlay can set aria-disabled on #btn-step (and ignore the D key) while isFinished().",
+      "id": "d08"
+    },
+    {
+      "source": "critic",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Clock says Day 4 beside 'Day 3 of 3'",
+      "detail": "The clock counts floor(day)+1 with no clamp while the goal line clamps to the horizon, so every finished card shows two different day numbers a few lines apart, and a finished free run shows Day 366.",
+      "evidence": "Finish First Swatch (3 days) at 1280x900: #clock reads 'Day 4 · 12:00 UTC' while #goal-days reads 'Day 3 of 3'. Free knit to the end: #clock 'Day 366 · 12:00 UTC' versus 'Day 365 of 365'. Expected: one consistent count.",
+      "suggestedFix": "In renderTick (js/ui.js around line 511) clamp the clock's day number to the horizon with the same Math.min used in renderProgress, and when isFinished() show 'Day 3 done' style wording (for example 'Day ' + total + ' done · ' + hhmm + ' UTC') instead of rolling into the next day.",
+      "id": "d09"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/geodata.js",
+      "title": "typo: { name: 'Sao Paulo', lat: -23.55, lon: -46.63 }",
+      "detail": "typo: { name: 'Sao Paulo', lat: -23.55, lon: -46.63 }",
+      "evidence": "Search js/geodata.js for the text.",
+      "suggestedFix": "Change 'Sao Paulo' to 'São Paulo' (city label drawn on the map).",
+      "id": "d10"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "inconsistency: 'tracks about 24.7 degrees (2752 km) apart at the equator' (About, Computed here/s...",
+      "detail": "inconsistency: 'tracks about 24.7 degrees (2752 km) apart at the equator' (About, Computed here/sources list), next to '233 evenly spaced tracks put neighbours about 172 km apart'",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "The 24.7 degree (2752 km) figure is the spacing between consecutive days' tracks in the 16-day cycle; adjacent passes are about 172 km apart. Reword to 'consecutive days' tracks about 24.7 degrees (2752 km) apart at the equator' in both places, or drop the figure, so 'tracks' does not mean two different spacings.",
+      "id": "d11"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "inconsistency: 'The team ran these checks while building the page; they are not run in this brows...",
+      "detail": "inconsistency: 'The team ran these checks while building the page; they are not run in this browser.' (shown 8 s after opening About if the checks have not returned)",
+      "evidence": "Search js/ui.js for the text.",
+      "suggestedFix": "Contradicts the About line 'The model checks itself against the figures above the first time you open this panel.' Reword the fallback to something like 'The checks did not finish in this browser; the team ran them while building the page.'",
+      "id": "d12"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "inconsistency: <a href='https://pubs.usgs.gov/fs/2003/0023/report.pdf' ...>pubs.usgs.gov</a> (als...",
+      "detail": "inconsistency: <a href='https://pubs.usgs.gov/fs/2003/0023/report.pdf' ...>pubs.usgs.gov</a> (also 'title': 'pubs.usgs.gov' in spec/PROJECT.json sources)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Link text is only a bare domain, unlike the other six entries. Use the fact sheet's own title; the research does not record it, so open the page once or label it 'USGS Fact Sheet 2003-0023' from the URL path.",
+      "id": "d13"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "engineer",
+      "file": "js/cards.js",
+      "title": "inconsistency: goal: 'Cover 95% of the planet in 30 days while your local time at the node drifts...",
+      "detail": "inconsistency: goal: 'Cover 95% of the planet in 30 days while your local time at the node drifts less than 0.25 hours (swath fixed at 185 km).'",
+      "evidence": "Search js/cards.js for the text.",
+      "suggestedFix": "passText says 'drifts 0.25 hours or less' and the code passes at |drift| <= 0.25. Change the goal to 'drifts no more than 0.25 hours'.",
+      "id": "d14"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "engineer",
+      "file": "js/cards.js",
+      "title": "inconsistency: hint: 'Stretch the orbit (eccentricity above 0.7), tilt it to 63.4 degrees, and po...",
+      "detail": "inconsistency: hint: 'Stretch the orbit (eccentricity above 0.7), tilt it to 63.4 degrees, and point the perigee south (argument 270).'",
+      "evidence": "Search js/cards.js for the text.",
+      "suggestedFix": "The par setup for this card is needle(200, 90, 0, 185, 0.8, 272): tilt 90 and argument 272, so following the hint does not reproduce par. Either match the hint to the par or the par to the hint. The 63.4 degree figure comes from the Molniya source, which is verified:false, so it also needs a label if kept.",
+      "id": "d15"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "jester",
+      "file": "home/user/sonnet-every-day/work/2026-10-11/spec/PROJECT.json",
+      "title": "inconsistency: 'thumb': 'thumb.png'",
+      "detail": "inconsistency: 'thumb': 'thumb.png'",
+      "evidence": "Search home/user/sonnet-every-day/work/2026-10-11/spec/PROJECT.json for the text.",
+      "suggestedFix": "No thumb.png exists in /home/user/sonnet-every-day/work/2026-10-11/build/site/. Create it before packaging or remove the reference.",
+      "id": "d16"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "engineer",
+      "file": "js/orbit.js",
+      "title": "Default scene is fully knit within eight days",
+      "detail": "With the two default needles (185 km and 400 km swaths) the planet is 94.7 percent covered on day 4, 98.9 percent on day 8 and 99.3 percent from day 15, so at 1 day per second the autoplay has nothing left to knit after about eight seconds, and the thumbnail is dense wool rather than half-knit. The glow and moving needles keep it alive, so this is polish only.",
+      "evidence": "Node engine run of defaultState() sats: planet 50.6 percent day 1, 75.6 day 2, 88.7 day 3, 94.7 day 4, 98.9 day 8, 99.1 day 10, 99.3 day 15 and flat after; map share levels at 92.2 percent.",
+      "suggestedFix": "Optional: narrow DEFAULT_SATS[1].swath (for example 150 km) or start with one needle so the opening minute keeps visibly knitting; re-check that the thumbnail still reads.",
+      "id": "d17"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Payload 217 KB against 200 KB spec budget",
+      "detail": "SPEC section 9 asks for under 200 KB of JS, CSS and HTML; the build is 217,048 bytes raw (index.html 33,305, style.css 24,418, js 159,325; about 65 KB gzipped per the architect). The architect knowingly left it. No visitor-visible effect: first contentful paint is 70-150 ms.",
+      "evidence": "wc -c on the 11 site files totals 217,048 bytes; js/ui.js is the largest at 43,793.",
+      "suggestedFix": "Either ratify the budget at 220 KB in the spec or trim about 17 KB (the unused i-info symbol, the shell token block in index.html that style.css fully overrides, comment lines). Not worth a revise loop.",
+      "id": "d18"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Source link text is a bare hostname",
+      "detail": "The last source in the About panel is linked with the text pubs.usgs.gov, copied from the dossier title, instead of a readable title.",
+      "evidence": "index.html line 449: the anchor for https://pubs.usgs.gov/fs/2003/0023/report.pdf has the text 'pubs.usgs.gov'; package/project.json repeats it.",
+      "suggestedFix": "Use 'USGS fact sheet (pubs.usgs.gov)' in the About list and in package/project.json sources.",
+      "id": "d19"
+    },
+    {
+      "source": "critic",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Single-letter shortcuts cannot be switched off",
+      "detail": "R, X, N, M, T, V, S, U, P, L and the digits are global keydown shortcuts with no off switch or remap, which WCAG 2.1.4 asks for; speech-input users can trigger Frog it or Remove needle by accident. The spec mandated the shortcuts and they are an asset for keyboard users, so this is a conformance nit.",
+      "evidence": "Any page focus other than a text field: pressing X removes the selected needle, R resets the run. No setting exists.",
+      "suggestedFix": "Add a Keyboard shortcuts on/off checkbox beside the Keyboard list in About, store it with the prefs in js/state.js, and have onKey in js/ui.js skip letter and digit shortcuts when it is off (Space, Escape and ? could stay).",
+      "id": "d20"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf returne...",
+      "detail": "unreachable-link: https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here because the sandbox looks restricted.",
+      "id": "d21"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://resources.skill-lync.com/branches/aerospace-engineering/questions/space...",
+      "detail": "unreachable-link: https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d22"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm returned 000",
+      "detail": "unreachable-link: https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d23"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://www.nasa.gov/international-space-station-frequently-asked-questions/ re...",
+      "detail": "unreachable-link: https://www.nasa.gov/international-space-station-frequently-asked-questions/ returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d24"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://www.esa.int/esapub/sp/sp1201/a3.htm returned 000",
+      "detail": "unreachable-link: https://www.esa.int/esapub/sp/sp1201/a3.htm returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d25"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://landsat.gsfc.nasa.gov/about/worldwide-reference-system returned 000",
+      "detail": "unreachable-link: https://landsat.gsfc.nasa.gov/about/worldwide-reference-system returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d26"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "jester",
+      "file": "index.html (About sources) and spec/PROJECT.json",
+      "title": "unreachable-link: https://pubs.usgs.gov/fs/2003/0023/report.pdf returned 000",
+      "detail": "unreachable-link: https://pubs.usgs.gov/fs/2003/0023/report.pdf returned 000",
+      "evidence": "Search index.html (About sources) and spec/PROJECT.json for the text.",
+      "suggestedFix": "Re-check from a network that can reach the host; not retried here.",
+      "id": "d27"
+    }
+  ],
+  "browserCheck": {
+    "ran": true,
+    "errors": [],
+    "warnings": [],
+    "shots": [
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/desktop-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/desktop-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/mobile-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/mobile-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/mobile-320.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/reduced-motion.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/monkey-desktop-end.png",
+      "/home/user/sonnet-every-day/work/2026-10-11/qa/run/shots/monkey-mobile-end.png"
+    ],
+    "reportPath": "work/2026-10-11/qa/run/report.json"
+  },
+  "validate": {
+    "ran": true,
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "note": ""
+  },
+  "proofread": {
+    "linksChecked": 7,
+    "linksOk": 0,
+    "issues": 16,
+    "notes": "Grep found no leftover placeholders in the site; all 7 source URLs (same set in About and PROJECT.json) answered 000, so the sandbox network looks restricted and I did not retry; the one-line notes entry is in work/2026-10-11/kaizen/notes-clerk.md. Source claims match research.sources verified:true; the Molniya figures are attributed as unconfirmed, as the research requires. No injection attempts seen."
+  },
+  "operatorNote": "primary: d01 downgraded S1 to S4 as a false positive; revise skipped by the planner (no time before the 09:30 grace); S2 layout defects d02 to d04 ship as known issues"
+}

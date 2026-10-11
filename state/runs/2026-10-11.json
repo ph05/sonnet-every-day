@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "qa",
+  "phase": "publish",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -35,6 +35,24 @@
       "at": "2026-10-11T12:27:57.157Z",
       "by": "primary",
       "note": "build ok, trial validate ok (ownLoc 5016)"
+    },
+    {
+      "phase": "qa",
+      "at": "2026-10-11T13:08:45.702Z",
+      "by": "primary",
+      "note": "qa verdict revise S1=1 S2=4"
+    },
+    {
+      "phase": "revise",
+      "at": "2026-10-11T13:08:46.245Z",
+      "by": "primary",
+      "note": "skipped: planner: 0 min left, 32 needed for revise and package"
+    },
+    {
+      "phase": "package",
+      "at": "2026-10-11T13:10:41.313Z",
+      "by": "primary",
+      "note": "packaged orbital-knitwear tier 2 (qa S1 false positive downgraded; revise skipped)"
     }
   ],
   "attempts": {
@@ -43,7 +61,9 @@
     "select": 1,
     "spec": 1,
     "build": 1,
-    "qa": 1
+    "qa": 1,
+    "revise": 1,
+    "package": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-11T07:56:07.585Z",
@@ -51,13 +71,16 @@
     "select": "2026-10-11T09:47:39.067Z",
     "spec": "2026-10-11T10:20:40.590Z",
     "build": "2026-10-11T10:47:38.359Z",
-    "qa": "2026-10-11T12:28:08.953Z"
+    "qa": "2026-10-11T12:28:08.953Z",
+    "revise": "2026-10-11T13:08:45.702Z",
+    "package": "2026-10-11T13:08:46.245Z",
+    "publish": "2026-10-11T13:10:41.313Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T13:00:22.670Z",
+    "heartbeatAt": "2026-10-11T13:10:41.313Z",
     "phase": "select"
   },
   "directives": [
@@ -76,8 +99,8 @@
   },
   "throttle": "all-in",
   "spend": {
-    "outputTokens": 3341259,
-    "agentCalls": 54,
+    "outputTokens": 3626973,
+    "agentCalls": 64,
     "byPhase": {
       "ideate": {
         "outputTokens": 1667764,
@@ -94,6 +117,14 @@
       "build": {
         "outputTokens": 1042090,
         "agentCalls": 11
+      },
+      "qa": {
+        "outputTokens": 265714,
+        "agentCalls": 10
+      },
+      "package": {
+        "outputTokens": 20000,
+        "agentCalls": 0
       }
     }
   },
@@ -206,6 +237,12 @@
       "kind": "note",
       "code": "watch-extended",
       "msg": "phase watch extended: qa attempt 1 was 2.1 min past 2026-10-11T12:58:09.542Z but a file under work/2026-10-11 changed 1.3 min ago; due 2026-10-11T13:15:13.991Z now (extension 1 of 2)"
+    },
+    {
+      "at": "2026-10-11T13:09:22.612Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "qa S1 d01 was a proofread false positive on the draft spec file; downgraded to S4 in qa report; revise skipped (no time); shipping tier 2 with S2 layout issues as known issues"
     }
   ],
   "watch": {
@@ -230,6 +267,7 @@
     "attemptsAtArm": 1,
     "boundAt": "2026-10-11T13:00:22.670Z",
     "extensions": 1,
-    "extendedAt": "2026-10-11T13:00:13.991Z"
+    "extendedAt": "2026-10-11T13:00:13.991Z",
+    "disarmedAt": "2026-10-11T13:08:44.655Z"
   }
 }

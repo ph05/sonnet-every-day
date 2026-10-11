@@ -9,8 +9,18 @@
   "fingerprint": {
     "category": "science-sim",
     "mechanic": "simulator",
-    "tone": ["cozy", "analytical", "playful"],
-    "tech": ["canvas2d", "svg", "dom-ui", "pointer-events", "localstorage"],
+    "tone": [
+      "cozy",
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
     "tags": [
       "orbits",
       "ground-track",
@@ -38,20 +48,54 @@
     "slot": "wildcard",
     "political": false
   },
-  "palette": ["#f3ede2", "#a8321f", "#c9482f", "#2a7b82", "#a87408", "#2a2631", "#efe6d4", "#17151c"],
+  "palette": [
+    "#f3ede2",
+    "#a8321f",
+    "#c9482f",
+    "#2a7b82",
+    "#a87408",
+    "#2a2631",
+    "#efe6d4",
+    "#17151c"
+  ],
   "entry": "index.html",
   "thumb": "thumb.png",
   "network": [],
   "sources": [
-    { "title": "GDC OrbitPrimer", "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf" },
-    { "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources", "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit" },
-    { "title": "Space Station Orbit Tutorial", "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm" },
-    { "title": "International Space Station Frequently Asked Questions - NASA", "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/" },
-    { "title": "Mission & Carrier Characteristics", "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm" },
-    { "title": "The Worldwide Reference System", "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system" },
-    { "title": "pubs.usgs.gov", "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf" }
+    {
+      "title": "GDC OrbitPrimer",
+      "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf"
+    },
+    {
+      "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources",
+      "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit"
+    },
+    {
+      "title": "Space Station Orbit Tutorial",
+      "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm"
+    },
+    {
+      "title": "International Space Station Frequently Asked Questions - NASA",
+      "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/"
+    },
+    {
+      "title": "Mission & Carrier Characteristics",
+      "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm"
+    },
+    {
+      "title": "The Worldwide Reference System",
+      "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system"
+    },
+    {
+      "title": "pubs.usgs.gov",
+      "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf"
+    }
   ],
   "makingOf": "Up to three satellites fly a two-body orbit with the J2 correction: Earth's bulge slowly turns each orbit's plane and perigee. Each pass is painted into a one-degree grid of stitches as wide as the satellite's swath, and scores weigh every stitch by its true area, so polar holes that look huge on a flat map count for little. The model is checked against figures from NASA, ESA and USGS pages and one independent explainer, found through web search and cross-checked between results (the team did not open every page): it gives 97.79 and 98.19 degrees of tilt for a sun-synchronous orbit at 600 and 700 km, and a 233-orbits-in-16-days repeat at about 699.6 km against Landsat's 705 km. It is a toy, not a tracker: tracks drift from real satellites over weeks, coastlines are hand-simplified, pars were found by brute-force search with this model, and the sun moves uniformly along the ecliptic.",
-  "stats": { "files": 0, "bytes": 0, "ownLoc": 0 },
+  "stats": {
+    "files": 13,
+    "bytes": 476102,
+    "ownLoc": 5016
+  },
   "credits": "Built by the Sonnet Every Day team"
 }

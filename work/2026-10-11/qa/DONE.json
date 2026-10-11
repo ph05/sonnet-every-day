@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "phase": "qa",
+  "date": "2026-10-11",
+  "verdict": "revise",
+  "counts": {
+    "S1": 1,
+    "S2": 4,
+    "S3": 11,
+    "S4": 11
+  },
+  "revision": 0
+}

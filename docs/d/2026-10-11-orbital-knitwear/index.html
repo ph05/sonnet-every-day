@@ -1,0 +1,518 @@
+<!doctype html>
+<!-- Orbital Knitwear. Started from ops/templates/page-shell.html; only the SLOTs differ. Look: style.css. Behaviour: js/. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Orbital Knitwear</title>
+<meta name="description" content="Tune a satellite's height, tilt and orbit shape and watch its ground track knit a wool-textured world map. Eight pattern cards set the goals, and scores count true surface area.">
+<link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTQiIGZpbGw9IiNmM2VkZTIiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjMyIiByPSIxMyIgZmlsbD0iIzJhN2I4MiIvPjxlbGxpcHNlIGN4PSIzMiIgY3k9IjMyIiByeD0iMjUiIHJ5PSIxMCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYTgzMjFmIiBzdHJva2Utd2lkdGg9IjQiIHRyYW5zZm9ybT0icm90YXRlKC0yOCAzMiAzMikiLz48Y2lyY2xlIGN4PSI1MyIgY3k9IjIxIiByPSI1IiBmaWxsPSIjYTg3NDA4Ii8+PC9zdmc+">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-prose { max-width: 68ch; }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="style.css">
+<link rel="modulepreload" href="js/ui.js">
+<link rel="modulepreload" href="js/render.js">
+<link rel="modulepreload" href="js/geodata.js">
+<link rel="modulepreload" href="js/orbit.js">
+<link rel="modulepreload" href="js/coverage.js">
+<link rel="modulepreload" href="js/cards.js">
+<link rel="modulepreload" href="js/state.js">
+<noscript><style>.kn-app { display: none; }</style></noscript>
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 2 &middot; 2026-10-11</p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Orbital Knitwear</h1>
+  <p class="sed-tagline">Tune a satellite's orbit and knit the planet in wool, one pass at a time, while the flat map lies about the holes.</p>
+
+  <div id="app" class="kn-app" data-state="loading" aria-busy="true">
+    <div id="fatal" class="kn-fatal" role="alert" hidden>
+      <p class="kn-fatal-msg"><strong>The yarn snapped:</strong> <span id="fatal-detail">something went wrong</span>. Reload to cast on again.</p>
+      <div class="kn-fatal-actions">
+        <button type="button" id="btn-frog" class="kn-btn is-primary"><svg class="ico" aria-hidden="true"><use href="#i-reset"/></svg><span>Frog it</span></button>
+        <button type="button" id="btn-reload" class="kn-btn">Reload</button>
+      </div>
+    </div>
+
+    <div class="kn-grid">
+      <div class="kn-left">
+        <section class="kn-stage-area" aria-label="World map">
+          <div id="stage" class="kn-stage" data-view="flat">
+            <canvas id="map" role="img" aria-label="World map being knitted">Your browser cannot draw the map.</canvas>
+            <canvas id="overlay" aria-hidden="true"></canvas>
+            <div class="kn-hud" aria-hidden="true">
+              <span class="kn-chip">Planet <b id="hud-planet">0%</b></span>
+              <span class="kn-chip">Map <b id="hud-map">0%</b></span>
+            </div>
+            <output id="map-readout" class="kn-readout" aria-live="off" hidden></output>
+            <p id="empty-hint" class="kn-empty" hidden>Press play, or nudge a slider, to start knitting.</p>
+            <div class="kn-loading" aria-hidden="true">
+              <svg class="kn-loading-art" viewBox="0 0 120 80" width="120" height="80" focusable="false">
+                <path class="yarn" d="M10 68c16-8 30-2 44-10s28-6 44-18"/>
+                <path class="needle n1" d="M22 70L92 10"/>
+                <path class="needle n2" d="M34 12L104 66"/>
+                <circle class="bob" cx="22" cy="70" r="4"/>
+                <circle class="bob" cx="34" cy="12" r="4"/>
+              </svg>
+              <p class="kn-loading-text">Casting on...</p>
+            </div>
+          </div>
+          <p id="map-caption" class="kn-caption">Flat map: the poles are inflated</p>
+          <p id="focus-note" class="kn-caption kn-focus-note" hidden>The dashed band is the part of the map this card scores.</p>
+
+          <div class="kn-playback">
+            <p id="clock" class="kn-clock">Day 1 &middot; 12:00 UTC</p>
+            <div class="kn-row">
+              <button type="button" id="btn-play" class="kn-btn is-primary" data-playing="false" title="Play or pause (Space)"><svg class="ico" aria-hidden="true"><use href="#i-play"/></svg><span class="kn-btn-label">Play</span></button>
+              <button type="button" id="btn-step" class="kn-btn" title="Advance one day, then pause (D)"><svg class="ico" aria-hidden="true"><use href="#i-step"/></svg><span>+1 day</span></button>
+              <button type="button" id="btn-reset" class="kn-btn" title="Unravel everything and start again (R)" aria-label="Frog it: unravel and start again"><svg class="ico" aria-hidden="true"><use href="#i-reset"/></svg><span>Frog it</span></button>
+              <div class="kn-field kn-speed">
+                <label for="speed">Speed</label>
+                <select id="speed">
+                  <option value="0.25">0.25 days/s</option>
+                  <option value="1" selected>1 day/s</option>
+                  <option value="4">4 days/s</option>
+                  <option value="16">16 days/s</option>
+                </select>
+              </div>
+            </div>
+            <div class="kn-row">
+              <div class="kn-seg" role="group" aria-label="Map projection">
+                <button type="button" id="btn-view-flat" class="kn-btn kn-seg-btn" aria-pressed="true" title="Flat map (V)"><svg class="ico" aria-hidden="true"><use href="#i-flat"/></svg><span>Flat map</span></button>
+                <button type="button" id="btn-view-polar" class="kn-btn kn-seg-btn" aria-pressed="false" title="Polar view (V)"><svg class="ico" aria-hidden="true"><use href="#i-polar"/></svg><span>Polar view</span></button>
+              </div>
+              <button type="button" id="btn-terminator" class="kn-btn" aria-pressed="true" title="Show or hide the night side (T)"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg><span>Night shading</span></button>
+            </div>
+          </div>
+        </section>
+
+        <section id="readouts" class="kn-panel kn-readouts" aria-labelledby="h-readouts">
+          <h2 id="h-readouts" class="kn-h2">Orbit readouts <span id="ro-for" class="kn-h2-sub">Needle A</span></h2>
+          <dl class="kn-dl">
+            <div class="kn-ro"><dt>Orbit time</dt><dd id="ro-period">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Highest point</dt><dd id="ro-apogee">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Node drift</dt><dd id="ro-regress">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Local time at node</dt><dd id="ro-ltan">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Orbits per day</dt><dd id="ro-revs">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Track shift per orbit</dt><dd id="ro-shift">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Repeat</dt><dd id="ro-repeat">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Farthest latitude</dt><dd id="ro-maxlat">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Sun-synchronous</dt><dd id="ro-sunsync">&ndash;</dd></div>
+          </dl>
+        </section>
+      </div>
+
+      <div class="kn-rail">
+        <section class="kn-panel kn-goal" aria-labelledby="h-goal">
+          <div class="kn-goal-head">
+            <h2 id="h-goal" class="kn-h2 kn-display">Free knit</h2>
+            <span id="goal-status" class="kn-status" hidden></span>
+          </div>
+          <p id="card-goal" class="kn-goal-text">Free knit: no goal, no par. Slide the needles around, press Tune sun-sync, or pick a pattern card to chase a badge.</p>
+          <progress id="card-progress" class="kn-progress" max="1" value="0" aria-label="Pattern progress">0%</progress>
+          <p id="goal-days" class="kn-goal-days">Day 1 of 365</p>
+          <p id="goal-pass" class="kn-goal-days" hidden></p>
+          <div id="card-result" class="kn-result" hidden>
+            <div class="kn-result-head">
+              <span id="result-rosette" class="kn-rosette" data-badge="none" aria-hidden="true"></span>
+              <div>
+                <p id="result-title" class="kn-result-title kn-display"></p>
+                <p id="result-text" class="kn-result-text"></p>
+              </div>
+            </div>
+            <div class="kn-row kn-result-actions">
+              <button type="button" id="btn-result-retry" class="kn-btn is-primary"><svg class="ico" aria-hidden="true"><use href="#i-reset"/></svg><span>Try again</span></button>
+              <button type="button" id="btn-result-share" class="kn-btn"><svg class="ico" aria-hidden="true"><use href="#i-share"/></svg><span>Copy link</span></button>
+              <button type="button" id="btn-result-next" class="kn-btn"><svg class="ico" aria-hidden="true"><use href="#i-step"/></svg><span>Next card</span></button>
+            </div>
+          </div>
+          <div class="kn-row kn-goal-actions">
+            <button type="button" id="btn-peek" class="kn-btn" title="Load the par setup (P). No badge this round."><svg class="ico" aria-hidden="true"><use href="#i-eye"/></svg><span>Peek at par</span></button>
+            <button type="button" id="btn-free" class="kn-btn" title="Leave the pattern card and knit freely ([)"><svg class="ico" aria-hidden="true"><use href="#i-wand"/></svg><span>Free knit</span></button>
+          </div>
+        </section>
+
+        <div id="tabs" class="kn-tabs" role="tablist" aria-label="Panels">
+          <button type="button" role="tab" id="tab-orbit" class="kn-tab" aria-selected="true" aria-controls="panel-orbit">Orbit</button>
+          <button type="button" role="tab" id="tab-cards" class="kn-tab" aria-selected="false" aria-controls="panel-cards" tabindex="-1">Cards</button>
+          <button type="button" role="tab" id="tab-score" class="kn-tab" aria-selected="false" aria-controls="panel-score" tabindex="-1">Score</button>
+        </div>
+
+        <section id="panel-orbit" class="kn-panel kn-orbit" aria-label="Orbit controls">
+          <div class="kn-block">
+            <h2 id="h-needles" class="kn-h2">Needles</h2>
+            <div id="sats" class="kn-sats" role="tablist" aria-label="Needles"></div>
+            <div class="kn-row kn-needle-actions">
+              <button type="button" id="btn-add-sat" class="kn-btn" title="Add a needle (N)"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg><span>Add needle</span></button>
+              <button type="button" id="btn-remove-sat" class="kn-btn" title="Remove the selected needle (X)"><svg class="ico" aria-hidden="true"><use href="#i-trash"/></svg><span>Remove needle</span></button>
+            </div>
+          </div>
+
+          <div class="kn-block kn-sliders" id="sliders">
+            <h2 id="h-tune" class="kn-h2">Tune <span id="tune-for">Needle A</span></h2>
+
+            <div class="kn-ctl" data-param="alt">
+              <div class="kn-ctl-head">
+                <label for="ctl-alt">Height (perigee)</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-alt" for="ctl-alt" aria-live="off">700 km</output>
+              </div>
+              <input type="range" id="ctl-alt" data-param="alt" min="200" max="2000" step="1" value="700" aria-describedby="hint-alt">
+              <div id="alt-ticks" class="kn-ticks" role="presentation"></div>
+              <p id="hint-alt" class="kn-hint">Tall ticks mark heights where the track repeats and the stitches tile.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="inc">
+              <div class="kn-ctl-head">
+                <label for="ctl-inc">Tilt</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-inc" for="ctl-inc" aria-live="off">98.19&deg;</output>
+              </div>
+              <input type="range" id="ctl-inc" data-param="inc" min="0" max="180" step="0.05" value="98.19" aria-describedby="hint-inc">
+              <p id="hint-inc" class="kn-hint">Near 98 degrees the orbit turns with the sun. 90 goes over the poles; past 90 the needle runs against the spin.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="ecc">
+              <div class="kn-ctl-head">
+                <label for="ctl-ecc">Stretch</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-ecc" for="ctl-ecc" aria-live="off">0.000</output>
+              </div>
+              <input type="range" id="ctl-ecc" data-param="ecc" min="0" max="0.8" step="0.005" value="0" aria-describedby="hint-ecc">
+              <p id="hint-ecc" class="kn-hint">0 is a circle. More pulls the far end of the orbit away from the planet.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="node">
+              <div class="kn-ctl-head">
+                <label for="ctl-node">Start longitude</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-node" for="ctl-node" aria-live="off">22.5&deg; W</output>
+              </div>
+              <input type="range" id="ctl-node" data-param="node" min="-180" max="180" step="0.5" value="-22.5" aria-describedby="hint-node">
+              <p id="hint-node" class="kn-hint">Where the needle crosses the equator heading north. You can also drag the map sideways.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="argp">
+              <div class="kn-ctl-head">
+                <label for="ctl-argp">Perigee turn</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-argp" for="ctl-argp" aria-live="off">0&deg;</output>
+              </div>
+              <input type="range" id="ctl-argp" data-param="argp" min="0" max="360" step="1" value="0" aria-describedby="hint-argp">
+              <p id="hint-argp" class="kn-hint">Turns a stretched orbit. It only matters when Stretch is above 0.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="swath">
+              <div class="kn-ctl-head">
+                <label for="ctl-swath">Swath width</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-swath" for="ctl-swath" aria-live="off">185 km</output>
+              </div>
+              <input type="range" id="ctl-swath" data-param="swath" min="110" max="1500" step="5" value="185" aria-describedby="hint-swath">
+              <p id="hint-swath" class="kn-hint">How wide a ribbon each pass knits.</p>
+            </div>
+
+            <div class="kn-ctl" data-param="season">
+              <div class="kn-ctl-head">
+                <label for="ctl-season">Sun date</label>
+                <svg class="kn-lock ico" aria-hidden="true"><use href="#i-lock"/></svg>
+                <output id="out-season" for="ctl-season" aria-live="off">Mar 20</output>
+              </div>
+              <input type="range" id="ctl-season" data-param="season" min="0" max="364" step="1" value="0" aria-describedby="hint-season">
+              <p id="hint-season" class="kn-hint">Moves the sun, the night line and local times. 0 is the March equinox.</p>
+            </div>
+          </div>
+
+          <div class="kn-block kn-actions" role="group" aria-label="Shortcuts">
+            <div class="kn-action-grid">
+              <button type="button" id="btn-snap" class="kn-btn" title="Snap to the nearest repeat height (S, or , and . for lower and higher)"><svg class="ico" aria-hidden="true"><use href="#i-wand"/></svg><span>Snap to a repeat height</span></button>
+              <button type="button" id="btn-sso" class="kn-btn" title="Tilt this needle so the orbit turns with the sun (U)"><svg class="ico" aria-hidden="true"><use href="#i-sun"/></svg><span>Tune sun-sync</span></button>
+              <button type="button" id="btn-random" class="kn-btn" title="Shuffle the needles (M)"><svg class="ico" aria-hidden="true"><use href="#i-shuffle"/></svg><span>Surprise me</span></button>
+              <button type="button" id="btn-share" class="kn-btn" title="Copy a link to these needles (L)"><svg class="ico" aria-hidden="true"><use href="#i-share"/></svg><span>Copy link</span></button>
+            </div>
+            <input type="text" id="share-url" class="kn-share-url" readonly hidden aria-label="Link to these needles" spellcheck="false">
+          </div>
+        </section>
+
+        <div class="kn-side">
+          <section id="panel-cards" class="kn-panel kn-cards" aria-labelledby="h-cards">
+            <h2 id="h-cards" class="kn-h2">Pattern cards</h2>
+            <p class="kn-sub">Eight small puzzles. Reach the pass line for a swatch, and the par for an heirloom.</p>
+            <div id="card-list" class="kn-cardlist"></div>
+          </section>
+
+          <section id="panel-score" class="kn-panel kn-score" aria-labelledby="h-score">
+            <h2 id="h-score" class="kn-h2">Score</h2>
+            <p id="sc-lie" class="kn-lie">Nothing knit yet.</p>
+            <div class="kn-meters">
+              <div class="kn-meter">
+                <div class="kn-meter-row"><span>Planet covered</span><b id="sc-planet">0.0%</b></div>
+                <div class="kn-bar" aria-hidden="true"><i id="bar-planet"></i></div>
+              </div>
+              <div class="kn-meter is-map">
+                <div class="kn-meter-row"><span>Map looks covered</span><b id="sc-map">0.0%</b></div>
+                <div class="kn-bar" aria-hidden="true"><i id="bar-map"></i></div>
+              </div>
+            </div>
+            <dl class="kn-dl">
+              <div class="kn-ro"><dt>Overlap waste</dt><dd id="sc-overlap">&ndash;</dd></div>
+              <div class="kn-ro"><dt>Mean revisit</dt><dd id="sc-revisit">&ndash;</dd></div>
+              <div class="kn-ro"><dt>Local-time drift</dt><dd id="sc-drift">&ndash;</dd></div>
+            </dl>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <div class="sed-making-of">
+        <h2>How it works</h2>
+        <p>Up to three satellites fly a two-body orbit with the J2 correction: Earth's bulge slowly turns each orbit's plane and perigee. Each pass is painted into a one-degree grid of stitches as wide as the satellite's swath. Scores weigh every stitch by its true area, so polar holes that look huge on a flat map count for little. This is a toy model, not a tracker: tracks drift from real satellites over weeks, and drag, the Moon and the Sun's pull are not modelled.</p>
+        <h2>What the sources say (as of 2026-10-11)</h2>
+        <p>A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day, which Earth's J2 bulge supplies; that takes about 98.2 degrees of tilt at 700 km (NASA primer) and about 97.8 degrees near 600 km (Skill-Lync). The International Space Station flies at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370 to 460 km in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial). Landsat 4 to 9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits, about 98.9 minutes per orbit, tracks about 24.7 degrees (2752 km) apart at the equator, with a design swath of 185 km (NASA, USGS).</p>
+        <h2>Computed here</h2>
+        <p>The model gives 97.79 degrees at 600 km and 98.19 degrees at 700 km, matching both sources. 233 evenly spaced tracks put neighbours about 172 km apart (40,075 km / 233), so a 185 km swath overlaps its neighbour by about 13 km (7 percent); the model's 233-in-16 repeat lands at about 699.6 km, 0.8 percent below Landsat's 705 km. The band beyond 60 degrees latitude is a third of a flat map but about 13 percent of the planet. The model shifts the station's track 23.4 to 23.8 degrees per orbit (370 to 460 km), a few percent more than the NASA tutorial's figure, which matches a slightly shorter orbit. The 63.4 degree tilt where the perigee stops turning comes from the same formula.</p>
+        <h2>Reported, unconfirmed</h2>
+        <p>As of 2026-10-11, per arXiv 2007.04341 (one search result): Molniya-type orbits use about 63.4 degrees of tilt, a 12-hour period and two apogees a day.</p>
+        <h2>Made up or hand-made</h2>
+        <p>Coastlines are hand-simplified outlines and city dots are approximate; there are no borders. Pars were found by brute-force search with this model. Card names, thresholds and yarn colours are the team's. The sun moves uniformly along the ecliptic (no equation of time).</p>
+        <h2>Physics checks</h2>
+        <div id="selftest-result" class="kn-selftest" aria-live="polite">The model checks itself against the figures above the first time you open this panel.</div>
+      </div>
+      <h2>Keyboard</h2>
+      <ul class="kn-keys">
+        <li><kbd>Space</kbd> play or pause</li>
+        <li><kbd>R</kbd> frog it (start again)</li>
+        <li><kbd>D</kbd> one more day</li>
+        <li><kbd>V</kbd> flat or polar view</li>
+        <li><kbd>T</kbd> night shading</li>
+        <li><kbd>N</kbd> add a needle, <kbd>X</kbd> remove it</li>
+        <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> pick a needle</li>
+        <li><kbd>S</kbd> snap to a repeat height, <kbd>,</kbd> lower, <kbd>.</kbd> higher</li>
+        <li><kbd>U</kbd> tune sun-sync</li>
+        <li><kbd>M</kbd> surprise me</li>
+        <li><kbd>P</kbd> peek at par</li>
+        <li><kbd>L</kbd> copy link</li>
+        <li><kbd>[</kbd> <kbd>]</kbd> previous and next card</li>
+        <li><kbd>?</kbd> open this panel, <kbd>Esc</kbd> close it</li>
+      </ul>
+      <h2>Sources</h2>
+      <p>These seven were found through web search and cross-checked between results as of 2026-10-11; the team did not open every page.</p>
+      <ul class="sed-sources">
+        <li><a href="https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf" rel="noopener noreferrer">GDC OrbitPrimer</a>: NASA's orbit primer; the sun-synchronous node drift of 0.9856 degrees per day and about 98.2 degrees of tilt for a 700 km circular orbit.</li>
+        <li><a href="https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit" rel="noopener noreferrer">Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources</a>: an independent explainer; Earth's J2 bulge turns the orbit's node, and about 600 km sits near 97.8 degrees.</li>
+        <li><a href="https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm" rel="noopener noreferrer">Space Station Orbit Tutorial</a>: 51.6 degrees of inclination, orbits of 90 to 93 minutes, and about 22.9 degrees of longitude west per pass.</li>
+        <li><a href="https://www.nasa.gov/international-space-station-frequently-asked-questions/" rel="noopener noreferrer">International Space Station Frequently Asked Questions - NASA</a>: the 51.6 degree inclination means the station never goes farther north or south than 51.6 degrees latitude.</li>
+        <li><a href="https://www.esa.int/esapub/sp/sp1201/a3.htm" rel="noopener noreferrer">Mission &amp; Carrier Characteristics</a>: an ESA table of space station characteristics, with an altitude range of 370 to 460 km.</li>
+        <li><a href="https://landsat.gsfc.nasa.gov/about/worldwide-reference-system" rel="noopener noreferrer">The Worldwide Reference System</a>: Landsat's 16-day cycle of 233 orbits, about 98.9 minutes each near 705 km, tracks about 24.7 degrees (2752 km) apart at the equator.</li>
+        <li><a href="https://pubs.usgs.gov/fs/2003/0023/report.pdf" rel="noopener noreferrer">pubs.usgs.gov</a>: a USGS fact sheet; satellites designed for a 185 km swath from a 705 km sun-synchronous orbit.</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by the Sonnet Every Day team</p>
+</footer>
+
+<div id="toast" class="kn-toast" role="status"></div>
+<div id="sr-announcer" class="sed-visually-hidden" aria-live="polite"></div>
+
+<template id="tpl-chip"><button type="button" class="sat-chip" role="tab"><svg class="glyph" viewBox="0 0 20 20" aria-hidden="true"><path d=""/></svg><span><span class="chip-name"></span><small class="chip-sum"></small></span></button></template>
+<template id="tpl-card"><button type="button" class="card-item" data-badge="none"><span class="kn-card-title"></span><span class="kn-badge" hidden></span><span class="kn-card-blurb"></span><span class="kn-card-meta"></span></button></template>
+
+<svg id="icons" class="kn-sprite" width="0" height="0" aria-hidden="true" focusable="false">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6.5" y="5.5" width="4" height="13" rx="1"/><rect x="13.5" y="5.5" width="4" height="13" rx="1"/></symbol>
+  <symbol id="i-step" viewBox="0 0 24 24"><path d="M6 5.5v13l9-6.5z"/><path d="M18.5 5.5v13"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.3-5.4"/><path d="M4.5 4.5v4.2h4.2"/></symbol>
+  <symbol id="i-flat" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 12h18M9 6v12M15 6v12"/></symbol>
+  <symbol id="i-polar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><path d="M12 3.5v4.5M12 16v4.5M3.5 12h4.5M16 12h4.5"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M3.5 7H7c2.2 0 3.4 1 4.6 3l1.4 2.4c1.2 2 2.4 3 4.6 3H20"/><path d="M17.5 13.5l2.5 2.5-2.5 2.5"/><path d="M3.5 17H7c1.5 0 2.6-.6 3.5-1.7"/><path d="M13 8.6C14 7.6 15.2 7 16.8 7H20"/><path d="M17.5 4.5L20 7l-2.5 2.5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15"/><path d="M9.5 7V4.5h5V7"/><path d="M6.5 7l1 12.5h9l1-12.5"/><path d="M10 11v5.5M14 11v5.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5"/><path d="M12 7.6v.1"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/></symbol>
+  <symbol id="i-wand" viewBox="0 0 24 24"><path d="M4.5 19.5l9-9"/><path d="M14.5 4.5l1.2 2.5 2.5 1.2-2.5 1.2-1.2 2.5-1.2-2.5-2.5-1.2 2.5-1.2z"/><path d="M18.5 14l.8 1.7 1.7.8-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8z"/></symbol>
+</svg>
+
+<script nomodule>
+  (function () {
+    var fatal = document.getElementById('fatal');
+    var detail = document.getElementById('fatal-detail');
+    if (detail) detail.textContent = 'this browser is too old for the page (it needs ES modules)';
+    if (fatal) fatal.hidden = false;
+  })();
+</script>
+<script>
+  // Boot watchdog. It runs before any module, so a script that never loads still ends in a readable message.
+  (function () {
+    var app = document.getElementById('app');
+    var fatal = document.getElementById('fatal');
+    var detail = document.getElementById('fatal-detail');
+    var reload = document.getElementById('btn-reload');
+    var frog = document.getElementById('btn-frog');
+    if (reload) reload.addEventListener('click', function () { location.reload(); });
+    if (frog) {
+      frog.addEventListener('click', function () {
+        document.dispatchEvent(new CustomEvent('app:reset', { detail: {} }));
+        window.setTimeout(function () {
+          if (!app || app.getAttribute('data-state') !== 'ready') location.reload();
+        }, 1500);
+      });
+    }
+    window.setTimeout(function () {
+      if (!app || !fatal || app.getAttribute('data-state') !== 'loading') return;
+      if (detail) detail.textContent = "the page didn't finish loading";
+      fatal.hidden = false;
+    }, 6000);
+  })();
+</script>
+<script type="module" src="js/main.js"></script>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>
