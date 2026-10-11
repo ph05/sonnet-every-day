@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-11 · lab · applied · ideate: name verification skipped for time and list it under skipped, not verifier unavailable
+
+- observation: 2026-10-11 ideate on 2 slots (args maxAgents 2, phaseBudgetMinutes 75): 8 scouts at 2 candidates each finished about 105 min in (dossier mtimes 08:23 to 09:43), so timeFor(4) was false and every verify call returned null. All 10 shortlisted ideas are unverified, yet the shortlist note, run phase note and report all say verifier unavailable, and skipStage was never called for verify. Now it is listed as verify r0 with minutes used, notes and log say phase budget spent; a real outage keeps the old wording. New selfcheck test fails without the fix.
+- category: prevention · lines changed: 20 · files: ops/workflows/_selfcheck.mjs, ops/workflows/ideate.js
+- question: On 2 slots the 8 scouts at 2 candidates took about 105 of 75 min and 7 of 17 survivors were surplus: should the second candidate need ceil(8 / slots) waves of MINUTES.twoCandidates (so 1 candidate when they cannot fit) while the refill stays allowed, so verification still runs?
+
 ## 2026-10-11 · pulse · applied · ideate: tell scouts the 12-source cap so facts do not cite sources the sanitizer cuts
 
 - observation: 2026-10-11: 7 of 16 scout dossiers recorded 13 to 19 sources but sanitizeDossier keeps 12 (ideate.js line 1120), so 11 of 98 facts point past the end of their sources (5 files in ideate/cand, 4 reached shortlist.json). The cap was in no prompt, rubric or test. I measured the digest idea of keeping cited sources first: scouts cite every source they record (cards-1 16 of 16), so it fixes 0 of 11. Now the scout prompt and research.md say at most 12 beside the 3-source minimum, and a selfcheck test (fails without it) pins 12 to the real sanitizer.

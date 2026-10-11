@@ -1170,6 +1170,18 @@ describe('ideate.js', () => {
       const short = s.json(s.work('ideas', 'shortlist.json'));
       assert.ok(short.ideas.every((i) => i.title !== 'STALE LEFTOVER' && i.verification && i.verification.status === 'unverified'));
       assert.ok(run.result.notes.includes('UNVERIFIED'));
+      assert.ok(run.result.notes.includes('UNVERIFIED (verifier unavailable)') && !run.result.skipped.some((x) => x.startsWith('verify ')), 'a real outage is still called one');
+    } finally { s.clean(); }
+  });
+
+  test('verification skipped because the phase budget was spent is named so and listed under skipped, not blamed on an outage', async () => {
+    const s = makeSandbox();
+    try {
+      const run = await go('ideate', baseArgs(s, { phaseBudgetMinutes: 3 }), ideateWorld(s));
+      checkRunInvariants('ideate', run, { skipPhaseUse: true });
+      assert.ok(run.result.skipped.includes('verify r0'), JSON.stringify(run.result.skipped));
+      assert.ok(run.result.notes.includes('UNVERIFIED (phase budget spent before they were checked)') && !run.result.notes.includes('verifier unavailable'), run.result.notes);
+      assert.ok(run.rec.logs.some((l) => l.includes('stays UNVERIFIED (phase budget spent)')) && run.rec.logs.some((l) => /skipped stage "verify r0": \d+ of \d+ candidates unchecked/.test(l)));
     } finally { s.clean(); }
   });
 

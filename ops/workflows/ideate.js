@@ -1468,13 +1468,17 @@ async function processBatch(files, tag, phaseNames) {
   const verdicts = await pipeline(toVerify, (_prev, c) => verifyOne(c, phaseNames.verify));
   for (const v of verdicts) if (isObj(v)) recordNetwork(v.network, 'verifier');
   await saveNetwork(phaseNames.verify);
+  // A verifier that never ran because the phase budget was already spent is not an outage: name the cause and list it under skipped.
+  const unchecked = verdicts.filter((v) => !v).length;
+  const spentOut = unchecked > 0 && !timeFor(MINUTES.verifyOne);
+  if (spentOut) skipStage(`verify ${tag}`, `${unchecked} of ${toVerify.length} candidates unchecked, the ${PBM} minute phase budget is spent (${Math.round(elapsedMin())} minutes used)`);
   toVerify.forEach((c, i) => {
     const meta2 = POOL.get(c.id);
     const v = verdicts[i];
     if (!v) {
       meta2.status = 'unverified';
       meta2.confidence = 3;
-      log(`${c.id} stays UNVERIFIED (verifier unavailable); it is only used to fill the shortlist`);
+      log(`${c.id} stays UNVERIFIED (${spentOut ? 'phase budget spent' : 'verifier unavailable'}); it is only used to fill the shortlist`);
       return;
     }
     meta2.confidence = Math.max(0, Math.min(10, num(v.confidence, 5)));
@@ -1708,7 +1712,7 @@ try {
     let degraded = chosen.length < SHORTLIST_N;
     const notes = [
       `${POOL.size} candidates entered the pool, ${alive.length} survived, ${chosen.length} shortlisted`,
-      unverifiedUsed ? `${unverifiedUsed} shortlisted idea(s) are UNVERIFIED (verifier unavailable): treat their research as unchecked` : '',
+      unverifiedUsed ? `${unverifiedUsed} shortlisted idea(s) are UNVERIFIED (${SKIPPED.some((x) => x.startsWith('verify ')) ? 'phase budget spent before they were checked' : 'verifier unavailable'}): treat their research as unchecked` : '',
       CARRY && !chosen.some((c) => c.carry) ? `the carried-over idea "${CARRY.title}" did not make the shortlist (dropped or filtered, see the drop log)` : '',
       HALT.reason ? `run halted early by ${HALT.reason}` : '',
       degraded ? `only ${chosen.length} of ${SHORTLIST_N} ideas available` : '',

@@ -147,6 +147,23 @@
       "linesChanged": 14,
       "question": "Tomorrow count dossiers with more than 12 sources in work/DATE/ideas: if scouts still exceed it, should the sanitizer keep each fact primary source first (measured today: orphan facts 11 to 0, but 19 alsoIn pointers lost)?",
       "reason": null
+    },
+    {
+      "id": "2026-10-11-lab",
+      "date": "2026-10-11",
+      "agent": "lab",
+      "title": "ideate: name verification skipped for time and list it under skipped, not verifier unavailable",
+      "observation": "2026-10-11 ideate on 2 slots (args maxAgents 2, phaseBudgetMinutes 75): 8 scouts at 2 candidates each finished about 105 min in (dossier mtimes 08:23 to 09:43), so timeFor(4) was false and every verify call returned null. All 10 shortlisted ideas are unverified, yet the shortlist note, run phase note and report all say verifier unavailable, and skipStage was never called for verify. Now it is listed as verify r0 with minutes used, notes and log say phase budget spent; a real outage keeps the old wording. New selfcheck test fails without the fix.",
+      "category": "prevention",
+      "files": [
+        "ops/workflows/_selfcheck.mjs",
+        "ops/workflows/ideate.js"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 20,
+      "question": "On 2 slots the 8 scouts at 2 candidates took about 105 of 75 min and 7 of 17 survivors were surplus: should the second candidate need ceil(8 / slots) waves of MINUTES.twoCandidates (so 1 candidate when they cannot fit) while the refill stays allowed, so verification still runs?",
+      "reason": null
     }
   ]
 }
