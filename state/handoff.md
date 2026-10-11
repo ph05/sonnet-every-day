@@ -1,25 +1,23 @@
-# Handoff from 2026-10-10 (day 1, tier 2, written by manual at 08:57)
+# Handoff from 2026-10-11 (day 2, tier 2, written by primary at 10:35)
 
 ## What went well
-- Day 1 is live: Jokers In Phase (tier 2, 3804 own lines, browser QA clean, 0 S1).
-- Heartbeat canary pushed to the heartbeat branch on the first try.
-- Kaizen applied 5 and proposed 1; the ideate failure of today already has a source fix and two guards.
+- Day 2 is live: Orbital Knitwear (tier 2, 5016 own lines, 34 of 34 in-page physics checks, browser QA clean).
+- Select, spec and build each ran inside their budgets; kaizen applied 4.
+- The phase watch extended ideate, build and qa correctly instead of killing healthy workflows.
 
 ## What went badly
-- ideate returned no ideas once (clerk decoded unicode escapes, size check failed); cost about 540k tokens. Fixed in ideate.js by kaizen (cards); two guards added (lab, engineer).
-- A workflow can stall forever after an interrupted agent (spec did, about 2.5 h lost). Playbook 6.7 has a new row; no automatic detector yet.
-- Only 2 agent slots on this machine (4 CPUs), so spec and build go compact on every day.
-- The first kaizen attempt was refused: 1 test failed at HEAD, later green. Cause unknown.
+- Ideate ran about 110 min on 2 agent slots (budget 75), so the day published at 09:11 and revise was skipped; 4 S2 layout defects shipped (phone map out of view, laptop column crops the map, card goal far from list). The critic kaizen added a quality.md minimum.
+- QA flagged a false S1 on a draft spec file; the operator downgraded it by hand. The proofread stage should ignore work/spec files.
+- The verifier did not run (time), so all 10 ideas were unverified.
+- Kaizen ran out of phase time: jester, architect, artisan, engineer and cards are queued.
 
 ## Watch tomorrow
-- Kaizen suspects if tomorrow degrades: 3281efd, c62f604, 1c20ee8, 37b545d, 7acc654.
-- Check that ideate no longer loses its normalize rounds (the CTRL regex is now built from code points).
-- Kaizen queue starts with critic, clerk, pulse (skipped today for phase time).
-- Open S2 on today's page: cascade below the fold (only a human or a later revise can fix it).
-- The build gate and kaizen suite take about 7 minutes each; stop any background heartbeat loop before a kaizen round.
+- Kaizen suspects if tomorrow degrades: 80ebbdb, 493f5f1, 77d6aed, 8fd8a73 (plus yesterday's list).
+- Ideate on 2 slots: consider starting with compact:true or 1 candidate per scout so it finishes near 45 min.
+- Count dossiers with more than 12 sources in work/DATE/ideas (pulse's kaizen asked).
+- The permission classifier denied delete_trigger once; a leftover timer may fire harmlessly.
 
 ## Open questions
-- Which single test failed at HEAD on the first kaizen attempt, and is it load-dependent?
-- Should checkWritten in build, qa, select, spec, revise get the same escape guard as ideate?
-- Can a stalled workflow be detected from the run file alone (phase-start older than the phase budget)?
+- Should the second candidate per scout scale with agent slots (lab's question)?
+- Wheel-over-map assertion for the protected browser-check.mjs (critic's question).
 - Proposal waiting for the owner: ops/kaizen/proposals/2026-10-10-architect.md.
