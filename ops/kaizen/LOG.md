@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: Clerk notes 2026-10-11: all 7 source links answered 000 from the sandbox and were reported as 7 unreachable links. clerk.md network-probe bullet only covered one host at a time, so nothing said the network itself looked down. Added one sentence: if every host fails the same way, put one line first saying the network looks down, then still list each host. Single line changed in clerk.md, no test touched.
 - category: prevention · lines changed: 2 · files: ops/roles/clerk.md
+- commit: 493f5f151d
 
 ## 2026-10-11 · critic · applied · quality.md: keep the main output in view with its controls (S2 shipped two days running)
 
