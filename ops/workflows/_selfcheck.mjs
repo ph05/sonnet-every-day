@@ -3767,6 +3767,16 @@ describe('ideate.js: research under a restricted network (search-only evidence, 
       assert.deepEqual(cand.research.facts[0].alsoIn, [2]);
     } finally { s.clean(); }
   });
+
+  test('scouts are told the 12-source cap the sanitizer applies (7 of 16 dossiers ran over it on 2026-10-11 and 11 facts lost their source)', async () => {
+    const mutate = (c) => { c.research.sources = Array.from({ length: 15 }, (_, k) => ({ title: `Source ${k}`, url: `https://example.org/${c.id}/${k}`, note: 'n', verified: true })); };
+    const { world, s } = await go({}, { mutate });
+    try {
+      assert.equal(s.json(s.work('ideate', 'cand', 'pulse-1.json')).research.sources.length, 12, 'the sanitizer cap changed: change the scout prompt and research.md with it');
+      assert.ok(world.sink.scoutPrompts.every((x) => x.prompt.includes('and at most 12: the sanitizer keeps only the first 12')), 'a scout prompt does not state the source cap');
+      assert.ok(fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'research.md'), 'utf8').includes('and at most **12**: the sanitizer keeps only the first 12'), 'research.md does not state the source cap');
+    } finally { s.clean(); }
+  });
 });
 
 describe('unverified facts never reach published copy as facts', () => {
