@@ -142,7 +142,7 @@
         "ops/workflows/_selfcheck.mjs",
         "ops/workflows/ideate.js"
       ],
-      "sha": null,
+      "sha": "77d6aedf2bdd809ea987d9cabae0678a160e993a",
       "status": "applied",
       "linesChanged": 14,
       "question": "Tomorrow count dossiers with more than 12 sources in work/DATE/ideas: if scouts still exceed it, should the sanitizer keep each fact primary source first (measured today: orphan facts 11 to 0, but 19 alsoIn pointers lost)?",

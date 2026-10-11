@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-11: 7 of 16 scout dossiers recorded 13 to 19 sources but sanitizeDossier keeps 12 (ideate.js line 1120), so 11 of 98 facts point past the end of their sources (5 files in ideate/cand, 4 reached shortlist.json). The cap was in no prompt, rubric or test. I measured the digest idea of keeping cited sources first: scouts cite every source they record (cards-1 16 of 16), so it fixes 0 of 11. Now the scout prompt and research.md say at most 12 beside the 3-source minimum, and a selfcheck test (fails without it) pins 12 to the real sanitizer.
 - category: prevention · lines changed: 14 · files: ops/rubrics/research.md, ops/workflows/_selfcheck.mjs, ops/workflows/ideate.js
+- commit: 77d6aedf2b
 - question: Tomorrow count dossiers with more than 12 sources in work/DATE/ideas: if scouts still exceed it, should the sanitizer keep each fact primary source first (measured today: orphan facts 11 to 0, but 19 alsoIn pointers lost)?
 
 ## 2026-10-11 · clerk · applied · clerk: say when every network probe fails the same way, so the network is named not the sites
