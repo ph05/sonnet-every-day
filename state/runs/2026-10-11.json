@@ -2,7 +2,7 @@
   "schema": 1,
   "date": "2026-10-11",
   "status": "in_progress",
-  "targetTier": 1,
+  "targetTier": 2,
   "tier": null,
   "phase": "ideate",
   "phasesDone": [
@@ -27,7 +27,15 @@
     "acquiredAt": "2026-10-11T07:55:42.028Z",
     "heartbeatAt": "2026-10-11T09:22:46.097Z"
   },
-  "directives": [],
+  "directives": [
+    {
+      "kind": "scope-cut",
+      "tier": 2,
+      "by": "wdA",
+      "at": "2026-10-11T09:33:22.495Z",
+      "ack": false
+    }
+  ],
   "chosen": null,
   "throttle": "all-in",
   "spend": {
@@ -83,6 +91,12 @@
       "kind": "note",
       "code": "watch-extended",
       "msg": "phase watch extended: ideate attempt 1 was 0.7 min past 2026-10-11T09:21:53.400Z but a file under work/2026-10-11 changed 0.3 min ago; due 2026-10-11T09:37:38.250Z now (extension 1 of 2)"
+    },
+    {
+      "at": "2026-10-11T09:33:22.495Z",
+      "by": "wdA",
+      "kind": "note",
+      "msg": "scope-cut directive (tier 2) issued by wdA"
     }
   ],
   "watch": {
