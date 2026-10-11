@@ -1,0 +1,172 @@
+{
+  "ok": true,
+  "date": "2026-10-11",
+  "agents": [
+    {
+      "agent": "pulse",
+      "lens": {
+        "id": "data-story",
+        "name": "Data Story",
+        "kind": "current",
+        "brief": "A good dataset is a story with the narrator removed. Pick a public dataset that has something to say right now, such as game logs, weather, transit, space, population or prices, hand-simplify and bundle a snapshot, and tell the story through interaction. State the date and source of every number.",
+        "sourceHints": [
+          "r/dataisbeautiful top of the month",
+          "Public NHL stats pages, NOAA, NASA open data, Our World in Data style public datasets",
+          "Wikipedia tables with CC licenses",
+          "data.gov-style open data portals"
+        ]
+      },
+      "provocation": [
+        "cardigan",
+        "magnet",
+        "cricket"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lens": {
+        "id": "deckbuilder-systems",
+        "name": "Deckbuilder Systems Lab",
+        "kind": "interest",
+        "brief": "Deckbuilders hide a probability engine: thinning, draw odds, synergy graphs, the quiet tyranny of a bad starter card. Build the instrument panel the genre never shipped: simulate ten thousand runs of a tiny invented deck and show which choices actually mattered.",
+        "sourceHints": [
+          "r/slaythespire, r/balatro and r/roguelikes strategy threads",
+          "r/gamedev and itch.io deckbuilder jam postmortems",
+          "Wikipedia: Hypergeometric distribution, Monte Carlo method",
+          "r/boardgames design discussions on engine building"
+        ]
+      },
+      "provocation": [
+        "porch",
+        "deke",
+        "hustle"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lens": {
+        "id": "anti-lens-opposite",
+        "name": "Anti-Lens: The Opposite",
+        "kind": "wildcard",
+        "brief": "Write down the most obvious idea for any topic of the day, then build its exact opposite. A calculator that refuses to give answers, a game about losing well, a map of nowhere, a visualization that hides data on purpose. It must still be good: opposites are a method, not an excuse.",
+        "sourceHints": [
+          "Any hot thread, inverted",
+          "Wikipedia: Oblique Strategies, Reverse psychology, Negative space",
+          "r/InternetIsBeautiful top posts, then flip the premise",
+          "Are.na channels on anti-design"
+        ]
+      },
+      "provocation": [
+        "metronome",
+        "hornet",
+        "receipt"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lens": {
+        "id": "rube-goldberg-tool",
+        "name": "Gloriously Overengineered",
+        "kind": "humor",
+        "brief": "Solve a trivial problem with a ludicrous pipeline: forty configurable steps to pick a lunch, a distributed consensus protocol for choosing a movie. Every stage must actually do something, and the final answer should be correct enough to be annoying.",
+        "sourceHints": [
+          "r/ProgrammerHumor and r/programming 'overengineering' threads",
+          "Wikipedia: Rube Goldberg machine, Consensus (computer science)",
+          "Hacker News Show HN: ridiculous solutions",
+          "r/Damnthatsinteresting machines"
+        ]
+      },
+      "provocation": [
+        "ember",
+        "anvil",
+        "vending"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lens": {
+        "id": "maps-and-places",
+        "name": "Cartography Corner",
+        "kind": "wildcard",
+        "brief": "Maps are arguments. Build a map toy where the projection, the scale or the data tells a story: distort a country by population, draw the isochrone of an old railway, compare where daylight falls on one date. Hand-simplify and bundle geometry; no tile services.",
+        "sourceHints": [
+          "r/MapPorn, r/geography and r/dataisbeautiful maps",
+          "Wikipedia: Map projection, Cartogram, Natural Earth data",
+          "Natural Earth public-domain data",
+          "Hacker News cartography posts"
+        ]
+      },
+      "provocation": [
+        "tide",
+        "tempo",
+        "ledge"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lens": {
+        "id": "itch-jam-watch",
+        "name": "Jam Watch",
+        "kind": "current",
+        "brief": "Game jams put a theme on the table and let thousands of people interpret it. Pick the theme that is live this week and interpret it better than the average entry: a complete tiny game with a real mechanic, juicy feedback, and an ending. Credit the theme, not any particular entry.",
+        "sourceHints": [
+          "itch.io jams calendar and featured jams",
+          "Ludum Dare and other open jam theme announcements",
+          "r/gamedev jam threads, r/WebGames",
+          "r/incremental_games"
+        ]
+      },
+      "provocation": [
+        "periscope",
+        "pivot",
+        "phosphor"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lens": {
+        "id": "accessibility-delight",
+        "name": "Everyone's Toy",
+        "kind": "wildcard",
+        "brief": "Make accessibility the creative engine rather than a checklist: a visual toy that is fully playable by ear, a color tool built for every kind of vision, a game that works with one switch. The inclusive version should be the best version, not the compromise.",
+        "sourceHints": [
+          "r/accessibility, r/blind, r/deaf and r/gamedev accessibility threads",
+          "Wikipedia: Sonification, Color blindness, Universal design",
+          "Game Accessibility Guidelines (public)",
+          "Hacker News accessibility threads"
+        ]
+      },
+      "provocation": [
+        "ribbon",
+        "zigzag",
+        "orbit"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lens": {
+        "id": "mundane-epic",
+        "name": "Mundane Epic",
+        "kind": "humor",
+        "brief": "Take an everyday chore and score it like an epic quest: laundry as a siege, commuting as a roguelike, an inbox as a hydra. Real progression, real stakes, honest jokes about modern life. The best versions end up quietly useful.",
+        "sourceHints": [
+          "r/CasualConversation and r/mildlyinteresting for everyday texture",
+          "r/incremental_games and r/roguelikes for progression design",
+          "Wikipedia: Gamification, Hero's journey",
+          "itch.io 'life sim' jam entries"
+        ]
+      },
+      "provocation": [
+        "outpost",
+        "obsidian",
+        "quicksand"
+      ]
+    }
+  ],
+  "owedKinds": [
+    "current",
+    "humor",
+    "wildcard"
+  ],
+  "relaxedDays": 0
+}

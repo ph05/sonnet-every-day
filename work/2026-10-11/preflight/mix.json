@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "window": {
+    "days": 14,
+    "from": "2026-09-27",
+    "to": "2026-10-10",
+    "builds": 1
+  },
+  "categoryCounts": {
+    "modding-games": 1
+  },
+  "slotCounts": {
+    "interest": 1,
+    "currentEvents": 0,
+    "humor": 0,
+    "wildcard": 0
+  },
+  "owed": [
+    "currentEvents",
+    "humor",
+    "wildcard"
+  ],
+  "owedDetail": [
+    {
+      "slot": "currentEvents",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "humor",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "wildcard",
+      "lastDate": null,
+      "daysSince": null
+    }
+  ],
+  "avoidCategories": [
+    "modding-games"
+  ],
+  "avoidMechanics": [
+    "toy"
+  ],
+  "politicsAllowed": true,
+  "summary": "In the last 14 days we shipped 1 build: modding-games x1. Do not propose these categories today (cooldown or already used twice this week): modding-games. Avoid these mechanics, used within the last 7 days: toy. Owed this week, so at least one idea each: currentEvents (skew pop/fun/hockey; politics is rare); humor; wildcard. A political idea is permitted but rare: playful and satirical only, never partisan."
+}

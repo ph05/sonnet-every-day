@@ -6,15 +6,17 @@
   "tier": null,
   "phase": "preflight",
   "phasesDone": [],
-  "attempts": {},
+  "attempts": {
+    "preflight": 1
+  },
   "phaseStartedAt": {
-    "preflight": "2026-10-11T07:55:42.028Z"
+    "preflight": "2026-10-11T07:56:07.585Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T07:55:42.028Z"
+    "heartbeatAt": "2026-10-11T07:56:07.585Z"
   },
   "directives": [],
   "chosen": null,
@@ -33,6 +35,25 @@
       "by": "primary",
       "kind": "note",
       "msg": "run created by primary (cse_011MmHKF9EADvVeN8KnZuFsm) targeting tier 1"
+    },
+    {
+      "at": "2026-10-11T07:56:02.978Z",
+      "by": "usage",
+      "kind": "note",
+      "code": "usage-warn",
+      "msg": "usage warning during the owner override: status allowed_warning (seven_day): the plan window is filling up; the owner override is active, so only logged"
+    },
+    {
+      "at": "2026-10-11T07:56:08.614Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "agent slots: 2"
+    },
+    {
+      "at": "2026-10-11T07:56:22.539Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "kaizen suspects: 3281efd c62f604 1c20ee8 37b545d 7acc654 (day 1 not clean; carried from handoff)"
     }
   ]
 }
