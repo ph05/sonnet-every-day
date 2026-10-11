@@ -2,6 +2,11 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-11 · clerk · applied · clerk: say when every network probe fails the same way, so the network is named not the sites
+
+- observation: Clerk notes 2026-10-11: all 7 source links answered 000 from the sandbox and were reported as 7 unreachable links. clerk.md network-probe bullet only covered one host at a time, so nothing said the network itself looked down. Added one sentence: if every host fails the same way, put one line first saying the network looks down, then still list each host. Single line changed in clerk.md, no test touched.
+- category: prevention · lines changed: 2 · files: ops/roles/clerk.md
+
 ## 2026-10-11 · critic · applied · quality.md: keep the main output in view with its controls (S2 shipped two days running)
 
 - observation: Same S2 kind two days running; revise was skipped both days so both shipped. 2026-10-10 d01: scoring cascade 318 px below Play (1,025 px on a phone). 2026-10-11 qa/report.json: d02 map and sliders never on screen together at 390x844, d03 sticky column scroller crops the map under a wheel at 1366x768 and 1280x800, d04 card goal about 1,600 px above the card list. quality.md hard minimums named only horizontal overflow; browser-check.mjs shots are viewport-only and its monkey wheels assert nothing. Added one hard-minimum bullet with both probes and a selfcheck test pinning it.
