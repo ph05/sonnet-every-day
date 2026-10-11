@@ -6,9 +6,9 @@
     "seed": 932310606,
     "passes": {
       "desktop-light": {
-        "domContentLoadedMs": 175,
-        "loadMs": 183,
-        "fcpMs": 100,
+        "domContentLoadedMs": 149,
+        "loadMs": 159,
+        "fcpMs": 120,
         "longTasks": {
           "count": 1,
           "totalMs": 65,
@@ -16,7 +16,7 @@
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 41,
         "headings": {
           "total": 15,
@@ -34,20 +34,20 @@
           "missingIndicator": 0,
           "trapped": false
         },
-        "ms": 1800
+        "ms": 1906
       },
       "desktop-dark": {
-        "domContentLoadedMs": 187,
-        "loadMs": 197,
-        "fcpMs": 92,
+        "domContentLoadedMs": 124,
+        "loadMs": 132,
+        "fcpMs": 80,
         "longTasks": {
           "count": 1,
-          "totalMs": 77,
-          "maxMs": 77
+          "totalMs": 58,
+          "maxMs": 58
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 41,
         "headings": {
           "total": 15,
@@ -60,20 +60,20 @@
           "failing": 0,
           "min": 7.26
         },
-        "ms": 1117
+        "ms": 1018
       },
       "mobile-light": {
-        "domContentLoadedMs": 126,
-        "loadMs": 130,
-        "fcpMs": 80,
+        "domContentLoadedMs": 112,
+        "loadMs": 116,
+        "fcpMs": 76,
         "longTasks": {
-          "count": 0,
-          "totalMs": 0,
-          "maxMs": 0
+          "count": 1,
+          "totalMs": 55,
+          "maxMs": 55
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 34,
         "headings": {
           "total": 15,
@@ -86,20 +86,20 @@
           "failing": 0,
           "min": 5.74
         },
-        "ms": 1085
+        "ms": 1018
       },
       "mobile-dark": {
-        "domContentLoadedMs": 134,
-        "loadMs": 137,
-        "fcpMs": 64,
+        "domContentLoadedMs": 113,
+        "loadMs": 118,
+        "fcpMs": 72,
         "longTasks": {
           "count": 1,
-          "totalMs": 53,
-          "maxMs": 53
+          "totalMs": 50,
+          "maxMs": 50
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 34,
         "headings": {
           "total": 15,
@@ -112,40 +112,40 @@
           "failing": 0,
           "min": 7.26
         },
-        "ms": 1005
+        "ms": 1057
       },
       "mobile-320": {
-        "domContentLoadedMs": 146,
-        "loadMs": 151,
-        "fcpMs": 88,
+        "domContentLoadedMs": 114,
+        "loadMs": 119,
+        "fcpMs": 64,
         "longTasks": {
           "count": 1,
-          "totalMs": 56,
-          "maxMs": 56
+          "totalMs": 59,
+          "maxMs": 59
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 34,
         "headings": {
           "total": 15,
           "h1": 1
         },
         "overflowPx": 0,
-        "ms": 987
+        "ms": 911
       },
       "reduced-motion": {
-        "domContentLoadedMs": 138,
-        "loadMs": 145,
-        "fcpMs": 92,
+        "domContentLoadedMs": 125,
+        "loadMs": 134,
+        "fcpMs": 96,
         "longTasks": {
           "count": 1,
-          "totalMs": 58,
-          "maxMs": 58
+          "totalMs": 59,
+          "maxMs": 59
         },
         "heapMB": 10,
         "resources": 9,
-        "domNodes": 515,
+        "domNodes": 522,
         "focusable": 41,
         "headings": {
           "total": 15,
@@ -157,12 +157,12 @@
           "infinite": 0,
           "names": []
         },
-        "ms": 899
+        "ms": 901
       }
     },
     "server": {
       "requests": 60,
-      "bytes": 1258104,
+      "bytes": 1269096,
       "notFound": []
     },
     "nonLocalRequests": [],
@@ -173,7 +173,7 @@
       "monkey"
     ],
     "browser": "141.0.7390.37",
-    "durationMs": 7675
+    "durationMs": 7645
   },
   "shots": [
     "/home/user/sonnet-every-day/work/2026-10-11/qa/first/shots/desktop-light.png",

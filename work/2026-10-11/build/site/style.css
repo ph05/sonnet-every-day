@@ -123,8 +123,19 @@
   .kn-side { display: contents; }
   .kn-goal { grid-column: auto; }
 }
-@media (min-width: 1024px) and (min-height: 760px) {
-  .kn-left { position: sticky; top: 12px; }
+/* The pinned column (stage, playback, readouts) is 860 to 920 px tall, taller than most laptop windows, so it scrolls inside
+   itself rather than hiding its last rows. The padding and negative margin leave room for shadows without moving anything. */
+@media (min-width: 1024px) and (min-height: 600px) {
+  .kn-left {
+    position: sticky;
+    top: 12px;
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    padding: 6px 10px 12px;
+    margin: -6px -10px -12px;
+    overflow: hidden auto;
+    scrollbar-width: thin;
+  }
 }
 @media (min-width: 1280px) {
   .kn-grid { grid-template-columns: minmax(0, 1fr) 400px; }

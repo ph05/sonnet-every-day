@@ -1,0 +1,62 @@
+{
+  "phase": "build",
+  "ok": true,
+  "date": "2026-10-11",
+  "tier": 2,
+  "compact": true,
+  "owners": {
+    "artisan": [
+      "index.html",
+      "style.css",
+      "js/ui.js",
+      "js/render.js",
+      "js/geodata.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/orbit.js",
+      "js/coverage.js",
+      "js/cards.js",
+      "js/state.js",
+      "js/selftest.js"
+    ]
+  },
+  "files": 11,
+  "missing": [],
+  "ownLoc": 5155,
+  "integration": {
+    "agentOk": true,
+    "rounds": 2,
+    "browserChecked": true,
+    "browserOk": true,
+    "errors": [],
+    "edits": [
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/js/ui.js",
+        "why": "Try again after a peek now emits app:pick-card for the active card instead of app:reset. A peek loads the par needles and the peeked flag only clears on app:pick-card, so the old button replayed the par setup, contradicting the result text and leaving the card unbadgeable."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/js/ui.js",
+        "why": "New-card detection compares with S.seenCard. app:cards always arrives before app:state and had already moved S.card, so the screen-reader announcement of a picked card and revealStage() (scroll the map back into view after picking a card from the Cards tab on a phone) never ran. Verified on a 390 px phone and with the announcer text."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/js/ui.js",
+        "why": "watchFrozen(): polls renderer.isSunFrozen() every 0.9 s while the night line is frozen, so the note 'Above a day or two per second the night line rests at 12:00 UTC.' clears after fast play stops (main stops drawing when nothing changes, so draw() never saw the release)."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/js/render.js",
+        "why": "Render loop stays alive while the speed-measurement window is open (Number.isFinite(rateDay)), so a fast run that stops releases the frozen night line and repaints, also in reduced motion where the loop otherwise idles."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/style.css",
+        "why": "The pinned left column (stage, playback bar, readouts; 860 to 920 px tall) was taller than the window at 1024x768, 1280x800, 1366x768, 1440x900 and 1536x864, hiding its lower readout rows (including Repeat) until the page end. It now scrolls inside itself (max-height 100dvh - 24px, overflow hidden auto, padding plus negative margin for shadows) and the pin starts at 600 px window height instead of 760."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-11/build/site/index.html",
+        "why": "Added rel=modulepreload for the seven static modules to remove the four-deep import waterfall on a real host; each module is still requested exactly once and no console warning appears."
+      }
+    ]
+  },
+  "siteDir": "work/2026-10-11/build/site",
+  "projectDraft": "work/2026-10-11/package/project.json"
+}

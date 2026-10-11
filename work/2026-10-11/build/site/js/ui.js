@@ -143,7 +143,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
   const S = {
     sats: [], sel: 0, view: 'flat', speed: 1, season: 0, terminator: true, playing: false, peeked: false, card: 'free',
     cards: [], activeCard: null, info: null, tick: null, tab: 'orbit', short: null, finishedShown: false,
-    booted: false, tickSig: '', labelAt: 0, focusOn: false, frozen: false, userPicked: false, drawFails: 0,
+    booted: false, tickSig: '', labelAt: 0, focusOn: false, frozen: false, userPicked: false, drawFails: 0, seenCard: null,
   };
   const timers = new Set();
   const listeners = [];
@@ -605,7 +605,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     const d = e.detail || {};
     const st = d.state;
     if (!st || !Array.isArray(st.sats) || !st.sats.length) return;
-    const before = { sel: S.sel, view: S.view, playing: S.playing, card: S.card };
+    const before = { sel: S.sel, view: S.view, playing: S.playing };
     S.booted = S.booted || d.reason !== 'boot';
     S.sats = st.sats.slice(0, 3).map((s) => ({ alt: +s.alt, inc: +s.inc, ecc: +s.ecc, node: +s.node, argp: +s.argp, swath: +s.swath }));
     S.sel = clamp(Math.floor(Number(st.sel) || 0), 0, S.sats.length - 1);
@@ -628,7 +628,10 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     renderCards();
     renderGoal();
     if (d.reason === 'reset' || d.reason === 'card') S.short = null;
-    if (before.card !== S.card) {
+    // app:cards always arrives first and has already moved S.card, so compare with the card this handler saw last.
+    const cardChanged = S.seenCard !== null && S.seenCard !== S.card;
+    S.seenCard = S.card;
+    if (cardChanged) {
       announce((S.activeCard ? 'Pattern card: ' + S.activeCard.title + '. ' + S.activeCard.goal : 'Free knit.'));
       if (S.userPicked) revealStage();
     }

@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "build",
+  "phase": "qa",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -29,6 +29,12 @@
       "at": "2026-10-11T10:47:33.217Z",
       "by": "primary",
       "note": "spec ok (compact, tier 2)"
+    },
+    {
+      "phase": "build",
+      "at": "2026-10-11T12:27:57.157Z",
+      "by": "primary",
+      "note": "build ok, trial validate ok (ownLoc 5016)"
     }
   ],
   "attempts": {
@@ -36,20 +42,22 @@
     "ideate": 1,
     "select": 1,
     "spec": 1,
-    "build": 1
+    "build": 1,
+    "qa": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-11T07:56:07.585Z",
     "ideate": "2026-10-11T07:56:52.904Z",
     "select": "2026-10-11T09:47:39.067Z",
     "spec": "2026-10-11T10:20:40.590Z",
-    "build": "2026-10-11T10:47:38.359Z"
+    "build": "2026-10-11T10:47:38.359Z",
+    "qa": "2026-10-11T12:28:08.953Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T12:18:35.099Z",
+    "heartbeatAt": "2026-10-11T12:28:19.649Z",
     "phase": "select"
   },
   "directives": [
@@ -68,8 +76,8 @@
   },
   "throttle": "all-in",
   "spend": {
-    "outputTokens": 2299169,
-    "agentCalls": 43,
+    "outputTokens": 3341259,
+    "agentCalls": 54,
     "byPhase": {
       "ideate": {
         "outputTokens": 1667764,
@@ -82,6 +90,10 @@
       "spec": {
         "outputTokens": 192061,
         "agentCalls": 6
+      },
+      "build": {
+        "outputTokens": 1042090,
+        "agentCalls": 11
       }
     }
   },
@@ -174,29 +186,41 @@
       "kind": "note",
       "code": "watch-extended",
       "msg": "phase watch extended: build attempt 1 was 0.8 min past 2026-10-11T12:17:38.874Z but a file under work/2026-10-11 changed 3.9 min ago; due 2026-10-11T12:33:27.543Z now (extension 1 of 2)"
+    },
+    {
+      "at": "2026-10-11T12:28:08.234Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "planner says qa+package+publish (29 min) exceeds 13 min of planned slack to 09:15; proceeding with a bounded compact qa (20 min budget): finish about 09:00, inside the 09:30 grace; fall back to smoke-only ship if qa runs past 09:10"
+    },
+    {
+      "at": "2026-10-11T12:28:09.542Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: qa attempt 1, due 2026-10-11T12:58:09.542Z (30 min: budget 20 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "build",
+    "phase": "qa",
     "attempt": 1,
-    "armedAt": "2026-10-11T10:47:38.874Z",
-    "dueAt": "2026-10-11T12:33:27.543Z",
+    "armedAt": "2026-10-11T12:28:09.542Z",
+    "dueAt": "2026-10-11T12:58:09.542Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01BDn8af37gfHevjoKM7ud5P",
-    "workflowTask": "w3ctxj616",
+    "triggerId": "trig_01WTBctZHSAYMYuoBRD4xFDx",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 80,
-    "delayMinutes": 90,
+    "budgetMinutes": 20,
+    "delayMinutes": 30,
     "clamped": null,
     "arms": {
       "ideate": 1,
       "select": 1,
       "spec": 1,
-      "build": 1
+      "build": 1,
+      "qa": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-11T12:18:35.099Z",
-    "extensions": 1,
-    "extendedAt": "2026-10-11T12:18:27.543Z"
+    "boundAt": "2026-10-11T12:28:19.649Z"
   }
 }
