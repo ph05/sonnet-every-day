@@ -4,19 +4,28 @@
   "status": "in_progress",
   "targetTier": 1,
   "tier": null,
-  "phase": "preflight",
-  "phasesDone": [],
+  "phase": "ideate",
+  "phasesDone": [
+    {
+      "phase": "preflight",
+      "at": "2026-10-11T07:56:46.463Z",
+      "by": "primary",
+      "note": "preflight ok"
+    }
+  ],
   "attempts": {
-    "preflight": 1
+    "preflight": 1,
+    "ideate": 1
   },
   "phaseStartedAt": {
-    "preflight": "2026-10-11T07:56:07.585Z"
+    "preflight": "2026-10-11T07:56:07.585Z",
+    "ideate": "2026-10-11T07:56:52.904Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-11T07:55:42.028Z",
-    "heartbeatAt": "2026-10-11T07:56:07.585Z"
+    "heartbeatAt": "2026-10-11T07:57:02.741Z"
   },
   "directives": [],
   "chosen": null,
@@ -54,6 +63,37 @@
       "by": "primary",
       "kind": "note",
       "msg": "kaizen suspects: 3281efd c62f604 1c20ee8 37b545d 7acc654 (day 1 not clean; carried from handoff)"
+    },
+    {
+      "at": "2026-10-11T07:56:45.803Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "premortem: A phase workflow stalls like the 2026-10-10 spec after an interrupted agent; mitigation: check for DONE.json at 60 minutes and run the 6.7 stall row | A non-ideate workflow text fails checkWritten after a clerk rewrite, repeating the 540k-token loss; mitigation: grep shipped programs for unicode and hex escapes | The 7-minute kaizen suite fails once at HEAD under 4-CPU load; mitigation: stop heartbeat loops before kaizen and record the failing test name"
+    },
+    {
+      "at": "2026-10-11T07:56:53.400Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: ideate attempt 1, due 2026-10-11T09:21:53.400Z (85 min: budget 75 + 10 margin)"
     }
-  ]
+  ],
+  "watch": {
+    "phase": "ideate",
+    "attempt": 1,
+    "armedAt": "2026-10-11T07:56:53.400Z",
+    "dueAt": "2026-10-11T09:21:53.400Z",
+    "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
+    "triggerId": "trig_01FToJKroe9VBAb2F2wMfVyw",
+    "workflowTask": null,
+    "role": "primary",
+    "budgetMinutes": 75,
+    "delayMinutes": 85,
+    "clamped": null,
+    "arms": {
+      "ideate": 1
+    },
+    "attemptsAtArm": 1,
+    "boundAt": "2026-10-11T07:57:02.741Z"
+  }
 }
