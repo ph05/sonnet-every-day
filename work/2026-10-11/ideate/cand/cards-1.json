@@ -1,0 +1,260 @@
+{
+  "id": "cards-1",
+  "title": "Pick Autopsy",
+  "pitch": "A visitor drafts a deck of about ten cards for a tiny invented deckbuilder, choosing, skipping or trimming at four forks, and a worker then plays that deck ten thousand seeded runs, painting a 100-by-100 field of wins and losses in a blink. The autopsy replays every fork both ways and splits the win-rate change fairly across the four choices, so the visitor sees which pick carried the run, which was a decoy and which quietly cost points, each with an honest error bar. Ranking the forks before the reveal earns an intuition grade, and any pixel replays its run card by card.",
+  "whyNow": "Timeless. Deckbuilder folklore (skip rewards, thin the deck, trust the combo) tends to be argued from the runs a player happens to remember, and this page measures it for one invented game with ten thousand runs per fork. Genre backdrop, reported and unconfirmed: Slay the Spire 2 has been in Early Access since 2026-03-05 per the studio's news post.",
+  "origin": {
+    "agent": "cards",
+    "lens": "deckbuilder-systems"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "simulator",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "deckbuilder",
+      "monte-carlo",
+      "draft-trainer",
+      "counterfactuals",
+      "shapley-value",
+      "draw-odds",
+      "deck-thinning",
+      "variance",
+      "seeded-simulation",
+      "card-games"
+    ],
+    "keywords": [
+      "pick-autopsy",
+      "skip-or-pick",
+      "starter-deck",
+      "hypergeometric",
+      "win-rate",
+      "error-bars",
+      "sample-size",
+      "regret-score",
+      "pixel-field",
+      "decoy-picks"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Fan guides for Slay the Spire treat skipping card rewards and trimming starter Strikes and Defends as a deliberate way to keep a deck thin (one guide suggests staying under about 15 cards unless the deck leans on card draw); guides and forums reportedly disagree on the right size, per a blended search summary, so that point is shown as reported. Opening-hand and draw odds follow the hypergeometric distribution (several trading-card math pages). Deck testers say comparing win rates by hand needs far more games than people play. Methods: the Shapley value averages a choice's marginal contribution over all orderings and the parts sum exactly to the total, which for four forks needs only 16 deck variants; common random numbers are the textbook way to compare simulations. Derived by the scout in a throwaway seeded Node prototype of an invented game, not from the web: 10,000 runs took about 0.13 s, a 16-variant batch 2 to 3.5 s, Shapley parts summed to the total in 8 of 8 scenarios, and matched seeds cut variance only 2 to 24 percent for single-card swaps, so accuracy rests on run count.",
+    "sources": [
+      {
+        "title": "Slay The Spire guide: tips for topping the tower",
+        "url": "https://www.pcgamer.com/slay-the-spire-guide/",
+        "date": "",
+        "snippet": "The guide treats the skip option on card rewards as a deliberate tool for keeping the deck small and suggests trimming the starting Strikes and Defends.",
+        "via": "search",
+        "note": "Establishes skipping and trimming as a recognised tactic. Not opened: the fetch failed at DNS today, so the statement comes from the search result text.",
+        "verified": true
+      },
+      {
+        "title": "Understanding Card Rewards: When to Take, Skip, or Remove",
+        "url": "https://www.spirebuilds.com/guides/understanding-card-rewards",
+        "date": "",
+        "snippet": "A fan guide on when to take, skip or remove card rewards, with the argument that each added card lowers the odds of drawing the best ones.",
+        "via": "search",
+        "note": "Second independent guide agreeing on skipping. The search summary blended several guides whose suggested deck sizes differ (about 12-15, 15-25, 25-40 cards), so sizes are not tied to one URL.",
+        "verified": true
+      },
+      {
+        "title": "yu gi oh hypergeometric probability distribution function",
+        "url": "https://ygoprodeck.com/article/yu-gi-oh-hypergeometric-probability-distribution-function-15119",
+        "date": "",
+        "snippet": "A card-game math article maps the hypergeometric inputs to deck terms (deck as population, opening hand as sample, wanted cards as successes) with a 3-copies-in-40-cards example.",
+        "via": "search",
+        "note": "Establishes the draw-odds model. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Bad Opening Hands",
+        "url": "https://cardmarket.com/en/Insight/Articles/The-Mathematics-Behind-Building-Competitive-Decks",
+        "date": "",
+        "snippet": "A trading-card marketplace article on the mathematics behind building decks, covering the probability mass function behind opening-hand calculators.",
+        "via": "search",
+        "note": "Independent second source for the hypergeometric model. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Card Draw Math in Star Wars: Unlimited",
+        "url": "https://taketheinitiative.substack.com/p/card-draw-math-in-star-wars-unlimited",
+        "date": "",
+        "snippet": "A newsletter post uses a hypergeometric calculator for draw odds in another card game and notes that mulligans can be handled by enlarging the sample.",
+        "via": "search",
+        "note": "Third independent source for the draw-odds model. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "# COMPARING SYSTEMS",
+        "url": "https://www2.isye.gatech.edu/~sman/courses/6644/Module10-ComparingSystems-201128.pdf",
+        "date": "2020",
+        "snippet": "University lecture notes covering common random numbers, antithetic variates and paired intervals for comparing simulated systems.",
+        "via": "search",
+        "note": "Establishes common random numbers as the standard comparison method; the result summary credits the course to Goldsman. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Using Common Random Numbers and Control Variates in Multiple-Comparison Procedures",
+        "url": "https://pubsonline.informs.org/doi/epdf/10.1287/opre.39.4.583",
+        "date": "1991",
+        "snippet": "A 1991 Operations Research paper on refining multiple-comparison procedures for simulated systems with common random numbers and control variates.",
+        "via": "search",
+        "note": "Independent second source for common random numbers in simulation comparison. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "When Does Pairing Seeds Reduce Variance? Evidence from a Multi-Agent Economic Simulation",
+        "url": "https://arxiv.org/pdf/2512.24145",
+        "date": "2025",
+        "snippet": "A paper shows the variance of a paired estimator equals the unpaired variance minus a term that grows with the covariance between paired outcomes, so the gain depends on correlation.",
+        "via": "search",
+        "note": "Supports the caution that pairing seeds does not always help, which matches the scout's own measurement. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Shapley value",
+        "url": "https://en.wikipedia.org/wiki/Shapley_value",
+        "date": "",
+        "snippet": "The article defines a player's value as the average marginal contribution over all orderings and shows that the values add up to the grand coalition's total.",
+        "via": "search",
+        "note": "Establishes the definition and the efficiency property. Result text only; the host cannot be fetched from here.",
+        "verified": true
+      },
+      {
+        "title": "The Shapley Value Approach",
+        "url": "https://shapley-value-regression.readthedocs.io/mathematical-foundation/",
+        "date": "",
+        "snippet": "Documentation for Shapley value regression splits a model's total R-squared among predictors so the importances add up to the whole.",
+        "via": "search",
+        "note": "Independent second source for efficiency (parts sum to the total). Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Why did the distribution change?",
+        "url": "https://arxiv.org/pdf/2102.13384",
+        "date": "",
+        "snippet": "A paper states the efficiency axiom (individual values sum to the grand coalition's payoff) and notes that efficiency, symmetry, dummy player and linearity together fix the Shapley value.",
+        "via": "search",
+        "note": "Third source for the axioms of the Shapley value. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Are you a Quiet Speculation member?",
+        "url": "https://modernnexus.com/systematic-and-practical-testing-guidelines/",
+        "date": "",
+        "snippet": "A Modern-format testing guide (URL slug: systematic and practical testing guidelines) argues it is hard to gather enough matches for a deck comparison to pass a t-test at high confidence, since single cards change little and game variance is high.",
+        "via": "search",
+        "note": "Establishes that hand testing yields samples too small for win-rate comparisons. Page title as shown is a membership prompt; content seen only in the search result.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Opening-hand and draw odds in card games follow the hypergeometric distribution (draws without replacement); one worked example uses 3 copies in a 40-card deck and a 5-card hand.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3,
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, fan guides for Slay the Spire commonly advise skipping most card rewards and trimming starter cards to keep the deck small; one guide suggests staying under about 15 cards unless the deck relies on card draw.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Common random numbers (matched random inputs) are the standard way to compare simulated alternatives, and the variance reduction depends on how strongly the paired outcomes correlate.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "The Shapley value gives each choice its average marginal contribution over all orderings and the values add up exactly to the total change (efficiency); for four choices that is 16 deck variants (2^4, counted by the scout).",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9,
+          10
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Deck testers report that comparing win rates by hand needs far more games than people play, because single cards change results only slightly and game variance is high.",
+        "sourceIndex": 11,
+        "alsoIn": [
+          12
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "A Pokemon testing guide suggests at least 10 to 20 goldfish sessions as a rough convention (single source, unverified).",
+        "sourceIndex": 13,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "A university project on card drafting for Slay the Spire exists (single source, findings not seen, unverified).",
+        "sourceIndex": 14,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Slay the Spire 2 launched into Steam Early Access on 2026-03-05 (reported; date read from the post URL; single source, unverified).",
+        "sourceIndex": 15,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "chess engine evaluation bars and move annotations",
+      "poker solver EV-loss trainers",
+      "skip-or-pick debates in roguelike deckbuilders",
+      "trading-card goldfishing",
+      "Shapley-value attribution in data science",
+      "Monte Carlo deck testing"
+    ]
+  },
+  "design": {
+    "coreLoop": "A visitor meets four forks (three pick-one-of-three-or-skip rewards and one trim-a-card shrine) and builds a deck of about ten cards, after ranking which fork they think will matter most. A worker plays the deck ten thousand seeded runs and paints a 100-by-100 field of wins and losses. The autopsy replays all 16 variants of the four forks, splits the win-rate change fairly across the choices and labels each as load-bearing, decoy or harmful with a 95 percent bar. Flipping any fork repaints the field in a fraction of a second, any pixel replays its run card by card, and the intuition grade makes the second and tenth draft each teach something new.",
+    "sophisticationHooks": [
+      "Exact Shapley attribution over the 16 deck variants of the four forks, parts summing exactly to the total change (verified in a scout prototype), with a 95 percent bar from per-run contributions",
+      "Honest uncertainty: binomial error bars, a how-many-runs-would-a-human-need panel, and a measured paired-versus-unpaired variance ratio shown on screen instead of an assumed benefit",
+      "Exact hypergeometric overlays (chance a key card is in the opening hand or seen by turn three) beside the simulated frequency so the two visibly agree",
+      "Deterministic keyed shuffles: any one of the ten thousand runs replays from its seed, and the URL hash restores the draft, seed and results"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "In one morning the team builds: the invented game (12 to 16 cards, three rooms, fixed greedy autopilot) and its seeded engine with node self-checks (hypergeometric counts, Shapley sum, determinism); the four-fork draft UI; worker batches with progress; the 100-by-100 canvas field with click-to-replay; the autopsy panel with bars and verdict labels; rewind by flipping a fork; the predict-then-reveal grade; an about panel with dated sources; hash state; light and dark; reduced motion. Cut: multiple card pools, relics, multi-act runs, animated fights, sound, daily leaderboards.",
+    "risks": [
+      "The pilot is a fixed greedy autopilot, so every number means this deck under this pilot; the page calls it a ruler, not an oracle, and makes no claim of optimal play.",
+      "Balance of the invented game decides everything: in the scout prototype single-card effects ranged from about minus 54 to plus 35 points in a harsh setting and minus 7 to plus 6 in a gentle one, with few near-zero decoys, so the card pool and enemies need tuning until decoys, synergies and traps all exist; a node harness can assert that spread.",
+      "Matched seeds were measured to help little (variance ratio 0.76 to 0.98 for single-card swaps in the prototype); the page shows its own measured ratio and relies on 10,000 runs per variant rather than an assumed gain.",
+      "A 16-variant batch of 10,000 runs took about 2 to 3.5 s in Node; a browser worker needs a progress bar, a cancel path and a lower run count (for example 4,000) on slow phones.",
+      "Unverified items stay flagged: the Slay the Spire 2 Early Access date, the 10 to 20 session rule of thumb, the Edinburgh drafting project and the reported disagreement on deck size each rest on one result or a blended summary, and the page shows them as 'as of 2026-10-11, per the named source' or omits them. Selection bias in pick-rate stats is the scout's own reasoning.",
+      "Safety framing: every card, enemy and name is invented, results are labelled simulated, nothing involves money or stakes, and no third-party art or audio is used."
+    ]
+  },
+  "durable": true,
+  "sanitizer": {
+    "redacted": [],
+    "trimmed": 4
+  }
+}

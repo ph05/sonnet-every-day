@@ -1,0 +1,236 @@
+{
+  "id": "cards-2",
+  "title": "Shuffle Sharp",
+  "pitch": "A lazy dealer riffles a fresh 52-card deck once or twice and a visitor, playing the sharp, calls each next card as it turns over. After a single idealised riffle about 31 cards can be called against 4.5 for blind guessing (the scout's seeded count), and each extra shuffle melts that edge until it is near half a card at seven riffles. A feint mode adds false shuffles and perfect faros that only look mixed, and an exact curve shows why seven is the magic number.",
+  "whyNow": "Timeless. A famous result becomes something felt in the fingers: exploiting a lazy shuffle is the card-table version of exploiting a strategy that mixes too little, and the curve is the plain-language picture of unexploitable play. In board-game deckbuilders every reshuffle of a hand-shuffled discard pile is a place where order can leak.",
+  "origin": {
+    "agent": "cards",
+    "lens": "deckbuilder-systems"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "competitive",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "dom-ui",
+      "pointer-events",
+      "web-animations"
+    ],
+    "tags": [
+      "riffle-shuffle",
+      "card-guessing",
+      "permutations",
+      "rising-sequences",
+      "randomness",
+      "faro-shuffle",
+      "card-sharp",
+      "total-variation",
+      "exploit-versus-equilibrium",
+      "feedback-game"
+    ],
+    "keywords": [
+      "seven-shuffles",
+      "false-shuffle",
+      "mixing-time",
+      "edge-curve",
+      "dealer-tell",
+      "likelihood-ratio",
+      "reshuffle",
+      "discard-pile",
+      "bot-benchmark",
+      "perfect-shuffle"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "After k riffles a deck holds only arrangements with at most 2^k rising sequences, and the chance of an arrangement depends only on its rising-sequence count r as C(2^k + n - r, n) over 2^(kn); the scout checked this law by exhaustive enumeration for small decks. Exact 52-card total variation distance (computed by the scout from Eulerian numbers) is 1.000 through k=4, then 0.924, 0.614, 0.334, 0.167, 0.085, 0.043 for k=5 to 10, matching the often-cited rule of about seven riffles (Harvey Mudd, MathWorks, Science News, the Bayer-Diaconis paper). Card guessing with complete feedback after one riffle is studied in several papers; the scout's seeded count for 52 cards gives 31.1 correct for a heads-tracking guesser (an exact Bayes guesser for one riffle matches at 31.2) against 4.5 for blind guessing, then 19.6, 12.9, 8.8, 6.6, 5.5, 5.0, 4.8, 4.7, 4.6 for 2 to 10 riffles. Eight perfect out-faros restore 52 cards (several sources; scout recount agrees).",
+    "sources": [
+      {
+        "title": "Seven Shuffles",
+        "url": "https://math.hmc.edu/funfacts/seven-shuffles/",
+        "date": "",
+        "snippet": "A Harvey Mudd fun-facts page on the result that about seven riffle shuffles are needed to mix a 52-card deck.",
+        "via": "search",
+        "note": "Establishes the seven-shuffle headline. Not opened: the fetch failed at DNS today, so the text comes from the search result.",
+        "verified": true
+      },
+      {
+        "title": "how many times should you shuffle the cards 2",
+        "url": "https://blogs.mathworks.com/cleve/2016/02/15/how-many-times-should-you-shuffle-the-cards-2/",
+        "date": "2016-02-15",
+        "snippet": "A numerical-computing blog post on how many riffle shuffles randomise a deck; the search summary mentions a computation where total variation falls below one half at seven.",
+        "via": "search",
+        "note": "Second independent source for seven; date read from the URL path. The summary also mentioned an information-based measure with a minimum near six shuffles but did not show which result said so, so that point stays unconfirmed.",
+        "verified": true
+      },
+      {
+        "title": "bayer diaconis",
+        "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/bayer_diaconis.pdf",
+        "date": "",
+        "snippet": "A PDF copy of the 1992 paper on the dovetail (riffle) shuffle; its Theorem 1 gives the chance of an arrangement after m shuffles in terms of its number of rising sequences.",
+        "via": "search",
+        "note": "Primary source for the riffle law. The formula was garbled in the snippets, so the scout checked C(a+n-r,n)/a^n by exhaustive enumeration for small decks. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Rising Sequences in Card Shuffling",
+        "url": "https://math.hmc.edu/funfacts/?p=357",
+        "date": "",
+        "snippet": "A fun-facts page defining rising sequences, the maximal runs of cards that keep their original relative order in a shuffled deck.",
+        "via": "search",
+        "note": "Establishes the statistic that tracks how much order a riffled deck keeps. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Disorder in the Deck",
+        "url": "https://www.sciencenews.org/article/disorder-deck-0",
+        "date": "",
+        "snippet": "A popular article says that with five or fewer shuffles the deck's original order is strongly in evidence, and with more than seven it has virtually disappeared.",
+        "via": "search",
+        "note": "Independent popular-press confirmation of the five-to-seven range. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "On card guessing game with one time riffle shuffle and complete feedback",
+        "url": "https://ar5iv.labs.arxiv.org/html/1908.07718",
+        "date": "",
+        "snippet": "A paper gives an optimal strategy for guessing cards after one riffle shuffle with complete feedback, with maximum expected correct guesses of order n/2 plus a term of order the square root of n.",
+        "via": "search",
+        "note": "Establishes the game and the single-riffle result; the scout's seeded count for n=52 (31.2 correct) is consistent with it. The same paper appears on other hosts, which are not independent. arxiv.org itself failed to fetch at DNS.",
+        "verified": true
+      },
+      {
+        "title": "The card guessing game: A generating function approach",
+        "url": "https://repository.li.mahidol.ac.th/handle/123456789/81563",
+        "date": "",
+        "snippet": "A later paper gives an expression for the expected number of correct guesses with an arbitrary number of terms, improving on earlier results.",
+        "via": "search",
+        "note": "Independent second paper on the same game. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "Refutation of the Bayer-Diaconis-McGrath conjecture for the riffle shuffle card guessing game with feedback",
+        "url": "https://hal-confremo.archives-ouvertes.fr/THESES-UPMC/hal-03324629v1",
+        "date": "",
+        "snippet": "A thesis record says the conjectured strategy is optimal for a single riffle but not in general.",
+        "via": "search",
+        "note": "Third independent paper on the game. The optimal-for-one-riffle-only point rests on this single result, so the page calls its multi-riffle guesser a heuristic.",
+        "verified": true
+      },
+      {
+        "title": "Faro shuffle",
+        "url": "https://en.wikipedia.org/wiki/Faro_shuffle",
+        "date": "",
+        "snippet": "The article describes perfect in- and out-shuffles and notes that eight out-shuffles restore a 52-card deck.",
+        "via": "search",
+        "note": "Establishes the order-8 fact. Result text only; the host cannot be fetched from here.",
+        "verified": true
+      },
+      {
+        "title": "Diaconis Graham Kantor Perfect Shuffles",
+        "url": "https://www.enseignement.polytechnique.fr/informatique/INF411/TD/TD1/Diaconis_Graham_Kantor_Perfect-Shuffles.pdf",
+        "date": "",
+        "snippet": "A course copy of the 1983 paper on the group generated by perfect in- and out-shuffles.",
+        "via": "search",
+        "note": "Primary reference for perfect shuffles. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "By ALEX STONE",
+        "url": "https://fanchung.ucsd.edu/ron/mm_wsj.html",
+        "date": "",
+        "snippet": "A review of a book on magical mathematics states that eight perfect shuffles return a 52-card deck to its original order.",
+        "via": "search",
+        "note": "Independent confirmation of the order-8 fact; the scout's own permutation recount gives 8 for the out-shuffle and 52 for the in-shuffle. Not opened.",
+        "verified": true
+      },
+      {
+        "title": "wiki.dominionstrategy.com",
+        "url": "https://wiki.dominionstrategy.com/index.php/Shuffle",
+        "date": "",
+        "snippet": "The community wiki says a reshuffle turns over the discard pile and shuffles it to form the new draw deck.",
+        "via": "search",
+        "note": "Single source for the board-game deckbuilder rule; used as context only. Unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "About seven riffle shuffles are needed to mix a 52-card deck, measured by total variation distance (Bayer and Diaconis, 1992); with five or fewer, the original order is still plain to see.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2,
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "After one riffle a deck has at most two rising sequences and the maximum roughly doubles with each further riffle, so five riffles cannot reach every arrangement of 52 cards.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Card guessing with complete feedback after a single riffle has been analysed by several independent authors, and an optimal strategy is known for one riffle.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Eight perfect out-shuffles restore a 52-card deck to its original order; the scout's recount also gives 52 for the in-shuffle.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9,
+          10
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11 the community wiki for a board-game deckbuilder describes a reshuffle as shuffling the discard pile into a new draw deck (single source, unverified).",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "card-guessing experiments with feedback",
+      "stage-magic false shuffles and perfect faro shuffles",
+      "poker talk of exploitative versus unexploitable play",
+      "board-game deckbuilders that reshuffle a hand-shuffled discard pile",
+      "total variation mixing-time plots"
+    ]
+  },
+  "design": {
+    "coreLoop": "A lazy dealer riffles a fresh deck k times (k hidden at first) and the visitor calls each next card from a tray of the unseen cards in original order, with every reveal acting as feedback. After the round the page shows hits against blind chance and a heads-tracking bot on the same shuffle, plus an exact likelihood table over k from the deck's rising-sequence count. A feint mode adds false shuffles and perfect faros to be called out, and a sweep plots the edge against the number of riffles beside the exact distance-from-random curve so the point where the edge dies is visible.",
+    "sophisticationHooks": [
+      "Exact math in the page: the riffle law by rising-sequence count, 52-card total variation distance via Eulerian numbers in BigInt, and a posterior over the number of riffles after each round, all checked against enumeration for small decks",
+      "Seeded Monte Carlo edge curve (hits versus 1 to 10 riffles) in a worker with stated sample size and standard errors, drawn beside the exact distance curve",
+      "Bot honesty: an exact Bayes guesser for one riffle and a labelled heads-tracking heuristic for more, never described as optimal beyond one riffle",
+      "Feint mode: false shuffle and perfect faro (order 8 for 52 cards) versus real riffles, judged by the rising-sequence statistic; challenge links carry the seed in the URL hash"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "In one morning the team builds: the riffle sampler and exact formulas with node self-checks (small-deck enumeration, the TV table, faro orders, known guess averages); the card tray and reveal UI with keyboard and touch; a canvas riffle animation; a worker for the edge curve; the round report with likelihood table; feint mode; an about panel with dated sources; hash state for seed and settings; light and dark; reduced motion. Cut: sound, overhand and pile shuffles, multiplayer, any deckbuilder clump panel if time is short, decks other than 52 and a 24-card phone mini deck.",
+    "risks": [
+      "The seven-shuffles figure depends on the distance measure; a search summary mentioned another analysis with an information-based minimum near six shuffles, which is unconfirmed and not shown as fact. The page names total variation as its measure and plots the whole curve instead of declaring one magic number.",
+      "The riffle model is idealised; the claim that it fits real human shuffling is reported in the literature but rests on one unattributed search summary, so the page labels the model as idealised and shows that claim only as reported.",
+      "Calling cards among 52 on a 360px screen needs a compact tray design (rainbow-ordered tiles with unseen cards lit); a 24-card phone mini deck is the fallback.",
+      "Beyond one riffle the guesser is a heuristic, not a solver: its averages are computed by the page and labelled as such, and the literature suggests the best strategy is not settled in general (single result).",
+      "Framing: math and stage-magic lore only, with no money, chips, real casino or brand names; the false-shuffle content stays at the level of general knowledge about why order survives a shuffle.",
+      "Unverified items stay flagged: the Dominion-style reshuffle rule rests on one wiki result and appears as context only."
+    ]
+  },
+  "durable": true
+}

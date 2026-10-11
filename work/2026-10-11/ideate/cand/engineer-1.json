@@ -1,0 +1,262 @@
+{
+  "id": "engineer-1",
+  "title": "Sound Lantern",
+  "pitch": "A lantern that shines sound: a beam sweeps around the player like a lighthouse while walls hum and every passage mouth rings a chime whose pitch tells how deep it runs, and one input (space, tap, gamepad button or an assistive switch) commits to the passage the beam is crossing. Each sweep is a small gamble, because another full revolution gives better information while the flood rises, and the whole cave plays with the screen dark, or by radar and captions alone for players who cannot hear. Afterwards the cave is revealed as a map with the player's ribbon route beside the best route.",
+  "whyNow": "Timeless as a design, with a seasonal nudge: October 15 is White Cane Safety Day in the US (as of 2026-10-11, per Paths to Literacy and Mass.gov). The page is framed as an audio game made for everyone, not as a simulation of blindness.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "accessibility-delight"
+  },
+  "fingerprint": {
+    "category": "games-arcade",
+    "mechanic": "game",
+    "tone": [
+      "serene",
+      "dramatic"
+    ],
+    "tech": [
+      "webaudio",
+      "procedural-audio",
+      "canvas2d",
+      "pointer-events",
+      "gamepad"
+    ],
+    "tags": [
+      "audio-game",
+      "echolocation",
+      "one-switch",
+      "spatial-audio",
+      "sonification",
+      "cave",
+      "switch-scanning",
+      "optimal-stopping",
+      "accessibility",
+      "procedural-generation"
+    ],
+    "keywords": [
+      "sound-sweep",
+      "web-audio",
+      "stereo-pan",
+      "ray-marching",
+      "reveal-map",
+      "daily-seed",
+      "lights-out",
+      "live-captions"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Click echolocation is documented by independent research groups (blind experts, and sighted novices after training), so reading a space by ear is a real skill. Audio-only games with binaural 3D sound exist (an audio-only iPhone title; student and thesis projects for visually impaired players) and sighted players enjoy them too. Switch scanning, where an indicator advances on its own and one switch selects, is the standard single-input method in assistive technology, and the Game Accessibility Guidelines favor very simple control schemes for switch users. The precedence effect fuses echoes within a few to tens of ms, so the page codes distance by pitch and chimes instead of tiny delays. The secretary problem (the 37 percent rule) frames the sweep dilemma. Critiques from blind advocates of blindfold-style simulations shape the framing: an audio game, not a simulation.",
+    "sources": [
+      {
+        "title": "Depth Echolocation Learnt by Novice Sighted People",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0156654",
+        "date": "",
+        "snippet": "PLOS ONE paper on sighted novices learning to judge depth from click echoes. The search summary says novices improved, which suggests total loss of sight is not required.",
+        "via": "search",
+        "note": "Sighted novices can learn click-based depth echolocation. Not opened; the summary was blended, but the title carries the finding and two other papers agree.",
+        "verified": true
+      },
+      {
+        "title": "Human click-based echolocation: Effects of blindness and age, and real-life implications in a 10-week training program",
+        "url": "https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0252330",
+        "date": "",
+        "snippet": "A 10-week training study. Per the search summary, both sighted and blind participants improved considerably and neither age nor blindness limited learning speed.",
+        "via": "search",
+        "note": "A second research group reports trainable click echolocation in sighted and blind adults.",
+        "verified": true
+      },
+      {
+        "title": "Mouth-clicks used by blind expert human echolocators - signal description and model based signal synthesis",
+        "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5578488/",
+        "date": "",
+        "snippet": "Analysis of mouth clicks recorded from blind expert echolocators, with a model for synthesizing them. Numeric click properties came only from a blended summary and are not relied on.",
+        "via": "search",
+        "note": "Blind experts echolocate with self-made mouth clicks; the click timing and beam-width figures stay unverified and are not used on the page.",
+        "verified": true
+      },
+      {
+        "title": "Papa Sangre",
+        "url": "https://en.wikipedia.org/wiki/Papa_Sangre",
+        "date": "",
+        "snippet": "Encyclopedia entry for an audio-only iPhone game. The search summary describes real-time binaural audio and 25 levels where the player collects notes and avoids enemies.",
+        "via": "search",
+        "note": "Precedent: a released game played by sound alone with binaural audio. Wikipedia was not opened (WebFetch fails on that host); other entries agree.",
+        "verified": true
+      },
+      {
+        "title": "Audio-only computer games: Papa Sangre",
+        "url": "https://staffprofiles.bournemouth.ac.uk/display/chapter/199332",
+        "date": "",
+        "snippet": "Bournemouth University staff-profile record of a book chapter that analyzes the sound design and gameplay of an audio-only game.",
+        "via": "search",
+        "note": "Independent scholarly confirmation that audio-only games are studied as a genre.",
+        "verified": true
+      },
+      {
+        "title": "Audio Games: A Suite of Four for Visually Impaired Players",
+        "url": "https://www.conncoll.edu/academics/internships-student-research/student-research-projects/audio-games-a-suite-of-four-for-visually-impaired-players.html",
+        "date": "",
+        "snippet": "Connecticut College student research project. Per the search summary it uses 3D location-based sound to place puzzles around the player, and the author notes sighted players can enjoy it too.",
+        "via": "search",
+        "note": "Audio-first games for visually impaired players that sighted players also enjoy.",
+        "verified": true
+      },
+      {
+        "title": "Audio-maze: a blind-accessible game (UMass Dartmouth record; result title shown as 'Logo image')",
+        "url": "https://repository.lib.umassd.edu/esploro/outputs/graduate/Audio-maze-a-blind-accessible-game/9914424883401301",
+        "date": "",
+        "snippet": "UMass Dartmouth graduate thesis record. The search summary says it introduces six game mechanics using a quadraphonic sound system to improve spatial awareness.",
+        "via": "search",
+        "note": "Academic precedent for navigation played by ear; the summary did not show how the game is played.",
+        "verified": true
+      },
+      {
+        "title": "Switch access scanning",
+        "url": "https://en.wikipedia.org/wiki/Switch_access_scanning",
+        "date": "",
+        "snippet": "Encyclopedia entry. Per the search summary, a scanning indicator moves through items by highlighting them or announcing them by voice, and the user activates a switch to select.",
+        "via": "search",
+        "note": "Defines auto-scan with one switch, including auditory scanning. The page was not opened.",
+        "verified": true
+      },
+      {
+        "title": "Assistive Context-Aware Toolkit (ACAT)",
+        "url": "https://www.intel.cn/content/www/cn/zh/developer/tools/open/acat/switches.html",
+        "date": "",
+        "snippet": "Intel's assistive toolkit page on switches. Per the search summary it highlights UI elements in a timed sequence and the user selects the highlighted one by activating a switch.",
+        "via": "search",
+        "note": "An independent organization describing the same timed single-switch scanning.",
+        "verified": true
+      },
+      {
+        "title": "Provide very simple control schemes that are compatible with assistive technology devices, such as switch or eye tracking",
+        "url": "https://gameaccessibilityguidelines.com/provide-very-simple-control-schemes-that-are-compatible-with-assistive-technology-devices-such-as-switch-or-eye-tracking/",
+        "date": "",
+        "snippet": "A Game Accessibility Guidelines page. Per the search summary, switches are simple binary input devices, and a one-button endless runner is the example of a scheme that works with them.",
+        "via": "search",
+        "note": "Guideline wording seen only as a title plus a blended summary from one organization, so unverified. Related pages in the same result set also advise avoiding held buttons and precise timing.",
+        "verified": false
+      },
+      {
+        "title": "The Perils of Playing Blind: Problems with Blindness Simulation and a Better Way to Teach about Blindness",
+        "url": "https://nfb.org/images/nfb/publications/jbir/jbir15/jbir050201.html",
+        "date": "",
+        "snippet": "Journal article hosted by the National Federation of the Blind. Per the search summary, blindfold simulations can build empathy but can also lower how capable blind people are judged to be.",
+        "via": "search",
+        "note": "Why the game is framed as an audio game, not a simulation of blindness. The summary was blended; two other entries agree on the critique itself.",
+        "verified": true
+      },
+      {
+        "title": "Why I won't 'try on' disability to build empathy in the design process (title truncated)",
+        "url": "https://blog.prototypr.io/why-i-wont-try-on-disability-to-build-empathy-in-the-design-process-and-you-should-think-twice-7086ed6202aa",
+        "date": "",
+        "snippet": "Design-community blog post arguing against disability simulation as an empathy shortcut; the search summary says it frames disabled people as left out of design.",
+        "via": "search",
+        "note": "Independent design-community critique of simulation exercises (an opinion piece).",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Several independent research groups report that people, blind experts and sighted novices after training, can judge distance or position from the echoes of their own mouth clicks (PLOS ONE and PLOS Computational Biology papers seen in search results).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Audio-first games built on binaural or 3D directional sound exist: Papa Sangre is an audio-only iPhone game whose levels are navigated by sound alone, and academic projects (Connecticut College, UMass Dartmouth) built audio games for visually impaired players.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          5,
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Switch access scanning advances an indicator through items on its own, by highlight or by voice, and the user selects the current item by activating a single switch.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, per the Game Accessibility Guidelines, a guideline recommends very simple control schemes compatible with switch or eye-tracking devices, with a one-button endless runner as the example (reported by one organization, unverified).",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "In the precedence effect, similar sounds close together in time are heard as one event; the fusion window is roughly 1 to 5 ms for clicks and tens of ms (about 30 to 50) for complex sounds, beyond which a separate echo is heard.",
+        "sourceIndex": 12,
+        "alsoIn": [
+          13
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "In the secretary problem, rejecting roughly the first n/e (about 37 percent) of candidates and then taking the first one better than all seen so far succeeds with probability near 1/e.",
+        "sourceIndex": 14,
+        "alsoIn": [
+          15
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Blind advocates and researchers criticize blindfold-style disability simulations; a review hosted by the National Federation of the Blind reports they can lower how capable blind people are judged to be, and design writers raise similar objections.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "White Cane Safety Day is observed in the US on October 15, and October is marked as White Cane Awareness Month by Massachusetts.",
+        "sourceIndex": 16,
+        "alsoIn": [
+          17
+        ],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "Papa Sangre (audio-only game, seen in search results)",
+      "Audio-maze thesis project (UMass Dartmouth, seen in search results)",
+      "Audio Games suite for visually impaired players (Connecticut College, seen in search results)",
+      "Switch-access auto-scanning",
+      "Lighthouse beam and radar sweep",
+      "The secretary problem",
+      "Dark Echo (sound-ripple maze game; named from memory, not verified here)"
+    ]
+  },
+  "design": {
+    "coreLoop": "At each chamber a beam of sound orbits the player once every few seconds (adjustable). A tick marks straight ahead, a continuous hum carries wall distance (nearer is brighter and louder), and each passage mouth rings a chime whose pitch encodes how far the passage runs, with wind layered on the exit direction and flutter on hazards. A single input commits to the passage under the beam at that instant (nearest mouth wins within an adjustable tolerance); a press between mouths bonks and costs a revolution. The player then walks the passage by footstep sound to the next chamber. A flood clock rises with every revolution, so each sweep poses an optimal-stopping choice between committing on partial information and paying for another full revolution. The run ends at the exit with a reveal map: the cave, the player's ribbon route, and the solver's best route. Daily seeds and hash-shared cave...",
+    "sophisticationHooks": [
+      "One deterministic percept stream, four renderers: a pure core turns each sweep into timed events (hum curve, tick, chimes, wind, flutter), consumed by a WebAudio renderer (AudioParam value curves and scheduled oscillators on the audio clock), a canvas radar, an aria-live caption feed, and optional vibration, so hearing, sight and touch are equal ways to play.",
+      "Cave engine: seeded Poisson-disc chambers, a minimum spanning tree plus extra loops under a planarity check, zigzag passage ribbons, a union signed-distance field, 96 to 128 ray-marched samples per sweep with hysteresis opening detection, and Dijkstra over walking time plus sweeps for par; decoy alcoves are placed so a greedy deepest-chime policy sometimes fails.",
+      "Input timing core: the beam angle is a pure function of audio-clock time; a press maps through a latency offset from tap-along calibration, then through assist tolerance and snap-to-nearest-mouth, with revolution period and tolerance adjustable so players with slower or less precise input run at their own pace.",
+      "Hearing-robust coding: direction rides on stereo pan, on time since the tick, and on the chime pitch contour at once, so mono speakers, one-ear listening and different hearing profiles still work; a setup step sets the volume ceiling and pitch range behind a limiter."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: cave generator and solver (about 350 lines), sweep sampler and percept events (about 250), WebAudio renderer with six voices (hum, tick, chime, wind, flutter or drip, footstep) (about 300), canvas radar and reveal map (about 250), UI shell with settings (speed, tolerance, mono, captions, contrast, reduced motion, lights-out), about and making-of panel, daily seed with URL-hash sharing, localStorage bests. Cut if short: collectible moths, moving bats, biome variety, free-steer mode, spoken direction labels, vibration.",
+    "risks": [
+      "Builders and QA cannot hear the result; mitigation: every mapping is a pure function with checkable outputs, captions mirror each percept in the DOM for inspection, and a built-in audio test strip plays each voice.",
+      "Disability-simulation critique (blind advocates, design writers): the copy presents an audio game for everyone and makes no empathy or blindfold claims; the about panel credits audio-game precedents.",
+      "Autoplay and mobile audio quirks: sound starts only after a gesture, resumes after tab changes, and the game pauses when hidden. Timing jitter and output latency vary by device; audio-clock timing plus calibration handle it, but headless QA cannot test it.",
+      "Loudness and hearing safety: a compressor, a volume ceiling and a setup step come before any sound plays.",
+      "Distance is coded by pitch and chimes, not realistic echo delays, because the precedence effect fuses short delays; the about panel says the acoustics are stylized.",
+      "Unverified: the Game Accessibility Guidelines wording (one organization) and the Web Audio panner details (MDN only). Fallbacks are a plain StereoPannerNode plus pitch coding, and the page shows the guideline as 'as of 2026-10-11, per Game Accessibility Guidelines'."
+    ]
+  },
+  "durable": true,
+  "sanitizer": {
+    "redacted": [],
+    "trimmed": 8
+  }
+}

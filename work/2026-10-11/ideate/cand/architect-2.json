@@ -1,0 +1,214 @@
+{
+  "id": "architect-2",
+  "title": "Orbital Knitwear",
+  "pitch": "A visitor tunes a satellite's height, tilt and orbit shape and watches its ground track unspool across a wool-textured world map, each pass adding a ribbon of stitches wherever the camera swath reaches. Pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, keeping a steady local time of day, or lingering over the far north. A flat-versus-polar toggle shows how the projection decides which holes look big, while the score counts true surface area.",
+  "whyNow": "Timeless: orbital geometry never goes stale. The knitting frame makes a nerdy subject cozy, and the projection toggle and daylight terminator put a map argument at the centre.",
+  "origin": {
+    "agent": "architect",
+    "lens": "maps-and-places"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": [
+      "cozy",
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "offscreen-canvas",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "orbits",
+      "ground-track",
+      "satellites",
+      "knitting",
+      "map-projections",
+      "sun-synchronous",
+      "coverage",
+      "polar-view",
+      "earth-observation",
+      "j2-precession"
+    ],
+    "keywords": [
+      "repeat-cycle",
+      "swath-width",
+      "dropped-stitch",
+      "pattern-card",
+      "local-solar-time",
+      "terminator",
+      "equirectangular",
+      "azimuthal",
+      "orbital-period",
+      "nodal-precession"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "A ground track is a map argument: one orbit is a sine wave on a flat map and a spiral seen from the pole. Research shapes the mechanic. Earth's bulge (J2) turns an orbit's plane, and at about 98 degrees and 600-700 km that turn matches the Sun's 0.9856 degrees per day, so a satellite keeps one local solar time; a two-body-plus-J2 calculation done here gives 97.79 degrees at 600 km and 98.19 degrees at 700 km, matching both sources. Landsat's 16-day cycle of 233 orbits is a literal knitting gauge: tracks about 172 km apart against a 185 km swath. The ISS inclination of 51.6 degrees fences its track and Earth's spin moves each pass about 23 degrees west. Scoring by true area matters: the band poleward of 60 degrees is a third of an equirectangular map but about 13 percent of the planet (computed here). The Molniya figures are single-sourced.",
+    "sources": [
+      {
+        "title": "GDC OrbitPrimer",
+        "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf",
+        "date": "",
+        "snippet": "NASA orbit primer; per the search summary it ties the sun-synchronous node rate to 0.9856 degrees per day and gives 98.2 degrees for a 700 km circular orbit.",
+        "via": "search",
+        "note": "Named in the search summary for the rate and the 700 km inclination; page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources",
+        "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit",
+        "date": "",
+        "snippet": "Q&A resource explaining that J2 oblateness regresses the orbit node and that about 600 km sits near 97.8 degrees.",
+        "via": "search",
+        "note": "Independent of NASA; agrees on the J2 mechanism and the near-98-degree inclination. A local calculation also gives 97.79 degrees at 600 km.",
+        "verified": true
+      },
+      {
+        "title": "Space Station Orbit Tutorial",
+        "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm",
+        "date": "",
+        "snippet": "NASA Earth Observations tutorial; per the search summary it gives 51.6 degrees inclination, 90-93 minute orbits and a westward shift near 22.9 degrees of longitude per orbit.",
+        "via": "search",
+        "note": "Named in the search summary for all three numbers. WebFetch on this host failed with a DNS error.",
+        "verified": true
+      },
+      {
+        "title": "International Space Station Frequently Asked Questions - NASA",
+        "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/",
+        "date": "",
+        "snippet": "NASA FAQ; per a domain-filtered search summary it says the station's 51.6 degree inclination means it never goes farther north or south than 51.6 degrees latitude.",
+        "via": "search",
+        "note": "Named in the search summary for the inclination and the latitude limit. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Mission & Carrier Characteristics",
+        "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm",
+        "date": "",
+        "snippet": "ESA publication table of space station characteristics; per the search summary it lists an altitude range of 370-460 km, consistent with the other results.",
+        "via": "search",
+        "note": "Independent agency (ESA) agreeing on the altitude range; the summary said inclination and period figures were consistent across NASA, ESA and an arXiv paper. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "The Worldwide Reference System",
+        "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system",
+        "date": "",
+        "snippet": "NASA Landsat page on the reference grid: 16-day cycle of 233 orbits, about 98.9 minute orbits, 705 km sun-synchronous orbit, tracks about 24.7 degrees (2752 km) apart at the equator.",
+        "via": "search",
+        "note": "Named in the search summary for the 233-orbit, 16-day cycle. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "pubs.usgs.gov",
+        "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf",
+        "date": "",
+        "snippet": "USGS fact sheet; per the search summary the satellites were designed for a 185 km swath from a 705 km sun-synchronous orbit.",
+        "via": "search",
+        "note": "Independent agency document agreeing with NASA on altitude and giving the 185 km swath. A catalogue record lists 183 km, so swath is treated as about 185 km.",
+        "verified": true
+      },
+      {
+        "title": "Dynamical properties of the Molniya satellite constellation: long-term evolution of orbital eccentricity",
+        "url": "https://arxiv.org/pdf/2007.04341",
+        "date": "",
+        "snippet": "Research paper; per the search summary it gives the Molniya critical inclination as arcsin(2/sqrt 5), about 63.4 degrees, and two apogees per day for a 12-hour period.",
+        "via": "search",
+        "note": "Single result for the specific figures; other Molniya results only described apogee dwell. Unverified.",
+        "verified": false
+      },
+      {
+        "title": "Getting Familiarised with the TLE object: Analysis of a Repeating Sun-Synchronous Orbit",
+        "url": "https://satmad.readthedocs.io/en/stable/tutorials/sso_analysis.html",
+        "date": "",
+        "snippet": "Open-source tutorial analysing a repeating sun-synchronous orbit; context for repeat ground tracks. Text not seen.",
+        "via": "search",
+        "note": "Context only, not used for any stated fact.",
+        "verified": false
+      },
+      {
+        "title": "J2 Perturbation |",
+        "url": "https://ai-solutions.com/_freeflyeruniversityguide/j2_perturbation.htm",
+        "date": "",
+        "snippet": "Tutorial page on the J2 perturbation of orbits, relevant to node regression. Text not seen.",
+        "via": "search",
+        "note": "Context for the J2 drift formula the engine implements; no figure taken from it.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day to hold one local solar time; Earth's J2 bulge supplies the drift, at about 98.2 degrees inclination for a 700 km circular orbit (NASA primer) and about 97.8 degrees near 600 km (second source).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "The International Space Station orbits at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370-460 km altitude in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial).",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3,
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Landsat 4-9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits; an orbit takes about 98.9 minutes, successive tracks sit about 24.7 degrees (2752 km) apart at the equator, and the design swath is 185 km.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Computed here from the Landsat figures: 233 evenly spaced tracks put neighbours about 172 km apart at the equator (40,075 km divided by 233), so a 185 km swath overlaps its neighbour by about 13 km, roughly 7 percent.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Molniya orbits are reported to use a critical inclination of about 63.4 degrees with a 12-hour period and two apogees per day (single source, unconfirmed).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "Worldwide Reference System tracks",
+      "space station pass trackers",
+      "knitting pattern charts",
+      "orbital mission-design games",
+      "equal-area map debates"
+    ]
+  },
+  "design": {
+    "coreLoop": "A round starts from a pattern card with a target and a par. The visitor sets up to three satellites (altitude, inclination, eccentricity, start longitude, swath), starts the clock and fast-forwards days of orbits while stitches fill the fabric. A live panel scores true-area coverage, dropped stitches, overlap waste, revisit time and local solar time under the satellite. Small altitude changes shift the track spacing, so a gappy weave snaps into a tight repeat; every setup is a shareable link.",
+    "sophisticationHooks": [
+      "Two-body propagation with J2 node and perigee drift, Kepler's equation by Newton iteration, Earth rotation and a sun model, so sun-synchronous and Molniya-style orbits emerge from physics instead of presets.",
+      "Repeat-ground-track finder: scans altitudes for k orbits in m days and marks stitch-perfect heights on the altitude slider, as in Landsat's 233 orbits per 16 days.",
+      "Projection honesty: one coverage grid renders in equirectangular and polar azimuthal views by inverse projection, while every score uses cos(latitude) area weights and a live readout shows map share versus planet share.",
+      "Pattern cards with par values from an in-page brute-force search, plus a day/night terminator so dawn-dusk orbits can ride the edge of night."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Eight disjoint files: orbit engine with J2, coverage grid (Worker), projections, land and city data, wool renderer, pattern cards with par search, planner UI, app shell with hash state and about panel. Built: 8 cards, flat and polar views, terminator, true-area scoring, light and dark themes, reduced-motion mode. Left out: real satellite catalogs, atmospheric drag, 3D globe, multiplayer.",
+    "risks": [
+      "Coastlines are hand-simplified from memory and may look crude; styling them as embroidered outlines with city dots keeps orientation honest.",
+      "The single-sourced Molniya figures show as 'as of 2026-10-11, per arXiv 2007.04341', though 63.4 degrees also follows from arcsin(2/sqrt 5).",
+      "Two-body plus J2 is not a precision propagator; the about panel says tracks drift from real satellites over weeks, and unit tests check the sourced figures within about 1 percent.",
+      "Pattern-card pars have to be solvable; the brute-force search verifies each card before it ships.",
+      "Wool texture at 1-degree resolution risks dropped frames on phones; an offscreen cached layer and a coarser grid on small screens mitigate this."
+    ]
+  },
+  "durable": true
+}

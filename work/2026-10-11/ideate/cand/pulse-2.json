@@ -1,0 +1,199 @@
+{
+  "id": "pulse-2",
+  "title": "Extra Attacker",
+  "pitch": "A late-game coaching trainer built on a real solver: each round deals a clock, a goal margin and a faceoff, the visitor chooses when to pull the goalie, and a backward-induction model grades the call in expected standings points using published scoring rates. A policy map shows where the math says to pull for every deficit, overlaid with the league-average pull time that has drifted earlier since 2013-14, while a crowd soundscape turns a backfired pull into a hush with a lone cricket in it. It arrives days after a goalie scored into an empty net.",
+  "whyNow": "Early in the 2026-27 NHL season a Rangers goalie scored into an empty net on 2026-10-01, reported as the 18th goalie ever to do so, which puts late-game empty nets in the headlines. The underlying question, when to pull the goalie, is evergreen: it arises in every close game, and the league-wide timing has drifted earlier for a decade.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "data-story"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "solver",
+    "tone": [
+      "competitive",
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "webaudio",
+      "dom-ui",
+      "pointer-events"
+    ],
+    "tags": [
+      "hockey",
+      "goalie",
+      "empty-net",
+      "extra-attacker",
+      "late-game-strategy",
+      "expected-points",
+      "backward-induction",
+      "coaching",
+      "decision-trainer",
+      "policy-map"
+    ],
+    "keywords": [
+      "pulled-goalie",
+      "six-on-five",
+      "poisson-model",
+      "trailing-by-one",
+      "league-trend",
+      "goalie-goals",
+      "regret",
+      "overtime-value"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Pulling the goalie is one of hockey's few decisions that can be settled with arithmetic, and it has a literature (operations-research papers, a 2018 study on 2015-16 NHL data, club analytics columns). The models disagree on the optimum, and one analysis found in search results argues realised benefits are smaller than simulations imply. Coach behaviour has moved: an NHL.com club column puts the average time left at a one-goal pull at about 73 s in 2013-14 and about 97 s in 2020-21 (peak about 106 s in 2019-20), and another outlet also reports coaches pulling earlier than ever. The hook is confirmed by three independent outlets: on 2026-10-01 a Rangers goalie scored into an empty net after Tampa Bay pulled its own, the 18th goalie in NHL history to score. The rate parameters come from single summaries and stay flagged; the page treats them as adjustable presets.",
+    "sources": [
+      {
+        "title": "TBL@NYR: Shesterkin pots Rangers' first ever goalie goal",
+        "url": "https://nhl.com/news/tampa-bay-lightning-new-york-rangers-game-recap-october-1-2026",
+        "date": "2026-10-01",
+        "snippet": "League game recap: Rangers goalie Igor Shesterkin scores into an empty net in a 5-1 home win over Tampa Bay, the first goalie goal in Rangers history.",
+        "via": "search",
+        "note": "Primary hook: the goalie goal on 2026-10-01.",
+        "verified": true
+      },
+      {
+        "title": "Daily Faceoff is a news site with no direct affiliation to the NHL, or NHLPA",
+        "url": "https://dailyfaceoff.com/news/igor-shesterkin-new-york-rangers-goalie-goal-nhl-tampa-bay-lightning-news-highlights",
+        "date": "",
+        "snippet": "Daily Faceoff report on the Shesterkin goalie goal against Tampa Bay (the result title is shown as the site tagline).",
+        "via": "search",
+        "note": "Independent second outlet for the goalie goal.",
+        "verified": true
+      },
+      {
+        "title": "igor shesterkin scores amazing goalie goal in rangers win over lightning 12518832",
+        "url": "https://www.newsweek.com/sports/igor-shesterkin-scores-amazing-goalie-goal-in-rangers-win-over-lightning-12518832",
+        "date": "",
+        "snippet": "Newsweek sports report on the Shesterkin goalie goal in the Rangers' win over the Lightning.",
+        "via": "search",
+        "note": "Third independent outlet; a search summary says every report calls him the 18th goalie to score.",
+        "verified": true
+      },
+      {
+        "title": "Check out all of the goalie goals scored in NHL history, from Billy Smith to Alex Nedeljkovic",
+        "url": "https://www.nhl.com/news/nhl-goalie-goals-all-time-313758920",
+        "date": "",
+        "snippet": "League list of goalie goals; a search summary says that as of March 2025 it counted 17 goalies with 20 goals (18 regular season, 2 playoffs), eleven of them shots into an empty net.",
+        "via": "search",
+        "note": "Baseline count before the 2026-10-01 goal; counts differ by rule and outlet. Single list.",
+        "verified": false
+      },
+      {
+        "title": "analytics with alison pulling the goaltender 327235290",
+        "url": "https://www.nhl.com/kraken/news/topic/analytics-with-alison/analytics-with-alison-pulling-the-goaltender-327235290",
+        "date": "",
+        "snippet": "Club analytics column: average time left when a team pulls its goalie down one goal rose from 73 s in 2013-14 to 97 s in 2020-21, after a 106 s peak in 2019-20.",
+        "via": "search",
+        "note": "Only numeric league series found so far; the direction is echoed by one other outlet's headline.",
+        "verified": true
+      },
+      {
+        "title": "nhl coaches are pulling goalies earlier than ever",
+        "url": "https://fivethirtyeight.com/features/nhl-coaches-are-pulling-goalies-earlier-than-ever",
+        "date": "",
+        "snippet": "Headline-level source: coaches pulling goalies earlier than ever; a search summary ties the shift to a 2014 playoff series in which one coach pulled very early.",
+        "via": "search",
+        "note": "Independent confirmation of the earlier-pull trend (headline seen).",
+        "verified": true
+      },
+      {
+        "title": "The State of Goalie Pulling in the NHL",
+        "url": "https://hockey-graphs.com/2020/05/18/the-state-of-goalie-pulling-in-the-nhl/",
+        "date": "2020-05-18",
+        "snippet": "Analytics article titled The State of Goalie Pulling in the NHL (May 2020); only the title and date were seen, not the text.",
+        "via": "search",
+        "note": "Possible place to find more season-by-season pull data; contents not seen, so it confirms nothing yet.",
+        "verified": false
+      },
+      {
+        "title": "bigthink.com",
+        "url": "https://bigthink.com/the-present/hockey/",
+        "date": "",
+        "snippet": "Popular-science summary of a 2018 study on 2015-16 NHL data: scoring chance per 10 s of 0.65% at full strength, 1.97% with the goalie pulled, 4.30% for an opponent facing an empty net; best pull about 6:10 left when down one.",
+        "via": "search",
+        "note": "Source of one rate preset and of the 6:10 claim. The study was not opened; single summary.",
+        "verified": false
+      },
+      {
+        "title": "More on Erkut's 'More on Morrison and Wheat's Pulling the Goalie Revisited'",
+        "url": "https://pubsonline.informs.org/doi/abs/10.1287/inte.19.5.45",
+        "date": "",
+        "snippet": "Operations-research journal exchange on the best time to pull the goalie (title only seen).",
+        "via": "search",
+        "note": "Shows the question has an academic debate behind it; no numbers are taken from it.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "On 2026-10-01 Rangers goalie Igor Shesterkin scored into an empty net in a 5-1 home win over Tampa Bay, reported as the 18th goalie in NHL history to score a goal; Tampa Bay had pulled its goalie late in the third period.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Coaches have pulled the goalie earlier over the last decade: an NHL.com club-analytics column puts the average time left at a one-goal pull at about 73 s in 2013-14 and about 97 s in 2020-21 (peak about 106 s in 2019-20); FiveThirtyEight's headline also reports the shift (exact figures from the NHL.com column only).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of March 2025 NHL.com counted 17 goalies credited with 20 goals (18 regular season, 2 playoffs), eleven of whom shot into an empty net; counts differ between outlets by rule (shot vs credited, regular season vs playoffs). Single list, unverified.",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Reported rate parameters (single summary, unverified): a 2018 study on 2015-16 NHL data gives scoring chances per 10 seconds of 0.65% at full strength, 1.97% with the goalie pulled and 4.30% for the opponent shooting at an empty net.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "That 2018 study is reported to find the best time to pull when down one goal is about 6:10 left, far earlier than the roughly two-minute league norm (single summary, unverified).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "poker solver strategy grids",
+      "football fourth-down decision tools",
+      "win-probability charts",
+      "arena crowd soundscapes",
+      "reinforcement-learning policy heatmaps"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each round deals a late-game scenario (margin, clock, faceoff zone); the visitor chooses a pull time on a rink-side clock and a seeded simulation plays out the remaining minutes. The solver then reveals the policy map and the regret of the call in expected points against the chosen science preset and against the league-average coach, and a report card accumulates over ten scenarios. Replays come from switching presets and objectives and watching the best pull time move by minutes.",
+    "sophisticationHooks": [
+      "Backward-induction solver over seconds left, goal margin and goalie in or out, with two objectives (regular season, where a tie is worth about 1.5 standings points, and playoffs, where it is worth about 0.5 wins) and presets from published scoring rates plus a custom slider.",
+      "Policy heatmap with the league-average pull time from the bundled trend series and the visitor's own calls plotted on it, plus a worker-run Monte Carlo cross-check of the solver.",
+      "Ten-scenario trainer with seeded scenarios, regret grading, streaks and a report card, with URL-hash replays.",
+      "Sound and humour layer: WebAudio crowd and horn, a lone synthesized cricket when a pull backfires, a cardigan-wearing cautious-coach persona against an early-pull gambler, and a length-of-ice goalie-goal shot as a bonus round."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: solver module and worker cross-check, rink canvas with scoreboard clock, scenario trainer with grading, policy heatmap, trend chart (verified points only), goalie-goal bonus shot, about panel with sources, light and dark, reduced motion, keyboard and touch. Cut: line changes, penalties and power-play states, goalie re-entry, overtime simulation beyond a fixed tie value, team-specific strengths, live data, accounts.",
+    "risks": [
+      "Model uncertainty: a scout's quick simplified backward-induction check (one scoring hazard per side, no goalie re-entry, tie worth 1.5 or 0.5) put the one-goal optimum near 1:45 to 2:52 and the two-goal optimum near 4:11 to 6:32, short of the 6:10 one summary reports. The page shows results as model output per preset and states its assumptions.",
+      "The rate figures (0.65%, 1.97% and 4.30% per 10 s; a classic 2.67x and 7.83x pair seen in a blended summary with no identified source) come from single summaries and appear as 'as of 2026-10-11, per <source>' or as adjustable defaults, never as settled fact. One analysis in search results argues real-world benefits are weaker than simulations; it is shown as a counterpoint only if confirmed.",
+      "Only three points of the league pull-time series are confirmed (2013-14, 2019-20, 2020-21); the chart plots just those and says so, unless a build-time search finds two agreeing sources for more seasons.",
+      "Goalie-goal counts differ by rule (shot vs credited, regular season vs playoffs) and by date; the page states its rule and as-of date.",
+      "Simulated play only: no wagering, no real money, text-only team names with no logos, and a plain 'simulation, not coaching advice' label."
+    ]
+  },
+  "durable": true
+}

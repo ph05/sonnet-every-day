@@ -1,0 +1,253 @@
+{
+  "id": "lab-2",
+  "title": "The Shortcut Trap",
+  "pitch": "A weight hangs from two springs and a few strings, and a visitor predicts whether snipping the short linking string will drop or lift it; the weight rises, against intuition. Sliders for string length and spring stiffness reveal the narrow band where this happens, a bounce metronome shows the weight vibrating twice as fast after the cut, and a mapping toggle recasts the same network as roads where closing a free shortcut cuts everyone's commute from 80 to 65 minutes in the textbook case. A puzzle mode deals random networks with a cut budget and scores the lift against the best possible.",
+  "whyNow": "Timeless. Road-closure and induced-demand arguments keep returning, and the spring version of the Braess paradox keeps resurfacing in physics lecture demos and blogs (posts from 2025 and 2026 turned up in search).",
+  "origin": {
+    "agent": "lab",
+    "lens": "anti-lens-opposite"
+  },
+  "fingerprint": {
+    "category": "education-explainer",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "analytical",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "dom-ui",
+      "pointer-events",
+      "webaudio",
+      "localstorage"
+    ],
+    "tags": [
+      "braess-paradox",
+      "springs",
+      "strings",
+      "equilibrium",
+      "traffic",
+      "network-flow",
+      "counterintuitive",
+      "series-parallel",
+      "shortcut",
+      "road-closure"
+    ],
+    "keywords": [
+      "cut-to-lift",
+      "slack-strings",
+      "paradox-band",
+      "user-equilibrium",
+      "commute-time",
+      "xpbd",
+      "bounce-frequency",
+      "cut-budget",
+      "prediction-score"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "In 1991 Cohen and Horowitz published a string-and-spring network in which cutting a string that supports a weight makes the weight rise, with an electrical analogue and a traffic analogy; it is formally the Braess paradox (1968), where adding a free road raises every driver's travel time. With the linking string intact the two springs act in series (k/2) while two longer safety strings hang slack; after the cut the safety strings take over and the springs act in parallel (2k), so the weight sits higher by W/(2k) minus an offset (read by the scout as the slack left in the safety strings). Scout check, not literature: a small static solver for equal springs, load F, stiffness k gave a lift that peaks at F/(2k), is positive only inside a band of safety-string lengths of width F/k, and is negative above it. Textbook traffic version: 4000 drivers, 65 minutes becoming 80 after a free link. Model limits: ideal massless springs, inextensible strings, quasi-static equilibrium, linear latencies, selfish routing; the paradox needs those conditions and the page says so.",
+    "sources": [
+      {
+        "title": "link.springer.com",
+        "url": "https://link.springer.com/article/10.1038/352699a0",
+        "date": "1991-08-22",
+        "snippet": "Record for the Cohen and Horowitz paper (Nature 352, 699-701): a string-and-spring network in which cutting a string that supports a weight makes the weight rise at equilibrium, with an electrical analogue and a traffic analogy.",
+        "via": "search",
+        "note": "Primary source for the spring-and-string version of the Braess paradox; full text not opened.",
+        "verified": true
+      },
+      {
+        "title": "Demonstrating Braess's Paradox with Springs : Networks Course blog for INFO 2040/CS 2850/Econ 2040/SOC 2090",
+        "url": "https://blogs.cornell.edu/info2040/2021/09/28/demonstrating-braesss-paradox-with-springs/",
+        "date": "2021-09-28",
+        "snippet": "A weight hangs from two springs and three ropes; one rope links the springs and the other two are slack, so the springs act in series; cutting the linking rope makes the weight rise. Ropes are fixed-time roads, springs are load-dependent roads.",
+        "via": "search",
+        "note": "Independent course write-up of the demonstration and its traffic reading; date taken from the URL.",
+        "verified": true
+      },
+      {
+        "title": "Passive Vibration Isolation Characteristics of Negative Extensibility Metamaterials",
+        "url": "https://arxiv.org/pdf/2507.00396",
+        "date": "",
+        "snippet": "Works through the same model: with the linking string intact the springs act in series with stiffness k/2; once severed the secondary strings take the load and the springs act in parallel with stiffness 2k, four times stiffer, so the weight moves up.",
+        "via": "search",
+        "note": "Established the series-to-parallel stiffness change (k/2 to 2k).",
+        "verified": true
+      },
+      {
+        "title": "Antagonistic Phenomena in Network Dynamics",
+        "url": "https://arxiv.org/pdf/1808.00165",
+        "date": "2018",
+        "snippet": "Review that treats the spring effect as formally equivalent to the Braess paradox; each spring holds half the weight after the cut, so the weight rises by W/(2k) minus the original stretch, positive only when that stretch is smaller than W/(2k).",
+        "via": "search",
+        "note": "Established the lift formula and its condition.",
+        "verified": true
+      },
+      {
+        "title": "lecdem.physics.umd.edu - A Look at Tension in Parallel Springs - Question of the Week 3/3-3/7",
+        "url": "https://lecdem.physics.umd.edu/question-of-the-week-archive/127-qotw-009-with-answer.html",
+        "date": "",
+        "snippet": "Describes a mass held by two spring-and-string units; once the coupling clip between the springs is released the mass ends up higher, because each spring carries half the weight and stretches half as much, and a little slack cannot make up for it.",
+        "via": "search",
+        "note": "Independent lecture-demo explanation of why the mass rises.",
+        "verified": true
+      },
+      {
+        "title": "b4 04",
+        "url": "https://lecdem.physics.umd.edu/b/b4/b4-04.html",
+        "date": "",
+        "snippet": "Catalogue entry named Spring and String Thing, described as a counterintuitive series-and-parallel springs demonstration; the page gave no procedure in the search summary.",
+        "via": "search",
+        "note": "Shows the demonstration is a standard lecture demo.",
+        "verified": true
+      },
+      {
+        "title": "B17. Spring Paradox",
+        "url": "https://web.mit.edu/~tsg/DemoPage/B/B17/B17.htm",
+        "date": "",
+        "snippet": "Demo-page entry titled Spring Paradox that appeared for the cut-the-string query; title-level evidence only, text not seen.",
+        "via": "search",
+        "note": "Title-level support that a second university lists the demonstration.",
+        "verified": true
+      },
+      {
+        "title": "Braess's paradox",
+        "url": "https://blog.matt-rickard.com/p/braesss-paradox",
+        "date": "",
+        "snippet": "Describes the textbook case: 4000 drivers, two routes each with a T/100-minute leg and a 45-minute leg, 65 minutes each; a zero-minute link raises every trip to 80 minutes and no one gains by switching back.",
+        "via": "search",
+        "note": "Established the 65 to 80 minute numbers.",
+        "verified": true
+      },
+      {
+        "title": "www.math.ntnu.no",
+        "url": "https://www.math.ntnu.no/conservation/2014/012.pdf",
+        "date": "",
+        "snippet": "Describes the same pattern: travel times first drop from 65 to 40 minutes for early adopters of the new road, then rise to 80 as more drivers use it.",
+        "via": "search",
+        "note": "Independent confirmation of the 65 to 80 minute figures.",
+        "verified": true
+      },
+      {
+        "title": "supernet.isenberg.umass.edu",
+        "url": "https://supernet.isenberg.umass.edu/courses/OIM413-Fall2018/OIM413lecture7.pdf",
+        "date": "",
+        "snippet": "Lecture slides cited in the search summary for a Seoul expressway-removal example (160,000 cars per day, dated 2002 there) and for the statement that the paradox arises under selfish user-optimal routing only.",
+        "via": "search",
+        "note": "Single source; figures differ between sources, so claims from it stay unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "Braess's paradox",
+        "url": "https://en.wikipedia.org/wiki/Braess%27s_paradox",
+        "date": "",
+        "snippet": "Standard reference entry that appeared for the real-world cases query; the Stuttgart, Seoul and New York cases are commonly cited but details differ between sources.",
+        "via": "search",
+        "note": "Entry not opened; summary blended several results, so the real-world cases stay unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "Spring Fever",
+        "url": "https://www.futilitycloset.com/2025/07/30/spring-fever-2/",
+        "date": "2025-07-30",
+        "snippet": "A puzzle-blog post titled Spring Fever appeared for the spring-paradox query; text not seen; date taken from the URL.",
+        "via": "search",
+        "note": "Suggests the demonstration is still circulating in 2025; title-level only.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Cohen and Horowitz (Nature 352, 699-701, 22 August 1991) described a string-and-spring network in which cutting a string that supports a weight makes the weight rise at equilibrium, with an electrical analogue and a traffic analogy.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          3
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "With the linking string intact the two springs act in series (effective stiffness k/2) and the secondary strings hang slack; after the cut the secondary strings take the load and the springs act in parallel (2k, four times stiffer), so each spring carries half the weight and the weight sits higher.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          1,
+          3,
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "The net rise is W/(2k) minus the original stretch, so the effect exists only when that stretch is smaller than W/(2k); a small amount of slack in the strings cannot make up for the reduced spring extension, so the mass ends up higher.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "University lecture-demo collections list the demonstration: a catalogue entry named Spring and String Thing (B4-04) described as a counterintuitive series-and-parallel demo, and a demo page titled Spring Paradox (B17).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "In the textbook Braess network (credited to Dietrich Braess, 1968), 4000 drivers choose between two routes, each a leg taking T/100 minutes (T = drivers on it) plus a fixed 45-minute leg; an even split takes 65 minutes, while a free link between the midpoints sends everyone over both congestible legs for 80 minutes and no one gains by switching back.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Reported, not confirmed: commonly cited real-world cases are Stuttgart (1969, a new downtown street worsened congestion and was closed), Seoul (Cheonggyecheon expressway removal, about 2003-2005) and New York (42nd Street closed for Earth Day 1990 without the predicted gridlock); sources differ on details.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Reported, not confirmed: lecture slides state that the paradox arises under selfish (user-optimal) routing and does not arise when a planner assigns system-optimal routes.",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "spring and string lecture demos",
+      "the textbook Braess road network",
+      "physics predict-observe-explain teaching sequences",
+      "daily seeded puzzle sites",
+      "city road-closure case studies"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each round shows a spring-and-string network with a cut budget. The visitor predicts rise, fall or no change, snips a string, and a physics relaxation settles to a measured height change that is scored against the prediction. A why-overlay colours taut and slack elements and shows series or parallel stiffness; a mapping toggle shows the same network as roads with a commute readout. Replay value comes from a daily seeded puzzle scored against the optimal cut set, sliders that move the paradox band, and networks where two cuts beat any single cut.",
+    "sophisticationHooks": [
+      "Tension-only strings and linear springs solved with XPBD plus a final settle, unit-tested against the closed form for the classic arrangement (lift equals F/(2k) minus the slack left in the secondary strings, the scout's reading of the original stretch).",
+      "A live phase strip under the sliders draws lift against secondary-string length as a tent for the equal-spring arrangement (positive inside a band of width F/k, peak F/(2k), negative beyond), produced by the same solver as the scene.",
+      "A seeded network generator that guarantees at least one counterintuitive cut and brute-forces the optimal cut set for the par score; bounce sonification doubles in rate after the cut because stiffness quadruples.",
+      "A road-map toggle that solves a user-equilibrium traffic assignment on the mapped network, so the cut reads as a road closure with before and after commute times."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "The day builds the XPBD core with closed-form tests, scissors interaction, six hand-made levels plus the seeded generator with brute-force par, the phase strip, bounce sonification, prediction scoring, the road-map toggle with a small equilibrium solver, a share hash, an about panel, light and dark themes, reduced motion (instant settle), keyboard and touch. The day cuts user-built networks, 3D, and the electrical and hydraulic analogues (named in the about panel only).",
+    "risks": [
+      "A quick Newton prototype of the static solver diverged for one very long secondary string, so the real solver needs a monotone method (XPBD with a final settle, or an active-set solve) and tests for slack and taut transitions.",
+      "The paradox exists only inside a band of parameters; the copy states that cutting lifts the weight only inside a band, and the sliders show both sides.",
+      "Real-world road cases come from popular articles and slides with differing details, so they appear as reported with a date, or are left out.",
+      "The price-of-anarchy bound of 4/3 for linear latencies was recalled from memory and not confirmed in search, so the page shows only measured ratios.",
+      "Spring-and-string demos already exist as lecture demos and videos, so the page differentiates through prediction scoring, the phase strip, the generator and the road mapping.",
+      "The traffic model (linear latencies, selfish routing, one origin-destination pair) is a toy, and the page says it is not traffic-planning advice."
+    ]
+  },
+  "durable": true,
+  "sanitizer": {
+    "redacted": [],
+    "trimmed": 2
+  }
+}

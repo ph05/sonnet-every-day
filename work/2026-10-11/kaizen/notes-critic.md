@@ -1,0 +1,1 @@
+Scout: a WebSearch summary blends its results, so only single-domain queries let me pin a claim to one site, and reddit.com is refused by the search tool while every WebFetch host failed DNS; the scout prompt could say up front that evidence is search-only and Reddit hooks stay unsourced, which would have saved me two failed searches and three fetch attempts.

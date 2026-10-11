@@ -27,6 +27,116 @@
       "host": "itch.io",
       "by": "probe",
       "error": "getaddrinfo ENOTFOUND itch.io"
+    },
+    {
+      "host": "www.cpc.ncep.noaa.gov",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND www.cpc.ncep.noaa.gov"
+    },
+    {
+      "host": "www.nhl.com",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND www.nhl.com"
+    },
+    {
+      "host": "arxiv.org",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND arxiv.org"
+    },
+    {
+      "host": "math.hmc.edu",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND math.hmc.edu"
+    },
+    {
+      "host": "www.megacrit.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND www.megacrit.com"
+    },
+    {
+      "host": "www.pcgamer.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND www.pcgamer.com"
+    },
+    {
+      "host": "plato.stanford.edu",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND plato.stanford.edu"
+    },
+    {
+      "host": "link.springer.com",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND link.springer.com"
+    },
+    {
+      "host": "modelai.gettysburg.edu",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND modelai.gettysburg.edu"
+    },
+    {
+      "host": "web.mit.edu",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND web.mit.edu"
+    },
+    {
+      "host": "blogs.cornell.edu",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND blogs.cornell.edu"
+    },
+    {
+      "host": "www.cs.princeton.edu",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND www.cs.princeton.edu"
+    },
+    {
+      "host": "blog.acolyer.org",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND blog.acolyer.org"
+    },
+    {
+      "host": "sailingissues.com",
+      "by": "architect",
+      "error": "getaddrinfo ENOTFOUND sailingissues.com"
+    },
+    {
+      "host": "eol.jsc.nasa.gov",
+      "by": "architect",
+      "error": "getaddrinfo ENOTFOUND eol.jsc.nasa.gov"
+    },
+    {
+      "host": "www.visitnorthumberland.com",
+      "by": "architect",
+      "error": "getaddrinfo ENOTFOUND www.visitnorthumberland.com"
+    },
+    {
+      "host": "ldj.am",
+      "by": "artisan",
+      "error": "getaddrinfo ENOTFOUND ldj.am"
+    },
+    {
+      "host": "aftermath.site",
+      "by": "artisan",
+      "error": "getaddrinfo ENOTFOUND aftermath.site"
+    },
+    {
+      "host": "developer.mozilla.org",
+      "by": "engineer",
+      "error": "getaddrinfo ENOTFOUND developer.mozilla.org"
+    },
+    {
+      "host": "www.csail.mit.edu",
+      "by": "critic",
+      "error": "getaddrinfo ENOTFOUND www.csail.mit.edu"
+    },
+    {
+      "host": "www.ised-isde.canada.ca",
+      "by": "critic",
+      "error": "getaddrinfo ENOTFOUND www.ised-isde.canada.ca"
+    },
+    {
+      "host": "www.which.co.uk",
+      "by": "critic",
+      "error": "getaddrinfo ENOTFOUND www.which.co.uk"
     }
   ],
   "okHosts": []

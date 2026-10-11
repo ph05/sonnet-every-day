@@ -1,0 +1,194 @@
+{
+  "id": "critic-1",
+  "title": "Siege Of The Sink",
+  "pitch": "Each night a seeded heap of dirty dishes besieges the kitchen, and the only fortress is a dishwasher drawn as a cross-section with two racks, a cutlery basket and a rotating spray arm. The visitor places and turns every item by tap, drag or arrow keys, starts the cycle, and watches simulated jets sweep the layout; surfaces the water never reached come out still crusted, and the debrief shows which item blocked which jet and how many minutes of hand-washing are now owed. A campaign of nastier piles, a daily seed and a built-in solver's best layout make the third attempt far smarter than the first.",
+  "whyNow": "Timeless chore with a seasonal edge: the hosting season is close (by the usual date rules, Canadian Thanksgiving is 2026-10-12 and US Thanksgiving is 2026-11-26; computed here, not sourced), and loading arguments are evergreen.",
+  "origin": {
+    "agent": "critic",
+    "lens": "mundane-epic"
+  },
+  "fingerprint": {
+    "category": "life-food-craft",
+    "mechanic": "puzzle",
+    "tone": [
+      "cozy",
+      "playful",
+      "dramatic"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "worker",
+      "webaudio",
+      "pointer-events",
+      "web-animations"
+    ],
+    "tags": [
+      "dishwasher",
+      "chores",
+      "packing-puzzle",
+      "ray-casting",
+      "spray-simulation",
+      "household",
+      "daily-seed",
+      "siege",
+      "cozy-sim"
+    ],
+    "keywords": [
+      "spray-arm",
+      "occlusion",
+      "soil-map",
+      "nesting",
+      "hand-wash-debt",
+      "simulated-annealing",
+      "battle-report",
+      "loading-rules"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "CHOICE (Australia) and Which? (UK), searched one site at a time, give the same physical loading rules: dirtiest faces toward the centre, spray arms free to turn and unblocked, items not touching or nesting, cups and bowls angled so water drains, big items to the back and sides. The cutlery up-or-down question is a standing public debate (Which?, Ideal Home and CHOICE each ran a piece), so the model can leave that rule to the simulation. Tetris-style dishwasher games already exist, so this idea differs by modelling water reaching soil on drawn outlines rather than filling a grid. Design principle: the chore's own constraint is the mechanic and points only show progress, echoing the critique of pointsification (one search result, unverified).",
+    "sources": [
+      {
+        "title": "How to load your dishwasher the right way - CHOICE",
+        "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/how-to-load-a-dishwasher",
+        "date": "",
+        "snippet": "Search summary limited to this site: soiled surfaces should face the centre, spray arms must turn freely and not be blocked, items should not touch or nest, and deep items are angled so water drains instead of pooling.",
+        "via": "search",
+        "note": "Loading rules from an Australian consumer-testing organisation; agrees with Which?.",
+        "verified": true
+      },
+      {
+        "title": "How to load your dishwasher - Which? - Which.co.uk",
+        "url": "https://www.which.co.uk/reviews/dishwashers/article/how-to-load-your-dishwasher-and-what-s-dishwasher-safe-aTkf79u5rqyY",
+        "date": "",
+        "snippet": "Search summary limited to this site: the dirty side of each item faces the middle, the jets work like a sprinkler so they must not be blocked or face away, bowls go face down, leave gaps, big items go at the back and sides, alternate cutlery.",
+        "via": "search",
+        "note": "Independent UK source for the same loading rules; agrees with CHOICE.",
+        "verified": true
+      },
+      {
+        "title": "The big dishwasher debate: should cutlery go up or down? - Which?",
+        "url": "https://www.which.co.uk/news/article/the-big-dishwasher-debate-should-cutlery-go-up-or-down-aDUUK0j91iSo",
+        "date": "",
+        "snippet": "A consumer-organisation news piece framed around the cutlery up-or-down argument. Only the title and address were seen; the content is not relied on.",
+        "via": "search",
+        "note": "Title shows the cutlery orientation question is a recurring public debate.",
+        "verified": true
+      },
+      {
+        "title": "The big dishwasher debate - do you put cutlery up or down?",
+        "url": "https://www.idealhome.co.uk/news/how-to-load-cutlery-in-a-dishwasher-237318",
+        "date": "",
+        "snippet": "A home-magazine article framed around the same cutlery argument. Only the title and address were seen.",
+        "via": "search",
+        "note": "Second independent outlet framing cutlery orientation as a debate.",
+        "verified": true
+      },
+      {
+        "title": "Cutlery up or down? We solve the great dishwasher debate - CHOICE",
+        "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/should-you-place-your-cutlery-up-or-down-in-your-dishwasher",
+        "date": "",
+        "snippet": "A CHOICE article that sets out to settle the cutlery argument. Only the title and address were seen.",
+        "via": "search",
+        "note": "Third outlet, in another country, so the debate is not local.",
+        "verified": true
+      },
+      {
+        "title": "Organize Your Dishwasher Using Tetris",
+        "url": "https://tetris.com/article/73/organize-your-dishwasher-using-tetris",
+        "date": "",
+        "snippet": "An article on the Tetris company's own site about organising a dishwasher with Tetris-style thinking. Only the title and address were seen.",
+        "via": "search",
+        "note": "Prior art: dishwasher packing already has a grid-based brand tie-in.",
+        "verified": true
+      },
+      {
+        "title": "Ecover teams up with Tetris to release dishwasher game",
+        "url": "https://www.marketing-beat.co.uk/?p=80313",
+        "date": "",
+        "snippet": "A trade-press item reporting that a cleaning brand and the Tetris company released a free online dishwasher game with leaderboards, per the search summary.",
+        "via": "search",
+        "note": "Independent trade-press confirmation that a Tetris-style dishwasher game exists; used as contrast only.",
+        "verified": true
+      },
+      {
+        "title": "cant play wont play 5686393",
+        "url": "https://kotaku.com/cant-play-wont-play-5686393",
+        "date": "",
+        "snippet": "Result titled after the 2010 essay on pointsification; the search summary credits Margaret Robertson with arguing that points and badges are the least essential part of a game.",
+        "via": "search",
+        "note": "Design principle for this lens; one result and a blended summary, so unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-11, CHOICE (Australia) and Which? (UK) each advise facing the dirtiest surfaces toward the centre of the dishwasher and keeping the spray arms free to turn and unblocked.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, both CHOICE and Which? advise leaving gaps so items do not touch or nest, and angling or turning bowls and cups so water drains instead of pooling; Which? adds that big items go at the back and sides.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, Which? (UK), Ideal Home (UK) and CHOICE (Australia) each published a piece framed around the cutlery handles-up-or-down debate.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3,
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, Tetris-style dishwasher games exist: the Tetris company hosts an article on organising a dishwasher, and trade press reported a cleaning-brand and Tetris dishwasher game.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Per one search result and its blended summary, the 2010 essay Can't Play, Won't Play by Margaret Robertson coined 'pointsification' for adding points and badges, which it calls the least essential part of games. Unverified.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "Unpacking (placement as a cozy puzzle)",
+      "Tetris-style dishwasher tie-ins (as contrast)",
+      "r/incremental_games unlocks and prestige loops",
+      "The Hero's Journey as chapter structure",
+      "CHOICE and Which? loading guides"
+    ]
+  },
+  "design": {
+    "coreLoop": "A seeded pile arrives with soil marked on specific surfaces. The visitor racks and orients each item in the cross-section, runs the cycle, and watches rotating jets sweep through; unreached soil stays, and the debrief names the blocker, the facing or the pooled water behind each stubborn patch. Hand-wash minutes owed feed a siege meter across a 10-night campaign, and a shareable battle report closes each night.",
+    "sophisticationHooks": [
+      "Spray model: a side cross-section, a rotating arm whose nozzle positions sweep the plane, rays cast against item outlines with one splash bounce, and a stubbornness threshold per soil patch, so coverage turns into clean or crusted.",
+      "Emergent rules: dirty side to the centre, no nesting, bowls angled, arm free to turn and big items to the sides come out of the geometry instead of a checklist; contested cutlery orientation is left to the simulation.",
+      "Chef-Bot par: simulated annealing in a Web Worker searches layouts for each seed with the same simulator, giving a best-known score and a ghost layout revealed after the player's attempt.",
+      "Siege flavour: the sink is the forward outpost where unplaced items wait and add hand-wash debt, soil left overnight sets like quicksand and needs direct hits, and a black cast-iron pan is the obsidian decoy that loses the siege if loaded."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built in the morning: about 12 hand-drawn SVG item outlines with soil patches, a two-rack cross-section, the spray simulator with heat-map reveal, tap, drag and arrow-key placement with rotation, a 10-night campaign plus daily seed, debrief overlay, the Chef-Bot worker, a share string in the URL hash and an about panel with sources. Cut: 3D, fluid dynamics, several machine models, custom dishes, any soundtrack beyond a simple procedural water hiss.",
+    "risks": [
+      "Fidelity: a 2D cross-section is a toy of a 3D machine. Planned mitigation: a visible toy-model label, tuning that favours the rules both consumer guides agree on, and no hygiene or sanitising claims anywhere.",
+      "Prior art: Tetris-style dishwasher games exist. Planned mitigation: no grid, drawn outlines, water as the mechanic, and a credit line in the about panel.",
+      "Art load: a dozen consistent silhouettes plus racks have to read in light and dark. Planned mitigation: flat vector shapes in one stroke style, with simpler shapes as the fallback if time runs short.",
+      "Touch at 360px: small items need tap-to-select then tap-to-place with large hit areas, and the keyboard path is a hard requirement of the spec.",
+      "Contested and unverified details: cutlery orientation varies by guide, so the page presents it as an open question; the pointsification critique rests on one search result and appears only as 'as of 2026-10-11, per' that source, or not at all."
+    ]
+  },
+  "durable": true
+}

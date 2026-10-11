@@ -1,0 +1,256 @@
+{
+  "id": "jester-2",
+  "title": "Group Chat Gremlin",
+  "pitch": "Five friends choose a movie with a real Raft-style protocol: they elect a Planner, replicate everyone's ballots into a shared log, and decide once three ballots are committed. The visitor plays the network, holding, dropping or reordering messages and crashing one friend within a mischief budget, while ember timers go dark, elections split and the minutes of the meeting write themselves. A live panel of Raft's safety properties stays green whatever the visitor does, so the game is stalling them, steering which movie wins through ballot order, or discovering that agreement is not fairness.",
+  "whyNow": "Timeless: group chats still struggle to settle on a film, and the idea turns a real, teachable algorithm into a game. It fills this week's owed wildcard slot with a playable simulation rather than another explainer.",
+  "origin": {
+    "agent": "jester",
+    "lens": "rube-goldberg-tool"
+  },
+  "fingerprint": {
+    "category": "games-arcade",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "absurd",
+      "nerdy",
+      "competitive"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "pointer-events",
+      "web-animations"
+    ],
+    "tags": [
+      "distributed-systems",
+      "raft",
+      "consensus",
+      "group-chat",
+      "fault-injection",
+      "adversary",
+      "movie-night",
+      "election-timeout",
+      "replicated-log",
+      "seeded-replay"
+    ],
+    "keywords": [
+      "leader-election",
+      "split-vote",
+      "quorum",
+      "flp-impossibility",
+      "two-generals",
+      "safety-invariants",
+      "meeting-minutes",
+      "network-partition",
+      "fairness",
+      "ember-timers"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Prose analogies that cast Raft as friends choosing lunch or dinner are already common, and interactive Raft visualisations exist, so a passive explainer would be a repeat. What the research supports as new is playing the adversary. The FLP result (1985) shows that with fully asynchronous delivery even one faulty process leaves every deterministic consensus protocol with a possible endless run, the Two Generals' Problem shows confirmations cannot remove doubt over lossy channels, and Raft answers with terms, majority votes and randomised election timeouts that make split votes unlikely, not impossible. Raft's five published safety properties give a live monitor that stays green whatever the visitor does, while ballot order decides which movie wins, which separates agreement from fairness. Lamport's Paxos paper was itself an allegory about a Greek parliament, which licenses the comic tone.",
+    "sources": [
+      {
+        "title": "flp.pdf (Princeton course papers folder)",
+        "url": "https://www.cs.princeton.edu/courses/archive/spring22/cos418/papers/flp.pdf",
+        "date": "",
+        "snippet": "PDF named flp.pdf in a Princeton course's papers folder; the search summary quotes its abstract: every protocol has a possible nonterminating run even with one faulty process.",
+        "via": "search",
+        "note": "The FLP paper itself (Journal of the ACM, 1985), shown only as www.cs.princeton.edu in the result list.",
+        "verified": true
+      },
+      {
+        "title": "Randomized Protocols for Asynchronous Consensus",
+        "url": "https://ar5iv.labs.arxiv.org/html/cs/0209014",
+        "date": "",
+        "snippet": "Survey abstract: consensus is impossible in an asynchronous system if even one process can fail; later work evades this with randomization, extra timing assumptions, failure detectors or stronger primitives.",
+        "via": "search",
+        "note": "Independent academic restatement of FLP. The workaround list informs the mischief-slider design but is single-source, so it is not used as a fact.",
+        "verified": true
+      },
+      {
+        "title": "Fischer-Lynch-Paterson impossibility",
+        "url": "https://read.seas.harvard.edu/cs2620/2026/lectures/flp",
+        "date": "",
+        "snippet": "Lecture page of a 2026 Harvard distributed-systems course devoted to the FLP impossibility result.",
+        "via": "search",
+        "note": "Shows the result is still core teaching material; a third source on the topic.",
+        "verified": true
+      },
+      {
+        "title": "Raft (algorithm)",
+        "url": "https://en.wikipedia.org/wiki/Raft_(algorithm)",
+        "date": "",
+        "snippet": "Encyclopedia article on Raft: leader election with terms, heartbeats and randomized election timeouts, plus log replication.",
+        "via": "search",
+        "note": "Background reference for the simulated protocol.",
+        "verified": true
+      },
+      {
+        "title": "lect11 raft final",
+        "url": "https://courses.physics.illinois.edu/cs425/fa2021/assets/slides/lect11-raft-final.pdf",
+        "date": "",
+        "snippet": "Course slides on Raft: time is divided into terms, each term has at most one leader, and some terms end without a leader after a failed election.",
+        "via": "search",
+        "note": "Independent source for terms and the one-leader-per-term rule.",
+        "verified": true
+      },
+      {
+        "title": "Is there a situation where multiple nodes reach the election time simultaneously during Raft leader election?",
+        "url": "https://ask.pingcap.com/t/is-there-a-situation-where-multiple-nodes-reach-the-election-time-simultaneously-during-raft-leader-election/8823",
+        "date": "",
+        "snippet": "Forum answer on simultaneous election timeouts: timeouts drawn from a fixed range such as 150-300 ms usually let one server win, but split votes can still occur and trigger another round.",
+        "via": "search",
+        "note": "Supports the commonly cited timeout range and the unlikely-not-impossible framing of split votes.",
+        "verified": true
+      },
+      {
+        "title": "cs.brown.edu Raft lecture slides",
+        "url": "https://cs.brown.edu/courses/cs138/s16/lectures/11raft.pdf",
+        "date": "",
+        "snippet": "University lecture slides on Raft returned for a query about its safety properties.",
+        "via": "search",
+        "note": "One of several separate course decks and pages returned for the five safety properties. The search summary reported consistent descriptions but per-entry text was not shown.",
+        "verified": true
+      },
+      {
+        "title": "illinois.edu distributed systems lecture slides (lect17)",
+        "url": "https://courses.grainger.illinois.edu/ece428/sp2020//assets/slides/lect17.pdf",
+        "date": "",
+        "snippet": "Course lecture slides in a distributed-systems class, returned for the same query about Raft's safety properties.",
+        "via": "search",
+        "note": "Second course deck for the five safety properties; same caveat that per-entry text was not shown.",
+        "verified": true
+      },
+      {
+        "title": "The Part-Time Parliament",
+        "url": "https://www.microsoft.com/en-us/research/publication/part-time-parliament/",
+        "date": "",
+        "snippet": "Research-library page for Lamport's allegorical Paxos paper, which appeared in ACM Transactions on Computer Systems in 1998.",
+        "via": "search",
+        "note": "Primary page for the paper whose Greek-island parliament framing licenses the comic tone.",
+        "verified": true
+      },
+      {
+        "title": "The Part-Time Parliament",
+        "url": "https://blog.acolyer.org/2015/03/03/the-part-time-parliament/",
+        "date": "",
+        "snippet": "Blog write-up of the Part-Time Parliament paper and its parliament allegory.",
+        "via": "search",
+        "note": "Independent secondary account of the same paper.",
+        "verified": true
+      },
+      {
+        "title": "Two Generals' Problem",
+        "url": "https://en.wikipedia.org/wiki/Two_Generals%27_Problem",
+        "date": "",
+        "snippet": "Encyclopedia article: no number of confirmation rounds can guarantee that each general knows the other has agreed, since the last message may be lost.",
+        "via": "search",
+        "note": "Background for the lesson that confirmations cannot remove doubt.",
+        "verified": true
+      },
+      {
+        "title": "TwoGenerals (Yale course wiki)",
+        "url": "https://cs.yale.edu/homes/aspnes/pinewiki/TwoGenerals.html",
+        "date": "",
+        "snippet": "Course notes: if messages can be lost, no protocol guarantees agreement unless the outcome is fixed in advance, with a shorten-the-protocol proof idea.",
+        "via": "search",
+        "note": "Independent academic proof sketch of the same impossibility (result title displayed only as wiki navigation links).",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The Fischer-Lynch-Paterson result (Journal of the ACM, 1985) shows that every deterministic protocol for asynchronous consensus has a possible non-terminating run even if just one process may fail, because a crashed process looks the same as a slow one.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "In Raft a follower that hears no heartbeat within a randomised timeout (150-300 ms is the commonly cited example) becomes a candidate for a new term; a majority of votes wins, each term has at most one leader, and a split vote simply triggers another round.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          5
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "The Raft paper lists five safety properties that hold at all times: Election Safety, Leader Append-Only, Log Matching, Leader Completeness and State Machine Safety.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Over a channel that can lose messages, no finite exchange of confirmations lets two parties be certain they agree (the Two Generals' Problem); extra messages only move the doubt to the last one.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Lamport's Paxos paper, The Part-Time Parliament, frames the protocol as the legislators of an ancient Greek island and appeared in ACM Transactions on Computer Systems in 1998.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Casting Raft as friends choosing dinner or lunch is already an established explainer genre (a DEV Community post, a database vendor's film-themed blog post, a conference talk on what to eat for lunch), so the new angle is making the visitor the adversary instead of the spectator.",
+        "sourceIndex": 12,
+        "alsoIn": [
+          13,
+          14
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "An interactive Raft visualisation called The Secret Lives of Data exists (reported by a third-party software listing; unconfirmed, one blended result).",
+        "sourceIndex": 15,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "The Secret Lives of Data (interactive Raft visualisation)",
+      "Dinner-plans and lunch-decision explainers for Raft",
+      "The Two Generals' Problem",
+      "The Part-Time Parliament allegory",
+      "FLP impossibility lecture material",
+      "Chaos-engineering style fault injection"
+    ]
+  },
+  "design": {
+    "coreLoop": "The visitor picks a level (stall them for twelve seconds, make a chosen movie win, or run the unlimited-mischief sandbox), reads the five friends' ember timers and ballots, then holds, drops or reorders messages and crashes one friend within a mischief budget while the protocol reacts in real time or in single steps. Each run ends with the verdict, a green safety panel, a fairness readout comparing the result with the all-five-ballots winner, and auto-written minutes of the meeting that double as a shareable replay link.",
+    "sophisticationHooks": [
+      "A deterministic Raft core (terms, randomised election timeouts, vote requests with a log up-to-date check, append consistency check, majority commit, step-down on higher terms) run as a seeded discrete-event simulation that can be rewound, replayed and shared.",
+      "A live monitor of Raft's five safety properties that no attack can turn red, so every level is about liveness and fairness, not about breaking agreement.",
+      "The verdict is a state machine over the first three committed ballots, so delay-based ordering changes the winner and shows that consensus is not fairness; a regret readout compares against the all-ballots winner.",
+      "A mischief slider from none to unlimited: at unlimited, an attentive gremlin can keep them re-electing forever, a hands-on echo of the FLP result, while bounded budgets and randomised timeouts are what let them finish."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built in one morning: a Raft-lite engine with an event queue, an invariant monitor and a fuzz test over thousands of seeded random attacks; an SVG ring of five friends with travelling envelopes, ember timers and per-friend log strips; five levels plus a sandbox and a date-seeded daily challenge; a minutes-of-the-meeting generator with persona lines and callbacks; a hash-encoded seed and action list for replay; keyboard play with pause and single-step; an about panel. Cut: log compaction, membership changes, more than five nodes, real networking, music.",
+    "risks": [
+      "The simplified Raft has to stay correct under every gremlin action; a seeded fuzz run with the invariant checker gates the build.",
+      "Newcomers may be lost; level one runs hands-off with plain-English envelope labels and a hover glossary.",
+      "Prior art: dinner-themed Raft explainers and passive visualisations exist, so page copy has to lead with the adversary game, outcome steering and the mischief slider.",
+      "Real-time play has to stay accessible: pause, single-step, full keyboard control and a message-list view for reduced motion.",
+      "FLP and Raft statements on the page stay within the verified facts; the 150-300 ms figure is shown as a commonly cited example, not a rule, and the unlimited-mischief mode is labelled as in the spirit of FLP, not a proof.",
+      "Unverified: that a named interactive Raft visualisation exists comes from a third-party listing; the page names it only as 'as of 2026-10-11, per a software listing' or omits it. Friends and movie titles are invented; no real films, brands or people."
+    ]
+  },
+  "durable": true,
+  "sanitizer": {
+    "redacted": [],
+    "trimmed": 4
+  }
+}

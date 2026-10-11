@@ -1,0 +1,326 @@
+{
+  "schema": 1,
+  "agent": "critic",
+  "lens": "mundane-epic",
+  "candidates": [
+    {
+      "id": "critic-1",
+      "title": "Siege Of The Sink",
+      "pitch": "Each night a seeded heap of dirty dishes besieges the kitchen, and the only fortress is a dishwasher drawn as a cross-section with two racks, a cutlery basket and a rotating spray arm. The visitor places and turns every item by tap, drag or arrow keys, starts the cycle, and watches simulated jets sweep the layout; surfaces the water never reached come out still crusted, and the debrief shows which item blocked which jet and how many minutes of hand-washing are now owed. A campaign of nastier piles, a daily seed and a built-in solver's best layout make the third attempt far smarter than the first.",
+      "whyNow": "Timeless chore with a seasonal edge: the hosting season is close (by the usual date rules, Canadian Thanksgiving is 2026-10-12 and US Thanksgiving is 2026-11-26; computed here, not sourced), and loading arguments are evergreen.",
+      "origin": {
+        "agent": "critic",
+        "lens": "mundane-epic"
+      },
+      "fingerprint": {
+        "category": "life-food-craft",
+        "mechanic": "puzzle",
+        "tone": ["cozy", "playful", "dramatic"],
+        "tech": ["svg", "canvas2d", "worker", "webaudio", "pointer-events", "web-animations"],
+        "tags": ["dishwasher", "chores", "packing-puzzle", "ray-casting", "spray-simulation", "household", "daily-seed", "siege", "cozy-sim"],
+        "keywords": ["spray-arm", "occlusion", "soil-map", "nesting", "hand-wash-debt", "simulated-annealing", "battle-report", "loading-rules"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "CHOICE (Australia) and Which? (UK), searched one site at a time, give the same physical loading rules: dirtiest faces toward the centre, spray arms free to turn and unblocked, items not touching or nesting, cups and bowls angled so water drains, big items to the back and sides. The cutlery up-or-down question is a standing public debate (Which?, Ideal Home and CHOICE each ran a piece), so the model can leave that rule to the simulation. Tetris-style dishwasher games already exist, so this idea differs by modelling water reaching soil on drawn outlines rather than filling a grid. Design principle: the chore's own constraint is the mechanic and points only show progress, echoing the critique of pointsification (one search result, unverified).",
+        "sources": [
+          {
+            "title": "How to load your dishwasher the right way - CHOICE",
+            "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/how-to-load-a-dishwasher",
+            "date": "",
+            "snippet": "Search summary limited to this site: soiled surfaces should face the centre, spray arms must turn freely and not be blocked, items should not touch or nest, and deep items are angled so water drains instead of pooling.",
+            "via": "search",
+            "note": "Loading rules from an Australian consumer-testing organisation; agrees with Which?.",
+            "verified": true
+          },
+          {
+            "title": "How to load your dishwasher - Which? - Which.co.uk",
+            "url": "https://www.which.co.uk/reviews/dishwashers/article/how-to-load-your-dishwasher-and-what-s-dishwasher-safe-aTkf79u5rqyY",
+            "date": "",
+            "snippet": "Search summary limited to this site: the dirty side of each item faces the middle, the jets work like a sprinkler so they must not be blocked or face away, bowls go face down, leave gaps, big items go at the back and sides, alternate cutlery.",
+            "via": "search",
+            "note": "Independent UK source for the same loading rules; agrees with CHOICE.",
+            "verified": true
+          },
+          {
+            "title": "The big dishwasher debate: should cutlery go up or down? - Which?",
+            "url": "https://www.which.co.uk/news/article/the-big-dishwasher-debate-should-cutlery-go-up-or-down-aDUUK0j91iSo",
+            "date": "",
+            "snippet": "A consumer-organisation news piece framed around the cutlery up-or-down argument. Only the title and address were seen; the content is not relied on.",
+            "via": "search",
+            "note": "Title shows the cutlery orientation question is a recurring public debate.",
+            "verified": true
+          },
+          {
+            "title": "The big dishwasher debate - do you put cutlery up or down?",
+            "url": "https://www.idealhome.co.uk/news/how-to-load-cutlery-in-a-dishwasher-237318",
+            "date": "",
+            "snippet": "A home-magazine article framed around the same cutlery argument. Only the title and address were seen.",
+            "via": "search",
+            "note": "Second independent outlet framing cutlery orientation as a debate.",
+            "verified": true
+          },
+          {
+            "title": "Cutlery up or down? We solve the great dishwasher debate - CHOICE",
+            "url": "https://www.choice.com.au/home-and-living/kitchen/dishwashers/articles/should-you-place-your-cutlery-up-or-down-in-your-dishwasher",
+            "date": "",
+            "snippet": "A CHOICE article that sets out to settle the cutlery argument. Only the title and address were seen.",
+            "via": "search",
+            "note": "Third outlet, in another country, so the debate is not local.",
+            "verified": true
+          },
+          {
+            "title": "Organize Your Dishwasher Using Tetris",
+            "url": "https://tetris.com/article/73/organize-your-dishwasher-using-tetris",
+            "date": "",
+            "snippet": "An article on the Tetris company's own site about organising a dishwasher with Tetris-style thinking. Only the title and address were seen.",
+            "via": "search",
+            "note": "Prior art: dishwasher packing already has a grid-based brand tie-in.",
+            "verified": true
+          },
+          {
+            "title": "Ecover teams up with Tetris to release dishwasher game",
+            "url": "https://www.marketing-beat.co.uk/?p=80313",
+            "date": "",
+            "snippet": "A trade-press item reporting that a cleaning brand and the Tetris company released a free online dishwasher game with leaderboards, per the search summary.",
+            "via": "search",
+            "note": "Independent trade-press confirmation that a Tetris-style dishwasher game exists; used as contrast only.",
+            "verified": true
+          },
+          {
+            "title": "cant play wont play 5686393",
+            "url": "https://kotaku.com/cant-play-wont-play-5686393",
+            "date": "",
+            "snippet": "Result titled after the 2010 essay on pointsification; the search summary credits Margaret Robertson with arguing that points and badges are the least essential part of a game.",
+            "via": "search",
+            "note": "Design principle for this lens; one result and a blended summary, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-11, CHOICE (Australia) and Which? (UK) each advise facing the dirtiest surfaces toward the centre of the dishwasher and keeping the spray arms free to turn and unblocked.",
+            "sourceIndex": 1,
+            "alsoIn": [0],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, both CHOICE and Which? advise leaving gaps so items do not touch or nest, and angling or turning bowls and cups so water drains instead of pooling; Which? adds that big items go at the back and sides.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, Which? (UK), Ideal Home (UK) and CHOICE (Australia) each published a piece framed around the cutlery handles-up-or-down debate.",
+            "sourceIndex": 2,
+            "alsoIn": [3, 4],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, Tetris-style dishwasher games exist: the Tetris company hosts an article on organising a dishwasher, and trade press reported a cleaning-brand and Tetris dishwasher game.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per one search result and its blended summary, the 2010 essay Can't Play, Won't Play by Margaret Robertson coined 'pointsification' for adding points and badges, which it calls the least essential part of games. Unverified.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Unpacking (placement as a cozy puzzle)",
+          "Tetris-style dishwasher tie-ins (as contrast)",
+          "r/incremental_games unlocks and prestige loops",
+          "The Hero's Journey as chapter structure",
+          "CHOICE and Which? loading guides"
+        ]
+      },
+      "design": {
+        "coreLoop": "A seeded pile arrives with soil marked on specific surfaces. The visitor racks and orients each item in the cross-section, runs the cycle, and watches rotating jets sweep through; unreached soil stays, and the debrief names the blocker, the facing or the pooled water behind each stubborn patch. Hand-wash minutes owed feed a siege meter across a 10-night campaign, and a shareable battle report closes each night.",
+        "sophisticationHooks": [
+          "Spray model: a side cross-section, a rotating arm whose nozzle positions sweep the plane, rays cast against item outlines with one splash bounce, and a stubbornness threshold per soil patch, so coverage turns into clean or crusted.",
+          "Emergent rules: dirty side to the centre, no nesting, bowls angled, arm free to turn and big items to the sides come out of the geometry instead of a checklist; contested cutlery orientation is left to the simulation.",
+          "Chef-Bot par: simulated annealing in a Web Worker searches layouts for each seed with the same simulator, giving a best-known score and a ghost layout revealed after the player's attempt.",
+          "Siege flavour: the sink is the forward outpost where unplaced items wait and add hand-wash debt, soil left overnight sets like quicksand and needs direct hits, and a black cast-iron pan is the obsidian decoy that loses the siege if loaded."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in the morning: about 12 hand-drawn SVG item outlines with soil patches, a two-rack cross-section, the spray simulator with heat-map reveal, tap, drag and arrow-key placement with rotation, a 10-night campaign plus daily seed, debrief overlay, the Chef-Bot worker, a share string in the URL hash and an about panel with sources. Cut: 3D, fluid dynamics, several machine models, custom dishes, any soundtrack beyond a simple procedural water hiss.",
+        "risks": [
+          "Fidelity: a 2D cross-section is a toy of a 3D machine. Planned mitigation: a visible toy-model label, tuning that favours the rules both consumer guides agree on, and no hygiene or sanitising claims anywhere.",
+          "Prior art: Tetris-style dishwasher games exist. Planned mitigation: no grid, drawn outlines, water as the mechanic, and a credit line in the about panel.",
+          "Art load: a dozen consistent silhouettes plus racks have to read in light and dark. Planned mitigation: flat vector shapes in one stroke style, with simpler shapes as the fallback if time runs short.",
+          "Touch at 360px: small items need tap-to-select then tap-to-place with large hit areas, and the keyboard path is a hard requirement of the spec.",
+          "Contested and unverified details: cutlery orientation varies by guide, so the page presents it as an open question; the pointsification critique rests on one search result and appears only as 'as of 2026-10-11, per' that source, or not at all."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "critic-2",
+      "title": "Opt-Out Odyssey",
+      "pitch": "A roguelike gauntlet of invented websites, each greeting the visitor with a procedurally composed consent banner full of named tricks: a grey sliver where Reject should be, a countdown that resets, switches that mean the opposite of their label. The visitor hunts for the least-tracking outcome in the fewest clicks, then reads a debrief with the room's friction ratio (clicks to accept versus clicks to refuse), the par found by a built-in solver, and a bestiary entry for every pattern that fired. Eight rooms and a 300-vendor boss make a run, and a daily seed gives everyone the same gauntlet.",
+      "whyNow": "Timeless: dismissing consent banners is a daily web chore (an observation, not a sourced statistic), and every figure on the page is dated and attributed, so nothing goes stale.",
+      "origin": {
+        "agent": "critic",
+        "lens": "mundane-epic"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": ["satirical", "chaotic", "playful"],
+        "tech": ["dom-ui", "web-animations", "pointer-events", "localstorage"],
+        "tags": ["dark-patterns", "consent-banners", "roguelike", "procedural-generation", "ux-satire", "privacy", "gauntlet", "bestiary", "par-solver"],
+        "keywords": ["friction-ratio", "confirmshaming", "roach-motel", "tells", "assist-mode", "daily-seed", "speedrun", "trap-grammar"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "A CHI 2020 paper (Nouwens and colleagues) analysed consent pop-ups from popular consent platforms on top UK websites and reported that only 11.8% met its minimal requirements based on European law; a later systematic review repeats the figure, and an MIT CSAIL news item headlines the finding. The denominator is unclear in the snippets, so the page would say 'in the study's sample'. Dark-pattern typologies are published by Canada's Office of Consumer Affairs and in a unified-taxonomy arXiv paper, giving named patterns for a bestiary. Cookie-banner games already exist (a Swiss broadcaster's browser game and a University of Luxembourg thesis game), so the edge is procedural variety, a solver-checked par and the friction ratio.",
+        "sources": [
+          {
+            "title": "Dark Patterns after the GDPR: Scraping Consent Pop-ups and Demonstrating their Influence",
+            "url": "https://arxiv.org/pdf/2001.02479",
+            "date": "",
+            "snippet": "Search summary: the study scraped the designs of the five most popular consent platforms on the top 10,000 UK websites (n=680) and reports that only 11.8% meet its minimal requirements based on European law.",
+            "via": "search",
+            "note": "Primary source for the 11.8% figure; the denominator is unclear in the snippets.",
+            "verified": true
+          },
+          {
+            "title": "Mapping the Empirical Evidence of the GDPR (In-)Effectiveness: A Systematic Review",
+            "url": "https://arxiv.org/pdf/2310.16735",
+            "date": "",
+            "snippet": "Search summary: a systematic review citing the study reports implicit consent at 32.5%, pre-ticked options at 30.3% to 56.2%, no reject-all button on 50.1%, and only 11.8% meeting minimal requirements.",
+            "via": "search",
+            "note": "Separate authors repeat the 11.8% figure; secondary, since it cites the primary study.",
+            "verified": true
+          },
+          {
+            "title": "Most websites don't follow European cookie consent laws",
+            "url": "https://www.csail.mit.edu/news/most-websites-dont-follow-european-cookie-consent-laws",
+            "date": "",
+            "snippet": "A university news item whose headline reports that most sites fall short of European cookie-consent rules. Only the headline and address were seen.",
+            "via": "search",
+            "note": "Press item on the same study as the primary source, so not an independent confirmation of the figure.",
+            "verified": true
+          },
+          {
+            "title": "Types of dark patterns",
+            "url": "https://ised-isde.canada.ca/site/office-consumer-affairs/en/types-dark-patterns",
+            "date": "",
+            "snippet": "A page from the Government of Canada's Office of Consumer Affairs listing types of dark patterns. Only the title and address were seen; the content is not relied on.",
+            "via": "search",
+            "note": "Shows a government consumer office publishes a typology of dark patterns.",
+            "verified": true
+          },
+          {
+            "title": "50 Shades of Deceptive Patterns: A Unified Taxonomy, Multimodal Detection, and Security Implications",
+            "url": "https://arxiv.org/pdf/2501.13351",
+            "date": "",
+            "snippet": "A research paper whose title announces a unified taxonomy of deceptive patterns. Only the title and address were seen.",
+            "via": "search",
+            "note": "Second independent typology source; also shows taxonomies overlap and differ.",
+            "verified": true
+          },
+          {
+            "title": "the dark patterns side of ux design",
+            "url": "https://www.deceptive.design/articles/the-dark-patterns-side-of-ux-design",
+            "date": "",
+            "snippet": "Search summaries describe an article on a design-ethics site covering the five-way grouping of dark patterns (nagging, obstruction, sneaking, interface interference, forced action) attributed to Gray and colleagues, 2018.",
+            "via": "search",
+            "note": "Typology detail for the bestiary; summaries were blended across results, so the five categories stay unverified.",
+            "verified": false
+          },
+          {
+            "title": "Zum Inhalt springen",
+            "url": "https://www.srf.ch/news/srf-data/datenschutz-und-dark-patterns-das-cookie-banner-spiel-trackt-mich-wenn-ihr-koennt",
+            "date": "",
+            "snippet": "The title as shown is a navigation label; the address names a cookie-banner game from a Swiss broadcaster. Per the search summary, players look for the most data-sparing setting using real examples.",
+            "via": "search",
+            "note": "Prior art: a broadcaster's cookie-banner browser game.",
+            "verified": true
+          },
+          {
+            "title": "Mater Thesis Dark Cookie",
+            "url": "https://orbilu.uni.lu/bitstream/10993/52802/1/Mater_Thesis___Dark_Cookie.pdf",
+            "date": "",
+            "snippet": "A University of Luxembourg master's thesis describing Dark Cookie, a five-level serious game that trains players to spot manipulative cookie banners, per the search summary.",
+            "via": "search",
+            "note": "Prior art: a thesis game; whether it is still playable was not checked.",
+            "verified": true
+          },
+          {
+            "title": "cant play wont play 5686393",
+            "url": "https://kotaku.com/cant-play-wont-play-5686393",
+            "date": "",
+            "snippet": "Result titled after the 2010 essay on pointsification; the search summary credits Margaret Robertson with arguing that points and badges are the least essential part of a game.",
+            "via": "search",
+            "note": "Design principle for this lens; one result and a blended summary, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-11, a CHI 2020 study (Nouwens and colleagues) of consent-platform pop-ups on top UK websites reported that only 11.8% met its minimal requirements based on European law; per the search summary the data are from 2019 and the denominator is unclear.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, typologies of dark patterns are published by Canada's Office of Consumer Affairs ('Types of dark patterns') and in an arXiv paper titled '50 Shades of Deceptive Patterns: A Unified Taxonomy, Multimodal Detection, and Security Implications'.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, cookie-banner games already exist: a Swiss broadcaster (SRF) published a browser game about finding the most data-sparing setting, and a University of Luxembourg master's thesis describes a five-level serious game called Dark Cookie.",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per blended search summaries, a widely used 2018 typology (Gray and colleagues) groups dark patterns into five categories: nagging, obstruction, sneaking, interface interference and forced action. Unverified.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Per one search result and its blended summary, the 2010 essay Can't Play, Won't Play by Margaret Robertson coined 'pointsification' for adding points and badges, which it calls the least essential part of games. Unverified.",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Papers, Please (bureaucratic interfaces as play)",
+          "Slay the Spire (relics and descent)",
+          "Cookie-banner games from a Swiss broadcaster and a university thesis (as contrast)",
+          "r/assholedesign and r/mildlyinfuriating as community mood (not searchable from here)",
+          "The Hero's Journey as the room-by-room arc"
+        ]
+      },
+      "design": {
+        "coreLoop": "Enter a room (an invented site with a seeded banner), read it under a patience timer, click through the layers to the lowest-tracking outcome, then read the debrief: trackers leaked, friction ratio, solver par and the named patterns that fired. Patience buys relics (contrast magnifier, one undo, tab-order sense) for the descent; every trap carries a visible tell, so each run sharpens the eye for the next, and bosses stack three patterns at once.",
+        "sophisticationHooks": [
+          "Banner grammar: a seed composes layout, button hierarchy, copy tone and about a dozen trap modules (hidden reject, confirmshaming, pre-ticked toggles, inverted switches, resetting countdown, fake close, cookie wall, nested vendor list, re-prompt); a breadth-first solver over each banner's state machine proves the room is solvable and computes par and the friction ratio.",
+          "Fair-trap rule: every trick carries a visible tell, and an assist mode, which doubles as the accessible path for keyboard and screen-reader players, narrates the tell in plain words.",
+          "Bestiary and debrief teach the named patterns and a real-world cheat sheet, so the quiet payoff is spotting the same tricks on real sites; dated study figures sit in the about panel beside their sources.",
+          "Roguelike layer and bends: quicksand rooms where each refusal opens another layer, an obsidian dark theme for the boss, a vendor list of hundreds of outposts, relics, a patience meter, a daily seed and a spoiler-free share receipt in the URL hash."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in the morning: the banner engine (spec, renderer, three visual themes, about twelve trap modules), the breadth-first solver for par and friction ratio, a run of eight rooms plus a boss, relics, bestiary, assist mode, daily seed and share receipt, and an about panel with dated sources. Cut: real-site lookalikes, any network call, audio beyond UI clicks, accounts and leaderboards.",
+        "risks": [
+          "Prior art: a Swiss broadcaster's browser game, a thesis game and similar teaching games exist. Planned mitigation: a credit line in the about panel and a pitch built on procedural variety, solver-checked par and the friction ratio rather than on the premise.",
+          "Accessibility: a game about hidden buttons can exclude people, so full keyboard play and the assist mode belong in the core spec, not the stretch list.",
+          "Safety framing: every site, brand and banner is invented and labelled parody; no real logos, no legal claims about real sites and no data collection; the page sets no cookies and says so, with localStorage used only for a best result inside try/catch.",
+          "Preachiness and repetition: the page needs a narrator with real jokes and enough copy and mutators that room ten still surprises, so copy writing starts first.",
+          "Unverified details: the five-category typology and the pointsification critique rest on blended or single results and appear only as 'as of 2026-10-11, per the named source' or not at all; the 11.8% figure is shown as 'in the study's sample' because the denominator is unclear."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

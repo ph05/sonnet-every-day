@@ -1,0 +1,222 @@
+{
+  "id": "artisan-1",
+  "title": "Dead Reckoning",
+  "pitch": "A storm has killed every screen on the boat, so the instructor turns it into a drill: you get a periscope, a stopwatch and a grease pencil. You raise the scope for a few seconds, swing it onto an unmanned target barge, turn the handwheel until the two images of its mast meet to read the range, then drop below and pencil the fix on the chart. Two fixes reveal the barge's course and speed, you slide the aim point along its track until the practice round and the barge arrive together, and a dye splash tells you how good you were.",
+  "whyNow": "Jam season: two outlets report Ludum Dare winding down toward 2028, and Ludum Dare 60 is listed for 16-19 October (as of 2026-10-11, per its page). One weekend jam page also reportedly lists 'Systems Offline' as its theme (single source, unconfirmed). This is the analog answer to that prompt: when the systems go dark, do it by hand.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "itch-jam-watch"
+  },
+  "fingerprint": {
+    "category": "games-arcade",
+    "mechanic": "game",
+    "tone": [
+      "analytical",
+      "dramatic",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "webaudio",
+      "pointer-events",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "game-jam",
+      "systems-offline",
+      "periscope",
+      "stadimeter",
+      "dead-reckoning",
+      "intercept",
+      "bearing-plot",
+      "training-drill",
+      "analog-instruments",
+      "seeded-drills"
+    ],
+    "keywords": [
+      "range-finding",
+      "bearing",
+      "firing-solution",
+      "chart-table",
+      "uncertainty-wedge",
+      "mast-height",
+      "handwheel",
+      "exposure",
+      "phosphor-readout",
+      "grease-pencil"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the same page also says theme TBA and a search for the host's own announcements found only earlier editions, so the page shows the theme as reported, not confirmed. What is verified shapes the mechanic: a periscope stadimeter converts the angle a mast subtends into range once the mast height is known, using two images offset by a handwheel, and accuracy depends on knowing the height, so the game needs a recognition book and several looks. Bearings alone from a stationary observer give no unique track, so the final drill removes the stadimeter and makes the player move the boat to build a baseline. Dead reckoning projects a fix forward from speed, heading and time, which is what the aim point does. Ludum Dare 60 is listed for 16-19 October and two outlets report the series ending in 2028.",
+    "sources": [
+      {
+        "title": "Patch Notes v2.0 - itch.io",
+        "url": "https://itch.io/jam/patch-notes",
+        "date": "",
+        "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+        "via": "search",
+        "note": "The hook. One site only and internally inconsistent; a search for the host's own announcements (newsletter, earlier jam pages) found nothing on v2.0. Show the theme as reported, as of 2026-10-11, never as confirmed.",
+        "verified": false
+      },
+      {
+        "title": "Submarine Torpedo Fire Control Manual",
+        "url": "https://legacy.maritime.org/doc/attack/index.php",
+        "date": "",
+        "snippet": "Historic training manual, as summarized by search: the stadimeter forms two identical images offset vertically by a handwheel; the observer lines up waterline and masthead and reads range against the masthead height entered; accuracy depends on observer skill and the height estimate.",
+        "via": "search",
+        "note": "Primary text for the ranging mechanic: stacked images, handwheel, accuracy limits. Seen through a search summary only (the manual page was not opened).",
+        "verified": true
+      },
+      {
+        "title": "Stadimeter",
+        "url": "https://en.wikipedia.org/wiki/Stadimeter",
+        "date": "",
+        "snippet": "Encyclopedia entry: an optical device that estimates range to an object of known height from the angle between its top and bottom; on a periscope the operator turns a knob until the top and bottom images align and reads range off the knob.",
+        "via": "search",
+        "note": "Independent statement of the same principle as the manual. Search only.",
+        "verified": true
+      },
+      {
+        "title": "Observability: Range-Only Versus Bearings-Only Target Motion Analysis When the Observer Maneuvers Smoothly",
+        "url": "https://hal-univ-tln.archives-ouvertes.fr/hal-03661187",
+        "date": "",
+        "snippet": "Research paper on bearings-only target motion analysis; search quotes say a single stationary observer cannot fix a unique target track and the observer has to maneuver to make range observable.",
+        "via": "search",
+        "note": "Shapes the final drill: with the stadimeter gone the player moves their own boat to build a baseline. Summary-level agreement with the patent entry; the quotes were not attributable to one entry.",
+        "verified": true
+      },
+      {
+        "title": "US5877998A - Recursive method for target motion analysis - Google Patents",
+        "url": "https://patents.google.com/patent/US5877998",
+        "date": "",
+        "snippet": "Patent on a recursive method for bearings-only target motion analysis; per the search summary it describes taking a bearing, changing to a known second velocity, taking another bearing and applying trigonometry to get range.",
+        "via": "search",
+        "note": "Independent of the papers (a patent office record). The summary said it did not fully verify the patent text, so only the maneuver-to-get-range idea is relied on.",
+        "verified": true
+      },
+      {
+        "title": "Dead reckoning",
+        "url": "https://en.wikipedia.org/wiki/Dead_reckoning",
+        "date": "",
+        "snippet": "Encyclopedia entry: dead reckoning estimates the current position from a previously determined position plus estimates of speed, heading and elapsed time.",
+        "via": "search",
+        "note": "Defines the term used in the title; the aim point is a dead-reckoned position.",
+        "verified": true
+      },
+      {
+        "title": "Dead reckoning",
+        "url": "https://technav.ieee.org/topic/dead-reckoning/",
+        "date": "",
+        "snippet": "Topic page from an engineering society's technology navigator, returned for the same definition: position estimated from a known start using speed, heading and time.",
+        "via": "search",
+        "note": "Independent second source for the definition. Search only.",
+        "verified": true
+      },
+      {
+        "title": "Ludum Dare 60 - October 16-19, 2026: dates, countdown, theme",
+        "url": "https://ldj.am/60",
+        "date": "",
+        "snippet": "Official page for Ludum Dare 60; the title shown in search gives 16-19 October 2026 and a countdown. A search summary said the theme is announced when the jam starts.",
+        "via": "search",
+        "note": "Primary but single source and not opened (the ldj.am fetch failed with a DNS error). Show as per its page, as of 2026-10-11.",
+        "verified": false
+      },
+      {
+        "title": "Ludum Dare Game Jam to end in 2028",
+        "url": "https://www.shacknews.com/article/148746/ludum-dare-game-jam-ending",
+        "date": "",
+        "snippet": "News article whose title says the Ludum Dare game jam will end in 2028.",
+        "via": "search",
+        "note": "One of two outlets reporting the wind-down; the title carries the claim.",
+        "verified": true
+      },
+      {
+        "title": "After 20 Years, Influential Game Jam Ludum Dare Will Wind Down",
+        "url": "https://aftermath.site/after-20-years-influential-game-jam-ludum-dare-will-wind-down/",
+        "date": "",
+        "snippet": "News article whose title says the influential Ludum Dare jam will wind down after twenty years.",
+        "via": "search",
+        "note": "Second outlet, independent of the first; the title carries the claim. The page was not opened (the aftermath.site fetch failed with a DNS error).",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A periscope stadimeter turns the angle a target's mast subtends into range once the mast height is known: two images offset by a handwheel or knob are lined up so the masthead meets the waterline, and range is read against the height entered. A wrong height means a wrong range.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "From bearings alone, a single stationary observer cannot determine a unique target track; the observer has to maneuver for range to become observable.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Dead reckoning estimates a current position from a previously determined position plus speed, heading and elapsed time; the result is an estimate, not a fix.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11 two outlets report that the long-running Ludum Dare game jam is winding down and will end in 2028.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Ludum Dare 60 is listed for 16-19 October 2026 on its official page (single source, as of 2026-10-11, per ldj.am).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "Historic submarine periscope approach drills",
+      "Grease-pencil plotting boards and paper chart tables",
+      "Deduction-by-measurement games",
+      "Lead-the-target artillery games",
+      "Green phosphor oscilloscope readouts",
+      "Ship recognition books"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each drill sends one to three unmanned barges across a range at constant course and speed. You raise the scope (a spray timer limits each look), find a barge in low power, switch to high power, name its class from the recognition book and turn the handwheel until the stacked images meet to read range. You lower the scope and the fix is pencilled on the chart with bearing and clock time. You wait, look again, and the two marks give a track with an uncertainty wedge. You drag the aim point along the track until the practice round and the barge arrive together, then fire; the dye splash scores the miss distance, with bonuses for fewer looks and less exposure. Every extra look is a value-of-information bet: minute two is learning the handwheel, minute ten is choosing the gap between looks.",
+    "sophisticationHooks": [
+      "Real optics: a stacked-image handwheel (two copies of the target, offset until the mast tip meets the waterline) turns a known mast height into range. The player's alignment error and a mis-identified ship class both skew the fix, and low power finds targets while high power measures.",
+      "Estimation with honesty: two timed fixes give a velocity vector drawn with an uncertainty wedge that narrows as the gap between looks grows, so waiting longer buys accuracy at the price of a barge that may sail out of range.",
+      "Equal-arrival aiming: dragging the aim point along the predicted track races two phosphor timing bars (practice round against barge) and a lamp lights when they match. A final drill takes the stadimeter away so the player must move the boat to build a baseline, as bearings-only tracking requires.",
+      "Hero moment: the scope broaches and a brass-ringed lens rises through the waterline, spray beading and clearing, horizon swaying with the swell; when the dye lands it blooms across the hull while the green readout answers with a soft afterglow. Reduced motion swaps the sway and spray for fades."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Build: seeded sim core (kinematics, reading-error model, scoring), periscope canvas with low and high power and four invented ship silhouettes, recognition book, stacked-image handwheel, SVG chart table with pencil fixes and uncertainty wedge, equal-arrival aiming with two timing bars, six drills ending in a graduation certificate, URL-hash seeds, instructor lines, muted-by-default WebAudio, reduced-motion twin, keyboard and touch controls, about panel with sources. Cut first: the bearings-only final drill, then swell-hidden waterlines. Not built: night, weather, other weapons, leaderboards, any backend.",
+    "risks": [
+      "Hook is single-sourced and inconsistent: the page will show 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io, and the Ludum Dare 60 dates as per its official page; the game works without either.",
+      "Onboarding: optical ranging is unfamiliar. Drill 0 teaches it hands-on with a stationary barge, a Navigator's Assist toggle overlays the geometry, and the handwheel has keyboard steps.",
+      "Military flavour: keep it an exercise with unmanned barges and dye-marked practice rounds, invented ship classes, no insignia, no real vessel names, no casualties.",
+      "Realism: the model is simplified and the page says it is a game, not seamanship; historic details in the making-of come only from sources marked verified.",
+      "Precision on small screens: big hit areas, step buttons and assist rounding stop pixel-hunting at 360px.",
+      "Scope: the bearings-only final drill is cut first if the morning runs short."
+    ]
+  },
+  "durable": true
+}

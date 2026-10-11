@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "date": "2026-10-11",
+  "dropped": [
+    {
+      "stage": "shortlist",
+      "id": "pulse-1",
+      "title": "Pacific Pulse",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "pulse-2",
+      "title": "Extra Attacker",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-1",
+      "title": "The Gas Remembers",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-2",
+      "title": "The Shortcut Trap",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "jester-1",
+      "title": "Forty Steps To Lunch",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "jester-2",
+      "title": "Group Chat Gremlin",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "engineer-1",
+      "title": "Sound Lantern",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 3.0) or category/slot cap"
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "id": "lab-1",
+  "title": "The Gas Remembers",
+  "pitch": "A visitor types a word and about 1,500 coloured particles spell it out; a gas simulation then scatters it into confetti while an entropy meter climbs. Pressing rewind runs the same laws backwards and the word re-forms, sealed by a bit-for-bit return receipt, because integer arithmetic makes every step exactly undoable. Switching to ordinary floating point, or nudging one particle by one part in a million, breaks the return, and a V-shaped mismatch curve points to the moment and the particle of the nudge.",
+  "whyNow": "Timeless. The arrow-of-time puzzle is about 150 years old, yet a toy that lets anyone break the reversal by hand is rare, and clips of dye unmixing in glycerin keep circulating (one was fact-checked as authentic).",
+  "origin": {
+    "agent": "lab",
+    "lens": "anti-lens-opposite"
+  },
+  "fingerprint": {
+    "category": "science-sim",
+    "mechanic": "simulator",
+    "tone": [
+      "nerdy",
+      "dramatic",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "webaudio",
+      "procedural-audio",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "time-reversal",
+      "entropy",
+      "arrow-of-time",
+      "chaos",
+      "butterfly-effect",
+      "particle-gas",
+      "integer-arithmetic",
+      "unmixing",
+      "reversibility",
+      "lyapunov-time"
+    ],
+    "keywords": [
+      "loschmidt-echo",
+      "verlet",
+      "return-receipt",
+      "bit-exact",
+      "echo-horizon",
+      "coarse-grained-entropy",
+      "text-to-particles",
+      "mismatch-curve",
+      "nudge",
+      "fixed-timestep"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Time-symmetric dynamics would retrace their path when every velocity is flipped; Loschmidt raised this against Boltzmann's H-theorem and Boltzmann answered that reversed states exist but are overwhelmingly rare. Floating-point simulations rarely manage it: the forward-and-back error grows exponentially in chaotic systems. Levesque and Verlet (1993) described an integer-arithmetic scheme that is exactly reversible, and later bit-reversible integrators use the same idea. University demos of dye unmixing in glycerin show the physical cousin. Scout prototype, not literature: 400 soft disks on a 2^20 integer lattice with antisymmetric rounded pair forces returned bit-exactly after 1500 steps out and 1500 back; a one-unit nudge grew by a factor e every 8 to 27 steps depending on density, and the mismatch against the clean replay had its apex at the nudge step. Model limits: 2D soft disks, a small gas, coarse-grained entropy, no quantum effects; Lyapunov rates are measured in the page and depend on its parameters.",
+    "sources": [
+      {
+        "title": "Loschmidt's paradox",
+        "url": "",
+        "date": "",
+        "snippet": "Entry on the reversibility objection: because microscopic laws are time-symmetric, reversing all velocities after entropy has risen would send a gas back toward lower entropy; Boltzmann replied that such states are extremely rare.",
+        "via": "search",
+        "note": "Established the objection and Boltzmann's statistical reply; the 1876 date appeared in two separate search summaries (summaries blended several results, entry itself not opened).",
+        "verified": false
+      },
+      {
+        "title": "Johan Josef Loschmidt was an assistant to the first",
+        "url": "https://informationphilosopher.com/solutions/scientist/loschmidt",
+        "date": "",
+        "snippet": "A page on Loschmidt in a philosophy-of-information site; per the search summary it covers the reversibility objection and gives an early Boltzmann date that the summary suspects is a typo.",
+        "via": "search",
+        "note": "Second, independent account of the objection; no date is taken from it because its early date was flagged as doubtful.",
+        "verified": true
+      },
+      {
+        "title": "link.springer.com",
+        "url": "https://link.springer.com/article/10.1007/BF01048022",
+        "date": "1993",
+        "snippet": "Publisher record for J. Stat. Phys. 72, 519-537 (1993); per the search summary the abstract describes a time-symmetric algorithm using integer arithmetic for simulating classical fluids.",
+        "via": "search",
+        "note": "Established the integer-arithmetic reversible scheme; full text not seen.",
+        "verified": true
+      },
+      {
+        "title": "JANUS: A bit-wise reversible integrator for N-body dynamics",
+        "url": "https://arxiv.org/pdf/1704.07715",
+        "date": "2017",
+        "snippet": "Introduces a bit-wise reversible N-body integrator that combines integer and floating-point arithmetic so that forward and backward integration agree exactly.",
+        "via": "search",
+        "note": "Later work building on integer reversibility; shows the idea is still used.",
+        "verified": true
+      },
+      {
+        "title": "Time's Arrow for Shockwaves; Bit-Reversible Lyapunov and 'Covariant' Vectors; Symmetry Breaking",
+        "url": "https://arxiv.org/pdf/1112.5491",
+        "date": "",
+        "snippet": "Shockwave study with about 1600 particles using bit-reversible integration and exact velocity reversal at set times; forward and backward Lyapunov exponents converge to machine accuracy yet differ from each other.",
+        "via": "search",
+        "note": "Shows bit-reversible runs used in practice for time-reversal studies.",
+        "verified": true
+      },
+      {
+        "title": "ANALYSIS OF ROUND OFF ERRORS WITH REVERSIBILITY TEST AS A DYNAMICAL INDICATOR",
+        "url": "https://arxiv.org/html/1205.3060v1",
+        "date": "",
+        "snippet": "Proposes using the round-off deviation after a forward-and-back integration as a dynamical indicator; the reversibility error grows exponentially for chaotic orbits and only linearly for regular ones.",
+        "via": "search",
+        "note": "Established exponential growth of reversal error in chaos versus linear growth in regular motion.",
+        "verified": true
+      },
+      {
+        "title": "repository.kulib.kyoto-u.ac.jp",
+        "url": "https://repository.kulib.kyoto-u.ac.jp/dspace/bitstream/2433/110231/1/KJ00004706540.pdf",
+        "date": "",
+        "snippet": "Repository paper noting that molecular dynamics cannot avoid numerical irreversibility from round-off, and citing a velocity-inversion test in which the Boltzmann H function failed to return to its starting value.",
+        "via": "search",
+        "note": "Independent statement that round-off limits numerical reversal.",
+        "verified": true
+      },
+      {
+        "title": "On the relation between reliable computation time, float-point precision and the Lyapunov exponent in chaotic systems",
+        "url": "https://arxiv.org/pdf/1410.4919",
+        "date": "",
+        "snippet": "Title-level only: a study relating reliable computation time, floating-point precision and the Lyapunov exponent in chaotic systems; content not seen.",
+        "via": "search",
+        "note": "Motivates the bits bench; not relied on for any claim.",
+        "verified": false
+      },
+      {
+        "title": "4F10.10 Unmixing Demonstration",
+        "url": "https://www.sfu.ca/physics/demos/demos-experiments/unmixing-surrey.html",
+        "date": "",
+        "snippet": "Lecture-demo page: dye injected in glycerol between two cylinders is mixed by slowly turning the inner cylinder and reappears when the rotation is reversed; the protocol advises a small maximum number of full turns (five, per the search summary).",
+        "via": "search",
+        "note": "Established the physical analogue of reversible mixing.",
+        "verified": true
+      },
+      {
+        "title": "Mixing and Unmixing (4F10.10)",
+        "url": "https://phys-office.phys.washington.edu/lectdemo/DetailPages/4/F/Mixing_and_Unmixing_(4F10.10).html",
+        "date": "",
+        "snippet": "Lecture-demo listing of the same unmixing demonstration; per the search summary it is based on a 1960 American Journal of Physics paper.",
+        "via": "search",
+        "note": "Second university running the demonstration.",
+        "verified": true
+      },
+      {
+        "title": "F4-12: UNMIXING - GLYCERIN AND DYE",
+        "url": "https://lecdem.physics.umd.edu/tools-and-resources/forum-tr/f4/79-f4-12-unmixing-glycerin-and-dye.html",
+        "date": "",
+        "snippet": "Lecture-demo forum page whose title names the glycerin-and-dye unmixing demonstration; title-level evidence that a third university runs it.",
+        "via": "search",
+        "note": "Title-level support for the demonstration being standard.",
+        "verified": true
+      },
+      {
+        "title": "Does This Video Show Two Fluids Becoming 'Unmixed'?",
+        "url": "https://www.snopes.com/fact-check/two-fluids-unmixed-video/",
+        "date": "",
+        "snippet": "Fact-check of a widely shared clip of a crank-driven unmixing demonstration; per the search summary the clip was found authentic.",
+        "via": "search",
+        "note": "Shows the effect is real and that a clip of it went viral.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Loschmidt's reversibility objection (reported as 1876): because microscopic laws are time-symmetric, reversing every velocity after entropy has risen would send a gas back toward lower entropy; Boltzmann replied that such reversed states exist but are extremely rare.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Levesque and Verlet published 'Molecular dynamics and time reversibility' (J. Stat. Phys. 72, 519-537, 1993), describing a time-symmetric integer-arithmetic algorithm for simulating classical fluids.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Bit-reversible integrators are used in published work: a 2017 N-body integrator (JANUS) mixes integer and floating-point arithmetic for exact time reversal, and a shockwave study with about 1600 particles reverses velocities exactly in bit-reversible runs.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Round-off prevents exact numerical reversal in molecular dynamics, and the error of a forward-and-back run grows exponentially for chaotic orbits but only linearly for regular ones.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-11"
+      },
+      {
+        "claim": "Dye lines in glycerol between two cylinders un-mix when the rotation is reversed, a standard university lecture demonstration (with a recommended limit on the number of turns), and a viral clip of one such demonstration was fact-checked as authentic.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9,
+          10,
+          11
+        ],
+        "asOf": "2026-10-11"
+      }
+    ],
+    "inspirations": [
+      "dye-in-glycerin unmixing lecture demos",
+      "Loschmidt's reversibility objection",
+      "bit-reversible molecular dynamics studies",
+      "git bisect as a debugging idiom",
+      "Maxwell's demon puzzles"
+    ]
+  },
+  "design": {
+    "coreLoop": "The visitor chooses a word, lets the gas disperse it, rewinds time and reads the return receipt, which compares the final state with the start bit for bit. The visitor then breaks the echo on purpose, with a nudge, a hornet particle (one very fast particle) or floating-point arithmetic, and the mismatch curve shows when and where it broke. A hidden-nudge hunt scores how few rewinds it takes to find the moment and the particle, so minute two is about experiments and minute ten is about forensics and the bits bench.",
+    "sophisticationHooks": [
+      "Exactly reversible integer Stormer-Verlet core with antisymmetric rounded pair forces (momentum conserved exactly), run side by side with float64 and float32 builds of the same code; a Node test asserts the bit-exact return.",
+      "Echo forensics: the distance between the clean replay and the reversed replay is zero just before a nudge and grows both ways, a V on a log axis whose apex marks the moment and the one particle that differs.",
+      "Bits bench in a worker: repeated one-unit nudges at several lattice resolutions measure the echo horizon against the page's own Lyapunov rate.",
+      "Coarse-grained entropy meter whose arrow flips at the rewind, collision ticks that play backwards on rewind, and a share hash that replays the same universe on any device (IEEE add, multiply, divide and square root only)."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "The day builds a pure deterministic engine (init, step, reverse, hash, entropy) with Node tests for exact return and momentum, a canvas renderer for 800 to 1500 particles with cell lists, rewind and scrub controls, the return receipt, mismatch and entropy plots, nudge and hornet tools, the hidden-nudge hunt, the bits bench, a share hash, an about panel, light and dark themes, a reduced-motion step-through, keyboard and touch. The day cuts 3D, event-driven hard spheres, a fluid-unmixing mode, quantum echoes and any server.",
+    "risks": [
+      "Defaults decide whether float64 fails before the gas has visibly mixed; the scout prototype showed float64 returns holding for roughly 600 to 1000 steps and failing between about 800 and 1400 steps, depending on density and speed, so tuned parameters and a visible step counter are needed.",
+      "Cross-device replay depends on using only IEEE add, multiply, divide and square root in the force path; Math.exp, Math.pow or trigonometry there would break the shared-state promise.",
+      "Phones: 1500 particles need cell lists and a cap on steps per frame; reduced-motion visitors need a step-through mode instead of continuous animation.",
+      "Lyapunov rates and echo horizons shown on the page are measured from its own model and labelled as such; only the verified literature facts are cited, and the making-of uses 'reported' wording for anything else.",
+      "Letters can lose legibility after the return, so long words or thin glyphs need a fallback shape or fewer characters.",
+      "The physical analogue (dye in glycerol) fails once diffusion intervenes, so the page states what is modelled (exact arithmetic) and what is not, and does not suggest that real gases un-mix."
+    ]
+  },
+  "durable": true
+}
