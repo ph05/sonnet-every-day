@@ -1,0 +1,344 @@
+{
+  "schema": 1,
+  "agent": "artisan",
+  "lens": "itch-jam-watch",
+  "candidates": [
+    {
+      "id": "artisan-1",
+      "title": "Dead Reckoning",
+      "pitch": "A storm has killed every screen on the boat, so the instructor turns it into a drill: you get a periscope, a stopwatch and a grease pencil. You raise the scope for a few seconds, swing it onto an unmanned target barge, turn the handwheel until the two images of its mast meet to read the range, then drop below and pencil the fix on the chart. Two fixes reveal the barge's course and speed, you slide the aim point along its track until the practice round and the barge arrive together, and a dye splash tells you how good you were.",
+      "whyNow": "Jam season: two outlets report Ludum Dare winding down toward 2028, and Ludum Dare 60 is listed for 16-19 October (as of 2026-10-11, per its page). One weekend jam page also reportedly lists 'Systems Offline' as its theme (single source, unconfirmed). This is the analog answer to that prompt: when the systems go dark, do it by hand.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "itch-jam-watch"
+      },
+      "fingerprint": {
+        "category": "games-arcade",
+        "mechanic": "game",
+        "tone": ["analytical", "dramatic", "nerdy"],
+        "tech": ["canvas2d", "svg", "webaudio", "pointer-events", "localstorage", "web-animations"],
+        "tags": ["game-jam", "systems-offline", "periscope", "stadimeter", "dead-reckoning", "intercept", "bearing-plot", "training-drill", "analog-instruments", "seeded-drills"],
+        "keywords": ["range-finding", "bearing", "firing-solution", "chart-table", "uncertainty-wedge", "mast-height", "handwheel", "exposure", "phosphor-readout", "grease-pencil"],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the same page also says theme TBA and a search of the host's own newsletter found only earlier editions, so the page shows the theme as reported, not confirmed. What is verified shapes the mechanic: a periscope stadimeter converts the angle a mast subtends into range once the mast height is known, using two images offset by a handwheel, and accuracy depends on knowing the height, so the game needs a recognition book and several looks. Bearings alone from a stationary observer give no unique track, so the final drill removes the stadimeter and makes the player move the boat to build a baseline. Dead reckoning projects a fix forward from speed, heading and time, which is what the aim point does. Ludum Dare 60 is listed for 16-19 October and two outlets report the series ending in 2028.",
+        "sources": [
+          {
+            "title": "Patch Notes v2.0 - itch.io",
+            "url": "https://itch.io/jam/patch-notes",
+            "date": "",
+            "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+            "via": "search",
+            "note": "The hook. One site only and internally inconsistent; a search of the host's own newsletter found nothing on v2.0. Show the theme as reported, as of 2026-10-11, never as confirmed.",
+            "verified": false
+          },
+          {
+            "title": "Submarine Torpedo Fire Control Manual",
+            "url": "https://legacy.maritime.org/doc/attack/index.php",
+            "date": "",
+            "snippet": "Historic training manual, as summarized by search: the stadimeter forms two identical images offset vertically by a handwheel; the observer lines up waterline and masthead and reads range against the masthead height entered; accuracy depends on observer skill and the height estimate.",
+            "via": "search",
+            "note": "Primary text for the ranging mechanic: stacked images, handwheel, accuracy limits. Seen through a search summary only (the manual page was not opened).",
+            "verified": true
+          },
+          {
+            "title": "Stadimeter",
+            "url": "https://en.wikipedia.org/wiki/Stadimeter",
+            "date": "",
+            "snippet": "Encyclopedia entry: an optical device that estimates range to an object of known height from the angle between its top and bottom; on a periscope the operator turns a knob until the top and bottom images align and reads range off the knob.",
+            "via": "search",
+            "note": "Independent statement of the same principle as the manual. Search only.",
+            "verified": true
+          },
+          {
+            "title": "Observability: Range-Only Versus Bearings-Only Target Motion Analysis When the Observer Maneuvers Smoothly",
+            "url": "https://hal-univ-tln.archives-ouvertes.fr/hal-03661187",
+            "date": "",
+            "snippet": "Research paper on bearings-only target motion analysis; search quotes say a single stationary observer cannot fix a unique target track and the observer has to maneuver to make range observable.",
+            "via": "search",
+            "note": "Shapes the final drill: with the stadimeter gone the player moves their own boat to build a baseline. Summary-level agreement with the patent entry; the quotes were not attributable to one entry.",
+            "verified": true
+          },
+          {
+            "title": "US5877998A - Recursive method for target motion analysis - Google Patents",
+            "url": "https://patents.google.com/patent/US5877998",
+            "date": "",
+            "snippet": "Patent on a recursive method for bearings-only target motion analysis; per the search summary it describes taking a bearing, changing to a known second velocity, taking another bearing and applying trigonometry to get range.",
+            "via": "search",
+            "note": "Independent of the papers (a patent office record). The summary said it did not fully verify the patent text, so only the maneuver-to-get-range idea is relied on.",
+            "verified": true
+          },
+          {
+            "title": "Dead reckoning",
+            "url": "https://en.wikipedia.org/wiki/Dead_reckoning",
+            "date": "",
+            "snippet": "Encyclopedia entry: dead reckoning estimates the current position from a previously determined position plus estimates of speed, heading and elapsed time.",
+            "via": "search",
+            "note": "Defines the term used in the title; the aim point is a dead-reckoned position.",
+            "verified": true
+          },
+          {
+            "title": "Dead reckoning",
+            "url": "https://technav.ieee.org/topic/dead-reckoning/",
+            "date": "",
+            "snippet": "Topic page from an engineering society's technology navigator, returned for the same definition: position estimated from a known start using speed, heading and time.",
+            "via": "search",
+            "note": "Independent second source for the definition. Search only.",
+            "verified": true
+          },
+          {
+            "title": "Ludum Dare 60 - October 16-19, 2026: dates, countdown, theme",
+            "url": "https://ldj.am/60",
+            "date": "",
+            "snippet": "Official page for Ludum Dare 60; the title shown in search gives 16-19 October 2026 and a countdown. A search summary said the theme is announced when the jam starts.",
+            "via": "search",
+            "note": "Primary but single source and not opened (the ldj.am fetch failed with a DNS error). Show as per its page, as of 2026-10-11.",
+            "verified": false
+          },
+          {
+            "title": "Ludum Dare Game Jam to end in 2028",
+            "url": "https://www.shacknews.com/article/148746/ludum-dare-game-jam-ending",
+            "date": "",
+            "snippet": "News article whose title says the Ludum Dare game jam will end in 2028.",
+            "via": "search",
+            "note": "One of two outlets reporting the wind-down; the title carries the claim.",
+            "verified": true
+          },
+          {
+            "title": "After 20 Years, Influential Game Jam Ludum Dare Will Wind Down",
+            "url": "https://aftermath.site/after-20-years-influential-game-jam-ludum-dare-will-wind-down/",
+            "date": "",
+            "snippet": "News article whose title says the influential Ludum Dare jam will wind down after twenty years.",
+            "via": "search",
+            "note": "Second outlet, independent of the first; the title carries the claim. The page was not opened (the aftermath.site fetch failed with a DNS error).",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A periscope stadimeter turns the angle a target's mast subtends into range once the mast height is known: two images offset by a handwheel or knob are lined up so the masthead meets the waterline, and range is read against the height entered. A wrong height means a wrong range.",
+            "sourceIndex": 1,
+            "alsoIn": [2],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "From bearings alone, a single stationary observer cannot determine a unique target track; the observer has to maneuver for range to become observable.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Dead reckoning estimates a current position from a previously determined position plus speed, heading and elapsed time; the result is an estimate, not a fix.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11 two outlets report that the long-running Ludum Dare game jam is winding down and will end in 2028.",
+            "sourceIndex": 8,
+            "alsoIn": [9],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Ludum Dare 60 is listed for 16-19 October 2026 on its official page (single source, as of 2026-10-11, per ldj.am).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Historic submarine periscope approach drills",
+          "Grease-pencil plotting boards and paper chart tables",
+          "Deduction-by-measurement games",
+          "Lead-the-target artillery games",
+          "Green phosphor oscilloscope readouts",
+          "Ship recognition books"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each drill sends one to three unmanned barges across a range at constant course and speed. You raise the scope (a spray timer limits each look), find a barge in low power, switch to high power, name its class from the recognition book and turn the handwheel until the stacked images meet to read range. You lower the scope and the fix is pencilled on the chart with bearing and clock time. You wait, look again, and the two marks give a track with an uncertainty wedge. You drag the aim point along the track until the practice round and the barge arrive together, then fire; the dye splash scores the miss distance, with bonuses for fewer looks and less exposure. Every extra look is a value-of-information bet: minute two is learning the handwheel, minute ten is choosing the gap between looks.",
+        "sophisticationHooks": [
+          "Real optics: a stacked-image handwheel (two copies of the target, offset until the mast tip meets the waterline) turns a known mast height into range. The player's alignment error and a mis-identified ship class both skew the fix, and low power finds targets while high power measures.",
+          "Estimation with honesty: two timed fixes give a velocity vector drawn with an uncertainty wedge that narrows as the gap between looks grows, so waiting longer buys accuracy at the price of a barge that may sail out of range.",
+          "Equal-arrival aiming: dragging the aim point along the predicted track races two phosphor timing bars (practice round against barge) and a lamp lights when they match. A final drill takes the stadimeter away so the player must move the boat to build a baseline, as bearings-only tracking requires.",
+          "Hero moment: the scope broaches and a brass-ringed lens rises through the waterline, spray beading and clearing, horizon swaying with the swell; when the dye lands it blooms across the hull while the green readout answers with a soft afterglow. Reduced motion swaps the sway and spray for fades."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: seeded sim core (kinematics, reading-error model, scoring), periscope canvas with low and high power and four invented ship silhouettes, recognition book, stacked-image handwheel, SVG chart table with pencil fixes and uncertainty wedge, equal-arrival aiming with two timing bars, six drills ending in a graduation certificate, URL-hash seeds, instructor lines, muted-by-default WebAudio, reduced-motion twin, keyboard and touch controls, about panel with sources. Cut first: the bearings-only final drill, then swell-hidden waterlines. Not built: night, weather, other weapons, leaderboards, any backend.",
+        "risks": [
+          "Hook is single-sourced and inconsistent: the page will show 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io, and the Ludum Dare 60 dates as per its official page; the game works without either.",
+          "Onboarding: optical ranging is unfamiliar. Drill 0 teaches it hands-on with a stationary barge, a Navigator's Assist toggle overlays the geometry, and the handwheel has keyboard steps.",
+          "Military flavour: keep it an exercise with unmanned barges and dye-marked practice rounds, invented ship classes, no insignia, no real vessel names, no casualties.",
+          "Realism: the model is simplified and the page says it is a game, not seamanship; historic details in the making-of come only from sources marked verified.",
+          "Precision on small screens: big hit areas, step buttons and assist rounding stop pixel-hunting at 360px.",
+          "Scope: the bearings-only final drill is cut first if the morning runs short."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "artisan-2",
+      "title": "Breaking Changes",
+      "pitch": "A plain grey brick-breaker ships as v0.1. Between waves the studio offers two release candidates written in marketing-speak, such as 'Improved ball responsiveness' or 'Ceiling deprecated to improve performance'. You decode the euphemism, pick one, and play the next wave under its real rules while a board of system lamps shows what just went offline. A codex records what each phrase actually meant, and by v1.0 your build is a loud, glorious, thoroughly broken thing you assembled yourself.",
+      "whyNow": "Timeless premise, since everyone has met a vague update note, with a jam-weekend nod: one jam page reportedly lists 'Systems Offline' as its theme (as of 2026-10-11, per itch.io, unconfirmed), and each patch here switches a game system off or on.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "itch-jam-watch"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": ["satirical", "playful", "chaotic"],
+        "tech": ["canvas2d", "webaudio", "pointer-events", "localstorage", "web-animations"],
+        "tags": ["game-jam", "patch-notes", "brick-breaker", "rule-mutation", "roguelite", "game-feel", "juice", "codex", "release-notes", "satire", "systems-offline"],
+        "keywords": ["changelog", "release-candidate", "verb-noun-grammar", "hidden-effects", "system-lamps", "greybox", "hit-stop", "screenshake", "rollback", "version-number"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own newsletter only shows earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho used a plain Breakout-style game to show how layers of feedback transform feel, which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
+        "sources": [
+          {
+            "title": "Patch Notes v2.0 - itch.io",
+            "url": "https://itch.io/jam/patch-notes",
+            "date": "",
+            "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+            "via": "search",
+            "note": "The jam-weekend nod. One site only and internally inconsistent; no independent mention of v2.0 was found. Show as reported, as of 2026-10-11, never as confirmed.",
+            "verified": false
+          },
+          {
+            "title": "indieformer.beehiiv.com",
+            "url": "https://indieformer.beehiiv.com/p/showcase0725",
+            "date": "",
+            "snippet": "Newsletter from the Patch Notes host, as summarized by search: it announced its first game jam in July 2025 and later described v1.0 as a 3-day sprint with over 480 games and 5000 votes.",
+            "via": "search",
+            "note": "Shows the series is real and recurring. Same organization as the jam page, so not independent confirmation of v2.0.",
+            "verified": false
+          },
+          {
+            "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
+            "url": "https://itch.io/jam/patch-notes-v-1-1",
+            "date": "",
+            "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; a summary of the host's newsletter gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
+            "via": "search",
+            "note": "Series context only; same organization as the other two entries.",
+            "verified": false
+          },
+          {
+            "title": "August 23, 2013",
+            "url": "https://www.gamedeveloper.com/design/video-is-your-game-juicy-enough-",
+            "date": "August 23, 2013",
+            "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
+            "via": "search",
+            "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and its Breakout-style demo; the venue differs from the next entry, so the page says 2012 only.",
+            "verified": true
+          },
+          {
+            "title": "Juicy Break",
+            "url": "https://crcdng.itch.io/juicy-break",
+            "date": "",
+            "snippet": "Independent creator page for a Breakout-style juice demo that, per the search summary, credits the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+            "via": "search",
+            "note": "Second, independent source for the talk and its Breakout-style demo. Search only.",
+            "verified": true
+          },
+          {
+            "title": "first unread message",
+            "url": "https://community.ebay.com/t5/Mobile-Apps/Meaningful-release-notes-for-app-updates/td-p/28639214/jump-to/first-unread-message",
+            "date": "",
+            "snippet": "Support-forum thread (slug: Meaningful-release-notes-for-app-updates) where a user asks for release notes that say what changed, arguing the stock phrase bug fixes and performance improvements tells them nothing.",
+            "via": "search",
+            "note": "Shows stock release-note wording draws complaints. Cite only as a source; the game never names any real company.",
+            "verified": true
+          },
+          {
+            "title": "meaningless release notes 6931757",
+            "url": "https://en.community.sonos.com/speakers-229128/meaningless-release-notes-6931757",
+            "date": "",
+            "snippet": "A second company's community-forum thread where a user calls update notes meaningless after two updates were described only as bug fixes and improved performance.",
+            "via": "search",
+            "note": "Independent second forum, different organization, same complaint. Cite only as a source; the game never names any real company.",
+            "verified": true
+          },
+          {
+            "title": "Mini Jam 219: Nocturne - itch.io",
+            "url": "https://itch.io/jam/mini-jam-219-nocturne",
+            "date": "",
+            "snippet": "Page for a biweekly jam series; per the search summary each jam announces a theme early and reveals a mandatory limitation at the start, and the theme is only inspiration while the limitation is what gets rated.",
+            "via": "search",
+            "note": "Inspires per-wave limitations delivered as patch notes. One site and summary-level only, so unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' used a plain Breakout-style game to show how tweening, stretching and extra feedback make a game feel alive.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, public support forums carry user complaints that stock release-note wording such as 'bug fixes and performance improvements' says nothing about what changed (two separate organizations' forums).",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The Patch Notes jam series ran its v1.1 edition on itch.io from 16 to 26 January 2026 (per the page title; same organization as the v2.0 listing).",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A Mini Jam page is reported to say the theme is only inspiration while a mandatory limitation, revealed at the start, is what gets rated (single site, unconfirmed).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "The 2012 juice talk and its greybox-to-gold demo",
+          "Brick-breakers and their roguelite descendants",
+          "Rule-rewriting puzzle games",
+          "Stock app-store release-note phrases",
+          "Live-service balance patches and their notes"
+        ]
+      },
+      "design": {
+        "coreLoop": "Wave loop: you read two patch notes, pick one with 1 or 2 (or a tap), watch the system-lamp board change as its true effect applies, then play a 30 to 40 second brick-breaker wave under every rule accumulated so far. Clearing the wave or losing a ball ends the loop with a 'known issues' reveal that tells you what the euphemism really meant and files it in the codex. Notes follow a learnable grammar (improved means faster with a catch, rebalanced means nerfed, deprecated means removed with compensation, reimagined means shuffled), so minute two is decoding and minute ten is routing synergies, such as a sticky paddle with gravity, around your build's weak spots. Ten waves end in a v1.0 launch card; three rollbacks end the run early. The daily seed makes the offers identical for everyone.",
+        "sophisticationHooks": [
+          "A decodable grammar: eight verbs (improved, rebalanced, streamlined, reimagined, modernized, deprecated, added in beta, fixed) act on eight game systems (ball, paddle, ceiling, bricks, gravity, input, audio, juice), so a euphemism means the same kind of change everywhere. A codex fills in as you learn, which is what separates minute two from minute ten.",
+          "Generic modifier engine with synergy and clamps: about 40 valid verb-noun pairs stack, such as a sticky paddle with gravity or multiball with the ceiling deprecated, while a stall watchdog ships an in-fiction hotfix if no brick falls for 25 seconds.",
+          "The juice ladder: feedback layers (hit-stop, squash and stretch, trails, particles, shake, synthesized sound) arrive as patches, so the page shows game feel being built from silent grey boxes at v0.1 to a bright, noisy v1.0. Each layer has a reduced-motion twin and a shake toggle.",
+          "Hero moment: a board of system lamps clicks off or on when a patch lands, an installing-update wipe sweeps the playfield, and the same bricks that were flat grey rectangles burst into confetti by v1.0 while the changelog scrolls alongside."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: fixed-step brick-breaker with sub-stepped collisions, a verb-by-noun patch engine (8 verbs, 8 systems, about 40 valid pairs) with flavor text, two-card picker, system-lamp board, codex, juice ladder with reduced-motion twins, muted-by-default WebAudio blips, ten waves with rollbacks and a v1.0 launch card, URL-hash seed and share string, keyboard and touch controls, about panel with sources. Cut first: unlockable skins, boss wave, extra brick types. Not built: leaderboards, any backend.",
+        "risks": [
+          "Hook is single-sourced and inconsistent: the page shows 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io (unconfirmed); the game does not depend on it.",
+          "Brick-breakers are crowded: distinctness rides on the decodable verb grammar, the codex and the writing, so the spec should protect those before extra polish.",
+          "Soft-locks and balance: clamp every parameter, ship an in-fiction hotfix that reverts the last patch if no brick falls for 25 seconds, and let the QA monkey test random builds.",
+          "Humor stays generic: invented studio, patches and quotes; aim at the genre of vague release notes, never at a real company or product, and list the forum threads only as sources.",
+          "Motion and flashing: cap flashes below 3 per second, give every shake or flash a reduced-motion twin and a shake toggle, start audio muted.",
+          "Scope: a generic verb-by-noun engine avoids hand-coding dozens of patches; skins, boss waves and extra brick types are cut first."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

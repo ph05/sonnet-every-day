@@ -1,0 +1,1 @@
+2026-10-11 pulse: both WebFetch tries (the NOAA CPC host and the NHL.com host) died at DNS in under a second, so the data-story sourceHints are search-only from this sandbox; idea: let the ideate probe test those two hosts too so scouts skip the attempt, and warn scouts that a search summary blends several results, which makes it hard to count independent sources.

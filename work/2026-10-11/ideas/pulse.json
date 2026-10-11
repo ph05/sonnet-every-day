@@ -1,0 +1,371 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "data-story",
+  "candidates": [
+    {
+      "id": "pulse-1",
+      "title": "Pacific Pulse",
+      "pitch": "A record-chasing El Nino is warming the tropical Pacific this autumn, and how strong it looks depends on the ruler used to measure it. The visitor flips between four rulers (classic ONI, NOAA's new relative index, monthly and daily Nino 3.4), watches the all-time table of events re-sort around a 2026 marker, and sets what-if peaks to see which records fall on which ruler. A bet card scores a guess against history and the forecasters, and a WebAudio drone follows the heat, so the page doubles as a small lesson in how a 'strongest ever' headline gets made.",
+      "whyNow": "NOAA's 2026-10-08 update keeps an El Nino Advisory in effect with the event still strengthening, late-September daily readings of Nino 3.4 passed +3 C, and forecasters centre the peak near +3.6 to +3.7 C. NOAA now also reports a relative index (RONI), so 'strongest ever' is a live argument about measurement. Numbers move with each monthly update, so every value on the page is stamped with its source and as-of date.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "data-story"
+      },
+      "fingerprint": {
+        "category": "data-viz",
+        "mechanic": "explorer",
+        "tone": ["analytical", "dramatic"],
+        "tech": ["svg", "canvas2d", "webaudio", "dom-ui"],
+        "tags": ["el-nino", "enso", "pacific-ocean", "sea-surface-temperature", "climate-data", "record-event", "measurement", "leaderboard", "forecast", "sonification"],
+        "keywords": ["oceanic-nino-index", "relative-oni", "nino-3-4", "strongest-on-record", "ensemble-forecast", "thermocline", "trade-winds", "analog-years", "data-literacy"],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "An El Nino is strengthening in the tropical Pacific and is on course to challenge the records. NOAA's Climate Prediction Center update of 2026-10-08 keeps the El Nino Advisory in effect and calls the event still strengthening; Carbon Brief and IRI put Nino 3.4 near +3 C by late September, and forecasters centre the peak around +3.6 to +3.7 C. The yardstick is contested: classic ONI peaks are about 2.6 (2015-16), 2.3 to 2.4 (1997-98) and 2.2 (1982-83), a monthly Nino 3.4 series ranks 1982-83 above 1997-98, and NOAA now also reports a relative index (RONI) that removes tropical-mean warming. That measurement argument plus a short, dated list of numbers per ruler is small enough to bundle by hand and gives the page its story.",
+        "sources": [
+          {
+            "title": "Climate Prediction Center: ENSO Diagnostic Discussion - NOAA",
+            "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.shtml",
+            "date": "2026-10-08",
+            "snippet": "NOAA's monthly ENSO discussion issued 8 Oct 2026, as seen in a search result: El Nino Advisory still in effect and the event still strengthening, with strong-to-very-strong conditions favoured into early 2027.",
+            "via": "search",
+            "note": "Official status on 2026-10-08. Status is echoed by another outlet's October-update headline (index 1); the detailed numbers are filed separately as single-result (index 11).",
+            "verified": true
+          },
+          {
+            "title": "El Nino Ski Season: NOAA Update Shows Strengthening Event",
+            "url": "https://snowbrains.com/el-nino-ski-season-october-update",
+            "date": "",
+            "snippet": "Ski-weather outlet headline reporting that NOAA's October update shows a strengthening El Nino; only the headline and URL were seen.",
+            "via": "search",
+            "note": "Independent echo of the NOAA status (headline level only).",
+            "verified": true
+          },
+          {
+            "title": "Analysis: 'Super El Nino' reaches 'remarkable' all-time record",
+            "url": "https://carbonbrief.org/analysis-super-el-nino-reaches-remarkable-all-time-record",
+            "date": "",
+            "snippet": "Carbon Brief analysis (several versions exist): daily Nino 3.4 anomaly 3.07 C on 19 Sept and 3.11 C on 21 Sept 2026, described as topping an earlier daily record of 3.08 C from 18 Nov 2015.",
+            "via": "search",
+            "note": "Shows daily readings near +3 C in late Sept 2026. The record claim itself rests on this outlet alone.",
+            "verified": true
+          },
+          {
+            "title": "IRI",
+            "url": "https://iri.columbia.edu/our-expertise/climate/forecasts/enso/current/",
+            "date": "",
+            "snippet": "IRI ENSO forecast page; a search summary attributes to its September update a Nino 3.4 near +3.0 C in mid-September and agreement of all 22 models on further strengthening.",
+            "via": "search",
+            "note": "Second, independent reading near +3 C. Attribution comes from a named bullet in a search summary; page text not seen.",
+            "verified": true
+          },
+          {
+            "title": "State of the climate: Rapidly developing El Nino raises chance of record-warm 2026",
+            "url": "https://www.carbonbrief.org/state-of-the-climate-rapidly-developing-el-nino-raises-chance-of-record-warm-2026",
+            "date": "",
+            "snippet": "Carbon Brief analysis; a search summary attributes to it a 667-run, 14-group ensemble centred on a Nino 3.4 peak near +3.6 C with over 91% of runs setting a record, and a likely record-warm 2027.",
+            "via": "search",
+            "note": "Forecast peak near +3.6 C. The ensemble figure is attributed in a search summary; article text not seen.",
+            "verified": true
+          },
+          {
+            "title": "Record El Nino Forecast: WMO Warns of Strongest Event Since 1950",
+            "url": "https://www.indexbox.io/blog/record-breaking-el-nio-forecast-for-late-2026/",
+            "date": "",
+            "snippet": "Aggregator item relaying a WMO forecast of a seasonal Nino 3.4 anomaly near +3.7 C for Oct-Dec 2026, the highest since observations began.",
+            "via": "search",
+            "note": "Second, independent forecast anchor near +3.6 to +3.7 C. Secondary source for the WMO figure.",
+            "verified": true
+          },
+          {
+            "title": "enso indices and past events",
+            "url": "https://www.mrcc.purdue.edu/index.php/climate_watch/special_topics/enso-indices-and-past-events",
+            "date": "",
+            "snippet": "Regional climate centre page ranking the largest three-month ONI readings since 1950 as 2015 (2.6), 1997 (2.3) and 1982 (2.2), all in Nov-Dec.",
+            "via": "search",
+            "note": "Historical ONI peaks; agrees with the Climate.gov page on 2015 and 1982 and differs by 0.1 on 1997.",
+            "verified": true
+          },
+          {
+            "title": "climate.gov",
+            "url": "https://climate.gov/comment/23747",
+            "date": "",
+            "snippet": "NOAA Climate.gov page (comment permalink) listing the largest ONI values since 1950 as 1972-73 (2.1), 1982-83 (2.2), 1997-98 (2.4) and 2015-16 (2.6); notes the strongest events may partly reflect background warming.",
+            "via": "search",
+            "note": "Second source for ONI peaks; shows the 1997-98 value differing between sources.",
+            "verified": true
+          },
+          {
+            "title": "could the upcoming super el nino be the strongest ever",
+            "url": "https://chairlift.opensnow.com/news/post/could-the-upcoming-super-el-nino-be-the-strongest-ever",
+            "date": "",
+            "snippet": "Weather-blog post giving monthly Nino 3.4 peaks: 2015-16 +2.57 (Nov 2015), 1997-98 +2.42 (Nov 1997 and Jan 1998), 1982-83 +2.43 (Jan 1983).",
+            "via": "search",
+            "note": "Only source of the monthly-series ranking in which 1982-83 edges 1997-98. Single source, unverified.",
+            "verified": false
+          },
+          {
+            "title": "roni info may 2026",
+            "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/pdf/roni-info-may-2026.pdf",
+            "date": "2026-05",
+            "snippet": "NOAA CPC information sheet on the Relative Oceanic Nino Index: 3-month Nino 3.4 anomaly minus the tropical-mean anomaly, rescaled to match the old ONI variability; past episodes to be re-evaluated.",
+            "via": "search",
+            "note": "Primary definition of RONI.",
+            "verified": true
+          },
+          {
+            "title": "RONI: el nuevo indice con el que la NOAA busca predecir mejor El Nino en un mundo mas calido",
+            "url": "https://www.meteored.cl/noticias/actualidad/roni-el-nuevo-indice-con-el-que-la-noaa-busca-predecir-mejor-el-nino-en-un-mundo-mas-calido.html",
+            "date": "",
+            "snippet": "Spanish-language weather outlet explaining NOAA's new relative index for El Nino in a warmer world (diacritics dropped from the title here).",
+            "via": "search",
+            "note": "Independent secondary explanation of RONI.",
+            "verified": true
+          },
+          {
+            "title": "El Nino/Southern Oscillation (ENSO) Diagnostic Discussion",
+            "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso_advisory/ensodisc.pdf",
+            "date": "2026-10-08",
+            "snippet": "Same discussion as index 0 in PDF form; a search summary read from it Nino 1+2 +3.9 C, Nino 3 +3.0 C, Nino 3.4 +2.1 C and odds of 54%, 83% and 70% for a historic 3-month RONI above +2.5.",
+            "via": "search",
+            "note": "Detailed numbers seen once and the same document as index 0, so not independent. Shown only as 'as of 2026-10-08, per CPC' or dropped.",
+            "verified": false
+          },
+          {
+            "title": "El Nino and La Nina Years and Intensities Based on",
+            "url": "https://ggweather.com/enso/roni.htm",
+            "date": "",
+            "snippet": "Weather-hobbyist page; only the title was seen: lists El Nino and La Nina years with intensities on a RONI basis (diacritics dropped from the title here).",
+            "via": "search",
+            "note": "Possible event-list source for the RONI ruler; contents not seen.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "On 2026-10-08 NOAA's Climate Prediction Center kept an El Nino Advisory in effect and described the event as still strengthening; a ski-weather outlet's October-update headline also reports a strengthening event.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Nino 3.4 stood near +3.0 to +3.1 C above average in mid-to-late September 2026 on daily or weekly measures (Carbon Brief: 3.07 on 19 Sept and 3.11 on 21 Sept; IRI: about +3.0 in mid-September).",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Forecast peaks sit near +3.6 C (Carbon Brief, 667 model runs from 14 groups, centre of the ensemble) and +3.7 C (WMO seasonal mean for Oct-Dec 2026, reported by an aggregator).",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Largest three-month ONI values since 1950: 2015-16 about 2.6, 1997-98 about 2.3 to 2.4 (the two sources differ), 1982-83 about 2.2, 1972-73 about 2.1.",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "RONI is the 3-month Nino 3.4 anomaly minus the tropical-mean SST anomaly (20N-20S), rescaled to the variance of the classic ONI, on a 1991-2020 base; NOAA says past episodes will be re-evaluated, so classifications can differ from ONI.",
+            "sourceIndex": 9,
+            "alsoIn": [10],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Monthly Nino 3.4 peaks reported by one outlet: 2015-16 +2.57 (Nov 2015), 1997-98 +2.42, 1982-83 +2.43 (Jan 1983), so on that series 1982-83 edges 1997-98, the reverse of the ONI order (single source, unverified).",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-08, per CPC (single search result, unverified): weekly anomalies +2.1 C (Nino 3.4), +3.0 C (Nino 3), +3.9 C (Nino 1+2); chances of a historic event (3-month RONI above +2.5) of 54% for Sep-Nov, 83% for Oct-Dec and 70% for Nov-Jan.",
+            "sourceIndex": 11,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": ["climate spiral animations", "warming stripes", "ENSO schematic diagrams of the Walker circulation", "bar-chart-race leaderboards", "ECG and seismograph traces"]
+      },
+      "design": {
+        "coreLoop": "The visitor selects a ruler and the all-time table of events re-sorts around a 2026 marker, with that ruler's own forecaster ranges and official odds. A what-if slider sets the eventual peak and shows which records fall on which ruler and which forecaster lands closest; a separate bet card scores the visitor's guess as a percentile against history. Replays come from comparing how many different 'strongest ever' answers one ocean gives, and each state is shareable through a URL hash.",
+        "sophisticationHooks": [
+          "Ruler engine: every bundled number is stored with value, ruler, source, definition and as-of date, so switching rulers re-sorts the table and refuses to mix incompatible values.",
+          "What-if and bet: a draggable eventual peak shows which records fall on which ruler, and a guess is scored as a percentile against the event distribution, the ensemble centre and the official exceedance odds, with a seeded share card.",
+          "Schematic Pacific strip: four Nino boxes glow on a hand-drawn ocean from the selected ruler's value, with a WebAudio drone whose pitch follows it and a static reduced-motion mode.",
+          "Stretch: a two-variable recharge-oscillator classroom model for wind-burst experiments, labelled as a teaching model and not a forecast."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: ruler engine and event table (about 12 events), 2026 status panel with dated numbers, forecaster ranges, what-if slider, bet card with percentile, schematic Pacific strip, drone, URL-hash state, light and dark, reduced motion, about panel listing only verified sources. Cut: full monthly ONI replay unless the table can be opened, regional impact maps, live fetching, accounts. Stretch if time remains: the oscillator mode.",
+        "risks": [
+          "Definitions differ across sources (daily vs weekly vs monthly, relative vs conventional, different baselines): the CPC regional figure of +2.1 C for Nino 3.4 and the IRI and Carbon Brief readings of +3.0 to +3.1 C are not interchangeable, so the page labels each number with its ruler and never mixes rulers; a number whose definition cannot be pinned down is dropped.",
+          "The CPC regional anomalies and exceedance odds were seen in a single search summary (unverified) and appear as 'as of 2026-10-08, per CPC' or not at all. The Carbon Brief daily-record claim (3.11 C against 3.08 C on 2015-11-18) rests on one outlet with several article versions and is shown as reported.",
+          "Full monthly ONI or RONI tables may not be reachable from the build sandbox (WebFetch to the CPC host failed at DNS on 2026-10-11). Fallback: the event-peak table from sources that agree, with no invented trajectories and no schematic curve presented as data; analog-year replay stays a stretch.",
+          "Forecast numbers move with each monthly update, so the page carries as-of stamps and reads as a dated snapshot afterwards.",
+          "Climate framing: the page stays descriptive, takes no policy stance, gives no weather or safety advice, and labels any winter tendency as a tendency, not a forecast."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "pulse-2",
+      "title": "Extra Attacker",
+      "pitch": "A late-game coaching trainer built on a real solver: each round deals a clock, a goal margin and a faceoff, the visitor chooses when to pull the goalie, and a backward-induction model grades the call in expected standings points using published scoring rates. A policy map shows where the math says to pull for every deficit, overlaid with the league-average pull time that has drifted earlier since 2013-14, while a crowd soundscape turns a backfired pull into a hush with a lone cricket in it. It arrives days after a goalie scored into an empty net.",
+      "whyNow": "Early in the 2026-27 NHL season a Rangers goalie scored into an empty net on 2026-10-01, reported as the 18th goalie ever to do so, which puts late-game empty nets in the headlines. The underlying question, when to pull the goalie, is evergreen: it arises in every close game, and the league-wide timing has drifted earlier for a decade.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "data-story"
+      },
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "solver",
+        "tone": ["competitive", "analytical", "playful"],
+        "tech": ["canvas2d", "worker", "webaudio", "dom-ui", "pointer-events"],
+        "tags": ["hockey", "goalie", "empty-net", "extra-attacker", "late-game-strategy", "expected-points", "backward-induction", "coaching", "decision-trainer", "policy-map"],
+        "keywords": ["pulled-goalie", "six-on-five", "poisson-model", "trailing-by-one", "league-trend", "goalie-goals", "regret", "overtime-value"],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "Pulling the goalie is one of hockey's few decisions that can be settled with arithmetic, and it has a literature (operations-research papers, a 2018 study on 2015-16 NHL data, club analytics columns). The models disagree on the optimum, and one analysis found in search results argues realised benefits are smaller than simulations imply. Coach behaviour has moved: an NHL.com club column puts the average time left at a one-goal pull at about 73 s in 2013-14 and about 97 s in 2020-21 (peak about 106 s in 2019-20), and another outlet also reports coaches pulling earlier than ever. The hook is confirmed by three independent outlets: on 2026-10-01 a Rangers goalie scored into an empty net after Tampa Bay pulled its own, the 18th goalie in NHL history to score. The rate parameters come from single summaries and stay flagged; the page treats them as adjustable presets.",
+        "sources": [
+          {
+            "title": "TBL@NYR: Shesterkin pots Rangers' first ever goalie goal",
+            "url": "https://nhl.com/news/tampa-bay-lightning-new-york-rangers-game-recap-october-1-2026",
+            "date": "2026-10-01",
+            "snippet": "League game recap: Rangers goalie Igor Shesterkin scores into an empty net in a 5-1 home win over Tampa Bay, the first goalie goal in Rangers history.",
+            "via": "search",
+            "note": "Primary hook: the goalie goal on 2026-10-01.",
+            "verified": true
+          },
+          {
+            "title": "Daily Faceoff is a news site with no direct affiliation to the NHL, or NHLPA",
+            "url": "https://dailyfaceoff.com/news/igor-shesterkin-new-york-rangers-goalie-goal-nhl-tampa-bay-lightning-news-highlights",
+            "date": "",
+            "snippet": "Daily Faceoff report on the Shesterkin goalie goal against Tampa Bay (the result title is shown as the site tagline).",
+            "via": "search",
+            "note": "Independent second outlet for the goalie goal.",
+            "verified": true
+          },
+          {
+            "title": "igor shesterkin scores amazing goalie goal in rangers win over lightning 12518832",
+            "url": "https://www.newsweek.com/sports/igor-shesterkin-scores-amazing-goalie-goal-in-rangers-win-over-lightning-12518832",
+            "date": "",
+            "snippet": "Newsweek sports report on the Shesterkin goalie goal in the Rangers' win over the Lightning.",
+            "via": "search",
+            "note": "Third independent outlet; a search summary says every report calls him the 18th goalie to score.",
+            "verified": true
+          },
+          {
+            "title": "Check out all of the goalie goals scored in NHL history, from Billy Smith to Alex Nedeljkovic",
+            "url": "https://www.nhl.com/news/nhl-goalie-goals-all-time-313758920",
+            "date": "",
+            "snippet": "League list of goalie goals; a search summary says that as of March 2025 it counted 17 goalies with 20 goals (18 regular season, 2 playoffs), eleven of them shots into an empty net.",
+            "via": "search",
+            "note": "Baseline count before the 2026-10-01 goal; counts differ by rule and outlet. Single list.",
+            "verified": false
+          },
+          {
+            "title": "analytics with alison pulling the goaltender 327235290",
+            "url": "https://www.nhl.com/kraken/news/topic/analytics-with-alison/analytics-with-alison-pulling-the-goaltender-327235290",
+            "date": "",
+            "snippet": "Club analytics column: average time left when a team pulls its goalie down one goal rose from 73 s in 2013-14 to 97 s in 2020-21, after a 106 s peak in 2019-20.",
+            "via": "search",
+            "note": "Only numeric league series found so far; the direction is echoed by one other outlet's headline.",
+            "verified": true
+          },
+          {
+            "title": "nhl coaches are pulling goalies earlier than ever",
+            "url": "https://fivethirtyeight.com/features/nhl-coaches-are-pulling-goalies-earlier-than-ever",
+            "date": "",
+            "snippet": "Headline-level source: coaches pulling goalies earlier than ever; a search summary ties the shift to a 2014 playoff series in which one coach pulled very early.",
+            "via": "search",
+            "note": "Independent confirmation of the earlier-pull trend (headline seen).",
+            "verified": true
+          },
+          {
+            "title": "The State of Goalie Pulling in the NHL",
+            "url": "https://hockey-graphs.com/2020/05/18/the-state-of-goalie-pulling-in-the-nhl/",
+            "date": "2020-05-18",
+            "snippet": "Analytics article titled The State of Goalie Pulling in the NHL (May 2020); only the title and date were seen, not the text.",
+            "via": "search",
+            "note": "Possible place to find more season-by-season pull data; contents not seen, so it confirms nothing yet.",
+            "verified": false
+          },
+          {
+            "title": "bigthink.com",
+            "url": "https://bigthink.com/the-present/hockey/",
+            "date": "",
+            "snippet": "Popular-science summary of a 2018 study on 2015-16 NHL data: scoring chance per 10 s of 0.65% at full strength, 1.97% with the goalie pulled, 4.30% for an opponent facing an empty net; best pull about 6:10 left when down one.",
+            "via": "search",
+            "note": "Source of one rate preset and of the 6:10 claim. The study was not opened; single summary.",
+            "verified": false
+          },
+          {
+            "title": "More on Erkut's 'More on Morrison and Wheat's Pulling the Goalie Revisited'",
+            "url": "https://pubsonline.informs.org/doi/abs/10.1287/inte.19.5.45",
+            "date": "",
+            "snippet": "Operations-research journal exchange on the best time to pull the goalie (title only seen).",
+            "via": "search",
+            "note": "Shows the question has an academic debate behind it; no numbers are taken from it.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "On 2026-10-01 Rangers goalie Igor Shesterkin scored into an empty net in a 5-1 home win over Tampa Bay, reported as the 18th goalie in NHL history to score a goal; Tampa Bay had pulled its goalie late in the third period.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Coaches have pulled the goalie earlier over the last decade: an NHL.com club-analytics column puts the average time left at a one-goal pull at about 73 s in 2013-14 and about 97 s in 2020-21 (peak about 106 s in 2019-20); FiveThirtyEight's headline also reports the shift (exact figures from the NHL.com column only).",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of March 2025 NHL.com counted 17 goalies credited with 20 goals (18 regular season, 2 playoffs), eleven of whom shot into an empty net; counts differ between outlets by rule (shot vs credited, regular season vs playoffs). Single list, unverified.",
+            "sourceIndex": 3,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Reported rate parameters (single summary, unverified): a 2018 study on 2015-16 NHL data gives scoring chances per 10 seconds of 0.65% at full strength, 1.97% with the goalie pulled and 4.30% for the opponent shooting at an empty net.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "That 2018 study is reported to find the best time to pull when down one goal is about 6:10 left, far earlier than the roughly two-minute league norm (single summary, unverified).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": ["poker solver strategy grids", "football fourth-down decision tools", "win-probability charts", "arena crowd soundscapes", "reinforcement-learning policy heatmaps"]
+      },
+      "design": {
+        "coreLoop": "Each round deals a late-game scenario (margin, clock, faceoff zone); the visitor chooses a pull time on a rink-side clock and a seeded simulation plays out the remaining minutes. The solver then reveals the policy map and the regret of the call in expected points against the chosen science preset and against the league-average coach, and a report card accumulates over ten scenarios. Replays come from switching presets and objectives and watching the best pull time move by minutes.",
+        "sophisticationHooks": [
+          "Backward-induction solver over seconds left, goal margin and goalie in or out, with two objectives (regular season, where a tie is worth about 1.5 standings points, and playoffs, where it is worth about 0.5 wins) and presets from published scoring rates plus a custom slider.",
+          "Policy heatmap with the league-average pull time from the bundled trend series and the visitor's own calls plotted on it, plus a worker-run Monte Carlo cross-check of the solver.",
+          "Ten-scenario trainer with seeded scenarios, regret grading, streaks and a report card, with URL-hash replays.",
+          "Sound and humour layer: WebAudio crowd and horn, a lone synthesized cricket when a pull backfires, a cardigan-wearing cautious-coach persona against an early-pull gambler, and a length-of-ice goalie-goal shot as a bonus round."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: solver module and worker cross-check, rink canvas with scoreboard clock, scenario trainer with grading, policy heatmap, trend chart (verified points only), goalie-goal bonus shot, about panel with sources, light and dark, reduced motion, keyboard and touch. Cut: line changes, penalties and power-play states, goalie re-entry, overtime simulation beyond a fixed tie value, team-specific strengths, live data, accounts.",
+        "risks": [
+          "Model uncertainty: a scout's quick simplified backward-induction check (one scoring hazard per side, no goalie re-entry, tie worth 1.5 or 0.5) put the one-goal optimum near 1:45 to 2:52 and the two-goal optimum near 4:11 to 6:32, short of the 6:10 one summary reports. The page shows results as model output per preset and states its assumptions.",
+          "The rate figures (0.65%, 1.97% and 4.30% per 10 s; a classic 2.67x and 7.83x pair seen in a blended summary with no identified source) come from single summaries and appear as 'as of 2026-10-11, per <source>' or as adjustable defaults, never as settled fact. One analysis in search results argues real-world benefits are weaker than simulations; it is shown as a counterpoint only if confirmed.",
+          "Only three points of the league pull-time series are confirmed (2013-14, 2019-20, 2020-21); the chart plots just those and says so, unless a build-time search finds two agreeing sources for more seasons.",
+          "Goalie-goal counts differ by rule (shot vs credited, regular season vs playoffs) and by date; the page states its rule and as-of date.",
+          "Simulated play only: no wagering, no real money, text-only team names with no logos, and a plain 'simulation, not coaching advice' label."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

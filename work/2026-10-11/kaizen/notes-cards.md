@@ -1,0 +1,1 @@
+The probe lists only five dead hosts, so each scout still spends about four more WebFetch tries (arxiv.org, math.hmc.edu, www.megacrit.com and www.pcgamer.com all failed with ENOTFOUND today); probing a dozen common research hosts once in the probe would save every scout those attempts.

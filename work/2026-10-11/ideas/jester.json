@@ -1,0 +1,524 @@
+{
+  "schema": 1,
+  "agent": "jester",
+  "lens": "rube-goldberg-tool",
+  "candidates": [
+    {
+      "id": "jester-1",
+      "title": "Forty Steps To Lunch",
+      "pitch": "A visitor enters their lunch options and a few moods, then watches the candidates roll down a forty-station contraption where every station runs a real decision method: budget and distance gates, Condorcet and Kemeny voting, a simulated-annealing ember bed, a Monte Carlo robustness court, a Pareto gate and more. A vending machine drops the verdict, a receipt prints, and a leave-one-out audit names the few stations that actually changed the answer, while a shadow run shows what simply taking the first idea would have chosen. Stations can be added, reordered and tuned, and the long game is a machine in which all forty visibly do something.",
+      "whyNow": "Timeless: lunch recurs daily, and the punchline is measured by the page instead of asserted. It also fills this week's owed humor slot with a working tool rather than a one-liner.",
+      "origin": {
+        "agent": "jester",
+        "lens": "rube-goldberg-tool"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "tool",
+        "tone": ["absurd", "playful", "nerdy", "satirical"],
+        "tech": ["svg", "canvas2d", "worker", "web-animations"],
+        "tags": [
+          "overengineering",
+          "decision-pipeline",
+          "lunch",
+          "voting-methods",
+          "simulated-annealing",
+          "monte-carlo",
+          "ablation",
+          "vending-machine",
+          "receipt",
+          "pareto-front",
+          "marble-run"
+        ],
+        "keywords": [
+          "condorcet",
+          "schulze",
+          "kemeny",
+          "borda",
+          "value-of-information",
+          "leave-one-out",
+          "conveyor",
+          "stage-editor",
+          "naive-baseline",
+          "robustness"
+        ],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "The overengineering joke is an established genre with a clear lineage: dictionaries define the Rube Goldberg sense as complex means for a simple end, and a long-running Java repository satirises enterprise software by piling layers onto FizzBuzz. Lunch deciders are a familiar startup exercise, so the gag alone is thin. The depth comes from methods that are real and checkable: Condorcet cycles, the Condorcet family used in Debian leader votes, simulated annealing (named for metallurgy, introduced 1983) and expected value of perfect information as the ceiling on what extra deliberation can buy. The research shapes the mechanic: every station reports a measured effect, a leave-one-out audit finds the load-bearing stations, and an EVPI-style closing stage delivers the annoyingly correct verdict, measured by the page rather than claimed, of how often the extra deliberation changed anything.",
+        "sources": [
+          {
+            "title": "RUBE GOLDBERG Definition & Meaning - Merriam-Webster",
+            "url": "https://www.merriam-webster.com/dictionary/Rube%20Goldberg",
+            "date": "",
+            "snippet": "Dictionary entry. The adjective sense is reaching by complex means an end that looks achievable simply.",
+            "via": "search",
+            "note": "Dictionary sense of the lens's namesake term; the Britannica dictionary entry agrees independently.",
+            "verified": true
+          },
+          {
+            "title": "Rube Goldberg Definition & Meaning",
+            "url": "https://www.britannica.com/dictionary/Rube-Goldberg",
+            "date": "",
+            "snippet": "Dictionary entry. The phrase covers doing something simple in a very complicated, unnecessary way.",
+            "note": "Second, independent publisher confirming the same sense.",
+            "via": "search",
+            "verified": true
+          },
+          {
+            "title": "Condorcet paradox",
+            "url": "https://wikipedia.com/wiki/Cyclic_tie",
+            "date": "",
+            "snippet": "Encyclopedia article on the Condorcet paradox: pairwise majority choices over three or more options can form a loop even when every voter ranks consistently.",
+            "via": "search",
+            "note": "Establishes the voting cycle that makes a Condorcet station a real, non-trivial stage.",
+            "verified": true
+          },
+          {
+            "title": "The Condorcet paradox",
+            "url": "https://mcintee.substack.com/p/the-condorcet-paradox-dbf775f9e858",
+            "date": "",
+            "snippet": "Essay titled The Condorcet paradox, an explainer on cyclic collective preferences.",
+            "via": "search",
+            "note": "Independent explainer on the same paradox. The search summary was blended, so agreement rests on the matching title and topic.",
+            "verified": true
+          },
+          {
+            "title": "Simulated annealing",
+            "url": "https://en.wikipedia.org/wiki/Simulated_annealing",
+            "date": "",
+            "snippet": "Encyclopedia article: the name comes from annealing in metallurgy (heating, then controlled cooling), and Kirkpatrick, Gelatt and Vecchi in 1983 are listed among the originators.",
+            "via": "search",
+            "note": "Establishes the metallurgy origin of the name, which the ember-bed station dramatises.",
+            "verified": true
+          },
+          {
+            "title": "Simulated annealing",
+            "url": "https://technav.ieee.org/topic/simulated-annealing/",
+            "date": "",
+            "snippet": "Topic page from a professional society on simulated annealing.",
+            "via": "search",
+            "note": "Independent second source; the search summary reported results agreeing on the 1983 introduction and the naming.",
+            "verified": true
+          },
+          {
+            "title": "Simulated annealing lecture notes (MIT math)",
+            "url": "https://math.mit.edu/~rmd/465/simanneal.pdf",
+            "date": "",
+            "snippet": "University lecture notes that cite the Kirkpatrick et al. paper and trace the method back to the Metropolis Monte Carlo algorithm.",
+            "via": "search",
+            "note": "Third independent academic source for the same origin story (result was displayed only as math.mit.edu).",
+            "verified": true
+          },
+          {
+            "title": "Expected value of perfect information",
+            "url": "https://en.wikipedia.org/wiki/Expected_value_of_perfect_information",
+            "date": "",
+            "snippet": "Encyclopedia article: EVPI is the price one would be willing to pay to gain access to perfect information.",
+            "via": "search",
+            "note": "Defines the quantity behind the closing 'was this worth it' station.",
+            "verified": true
+          },
+          {
+            "title": "32.9 Expected Value Of Perfect Information",
+            "url": "https://treeage.com/help/Content/66-Probabilistic-Sensitivty-Analysis-on-CE-Models/8-ExpectedVaueOfPerfectInformation.htm",
+            "date": "",
+            "snippet": "Software help page defining EVPI as the gain from deciding with perfect rather than imperfect information.",
+            "via": "search",
+            "note": "Independent vendor documentation agreeing with the encyclopedia definition.",
+            "verified": true
+          },
+          {
+            "title": "expected value of perfect information",
+            "url": "https://casrai.org/guides/expected-value-of-perfect-information",
+            "date": "",
+            "snippet": "Research-glossary entry on how much better decisions would be on average if every uncertain parameter were known.",
+            "via": "search",
+            "note": "Third independent definition; the search summary also reported that the value is never negative and caps what any other information gathering can add.",
+            "verified": true
+          },
+          {
+            "title": "Debian Project Leader Elections 2025",
+            "url": "https://www.debian.org/vote/2025/vote_001.en.html",
+            "date": "",
+            "snippet": "Official vote page stating that the project uses the Condorcet method and noting that Condorcet variants need a way to settle cycles.",
+            "via": "search",
+            "note": "Primary source for a real-world Condorcet-family election; the 2024 French vote page points to the Schulze method.",
+            "verified": true
+          },
+          {
+            "title": "resultat electoral le nouveau dpl est",
+            "url": "https://linuxfr.org/news/resultat-electoral-le-nouveau-dpl-est.epub",
+            "date": "",
+            "snippet": "French news article on a Debian leader election result that refers to Debian's voting variant as the Schulze method.",
+            "via": "search",
+            "note": "Independent outlet agreeing that Debian uses a Schulze or Condorcet-style method.",
+            "verified": true
+          },
+          {
+            "title": "FizzBuzzEnterpriseEdition repository listing",
+            "url": "https://gittrend.io/repo/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition",
+            "date": "",
+            "snippet": "Repository listing for a long-running Java project that presents itself as satire of enterprise software. Star counts shown there may be stale.",
+            "via": "search",
+            "note": "Establishes the overengineering-as-satire lineage; the star count is deliberately not used.",
+            "verified": true
+          },
+          {
+            "title": "678049 fizzbuzz enterprise edition33",
+            "url": "https://gamedev.net/forums/topic/678049-fizzbuzz-enterprise-edition33",
+            "date": "",
+            "snippet": "Forum thread noting the repository's tongue-in-cheek open issues, such as a REST API request, compliance items and a six-month release cycle.",
+            "via": "search",
+            "note": "Independent forum confirming the genre and that the humor lives in the details.",
+            "verified": true
+          },
+          {
+            "title": "Hacker Newsnew | past | comments | ask | show | jobs | submitlogin",
+            "url": "https://news.ycombinator.com/item?id=9609511",
+            "date": "",
+            "snippet": "Hacker News discussion of a lunch-picker site; commenters call building a lunch picker a rite of passage for startups.",
+            "via": "search",
+            "note": "Single result with a blended search summary, so unverified; colour only, not a fact on the page.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Merriam-Webster defines the adjective Rube Goldberg as accomplishing by complex means what seemingly could be done simply, and the Britannica dictionary gives the same sense: doing something simple in an unnecessarily complicated way.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Pairwise majority voting over three or more options can produce a cycle (A beats B, B beats C, C beats A) even when every voter's own ranking is consistent; this is the Condorcet paradox.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Simulated annealing takes its name from annealing in metallurgy (heating, then controlled cooling) and is credited to Kirkpatrick, Gelatt and Vecchi in 1983.",
+            "sourceIndex": 4,
+            "alsoIn": [5, 6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The expected value of perfect information (EVPI) is the most that removing all uncertainty before deciding could be worth; it is never negative and is an upper bound on the value of any other information gathering.",
+            "sourceIndex": 7,
+            "alsoIn": [8, 9],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of the 2024 and 2025 vote pages, the Debian project uses the Condorcet method for its leader elections, and a LinuxFr report describes Debian's variant as the Schulze method.",
+            "sourceIndex": 10,
+            "alsoIn": [11],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "FizzBuzz Enterprise Edition, a Java repository presented as satire of enterprise software, is a known example of piling layers onto a trivial task for comic effect, with much of the joke in its tongue-in-cheek issue tracker.",
+            "sourceIndex": 12,
+            "alsoIn": [13],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Commenters on a Hacker News thread about a lunch-picker site called building one a rite of passage for startups (reported, unconfirmed; one blended result).",
+            "sourceIndex": 14,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Cartoon contraptions such as the self-operating napkin",
+          "FizzBuzz Enterprise Edition",
+          "Office lunch-picking wheels and lunch-picker apps",
+          "Marble runs and vending-machine coil drops",
+          "Decision-analysis value-of-information tools"
+        ]
+      },
+      "design": {
+        "coreLoop": "The visitor sets the scene (options, budget, mood, weather), arranges stations on the conveyor, runs the machine, and watches candidate marbles pass each station while a ticker reports what that station measurably did. The receipt then shows the verdict, idle versus load-bearing stations from a leave-one-out audit, win frequency across thousands of perturbed worlds, and whether the first idea typed would have agreed. Tinkering continues toward two badges, all forty stations active and every active station load-bearing, and a shareable link replays the same machine.",
+        "sophisticationHooks": [
+          "Forty-plus real stations in five families (gates, scorers, voters, stochastic searchers, consensus panels), each a pure function whose effect is measured as eliminations, rank movement or re-weighting, or reported as idle.",
+          "Leave-one-out ablation, Monte Carlo robustness and an EVPI-style closing stage produce the annoyingly correct verdict, including how often the naive first pick would have won anyway.",
+          "Order matters and is discoverable: a lottery before the filters wastes everything downstream, and a Pareto gate stays idle until a dominated option exists, which turns all-forty-active into a puzzle.",
+          "Presentation layer: SVG and canvas conveyor with anvil-drop eliminations, an ember-bed annealer, a vending-machine dispenser and a receipt with a hash-derived serial and barcode; machine, menu and daily seed live in the URL hash."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in one morning: stage engine plus about 42 stations as small pure functions, an ablation and Monte Carlo worker, a conveyor renderer with a handful of station vignettes reused by family, vending machine and receipt, a drag-and-reorder editor with parameters, 24 hand-written lunch options with attributes, a date-seeded daily scenario, a templated copy module (three line variants per station, filled with real numbers), URL-hash state and an about panel. Cut: real restaurant data or maps, accounts, bespoke art per station, sound beyond optional synthesized clunks.",
+        "risks": [
+          "Forty stations of real logic is the main scope risk; mitigated by building five family templates first, then parameterised variants, with a fallback of shipping thirty stations.",
+          "Copy volume across stations is large; templated lines filled with numbers from the actual run keep it from reading as canned.",
+          "A long animation can drag; skip and speed controls plus a static step list for reduced motion keep it quick.",
+          "Unverified: the 2015-era remark that lunch pickers are a startup rite of passage stays out of page copy, or appears as 'as of 2026-10-11, per a Hacker News comment'.",
+          "Close kin exist in enterprise-satire repositories; the differentiators are the measured-effect audit and the all-forty-active puzzle, and page copy has to lead with them.",
+          "Stage blurbs that cite method origins stay within verified facts (Condorcet cycles, the annealing name, the EVPI definition, Debian's Condorcet vote); other history is omitted. Lunch scores are the visitor's own ratings, labelled as entertainment, not advice."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "jester-2",
+      "title": "Group Chat Gremlin",
+      "pitch": "Five friends choose a movie with a real Raft-style protocol: they elect a Planner, replicate everyone's ballots into a shared log, and decide once three ballots are committed. The visitor plays the network, holding, dropping or reordering messages and crashing one friend within a mischief budget, while ember timers go dark, elections split and the minutes of the meeting write themselves. A live panel of Raft's safety properties stays green whatever the visitor does, so the game is stalling them, steering which movie wins through ballot order, or discovering that agreement is not fairness.",
+      "whyNow": "Timeless: group chats still struggle to settle on a film, and the idea turns a real, teachable algorithm into a game. It fills this week's owed wildcard slot with a playable simulation rather than another explainer.",
+      "origin": {
+        "agent": "jester",
+        "lens": "rube-goldberg-tool"
+      },
+      "fingerprint": {
+        "category": "games-arcade",
+        "mechanic": "game",
+        "tone": ["playful", "absurd", "nerdy", "competitive"],
+        "tech": ["svg", "canvas2d", "pointer-events", "web-animations"],
+        "tags": [
+          "distributed-systems",
+          "raft",
+          "consensus",
+          "group-chat",
+          "fault-injection",
+          "adversary",
+          "movie-night",
+          "election-timeout",
+          "replicated-log",
+          "seeded-replay"
+        ],
+        "keywords": [
+          "leader-election",
+          "split-vote",
+          "quorum",
+          "flp-impossibility",
+          "two-generals",
+          "safety-invariants",
+          "meeting-minutes",
+          "network-partition",
+          "fairness",
+          "ember-timers"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Prose analogies that cast Raft as friends choosing lunch or dinner are already common, and interactive Raft visualisations exist, so a passive explainer would be a repeat. What the research supports as new is playing the adversary. The FLP result (1985) shows that with fully asynchronous delivery even one faulty process leaves every deterministic consensus protocol with a possible endless run, the Two Generals' Problem shows confirmations cannot remove doubt over lossy channels, and Raft answers with terms, majority votes and randomised election timeouts that make split votes unlikely, not impossible. Raft's five published safety properties give a live monitor that stays green whatever the visitor does, while ballot order decides which movie wins, which separates agreement from fairness. Lamport's Paxos paper was itself an allegory about a Greek parliament, which licenses the comic tone.",
+        "sources": [
+          {
+            "title": "flp.pdf (Princeton course papers folder)",
+            "url": "https://www.cs.princeton.edu/courses/archive/spring22/cos418/papers/flp.pdf",
+            "date": "",
+            "snippet": "PDF named flp.pdf in a Princeton course's papers folder; the search summary quotes its abstract: every protocol has a possible nonterminating run even with one faulty process.",
+            "via": "search",
+            "note": "The FLP paper itself (Journal of the ACM, 1985), shown only as www.cs.princeton.edu in the result list.",
+            "verified": true
+          },
+          {
+            "title": "Randomized Protocols for Asynchronous Consensus",
+            "url": "https://ar5iv.labs.arxiv.org/html/cs/0209014",
+            "date": "",
+            "snippet": "Survey abstract: consensus is impossible in an asynchronous system if even one process can fail; later work evades this with randomization, extra timing assumptions, failure detectors or stronger primitives.",
+            "via": "search",
+            "note": "Independent academic restatement of FLP. The workaround list informs the mischief-slider design but is single-source, so it is not used as a fact.",
+            "verified": true
+          },
+          {
+            "title": "Fischer-Lynch-Paterson impossibility",
+            "url": "https://read.seas.harvard.edu/cs2620/2026/lectures/flp",
+            "date": "",
+            "snippet": "Lecture page of a 2026 Harvard distributed-systems course devoted to the FLP impossibility result.",
+            "via": "search",
+            "note": "Shows the result is still core teaching material; a third source on the topic.",
+            "verified": true
+          },
+          {
+            "title": "Raft (algorithm)",
+            "url": "https://en.wikipedia.org/wiki/Raft_(algorithm)",
+            "date": "",
+            "snippet": "Encyclopedia article on Raft: leader election with terms, heartbeats and randomized election timeouts, plus log replication.",
+            "via": "search",
+            "note": "Background reference for the simulated protocol.",
+            "verified": true
+          },
+          {
+            "title": "lect11 raft final",
+            "url": "https://courses.physics.illinois.edu/cs425/fa2021/assets/slides/lect11-raft-final.pdf",
+            "date": "",
+            "snippet": "Course slides on Raft: time is divided into terms, each term has at most one leader, and some terms end without a leader after a failed election.",
+            "via": "search",
+            "note": "Independent source for terms and the one-leader-per-term rule.",
+            "verified": true
+          },
+          {
+            "title": "Is there a situation where multiple nodes reach the election time simultaneously during Raft leader election?",
+            "url": "https://ask.pingcap.com/t/is-there-a-situation-where-multiple-nodes-reach-the-election-time-simultaneously-during-raft-leader-election/8823",
+            "date": "",
+            "snippet": "Forum answer on simultaneous election timeouts: timeouts drawn from a fixed range such as 150-300 ms usually let one server win, but split votes can still occur and trigger another round.",
+            "via": "search",
+            "note": "Supports the commonly cited timeout range and the unlikely-not-impossible framing of split votes.",
+            "verified": true
+          },
+          {
+            "title": "cs.brown.edu Raft lecture slides",
+            "url": "https://cs.brown.edu/courses/cs138/s16/lectures/11raft.pdf",
+            "date": "",
+            "snippet": "University lecture slides on Raft returned for a query about its safety properties.",
+            "via": "search",
+            "note": "One of several separate course decks and pages returned for the five safety properties. The search summary reported consistent descriptions but per-entry text was not shown.",
+            "verified": true
+          },
+          {
+            "title": "illinois.edu distributed systems lecture slides (lect17)",
+            "url": "https://courses.grainger.illinois.edu/ece428/sp2020//assets/slides/lect17.pdf",
+            "date": "",
+            "snippet": "Course lecture slides in a distributed-systems class, returned for the same query about Raft's safety properties.",
+            "via": "search",
+            "note": "Second course deck for the five safety properties; same caveat that per-entry text was not shown.",
+            "verified": true
+          },
+          {
+            "title": "The Part-Time Parliament",
+            "url": "https://www.microsoft.com/en-us/research/publication/part-time-parliament/",
+            "date": "",
+            "snippet": "Research-library page for Lamport's allegorical Paxos paper, which appeared in ACM Transactions on Computer Systems in 1998.",
+            "via": "search",
+            "note": "Primary page for the paper whose Greek-island parliament framing licenses the comic tone.",
+            "verified": true
+          },
+          {
+            "title": "The Part-Time Parliament",
+            "url": "https://blog.acolyer.org/2015/03/03/the-part-time-parliament/",
+            "date": "",
+            "snippet": "Blog write-up of the Part-Time Parliament paper and its parliament allegory.",
+            "via": "search",
+            "note": "Independent secondary account of the same paper.",
+            "verified": true
+          },
+          {
+            "title": "Two Generals' Problem",
+            "url": "https://en.wikipedia.org/wiki/Two_Generals%27_Problem",
+            "date": "",
+            "snippet": "Encyclopedia article: no number of confirmation rounds can guarantee that each general knows the other has agreed, since the last message may be lost.",
+            "via": "search",
+            "note": "Background for the lesson that confirmations cannot remove doubt.",
+            "verified": true
+          },
+          {
+            "title": "TwoGenerals (Yale course wiki)",
+            "url": "https://cs.yale.edu/homes/aspnes/pinewiki/TwoGenerals.html",
+            "date": "",
+            "snippet": "Course notes: if messages can be lost, no protocol guarantees agreement unless the outcome is fixed in advance, with a shorten-the-protocol proof idea.",
+            "via": "search",
+            "note": "Independent academic proof sketch of the same impossibility (result title displayed only as wiki navigation links).",
+            "verified": true
+          },
+          {
+            "title": "DEV Community post on dinner plans and distributed systems",
+            "url": "https://dev.to/sumana10l/dinner-plans-distributed-systems-a-fun-guide-to-consensus-3694",
+            "date": "",
+            "snippet": "Community post casting friends as servers deciding where to eat, with Raft electing one friend to announce the plan.",
+            "via": "search",
+            "note": "Shows the dinner analogy for Raft already exists in prose.",
+            "verified": true
+          },
+          {
+            "title": "raft is so fetch",
+            "url": "https://cockroachlabs.com/blog/raft-is-so-fetch",
+            "date": "",
+            "snippet": "Database vendor blog explaining Raft through a film-themed analogy.",
+            "via": "search",
+            "note": "Second independent example of an analogy explainer.",
+            "verified": true
+          },
+          {
+            "title": "Distributed Consensus A.K.A. 'What do we eat for lunch?' (conference talk)",
+            "url": "https://vimeo.com/105857866",
+            "date": "",
+            "snippet": "Conference talk titled around what to eat for lunch, covering Raft and consensus implementations.",
+            "via": "search",
+            "note": "Third example; all three are passive explainers, not games.",
+            "verified": true
+          },
+          {
+            "title": "The Secret Lives of Data download for Linux",
+            "url": "https://www.onworks.net/software/linux/app-the-secret-lives-of-data?amp=1",
+            "date": "",
+            "snippet": "Third-party download listing for The Secret Lives of Data, which the search summary describes as a browser-based interactive Raft visualization.",
+            "via": "search",
+            "note": "Single listing and a blended summary, so unverified; only a pointer to prior art.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The Fischer-Lynch-Paterson result (Journal of the ACM, 1985) shows that every deterministic protocol for asynchronous consensus has a possible non-terminating run even if just one process may fail, because a crashed process looks the same as a slow one.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "In Raft a follower that hears no heartbeat within a randomised timeout (150-300 ms is the commonly cited example) becomes a candidate for a new term; a majority of votes wins, each term has at most one leader, and a split vote simply triggers another round.",
+            "sourceIndex": 3,
+            "alsoIn": [4, 5],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The Raft paper lists five safety properties that hold at all times: Election Safety, Leader Append-Only, Log Matching, Leader Completeness and State Machine Safety.",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Over a channel that can lose messages, no finite exchange of confirmations lets two parties be certain they agree (the Two Generals' Problem); extra messages only move the doubt to the last one.",
+            "sourceIndex": 10,
+            "alsoIn": [11],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Lamport's Paxos paper, The Part-Time Parliament, frames the protocol as the legislators of an ancient Greek island and appeared in ACM Transactions on Computer Systems in 1998.",
+            "sourceIndex": 8,
+            "alsoIn": [9],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Casting Raft as friends choosing dinner or lunch is already an established explainer genre (a DEV Community post, a database vendor's film-themed blog post, a conference talk on what to eat for lunch), so the new angle is making the visitor the adversary instead of the spectator.",
+            "sourceIndex": 12,
+            "alsoIn": [13, 14],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "An interactive Raft visualisation called The Secret Lives of Data exists (reported by a third-party software listing; unconfirmed, one blended result).",
+            "sourceIndex": 15,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "The Secret Lives of Data (interactive Raft visualisation)",
+          "Dinner-plans and lunch-decision explainers for Raft",
+          "The Two Generals' Problem",
+          "The Part-Time Parliament allegory",
+          "FLP impossibility lecture material",
+          "Chaos-engineering style fault injection"
+        ]
+      },
+      "design": {
+        "coreLoop": "The visitor picks a level (stall them for twelve seconds, make a chosen movie win, or run the unlimited-mischief sandbox), reads the five friends' ember timers and ballots, then holds, drops or reorders messages and crashes one friend within a mischief budget while the protocol reacts in real time or in single steps. Each run ends with the verdict, a green safety panel, a fairness readout comparing the result with the all-five-ballots winner, and auto-written minutes of the meeting that double as a shareable replay link.",
+        "sophisticationHooks": [
+          "A deterministic Raft core (terms, randomised election timeouts, vote requests with a log up-to-date check, append consistency check, majority commit, step-down on higher terms) run as a seeded discrete-event simulation that can be rewound, replayed and shared.",
+          "A live monitor of Raft's five safety properties that no attack can turn red, so every level is about liveness and fairness, not about breaking agreement.",
+          "The verdict is a state machine over the first three committed ballots, so delay-based ordering changes the winner and shows that consensus is not fairness; a regret readout compares against the all-ballots winner.",
+          "A mischief slider from none to unlimited: at unlimited, an attentive gremlin can keep them re-electing forever, a hands-on echo of the FLP result, while bounded budgets and randomised timeouts are what let them finish."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built in one morning: a Raft-lite engine with an event queue, an invariant monitor and a fuzz test over thousands of seeded random attacks; an SVG ring of five friends with travelling envelopes, ember timers and per-friend log strips; five levels plus a sandbox and a date-seeded daily challenge; a minutes-of-the-meeting generator with persona lines and callbacks; a hash-encoded seed and action list for replay; keyboard play with pause and single-step; an about panel. Cut: log compaction, membership changes, more than five nodes, real networking, music.",
+        "risks": [
+          "The simplified Raft has to stay correct under every gremlin action; a seeded fuzz run with the invariant checker gates the build.",
+          "Newcomers may be lost; level one runs hands-off with plain-English envelope labels and a hover glossary.",
+          "Prior art: dinner-themed Raft explainers and passive visualisations exist, so page copy has to lead with the adversary game, outcome steering and the mischief slider.",
+          "Real-time play has to stay accessible: pause, single-step, full keyboard control and a message-list view for reduced motion.",
+          "FLP and Raft statements on the page stay within the verified facts; the 150-300 ms figure is shown as a commonly cited example, not a rule, and the unlimited-mischief mode is labelled as in the spirit of FLP, not a proof.",
+          "Unverified: that a named interactive Raft visualisation exists comes from a third-party listing; the page names it only as 'as of 2026-10-11, per a software listing' or omits it. Friends and movie titles are invented; no real films, brands or people."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

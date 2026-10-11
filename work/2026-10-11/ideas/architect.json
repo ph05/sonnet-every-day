@@ -1,0 +1,401 @@
+{
+  "schema": 1,
+  "agent": "architect",
+  "lens": "maps-and-places",
+  "candidates": [
+    {
+      "id": "architect-1",
+      "title": "Moon Ferry",
+      "pitch": "A visitor skippers a slow ferry across an invented strait where the tidal stream outruns the engine. They scrub an hour-by-hour stream atlas, read the day's tide table, pick a departure time and drag waypoints, and the boat then sails the plan while the arrows swing round and a shoal ledge dries and floods. Afterwards a solver reveals the fastest possible passage as a ghost boat and paints arrival-time isochrones that lean with the stream, so the visitor sees which minutes the moon took.",
+      "whyNow": "October is king-tide season: station tables list a new-moon spring-tide window on Oct 10-11, 2026 and a larger perigean peak around Oct 26-28, so the autumn's strongest streams are due. The daily passage reads the real moon age, and the idea stays good all year because every coast keeps a tide table.",
+      "origin": {
+        "agent": "architect",
+        "lens": "maps-and-places"
+      },
+      "fingerprint": {
+        "category": "games-arcade",
+        "mechanic": "puzzle",
+        "tone": ["serene", "nerdy", "playful"],
+        "tech": ["canvas2d", "worker", "dom-ui", "pointer-events", "localstorage"],
+        "tags": ["tides", "tidal-streams", "nautical-chart", "passage-planning", "isochrones", "time-optimal-routing", "ferry", "rule-of-twelfths", "spring-neap", "slack-water"],
+        "keywords": ["stream-atlas", "tide-table", "set-and-drift", "chart-datum", "ghost-route", "drying-ledge", "potential-flow", "daily-passage", "aim-off"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "Tidal navigation is a map that changes with the clock. Stream atlases print one chartlet per hour relative to high water at a standard port, with arrows whose paired numbers give neap and spring knots, and sailors turn tide tables into water depth with the rule of twelfths (1:2:3:3:2:1 of the range per hour). Tides repeat about every 12 h 25 min, so a tide table slides roughly 50 minutes a day. Tidal causeways such as Holy Island publish daily crossing windows that slide with the tide, the same timetable puzzle in real life. Minimum-time steering through a drifting current is Zermelo's problem; one 2019 arXiv paper reports analytic solutions can be unstable in turbulent flow (single source, unconfirmed), so the build searches a time-dependent grid instead. Station tables put the 2026 king-tide windows at Oct 10-11 and about Oct 26-28. The strait, ports and tide station are invented; the physics is simplified and labelled so.",
+        "sources": [
+          {
+            "title": "Rule of twelfths",
+            "url": "https://en.wikipedia.org/wiki/Rule_of_twelfths",
+            "date": "",
+            "snippet": "Reference article on estimating tide height between low and high water by taking 1, 2, 3, 3, 2, 1 twelfths of the range in successive hours. The host could not be opened today, so only its search listing was seen.",
+            "via": "search",
+            "note": "Title and URL name the rule; counted with two other separate results (casualnavigation, surfertoday) whose titles name the same rule. Search summary was blended and page text not seen.",
+            "verified": true
+          },
+          {
+            "title": "Easy Tidal Predictions: The Rule Of Twelfths",
+            "url": "https://casualnavigation.com/easy-tidal-predictions-the-rule-of-twelfths/",
+            "date": "",
+            "snippet": "Navigation blog post teaching the rule of twelfths for tide height between a tide table's high and low water.",
+            "via": "search",
+            "note": "Second separate result on the same rule; search summary also reported use for passing a sand bar or shallow harbour.",
+            "verified": true
+          },
+          {
+            "title": "the tidal rule of twelfths in surfing",
+            "url": "https://www.surfertoday.com/surfing/the-tidal-rule-of-twelfths-in-surfing",
+            "date": "",
+            "snippet": "Surf-magazine explainer applying the rule of twelfths to estimate how the tide changes hour by hour.",
+            "via": "search",
+            "note": "Third separate result on the rule, from an unrelated community, so the rule is not one site's claim.",
+            "verified": true
+          },
+          {
+            "title": "Admiralty Tidal Stream Atlas: The Solent and Adjacent Waters (NP337), 4th Edition 1993",
+            "url": "https://www.amnautical.com/products/tidal-stream-atlas-the-solent-and-adjacent-waters",
+            "date": "",
+            "snippet": "Retailer listing for a tidal stream atlas: hourly arrow diagrams tied to high water at a standard port, with mean neap and spring rates in tenths of a knot.",
+            "via": "search",
+            "note": "Retailer description named in the search summary for the standard-port reference and the neap/spring rate pairs.",
+            "verified": true
+          },
+          {
+            "title": "www.pbo.co.uk",
+            "url": "https://www.pbo.co.uk/?p=27019",
+            "date": "",
+            "snippet": "Boat-owner magazine article on reading a tidal stream atlas: one chartlet per hour relative to Dover high water, arrow weight shows rate, paired numbers such as 05,19 give neap and spring knots.",
+            "via": "search",
+            "note": "The search summary named this single article as the source of the how-to details, independent of the retailer listing that agrees on the structure.",
+            "verified": true
+          },
+          {
+            "title": "crossing times",
+            "url": "https://www.visitnorthumberland.com/coast/holy-island/crossing-times",
+            "date": "",
+            "snippet": "Tourist-board page for the Holy Island causeway: the safe crossing window depends on the tide and shifts every day.",
+            "via": "search",
+            "note": "Named in the search summary for the daily-shifting window; the host failed to open for WebFetch.",
+            "verified": true
+          },
+          {
+            "title": "IMPORTANT SAFETY NOTES:",
+            "url": "https://holyislandcrossingtimes.northumberland.gov.uk",
+            "date": "",
+            "snippet": "Northumberland County Council's table of safe crossing periods for the tidal road, with advice to allow extra time for wind and other variables.",
+            "via": "search",
+            "note": "Official publisher of the dated crossing windows, named in the search summary; independent of the tourist board.",
+            "verified": true
+          },
+          {
+            "title": "Zermelo's problem: Optimal point-to-point navigation in 2D turbulent flows using Reinforcement Learning",
+            "url": "https://arxiv.org/pdf/1907.08591",
+            "date": "",
+            "snippet": "Research paper on minimum-time navigation of a vessel-like agent in a moving flow; the search summary says it finds analytic optimal solutions unstable in turbulent flow.",
+            "via": "search",
+            "note": "Title names the problem. The instability remark rests on this one result and stays unconfirmed.",
+            "verified": true
+          },
+          {
+            "title": "Optimal Routing Strategies for Autonomous Underwater Vehicles in Time-Varying Environment",
+            "url": "https://arxiv.org/pdf/2008.02115",
+            "date": "",
+            "snippet": "Paper on time-optimal routing of underwater vehicles through time-varying currents.",
+            "via": "search",
+            "note": "Separate group and year; title matches the time-varying routing problem. Search summary was blended and page text not seen.",
+            "verified": true
+          },
+          {
+            "title": "2026 OBX Tide Calendar - Spring, Neap & King Tide Dates",
+            "url": "https://obxtidecharts.com/tide-calendar-2026/",
+            "date": "",
+            "snippet": "Outer Banks calendar of 2026 spring tides; per the search summary it marks Oct 10 as a new-moon spring tide and Oct 26 as the peak perigean king tide.",
+            "via": "search",
+            "note": "Named in the search summary for both October windows.",
+            "verified": true
+          },
+          {
+            "title": "The SC King Tides Initiative",
+            "url": "https://mycoast.org/sc/king-tides",
+            "date": "",
+            "snippet": "South Carolina program page; per the search summary it gives Oct 10-11 as a predicted king tide window.",
+            "via": "search",
+            "note": "Independent program page agreeing on the early October window.",
+            "verified": true
+          },
+          {
+            "title": "US King Tides 2026 to 2027: Dates at 179 NOAA Tide Stations",
+            "url": "https://mywild.report/king-tides",
+            "date": "",
+            "snippet": "Station-by-station table of 2026-27 king tides; per the search summary the most common single peak date is Oct 27, 2026.",
+            "via": "search",
+            "note": "Agrees with the calendar on a late-October peak; station tables vary by place.",
+            "verified": true
+          },
+          {
+            "title": "Frequency of Tides - The Lunar Day - Tides and water levels: NOAA's National Ocean Service Education",
+            "url": "https://oceanservice.noaa.gov/education/tutorial_tides/tides05_lunarday.html",
+            "date": "",
+            "snippet": "NOAA education page: a lunar day lasts 24 hours 50 minutes, 50 minutes longer than a solar day, giving two high and two low tides roughly every 12 hours 25 minutes.",
+            "via": "search",
+            "note": "Named in a domain-filtered search summary for the lunar day and the 12 h 25 min spacing. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "tide - Kids",
+            "url": "https://kids.britannica.com/kids/article/tide/390262",
+            "date": "",
+            "snippet": "Encyclopedia article for students; per the search summary it gives the same average interval between high tides.",
+            "via": "search",
+            "note": "Separate organization agreeing with NOAA on the average interval between high tides. Page not opened.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The rule of twelfths estimates tide height between low and high water as 1/12, 2/12, 3/12, 3/12, 2/12 and 1/12 of the range in successive hours for a roughly sinusoidal semidiurnal tide, and is used to judge when a shallow bar or ledge can be crossed.",
+            "sourceIndex": 0,
+            "alsoIn": [1, 2],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "A tidal stream atlas gives one chartlet per hour relative to high water at a standard port (Dover for the southern North Sea), with arrows whose paired numbers give neap and spring rates in knots, for example 05,19 meaning 0.5 and 1.9 knots.",
+            "sourceIndex": 4,
+            "alsoIn": [3],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Holy Island's tidal causeway has dated safe-crossing windows published by Northumberland County Council, and the windows shift from day to day with the tide.",
+            "sourceIndex": 6,
+            "alsoIn": [5],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Zermelo's problem is the minimum-time steering of a vessel through a moving current, studied for boats and underwater vehicles including time-varying flows.",
+            "sourceIndex": 7,
+            "alsoIn": [8],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, station tables list a king-tide window around the Oct 10 new moon (Oct 10-11 on US east-coast tables).",
+            "sourceIndex": 9,
+            "alsoIn": [10],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "As of 2026-10-11, station tables put the larger perigean king-tide peak near the Oct 26 full moon, with the highest predicted tides mostly Oct 26-28.",
+            "sourceIndex": 11,
+            "alsoIn": [9],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Semidiurnal tides recur about every 12 h 25 min because the lunar day lasts 24 h 50 min, so high water arrives roughly 50 minutes later each day.",
+            "sourceIndex": 12,
+            "alsoIn": [13],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "tidal stream atlases",
+          "Holy Island causeway crossing tables",
+          "Zermelo's navigation problem",
+          "paper nautical chart conventions",
+          "ferry timetables"
+        ]
+      },
+      "design": {
+        "coreLoop": "Each passage runs briefing, planning, sailing and review. The visitor studies the tide table, tide curve and stream atlas, picks a departure hour and up to five waypoints with an aim-off angle per leg, and sees a live prediction of the track update. Sailing plays the day at high speed while streams swing and the ledge floods or dries. Review overlays the solver ghost and arrival isochrones, scores efficiency against the optimum, and offers a harder strait or the seeded daily passage.",
+        "sophisticationHooks": [
+          "Tide model with a spring-neap beat: two lunar-solar constituents plus the real moon age set height, and stream strength follows the rate of change of height, so slack water lands near high and low water.",
+          "Stream field relaxed over the hand-drawn water mask in a Worker: depth-weighted potential flow makes streams quicken through narrows and round headlands, with hand-placed eddies added.",
+          "Solver ghost: time-dependent Dijkstra on an 80 by 60 grid with waiting allowed gives the earliest arrival at every cell, which yields both the optimal route and the isochrone contours.",
+          "A drying ledge opens only when charted depth plus tide height beats the draught, so departure time, route and the rule of twelfths interlock."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Eight disjoint files: tide model, stream-field solver (Worker), time-dependent route solver (Worker), boat kinematics, chart renderer, level data with a seeded daily passage, planner UI, app shell with hash state and about panel. Built: 6 invented straits, tide table and curve, atlas scrubber, ghost boat and isochrones, light and dark chart themes, reduced-motion mode. Left out: real coastlines, live tide data, wind, sound, accounts.",
+        "risks": [
+          "Potential-flow streams have no true overfalls or turbulence, so copy calls them stylised and hand-placed eddies add character.",
+          "A dense planner on a 360px screen is mitigated with a bottom sheet, tap-to-add waypoints and a list-and-keyboard alternative to dragging.",
+          "Difficulty across springs and neaps needs tuning; par times come from the solver at build time rather than guesses.",
+          "Single-sourced remarks (the 2019 finding that analytic Zermelo solutions can be unstable) stay off the page; king-tide dates vary by station, so copy says 'as of 2026-10-11, per US station tables' and the page makes no forecast.",
+          "A game, not a navigation aid: all places and stations are invented and the about panel says so."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "architect-2",
+      "title": "Orbital Knitwear",
+      "pitch": "A visitor tunes a satellite's height, tilt and orbit shape and watches its ground track unspool across a wool-textured world map, each pass adding a ribbon of stitches wherever the camera swath reaches. Pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, keeping a steady local time of day, or lingering over the far north. A flat-versus-polar toggle shows how the projection decides which holes look big, while the score counts true surface area.",
+      "whyNow": "Timeless: orbital geometry never goes stale. The knitting frame makes a nerdy subject cozy, and the projection toggle and daylight terminator put a map argument at the centre.",
+      "origin": {
+        "agent": "architect",
+        "lens": "maps-and-places"
+      },
+      "fingerprint": {
+        "category": "science-sim",
+        "mechanic": "simulator",
+        "tone": ["cozy", "analytical", "playful"],
+        "tech": ["canvas2d", "worker", "offscreen-canvas", "dom-ui", "localstorage"],
+        "tags": ["orbits", "ground-track", "satellites", "knitting", "map-projections", "sun-synchronous", "coverage", "polar-view", "earth-observation", "j2-precession"],
+        "keywords": ["repeat-cycle", "swath-width", "dropped-stitch", "pattern-card", "local-solar-time", "terminator", "equirectangular", "azimuthal", "orbital-period", "nodal-precession"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "research": {
+        "summary": "A ground track is a map argument: one orbit is a sine wave on a flat map and a spiral seen from the pole. Research shapes the mechanic. Earth's bulge (J2) turns an orbit's plane, and at about 98 degrees and 600-700 km that turn matches the Sun's 0.9856 degrees per day, so a satellite keeps one local solar time; a two-body-plus-J2 calculation done here gives 97.79 degrees at 600 km and 98.19 degrees at 700 km, matching both sources. Landsat's 16-day cycle of 233 orbits is a literal knitting gauge: tracks about 172 km apart against a 185 km swath. The ISS inclination of 51.6 degrees fences its track and Earth's spin moves each pass about 23 degrees west. Scoring by true area matters: the band poleward of 60 degrees is a third of an equirectangular map but about 13 percent of the planet (computed here). The Molniya figures are single-sourced.",
+        "sources": [
+          {
+            "title": "GDC OrbitPrimer",
+            "url": "https://science.nasa.gov/wp-content/uploads/2023/05/GDC_OrbitPrimer.pdf",
+            "date": "",
+            "snippet": "NASA orbit primer; per the search summary it ties the sun-synchronous node rate to 0.9856 degrees per day and gives 98.2 degrees for a 700 km circular orbit.",
+            "via": "search",
+            "note": "Named in the search summary for the rate and the 700 km inclination; page not opened.",
+            "verified": true
+          },
+          {
+            "title": "Sun-Synchronous Orbit | Spacecraft Design Interview | Skill-Lync Resources",
+            "url": "https://resources.skill-lync.com/branches/aerospace-engineering/questions/spacecraft-design/sun-synchronous-orbit",
+            "date": "",
+            "snippet": "Q&A resource explaining that J2 oblateness regresses the orbit node and that about 600 km sits near 97.8 degrees.",
+            "via": "search",
+            "note": "Independent of NASA; agrees on the J2 mechanism and the near-98-degree inclination. A local calculation also gives 97.79 degrees at 600 km.",
+            "verified": true
+          },
+          {
+            "title": "Space Station Orbit Tutorial",
+            "url": "https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm",
+            "date": "",
+            "snippet": "NASA Earth Observations tutorial; per the search summary it gives 51.6 degrees inclination, 90-93 minute orbits and a westward shift near 22.9 degrees of longitude per orbit.",
+            "via": "search",
+            "note": "Named in the search summary for all three numbers. WebFetch on this host failed with a DNS error.",
+            "verified": true
+          },
+          {
+            "title": "International Space Station Frequently Asked Questions - NASA",
+            "url": "https://www.nasa.gov/international-space-station-frequently-asked-questions/",
+            "date": "",
+            "snippet": "NASA FAQ; per a domain-filtered search summary it says the station's 51.6 degree inclination means it never goes farther north or south than 51.6 degrees latitude.",
+            "via": "search",
+            "note": "Named in the search summary for the inclination and the latitude limit. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "Mission & Carrier Characteristics",
+            "url": "https://www.esa.int/esapub/sp/sp1201/a3.htm",
+            "date": "",
+            "snippet": "ESA publication table of space station characteristics; per the search summary it lists an altitude range of 370-460 km, consistent with the other results.",
+            "via": "search",
+            "note": "Independent agency (ESA) agreeing on the altitude range; the summary said inclination and period figures were consistent across NASA, ESA and an arXiv paper. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "The Worldwide Reference System",
+            "url": "https://landsat.gsfc.nasa.gov/about/worldwide-reference-system",
+            "date": "",
+            "snippet": "NASA Landsat page on the reference grid: 16-day cycle of 233 orbits, about 98.9 minute orbits, 705 km sun-synchronous orbit, tracks about 24.7 degrees (2752 km) apart at the equator.",
+            "via": "search",
+            "note": "Named in the search summary for the 233-orbit, 16-day cycle. Page not opened.",
+            "verified": true
+          },
+          {
+            "title": "pubs.usgs.gov",
+            "url": "https://pubs.usgs.gov/fs/2003/0023/report.pdf",
+            "date": "",
+            "snippet": "USGS fact sheet; per the search summary the satellites were designed for a 185 km swath from a 705 km sun-synchronous orbit.",
+            "via": "search",
+            "note": "Independent agency document agreeing with NASA on altitude and giving the 185 km swath. A catalogue record lists 183 km, so swath is treated as about 185 km.",
+            "verified": true
+          },
+          {
+            "title": "Dynamical properties of the Molniya satellite constellation: long-term evolution of orbital eccentricity",
+            "url": "https://arxiv.org/pdf/2007.04341",
+            "date": "",
+            "snippet": "Research paper; per the search summary it gives the Molniya critical inclination as arcsin(2/sqrt 5), about 63.4 degrees, and two apogees per day for a 12-hour period.",
+            "via": "search",
+            "note": "Single result for the specific figures; other Molniya results only described apogee dwell. Unverified.",
+            "verified": false
+          },
+          {
+            "title": "Getting Familiarised with the TLE object: Analysis of a Repeating Sun-Synchronous Orbit",
+            "url": "https://satmad.readthedocs.io/en/stable/tutorials/sso_analysis.html",
+            "date": "",
+            "snippet": "Open-source tutorial analysing a repeating sun-synchronous orbit; context for repeat ground tracks. Text not seen.",
+            "via": "search",
+            "note": "Context only, not used for any stated fact.",
+            "verified": false
+          },
+          {
+            "title": "J2 Perturbation |",
+            "url": "https://ai-solutions.com/_freeflyeruniversityguide/j2_perturbation.htm",
+            "date": "",
+            "snippet": "Tutorial page on the J2 perturbation of orbits, relevant to node regression. Text not seen.",
+            "via": "search",
+            "note": "Context for the J2 drift formula the engine implements; no figure taken from it.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day to hold one local solar time; Earth's J2 bulge supplies the drift, at about 98.2 degrees inclination for a 700 km circular orbit (NASA primer) and about 97.8 degrees near 600 km (second source).",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "The International Space Station orbits at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370-460 km altitude in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial).",
+            "sourceIndex": 2,
+            "alsoIn": [3, 4],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Landsat 4-9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits; an orbit takes about 98.9 minutes, successive tracks sit about 24.7 degrees (2752 km) apart at the equator, and the design swath is 185 km.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Computed here from the Landsat figures: 233 evenly spaced tracks put neighbours about 172 km apart at the equator (40,075 km divided by 233), so a 185 km swath overlaps its neighbour by about 13 km, roughly 7 percent.",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-11"
+          },
+          {
+            "claim": "Molniya orbits are reported to use a critical inclination of about 63.4 degrees with a 12-hour period and two apogees per day (single source, unconfirmed).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-11"
+          }
+        ],
+        "inspirations": [
+          "Worldwide Reference System tracks",
+          "space station pass trackers",
+          "knitting pattern charts",
+          "orbital mission-design games",
+          "equal-area map debates"
+        ]
+      },
+      "design": {
+        "coreLoop": "A round starts from a pattern card with a target and a par. The visitor sets up to three satellites (altitude, inclination, eccentricity, start longitude, swath), starts the clock and fast-forwards days of orbits while stitches fill the fabric. A live panel scores true-area coverage, dropped stitches, overlap waste, revisit time and local solar time under the satellite. Small altitude changes shift the track spacing, so a gappy weave snaps into a tight repeat; every setup is a shareable link.",
+        "sophisticationHooks": [
+          "Two-body propagation with J2 node and perigee drift, Kepler's equation by Newton iteration, Earth rotation and a sun model, so sun-synchronous and Molniya-style orbits emerge from physics instead of presets.",
+          "Repeat-ground-track finder: scans altitudes for k orbits in m days and marks stitch-perfect heights on the altitude slider, as in Landsat's 233 orbits per 16 days.",
+          "Projection honesty: one coverage grid renders in equirectangular and polar azimuthal views by inverse projection, while every score uses cos(latitude) area weights and a live readout shows map share versus planet share.",
+          "Pattern cards with par values from an in-page brute-force search, plus a day/night terminator so dawn-dusk orbits can ride the edge of night."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Eight disjoint files: orbit engine with J2, coverage grid (Worker), projections, land and city data, wool renderer, pattern cards with par search, planner UI, app shell with hash state and about panel. Built: 8 cards, flat and polar views, terminator, true-area scoring, light and dark themes, reduced-motion mode. Left out: real satellite catalogs, atmospheric drag, 3D globe, multiplayer.",
+        "risks": [
+          "Coastlines are hand-simplified from memory and may look crude; styling them as embroidered outlines with city dots keeps orientation honest.",
+          "The single-sourced Molniya figures show as 'as of 2026-10-11, per arXiv 2007.04341', though 63.4 degrees also follows from arcsin(2/sqrt 5).",
+          "Two-body plus J2 is not a precision propagator; the about panel says tracks drift from real satellites over weeks, and unit tests check the sourced figures within about 1 percent.",
+          "Pattern-card pars have to be solvable; the brute-force search verifies each card before it ships.",
+          "Wool texture at 1-degree resolution risks dropped frames on phones; an offscreen cached layer and a coarser grid on small screens mitigate this."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

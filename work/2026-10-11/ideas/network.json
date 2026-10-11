@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "date": "2026-10-11",
+  "note": "WebFetch is attempted at most once per host per day; hosts under failedHosts are skipped by every later agent. Use WebSearch results for them.",
+  "failedHosts": [
+    {
+      "host": "en.wikipedia.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND en.wikipedia.org"
+    },
+    {
+      "host": "www.reddit.com",
+      "by": "probe",
+      "error": "Claude Code is unable to fetch from www.reddit.com"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND news.ycombinator.com"
+    },
+    {
+      "host": "data.gov",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND data.gov"
+    },
+    {
+      "host": "itch.io",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND itch.io"
+    }
+  ],
+  "okHosts": []
+}
