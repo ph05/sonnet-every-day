@@ -25,6 +25,7 @@ Used by `ops/workflows/select.js`. Nine judges each score ALL shortlisted ideas 
     "minFeasibility": 5,
     "minSafety": 5,
     "minClarity": 5,
+    "bonusMinClarity": 7,
     "carryMinTotal": 58,
     "carryMinFeasibility": 5,
     "carryMinSafety": 6,
@@ -40,7 +41,7 @@ Why these weights: variety and finishability decide whether the project is worth
 
 ## Purpose bonus (today's plan)
 
-`node scripts/novelty.mjs mix` prints the purpose plan: `wanted` (one or two purposes), `avoid` and `bonus`. An idea whose `fingerprint.purpose` is wanted gets `purposeBonus` points on top of its `baseTotal`. An idea whose purpose is avoided cannot win (reason `purpose-avoid`). An idea without a purpose, or a day without a plan, gets no bonus and no penalty; the log says "purpose missing" or "no purpose plan". The carry-over floor and the rejected notes use `baseTotal`, never the bonus. `ranking[]` records `baseTotal`, `purposeBonus` and `purpose` for every idea.
+`node scripts/novelty.mjs mix` prints the purpose plan: `wanted` (one or two purposes), `avoid` and `bonus`. An idea whose `fingerprint.purpose` is wanted gets `purposeBonus` points on top of its `baseTotal` when its clarity is at least `bonusMinClarity` (7) or unscored: one clarity point is worth about 1.5 total points, so an unconditional bonus would let a murky wanted idea beat a clear one. A withheld bonus is logged and named in the idea's rejected note. An idea whose purpose is avoided cannot win (reason `purpose-avoid`). An idea without a purpose, or a day without a plan, gets no bonus and no penalty; the log says "purpose missing" or "no purpose plan". The carry-over floor and the rejected notes use `baseTotal`, never the bonus. `ranking[]` records `baseTotal`, `purposeBonus` and `purpose` for every idea.
 
 ## Gates, ranking, tie-breaks
 
@@ -61,7 +62,7 @@ Question: "Why would this embarrass us the moment it goes live?" By purpose: wou
 
 ## Scoring anchors (every judge uses these)
 
-Calibration: use the whole scale, at most 3 ideas share a score, an honest 3 beats a polite 6. Judge the idea as researched, not the pitch prose. Cite something concrete from the dossier. Judge each idea for its own purpose (`fingerprint.purpose`): a tool, a lesson and a game earn the same score in different ways.
+Calibration: use the whole scale, at most 3 ideas share a score, an honest 3 beats a polite 6. Judge the idea as researched, not the pitch prose; clarity is the exception and judges the words a stranger meets. Cite something concrete from the dossier. Judge each idea for its own purpose (`fingerprint.purpose`): a tool, a lesson and a game earn the same score in different ways.
 
 ### sophistication (depth that can be discovered)
 Depth is discoverable, never required: depth a newcomer must climb before the first success earns nothing. For a tool, depth is correctness and completeness against the paid equivalents (edge cases, units, locales, big inputs); for a lesson, how far the visitor's mental model changes (a ladder of demos, worked examples).
@@ -91,7 +92,7 @@ The purpose is part of variety: compare it with the purposes in the history dige
 * 10: obviously doable, well understood, parallelizes across the whole team.
 
 ### timeliness (freshness)
-"Verified" is defined in `ops/rubrics/research.md`: a page really opened, or two independent search results that agree (WebFetch mostly fails in the cloud, so search-only evidence counts). Judge the dates and the `verification.evidence` field, not the label alone.
+"Verified" is defined in `ops/rubrics/research.md`: a page really opened, two independent search results that agree, or the primary source's own official page in a search result (WebFetch mostly fails in the cloud, so search-only evidence counts). Judge the dates and the `verification.evidence` field, not the label alone.
 * 2: stale, dated or the hook is thin or unverified.
 * 5: neutral; neither topical nor especially timeless.
 * 8: a verified current hook, or a clearly evergreen premise with charm.
@@ -118,7 +119,7 @@ Read `ops/rubrics/safety.md`, including its clean-room rules for tools (an origi
 * 10: clean and unusually well evidenced.
 
 ### clarity (can a stranger get it in ten seconds)
-Judge `plainSentence`, `firstMinute` and `conceptsToLearn`, with the title and the pitch. A tool: the title and plain sentence say exactly what you will be able to do. A lesson: they say what you will understand.
+Judge the words a stranger meets: the title, `plainSentence` and `firstMinute`, with the pitch. A tool: the title and plain sentence say exactly what you will be able to do. A lesson: they say what you will understand. Count yourself the concepts a newcomer must grasp before the first success (what a lesson teaches afterwards does not count) and score your count when it is higher than `conceptsToLearn`. A title that names no literal thing (a metaphor alone, like "Orbital Knitwear") caps clarity at 4.
 * 2: the premise needs a paragraph; a metaphor or jargon hides what it is; 3 or more concepts before a first success.
 * 5: clear after reading the pitch; one or two new concepts.
 * 8: one plain sentence says it; a first success within 30 seconds without reading anything; at most one new concept.

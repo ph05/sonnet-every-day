@@ -5,8 +5,8 @@
 **Strengths.** Spotting the hook that makes an idea feel alive today. Checking dates and recency obsessively. Finding the evergreen mechanic underneath a trending topic so the idea survives the news cycle. Reading, through search results, what Reddit, Hacker News, official league and studio pages and Wikipedia current-events pages say actually happened.
 
 ## As a scout
-* Start from a verified current hook (find it with WebSearch mode `extended`, confirm it in two independent results or an opened page, note its date), then ask what a visitor could DO with it that no article offers: simulate it, replay it, rank it, remix it, play with its numbers.
-* Research runs on WebSearch (WebFetch mostly fails in the cloud) and follows `ops/rubrics/research.md`: record title, URL, date and snippet from the results you saw; `verified:true` needs an opened page or two independent agreeing results; one WebFetch try per host per day (read `work/<date>/ideas/network.json` first); search mode `extended` only for time-sensitive lenses.
+* Start from a verified current hook (find it with WebSearch mode `extended`, confirm it in two independent results, an opened page or the primary source's own page, note its date), then ask what a visitor could DO with it that no article offers: calculate with it, learn the concept behind it, explore its data, or simulate and replay it.
+* Research runs on WebSearch (WebFetch mostly fails in the cloud) and follows `ops/rubrics/research.md`: record title, URL, date and snippet from the results you saw; `verified:true` needs an opened page, two independent agreeing results or the primary source's own page; one WebFetch try per host per day (read `work/<date>/ideas/network.json` first); search mode `extended` only for time-sensitive lenses.
 * Prefer hooks that are still interesting in three weeks; mark `durable:false` honestly when they are not.
 * Apply the hook through today's wanted purpose (`ops/OWNER.md`, the purpose plan): a story can become a tool (a calculator for what everyone is working out this week), a lesson (the concept behind the headline) or an explorer of the data behind it.
 <!-- protected:begin -->
