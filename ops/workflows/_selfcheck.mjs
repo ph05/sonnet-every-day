@@ -832,7 +832,8 @@ export function reviseWorld(sb, cfg = {}) {
         state.atRecheck[state.rechecks] = { inBuild: marked.filter((m) => mark(sb.work('build', 'site'), m.file)).length, inCopy: marked.filter((m) => mark(m.dir, m.file)).length };
         if (cfg.recheckNull) return null;
         if (cfg.recheckThrows) throw new Error(cfg.recheckThrows);
-        const open = [...prompt.matchAll(/^- (\S+) \[(S[123])\] (\w+) (\S+):/gm)].map((m) => ({ id: m[1], severity: m[2], owner: m[3], file: m[4] === '(no' ? '' : m[4] }));
+        // a defect without a file is listed as "(no file)": the fake critic must see it too, or it would silently never verify it
+        const open = [...prompt.matchAll(/^- (\S+) \[(S[123])\] (\w+) (\(no file\)|\S+):/gm)].map((m) => ({ id: m[1], severity: m[2], owner: m[3], file: m[4] === '(no file)' ? '' : m[4] }));
         const r = cfg.recheck ? cfg.recheck(state.rechecks, open) : { fixed: open.map((d) => d.id), defects: [] };
         return { exercisedInBrowser: true, notes: '', ...r };
       }
@@ -1822,6 +1823,38 @@ describe('build.js', () => {
   }
   const seed = (s, opts = {}) => seedSpecFiles(s, opts);
 
+  test('2 slots: the start-up clerks run together, the final roster runs beside the first-load check, and a builder writing a file it does not own is a reported conflict', async () => {
+    const s = makeSandbox();
+    try {
+      seed(s, { compact: true });
+      const w = buildWorld(s);
+      const inner = w.respond;
+      const seen = { roster: 0, integrated: false, rosterAfterIntegrate: 0 };
+      const overlap = { start: false, verify: false };
+      const waitFor = async (cond) => { for (let i = 0; i < 60 && !cond(); i++) await new Promise((r) => setTimeout(r, 5)); return cond(); };
+      w.respond = async (ctx) => {
+        const label = ctx.opts.label;
+        if (label === 'roster') { seen.roster++; if (seen.integrated) seen.rosterAfterIntegrate++; }
+        if (label === 'integrate') seen.integrated = true;
+        // each of these waits briefly for a roster call: it only arrives while they wait if the script issued both together
+        if (label === 'integrity baseline') overlap.start = await waitFor(() => seen.roster > 0);
+        if (label === 'first-load check') overlap.verify = await waitFor(() => seen.rosterAfterIntegrate > 0);
+        const r = await inner(ctx);
+        // the engineer also writes index.html, which the artisan owns: the last writer wins unless someone notices
+        if (r && label === 'build engineer') return { ...r, files: [...r.files, { path: `${s.work('build', 'site')}/index.html`, lines: 12 }] };
+        return r;
+      };
+      const run = await go(s, w, {}, { tier: 2, compact: true, maxAgents: 2, osHeartbeat: true });
+      checkRunInvariants('build', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result));
+      assert.deepEqual(overlap, { start: true, verify: true }, 'independent clerks are issued together');
+      assert.ok(run.rec.maxActive <= 2, `the gate follows the 2 slots (${run.rec.maxActive})`);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.conflicts)), [{ file: 'index.html', by: 'engineer', owner: 'artisan' }]);
+      assert.deepEqual(s.json(s.work('build', 'DONE.json')).conflicts, [{ file: 'index.html', by: 'engineer', owner: 'artisan' }]);
+      assert.ok(run.rec.calls.find((c) => c.label === 'integrate').prompt.includes('OWNERSHIP CONFLICT: engineer wrote index.html, which artisan owns'), 'the integrator is told');
+    } finally { s.clean(); }
+  });
+
   test('full build: disjoint builders write the site, the architect integrates, DONE marker sits beside the site', async () => {
     const s = makeSandbox();
     try {
@@ -1991,6 +2024,44 @@ describe('qa.js', () => {
       const bc = run.rec.calls.find((c) => c.label === 'browser-check (full)').prompt;
       assert.ok(bc.includes(`browser-check.mjs ${s.work('build', 'site')} --out ${s.work('qa', 'run')} --seconds 20`));
       assert.ok(!bc.includes('--no-monkey'), 'QA runs the monkey');
+    } finally { s.clean(); }
+  });
+
+  test('proofread findings that name a page file beside the draft spec stay (routed to that file); the critic\'s own ids follow the renumbering; the critic gets the time box', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s);
+      const world = qaWorld(s, {
+        critic: {
+          verdict: 'revise',
+          summary: 'The phone layout (d01) hides the map; d02 is a nit.',
+          scores: DIMENSIONS.map((d, i) => ({ dimension: d, score: 8, note: i === 0 ? 'held back by d01' : 'fine' })),
+          defects: [D('d01', 'S3', 'artisan', 'index.html', 'Phone map scrolls away'), D('d02', 'S4', 'artisan', 'index.html', 'Odd margin')],
+        },
+        // the strings the real proofreader wrote on 2026-10-10 and 2026-10-11 (the About links were dropped on the 11th, kept on the 10th)
+        proof: { issues: [
+          { kind: 'dead-link', file: 'index.html (About sources) and spec/PROJECT.json', text: 'https://example.org/gone returned 404', fix: 'replace the source' },
+          { kind: 'placeholder', file: `${s.root.slice(1)}/work/${DATE}/spec/PROJECT.json`, text: "'stats': { 'files': 0 }", fix: 'packaging fills it' },
+          { kind: 'typo', file: "js/copy.js (NOTICE 'no-hint', line 14)", text: 'teh hint', fix: 'the hint' },
+        ], linksChecked: 1, linksOk: 0, notes: '' },
+      });
+      const run = await go(s, world, {}, { phaseBudgetMinutes: 30 });
+      checkRunInvariants('qa', run);
+      const rep = s.json(s.work('qa', 'report.json'));
+      const dead = rep.defects.find((d) => d.title.startsWith('dead-link'));
+      assert.ok(dead, 'the About-panel dead link (it names index.html and the draft spec) is a page defect');
+      assert.deepEqual([dead.id, dead.severity, dead.file, dead.owner], ['d01', 'S2', 'index.html', 'artisan']);
+      assert.ok(!rep.defects.some((d) => d.title.startsWith('placeholder')), 'a finding naming only the draft spec is still ignored');
+      const typo = rep.defects.find((d) => d.title.startsWith('typo'));
+      assert.deepEqual([typo.file, typo.owner], ['js/copy.js', 'jester'], 'the page file inside a free-text file field routes the defect');
+      const phone = rep.defects.find((d) => d.title === 'd01 title');
+      assert.deepEqual([phone.id, phone.criticId], ['d02', 'd01']);
+      assert.equal(rep.summary, 'The phone layout (d02) hides the map; d04 is a nit.', 'the summary cites the report\'s ids');
+      assert.equal(rep.scores[0].note, 'held back by d02');
+      const critic = run.rec.calls.find((c) => c.label === 'critic review').prompt;
+      assert.ok(/Time box: about \d+ minutes are left for your review \(the qa phase has 30 minutes in all\)/.test(critic), 'the critic knows its time box');
+      const open = await go(s, qaWorld(s));
+      assert.ok(!open.rec.calls.find((c) => c.label === 'critic review').prompt.includes('Time box'), 'no phase budget, no time box');
     } finally { s.clean(); }
   });
 
@@ -2757,6 +2828,72 @@ describe('revise.js', () => {
         if (name === 'no-critic') assert.ok(run.result.remaining.length > 0, 'without a recheck the old defects are assumed to remain');
       } finally { s.clean(); }
     }
+  });
+
+  // The clock clerk answers with a chosen time (minutes after T0) for the labels in `at`; every other clerk prints the real time.
+  const timed = (w, T0, at) => ({ ...w, respond: async (ctx) => {
+    const m = /^clock (.+)$/.exec(ctx.opts.label);
+    if (m && Object.hasOwn(at, m[1])) return emulateFilesOnly(ctx.sb, ctx.prompt, { ok: true, at: T0 + at[m[1]] * 60000 });
+    return w.respond(ctx);
+  } });
+
+  test('phase time: a 14-minute plan (the planner floor) runs its loop after a 4-minute start-up; a later loop must fit its measured predecessor', async () => {
+    let s = base();
+    try {
+      const run = await go(s, timed(reviseWorld(s), Date.now(), { start: 0, 'loop 1': 4 }), {}, { phaseBudgetMinutes: 14 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted], [1, 1], `the plan promised one loop: ${JSON.stringify(run.result.skipped)}`);
+    } finally { s.clean(); }
+    // loop 1 took 20 minutes (two slots): 18 minutes left is above the nominal 14 but cannot hold another such loop
+    const twoLoops = (x) => reviseWorld(x, { recheck: (n) => (n === 1 ? { fixed: ['d02'], defects: [D('d01', 'S1', 'engineer', 'js/engine.js'), D('d03', 'S2', 'engineer', 'js/engine.js')] } : { fixed: ['d01', 'd03'], defects: [] }) });
+    s = base();
+    try {
+      const run = await go(s, timed(twoLoops(s), Date.now(), { start: 0, 'loop 1': 2, 'loop 2': 22 }), {}, { phaseBudgetMinutes: 40, reviseLoops: 2 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted], [1, 1]);
+      assert.ok(run.result.skipped.includes('revise loop 2'), JSON.stringify(run.result.skipped));
+      assert.ok(run.rec.logs.some((l) => l.includes('a loop needs 20 (loop 1 took that long)')), run.rec.logs.filter((l) => l.includes('skipped')).join('\n'));
+    } finally { s.clean(); }
+    // the same first loop in 10 minutes leaves room for the second
+    s = base();
+    try {
+      const run = await go(s, timed(twoLoops(s), Date.now(), { start: 0, 'loop 1': 2, 'loop 2': 12 }), {}, { phaseBudgetMinutes: 40, reviseLoops: 2 });
+      assert.deepEqual([run.result.loopsRun, run.result.promoted, run.result.clean], [2, 2, true]);
+    } finally { s.clean(); }
+    // a budget spent before the first loop, or one smaller than a loop, runs none
+    for (const [pbm, at] of [[14, { start: 0, 'loop 1': 15 }], [5, { start: 0, 'loop 1': 0 }]]) {
+      s = base();
+      try {
+        const run = await go(s, timed(reviseWorld(s), Date.now(), at), {}, { phaseBudgetMinutes: pbm });
+        checkRunInvariants('revise', run, { skipPhaseUse: true });
+        assert.equal(run.result.loopsRun, 0, `budget ${pbm}`);
+        assert.equal(rd(s).revision, 1);
+      } finally { s.clean(); }
+    }
+  });
+
+  test('a recheck that leaves an open defect out of both fixed and defects never verified it: it stays open, and an empty answer promotes nothing', async () => {
+    let s = base();
+    try {
+      // before: an empty answer read as "every defect fixed", the loop was promoted and the report said ship
+      const run = await go(s, reviseWorld(s, { recheck: () => ({ fixed: [], defects: [] }) }), {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.deepEqual([run.result.promoted, run.result.kept], [0, 'pre-revise']);
+      assert.equal(rd(s).verdict, 'revise');
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.counts)), { S1: 1, S2: 2, S3: 1, S4: 1 });
+      assert.ok(run.rec.logs.some((l) => l.includes('neither fixed nor listed d01, d02, d03')), run.rec.logs.join('\n'));
+    } finally { s.clean(); }
+    s = base();
+    try {
+      // a partial answer: d02 verified fixed, d03 still open, the S1 d01 forgotten: one S2 fewer is still better, but d01 stays open
+      const run = await go(s, reviseWorld(s, { recheck: () => ({ fixed: ['d02'], defects: [D('d03', 'S2', 'engineer', 'js/engine.js')] }) }), {}, { reviseLoops: 1 });
+      checkRunInvariants('revise', run, { skipPhaseUse: true });
+      assert.equal(run.result.promoted, 1);
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.fixed)), ['d02']);
+      const rep = rd(s);
+      assert.equal(rep.counts.S1, 1, 'the forgotten S1 is still in the report, so the day cannot ship it unseen');
+      assert.ok(rep.defects.some((d) => d.id === 'd01' && d.severity === 'S1'));
+    } finally { s.clean(); }
   });
 });
 

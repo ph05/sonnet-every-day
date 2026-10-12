@@ -756,6 +756,14 @@ async function runGate() {
   return { ran: true, ok: out.ok === true, errors: arr(out.errors), warnings: arr(out.warnings), expected: arr(out.expected), stats: isObj(out.stats) ? out.stats : {}, note: '' };
 }
 
+// The phase budget reaches the critic, the only long agent of the phase: a script cannot stop an agent, and on 2026-10-11 a 20-minute
+// compact qa took 41 minutes because the critic never knew its time box. About REPORT_MINUTES stay for the report, marker and integrity clerks.
+const REPORT_MINUTES = 6;
+function criticTimeBox() {
+  if (PBM === null) return [];
+  const minutes = Math.max(10, Math.round(timeLeftMin()) - REPORT_MINUTES);
+  return [`- Time box: about ${minutes} minutes are left for your review (the qa phase has ${PBM} minutes in all). Run date when you start and plan to fit: steps 1 to 3, the core loop and the 390px view of step 4, then steps 5 to 7. Spend only what is left on extra exploration (more Playwright scenarios, fuzzing, re-deriving numbers). Never skip a step to save time: trim the depth of step 4 instead.`];
+}
 function criticPrompt(browser, gate, roster) {
   const ownerLines = Object.entries(roster.owners).map(([o, f]) => `  ${o}: ${arr(f).join(', ')}`).join('\n');
   const task = [
@@ -768,6 +776,7 @@ function criticPrompt(browser, gate, roster) {
     `- Automated browser check (desktop and mobile, light and dark, reduced motion, plus a random "monkey"): ${browser.reportPath}. Result: ${browser.noBrowser ? 'NO BROWSER AVAILABLE (judge from source only and say so)' : browser.ran ? `ok=${browser.ok}` : 'did not run'}. Errors: ${browser.errors.length ? `\n${browser.errors.slice(0, 25).map((e) => `    ${clip(e, 300)}`).join('\n')}` : 'none'}. Warnings: ${browser.warnings.length ? `\n${browser.warnings.slice(0, 15).map((e) => `    ${clip(e, 240)}`).join('\n')}` : 'none'}.`,
     `- Screenshots: ${QA_DIR}/run/shots/ (list the directory, then open EVERY PNG with the Read tool and look at it: layout, hierarchy, overlaps, clipping, contrast, dark mode, the 390px and 320px mobile views).`,
     `- Packaging dry run (validate.mjs project on a copy with the draft project.json; thumbnail errors ignored because thumbnails are generated later): ${gate.ran ? (gate.errors.length ? `errors:\n${gate.errors.slice(0, 15).map((e) => `    ${clip(e, 240)}`).join('\n')}` : 'clean') : gate.note || 'did not run'}.`,
+    ...criticTimeBox(),
     '',
     'Procedure:',
     `1. Read ${REPO}/ops/rubrics/quality.md completely (hard minimums, dimensions, severity S1 to S4, defect record, verdict) and ${REPO}/ops/rubrics/safety.md.`,
@@ -812,6 +821,24 @@ function makeOwnerOf(roster) {
     return BUILDERS.includes(hint) ? hint : 'architect';
   };
 }
+// Paths outside the page (draft metadata, spec, research, QA scratch): a proofread finding that names only these is not a page defect.
+const OUTSIDE_PAGE = /(^|\/)(spec|package|ideas|ideate|qa)\/|(^|\/)PROJECT\.json\b|(^|\/)project\.json\b|SPEC\.md\b|DESIGN\.md\b/i;
+// The page file a free-text "file" field names: the field itself when it is a page path, else the longest page path among its words
+// ("js/ui.js (NOTICE 'no-hint', line 14)" -> js/ui.js), else ''. index.html always counts as a page file.
+function pageFileOf(roster, f) {
+  const paths = uniq(['index.html', ...arr(roster.files).map((x) => x.path)]);
+  const whole = normFile(f);
+  if (paths.includes(whole)) return whole;
+  const words = String(f || '').split(/[\s,;()'"`[\]]+/).map(normFile).filter(Boolean);
+  return paths.filter((p) => words.includes(p)).sort((a, b) => b.length - a.length)[0] || '';
+}
+// The critic numbers its defects its own way; the report renumbers all defects by severity. Its summary and score notes cite its own
+// ids ("the phone layout (d01)"), so they are rewritten to the report's ids (2026-10-11: the summary's d01 was the report's d02).
+const criticKey = (id) => {
+  const m = /^[dD]0*(\d{1,3})$/.exec(String(id || '').trim());
+  return m ? `d${Number(m[1])}` : null;
+};
+const renumberText = (text, idMap) => (idMap.size ? String(text).replace(/\b[dD]0*(\d{1,3})\b(?!\.\w)/g, (m, n) => idMap.get(`d${Number(n)}`) || m) : String(text));
 // Owner for a browser-check or validate message that names a file somewhere in its text.
 function ownerFromText(roster, text, ownerOf) {
   for (const f of roster.files) {
@@ -831,6 +858,7 @@ try {
   const roster = await loadRoster('Roster');
   if (!roster.ok) log(`ownership roster unavailable (${roster.error}): defects default to architect`);
   const ownerOf = makeOwnerOf(roster);
+  const pageFileIn = (f) => pageFileOf(roster, f);
 
   phase('Checks');
   const pBrowser = runBrowser('browser-check (full)', `${QA_DIR}/run`, `--seconds ${SECONDS}`, 'Checks');
@@ -868,6 +896,7 @@ try {
       if (!isObj(d) || (!str(d.detail) && !str(d.title))) continue;
       const file = normFile(d.file);
       add('critic', {
+        criticId: str(d.id),
         severity: SEVERITIES.includes(d.severity) ? d.severity : 'S2',
         owner: ownerOf(file, d.owner),
         file,
@@ -892,14 +921,16 @@ try {
     for (const p of arr(proof.issues)) {
       if (!isObj(p) || !str(p.text)) continue;
       // Only the page ships: a finding in the draft metadata, the spec or the research files is noise, not a defect (2026-10-11: a
-      // placeholder in work/<D>/spec/PROJECT.json was filed as an S1 and would have forced a Tier 3 day).
-      if (/(^|\/)(spec|package|ideas|ideate|qa)\/|(^|\/)PROJECT\.json$|(^|\/)project\.json$|SPEC\.md$|DESIGN\.md$/i.test(String(p.file || ''))) {
+      // placeholder in work/<D>/spec/PROJECT.json was filed as an S1 and would have forced a Tier 3 day). A finding that names a page
+      // file as well ("index.html (About sources) and spec/PROJECT.json", the About links of 2026-10-10 and 2026-10-11) is about the page.
+      const pageFile = pageFileIn(p.file);
+      if (!pageFile && OUTSIDE_PAGE.test(String(p.file || ''))) {
         log(`proofread: ignoring a finding outside the page (${clip(p.file, 80)}): ${clip(p.text, 80)}`);
         continue;
       }
       const kind = str(p.kind, 'typo');
       const severity = kind === 'placeholder' ? 'S1' : ['dead-link', 'source-mismatch', 'unverified-claim'].includes(kind) ? 'S2' : kind === 'unreachable-link' ? 'S4' : 'S3';
-      const file = normFile(p.file);
+      const file = pageFile || normFile(p.file);
       add('proofread', { severity, owner: ownerOf(file, 'jester'), file, title: clip(`${kind}: ${p.text}`, 100), detail: clip(`${kind}: ${p.text}`, 500), evidence: `Search ${file || 'the site'} for the text.`, suggestedFix: clip(p.fix, 400) });
     }
   }
@@ -920,6 +951,9 @@ try {
   }
   defects.sort((a, b) => SEV_RANK[a.severity] - SEV_RANK[b.severity]);
   defects.forEach((d, i) => { d.id = `d${String(i + 1).padStart(2, '0')}`; });
+  const idMap = new Map();
+  for (const d of defects) if (d.source === 'critic' && criticKey(d.criticId) && !idMap.has(criticKey(d.criticId))) idMap.set(criticKey(d.criticId), d.id);
+  const criticText = (t) => renumberText(t, idMap);
   const counts = { S1: 0, S2: 0, S3: 0, S4: 0 };
   for (const d of defects) counts[d.severity]++;
 
@@ -941,9 +975,9 @@ try {
     degraded: degradedWhy.length > 0,
     degradedWhy,
     unreviewed,
-    summary: critic ? clip(critic.summary, 900) : 'No critic review (see degradedWhy); only automated checks and proofreading contributed.',
-    scores: critic ? arr(critic.scores) : [],
-    highlights: critic ? arr(critic.highlights).slice(0, 8) : [],
+    summary: critic ? clip(criticText(critic.summary), 900) : 'No critic review (see degradedWhy); only automated checks and proofreading contributed.',
+    scores: critic ? arr(critic.scores).map((x) => (isObj(x) && typeof x.note === 'string' ? { ...x, note: criticText(x.note) } : x)) : [],
+    highlights: critic ? arr(critic.highlights).slice(0, 8).map((x) => (typeof x === 'string' ? criticText(x) : x)) : [],
     exercisedInBrowser: Boolean(critic && critic.exercisedInBrowser),
     defects,
     browserCheck: { ran: browser.ran, errors: browser.errors, warnings: browser.warnings.slice(0, 30), shots: browser.shots.slice(0, 20), reportPath: relPath(browser.reportPath) },

@@ -1060,11 +1060,29 @@ try {
     const rewritten = Boolean(repOut && repOut.ok === true);
     return { rewritten, repOut, why: rep.problems.join(' | ') || clip(rep.stdout, 300) };
   }
+  // Time (PLAYBOOK 8.6, 8.7). `revise plan` hands over at least one loop's worth (LOOP_MINUTES = MINUTES.loop) and that figure already
+  // includes the start-up clerks (clock, integrity, roster, report), so the FIRST loop runs whenever the plan gave a loop's worth and the
+  // budget is not yet spent: demanding 14 whole minutes after the start-up made a 14 to 17 minute plan run no loop at all. A later loop
+  // needs as much time left as the longer of MINUTES.loop and the loop just measured (on 2 agent slots the fixers, the browser check and
+  // the recheck critic run one after another, so a real loop takes longer than the planner's figure).
+  const LOOP_CLOCK = { start: null, last: 0 };
+  const loopTimeProblem = (k) => {
+    if (PBM === null) return '';
+    if (k === 1) {
+      if (PBM < MINUTES.loop) return `the phase budget of ${PBM} minutes is less than one loop (${MINUTES.loop})`;
+      return timeLeftMin() > 0 ? '' : `the phase budget of ${PBM} minutes was spent before the first loop (${Math.round(elapsedMin())} minutes of start-up)`;
+    }
+    const need = Math.max(MINUTES.loop, Math.ceil(LOOP_CLOCK.last));
+    return timeFor(need) ? '' : `about ${Math.max(0, Math.round(timeLeftMin()))} minutes left of the phase budget, a loop needs ${need}${need > MINUTES.loop ? ` (loop ${k - 1} took that long)` : ''}`;
+  };
   for (let k = 1; !skipWhy && k <= LOOPS_RUN && current.length; k++) {
     if (HALT.reason) { skipStage(`revise loop ${k}`, HALT.reason); break; }
     await tick(`loop ${k}`);
+    if (LOOP_CLOCK.start !== null) LOOP_CLOCK.last = Math.max(0, elapsedMin() - LOOP_CLOCK.start);
+    LOOP_CLOCK.start = elapsedMin();
     if (room() < COST.loop) { skipStage(`revise loop ${k}`, `${kfmt(room())} usable tokens`); break; }
-    if (!timeFor(MINUTES.loop)) { skipStage(`revise loop ${k}`, `about ${Math.round(timeLeftMin())} minutes left of the phase budget`); break; }
+    const late = loopTimeProblem(k);
+    if (late) { skipStage(`revise loop ${k}`, late); break; }
     if (!copied) {
       const copy = await makeWorkingCopy();
       if (!copy.ok) {
@@ -1121,6 +1139,16 @@ try {
       ? arr(rc.defects).filter((d) => isObj(d) && (str(d.detail) || str(d.title))).map((d) => toDefect({ ...d, id: /^N\d+$/i.test(String(d.id)) || !str(d.id) ? `r${k}-${String(++n).padStart(2, '0')}` : String(d.id) }, false))
       : current.map((d) => ({ ...d }));
     if (!rc) log(`recheck critic returned nothing: assuming the previous defects remain (${current.length})`);
+    // The recheck must account for every open defect: verified fixed, or listed as still open. One it leaves out was never verified, so
+    // it stays open with its previous record; an empty or truncated answer must never read as "everything fixed" and promote the loop.
+    if (rc) {
+      const fixedSet = new Set(fixedNow.map((x) => String(x)));
+      const unaccounted = current.filter((d) => !fixedSet.has(d.id) && !list.some((x) => x.id === d.id));
+      if (unaccounted.length) {
+        log(`recheck ${k} neither fixed nor listed ${unaccounted.map((d) => d.id).join(', ')}: they stay open (a defect is fixed only when the critic verified it)`);
+        list.push(...unaccounted.map((d) => ({ ...d })));
+      }
+    }
     for (const e of browserState.errors) {
       if (/^no-browser/.test(e) || list.some((d) => `${d.title} ${d.detail}`.toLowerCase().includes(e.toLowerCase().slice(0, 48)))) continue;
       list.push(toDefect({ id: `r${k}-${String(++n).padStart(2, '0')}`, severity: 'S1', owner: 'architect', file: '', title: `browser-check: ${e}`, detail: `browser-check reported: ${e}`, evidence: `node scripts/qa/browser-check.mjs ${relPath(SITE)} --out work/${DATE}/qa/recheck-${k}`, suggestedFix: 'Fix the root cause named in the message.' }, false));

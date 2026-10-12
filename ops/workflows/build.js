@@ -14,7 +14,7 @@ export const meta = {
 // reads: work/<date>/spec/*. writes: the site in work/<date>/build/site/ (each owner only their own files; no project.json, no
 //   thumb.png), work/<date>/build/notes/, the first-load checks in work/<date>/qa/first*/, a draft of the metadata in
 //   work/<date>/package/project.json (the packaging step reads and corrects it), and work/<date>/build/DONE.json last of all.
-// returns: {ok, phase:'build', siteDir, files, ownLoc, spend, minOwnLoc, owners{owner: fileCount}, missing[], integrationOk,
+// returns: {ok, phase:'build', siteDir, files, ownLoc, spend, minOwnLoc, owners{owner: fileCount}, missing[], conflicts[{file, by, owner}], integrationOk,
 //   browserChecked, browserErrors[], degraded, reason, skipped[], notes}
 // A missing or mistyped argument returns {ok:false, error:'bad-args', missing[], problems[]} at once, before any agent runs.
 // Also common and optional: maxAgents (integer >= 1, the harness's concurrent-agent slots = min(16, CPUs - 2), capped at 8; fewer than 6 makes spec and
@@ -658,6 +658,12 @@ const IDEA_FILE = `${REPO}/state/ideas/${DATE}.json`;
 const IDEA_ID = str(A.ideaId, '(the chosenId in the ideas file)');
 const BUILD_COMPACT = COMPACT || NARROW;
 const MIN_LOC = BUILD_COMPACT ? num(CFG.limits && CFG.limits.minOwnLinesOfCodeTier2, 350) : num(CFG.limits && CFG.limits.minOwnLinesOfCodeTier1, 700);
+// A path a builder reported, relative to the site directory (builders may answer with absolute or ./ paths).
+const normSitePath = (f) => {
+  let p = String(f || '').trim();
+  if (p.startsWith(`${SITE}/`)) p = p.slice(SITE.length + 1);
+  return p.replace(/^.*\/work\/[^/]+\/build\/site\//, '').replace(/^(\.\/)+/, '').replace(/^\/+/, '');
+};
 const COST = { floor: 200000, depthPass: 250000, secondIntegration: 150000 };
 const MINUTES = { depthPass: 20, secondIntegration: 10 };
 
@@ -747,10 +753,10 @@ function integratePrompt(ownFiles, summaries, issues, pass) {
 const pulse = startPulse('build', 300);
 let finalReport;
 try {
-  await tick('start');
-  await integritySnapshot('build');
   phase('Roster');
-  let roster = await loadRoster('Roster');
+  // The clock, the integrity baseline and the roster are independent clerks: together they cost one round trip on 2 agent slots instead
+  // of three in a row (2026-10-11: 11 agent calls, every clerk serial). The baseline still exists before any builder starts.
+  let [, , roster] = await Promise.all([tick('start'), integritySnapshot('build'), loadRoster('Roster')]);
   if (!roster.ok || !roster.files.length) {
     log(`no usable ownership map: ${roster.error || 'empty'}`);
     finalReport = { ok: false, degraded: true, reason: HALT.reason || 'no-ownership', notes: `could not read ${SPEC_DIR}/OWNERSHIP.json: ${roster.error || 'empty map'}` };
@@ -767,12 +773,24 @@ try {
     const summaries = [];
     const reports = await Promise.all(builders.map((b) =>
       specialist(b.owner, builderPrompt(b.owner, b.files, 'build', ''), { label: `build ${b.owner}`, phase: 'Build', schema: BUILDER_SCHEMA })));
+    // Ownership conflicts: builders write at the same moment, so a file written by a builder that does not own it may have overwritten
+    // (or been overwritten by) its owner's version; the last writer wins silently. The builder's own report is the only witness.
+    const ownerOfPath = new Map(roster.files.map((f) => [f.path, f.owner]));
+    const conflicts = [];
     builders.forEach((b, i) => {
       const r = reports[i];
       if (!r) { log(`builder ${b.owner} returned nothing (files may still exist)`); summaries.push(`${b.owner}: builder failed or returned nothing; check its files carefully`); return; }
+      for (const f of arr(r.files)) {
+        const p = normSitePath(isObj(f) ? f.path : f);
+        if (p && !b.files.includes(p)) conflicts.push({ file: p, by: b.owner, owner: ownerOfPath.get(p) || null });
+      }
       const bits = [...arr(r.assumptions).map((x) => `assumed: ${clip(x, 160)}`), ...arr(r.deviations).map((x) => `deviation: ${clip(x, 160)}`), ...arr(r.concerns).map((x) => `concern: ${clip(x, 160)}`)];
       summaries.push(`${b.owner} (${num(r.ownLoc, 0)} lines${r.done === false ? ', NOT DONE' : ''}): ${bits.slice(0, 6).join(' | ') || 'no notes'}`);
     });
+    for (const c of conflicts) {
+      log(`ownership conflict: ${c.by} reports writing ${c.file}, ${c.owner ? `owned by ${c.owner}` : 'which nobody owns'}`);
+      summaries.push(`OWNERSHIP CONFLICT: ${c.by} wrote ${c.file}${c.owner ? `, which ${c.owner} owns: check that neither version overwrote the other and restore the owner's work` : ', which is not in OWNERSHIP.json: keep it only if the page needs it'}`);
+    }
 
     roster = await loadRoster('Build');
     const stillMissing = roster.ok ? roster.missing : [];
@@ -798,7 +816,9 @@ try {
     phase('Integrate');
     const ownFiles = arr(roster.owners.architect);
     let arch = await specialist('architect', integratePrompt(ownFiles, summaries, [], 1), { label: 'integrate', phase: 'Integrate', schema: INTEGRATE_SCHEMA });
-    let browser = await runBrowser('first-load check', `${WORK}/qa/first-verify`, '--no-monkey', 'Integrate');
+    // The verification check and the final roster only read the site: they run side by side (one clerk round trip saved on 2 slots).
+    let browser;
+    [browser, roster] = await Promise.all([runBrowser('first-load check', `${WORK}/qa/first-verify`, '--no-monkey', 'Integrate'), loadRoster('Integrate')]);
     let rounds = arch ? num(arch.rounds, 1) : 0;
     if (browser.noBrowser) log('no browser available: the first-load check is skipped, QA will repeat it when a browser exists');
     if (!browser.noBrowser && browser.errors.length) await tick('second integration');
@@ -806,9 +826,8 @@ try {
       log(`first-load check still reports ${browser.errors.length} error(s): second integration pass`);
       const arch2 = await specialist('architect', integratePrompt(ownFiles, summaries, browser.errors, 2), { label: 'integrate (pass 2)', phase: 'Integrate', schema: INTEGRATE_SCHEMA });
       if (arch2) { arch = arch2; rounds += num(arch2.rounds, 1); }
-      browser = await runBrowser('first-load check 2', `${WORK}/qa/first-verify`, '--no-monkey', 'Integrate');
+      [browser, roster] = await Promise.all([runBrowser('first-load check 2', `${WORK}/qa/first-verify`, '--no-monkey', 'Integrate'), loadRoster('Integrate')]);
     }
-    roster = await loadRoster('Integrate');
     const integrationOk = !browser.noBrowser && browser.ran && browser.errors.length === 0;
 
     phase('Finalize');
@@ -824,6 +843,7 @@ try {
       files: roster.files.length,
       missing: missingNow,
       ownLoc: roster.ownLoc,
+      conflicts,
       integration: {
         agentOk: arch ? arch.ok === true : false,
         rounds,
@@ -847,6 +867,7 @@ try {
       ownLoc: roster.ownLoc,
       minOwnLoc: MIN_LOC,
       missing: missingNow,
+      conflicts: conflicts.slice(0, 20),
       integrationOk,
       browserChecked: browser.ran && !browser.noBrowser,
       browserErrors: browser.errors.slice(0, 20),
