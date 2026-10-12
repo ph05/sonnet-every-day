@@ -255,7 +255,7 @@
       "files": [
         "ops/rubrics/research.md"
       ],
-      "sha": null,
+      "sha": "f199377cb4d13db9ef0ac05087fd4e0e594a095d",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the dossier fact object get an eventDate field apart from asOf so sports claims cannot confuse them?",
