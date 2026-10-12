@@ -1,0 +1,171 @@
+{
+  "ok": true,
+  "date": "2026-10-12",
+  "agents": [
+    {
+      "agent": "pulse",
+      "lens": {
+        "id": "arxiv-fresh",
+        "name": "Fresh From arXiv",
+        "kind": "current",
+        "brief": "New preprints land every morning, and some have a figure or idea that can be played with. Pick a paper whose core mechanism fits in a browser and rebuild the intuition as an interactive, without claiming results you did not reproduce. Cite the abstract, show the toy, mark what is simplified.",
+        "sourceHints": [
+          "arXiv new listings: cs.GT, cs.AI, cs.GR, physics.soc-ph, q-bio.PE, math.CO",
+          "r/MachineLearning and r/science weekly paper threads",
+          "Quanta Magazine and similar science journalism for context",
+          "Hacker News discussions of preprints"
+        ]
+      },
+      "provocation": [
+        "swirl",
+        "velvet",
+        "kiln"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lens": {
+        "id": "balatro-score-math",
+        "name": "Chips Times Mult",
+        "kind": "interest",
+        "brief": "Chips multiplied by mult is a tiny algebra that explodes: additive terms, multiplicative terms, retriggers, ordering effects, exponents. Make that math visible: an order-of-operations optimizer, a scoring-tree visualizer, a what-if explorer that finds the best joker order for a given hand.",
+        "sourceHints": [
+          "r/balatro build-guide and high-score threads",
+          "r/dataisbeautiful and r/mathpics for ways to show combinatorial growth",
+          "Wikipedia: Combinatorics, Permutation, Exponential growth",
+          "Hacker News posts on game balance and numbers-go-up design"
+        ]
+      },
+      "provocation": [
+        "palindrome",
+        "riff",
+        "granite"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lens": {
+        "id": "weird-web",
+        "name": "Weird Web",
+        "kind": "wildcard",
+        "brief": "The early-web spirit: strange sites that exist because someone had to make them. Build something form-breaking and art-adjacent, such as a page that reads you back, an interface that is also the content, or a cursor with a story. Not random for its own sake; it needs a rule you can feel.",
+        "sourceHints": [
+          "Are.na channels on weird web and net art",
+          "r/InternetIsBeautiful and r/web_design",
+          "Hacker News Show HN: strange websites",
+          "Wikipedia: Net.art, Esoteric programming language"
+        ]
+      },
+      "provocation": [
+        "doorbell",
+        "tollbooth",
+        "bonfire"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lens": {
+        "id": "word-play",
+        "name": "Pun Engine",
+        "kind": "humor",
+        "brief": "Language is a machine with loose parts. Build a toy that plays with them: anagram finders with taste, spoonerism makers, rhyme ladders, text rebranders that transform a paragraph into a different register. The wordplay needs real rules so the output keeps surprising.",
+        "sourceHints": [
+          "r/wordplay, r/words, r/etymology and r/linguistics",
+          "Wikipedia: Spoonerism, Anagram, Pangram, Oulipo",
+          "r/InternetIsBeautiful word toys",
+          "Public domain word lists and corpora"
+        ]
+      },
+      "provocation": [
+        "toaster",
+        "tadpole",
+        "meteor"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lens": {
+        "id": "music-instrument",
+        "name": "Instrument Maker",
+        "kind": "wildcard",
+        "brief": "WebAudio makes the browser a synthesizer. Build an instrument or a composition engine with a distinctive way of playing: a physical-model string you pluck by drawing, a tuning-system explorer, a drum machine that evolves, a generative score that never repeats.",
+        "sourceHints": [
+          "r/synthesizers, r/WeAreTheMusicMakers, r/musictheory",
+          "Wikipedia: Just intonation, Karplus-Strong string synthesis, Euclidean rhythm",
+          "Hacker News posts on WebAudio and procedural music",
+          "r/InternetIsBeautiful instruments"
+        ]
+      },
+      "provocation": [
+        "avalanche",
+        "zigzag",
+        "teleprinter"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lens": {
+        "id": "craft-shareable",
+        "name": "Shareable Seeds",
+        "kind": "craft",
+        "brief": "Design for the screenshot and the link: a seeded world, a daily challenge, a URL hash that reconstructs the exact state, a result card people want to send. The idea works alone but is better when passed around; make the share artifact beautiful and spoiler-safe.",
+        "sourceHints": [
+          "r/InternetIsBeautiful and r/WebGames shareable toys",
+          "Wikipedia: Procedural generation, Seed (random number generation)",
+          "Hacker News posts on daily-puzzle design",
+          "r/gamedev discussions on daily challenges"
+        ]
+      },
+      "provocation": [
+        "blind",
+        "cipher",
+        "mishap"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lens": {
+        "id": "hockey-now",
+        "name": "Tonight on the Ice",
+        "kind": "current",
+        "brief": "What is the NHL talking about right now? A playoff race, a scoring streak, a hot goalie, a rule dispute, a rivalry, a rookie. Turn the live storyline into something playable or explorable, with a bundled dated snapshot of the numbers so it still works offline and every fact carries its date.",
+        "sourceHints": [
+          "NHL.com public scores, standings and stats pages",
+          "r/hockey daily and post-game threads, top of the week",
+          "Hockey-Reference.com current season pages",
+          "Wikipedia: current NHL season article"
+        ]
+      },
+      "provocation": [
+        "compass",
+        "mycelium",
+        "discard"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lens": {
+        "id": "confident-machine",
+        "name": "The Confidently Wrong Machine",
+        "kind": "humor",
+        "brief": "A contraption that explains, predicts or classifies with total conviction and delightfully bad reasoning, but with a consistent internal logic you can learn. Parody the tone of automated certainty, not any real product. The player's goal is to understand how it thinks.",
+        "sourceHints": [
+          "r/ProgrammerHumor and r/ChatGPT-style absurd-output threads (the pattern, not specific outputs)",
+          "Wikipedia: Pareidolia, Apophenia, Expert system",
+          "r/InternetIsBeautiful toy oracles",
+          "arXiv humor-and-failure case papers"
+        ]
+      },
+      "provocation": [
+        "lighthouse",
+        "nomad",
+        "jubilee"
+      ]
+    }
+  ],
+  "owedKinds": [
+    "current",
+    "humor"
+  ],
+  "relaxedDays": 0
+}

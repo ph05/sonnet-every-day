@@ -1,0 +1,2 @@
+2026-10-10 | Jokers In Phase | modding-games | toy | balatro,joker-mod,mod-concept,scoring-engine,synchronization,oscillators,deckbuilder,sandbox
+2026-10-11 | Orbital Knitwear | science-sim | simulator | orbits,ground-track,satellites,knitting,map-projections,sun-synchronous,coverage,polar-view,earth-observation,j2-precession

@@ -2,21 +2,40 @@
   "schema": 1,
   "date": "2026-10-12",
   "status": "in_progress",
-  "targetTier": 1,
+  "targetTier": 2,
   "tier": null,
-  "phase": "preflight",
-  "phasesDone": [],
-  "attempts": {},
+  "phase": "ideate",
+  "phasesDone": [
+    {
+      "phase": "preflight",
+      "at": "2026-10-12T07:57:43.281Z",
+      "by": "primary",
+      "note": "preflight ok"
+    }
+  ],
+  "attempts": {
+    "preflight": 1,
+    "ideate": 1
+  },
   "phaseStartedAt": {
-    "preflight": "2026-10-12T07:56:39.207Z"
+    "preflight": "2026-10-12T07:56:56.306Z",
+    "ideate": "2026-10-12T07:57:43.824Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T07:56:39.207Z"
+    "heartbeatAt": "2026-10-12T07:57:57.016Z"
   },
-  "directives": [],
+  "directives": [
+    {
+      "kind": "scope-cut",
+      "tier": 2,
+      "by": "primary",
+      "at": "2026-10-12T07:57:22.278Z",
+      "ack": true
+    }
+  ],
   "chosen": null,
   "throttle": "balanced",
   "spend": {
@@ -33,6 +52,62 @@
       "by": "primary",
       "kind": "note",
       "msg": "run created by primary (cse_011MmHKF9EADvVeN8KnZuFsm) targeting tier 1"
+    },
+    {
+      "at": "2026-10-12T07:56:58.337Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "agent slots: 2"
+    },
+    {
+      "at": "2026-10-12T07:57:06.306Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "kaizen suspects: 80ebbdb 493f5f1 77d6aed 8fd8a73 (day 2 not clean; carried from handoff)"
+    },
+    {
+      "at": "2026-10-12T07:57:22.278Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "scope-cut directive (tier 2) issued by primary"
+    },
+    {
+      "at": "2026-10-12T07:57:23.616Z",
+      "by": "primary",
+      "kind": "degrade",
+      "code": "planned-compact",
+      "msg": "planner: tier 1 never fits on 2 agent slots; whole day planned compact tier 2"
+    },
+    {
+      "at": "2026-10-12T07:57:42.534Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "premortem: Ideate overruns again on 2 slots with the untested batched verify; mitigation: scouts write one candidate first and a second only if time remains | Four recent kaizens touched ideate.js and selfcheck and never met a full ideate run; mitigation: run selfcheck and playbook tests before ideate and log exit codes | Layout S2 defects shipped two days because revise was skipped; mitigation: builder checks output and first control share a 390x844 viewport before qa"
+    },
+    {
+      "at": "2026-10-12T07:57:44.361Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: ideate attempt 1, due 2026-10-12T09:57:44.361Z (120 min: budget 110 + 10 margin)"
     }
-  ]
+  ],
+  "watch": {
+    "phase": "ideate",
+    "attempt": 1,
+    "armedAt": "2026-10-12T07:57:44.361Z",
+    "dueAt": "2026-10-12T09:57:44.361Z",
+    "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
+    "triggerId": "trig_01Gn1j4xZbDVxzNEs9DD9DJe",
+    "workflowTask": null,
+    "role": "primary",
+    "budgetMinutes": 110,
+    "delayMinutes": 120,
+    "clamped": null,
+    "arms": {
+      "ideate": 1
+    },
+    "attemptsAtArm": 1,
+    "boundAt": "2026-10-12T07:57:57.016Z"
+  }
 }

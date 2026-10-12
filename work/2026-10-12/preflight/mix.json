@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "window": {
+    "days": 14,
+    "from": "2026-09-28",
+    "to": "2026-10-11",
+    "builds": 2
+  },
+  "categoryCounts": {
+    "modding-games": 1,
+    "science-sim": 1
+  },
+  "slotCounts": {
+    "interest": 1,
+    "currentEvents": 0,
+    "humor": 0,
+    "wildcard": 1
+  },
+  "owed": [
+    "currentEvents",
+    "humor"
+  ],
+  "owedDetail": [
+    {
+      "slot": "currentEvents",
+      "lastDate": null,
+      "daysSince": null
+    },
+    {
+      "slot": "humor",
+      "lastDate": null,
+      "daysSince": null
+    }
+  ],
+  "avoidCategories": [
+    "science-sim"
+  ],
+  "avoidMechanics": [
+    "simulator",
+    "toy"
+  ],
+  "politicsAllowed": true,
+  "summary": "In the last 14 days we shipped 2 builds: modding-games x1, science-sim x1. Do not propose these categories today (cooldown or already used twice this week): science-sim. Avoid these mechanics, used within the last 7 days: simulator, toy. Owed this week, so at least one idea each: currentEvents (skew pop/fun/hockey; politics is rare); humor. A political idea is permitted but rare: playful and satirical only, never partisan."
+}
