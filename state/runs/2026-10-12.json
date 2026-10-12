@@ -15,17 +15,17 @@
   ],
   "attempts": {
     "preflight": 1,
-    "ideate": 1
+    "ideate": 2
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
-    "ideate": "2026-10-12T07:57:43.824Z"
+    "ideate": "2026-10-12T07:59:32.633Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T07:57:57.016Z"
+    "heartbeatAt": "2026-10-12T07:59:43.612Z"
   },
   "directives": [
     {
@@ -90,24 +90,37 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: ideate attempt 1, due 2026-10-12T09:57:44.361Z (120 min: budget 110 + 10 margin)"
+    },
+    {
+      "at": "2026-10-12T07:59:31.906Z",
+      "by": "primary",
+      "kind": "error",
+      "msg": "ideate returned budget-exhausted with 0 spend: budget.spent() is the persistent session's cumulative output (3.93M by get_session), not this turn's, so capTokens 2.4M was already below it; retrying with capTokens = session output now + 2.4M"
+    },
+    {
+      "at": "2026-10-12T07:59:33.215Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: ideate attempt 2, due 2026-10-12T09:59:33.215Z (120 min: budget 110 + 10 margin)"
     }
   ],
   "watch": {
     "phase": "ideate",
-    "attempt": 1,
-    "armedAt": "2026-10-12T07:57:44.361Z",
-    "dueAt": "2026-10-12T09:57:44.361Z",
+    "attempt": 2,
+    "armedAt": "2026-10-12T07:59:33.215Z",
+    "dueAt": "2026-10-12T09:59:33.215Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01Gn1j4xZbDVxzNEs9DD9DJe",
+    "triggerId": "trig_01PBu1sG3QXDdBaWQPt4BsVx",
     "workflowTask": null,
     "role": "primary",
     "budgetMinutes": 110,
     "delayMinutes": 120,
     "clamped": null,
     "arms": {
-      "ideate": 1
+      "ideate": 2
     },
-    "attemptsAtArm": 1,
-    "boundAt": "2026-10-12T07:57:57.016Z"
+    "attemptsAtArm": 2,
+    "boundAt": "2026-10-12T07:59:43.612Z"
   }
 }
