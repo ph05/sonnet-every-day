@@ -184,7 +184,9 @@ describe('phasewatch: pure pieces', () => {
 
   test('computeDue: kaizen is bounded by the 12:00 cutoff, a manual run and an over day by nothing, and nothing waits longer than 6 hours', () => {
     const kz = { ...due, phase: 'kaizen', budgetMinutes: 120 };
-    assert.deepEqual(pw.computeDue({ ...kz, nowMs: at('08:40') }), { dueMs: at('10:50'), delayMinutes: 130, clamped: null });
+    // the kaizen margin is 10 + 15: the round is never extended, and its last member may start 15 minutes before the budget ends
+    assert.deepEqual(pw.computeDue({ ...kz, nowMs: at('08:40') }), { dueMs: at('11:05'), delayMinutes: 145, clamped: null });
+    assert.deepEqual([pw.watchMarginMinutes('kaizen'), pw.watchMarginMinutes('build'), pw.watchMarginMinutes('ideate')], [25, 10, 10]);
     assert.deepEqual(pw.computeDue({ ...kz, nowMs: at('10:30') }), { dueMs: at('11:55'), delayMinutes: 85, clamped: 'kaizen-cutoff' });
     assert.equal(pw.computeDue({ ...due, nowMs: at('09:30'), manual: true }).delayMinutes, 100);
     assert.equal(pw.computeDue({ ...due, nowMs: at('09:30'), manual: true }).clamped, null);
@@ -515,7 +517,7 @@ describe('watch arm', () => {
   test('kaizen (after the publish) is bounded by the 12:00 cutoff, a day that is over by nothing; at most 6 hours', async () => {
     const box = await kaizenRun();
     const early = good(await arm(box, 'kaizen', '08:40'));
-    assert.deepEqual([early.delayMinutes, early.dueAt, early.clamped], [130, iso('10:50'), null]);
+    assert.deepEqual([early.delayMinutes, early.dueAt, early.clamped, early.marginMinutes], [145, iso('11:05'), null, 25]);
     const late = good(await arm(box, 'kaizen', '10:30'));
     assert.deepEqual([late.delayMinutes, late.dueAt, late.clamped], [85, iso('11:55'), 'kaizen-cutoff']);
     const long = await inPhase('ideate');
@@ -570,24 +572,26 @@ describe('watch arm', () => {
     assert.equal(good(await arm(box, 'ideate', '06:01')).replaced, null);
   });
 
-  test('the heartbeat loop of the launch: osHeartbeat is true only when the loop reaches the watch, and the loop is printed as a command to run in the background', async () => {
+  test('the heartbeat loop of the launch: osHeartbeat is true only when the loop keeps the lease fresh past the watch, and the loop is printed as a command to run in the background', async () => {
     const ideate = await inPhase('ideate');
     const a = good(await arm(ideate, 'ideate', '04:00')); // 90 + 10 minutes
-    assert.deepEqual(pick(a.heartbeatLoop, ['variant', 'background', 'timeoutMs', 'iterations', 'coversMinutes', 'coversWatch']), { variant: 'heartbeat-branch', background: true, timeoutMs: 6_600_000, iterations: 24, coversMinutes: 108, coversWatch: true });
+    // 25 beats of 270 s (113 minutes); the last pushed beat is at most 14 minutes older, and the lease looks stale 35 minutes after it
+    assert.deepEqual(pick(a.heartbeatLoop, ['variant', 'background', 'timeoutMs', 'iterations', 'coversMinutes', 'freshUntilMinutes', 'coversWatch']), { variant: 'heartbeat-branch', background: true, timeoutMs: 7_200_000, iterations: 25, coversMinutes: 113, freshUntilMinutes: 134, coversWatch: true });
     assert.equal(a.osHeartbeat, true);
-    assert.equal(a.heartbeatLoop.command, `for i in $(seq 1 24); do node scripts/heartbeat.mjs --role primary --session P1 --phase ideate --date ${DATE} --wait 270 >/dev/null 2>&1; done`);
+    assert.equal(a.heartbeatLoop.command, `for i in $(seq 1 25); do node scripts/heartbeat.mjs --role primary --session P1 --phase ideate --date ${DATE} --wait 270 >/dev/null 2>&1; done`);
     const start = a.then.find((x) => x.startsWith('start the heartbeat loop in the background now'));
-    assert.match(start, /\(Bash run_in_background, timeout 6600000\): for i in .* then pass osHeartbeat:true to the Workflow; never stop the loop at launch$/);
+    assert.match(start, /\(Bash run_in_background, timeout 7200000\): for i in .* then pass osHeartbeat:true to the Workflow; never stop the loop at launch$/);
     // a short watch gets a short loop (25 minutes: ceil(25 * 60 / 270) + 2 beats of 4.5 minutes)
     const pre = await inPhase('preflight');
     const p = good(await arm(pre, 'preflight', '04:00'));
     assert.deepEqual([p.heartbeatLoop.iterations, p.heartbeatLoop.coversMinutes, p.osHeartbeat], [8, 36, true]);
-    // a long one outlives the loop (the Bash background timeout is about 110 minutes): osHeartbeat stays out, so the Workflow keeps its own pulse
+    // a long one outlives the lease the loop can keep fresh (the Bash background timeout is 2 hours: 26 beats, 117 minutes; the lease
+    // looks stale from minute 138): osHeartbeat stays out, so the Workflow keeps its own pulse
     const build = await inPhase('build');
     const b = good(await arm(build, 'build', '04:00')); // 150 + 10
-    assert.deepEqual([b.heartbeatLoop.coversWatch, b.osHeartbeat, b.heartbeatLoop.iterations, b.heartbeatLoop.coversMinutes], [false, false, 24, 108]);
+    assert.deepEqual([b.heartbeatLoop.coversWatch, b.osHeartbeat, b.heartbeatLoop.iterations, b.heartbeatLoop.coversMinutes, b.heartbeatLoop.freshUntilMinutes], [false, false, 26, 117, 138]);
     const would = b.then.find((x) => x.startsWith('the heartbeat loop would end before the watch'));
-    assert.match(would, /\(108 of 160 min\): you may still start it \(for i in .*\) but leave osHeartbeat out, so the Workflow keeps its own pulse$/);
+    assert.match(would, /\(117 of 160 min; the lease would look stale from minute 138\): you may still start it \(for i in .*\) but leave osHeartbeat out, so the Workflow keeps its own pulse$/);
     assert.ok(!b.then.some((x) => x.startsWith('start the heartbeat loop')));
   });
 
@@ -598,8 +602,8 @@ describe('watch arm', () => {
     process.env.HOME = home;
     try {
       const ideate = await inPhase('ideate');
-      const a = good(await arm(ideate, 'ideate', '04:00')); // 100 minutes: 5 loops of 20 minutes
-      assert.deepEqual(pick(a.heartbeatLoop, ['variant', 'iterations', 'coversMinutes', 'coversWatch']), { variant: 'work-branch', iterations: 5, coversMinutes: 100, coversWatch: true });
+      const a = good(await arm(ideate, 'ideate', '04:00')); // 100 minutes: 5 loops of 20 minutes, each beat pushed
+      assert.deepEqual(pick(a.heartbeatLoop, ['variant', 'iterations', 'coversMinutes', 'freshUntilMinutes', 'coversWatch']), { variant: 'work-branch', iterations: 5, coversMinutes: 100, freshUntilMinutes: 135, coversWatch: true });
       assert.equal(a.heartbeatLoop.command, `for i in $(seq 1 5); do node -e "setTimeout(()=>{},1200000)"; node scripts/state.mjs beat --role primary --session P1 --phase ideate --date ${DATE}; node scripts/state.mjs sync -m "sed(${DATE}): liveness" --paths state/runs/${DATE}.json; done`);
       const build = await inPhase('build');
       const b = good(await arm(build, 'build', '04:00'));
@@ -905,7 +909,7 @@ describe('watch check: overdue', () => {
 
     const kz = await kaizenRun();
     good(await arm(kz, 'kaizen', '08:40'));
-    const k = good(await chk(kz, 'kaizen', '10:55')); // due 10:50
+    const k = good(await chk(kz, 'kaizen', '11:10')); // due 11:05 (120 + 25)
     assert.deepEqual([k.next, k.hint], ['retry', 'compact']);
     assert.ok(!k.steps.some((s) => s.includes('scope-cut')), 'a published day takes no directive');
     // The retry of the kaizen round keeps the tree clean (kaizen.mjs refuses a dirty one): the watch-fired event is pushed BEFORE the check
@@ -921,7 +925,7 @@ describe('watch check: overdue', () => {
     assert.match(text, /\$HOME\/\.sed-wf-2026-10-09-kaizen/);
     assert.match(text, /\(no task bind\)/);
     // the commands run (the sync needs a git repo: the sandbox has none, so it is left out here and tested with a remote below)
-    const out = await runSteps(kz, k.steps.filter((s) => !s.includes('state.mjs sync')), '10:56');
+    const out = await runSteps(kz, k.steps.filter((s) => !s.includes('state.mjs sync')), '11:11');
     assert.equal(out[0].attempt, 2); // phase-start --phase kaizen is allowed on a published day with its kaizen pending
     assert.deepEqual([out.at(-1).attempt, out.at(-1).phase], [2, 'kaizen']); // and the retry has its own watch
   });
@@ -1037,10 +1041,10 @@ describe('watch check: overdue', () => {
   test('kaizen: a second stall closes the round on purpose; the page stays published', async () => {
     const box = await kaizenRun();
     good(await ST(box, ['phase-start', '--phase', 'kaizen', '--session', 'P1'], '08:36')); // attempt 2
-    good(await arm(box, 'kaizen', '08:37'));
-    const j = good(await chk(box, 'kaizen', '10:50'));
+    good(await arm(box, 'kaizen', '08:37')); // due 11:02
+    const j = good(await chk(box, 'kaizen', '11:05'));
     assert.deepEqual([j.next, j.degrade.how, j.degrade.skip], ['degrade', 'skip', ['kaizen']]);
-    await runSteps(box, j.steps, '10:51');
+    await runSteps(box, j.steps, '11:06');
     const run = box.run();
     assert.deepEqual([run.status, run.phase, rs.doneNames(run).includes('kaizen')], ['published', 'done', true]);
     assert.equal(rs.kaizenPending(run), false);
@@ -1128,7 +1132,7 @@ describe('watch check: overdue', () => {
 describe('watch check: a Workflow that is still writing files is given more time, not stopped', () => {
   // Day 1 of the real project: build ran 85 minutes against a budget of 80, qa 38 against 30, kaizen 82 against 75 -- all healthy, all slow.
   // A timer measures elapsed time; the files say whether the Workflow still works.
-  test('a file that changed within 20 minutes of the due time moves the watch out by 15 minutes, twice at most; the third time the Workflow is stopped', async () => {
+  test('a file that changed within the phase\'s window (build: 35 minutes) moves the watch out by 15 minutes, twice at most; the third time the Workflow is stopped', async () => {
     const { box, due } = await armed('build'); // 150 + 10 minutes from 04:00: due 06:40
     assert.equal(due, iso('06:40'));
     touch(box, `work/${DATE}/build/site/app.js`, '06:35');
@@ -1136,7 +1140,7 @@ describe('watch check: a Workflow that is still writing files is given more time
     assert.deepEqual(pick(j, ['verdict', 'action', 'next', 'hint', 'attempt', 'overdueMinutes', 'repeat', 'timerFired', 'triggerId', 'workflowTask', 'degrade', 'dueAt']),
       { verdict: 'overdue', action: 'extend', next: 'extend', hint: null, attempt: 1, overdueMinutes: 1, repeat: false, timerFired: true, triggerId: 'trig_1', workflowTask: 'wf-1', degrade: null, dueAt: iso('06:56') });
     assert.deepEqual(j.progress, { newestAt: iso('06:35'), minutesAgo: 6 });
-    assert.deepEqual(j.extension, { n: 1, max: 2, minutes: 15, dueAt: iso('06:56'), previousDueAt: due, clamped: null });
+    assert.deepEqual(j.extension, { n: 1, max: 2, minutes: 15, dueAt: iso('06:56'), previousDueAt: due, clamped: null, windowMinutes: 35 });
     assert.deepEqual(j.sendLater, pw.sendLaterFor({ date: DATE, phase: 'build', attempt: 1, session: 'P1', dueAt: iso('06:56'), root: box.root }));
     assert.match(j.reason, /build attempt 1 fell due .* \(1 min ago\) but a file under work\/2026-10-09 changed 6 min ago: the Workflow is still working, so the watch moves out to .* \(extension 1 of 2\)/);
     assert.match(j.steps[0], /^Do NOT stop build: its files are still changing \(newest change 6 min ago\)\. The timer that woke you has fired and is spent: do NOT delete it/);
@@ -1172,14 +1176,16 @@ describe('watch check: a Workflow that is still writing files is given more time
     assert.equal(watchEvents(box.run(), 'watch-fired').length, 1);
   });
 
-  test('exactly 20 minutes of silence still counts as working, 21 does not; files stamped by a clock that is ahead are not progress', async () => {
+  test('exactly the window of silence still counts as working (20 minutes, build 35), a minute more does not; files stamped by a clock that is ahead are not progress', async () => {
     const verdict = async (stamp_, now = '06:41', phase = 'build', opts = {}) => {
       const { box } = await armed(phase, opts);
       if (stamp_) touch(box, `work/${DATE}/${phase}/x.js`, stamp_);
       return good(await chk(box, phase, now));
     };
-    assert.equal((await verdict('06:21')).action, 'extend');
-    assert.equal((await verdict('06:20')).action, 'retry');
+    assert.equal((await verdict('06:06')).action, 'extend', 'build: 35 minutes of silence');
+    assert.equal((await verdict('06:05')).action, 'retry', 'build: 36 minutes');
+    assert.equal((await verdict('04:36', '04:56', 'select')).action, 'extend', 'select (45 + 10, due 04:55): 20 minutes of silence');
+    assert.equal((await verdict('04:35', '04:56', 'select')).action, 'retry', 'select: 21 minutes');
     assert.equal((await verdict(null)).action, 'retry', 'no file at all');
     // a file time a few minutes ahead of the clock is a slightly skewed clock: it counts as "just now"; far ahead (or the real clock of a pinned run) is ignored
     const near = await verdict('06:44');
@@ -1217,9 +1223,9 @@ describe('watch check: a Workflow that is still writing files is given more time
 
   test('never for the kaizen (its tree must stay clean), never for a Workflow that finished, never again once the decision is made', async () => {
     const kz = await kaizenRun();
-    good(await arm(kz, 'kaizen', '08:40')); // 120 + 10: due 10:50
-    touch(kz, `work/${DATE}/kaizen/notes.md`, '10:45');
-    const k = good(await chk(kz, 'kaizen', '10:51'));
+    good(await arm(kz, 'kaizen', '08:40')); // 120 + 25: due 11:05
+    touch(kz, `work/${DATE}/kaizen/notes.md`, '11:00');
+    const k = good(await chk(kz, 'kaizen', '11:06'));
     assert.deepEqual([k.action, k.progress.minutesAgo], ['retry', 6]);
     assert.equal(watchEvents(kz.run(), 'watch-extended').length, 0);
 
@@ -1236,12 +1242,22 @@ describe('watch check: a Workflow that is still writing files is given more time
     assert.equal(watchEvents(fired.box.run(), 'watch-extended').length, 0);
   });
 
-  test('the new due time is bound like a fresh arm: never later than the hard stop minus 5 minutes, never less than 5 minutes away', async () => {
-    const { box, due } = await armed('build', { at: '08:00', extra: ['--minutes', '130'] });
-    assert.equal(due, iso('10:20'));
-    touch(box, `work/${DATE}/build/site/app.js`, '10:15');
-    const j = good(await chk(box, 'build', '10:21')); // 15 minutes would be 10:36; the hard stop allows 10:25, which is under 5 minutes away
-    assert.deepEqual([j.extension.dueAt, j.extension.minutes, j.extension.clamped], [iso('10:26'), 5, 'min']);
+  test('the new due time is bound like a fresh arm: never later than the hard stop minus 5 minutes; with no room left there is no extension (and no retry)', async () => {
+    const { box, due } = await armed('build', { at: '08:00', extra: ['--minutes', '120'] });
+    assert.equal(due, iso('10:10'));
+    touch(box, `work/${DATE}/build/site/app.js`, '10:05');
+    const j = good(await chk(box, 'build', '10:11')); // 15 minutes would be 10:26; the hard stop allows 10:25
+    assert.deepEqual([j.action, j.extension.dueAt, j.extension.minutes, j.extension.clamped], ['extend', iso('10:25'), 14, 'hard-stop']);
+    good(await W(box, 'bind', ['--phase', 'build', '--session', 'P1', '--attempt', '1', '--trigger-id', 'trig_2'], '10:12'));
+    // at 10:25 the bound leaves nothing: an extension would end past it ('min' 5 minutes: 10:30, the hard stop itself). The phase is
+    // resolved now, and with no room for a retry either, by the two-failures table (the build files stay for the closer to salvage)
+    touch(box, `work/${DATE}/build/site/style.css`, '10:24');
+    const k = good(await chk(box, 'build', '10:25'));
+    assert.deepEqual([k.verdict, k.action, k.tooLate, k.attemptsLeft, k.degrade.toTier, k.extension], ['overdue', 'degrade', true, 1, 3, undefined]);
+    assert.match(k.reason, /0 min are left before the hard stop 10:30 \(minus 5\), a retry needs 30: no retry, the two-failures table applies$/);
+    assert.ok(!k.steps.some((x) => /rm -rf|phase-start/.test(x)), 'nothing is wiped and nothing is relaunched');
+    assert.ok(k.steps.some((x) => x.includes('event --kind degrade --msg "build stalled 0 min before the hard stop 10:30 (phase watch): tier 3"')));
+    assert.equal(watchEvents(box.run(), 'watch-extended').length, 1);
     // a manual run is bound by nothing
     const manual = sandbox(CFG);
     good(await ST(manual, ['begin', '--role', 'manual', '--session', 'P1'], '03:55'));
@@ -1261,8 +1277,14 @@ describe('watch check: a Workflow that is still writing files is given more time
     for (const extensions of ['x', -1, 1.5, null, NaN, undefined]) assert.equal(plan({ watch: watch({ extensions }) }).n, 1, String(extensions));
     assert.equal(plan({ watch: watch({ extensions: 1 }) }).n, 2);
     for (const extensions of [2, 3, 99]) assert.equal(plan({ watch: watch({ extensions }) }), null, String(extensions));
-    for (const minutesAgo of [null, undefined, '5', NaN, 20.1, 21, 1e9]) assert.equal(plan({ facts: facts(minutesAgo) }), null, String(minutesAgo));
-    for (const minutesAgo of [0, 0.1, 20]) assert.ok(plan({ facts: facts(minutesAgo) }), String(minutesAgo));
+    for (const minutesAgo of [null, undefined, '5', NaN, 35.1, 36, 1e9]) assert.equal(plan({ facts: facts(minutesAgo) }), null, String(minutesAgo));
+    for (const minutesAgo of [0, 0.1, 20, 35]) assert.ok(plan({ facts: facts(minutesAgo) }), String(minutesAgo));
+    assert.equal(plan({ facts: facts(6) }).windowMinutes, 35);
+    // the window follows the phase: 20 minutes by default, longer where one agent call writes a big file in one go
+    assert.deepEqual(Object.fromEntries(['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package'].map((p) => [p, pw.progressFreshMinutes(p)])),
+      { preflight: 20, ideate: 30, select: 20, spec: 30, build: 35, qa: 25, revise: 30, package: 20 });
+    assert.equal(plan({ watch: watch({ phase: 'select', budgetMinutes: 45 }), facts: facts(20.1) }), null);
+    assert.ok(plan({ watch: watch({ phase: 'select', budgetMinutes: 45 }), facts: facts(20) }));
     assert.equal(plan({ facts: { doneMarker: false } }), null, 'no progress field at all');
     assert.equal(plan({ facts: facts(6, { doneMarker: true }) }), null);
     assert.equal(plan({ watch: watch({ firedAt: iso('06:41') }) }), null);
@@ -1578,8 +1600,10 @@ describe('watch disarm', () => {
   test('marks the watch disarmed and prints the trigger to delete; doing it again is harmless', async () => {
     const { box } = await armed();
     const j = good(await W(box, 'disarm', ['--phase', 'ideate', '--session', 'P1'], '04:20'));
-    assert.deepEqual(keys(j), ['attempt', 'date', 'deleteTrigger', 'disarmed', 'disarmedAt', 'ok', 'phase', 'session', 'timerFired', 'triggerId', 'workflowTask']);
+    assert.deepEqual(keys(j), ['attempt', 'date', 'deleteTrigger', 'disarmed', 'disarmedAt', 'ifDeleteDenied', 'ok', 'phase', 'session', 'timerFired', 'triggerId', 'workflowTask']);
     assert.deepEqual(pick(j, ['disarmed', 'triggerId', 'workflowTask', 'deleteTrigger', 'disarmedAt', 'timerFired']), { disarmed: true, triggerId: 'trig_1', workflowTask: 'wf-1', deleteTrigger: { trigger_id: 'trig_1' }, disarmedAt: iso('04:20'), timerFired: false });
+    // the permission classifier may refuse the delete (2026-10-11): the fallback of PLAYBOOK 7.1a step 4 comes with it
+    assert.equal(j.ifDeleteDenied, 'update_trigger({ trigger_id: "trig_1", enabled: false }); denied too: leave it, it fires into a stale `watch check` (PLAYBOOK 7.1a step 4, FM-120)');
     assert.equal(box.run().watch.disarmedAt, iso('04:20'));
     assert.equal(box.run().lease.heartbeatAt, iso('04:20'));
     const before = bytes(box);
@@ -1907,12 +1931,12 @@ describe('begin and status: an armed watch overdue by more than 15 minutes makes
 
   test('the kaizen phase counts too: a kaizen watch more than 15 minutes late frees the round for resume-kaizen', async () => {
     const box = await kaizenRun();
-    good(await arm(box, 'kaizen', '08:40', ['--minutes', '20'])); // due 09:10
-    good(await ST(box, ['beat', '--role', 'primary', '--session', 'P1', '--phase', 'kaizen'], '09:20'));
-    const running = good(await begin(box, 'wdA', 'A1', '09:25')); // 15 minutes late: the owner is still running it
+    good(await arm(box, 'kaizen', '08:40', ['--minutes', '20'])); // due 09:25 (20 + 25)
+    good(await ST(box, ['beat', '--role', 'primary', '--session', 'P1', '--phase', 'kaizen'], '09:35'));
+    const running = good(await begin(box, 'wdA', 'A1', '09:40')); // 15 minutes late: the owner is still running it
     assert.equal(running.action, 'exit-published');
     assert.match(running.reason, /its kaizen is running/);
-    const freed = good(await begin(box, 'wdA', 'A1', '09:26')); // 16 minutes late
+    const freed = good(await begin(box, 'wdA', 'A1', '09:41')); // 16 minutes late
     assert.equal(freed.action, 'resume-kaizen');
     assert.match(freed.reason, /phase watch for kaizen is 16 min overdue/);
   });
@@ -2259,5 +2283,235 @@ describe('with a real remote', () => {
     const j = good(fetching(b, ['begin', '--role', 'wdB', '--session', 'B1'], '05:57')); // 16 minutes late, heartbeat 7 minutes old
     assert.equal(j.action, 'takeover');
     assert.match(j.reason, /phase watch for build is 16 min overdue/);
+  });
+});
+
+// ---------------------------------------------------------------------------------------
+// narrow machines (2 agent slots) and the 2026-10-11 run
+// ---------------------------------------------------------------------------------------
+
+describe('narrow machines: the planner\'s budgets (ideate 110, build 88), silent agents, the hard stop and the 2026-10-11 run', () => {
+  const at = (t) => Date.parse(stamp(t));
+  // the real config's kaizen budget (85) on top of the test budgets
+  const REAL_KAIZEN = { ...CFG, phaseBudgetMinutes: { ...BUDGETS, kaizen: 85 } };
+  /** pw.checkWatch in-process against the sandbox (for the displacedBy seam). */
+  const direct = (box, opts) => {
+    const prev = process.env.SED_ROOT;
+    process.env.SED_ROOT = box.root;
+    try {
+      return pw.checkWatch({ date: DATE, session: 'P1', config: CFG, ...opts });
+    } finally {
+      if (prev === undefined) delete process.env.SED_ROOT;
+      else process.env.SED_ROOT = prev;
+    }
+  };
+
+  test('the heartbeat loop keeps the lease fresh past the due time of a 110-minute ideate, so osHeartbeat stays on and the Workflow keeps both slots', async () => {
+    // Before: 24 beats (108 minutes) against a due time of 120 minutes gave osHeartbeat:false, and on 2 slots the Workflow's own pulse
+    // then took one of the two: ideate ran on one slot.
+    const box = await inPhase('ideate');
+    const a = good(await arm(box, 'ideate', '04:00', ['--minutes', '110'])); // due 06:00
+    assert.deepEqual([a.delayMinutes, a.dueAt, a.osHeartbeat], [120, iso('06:00'), true]);
+    assert.deepEqual(pick(a.heartbeatLoop, ['iterations', 'coversMinutes', 'freshUntilMinutes', 'timeoutMs', 'coversWatch']), { iterations: 26, coversMinutes: 117, freshUntilMinutes: 138, timeoutMs: 7_200_000, coversWatch: true });
+    assert.ok(a.then.some((x) => x.startsWith('start the heartbeat loop in the background now (Bash run_in_background, timeout 7200000)')));
+    // what the claim rests on: the last beat that reached the branch (14 minutes before the loop's end at 117) keeps the lease fresh
+    // until 10 minutes past the due time, where the PHASEWATCH turn has pushed a fresh one
+    const lastPushed = { session: 'P1', at: plusMinutes(iso('04:00'), 117 - 14) };
+    const run = box.run();
+    assert.equal(rs.leaseInfo(CFG, run, lastPushed, at('06:10')).stale, false);
+    assert.equal(rs.leaseInfo(CFG, run, lastPushed, at('06:19')).stale, true, 'past freshUntilMinutes (138) without the PHASEWATCH turn: stale, as designed');
+    // the PHASEWATCH turn at the due time: the extension touches the lease (and its steps sync it), so the lease is fresh again
+    good(await W(box, 'bind', ['--phase', 'ideate', '--session', 'P1', '--attempt', '1', '--trigger-id', 'trig_1'], '04:01'));
+    touch(box, `work/${DATE}/ideate/cand/lab-1.json`, '05:50');
+    assert.equal(good(await chk(box, 'ideate', '06:01')).action, 'extend');
+    assert.equal(rs.leaseInfo(CFG, box.run(), lastPushed, at('06:30')).stale, false);
+    // build on the narrow timetable (88 minutes) is covered as before; the planner's cap (110) is covered too
+    for (const minutes of ['88', '110']) {
+      const b = await inPhase('build');
+      assert.equal(good(await arm(b, 'build', '07:00', ['--minutes', minutes])).osHeartbeat, true, minutes);
+    }
+    // a config without a usable leaseStaleMinutes falls back to the strict rule: the loop itself must reach the due time
+    const strict = pw.heartbeatLoopFor({ phase: 'ideate', session: 'P1', role: 'primary', date: DATE, delayMinutes: 120 });
+    assert.deepEqual([strict.coversWatch, strict.freshUntilMinutes], [false, 117]);
+    assert.equal(pw.heartbeatLoopFor({ phase: 'ideate', session: 'P1', role: 'primary', date: DATE, delayMinutes: 117 }).coversWatch, true);
+  });
+
+  test('a builder writing one big file is silent for 25 minutes: the build is extended, not stopped and wiped', async () => {
+    const { box, due } = await armed('build', { at: '07:00', extra: ['--minutes', '88'] });
+    assert.equal(due, iso('08:38'));
+    touch(box, `work/${DATE}/build/site/js/ui.js`, '08:14'); // the last write, 25 minutes before the check
+    const j = good(await chk(box, 'build', '08:39'));
+    assert.deepEqual([j.action, j.progress.minutesAgo, j.extension.windowMinutes, j.extension.dueAt], ['extend', 25, 35, iso('08:54')]);
+    assert.ok(!j.steps.some((x) => /TaskStop|rm -rf/.test(x)), 'nothing stopped, nothing wiped');
+    // the same silence in a phase without long single writes (select) is a stall
+    const sel = await armed('select', { at: '07:00', extra: ['--minutes', '25'] }); // due 07:35
+    touch(sel.box, `work/${DATE}/select/x.json`, '07:11');
+    assert.equal(good(await chk(sel.box, 'select', '07:36')).action, 'retry');
+  });
+
+  test('near the hard stop a retry is not offered (it would wipe what the closer can salvage and run past 10:30); manual runs have no bound', async () => {
+    const at0955 = await armed('build', { at: '08:00', extra: ['--minutes', '100'] }); // due 09:50
+    const r = good(await chk(at0955.box, 'build', '09:55')); // 30 minutes before 10:25
+    assert.deepEqual([r.action, r.tooLate], ['retry', undefined]);
+    const at0956 = await armed('build', { at: '08:00', extra: ['--minutes', '100'] });
+    const d = good(await chk(at0956.box, 'build', '09:56'));
+    assert.deepEqual([d.action, d.tooLate, d.attemptsLeft, d.degrade.how, d.degrade.toTier], ['degrade', true, 1, 'tier', 3]);
+    assert.ok(!d.steps.some((x) => /rm -rf|phase-start/.test(x)), 'nothing is wiped and nothing is relaunched');
+    await runSteps(at0956.box, d.steps, '09:57');
+    const run = at0956.box.run();
+    assert.deepEqual([run.targetTier, run.attempts.build, run.watch.disarmedAt], [3, 1, iso('09:57')]);
+    assert.ok(run.events.some((e) => e.kind === 'degrade' && /build stalled 29 min before the hard stop 10:30 \(phase watch\): tier 3/.test(e.msg)));
+    // qa near the hard stop skips QA (validator and smoke run only) instead of starting it again
+    const qa = await armed('qa', { at: '09:00', extra: ['--minutes', '45'] }); // due 09:55
+    const q = good(await chk(qa.box, 'qa', '10:00'));
+    assert.deepEqual([q.action, q.degrade.skip], ['degrade', ['qa', 'revise']]);
+    // a manual run is bound by nothing: the retry stands
+    const manual = sandbox(CFG);
+    good(await ST(manual, ['begin', '--role', 'manual', '--session', 'P1'], '03:55'));
+    good(await ST(manual, ['phase-start', '--phase', 'preflight', '--session', 'P1'], '10:00'));
+    good(await W(manual, 'arm', ['--phase', 'preflight', '--session', 'P1', '--role', 'manual', '--minutes', '10'], '10:00')); // due 10:20
+    assert.equal(good(await chk(manual, 'preflight', '10:21', ['--role', 'manual'])).action, 'retry');
+    // the kaizen round is bound by the 12:00 cutoff the same way: a second round that cannot fit is closed on purpose
+    const kz = await kaizenRun();
+    good(await arm(kz, 'kaizen', '10:00', ['--minutes', '20'])); // due 10:45
+    assert.equal(good(await chk(kz, 'kaizen', '11:25')).action, 'retry', '30 minutes before 11:55');
+    const kz2 = await kaizenRun();
+    good(await arm(kz2, 'kaizen', '10:00', ['--minutes', '20']));
+    const k = good(await chk(kz2, 'kaizen', '11:26'));
+    assert.deepEqual([k.action, k.tooLate, k.degrade.skip], ['degrade', true, ['kaizen']]);
+    assert.match(k.reason, /before the 12:00 kaizen cutoff/);
+    // planOverdue (pure) without a bound is unchanged
+    const w = { phase: 'build', attempt: 1, dueAt: iso('09:50'), workflowTask: null };
+    const facts = { doneMarker: false, outputs: { required: [], present: [], missing: [] } };
+    const plain = { run: { attempts: { build: 1 }, targetTier: 1, phasesDone: [] }, config: CFG, watch: w, facts, date: DATE, session: 'P1', overdueMinutes: 6 };
+    assert.equal(pw.planOverdue(plain).next, 'retry');
+    assert.equal(pw.planOverdue({ ...plain, roomMinutes: 29.9 }).next, 'degrade');
+    assert.equal(pw.planOverdue({ ...plain, roomMinutes: 30 }).next, 'retry');
+  });
+
+  test('a stale timer says what the PLAYBOOK stale row says: a replaced session stops its zombie Workflow, a restarted phase is armed', async () => {
+    const taken = await armed();
+    good(await ST(taken.box, ['begin', '--role', 'wdA', '--session', 'A1'], '05:40'));
+    const t = good(await chk(taken.box, 'ideate', '05:45'));
+    assert.deepEqual([t.code, t.action], ['lease-held-by-other', 'stop-zombie']);
+    assert.match(t.instructions, /^You were replaced \(PLAYBOOK 6\.6\): TaskStop your ideate Workflow \(TaskStop\(\{ task_id: "wf-1" \}\)\): it is a zombie now/);
+    assert.match(t.instructions, /do NOT delete it/);
+    // displaced (another container took the lease): the same
+    const disp = await armed();
+    const j = direct(disp.box, { phase: 'ideate', now: iso('05:45'), displacedBy: { holder: 'wdB', session: 'B1' } });
+    assert.deepEqual([j.code, j.action], ['displaced', 'stop-zombie']);
+    assert.match(j.instructions, /TaskStop\(\{ task_id: "wf-1" \}\)/);
+    // the kaizen binds no task: its zombie is found by the id the operator kept outside the repo
+    const kz = await kaizenRun();
+    good(await arm(kz, 'kaizen', '08:40'));
+    const kj = direct(kz, { phase: 'kaizen', now: iso('09:00'), displacedBy: { holder: 'manual', session: 'M1' } });
+    assert.deepEqual([kj.code, kj.action], ['displaced', 'stop-zombie']);
+    assert.match(kj.instructions, /\$HOME\/\.sed-wf-2026-10-09-kaizen/);
+    // restarted: the phase was started again after the watch fired, without a new arm
+    const re = await armed('build');
+    good(await chk(re.box, 'build', '06:41')); // retry decided
+    good(await ST(re.box, ['phase-start', '--phase', 'build', '--session', 'P1'], '06:45'));
+    const r = good(await chk(re.box, 'build', '06:50'));
+    assert.deepEqual([r.code, r.action], ['restarted', 'arm']);
+    assert.match(r.instructions, /arm one \(PLAYBOOK 7\.1a steps 3 to 6/);
+    // expired: begin decides; the ordinary codes leave nothing to do
+    const old = await armed();
+    const e = good(await chk(old.box, 'ideate', '08:00'));
+    assert.deepEqual([e.code, e.action], ['expired', 'nothing']);
+    assert.match(e.instructions, /the next `begin` decides/);
+    const done = await armed();
+    good(await ST(done.box, ['phase-done', '--phase', 'ideate', '--session', 'P1', '--role', 'primary'], '05:30'));
+    const p = good(await chk(done.box, 'ideate', '05:45'));
+    assert.deepEqual([p.code, p.action], ['phase-done', 'nothing']);
+    assert.match(p.instructions, /^Nothing else to do\./);
+  });
+
+  test('disarm with a task id that differs from the bound one: refused while the phase runs, accepted once its DONE.json is on disk', async () => {
+    const { box } = await armed('build'); // wf-1 bound
+    const before = bytes(box);
+    const refused = good(await W(box, 'disarm', ['--phase', 'build', '--session', 'P1', '--workflow-task', 'wf-9'], '05:00'));
+    assert.deepEqual([refused.disarmed, refused.reason], [false, 'other-task']);
+    assert.match(refused.note, /Touch nothing; the watch stays armed\. Only if this notification is the build Workflow's own result \(it reports phase "build"\) was the id bound at launch wrong: then run node scripts\/state\.mjs watch bind --phase build --session P1 --date 2026-10-09 --attempt 1 --workflow-task wf-9 and this disarm again\.$/);
+    assert.deepEqual(bytes(box), before, 'nothing written');
+    // the Workflow wrote its DONE.json (the last thing it does): the notification is the phase's own, whatever id was bound
+    touch(box, `work/${DATE}/build/DONE.json`, '05:10', '{"ok":true,"phase":"build"}');
+    const j = good(await W(box, 'disarm', ['--phase', 'build', '--session', 'P1', '--workflow-task', 'wf-9'], '05:11'));
+    assert.deepEqual(pick(j, ['disarmed', 'taskMismatch', 'deleteTrigger']), { disarmed: true, taskMismatch: { bound: 'wf-1', notified: 'wf-9' }, deleteTrigger: { trigger_id: 'trig_1' } });
+    assert.match(j.note, /DONE\.json is on disk, so the build Workflow finished and this is its result/);
+    assert.equal(box.run().watch.disarmedAt, iso('05:11'));
+    // the echo of a stopped task stays an echo, DONE.json or not
+    const echo = await armed('build');
+    good(await chk(echo.box, 'build', '06:41')); // retry: wf-1 is stopped
+    touch(echo.box, `work/${DATE}/build/DONE.json`, '06:42', '{"ok":true}');
+    assert.equal(good(await W(echo.box, 'disarm', ['--phase', 'build', '--session', 'P1', '--workflow-task', 'wf-1'], '06:43')).reason, 'echo');
+  });
+
+  test('the replaced timer: the then-steps carry the update_trigger fallback of PLAYBOOK 7.1a step 4', async () => {
+    const { box } = await armed('ideate');
+    const again = good(await arm(box, 'ideate', '04:05'));
+    assert.equal(again.then[0], 'first delete_trigger({ trigger_id: "trig_1" }): it is the pending timer of the ideate watch this arm replaced. Denied: update_trigger({ trigger_id: "trig_1", enabled: false }) instead (never retry a denied call as written); denied too: leave it, it fires into a stale `watch check` (FM-120)');
+  });
+
+  test('the kaizen watch: the configured 85-minute budget plus one member\'s turn and the margin; the lease rule widens the same way', async () => {
+    const box = await kaizenRun(REAL_KAIZEN);
+    const a = good(await arm(box, 'kaizen', '09:11')); // no --minutes: config.phaseBudgetMinutes.kaizen, the number the Workflow gets
+    assert.deepEqual(pick(a, ['budgetMinutes', 'budgetSource', 'marginMinutes', 'delayMinutes', 'dueAt', 'osHeartbeat']), { budgetMinutes: 85, budgetSource: 'config', marginMinutes: 25, delayMinutes: 110, dueAt: iso('11:01'), osHeartbeat: true });
+    assert.match(box.run().events.at(-1).msg, /\(110 min: budget 85 \+ 25 margin\)$/);
+    // a healthy round of 100 minutes (day 1 ran 82 against 75; the last member may start 15 minutes before the budget ends) is no stall
+    assert.equal(good(await chk(box, 'kaizen', '10:51')).verdict, 'early');
+    // the lease rule of another container that cannot see the watch: budget + 25 + 15
+    const blind = { ...box.run(), watch: undefined };
+    assert.equal(rs.leaseInfo(REAL_KAIZEN, blind, { session: 'P1', at: iso('10:55') }, at('11:00')).stuckLimitMinutes, 125);
+  });
+
+  test('a DONE.json written long before the timer means the notification is lost: finish from the files now; a fresh one gets a follow-up check, not a wait for ever', async () => {
+    // fresh (2 minutes old): the notification is probably queued behind this turn; a follow-up timer catches a lost one
+    const { box } = await armed('build'); // due 06:40
+    touch(box, `work/${DATE}/build/DONE.json`, '06:39', '{"ok":true}');
+    const j = good(await chk(box, 'build', '06:41'));
+    assert.deepEqual(pick(j, ['action', 'doneAgeMinutes', 'notificationLost']), { action: 'nothing', doneAgeMinutes: 2, notificationLost: false });
+    assert.deepEqual(j.followUp, { ...pw.sendLaterFor({ date: DATE, phase: 'build', attempt: 1, session: 'P1', dueAt: iso('06:51'), root: box.root }), name: `sed-watch-${DATE}-build-a1-followup` });
+    assert.match(j.steps.at(-1), /call send_later with followUp\.at, followUp\.name and followUp\.message \(one more check in 10 minutes; bind nothing\), then end the turn/);
+    // the follow-up fires and the watch is still armed: the notification is lost, the files are the truth (nothing more is written)
+    const before = bytes(box);
+    const k = good(await chk(box, 'build', '06:51', ['--attempt', '1']));
+    assert.deepEqual(pick(k, ['action', 'doneAgeMinutes', 'notificationLost', 'followUp']), { action: 'nothing', doneAgeMinutes: 12, notificationLost: true, followUp: undefined });
+    assert.match(k.steps[0], /written 12 min ago .* it is lost\. Do not wait for it\./);
+    assert.equal(k.steps[1], `run: node scripts/state.mjs watch disarm --phase build --session P1 --date ${DATE}   (the timer that woke you has fired and is spent: delete nothing)`);
+    assert.deepEqual(bytes(box), before);
+    await runSteps(box, k.steps, '06:52');
+    assert.equal(box.run().watch.disarmedAt, iso('06:52'));
+    // handled in between: the follow-up finds the watch disarmed (stale)
+    const handled = await armed('build');
+    touch(handled.box, `work/${DATE}/build/DONE.json`, '06:39', '{"ok":true}');
+    good(await chk(handled.box, 'build', '06:41'));
+    good(await W(handled.box, 'disarm', ['--phase', 'build', '--session', 'P1', '--workflow-task', 'wf-1'], '06:42'));
+    assert.equal(good(await chk(handled.box, 'build', '06:51', ['--attempt', '1'])).code, 'disarmed');
+  });
+
+  test('2026-10-11 replay: qa extended once, its timer\'s delete denied, the leftover timer fires during the kaizen round and finds stale without writing', async () => {
+    const box = await inPhase('qa', { config: REAL_KAIZEN, at: '08:28' });
+    const a = good(await arm(box, 'qa', '2026-10-09T12:28:09.542Z', ['--minutes', '20']));
+    assert.equal(a.dueAt, '2026-10-09T12:58:09.542Z');
+    good(await W(box, 'bind', ['--phase', 'qa', '--session', 'P1', '--attempt', '1', '--trigger-id', 'trig_qa1', '--workflow-task', 'wf-qa'], '08:29'));
+    touch(box, `work/${DATE}/qa/run/report.json`, '2026-10-09T12:58:55.000Z');
+    const ext = good(await chk(box, 'qa', '2026-10-09T13:00:13.991Z'));
+    assert.deepEqual([ext.action, ext.extension.dueAt, ext.sendLater.at], ['extend', '2026-10-09T13:15:13.991Z', '2026-10-09T13:16:00Z']);
+    good(await W(box, 'bind', ['--phase', 'qa', '--session', 'P1', '--attempt', '1', '--trigger-id', 'trig_qa2'], '09:01'));
+    // the notification: disarm prints the pending extension timer, with the fallback for a denied delete
+    const dis = good(await W(box, 'disarm', ['--phase', 'qa', '--session', 'P1', '--workflow-task', 'wf-qa'], '09:08'));
+    assert.deepEqual([dis.disarmed, dis.deleteTrigger, typeof dis.ifDeleteDenied], [true, { trigger_id: 'trig_qa2' }, 'string']);
+    // (delete_trigger denied, update_trigger not tried): the timer stays pending. The day moves on to the kaizen round.
+    for (const p of ['qa', 'revise', 'package']) good(await ST(box, ['phase-done', '--phase', p, '--session', 'P1', '--role', 'primary'], '09:09'));
+    seedPage(box, 2);
+    good(await ST(box, ['finish', '--status', 'published', '--tier', '2', '--by', 'primary'], '09:11'));
+    good(await ST(box, ['phase-start', '--phase', 'kaizen', '--session', 'P1'], '09:11'));
+    const k = good(await arm(box, 'kaizen', '09:11'));
+    assert.equal(k.replaced, null, 'the qa watch was disarmed: nothing of it is handed back');
+    const before = bytes(box);
+    const j = good(await chk(box, 'qa', '2026-10-09T13:16:00.000Z', ['--attempt', '1']));
+    assert.deepEqual(pick(j, ['verdict', 'code', 'action', 'triggerId', 'deleteTrigger']), { verdict: 'stale', code: 'other-phase', action: 'nothing', triggerId: null, deleteTrigger: null });
+    assert.match(j.instructions, /^Nothing else to do\. The timer that woke you has fired and is spent: do NOT delete it/);
+    assert.deepEqual(bytes(box), before, 'the kaizen round\'s tree stays clean: a stale timer writes nothing');
   });
 });

@@ -45,15 +45,20 @@ import {
   stagingDirs,
   toDate,
   updateRun,
+  watchMarginMinutes,
   watchOverdueMinutes,
 } from './runstate.mjs';
 
-export { WATCH_STALE_AFTER_MINUTES, WATCH_MARGIN_MINUTES };
+export { WATCH_STALE_AFTER_MINUTES, WATCH_MARGIN_MINUTES, watchMarginMinutes };
 
-// WATCH_MARGIN_MINUTES (runstate.mjs): the watch fires this long after the phase budget the Workflow was given (the Workflow honors the
-// budget itself). The lease rule of runstate.leaseInfo uses the same number, so the two cannot drift.
+// watchMarginMinutes (runstate.mjs): the watch fires this long after the phase budget the Workflow was given (the Workflow honors the
+// budget itself): WATCH_MARGIN_MINUTES, plus one member's turn for the kaizen round. The lease rule of runstate.leaseInfo uses the same
+// numbers, so the two cannot drift.
 /** The watch never falls due later than this before the day's hard stop (the kaizen cutoff for the kaizen phase). */
 export const HARD_STOP_BUFFER_MINUTES = 5;
+/** A retry is not offered with less than this left before that bound: nothing can be redone in less, and the retry's wipe would destroy
+ * files the closer could still salvage at the hard stop. The two-failures table (degrade) applies instead. */
+export const MIN_RETRY_MINUTES = 30;
 /** ... and never sooner than this after it was armed. */
 export const MIN_WATCH_MINUTES = 5;
 /** A watch that cannot fire within six hours protects nothing. */
@@ -62,19 +67,40 @@ export const MAX_WATCH_MINUTES = 6 * 60;
 export const EARLY_TOLERANCE_MINUTES = 2;
 /** A timer delivered later than this after its due time is too old to act on (an abandoned run, a container that slept): the verdict is stale. */
 export const MAX_LATE_MINUTES = 120;
-/** A file under work/<D> that changed this recently when the watch falls due says the Workflow is still working. */
+/** A file under work/<D> that changed this recently when the watch falls due says the Workflow is still working (the default window). */
 export const PROGRESS_FRESH_MINUTES = 20;
+/**
+ * The window per phase: one agent call writes nothing until it writes its file in one go, and in these phases one call can be silent for
+ * longer than 20 minutes on a healthy day: a builder's 1000-line module (2026-10-11: ui.js 1097 lines, render.js 1056), the architect's
+ * SPEC.md, a scout's or a verifier's batch after its searches, a fix agent's copy, QA's review. A too short window stops and wipes a
+ * healthy phase (retry); a too long one only grants a hung one its two extensions (30 minutes).
+ */
+export const PROGRESS_FRESH_BY_PHASE = Object.freeze({ ideate: 30, spec: 30, build: 35, qa: 25, revise: 30 });
+/** The freshness window of `phase` in minutes. */
+export const progressFreshMinutes = (phase) => PROGRESS_FRESH_BY_PHASE[phase] ?? PROGRESS_FRESH_MINUTES;
 /** A working Workflow gets the watch moved out by this much, at most MAX_EXTENSIONS times (kaizen never: its tree must stay clean). */
 export const EXTEND_MINUTES = 15;
 export const MAX_EXTENSIONS = 2;
+/** A DONE.json older than this when the timer fires means the Workflow's notification is lost: it would have woken the session first. */
+export const NOTIFICATION_GRACE_MINUTES = 5;
+/** A fresh DONE.json: the notification is probably queued behind the PHASEWATCH turn; a follow-up check this much later catches a lost one. */
+export const FOLLOW_UP_MINUTES = 10;
 /** A work tree with more entries than this is not walked to the end (the newest change found so far stands). */
 const MAX_WALK_ENTRIES = 20_000;
 /** A file change this far in the future of the clock the command runs by is not progress (clock skew, a pinned --now). */
 const FUTURE_SLACK_MS = 5 * 60_000;
 /** How many Workflow task ids a block remembers as stopped (to recognise the echo of a TaskStop). */
 const MAX_STOPPED_TASKS = 6;
-/** The Bash tool's background timeout used for the heartbeat loops (PLAYBOOK 7.5): about 110 minutes. */
-const LOOP_TIMEOUT_MS = 6_600_000;
+/** The Bash tool's longest background timeout (2 hours) bounds the heartbeat loop of a launch (PLAYBOOK 7.1a step 5). */
+const LOOP_TIMEOUT_MS = 7_200_000;
+/** One beat of the heartbeat-branch loop waits this long; 26 beats (117 minutes) fit in the timeout. */
+const BEAT_SECONDS = 270;
+const MAX_LOOP_BEATS = 26;
+/** heartbeat.mjs pushes a beat that only moves the timestamp at most every 10 minutes: with a beat every 4.5 minutes every third one
+ * reaches the branch, so the last pushed beat can be 14 minutes older than the end of the loop. */
+const HB_PUSH_GAP_MINUTES = 14;
+/** The PHASEWATCH turn (delivered up to 2 minutes after the due time) runs `watch check` and its `sync`, which pushes a fresh lease. */
+const LOOP_SLACK_MINUTES = 10;
 
 /** The budget of a phase that config.phaseBudgetMinutes has no usable entry for: the "hard cap" column of PLAYBOOK section 2. */
 export const DEFAULT_PHASE_MINUTES = Object.freeze({
@@ -162,29 +188,37 @@ export function phaseBudget(config, phase, override) {
 }
 
 /**
- * Pure. When does a watch armed at `nowMs` fall due: budget + margin minutes later, scaled DOWN so that it is not later than the
- * day's hard stop minus 5 minutes (the kaizen cutoff for `kaizen`, which runs after the publish), and never sooner than 5 minutes.
- * A manual run, or a rerun of a day that is already over, has no deadline pressure: no hard-stop clamp then.
+ * Pure. Minutes from `nowMs` to the latest instant a watch of `phase` may fall due: the day's hard stop minus 5 minutes (the kaizen
+ * cutoff minus 5 for `kaizen`, which runs after the publish); negative once that is past. null when nothing binds: a manual run, a rerun
+ * of a day that is already over, a schedule without a usable hard stop.
+ */
+export function boundRoomMinutes({ config, date, phase, nowMs, manual = false }) {
+  if (manual || localParts(new Date(nowMs), config.timezone).date > date) return null;
+  const boundMinutes = phase === 'kaizen' ? KAIZEN_CUTOFF_MINUTES : scheduleMinutes(config).hardStop;
+  if (!Number.isFinite(boundMinutes)) return null;
+  const latest = zonedInstant(date, hhmmOf(boundMinutes), config.timezone) - HARD_STOP_BUFFER_MINUTES * MIN_MS;
+  const room = (latest - nowMs) / MIN_MS;
+  return Number.isFinite(room) ? room : null;
+}
+
+/**
+ * Pure. When does a watch armed at `nowMs` fall due: budget + margin minutes later (watchMarginMinutes: 10, 25 for the kaizen round;
+ * `marginMinutes` overrides it), scaled DOWN so that it is not later than the day's hard stop minus 5 minutes (the kaizen cutoff for
+ * `kaizen`, which runs after the publish), and never sooner than 5 minutes. A manual run, or a rerun of a day that is already over, has
+ * no deadline pressure: no hard-stop clamp then.
  * Returns { dueMs, delayMinutes, clamped } with clamped null | 'hard-stop' | 'kaizen-cutoff' | 'min' | 'max'.
  */
-export function computeDue({ config, date, phase, nowMs, budgetMinutes, manual = false }) {
-  let delay = budgetMinutes + WATCH_MARGIN_MINUTES;
+export function computeDue({ config, date, phase, nowMs, budgetMinutes, manual = false, marginMinutes = watchMarginMinutes(phase) }) {
+  let delay = budgetMinutes + marginMinutes;
   let clamped = null;
   if (delay > MAX_WATCH_MINUTES) {
     delay = MAX_WATCH_MINUTES;
     clamped = 'max';
   }
-  const dayIsOver = localParts(new Date(nowMs), config.timezone).date > date;
-  if (!manual && !dayIsOver) {
-    const boundMinutes = phase === 'kaizen' ? KAIZEN_CUTOFF_MINUTES : scheduleMinutes(config).hardStop;
-    if (Number.isFinite(boundMinutes)) {
-      const latest = zonedInstant(date, hhmmOf(boundMinutes), config.timezone) - HARD_STOP_BUFFER_MINUTES * MIN_MS;
-      const room = (latest - nowMs) / MIN_MS;
-      if (Number.isFinite(room) && room < delay) {
-        delay = room;
-        clamped = phase === 'kaizen' ? 'kaizen-cutoff' : 'hard-stop';
-      }
-    }
+  const room = boundRoomMinutes({ config, date, phase, nowMs, manual });
+  if (room !== null && room < delay) {
+    delay = room;
+    clamped = phase === 'kaizen' ? 'kaizen-cutoff' : 'hard-stop';
   }
   if (delay < MIN_WATCH_MINUTES) {
     delay = MIN_WATCH_MINUTES;
@@ -386,11 +420,15 @@ function attemptCounts(run, config, watch) {
  * and finish it instead of redoing it; `fallback` is what happens when the check fails), 'retry' (attempts left: same phase, compact) or
  * 'degrade' (attempts exhausted: the existing two-failures table of PLAYBOOK 6.7). Attempts are counted as `begin` counts them
  * (run.attempts, bumped by `phase-start`) and also by the watch's own arm counter, so a missing `phase-start` cannot loop for ever.
+ * `roomMinutes` (boundRoomMinutes: minutes left before the hard stop minus 5, or the kaizen cutoff minus 5; null when nothing binds):
+ * with less than MIN_RETRY_MINUTES left no retry is offered, whatever the attempts say: the degrade table applies (`tooLate:true`).
  * The timer that woke the session has fired and is spent: no step ever deletes it.
  */
-export function planOverdue({ run, config, watch, facts, role, date, session, overdueMinutes }) {
+export function planOverdue({ run, config, watch, facts, role, date, session, overdueMinutes, roomMinutes = null }) {
   const phase = watch.phase;
   const { maxAttempts, attemptsUsed, attemptsLeft } = attemptCounts(run, config, watch);
+  const tooLate = typeof roomMinutes === 'number' && Number.isFinite(roomMinutes) && roomMinutes < MIN_RETRY_MINUTES;
+  const boundName = phase === 'kaizen' ? 'the 12:00 kaizen cutoff' : `the hard stop ${config.schedule?.hardStop ?? ''}`.trim();
   // R lands in commands the operator will run: only a real role name may get there, whatever the run file says
   const R = [role, run.lease?.holder, watch.role].find((r) => ROLES.includes(r)) ?? 'primary';
   const disarm = `node scripts/state.mjs watch disarm --phase ${phase} --session ${session} --date ${date}`;
@@ -408,6 +446,11 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
     : [];
 
   if (facts.doneMarker) {
+    // A Workflow that finished well before its timer would have woken the session with its notification first: that one is lost, and
+    // waiting for it would stall the day (nothing else wakes the session). A fresh DONE.json: the notification is probably queued.
+    const age = facts.doneAgeMinutes;
+    const lost = typeof age === 'number' && Number.isFinite(age) && age > NOTIFICATION_GRACE_MINUTES;
+    const finishFromFiles = `the PLAYBOOK 7.3 checks, spend (no result: charge the PLAYBOOK 6.5 estimate) and the checkpoint from the files, as if it had returned (PLAYBOOK 6.7: the files are the truth)`;
     return {
       next: 'nothing',
       hint: null,
@@ -415,17 +458,26 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
       maxAttempts,
       attemptsLeft,
       degrade: null,
-      reason: `${late}, but ${doneFile} exists: the Workflow finished and only its report is missing`,
-      steps: [
-        `Do NOT stop or retry ${phase}: its DONE.json is written (the last thing the Workflow does), so it finished.`,
-        'If its task-notification arrives, handle it as usual: watch disarm (with --workflow-task), the PLAYBOOK 7.3 checks, spend, checkpoint.',
-        `If nothing arrives: run: ${disarm}  (the timer that woke you has fired and is spent: delete nothing), then do the 7.3 checks, spend and the checkpoint from the files, as if it had returned (PLAYBOOK 6.7: the files are the truth).`,
-      ],
+      awaitNotification: !lost,
+      reason: lost
+        ? `${late}, but ${doneFile} exists: the Workflow finished ${Math.round(age)} min ago and its notification never came`
+        : `${late}, but ${doneFile} exists: the Workflow finished and only its report is missing`,
+      steps: lost
+        ? [
+            `Do NOT stop or retry ${phase}: its DONE.json was written ${Math.round(age)} min ago (the last thing the Workflow does), so it finished, and its notification would have woken you before this timer: it is lost. Do not wait for it.`,
+            `run: ${disarm}   (the timer that woke you has fired and is spent: delete nothing)`,
+            `Then ${finishFromFiles}. A notification that still arrives finds the watch disarmed: one line, touch nothing.`,
+          ]
+        : [
+            `Do NOT stop or retry ${phase}: its DONE.json is written (the last thing the Workflow does), so it finished.`,
+            'If its task-notification arrives, handle it as usual: watch disarm (with --workflow-task), the PLAYBOOK 7.3 checks, spend, checkpoint.',
+            `It is probably queued behind this turn. So that a lost one cannot stall the day: call send_later with followUp.at, followUp.name and followUp.message (one more check in ${FOLLOW_UP_MINUTES} minutes; bind nothing), then end the turn. If that check finds the watch still armed it says the notification is lost: then run: ${disarm} (the timer that woke you has fired and is spent: delete nothing) and do ${finishFromFiles}.`,
+          ],
     };
   }
 
   let base;
-  if (attemptsLeft > 0) {
+  if (attemptsLeft > 0 && !tooLate) {
     const steps = [stop, ...shown];
     if (kaizen) {
       steps.push(`run: node scripts/state.mjs sync -m "sed(${date}): ${R} kaizen watch fired"   (commits the watch-fired event; never git checkout the run file)`);
@@ -462,13 +514,15 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
   } else {
     const degrade = degradePlan({ phase, targetTier: run.targetTier, hasIdeas: doneNames(run).includes('ideate') || facts.hasIdeas, blocked: Boolean(facts.blocked) });
     const steps = [stop, ...shown];
+    // why the phase is given up: its attempts are spent, or (tooLate) a retry cannot fit before the bound any more
+    const why = tooLate && attemptsLeft > 0 ? `stalled ${Math.max(0, Math.floor(roomMinutes))} min before ${boundName}` : `stalled ${attemptsUsed} times`;
     if (degrade.how === 'tier') {
       steps.push(`run: node scripts/state.mjs directive --kind ship-now --tier ${degrade.toTier} --by ${R} --date ${date}`);
       steps.push(`run: node scripts/state.mjs ack-directive --kind ship-now --date ${date}`);
-      steps.push(`run: node scripts/state.mjs event --kind degrade --msg "${phase} stalled ${attemptsUsed} times (phase watch): tier ${degrade.toTier}" --by ${R} --date ${date}`);
+      steps.push(`run: node scripts/state.mjs event --kind degrade --msg "${phase} ${why} (phase watch): tier ${degrade.toTier}" --by ${R} --date ${date}`);
     } else {
       for (const p of degrade.skip) {
-        steps.push(`run: node scripts/state.mjs skip-phase --phase ${p} --reason "phase watch: ${phase} stalled ${attemptsUsed} times" --session ${session} --role ${R} --date ${date}`);
+        steps.push(`run: node scripts/state.mjs skip-phase --phase ${p} --reason "phase watch: ${phase} ${why}" --session ${session} --role ${R} --date ${date}`);
       }
     }
     steps.push(`run: ${disarm}   (the timer that woke you has fired and is spent: delete nothing)`);
@@ -480,7 +534,11 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
       maxAttempts,
       attemptsLeft,
       degrade,
-      reason: `${late}; all ${maxAttempts} attempts are spent`,
+      ...(tooLate && attemptsLeft > 0 ? { tooLate: true } : {}),
+      reason:
+        tooLate && attemptsLeft > 0
+          ? `${late}; ${Math.max(0, Math.floor(roomMinutes))} min are left before ${boundName} (minus ${HARD_STOP_BUFFER_MINUTES}), a retry needs ${MIN_RETRY_MINUTES}: no retry, the two-failures table applies`
+          : `${late}; all ${maxAttempts} attempts are spent`,
       steps,
     };
   }
@@ -513,18 +571,23 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
  * Pure. May an overdue watch be moved out instead of acted on? A timer measures elapsed time, and a healthy Workflow on two agent slots
  * is slow (day 1: build 85 minutes, qa 38 and kaizen 82 against budgets of 80, 30 and 75): stopping and wiping it would throw away good
  * work. The Workflow is judged by its files. Yes (at most MAX_EXTENSIONS times, never for the kaizen, whose tree must stay clean) when a file
- * under work/<D> changed within PROGRESS_FRESH_MINUTES and the timer itself was on time. Returns null or { n, dueMs, dueAt, minutes, clamped }.
+ * under work/<D> changed within the phase's window (progressFreshMinutes: one agent call that writes a big file in one go is silent for
+ * a long time) and the timer itself was on time; never past the bound of computeDue: an extension that the hard stop (or the kaizen
+ * cutoff) would squeeze below MIN_WATCH_MINUTES is refused, so nothing runs past it on an extension. Returns null or
+ * { n, dueMs, dueAt, minutes, clamped, windowMinutes }.
  */
 export function planExtension({ config, date, watch, facts, overdueMinutes, nowMs, manual = false }) {
   const phase = watch.phase;
   if (phase === 'kaizen' || watch.firedAt || facts.doneMarker) return null;
   const used = Number.isInteger(watch.extensions) && watch.extensions > 0 ? watch.extensions : 0;
   if (used >= MAX_EXTENSIONS) return null;
+  const windowMinutes = progressFreshMinutes(phase);
   const ago = facts.progress?.minutesAgo;
-  if (typeof ago !== 'number' || !Number.isFinite(ago) || ago > PROGRESS_FRESH_MINUTES) return null;
+  if (typeof ago !== 'number' || !Number.isFinite(ago) || ago > windowMinutes) return null;
   if (overdueMinutes >= Math.max(15, 0.5 * (Number(watch.budgetMinutes) || 0))) return null;
-  const due = computeDue({ config, date, phase, nowMs, budgetMinutes: EXTEND_MINUTES - WATCH_MARGIN_MINUTES, manual });
-  return { n: used + 1, dueMs: due.dueMs, dueAt: new Date(due.dueMs).toISOString(), minutes: due.delayMinutes, clamped: due.clamped };
+  const due = computeDue({ config, date, phase, nowMs, budgetMinutes: EXTEND_MINUTES, marginMinutes: 0, manual });
+  if (due.clamped === 'min') return null; // the bound leaves no room: the phase is resolved now, not in 5 minutes past the bound
+  return { n: used + 1, dueMs: due.dueMs, dueAt: new Date(due.dueMs).toISOString(), minutes: due.delayMinutes, clamped: due.clamped, windowMinutes };
 }
 
 // ---------------------------------------------------------------------------------------
@@ -594,8 +657,19 @@ export function gatherFacts(date, phase, nowMs = Date.now()) {
   } catch {
     newest = null;
   }
+  // how long ago the Workflow wrote its DONE.json (null: none, unreadable, or stamped by a clock ahead of this one)
+  let doneAgeMinutes = null;
+  if (doneMarker) {
+    try {
+      const { mtimeMs } = fs.statSync(rp('work', date, phase, 'DONE.json'));
+      if (mtimeMs <= nowMs + FUTURE_SLACK_MS) doneAgeMinutes = round1(Math.max(0, (nowMs - mtimeMs) / MIN_MS));
+    } catch {
+      doneAgeMinutes = null;
+    }
+  }
   return {
     doneMarker,
+    doneAgeMinutes,
     outputs: { required, present, missing: required.filter((p) => !present.includes(p)) },
     hasIdeas: nonEmpty(rp('work', date, 'ideas', 'shortlist.json')),
     blocked,
@@ -608,24 +682,31 @@ export function gatherFacts(date, phase, nowMs = Date.now()) {
 // ---------------------------------------------------------------------------------------
 
 /**
- * The OS-level heartbeat loop that keeps the lease alive while the turn is over (PLAYBOOK 7.5): with fewer than 6 agent slots a Workflow
- * that gets osHeartbeat:true drops its own pulse, so this loop is then the only signal and must be started BEFORE the Workflow and never
- * stopped at launch. It is bounded by the Bash background timeout (about 110 minutes): `coversWatch` says whether that reaches the watch's
- * due time; if not, osHeartbeat must be left out so the Workflow keeps its own pulse. When the heartbeat branch cannot be pushed
- * ($HOME/.sed-hb-broken-<D>, FM-111) the work-branch loop of PLAYBOOK 4 is printed instead.
+ * The OS-level heartbeat loop that keeps the lease alive while the turn is over (PLAYBOOK 7.1a step 5): with fewer than 6 agent slots a
+ * Workflow that gets osHeartbeat:true drops its own pulse (on 2 slots that pulse would take one of the two), so this loop is then the
+ * only signal and must be started BEFORE the Workflow and never stopped at launch. It is bounded by the Bash background timeout (2 hours,
+ * 26 beats of 4.5 minutes). It need not beat until the due time itself: the lease looks stale only `leaseStaleMinutes` after the last
+ * beat that reached the branch, and the PHASEWATCH turn at the due time pushes a fresh lease (`watch check`, then its `sync`). So
+ * `coversWatch` says whether the lease stays fresh until LOOP_SLACK_MINUTES past the due time (`freshUntilMinutes`); if not,
+ * osHeartbeat must be left out so the Workflow keeps its own pulse. Without a usable `leaseStaleMinutes` the loop itself must reach the
+ * due time. When the heartbeat branch cannot be pushed ($HOME/.sed-hb-broken-<D>, FM-111) the work-branch loop of PLAYBOOK 4 is printed
+ * instead (every beat of it is pushed).
  */
-export function heartbeatLoopFor({ phase, session, role, date, delayMinutes }) {
+export function heartbeatLoopFor({ phase, session, role, date, delayMinutes, leaseStaleMinutes = null }) {
   let workBranch = false;
   try {
     workBranch = fs.existsSync(path.join(os.homedir(), `.sed-hb-broken-${date}`));
   } catch {
     workBranch = false;
   }
-  const iterations = workBranch ? Math.min(5, Math.ceil(delayMinutes / 20) + 1) : Math.min(24, Math.ceil((delayMinutes * 60) / 270) + 2);
-  const coversMinutes = workBranch ? iterations * 20 : Math.round(iterations * 4.5);
+  const iterations = workBranch ? Math.min(5, Math.ceil(delayMinutes / 20) + 1) : Math.min(MAX_LOOP_BEATS, Math.ceil((delayMinutes * 60) / BEAT_SECONDS) + 2);
+  const coversMinutes = workBranch ? iterations * 20 : Math.round((iterations * BEAT_SECONDS) / 60);
+  const reach = Math.min(coversMinutes, LOOP_TIMEOUT_MS / MIN_MS);
+  const stale = typeof leaseStaleMinutes === 'number' && Number.isFinite(leaseStaleMinutes) && leaseStaleMinutes > 0 ? leaseStaleMinutes : null;
+  const freshUntilMinutes = stale === null ? reach : round1(reach - (workBranch ? 0 : HB_PUSH_GAP_MINUTES) + stale);
   const command = workBranch
     ? `for i in $(seq 1 ${iterations}); do node -e "setTimeout(()=>{},1200000)"; node scripts/state.mjs beat --role ${role} --session ${session} --phase ${phase} --date ${date}; node scripts/state.mjs sync -m "sed(${date}): liveness" --paths state/runs/${date}.json; done`
-    : `for i in $(seq 1 ${iterations}); do node scripts/heartbeat.mjs --role ${role} --session ${session} --phase ${phase} --date ${date} --wait 270 >/dev/null 2>&1; done`;
+    : `for i in $(seq 1 ${iterations}); do node scripts/heartbeat.mjs --role ${role} --session ${session} --phase ${phase} --date ${date} --wait ${BEAT_SECONDS} >/dev/null 2>&1; done`;
   return {
     variant: workBranch ? 'work-branch' : 'heartbeat-branch',
     command,
@@ -633,7 +714,8 @@ export function heartbeatLoopFor({ phase, session, role, date, delayMinutes }) {
     timeoutMs: LOOP_TIMEOUT_MS,
     iterations,
     coversMinutes,
-    coversWatch: coversMinutes >= delayMinutes,
+    freshUntilMinutes,
+    coversWatch: stale === null ? reach >= delayMinutes : freshUntilMinutes >= delayMinutes + LOOP_SLACK_MINUTES,
   };
 }
 
@@ -648,7 +730,7 @@ function dayOf(date, at, config) {
 /**
  * arm: record run.watch for the phase the run is in and print the send_later call that wakes the session when it falls due.
  * opts: { date, phase, session, role?, minutes?, now, config }. `minutes` is the phase budget the Workflow gets as
- * phaseBudgetMinutes (default config.phaseBudgetMinutes[phase]); the watch falls due WATCH_MARGIN_MINUTES after it. Arming the same launch
+ * phaseBudgetMinutes (default config.phaseBudgetMinutes[phase]); the watch falls due watchMarginMinutes(phase) after it. Arming the same launch
  * twice (same phase and session, the earlier watch neither fired nor disarmed, no `phase-start` since) is one attempt, not two: it
  * refreshes the watch and says `reused:true`.
  */
@@ -705,7 +787,7 @@ export function armWatch({ date, phase, session, role, minutes, now, config = lo
       ...(stoppedTasks.length ? { stoppedTasks } : {}),
     };
     touchLease(run, session, nowIso);
-    const margin = WATCH_MARGIN_MINUTES;
+    const margin = watchMarginMinutes(phase);
     pushEvent(
       run,
       'note',
@@ -715,8 +797,12 @@ export function armWatch({ date, phase, session, role, minutes, now, config = lo
       'watch-armed',
     );
     const R = holder ?? 'primary';
-    const loop = heartbeatLoopFor({ phase, session, role: R, date: day, delayMinutes: due.delayMinutes });
+    const loop = heartbeatLoopFor({ phase, session, role: R, date: day, delayMinutes: due.delayMinutes, leaseStaleMinutes: config.leaseStaleMinutes });
     const kaizen = phase === 'kaizen';
+    // the replaced timer is still pending; the permission classifier may refuse its delete (2026-10-11): disable it instead, else leave it
+    const replacedTimer = replaced?.triggerId
+      ? `first delete_trigger({ trigger_id: "${replaced.triggerId}" }): it is the pending timer of the ${replaced.phase} watch this arm replaced. Denied: update_trigger({ trigger_id: "${replaced.triggerId}", enabled: false }) instead (never retry a denied call as written); denied too: leave it, it fires into a stale \`watch check\` (FM-120)`
+      : null;
     return {
       run,
       result: {
@@ -739,13 +825,13 @@ export function armWatch({ date, phase, session, role, minutes, now, config = lo
         heartbeatLoop: loop,
         osHeartbeat: loop.coversWatch,
         then: [
-          ...(replaced?.triggerId ? [`first delete_trigger({ trigger_id: "${replaced.triggerId}" }): it is the pending timer of the ${replaced.phase} watch this arm replaced`] : []),
+          ...(replacedTimer ? [replacedTimer] : []),
           ...(replaced?.workflowTask ? [`the replaced watch had Workflow task "${replaced.workflowTask}" bound: if it still runs, TaskStop it before another launch`] : []),
           'call send_later with sendLater.at, sendLater.name and sendLater.message exactly as printed (it returns a trigger_id)',
           `run: node scripts/state.mjs watch bind --phase ${phase} --session ${session} --date ${day} --attempt ${attempt} --trigger-id <the trigger_id>`,
           loop.coversWatch
             ? `start the heartbeat loop in the background now (Bash run_in_background, timeout ${loop.timeoutMs}): ${loop.command}   then pass osHeartbeat:true to the Workflow; never stop the loop at launch`
-            : `the heartbeat loop would end before the watch (${loop.coversMinutes} of ${due.delayMinutes} min): you may still start it (${loop.command}) but leave osHeartbeat out, so the Workflow keeps its own pulse`,
+            : `the heartbeat loop would end before the watch (${loop.coversMinutes} of ${due.delayMinutes} min; the lease would look stale from minute ${loop.freshUntilMinutes}): you may still start it (${loop.command}) but leave osHeartbeat out, so the Workflow keeps its own pulse`,
           `run: node scripts/state.mjs sync -m "sed(${day}): ${R} ${phase} launch (watch armed)"   (other containers see only what is pushed; this one push also carries the checkpoint of the phase that just finished)`,
           kaizen
             ? 'launch the kaizen Workflow in the background and bind no task (write nothing under the repo while it runs; keep its id in "$HOME/.sed-wf-' + day + '-kaizen")'
@@ -808,7 +894,9 @@ export function bindWatch({ date, phase, session, triggerId, workflowTask, attem
  * delete_trigger it, but only a timer that is still pending: one that has fired is spent and is never to be deleted (`timerFired:true`).
  * A watch of another phase or session is left alone and its trigger is not printed. With `workflowTask` (the id the notification names)
  * the disarm is refused for a task that is not the watch's own (`reason:'other-task'`) or that this watch stopped (`reason:'echo'`): a late
- * or echoed notification must not unwatch the live attempt.
+ * or echoed notification must not unwatch the live attempt. A different id while the watched phase's DONE.json is on disk is the phase's
+ * own completion whatever id was bound at launch (DONE.json is the last thing its Workflow writes; `taskMismatch` says so): refusing it
+ * would leave the result unhandled until the timer. A printed `deleteTrigger` comes with `ifDeleteDenied`, the PLAYBOOK 7.1a fallback.
  */
 export function disarmWatch({ date, phase, session, workflowTask, now, config = loadConfig() }) {
   if (phase !== undefined) assertPhase(phase);
@@ -829,17 +917,34 @@ export function disarmWatch({ date, phase, session, workflowTask, now, config = 
     const current = { phase: w.phase, attempt: w.attempt, session: w.session };
     if (phase !== undefined && w.phase !== phase) return { result: none('other-phase', { current }) };
     if (session !== undefined && w.session !== session) return { result: none('other-session', { current }) };
+    let taskMismatch = null;
     if (workflowTask !== undefined) {
       if (w.stoppedTasks.includes(workflowTask)) {
         return { result: none('echo', { current: { ...current, workflowTask: w.workflowTask }, note: `task ${workflowTask} is a Workflow this watch stopped: its notification is the echo of your TaskStop. Touch nothing; the live attempt keeps its watch.` }) };
       }
       if (w.workflowTask && w.workflowTask !== workflowTask) {
-        return { result: none('other-task', { current: { ...current, workflowTask: w.workflowTask }, note: `the watch belongs to task ${w.workflowTask}, not ${workflowTask}: this notification is another run's. Touch nothing; the watch stays armed.` }) };
+        let finished = false;
+        try {
+          finished = hasDoneMarker(day, w.phase);
+        } catch {
+          finished = false;
+        }
+        if (!finished) {
+          const rebind = `node scripts/state.mjs watch bind --phase ${w.phase} --session ${w.session} --date ${day} --attempt ${w.attempt} --workflow-task ${workflowTask}`;
+          return {
+            result: none('other-task', {
+              current: { ...current, workflowTask: w.workflowTask },
+              note: `the watch belongs to task ${w.workflowTask}, not ${workflowTask}: a notification of another task (an earlier attempt, the end of the heartbeat loop). Touch nothing; the watch stays armed. Only if this notification is the ${w.phase} Workflow's own result (it reports phase "${w.phase}") was the id bound at launch wrong: then run ${rebind} and this disarm again.`,
+            }),
+          };
+        }
+        taskMismatch = { bound: w.workflowTask, notified: workflowTask };
       }
     }
     // Spent once `watch check` recorded it, or once its due time has passed: send_later fires on the first whole minute at or after
     // dueAt, so its PHASEWATCH turn may already be queued behind this notification turn. A leftover finds the watch disarmed (stale).
     const timerFired = Boolean(w.firedAt || w.timerFiredAt) || at.getTime() >= w.dueMs;
+    const deleteTrigger = w.triggerId && !timerFired ? { trigger_id: w.triggerId } : null;
     const out = {
       ok: true,
       date: day,
@@ -847,7 +952,16 @@ export function disarmWatch({ date, phase, session, workflowTask, now, config = 
       triggerId: w.triggerId,
       workflowTask: w.workflowTask,
       timerFired,
-      deleteTrigger: w.triggerId && !timerFired ? { trigger_id: w.triggerId } : null,
+      deleteTrigger,
+      ...(deleteTrigger
+        ? { ifDeleteDenied: `update_trigger({ trigger_id: "${deleteTrigger.trigger_id}", enabled: false }); denied too: leave it, it fires into a stale \`watch check\` (PLAYBOOK 7.1a step 4, FM-120)` }
+        : {}),
+      ...(taskMismatch
+        ? {
+            taskMismatch,
+            note: `the notification names task ${workflowTask} but ${w.workflowTask} was bound; work/${day}/${w.phase}/DONE.json is on disk, so the ${w.phase} Workflow finished and this is its result: handled as its own notification`,
+          }
+        : {}),
     };
     if (w.disarmedAt) return { result: { ...out, disarmed: false, alreadyDisarmed: true, disarmedAt: w.disarmedAt } };
     run.watch.disarmedAt = nowIso;
@@ -889,7 +1003,8 @@ const STALE_INSTRUCTIONS = `Nothing else to do. ${SPENT_TIMER} End the turn.`;
 
 /**
  * check: what a PHASEWATCH line means right now. Always ok:true with a verdict (stale | early | overdue) and an `action` code
- * (nothing | re-arm | extend | retry | finish-by-hand | degrade; `next` repeats it for an overdue phase); never throws for
+ * (stale: nothing, or stop-zombie for a replaced session and arm for a restarted phase, as `instructions` say; early: re-arm;
+ * overdue: extend | retry | finish-by-hand | degrade | nothing, which `next` repeats); never throws for
  * a missing or damaged run or watch. An overdue verdict writes (once per watch, under the per-date lock, after the run was read a second
  * time, so a `phase-done` that raced the first read turns the verdict into stale): the `watch-fired` event for a retry, a degrade or a
  * finish by hand, or the moved-out due time (`extend`) when the Workflow's files are still changing. The timer that called is spent
@@ -909,6 +1024,25 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
   const base = { ok: true, date: day, phase, session, now: nowIso };
   const root = repoRoot();
 
+  // What a stale timer leaves to do is the PLAYBOOK 7.1a stale row: nothing, except for the codes that row names.
+  const staleInstructions = (c) => {
+    const task = c.watch?.workflowTask;
+    const stopIt =
+      phase === 'kaizen'
+        ? `TaskStop your kaizen Workflow (its id is in "$HOME/.sed-wf-${day}-kaizen", else the one the Workflow tool printed at launch)`
+        : `TaskStop your ${phase} Workflow (${task ? `TaskStop({ task_id: "${task}" })` : 'the task id the Workflow tool printed at launch'})`;
+    switch (c.code) {
+      case 'displaced':
+      case 'lease-held-by-other':
+        return `You were replaced (PLAYBOOK 6.6): ${stopIt}: it is a zombie now and writes into the new holder's files. Write nothing else. ${SPENT_TIMER} End the turn.`;
+      case 'restarted':
+        return `The ${phase} attempt that runs now has no watch of its own: arm one (PLAYBOOK 7.1a steps 3 to 6: watch arm, send_later, watch bind --attempt, sync). ${SPENT_TIMER} Then end the turn.`;
+      case 'expired':
+        return `Too old to act on: the next \`begin\` decides what happens to the run. ${STALE_INSTRUCTIONS}`;
+      default:
+        return STALE_INSTRUCTIONS;
+    }
+  };
   const staleOut = (c) => ({
     ...base,
     verdict: 'stale',
@@ -917,8 +1051,8 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
     triggerId: c.foreign ? null : (c.watch?.triggerId ?? null),
     deleteTrigger: null,
     timerFired: true,
-    action: 'nothing',
-    instructions: STALE_INSTRUCTIONS,
+    action: ['displaced', 'lease-held-by-other'].includes(c.code) ? 'stop-zombie' : c.code === 'restarted' ? 'arm' : 'nothing',
+    instructions: staleInstructions(c),
   });
   const earlyOut = (c) => {
     const w = c.watch;
@@ -972,7 +1106,8 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
     };
 
     // Still working? Then the watch moves out instead of the Workflow being stopped.
-    const ext = planExtension({ config, date: day, watch: w, facts, overdueMinutes: c.overdueMinutes, nowMs, manual: run.lease?.holder === 'manual' });
+    const manual = run.lease?.holder === 'manual';
+    const ext = planExtension({ config, date: day, watch: w, facts, overdueMinutes: c.overdueMinutes, nowMs, manual });
     if (ext) {
       const was = w.dueAt;
       const by = [role, run.lease?.holder].find((r) => ROLES.includes(r)) ?? 'watch';
@@ -994,7 +1129,7 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
           reason: `${phase} attempt ${w.attempt} fell due ${was} (${c.overdueMinutes} min ago) but a file under work/${day} changed ${facts.progress.minutesAgo} min ago: the Workflow is still working, so the watch moves out to ${ext.dueAt} (extension ${ext.n} of ${MAX_EXTENSIONS})`,
           degrade: null,
           repeat: false,
-          extension: { n: ext.n, max: MAX_EXTENSIONS, minutes: ext.minutes, dueAt: ext.dueAt, previousDueAt: was, clamped: ext.clamped },
+          extension: { n: ext.n, max: MAX_EXTENSIONS, minutes: ext.minutes, dueAt: ext.dueAt, previousDueAt: was, clamped: ext.clamped, windowMinutes: ext.windowMinutes },
           sendLater: sendLaterFor({ date: day, phase, attempt: w.attempt, session, dueAt: ext.dueAt, root }),
           steps: [
             `Do NOT stop ${phase}: its files are still changing (newest change ${facts.progress.minutesAgo} min ago). ${SPENT_TIMER}`,
@@ -1007,7 +1142,8 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
       };
     }
 
-    const plan = planOverdue({ run, config, watch: w, facts, role, date: day, session, overdueMinutes: c.overdueMinutes });
+    const roomMinutes = boundRoomMinutes({ config, date: day, phase, nowMs, manual });
+    const plan = planOverdue({ run, config, watch: w, facts, role, date: day, session, overdueMinutes: c.overdueMinutes, roomMinutes });
     const out = {
       ...common,
       dueAt: w.dueAt,
@@ -1019,7 +1155,15 @@ export function checkWatch({ date, phase, session, attempt, role, now, config = 
       maxAttempts: plan.maxAttempts,
       attemptsLeft: plan.attemptsLeft,
       degrade: plan.degrade,
+      ...(plan.tooLate ? { tooLate: true } : {}),
       ...(plan.fallback ? { fallback: plan.fallback } : {}),
+      ...(plan.next === 'nothing' ? { doneAgeMinutes: facts.doneAgeMinutes, notificationLost: !plan.awaitNotification } : {}),
+      ...(plan.awaitNotification
+        ? (() => {
+            const t = sendLaterFor({ date: day, phase, attempt: w.attempt, session, dueAt: new Date(nowMs + FOLLOW_UP_MINUTES * MIN_MS).toISOString(), root });
+            return { followUp: { ...t, name: `${t.name}-followup` } };
+          })()
+        : {}),
       repeat: Boolean(w.firedAt),
       steps: plan.steps,
     };

@@ -42,6 +42,12 @@ export const WATCH_STALE_AFTER_MINUTES = 15;
 // The watch falls due this long after the phase budget the Workflow was given (phasewatch.mjs arms it; the lease rule below uses the
 // same number to estimate how long a phase may take when no watch is visible).
 export const WATCH_MARGIN_MINUTES = 10;
+// The kaizen round is never extended (an extension writes the run file, and the round's tree must stay clean), and kaizen.js starts a
+// member while 15 minutes of its budget are left, so the last member of a healthy round ends up to that much past the budget (day 1:
+// 82 minutes against 75). Its watch falls due that much later than the others; the lease rule below widens its window the same way.
+export const KAIZEN_MEMBER_MINUTES = 15;
+/** Minutes between the end of the phase budget a Workflow was given and the moment its phase watch falls due. */
+export const watchMarginMinutes = (phase) => WATCH_MARGIN_MINUTES + (phase === 'kaizen' ? KAIZEN_MEMBER_MINUTES : 0);
 // Phases whose work lands in work/<date>/<dir>/ and is wiped when a takeover restarts them.
 const STAGING_DIRS = {
   ideate: ['ideate', 'ideas'],
@@ -585,7 +591,7 @@ export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false, hb
   const watchDue = watchLate === null ? NaN : isoMs(run.watch.dueAt);
   const watchLimit = Number.isFinite(watchDue) && start !== null ? round1((watchDue - start) / 60000 + WATCH_STALE_AFTER_MINUTES) : null;
   const budget = config.phaseBudgetMinutes?.[run.phase];
-  const budgetLimit = typeof budget === 'number' && Number.isFinite(budget) && budget > 0 ? round1(budget + WATCH_MARGIN_MINUTES + WATCH_STALE_AFTER_MINUTES) : null;
+  const budgetLimit = typeof budget === 'number' && Number.isFinite(budget) && budget > 0 ? round1(budget + watchMarginMinutes(run.phase) + WATCH_STALE_AFTER_MINUTES) : null;
   const allowance = watchLimit ?? budgetLimit;
   const stuckLimit = allowance !== null && allowance > baseLimit ? allowance : baseLimit;
   const stuck = (run.status === 'in_progress' || kaizenPending(run)) && run.phase !== 'done' && phaseMinutes !== null && phaseMinutes > stuckLimit;
