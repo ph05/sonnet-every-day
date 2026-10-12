@@ -1486,3 +1486,26 @@ test('watchdogs and the deadman Action: CONTRACT and PLAYBOOK describe what begi
   assert.ok(fs.existsSync(path.join(REPO_ROOT, '.github/workflows/sync-main.yml')));
   assert.match(read('.github/workflows/deadman.yml'), /cron: '40 13 \* \* \*'/);
 });
+
+// ---------------------------------------------------------------------------------------------
+// the operator transcripts of 2026-10-10 and 2026-10-11 (audit F9)
+// ---------------------------------------------------------------------------------------------
+
+test('transcripts: the usage guard wants a fresh get_session each turn, a heartbeat loop that ran out is restarted, a stale-clone warning is cured by the sync', () => {
+  const guard = section(PLAYBOOK, '### 6.5a Usage guard');
+  assert.match(guard, /in every turn that runs the guard/, 'five of seven guard calls on 2026-10-11 pasted an earlier reading');
+  const notification = PLAYBOOK.split('\n').find((l) => l.startsWith('**A task notification arrives.**'));
+  assert.ok(notification && /ran out while the watch is `armed` and not yet due/.test(notification) && /start the same loop command again/.test(notification), 'a heartbeat loop that ran out under a working Workflow is no echo (2026-10-11 09:32)');
+  assert.match(section(PLAYBOOK, '### 0.1 Turn card'), /the loop ran out under a still armed, not yet due watch/);
+  assert.match(section(PLAYBOOK, '### 5.4 closer'), /WARNING the site holds no page for it[^.]*suspect your clone first/);
+  const fm = read('ops/FAILURE_MODES.md');
+  for (const id of ['FM-135', 'FM-136']) assert.ok(new RegExp(`^\\| ${id} \\|`, 'm').test(fm), `${id} is missing`);
+  assert.match(fm, /^\| FM-113 \|.*WARNING the site holds no page for it.*`sync` \(it rebases onto origin\)/m);
+});
+
+test('transcripts: below 6 agent slots every workflow caps the default effort at high (2026-10-11 scouts took 9 times longer at max)', () => {
+  for (const w of ['ideate', 'select', 'spec', 'build', 'qa', 'revise', 'kaizen']) {
+    assert.match(read(`ops/workflows/${w}.js`), /const BASE_EFFORT = NARROW && \(LEVEL_EFFORT === 'max' \|\| LEVEL_EFFORT === 'xhigh'\) \? 'high' : LEVEL_EFFORT;/, w);
+  }
+  assert.match(section(PLAYBOOK, '### 6.5a Usage guard'), /below 6 slots the workflows cap the default effort at `high` by themselves/);
+});

@@ -92,7 +92,11 @@ const roleTitle = (r) => ROLE_TITLES[r] || String(r);
 
 // Effort: 'max' only for roles the level allows, everything else at the level's default effort.
 const EFFORTS = ['low', 'medium', 'high', 'xhigh', 'max'];
-const BASE_EFFORT = EFFORTS.includes(LC.defaultEffort) ? LC.defaultEffort : 'high';
+// On a narrow machine (fewer than 6 agent slots) scouts, judges, verifiers and kaizen members run in waves of 2, so every extra bit of
+// effort multiplies the wall clock: under the all-in level (max) the 2026-10-11 scouts took 1,090 to 2,213 s each against 124 to 197 s at
+// high on 2026-10-10, ideate ran 109 minutes instead of 29 and the page went live at 09:11. There the default effort is capped at high.
+const LEVEL_EFFORT = EFFORTS.includes(LC.defaultEffort) ? LC.defaultEffort : 'high';
+const BASE_EFFORT = NARROW && (LEVEL_EFFORT === 'max' || LEVEL_EFFORT === 'xhigh') ? 'high' : LEVEL_EFFORT;
 const MAX_ROLES = LC.maxEffortRoles === 'all' ? 'all' : Array.isArray(LC.maxEffortRoles) ? LC.maxEffortRoles : ['architect', 'engineer', 'critic'];
 const effortFor = (role) => (MAX_ROLES === 'all' || MAX_ROLES.includes(role) ? 'max' : BASE_EFFORT);
 

@@ -1520,7 +1520,9 @@ export function beginRun(opts) {
       role: opts.role,
       targetTier: p.targetTier,
       resumePhase: p.resumePhase,
-      reason: unbacked ? `${p.reason}; WARNING the site holds no page for it (${unbacked}): run \`deadman.mjs --force\` to repair` : p.reason,
+      reason: unbacked
+        ? `${p.reason}; WARNING the site holds no page for it (${unbacked}): if this clone may be behind origin (a closer that babysat is: begin merges only the run file), run \`state.mjs sync\` and \`begin\` again first; if the warning stays, run \`deadman.mjs --force\` to repair`
+        : p.reason,
       wrote,
       directiveAdded: p.directives.length > 0 && wrote,
       builtSiteAvailable: p.builtSiteAvailable,

@@ -3570,6 +3570,9 @@ describe('finish: a day is only published when its page and history entry exist'
     assert.equal(j.action, 'exit-published');
     assert.equal(j.publicationBacked, false);
     assert.match(j.reason, /no page for it/);
+    // 2026-10-11 09:12: a closer that had babysat for 24 minutes read this on a clone that was behind origin (begin merges only the
+    // run file, never state/history.json or docs/) and was told to run deadman.mjs --force; the page was in fact live.
+    assert.match(j.reason, /behind origin.*state\.mjs sync.*begin.*again.*deadman\.mjs --force/, 'the warning names the stale clone before the repair');
     assert.equal(j.wrote, false);
     assert.deepEqual(bytes(box, box.runFile()), before);
     assert.equal(good(st(box, ['status'], '07:28')).publicationBacked, false);

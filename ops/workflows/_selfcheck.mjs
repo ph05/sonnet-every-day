@@ -234,6 +234,9 @@ function baseArgs(sb, extra = {}) {
   };
 }
 
+// The owner override of 2026-10-11 ran the day at level all-in: default effort max for every agent (config.json budget.levels).
+const ALL_IN = { level: 'all-in', levelConfig: { outputTokens: 8000000, defaultEffort: 'max', maxEffortRoles: 'all', reviseLoops: 2, reserveForPublishTokens: 250000, capTokens: 7750000 }, capTokens: 7150000 };
+
 // ------------------------------------------------------------------ the fake runtime
 const ALLOWED_OPTS = new Set(['label', 'phase', 'schema', 'model', 'effort', 'isolation', 'agentType']);
 const EFFORTS = new Set(['low', 'medium', 'high', 'xhigh', 'max']);
@@ -1369,6 +1372,24 @@ describe('select.js', () => {
     checkPrograms(run);
     return run;
   }
+
+  test('below 6 slots the all-in level (effort max) judges at high; a wide machine keeps max (2026-10-11: eight judges took 273 to 548 s each)', async () => {
+    const s = makeSandbox();
+    let s2 = null;
+    try {
+      seedShortlist(s);
+      const narrow = await go(s, selectWorld(s), {}, { maxAgents: 2, ...ALL_IN });
+      checkRunInvariants('select', narrow);
+      const judges = narrow.rec.calls.filter((c) => c.label.startsWith('judge '));
+      assert.ok(judges.length > 0, `the narrow run judges (${judges.length} judge calls; the panel pairs criteria below 6 slots, so the count is not pinned here)`);
+      assert.deepEqual([...new Set(judges.map((c) => c.effort))], ['high']);
+      s2 = makeSandbox();
+      seedShortlist(s2);
+      const wide = await go(s2, selectWorld(s2), {}, { maxAgents: 8, ...ALL_IN });
+      const wideJudges = wide.rec.calls.filter((c) => c.label.startsWith(`judge `));
+      assert.ok(wideJudges.length > 0 && wideJudges.every((c) => c.effort === `max`), `a wide machine keeps the level effort`);
+    } finally { s.clean(); if (s2) s2.clean(); }
+  });
 
   test('the script weights and gates equal the JSON block in ops/rubrics/selection.md', async () => {
     const s = makeSandbox();
@@ -3256,6 +3277,20 @@ describe('kaizen.js', () => {
     return { run, world, result: plain(run.result) };
   }
 
+  test('below 6 slots the all-in level (effort max) runs the Sonnet members at high, so more of them fit the phase (2026-10-11: four of nine at 1,047 to 1,182 s each)', async () => {
+    const s = makeSandbox();
+    let s2 = null;
+    try {
+      const { run } = await go(s, { dayNumber: 3, maxAgents: 2, ...ALL_IN });
+      const members = run.rec.calls.filter((c) => KAIZEN_ROSTER.some((m) => c.label === `kaizen ${m}`) && c.label !== 'kaizen clerk');
+      assert.equal(members.length, 8);
+      assert.deepEqual([...new Set(members.map((c) => c.effort))], ['high']);
+      s2 = makeSandbox();
+      const wide = await go(s2, { dayNumber: 3, maxAgents: 8, ...ALL_IN });
+      assert.ok(wide.run.rec.calls.filter((c) => KAIZEN_ROSTER.some((m) => c.label === `kaizen ${m}`) && c.label !== 'kaizen clerk').every((c) => c.effort === 'max'), 'a wide machine keeps the level effort');
+    } finally { s.clean(); if (s2) s2.clean(); }
+  });
+
   test('normal day: nine members one at a time, rotated by the day number, each prompt complete', async () => {
     const s = makeSandbox();
     try {
@@ -4336,6 +4371,21 @@ describe('heartbeat pulse never gives up on failures, and the work gate follows 
       const wide = await runWorkflow('ideate', baseArgs(s2 = makeSandbox()), { world: ideateWorld(s2) });
       checkRunInvariants('ideate', wide);
       assert.ok(wide.rec.calls.some((c) => /^verify \S+/.test(c.label)) && !wide.rec.calls.some((c) => c.label.startsWith('verify-batch ')));
+    } finally { s.clean(); if (s2) s2.clean(); }
+  });
+
+  test('below 6 slots the all-in level (effort max) is capped at high for scouts and verifiers; a wide machine keeps max (2026-10-11 scouts took 9 times longer at max)', async () => {
+    const s = makeSandbox();
+    let s2 = null;
+    try {
+      const narrow = await runWorkflow('ideate', baseArgs(s, { maxAgents: 2, osHeartbeat: true, ...ALL_IN }), { world: ideateWorld(s) });
+      checkRunInvariants('ideate', narrow);
+      const work = narrow.rec.calls.filter((c) => c.model === 'sonnet' && /^(scout|verify|premortem|novelty reviser)/.test(c.label));
+      assert.ok(work.filter((c) => c.label.startsWith('scout ')).length >= 8 && work.some((c) => c.label.startsWith('verify')), work.map((c) => c.label).join(' | '));
+      assert.deepEqual([...new Set(work.map((c) => c.effort))], ['high'], 'narrow + all-in: nothing researched or verified at max');
+      const wide = await runWorkflow('ideate', baseArgs(s2 = makeSandbox(), { maxAgents: 8, ...ALL_IN }), { world: ideateWorld(s2) });
+      checkRunInvariants('ideate', wide);
+      assert.ok(wide.rec.calls.filter((c) => c.label.startsWith('scout ')).every((c) => c.effort === 'max'), 'a wide machine keeps the level effort');
     } finally { s.clean(); if (s2) s2.clean(); }
   });
 
