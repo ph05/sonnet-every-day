@@ -869,6 +869,13 @@ export function kaizenWorld(sb, cfg = {}) {
       const label = opts.label;
       if (label.startsWith('pulse')) return { ok: true, pushed: true, note: '' };
       if (label === 'kaizen status' || label.startsWith('kaizen check after')) { sink.status++; return statusAnswer(); }
+      if (label === 'kaizen verify' || label.startsWith('kaizen verify (')) { // and the clerk's one retry on sonnet
+        sink.verify = (sink.verify || 0) + 1;
+        sink.verifyPrompt = prompt;
+        if (cfg.verifyNull) return null;
+        if (cfg.verifyRefused) return { ran: true, ok: false, status: '', error: 'working tree is not clean (ops/roles/stray.md); verify judges HEAD as committed' };
+        return cfg.verifyRed ? { ran: true, ok: false, status: 'red', error: 'tests failed (exit 1) [tests/e2e.test.mjs > (m3) cross-references]', suspects: ['abc1234567 jester'] } : { ran: true, ok: true, status: 'green' };
+      }
       if (label === 'kaizen baseline') {
         sink.baseline++;
         sink.baselinePrompt = prompt;
@@ -3267,9 +3274,11 @@ describe('kaizen.js', () => {
       assert.deepEqual(result.results.map((r) => r.agent), order);
       for (const r of result.results) assert.deepEqual(Object.keys(r).sort(), ['agent', 'blocker', 'detail', 'observation', 'outcome', 'title', 'treeClean']);
       assert.ok(result.spend && result.spend.agentCalls >= 12);
-      // the call sequence: status, baseline, the nine members, wrap-up
+      // the call sequence: status, baseline, the nine members, wrap-up, then the round's one full run
       const labels = run.rec.calls.filter((c) => !c.label.startsWith('pulse')).map((c) => c.label);
-      assert.deepEqual(labels, ['kaizen status', 'kaizen baseline', ...order.map((m) => `kaizen ${m}`), 'kaizen wrap-up']);
+      assert.deepEqual(labels, ['kaizen status', 'kaizen baseline', ...order.map((m) => `kaizen ${m}`), 'kaizen wrap-up', 'kaizen verify']);
+      assert.deepEqual(result.verify, { ran: true, ok: true, status: 'green' });
+      assert.ok(world.sink.verifyPrompt.includes(`node scripts/kaizen.mjs verify --if-needed --date ${DATE}`) && world.sink.verifyPrompt.includes('DETACHED'));
       // models and effort: sonnet at the default effort (never max), the clerk member on haiku at medium
       for (const c of run.rec.calls.filter((x) => KAIZEN_ROSTER.some((m) => x.label === `kaizen ${m}`))) {
         const clerk = c.label === 'kaizen clerk';
@@ -3306,7 +3315,7 @@ describe('kaizen.js', () => {
         used.add(m[1]);
         for (const f of m[2].matchAll(/(?<![\w-])--([a-z][a-z-]*)/g)) assert.ok(gate.includes(`--${f[1]}`), `kaizen.mjs has no --${f[1]} (${c.label})`);
       }
-      assert.deepEqual([...used].sort(), ['begin', 'check', 'commit', 'digest', 'propose', 'scan', 'status']);
+      assert.deepEqual([...used].sort(), ['begin', 'check', 'commit', 'digest', 'propose', 'scan', 'status', 'verify']);
       for (const sub of used) assert.ok(new RegExp(`COMMANDS = \\[[^\\]]*'${sub}'`).test(gate), `kaizen.mjs has no ${sub} command`);
     } finally { s.clean(); }
   });
@@ -3597,6 +3606,64 @@ describe('kaizen.js', () => {
       assert.ok(run.rec.calls.some((c) => c.label === 'clock start') && run.rec.calls.some((c) => c.label === 'clock before pulse'));
       assert.ok(world.sink.prompts.pulse.includes(`${s.root}/work/2026-10-09/elsewhere/notes-pulse.md`));
       assert.ok(world.sink.prompts.pulse.includes('at most 77 changed lines') && world.sink.prompts.pulse.includes('in at most 2 files'));
+    } finally { s.clean(); }
+  });
+
+  test('queued members go first longest-waiting first (the queue file order), not in rotation order', async () => {
+    const s = makeSandbox();
+    try {
+      // day 2 rotates lab, jester, architect, artisan, engineer, critic, clerk, pulse, cards: rotation order would put critic before
+      // cards, but cards has waited longer (it is first in state/kaizen-queue.json), so cards goes first
+      const { world, result } = await go(s, { dayNumber: 2, queue: ['cards', 'critic'] }, { queueFile: ['cards', 'critic'] });
+      assert.deepEqual(world.sink.order.slice(0, 3), ['cards', 'critic', 'lab']);
+      assert.deepEqual(result.queue.clear, ['cards', 'critic']);
+    } finally { s.clean(); }
+  });
+
+  test('a red full verification after the round degrades the result and names the suspects; no commit means no verification', async () => {
+    const s = makeSandbox();
+    try {
+      const red = await go(s, { dayNumber: 0 }, { verifyRed: true });
+      assert.equal(red.world.sink.verify, 1);
+      assert.equal(red.result.ok, false);
+      assert.equal(red.result.degraded, true);
+      assert.equal(red.result.reason, 'verify-red');
+      assert.deepEqual(red.result.verify.suspects, ['abc1234567 jester']);
+      assert.ok(red.result.notes.includes('full verification RED') && red.result.notes.includes('abc1234567 jester'));
+      assert.ok(red.run.rec.logs.some((l) => l.startsWith('FULL VERIFICATION RED')));
+      // members that changed nothing: nothing to verify
+      const idle = await go(s, { dayNumber: 0 }, { member: Object.fromEntries(KAIZEN_ROSTER.map((m) => [m, { outcome: 'skipped' }])) });
+      assert.equal(idle.world.sink.verify || 0, 0);
+      assert.equal(idle.result.verify.ran, false);
+      // a lost verify clerk is logged, never a failure of the round
+      const lostV = await go(s, { dayNumber: 0 }, { verifyNull: true });
+      assert.equal(lostV.result.ok, true);
+      assert.equal(lostV.world.sink.verify, 2, 'the haiku clerk and its one sonnet retry');
+      assert.equal(lostV.result.verify.why, 'clerk-failed');
+      assert.ok(lostV.run.rec.logs.some((l) => l.includes('kaizen.mjs verify --if-needed yourself')));
+      // a refusal (a dirty tree, a held lock) judged nothing: it is not a red verification
+      const refused = await go(s, { dayNumber: 0 }, { verifyRefused: true });
+      assert.equal(refused.result.ok, true);
+      assert.deepEqual([refused.result.verify.ran, refused.result.verify.why], [false, 'refused']);
+      assert.ok(refused.run.rec.logs.some((l) => l.startsWith('full verification refused')));
+    } finally { s.clean(); }
+  });
+
+  test('a member that reports its clock reading spares the next clock clerk; verify is deferred when the budget is short', async () => {
+    const s = makeSandbox();
+    try {
+      const later = Date.now() + 4 * 60000; // the first member reports a status read 4 minutes into the round
+      const { run, world, result } = await go(s, { dayNumber: 0, phaseBudgetMinutes: 13, members: ['pulse', 'clerk'] }, { member: { pulse: { at: later } } });
+      const clocks = run.rec.calls.filter((c) => c.label.startsWith('clock ')).map((c) => c.label);
+      assert.ok(clocks.includes('clock start') && clocks.includes('clock before pulse'));
+      assert.ok(!clocks.includes('clock before clerk'), `the member's own reading is the clock: ${clocks.join(', ')}`);
+      // 13 - 4 = 9 minutes left: the clerk may not start (needs 12) and the full verification is left to the next cold begin (needs 10)
+      assert.deepEqual(world.sink.order, ['pulse']);
+      assert.deepEqual(result.skippedWhy, { clerk: 'phase-time' });
+      assert.deepEqual(result.verify, { ran: false, why: 'phase-time' });
+      assert.equal(world.sink.verify || 0, 0);
+      assert.ok(result.notes.includes('full verification not run (phase-time)'));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('full verification deferred')));
     } finally { s.clean(); }
   });
 });

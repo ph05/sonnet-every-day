@@ -13,6 +13,7 @@ import { REPO_ROOT, TEST_CONFIG } from './helpers/sandbox.mjs';
 import { localParts } from '../scripts/lib/common.mjs';
 import {
   fold, badPathReason, isProtected, isAllowed, parseProtected, checkProtectedBlocks, jsContextAt, compareCounts, renderLog, lexSource, testMetrics, failedTests,
+  gatePlan, GATE_MAP, E2E_DOCS_PATTERN, mergeSuites,
 } from '../scripts/kaizen.mjs';
 
 const KAIZEN = path.join(REPO_ROOT, 'scripts', 'kaizen.mjs');
@@ -258,6 +259,101 @@ describe('protected blocks', () => {
   test('marker count may not fall even when the markers are in an odd format', () => {
     const head = 'a // protected:begin inline\nb\n';
     assert.deepEqual(rules(head, 'a\nb\n'), ['protected-marker-count']);
+  });
+});
+
+describe('the selective gate: which suites a diff runs', () => {
+  test('doc paths run validate plus the suites that read them; scripts/, tests/, site-src/, lenses.json or an unknown path run everything', () => {
+    const docs = gatePlan(['ops/roles/lab.md', 'ops/CULTURE.md']);
+    assert.deepEqual([docs.tier, docs.selfcheck, docs.files], ['docs', true, ['e2e:docs', 'tests/playbook.test.mjs']]);
+    const pb = gatePlan(['ops/PLAYBOOK.md', 'README.md']);
+    assert.deepEqual(pb.files, ['e2e:docs', 'tests/playbook.test.mjs', 'tests/revise-policy.test.mjs']);
+    assert.equal(pb.selfcheck, true, 'the selfcheck runs the playbook\'s own A1 snippet');
+    const fm = gatePlan(['ops/FAILURE_MODES.md']);
+    assert.deepEqual([fm.selfcheck, fm.files], [false, ['e2e:docs', 'tests/playbook.test.mjs']]);
+    assert.ok(gatePlan(['ops/templates/page-shell.html']).files.includes('tests/qa.test.mjs'), 'qa.test reads the live page shell');
+    const wf = gatePlan(['ops/workflows/ideate.js', 'ops/rubrics/research.md']);
+    assert.deepEqual([wf.tier, wf.selfcheck], ['workflows', true]);
+    assert.ok(wf.files.includes('tests/revise-policy.test.mjs'));
+    for (const paths of [['scripts/foo.mjs'], ['ops/roles/lab.md', 'tests/a.test.mjs'], ['site-src/gallery.css'], ['ops/lenses.json'], ['ops/other.md'], []]) {
+      const p = gatePlan(paths);
+      assert.deepEqual([p.tier, p.selfcheck, p.files], ['full', true, null], paths.join(','));
+    }
+    assert.match(gatePlan(['ops/roles/lab.md', 'scripts/foo.mjs']).why, /scripts\/foo\.mjs is outside the doc paths/);
+  });
+
+  test('every selective row runs the doc suite, and only paths a kaizen may edit are mapped', () => {
+    for (const row of GATE_MAP) {
+      assert.ok(row.files.includes('tests/playbook.test.mjs'), row.paths.join(','));
+      for (const p of row.paths) assert.ok(isAllowed(p.endsWith('/') ? `${p}x.md` : p, KZ.allowedPaths), `${p} is not an allowed path`);
+      for (const p of row.paths) assert.ok(!['scripts/', 'tests/', 'site-src/'].some((a) => p.startsWith(a)), `${p} must run every suite`);
+    }
+  });
+
+  // The proof of the map, kept true: every suite that reads a live doc (a path joined to the repo root, or a reader bound to it) must be
+  // listed in that doc's row, and every e2e scenario that reads a doc (live, or the copy in its sandbox) must match E2E_DOCS_PATTERN.
+  const strip = (t) => t.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, '')).replace(/(^|[\s;{}(),])\/\/.*$/gm, '$1');
+  const SEGS = String.raw`((?:\s*['"\`][^'"\`\n]*['"\`]\s*,?)+)`;
+  const joinSegs = (s) => [...s.matchAll(/['"`]([^'"`\n]*)['"`]/g)].map((m) => m[1]).join('/').replace(/\/+/g, '/');
+  const rowOf = (p) => GATE_MAP.find((r) => r.paths.some((a) => (a.endsWith('/') ? `${p}/`.startsWith(a) : p === a)));
+  function liveDocReads(text) {
+    const out = new Set();
+    const code = strip(text);
+    for (const m of code.matchAll(new RegExp(String.raw`\b(?:REPO_ROOT|REAL_ROOT|REAL_REPO|REPO|ROOT)\s*,${SEGS}`, 'g'))) out.add(joinSegs(m[1]));
+    for (const m of code.matchAll(new RegExp(String.raw`(?<![.\w])(?:read|readRepo|listDir)\(${SEGS}`, 'g'))) out.add(joinSegs(m[1]));
+    return [...out].filter((p) => rowOf(p));
+  }
+
+  test('the gate map lists every suite that reads a live doc (grep of tests/*.test.mjs and the selfcheck)', () => {
+    const files = fs.readdirSync(path.join(REPO_ROOT, 'tests')).filter((f) => f.endsWith('.test.mjs')).map((f) => `tests/${f}`);
+    const seen = [];
+    for (const f of [...files, 'ops/workflows/_selfcheck.mjs']) {
+      if (f === 'tests/e2e.test.mjs') continue; // judged scenario by scenario below
+      for (const doc of liveDocReads(fs.readFileSync(path.join(REPO_ROOT, f), 'utf8'))) {
+        const row = rowOf(doc);
+        seen.push(`${f} ${doc}`);
+        if (f === 'ops/workflows/_selfcheck.mjs') assert.ok(row.selfcheck, `the selfcheck reads ${doc}: its row must run the selfcheck`);
+        else assert.ok(row.files.includes(f), `${f} reads ${doc}: add it to the row of ${row.paths.join(', ')} in GATE_MAP`);
+      }
+    }
+    // the grep finds the readers the map was built from (a grep that finds nothing proves nothing)
+    for (const must of ['tests/playbook.test.mjs ops/PLAYBOOK.md', 'tests/revise-policy.test.mjs ops/PLAYBOOK.md', 'tests/qa.test.mjs ops/templates/page-shell.html', 'ops/workflows/_selfcheck.mjs ops/rubrics/selection.md']) {
+      assert.ok(seen.includes(must), `the grep no longer sees ${must}: ${seen.join('; ')}`);
+    }
+  });
+
+  test('every e2e scenario that reads a doc, live or in its sandbox, is in the e2e doc subset', () => {
+    const lines = strip(fs.readFileSync(path.join(REPO_ROOT, 'tests', 'e2e.test.mjs'), 'utf8')).split('\n');
+    const starts = lines.map((l, i) => [i, /^ {2}test\('(\([^)]+\))/.exec(l)?.[1]]).filter(([, id]) => id);
+    const DOC_USE = /\bPLAYBOOK\b(?!\.md| \d)|\bpushBudget\(|\bDOC_FILES\b|['"`][^'"`\n]*?(?:ops\/roles\/|ops\/rubrics\/|CULTURE\.md|PLAYBOOK\.md|FAILURE_MODES\.md|OPERATING\.md|README\.md|ops\/templates\/|ops\/workflows\/[\w-]+\.js)/;
+    const pattern = new RegExp(E2E_DOCS_PATTERN);
+    const readers = [];
+    starts.forEach(([at, id], k) => {
+      const body = lines.slice(at + 1, k + 1 < starts.length ? starts[k + 1][0] : lines.length).join('\n'); // the title line is not a read
+      if (DOC_USE.test(body) || liveDocReads(body).length) readers.push(id);
+    });
+    assert.ok(readers.includes('(kz1)') && readers.includes('(m)') && readers.length >= 8, readers.join(' '));
+    for (const id of readers) assert.match(`${id} x`, pattern, `${id} reads a doc: E2E_DOCS_PATTERN must select it`);
+  });
+
+  test('a selective run is judged file by file, and its baseline keeps every other file', () => {
+    const c = (pass, extra = {}) => ({ tests: pass, pass, fail: 0, cancelled: 0, skipped: 0, todo: 0, ...extra });
+    const base = { selfcheck: { ok: true, counts: c(2) }, tests: { ok: true, counts: c(15), files: { 'tests/a.test.mjs': { ok: true, ms: 9, counts: c(5) }, 'tests/b.test.mjs': { ok: true, ms: 9, counts: c(10) } } } };
+    const partial = (counts) => ({ tests: { ok: true, partial: true, counts, files: { 'tests/b.test.mjs': { ok: true, ms: 3, counts } } } });
+    assert.deepEqual(compareCounts(base, partial(c(10))), [], 'the sum of a subset is not compared with the sum of every file');
+    assert.match(compareCounts(base, partial(c(9))).join(), /tests \(tests\/b\.test\.mjs\): passing tests dropped from 10 to 9/);
+    assert.match(compareCounts(base, partial(c(10, { skipped: 1 }))).join(), /skipped tests rose/);
+    const subset = { tests: { ok: true, partial: true, counts: c(3), files: { 'tests/e2e.test.mjs#docs': { ok: true, ms: 1, counts: c(3), pattern: 'x' } } } };
+    assert.deepEqual(compareCounts(base, subset), [], 'a name-filtered file the baseline has not seen only has to pass');
+    assert.match(compareCounts(base, { tests: { ...subset.tests, files: { 'tests/e2e.test.mjs#docs': { ok: false, counts: c(2, { fail: 1 }), pattern: 'x' } } } }).join(), /1 failing/);
+    const merged = mergeSuites(base, partial(c(11)));
+    assert.equal(merged.tests.files['tests/a.test.mjs'].counts.pass, 5, 'files the diff cannot reach keep their result');
+    assert.equal(merged.tests.counts.pass, 16, 'the sum is taken again over every whole file');
+    assert.equal(merged.tests.partial, undefined);
+    assert.equal(merged.selfcheck.counts.pass, 2);
+    const withSubset = mergeSuites(merged, subset);
+    assert.equal(withSubset.tests.counts.pass, 16, 'a name-filtered run is kept apart from the sums');
+    assert.ok(withSubset.tests.files['tests/e2e.test.mjs#docs']);
   });
 });
 
@@ -1328,7 +1424,7 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     fs.writeFileSync(mark, 'seen'); // the baseline run passes...
     assert.equal(repo.kz(['begin', '--agent', 'lab', '--date', D], env).code, 0);
     fs.rmSync(mark); // ...and the next run of the test fails once
-    repo.w('ops/roles/lab.md', '# Lab\n\nbetter\n');
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n'); // site-src/ runs every suite (a doc path would not reach tests/)
     const r = repo.kz(commitArgs('lab'), env);
     assert.equal(r.code, 0, JSON.stringify(r.json));
     assert.equal(r.json.status, 'applied');
@@ -1384,7 +1480,7 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     const mark = outside('mark');
     const env = { FLAKY_MARK: mark };
     const repo = makeRepo({ 'tests/flaky.test.mjs': STUB_FLAKY_ONCE });
-    for (const [agent, file] of [['pulse', 'ops/roles/lab.md'], ['cards', 'site-src/gallery.css']]) {
+    for (const [agent, file] of [['pulse', 'site-src/gallery.css'], ['cards', 'site-src/gallery.css']]) {
       fs.writeFileSync(mark, 'seen');
       assert.equal(repo.kz(['begin', '--agent', agent, '--date', D], env).code, 0);
       fs.rmSync(mark);
@@ -1401,7 +1497,7 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     const repo = makeRepo({ 'tests/red.test.mjs': STUB_RED_ON_DEMAND });
     const env = { RUN_LOG: log };
     assert.equal(repo.kz(['begin', '--agent', 'engineer', '--date', D], env).code, 0);
-    repo.w('ops/roles/lab.md', '# Lab\n\nbetter\n');
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n');
     const r = repo.kz(commitArgs('engineer'), { ...env, GO_RED: '1' });
     assert.equal(r.code, 1, JSON.stringify(r.json));
     assert.equal(r.json.status, 'rejected');
@@ -1432,14 +1528,14 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     fs.writeFileSync(counter, '5'); // the baseline run: neither test fails
     assert.equal(repo.kz(['begin', '--agent', 'jester', '--date', D], env).code, 0);
     fs.writeFileSync(counter, '0'); // first run: the first test fails; re-run: the second one does
-    repo.w('ops/roles/lab.md', '# Lab\n\nbetter\n');
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n');
     const r = repo.kz(commitArgs('jester'), env);
     assert.equal(r.code, 1, JSON.stringify(r.json));
     assert.match(r.json.reason, /^tests failed \(exit 1\), and failed again on the automatic re-run \[tests\/flip\.test\.mjs > fails on the second run only\]/);
     assert.deepEqual(r.json.flaky, [{ suite: 'tests', rescued: false, tests: ['tests/flip.test.mjs > fails on the first run only', 'tests/flip.test.mjs > fails on the second run only'] }]);
     assert.deepEqual(suspects(repo).map((x) => x.test).sort(), ['tests/flip.test.mjs > fails on the first run only', 'tests/flip.test.mjs > fails on the second run only']);
     assert.equal(repo.status(), '?? state/flaky-suspects.json', 'only the advisory list is left; the member\'s change was restored');
-    assert.equal(repo.r('ops/roles/lab.md'), '# Lab\n\nplain text\n');
+    assert.equal(repo.r('site-src/gallery.css'), 'body { color: red; }\n');
   });
 
   test('the re-run starts from an empty temp directory: a cache the first run left behind cannot rescue a failure a fresh container would hit again', () => {
@@ -1453,7 +1549,7 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     fs.writeFileSync(cache, 'warm'); // the baseline runs warm and passes
     assert.equal(repo.kz(['begin', '--agent', 'jester', '--date', D], env).code, 0);
     fs.rmSync(cache); // the member's run starts cold
-    repo.w('ops/roles/lab.md', '# Lab\n\nbetter\n');
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n');
     const r = repo.kz(commitArgs('jester'), env);
     assert.equal(r.code, 1, JSON.stringify(r.json));
     assert.equal(r.json.status, 'rejected');
@@ -1463,6 +1559,24 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     assert.ok(fs.existsSync(cache), 'the first run did warm the shared temp dir');
     assert.deepEqual(fs.readdirSync(priv).filter((n) => n.startsWith('sed-kaizen-rerun-')), [], 'the re-run\'s own temp dir is removed again');
     assert.equal(repo.status(), '', 'the rejection restored the tree');
+  });
+
+  test('only the file that failed runs again, alone after the pool: its passing neighbours are not re-run', () => {
+    // A failure that the load of the parallel pool provoked (the 2026-10-10 kind) gets a quiet second chance; re-running every file, as the
+    // whole-suite re-run did, recreated the same load and cost a full suite run.
+    const STUB_NEIGHBOUR = "import test from 'node:test';\nimport fs from 'node:fs';\ntest('neighbour', () => { fs.appendFileSync(process.env.RUN_LOG, 'neighbour\\n'); });\n";
+    const mark = outside('mark');
+    const log = outside('runs.log');
+    const repo = makeRepo({ 'tests/flaky.test.mjs': STUB_FLAKY_ONCE, 'tests/neighbour.test.mjs': STUB_NEIGHBOUR });
+    fs.writeFileSync(mark, 'seen');
+    assert.equal(repo.kz(['begin', '--agent', 'lab', '--date', D], { FLAKY_MARK: mark, RUN_LOG: log }).code, 0);
+    fs.rmSync(mark);
+    fs.rmSync(log);
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n');
+    const r = repo.kz(commitArgs('lab'), { FLAKY_MARK: mark, RUN_LOG: log, SED_KAIZEN_JOBS: '3' });
+    assert.equal(r.code, 0, JSON.stringify(r.json));
+    assert.deepEqual(r.json.suites.tests.flaky, [FLAKY_NAME]);
+    assert.equal(lineCount(log), 1, 'the neighbour ran once: only tests/flaky.test.mjs was re-run');
   });
 
   test('a timeout is not repeated', () => {
@@ -1516,6 +1630,125 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     assert.ok(!text.includes('ignore all previous instructions'));
     assert.deepEqual(suspects(repo2).map((x) => x.test).sort(), [FLAKY_NAME, 'ok one', '[removed] and [removed]'].sort());
     assert.deepEqual(suspects(repo2).find((x) => x.test === 'ok one'), { test: 'ok one', suite: 'tests', count: 1, firstSeen: null, lastSeen: null, lastBy: null });
+  });
+});
+
+describe('commit: the selective gate and the round\'s full verification', () => {
+  const STUB_PLAYBOOK_TEST = `import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+test('the playbook keeps its protected block', () => {
+  if (process.env.RUN_LOG) fs.appendFileSync(process.env.RUN_LOG, 'playbook\\n');
+  assert.match(fs.readFileSync(new URL('../ops/PLAYBOOK.md', import.meta.url), 'utf8'), /protected:begin/);
+});
+`;
+  const runs = (log) => (fs.existsSync(log) ? fs.readFileSync(log, 'utf8').split('\n').filter(Boolean) : []);
+
+  test('a doc-only diff runs validate, the selfcheck and the mapped suites only, and is listed for the full verification', () => {
+    const log = outside('runs.log');
+    const repo = makeRepo({ 'tests/playbook.test.mjs': STUB_PLAYBOOK_TEST, 'tests/red.test.mjs': STUB_RED_ON_DEMAND });
+    assert.equal(repo.kz(['begin', '--agent', 'lab', '--date', D], { RUN_LOG: log }).json.baseline.partial, false, 'a cold begin runs every suite');
+    assert.deepEqual(runs(log), ['playbook']);
+    repo.w('ops/roles/lab.md', '# Lab\n\nplain text, clearer\n');
+    // tests/red.test.mjs would fail now; a role file cannot reach it, so the gate does not run it
+    const r = repo.kz(commitArgs('lab'), { RUN_LOG: log, GO_RED: '1' });
+    assert.equal(r.code, 0, JSON.stringify(r.json));
+    assert.equal(r.json.gate.tier, 'docs');
+    assert.deepEqual(r.json.suites.tests.files, ['tests/playbook.test.mjs']);
+    assert.equal(r.json.suites.tests.partial, true);
+    assert.equal(r.json.suites.selfcheck.pass, 2);
+    assert.deepEqual(runs(log), ['playbook', 'playbook'], 'red.test.mjs never ran in the selective gate');
+    assert.match(repo.git('log', '-1', '--format=%B', r.json.sha), /^Kaizen-Gate: docs$/m);
+    const next = begin(repo, 'cards');
+    assert.equal(next.json.baseline.cached, true);
+    assert.equal(next.json.baseline.partial, true);
+    assert.equal(next.json.baseline.unverified, 1);
+    assert.equal(next.json.baseline.suites.tests.pass, 7, 'the carried baseline still sums every file (5 + playbook + red)');
+    assert.deepEqual(repo.kz(['status', '--date', D]).json.verification, { state: 'partial', unverified: 1 });
+    // a full-tier change after it is judged against the carried counts
+    repo.w('site-src/gallery.css', 'body { color: blue; }\n');
+    const full = repo.kz(commitArgs('cards', { title: 'css' }), { RUN_LOG: log });
+    assert.equal(full.code, 0, JSON.stringify(full.json));
+    assert.equal(full.json.gate.tier, 'full');
+    assert.equal(full.json.suites.tests.pass, 7);
+    assert.deepEqual(repo.kz(['status', '--date', D]).json.verification, { state: 'full', unverified: 0 }, 'a full gate covers what came before');
+  });
+
+  test('verify runs every suite at HEAD: green makes the baseline full, red names the commits that skipped suites and blocks the next begin', () => {
+    const log = outside('runs.log');
+    const repo = makeRepo({ 'tests/playbook.test.mjs': STUB_PLAYBOOK_TEST, 'tests/red.test.mjs': STUB_RED_ON_DEMAND });
+    assert.equal(repo.kz(['begin', '--agent', 'jester', '--date', D], { RUN_LOG: log }).code, 0);
+    repo.w('ops/CULTURE.md', 'A small, true sentence.\n');
+    const c = repo.kz(commitArgs('jester'), { RUN_LOG: log, GO_RED: '1' });
+    assert.equal(c.code, 0, JSON.stringify(c.json));
+    // the slip: a suite the selective gate skipped is red at HEAD
+    const red = repo.kz(['verify', '--date', D], { RUN_LOG: log, GO_RED: '1' });
+    assert.equal(red.code, 1, JSON.stringify(red.json));
+    assert.equal(red.json.status, 'red');
+    assert.match(red.json.error, /tests failed .*tests\/red\.test\.mjs > red on demand/);
+    assert.deepEqual(red.json.suspects.map((s) => [s.sha, s.agent, s.tier]), [[c.json.sha, 'jester', 'docs']]);
+    assert.match(red.json.hint, /"Revert one" of ops\/OPERATING\.md\. The operator never reverts a kaizen by itself/);
+    assert.equal(runs(log).filter((l) => l === 'run').length, 2, 'the red file: one run and its one re-run, alone');
+    assert.deepEqual(repo.kz(['status', '--date', D]).json.verification, { state: 'red', unverified: 1 });
+    const blocked = begin(repo, 'cards');
+    assert.equal(blocked.code, 1);
+    assert.match(blocked.json.error, /already fail at HEAD \(tests failed .*tests\/red\.test\.mjs > red on demand.*skipped suites in a selective gate: [0-9a-f]{10} \(jester, docs\)/);
+    // once the cause is gone, verify is green and the next begin is served from the full baseline it stored
+    const green = repo.kz(['verify', '--date', D], { RUN_LOG: log });
+    assert.equal(green.code, 0, JSON.stringify(green.json));
+    assert.deepEqual([green.json.status, green.json.ran, green.json.verified], ['green', true, [c.json.sha]]);
+    // the round's own queue write (state/, the orchestrator's) does not stop it; --if-needed is free on a full green HEAD
+    repo.w('state/kaizen-queue.json', '{"schema":1,"skipped":["cards"]}\n');
+    const free = repo.kz(['verify', '--if-needed', '--date', D]);
+    assert.deepEqual([free.code, free.json.ok, free.json.ran], [0, true, false], JSON.stringify(free.json));
+    repo.git('checkout', '--', 'state/kaizen-queue.json');
+    const after = begin(repo, 'cards');
+    assert.equal(after.code, 0, JSON.stringify(after.json));
+    assert.deepEqual([after.json.baseline.cached, after.json.baseline.partial], [true, false]);
+    // a dirty tree is refused: verify judges HEAD as committed
+    repo.w('ops/roles/lab.md', 'dirty\n');
+    assert.match(repo.kz(['verify', '--date', D]).json.error, /not clean/);
+  });
+
+  test('without a baseline record (a new HEAD, a lost temp dir) the suspects come from the Kaizen-Gate trailers', () => {
+    const repo = makeRepo({ 'tests/red.test.mjs': STUB_RED_ON_DEMAND });
+    assert.equal(begin(repo, 'pulse').code, 0);
+    repo.w('ops/OPERATING.md', 'Clearer.\n');
+    const c = repo.kz(commitArgs('pulse'), { GO_RED: '1', RUN_LOG: outside('runs.log') });
+    assert.equal(c.code, 0, JSON.stringify(c.json));
+    fs.rmSync(gateStateDir(repo.root), { recursive: true, force: true });
+    const r = repo.kz(['begin', '--agent', 'cards', '--date', D], { GO_RED: '1', RUN_LOG: outside('runs.log') });
+    assert.equal(r.code, 1);
+    assert.deepEqual(r.json.suspects.map((s) => [s.sha, s.agent, s.tier, s.files]), [[c.json.sha, 'pulse', 'docs', ['ops/OPERATING.md']]]);
+  });
+
+  test('a suite the map does not know still runs when its code names the changed file or directory (a role edit that breaks it is rejected)', () => {
+    // the e2e sandboxes carry such a stub: it fails when a role file holds a marker, and their kaizen days rely on it
+    const READER = "import test from 'node:test';\nimport assert from 'node:assert/strict';\nimport fs from 'node:fs';\nimport path from 'node:path';\n"
+      + "test('no role file holds the marker', () => {\n  const dir = path.join(process.env.SED_ROOT, 'ops', 'roles');\n"
+      + "  for (const f of fs.readdirSync(dir)) assert.ok(!fs.readFileSync(path.join(dir, f), 'utf8').includes('BREAK-ME'), f);\n});\n";
+    const repo = makeRepo({ 'tests/roles-reader.test.mjs': READER });
+    assert.equal(begin(repo, 'pulse').code, 0);
+    repo.w('ops/roles/lab.md', '# Lab\n\nBREAK-ME\n');
+    const r = repo.kz(commitArgs('pulse'));
+    assert.equal(r.code, 1, JSON.stringify(r.json));
+    assert.match(r.json.reason, /tests failed .*tests\/roles-reader\.test\.mjs > no role file holds the marker/);
+    assert.equal(repo.r('ops/roles/lab.md'), '# Lab\n\nplain text\n');
+    const plan = gatePlan(['ops/roles/lab.md'], repo.root);
+    assert.ok(plan.files.includes('tests/roles-reader.test.mjs') && !plan.files.includes('tests/a.test.mjs'), plan.files.join(','));
+  });
+
+  test('a proposal keeps the next begin warm: the baseline carries over to the new HEAD and the proposal waits for verification', () => {
+    const repo = makeRepo();
+    assert.equal(begin(repo, 'architect').code, 0);
+    repo.w(`work/${D}/tmp/proposal.md`, 'Raise the cap.\n');
+    const p = repo.kz(['propose', '--agent', 'architect', '--date', D, '--title', 'Raise a cap', '--body-file', repo.p(`work/${D}/tmp/proposal.md`)]);
+    assert.equal(p.code, 0, JSON.stringify(p.json));
+    assert.match(repo.git('log', '-1', '--format=%B', p.json.sha), /^Kaizen-Gate: proposal$/m);
+    const next = begin(repo, 'artisan');
+    assert.equal(next.code, 0, JSON.stringify(next.json));
+    assert.equal(next.json.baseline.cached, true, 'no cold run of every suite after a proposal');
+    assert.equal(next.json.baseline.unverified, 1);
   });
 });
 

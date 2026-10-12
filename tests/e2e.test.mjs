@@ -3439,7 +3439,7 @@ describe('e2e', () => {
     assert.ok(rows.length > 90, `only ${rows.length} commands found: the extractor is broken`);
     const table = stateFlagTable();
     assert.deepEqual([...table.keys()].sort(), ['ack-directive', 'beat', 'begin', 'choose', 'directive', 'event', 'fail', 'finish', 'phase-done', 'phase-start', 'revise', 'skip-phase', 'spend', 'status', 'sync', 'throttle', 'today', 'usage', 'watch']);
-    assert.deepEqual([...kaizenUsage().keys()].sort(), ['begin', 'check', 'commit', 'digest', 'propose', 'queue', 'scan', 'status']);
+    assert.deepEqual([...kaizenUsage().keys()].sort(), ['begin', 'check', 'commit', 'digest', 'propose', 'queue', 'scan', 'status', 'verify']);
     const problems = [];
     for (const row of rows) for (const p of lintCommand(row, table)) problems.push(`${row.file}:${row.line}: ${p} :: node ${row.script}${row.rest.trimEnd().slice(0, 80)}`);
     assert.deepEqual(problems, []);

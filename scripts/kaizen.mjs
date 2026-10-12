@@ -9,8 +9,14 @@
 //   check   [--agent A] [--evidence TEXT]             working tree vs HEAD against every rule; read-only
 //   commit  --agent A --title T --observation O --category C [--question Q] [--evidence E] [--date D]
 //   propose --agent A --title T --body-file F [--observation O] [--category C] [--date D]
-//   status  [--date D]                                tree state, ledger counts, who is still to go today
+//   status  [--date D]                                tree state, ledger counts, who is still to go today, verification state
 //   queue   [--skip a,b] [--clear a,b]                members skipped by a budget stop (they go first tomorrow)
+//   verify  [--if-needed] [--date D]                  every suite at HEAD: the round's one full run after selective gates
+//
+// The selective gate (GATE_MAP, ops/kaizen/README.md): `commit` runs validate plus only the suites that read what the diff touches
+// when every path is a doc path (roles, rubrics, CULTURE, PLAYBOOK, FAILURE_MODES, OPERATING, README, templates, proposals,
+// workflows); scripts/, tests/, site-src/ and anything else run every suite. A cold `begin` (a new HEAD) always runs every suite, and
+// `verify` runs them once more at the end of a round that used selective gates; a red full run names the commits that skipped suites.
 //
 // Design rules: git runs through execFile with argument arrays (never a shell) and literal pathspecs; the
 // rules come from the COMMITTED config.json so an agent cannot loosen them by editing the working copy;
@@ -800,17 +806,129 @@ async function withLock(root, name, fn) {
   }
 }
 
-// ---------------------------------------------------------------------------------------------- suites
+// ---------------------------------------------------------------------------------------------- suites and the selective gate
 
-const SUITES = [
-  { name: 'validate', args: ['scripts/validate.mjs', 'repo'], timeoutMs: 180_000, counts: false },
-  { name: 'selfcheck', args: ['--test-reporter=tap', 'ops/workflows/_selfcheck.mjs'], timeoutMs: 600_000, counts: true },
-  { name: 'tests', args: ['--test', '--test-reporter=tap', 'tests/*.test.mjs'], timeoutMs: 1_800_000, counts: true },
+// Three suites, as before: validate (scripts/validate.mjs repo), selfcheck (ops/workflows/_selfcheck.mjs) and tests (tests/*.test.mjs).
+// selfcheck and every test file now run as separate `node --test` processes in one pool of gateJobs() workers (what `npm test` does
+// with one invocation), longest first, so a file's counts, time, timeout and re-run are its own; `tests` reports their sum.
+const VALIDATE_SUITE = { name: 'validate', args: ['scripts/validate.mjs', 'repo'], timeoutMs: 180_000, counts: false };
+const SELFCHECK_FILE = 'ops/workflows/_selfcheck.mjs';
+const SELFCHECK_TIMEOUT_MS = 600_000;
+const TEST_FILE_TIMEOUT_MS = 1_800_000;
+const E2E_FILE = 'tests/e2e.test.mjs';
+/**
+ * The e2e scenarios that read a live doc or the copy of one in their sandbox: the doc lint and its cousins (m, m2..m6: every command,
+ * field and cross-reference the docs name), the kaizen days (kz1..kz7: members append lines to role and rubric files under their caps,
+ * kz1 reads the PLAYBOOK 6.1 push budget, kz7 the OPERATING.md revert recipe) and the bootstrap scenarios (bs1: the PLAYBOOK 14 final
+ * check, bs2: the PLAYBOOK 3.3 session line). Found by grep of the test bodies (n and n2 replay OPERATING.md recipes from their own copy
+ * and read no doc); tests/kaizen.test.mjs re-greps them.
+ */
+export const E2E_DOCS_PATTERN = '^\\((?:m\\d?|kz\\d|bs\\d)\\) ';
+const E2E_DOCS = 'e2e:docs';
+/**
+ * The selective gate (ops/kaizen/README.md "What the gate runs"). A diff whose every path matches a row runs validate plus the union of
+ * those rows' suites; any other path (scripts/, tests/, site-src/, ops/lenses.json, which scripts read in every sandbox, or a path not
+ * listed) runs everything. A row lists each suite that reads the path (the live file, or the copy a scenario's sandbox carries), found
+ * by grep and re-checked by tests/kaizen.test.mjs. `e2e:docs` is tests/e2e.test.mjs limited to E2E_DOCS_PATTERN. What a selective gate
+ * leaves out runs once per round in the full verification (`verify`, or the next cold `begin`), which names the partial-gated commits.
+ */
+export const GATE_MAP = [
+  { paths: ['ops/PLAYBOOK.md'], selfcheck: true, files: ['tests/playbook.test.mjs', 'tests/revise-policy.test.mjs', E2E_DOCS] },
+  { paths: ['ops/roles/', 'ops/rubrics/', 'ops/CULTURE.md'], selfcheck: true, files: ['tests/playbook.test.mjs', E2E_DOCS] },
+  { paths: ['ops/FAILURE_MODES.md', 'ops/OPERATING.md', 'README.md', 'ops/kaizen/proposals/'], selfcheck: false, files: ['tests/playbook.test.mjs', E2E_DOCS] },
+  { paths: ['ops/templates/'], selfcheck: false, files: ['tests/playbook.test.mjs', 'tests/qa.test.mjs', E2E_DOCS] },
+  { paths: ['ops/workflows/'], selfcheck: true, files: ['tests/playbook.test.mjs', 'tests/revise-policy.test.mjs', E2E_DOCS] },
 ];
+const FULL_PLAN = Object.freeze({ tier: 'full', selfcheck: true, files: null, why: 'every suite' });
+
+const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const stripComments = (t) => t.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, '')).replace(/(^|[\s;{}(),])\/\/.*$/gm, '$1');
+
+/**
+ * Test files of `dir` (e2e aside: its doc scenarios are the subset) whose code, comments removed, names a changed path in a string: the
+ * file name (`'lab.md'`, `'PLAYBOOK.md'`), or its directory as a path segment (`'ops/roles'`, `'roles'`). On top of GATE_MAP, so a
+ * suite the map does not know (a new one, or a sandbox's own stub) still runs when it reads what changed.
+ */
+function readersIn(dir, paths) {
+  const needles = [];
+  for (const p of paths) {
+    const parts = p.split('/');
+    needles.push(new RegExp(`['"\`](?:[^'"\`\\n]*/)?${escRe(parts.at(-1))}['"\`]`));
+    if (parts.length > 2) needles.push(new RegExp(`['"\`](?:[^'"\`\\n]*/)?${escRe(parts.at(-2))}(?:/[^'"\`\\n]*)?['"\`]`));
+  }
+  return testFiles(dir).filter((f) => {
+    if (f === E2E_FILE) return false;
+    try {
+      const code = stripComments(fs.readFileSync(path.join(dir, f), 'utf8'));
+      return needles.some((re) => re.test(code));
+    } catch {
+      return true; // unreadable: run it
+    }
+  });
+}
+
+/**
+ * What the gate runs for the changed `paths`: {tier: full|docs|workflows, selfcheck, files (null = every test file), why}. With `dir`,
+ * the test files that name a changed path are added to the GATE_MAP rows (readersIn).
+ */
+export function gatePlan(paths, dir = null) {
+  const files = new Set();
+  let selfcheck = false;
+  if (!paths.length) return { ...FULL_PLAN };
+  for (const p of paths) {
+    const row = GATE_MAP.find((r) => r.paths.some((a) => (a.endsWith('/') ? p.startsWith(a) : p === a)));
+    if (!row) return { ...FULL_PLAN, why: `${p} is outside the doc paths of the selective gate: every suite runs` };
+    selfcheck ||= row.selfcheck;
+    for (const f of row.files) files.add(f);
+  }
+  if (dir) for (const f of readersIn(dir, paths)) files.add(f);
+  if (files.has(E2E_FILE)) files.delete(E2E_DOCS);
+  const tier = paths.some((p) => p.startsWith('ops/workflows/')) ? 'workflows' : 'docs';
+  return { tier, selfcheck, files: [...files].sort(), why: `only doc paths changed: validate${selfcheck ? ', selfcheck' : ''} and ${[...files].sort().join(', ')}` };
+}
 
 function suiteTimeout(suite) {
   const override = Number(process.env.SED_KAIZEN_SUITE_TIMEOUT_MS);
   return Number.isFinite(override) && override > 0 ? override : suite.timeoutMs;
+}
+
+/** Test files at once: SED_KAIZEN_JOBS, else what `node --test` uses (one per CPU, less one, at least one). */
+function gateJobs() {
+  const n = Number(process.env.SED_KAIZEN_JOBS);
+  if (Number.isInteger(n) && n >= 1) return Math.min(n, 16);
+  const cpus = typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length;
+  return Math.max(1, cpus - 1);
+}
+
+/** tests/*.test.mjs of `dir`, what the shell glob of `npm test` expands to. */
+function testFiles(dir) {
+  try {
+    return fs.readdirSync(path.join(dir, 'tests')).filter((f) => f.endsWith('.test.mjs')).sort().map((f) => `tests/${f}`);
+  } catch {
+    return [];
+  }
+}
+
+/** The runnable units of a plan: selfcheck and one job per test file (the repo's, so a sandbox without a mapped suite skips it). */
+function planJobs(dir, plan, only) {
+  const jobs = [];
+  const want = (suite) => !only || only.includes(suite);
+  if (want('selfcheck') && plan.selfcheck && fs.existsSync(path.join(dir, SELFCHECK_FILE))) {
+    jobs.push({ suite: 'selfcheck', name: 'selfcheck', key: SELFCHECK_FILE, args: ['--test-reporter=tap', SELFCHECK_FILE], timeoutMs: SELFCHECK_TIMEOUT_MS, counts: true, pattern: null });
+  }
+  if (!want('tests')) return jobs;
+  const all = testFiles(dir);
+  for (const f of plan.files ?? all) {
+    const docs = f === E2E_DOCS;
+    const file = docs ? E2E_FILE : f;
+    if (!all.includes(file)) continue;
+    const key = docs ? `${E2E_FILE}#docs` : file;
+    jobs.push({
+      suite: 'tests', name: key, key, timeoutMs: TEST_FILE_TIMEOUT_MS, counts: true, pattern: docs ? E2E_DOCS_PATTERN : null,
+      args: ['--test', '--test-reporter=tap', ...(docs ? [`--test-name-pattern=${E2E_DOCS_PATTERN}`] : []), file],
+    });
+  }
+  return jobs;
 }
 
 function parseCounts(out) {
@@ -964,23 +1082,84 @@ async function rerunSuite(dir, suite, env, first) {
   return second;
 }
 
+const ZERO_COUNTS = Object.freeze({ tests: 0, pass: 0, fail: 0, cancelled: 0, skipped: 0, todo: 0 });
+const sumCounts = (list) => list.reduce((acc, c) => Object.fromEntries(Object.keys(ZERO_COUNTS).map((k) => [k, acc[k] + (c?.[k] ?? 0)])), { ...ZERO_COUNTS });
+
+/** Runs `jobs` with at most `limit` at once, longest first (`hints`: ms per key from an earlier run; else e2e, then selfcheck). */
+async function runPool(dir, jobs, env, limit, hints = {}) {
+  const guess = (j) => hints[j.key] ?? (j.key === E2E_FILE ? 3e6 : j.pattern ? 2e6 : j.suite === 'selfcheck' ? 1e6 : 0);
+  const queue = [...jobs].sort((a, b) => guess(b) - guess(a) || (a.key < b.key ? -1 : 1));
+  const out = new Map();
+  const worker = async () => {
+    while (queue.length) {
+      const job = queue.shift();
+      out.set(job, await runSuiteOnce(dir, job, env));
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, jobs.length)) }, worker));
+  return out;
+}
+
+/** The `tests` suite of a run: the sum of its files, with each file's own verdict, time and counts under `files`. */
+function combineTests(entries, wallMs, partial) {
+  const files = {};
+  for (const [job, r] of entries) {
+    files[job.key] = { ok: r.ok, ms: r.ms, ...(r.counts ? { counts: r.counts } : {}), ...(job.pattern ? { pattern: job.pattern } : {}), ...(r.timedOut ? { timedOut: true } : {}) };
+  }
+  const bad = entries.filter(([, r]) => !r.ok);
+  const worst = bad.find(([, r]) => r.timedOut) ?? bad[0] ?? null;
+  const retried = entries.filter(([, r]) => r.retry);
+  return {
+    ok: bad.length === 0,
+    code: worst ? worst[1].code : 0,
+    timedOut: bad.some(([, r]) => r.timedOut),
+    ms: wallMs,
+    counts: sumCounts(entries.map(([, r]) => r.counts)),
+    tail: worst ? `${worst[0].key}: ${worst[1].tail}` : (entries.at(-1)?.[1].tail ?? ''),
+    failed: bad.flatMap(([, r]) => r.failed ?? []).slice(0, MAX_FLAKY_NAMES),
+    files,
+    ...(partial ? { partial: true } : {}),
+    ...(retried.length ? {
+      retry: {
+        firstCode: retried[0][1].retry.firstCode,
+        firstMs: retried.reduce((n, [, r]) => n + (r.retry.firstMs ?? 0), 0),
+        firstFailed: retried.flatMap(([, r]) => r.retry.firstFailed).slice(0, MAX_FLAKY_NAMES),
+        flipped: retried.flatMap(([, r]) => r.retry.flipped).slice(0, MAX_FLAKY_NAMES),
+      },
+    } : {}),
+  };
+}
+
 /**
- * Runs the three suites in `dir` (the repo root or a pristine export). Stops at the first failure unless `all`. A suite that
- * fails on its own is run once more before it counts as failed (`retry: false` switches that off); a timeout is never
- * repeated, because a hang is not a flake the phase budget can pay for twice.
+ * Runs the suites of `plan` (default: every suite) in `dir`: validate first (it stops the run when it fails, unless `all`), then
+ * selfcheck and the test files together in a pool of gateJobs() workers. A file that fails on its own is run ONCE more, alone, after
+ * the pool, in a fresh empty temp directory (`retry: false` switches that off): alone, because a failure that only the pool's load
+ * provoked must get a quiet second chance. A timeout is never repeated: a hang is not a flake the phase budget can pay for twice.
  */
-export async function runSuites(dir, { all = false, only = null, retry = true } = {}) {
+export async function runSuites(dir, { all = false, only = null, retry = true, plan = FULL_PLAN, hints = {} } = {}) {
   const env = { ...process.env, SED_ROOT: dir, GIT_TERMINAL_PROMPT: '0' };
   delete env.NODE_TEST_CONTEXT; // a nested `node --test` inside a test run would otherwise emit the child protocol, not TAP
   delete env.SED_NOW;
   const results = {};
-  for (const suite of SUITES) {
-    if (only && !only.includes(suite.name)) continue;
-    let res = await runSuiteOnce(dir, suite, env);
-    if (!res.ok && retry && !res.timedOut) res = await rerunSuite(dir, suite, env, res);
-    results[suite.name] = res;
-    if (!res.ok && !all) break;
+  if (!only || only.includes('validate')) {
+    let res = await runSuiteOnce(dir, VALIDATE_SUITE, env);
+    if (!res.ok && retry && !res.timedOut) res = await rerunSuite(dir, VALIDATE_SUITE, env, res);
+    results.validate = res;
+    if (!res.ok && !all) return results;
   }
+  const jobs = planJobs(dir, plan, only);
+  if (!jobs.length) return results;
+  const started = Date.now();
+  const done = await runPool(dir, jobs, env, gateJobs(), hints);
+  for (const job of jobs) {
+    const first = done.get(job);
+    if (!first.ok && retry && !first.timedOut) done.set(job, await rerunSuite(dir, job, env, first));
+  }
+  const wallMs = Date.now() - started;
+  const self = jobs.find((j) => j.suite === 'selfcheck');
+  if (self) results.selfcheck = done.get(self);
+  const tests = jobs.filter((j) => j.suite === 'tests').map((j) => [j, done.get(j)]);
+  if (tests.length) results.tests = combineTests(tests, wallMs, plan.files !== null);
   return results;
 }
 
@@ -995,44 +1174,99 @@ const suiteFailure = (results) => {
   return null;
 };
 
-/** Passing tests must not drop; nothing may start failing, being skipped or turning into a todo. */
+/**
+ * Passing tests must not drop; nothing may start failing, being skipped or turning into a todo. A full run is judged on the sums, a
+ * selective (partial) one file by file against the same file in the baseline (a file the baseline has not seen only has to pass).
+ */
 export function compareCounts(before, after) {
   const problems = [];
-  for (const name of ['selfcheck', 'tests']) {
-    const b = before?.[name]?.counts;
-    const a = after?.[name]?.counts;
-    if (!a) continue;
+  const judge = (name, b, a) => {
+    if (!a) return;
     if (a.fail > 0 || a.cancelled > 0) problems.push(`${name}: ${a.fail} failing, ${a.cancelled} cancelled`);
-    if (!b) continue;
+    if (!b) return;
     if (a.pass < b.pass) problems.push(`${name}: passing tests dropped from ${b.pass} to ${a.pass}`);
     if (a.skipped > b.skipped) problems.push(`${name}: skipped tests rose from ${b.skipped} to ${a.skipped}`);
     if (a.todo > b.todo) problems.push(`${name}: todo tests rose from ${b.todo} to ${a.todo}`);
-  }
+  };
+  judge('selfcheck', before?.selfcheck?.counts, after?.selfcheck?.counts);
+  const t = after?.tests;
+  if (t?.partial && t.files) {
+    for (const [key, f] of Object.entries(t.files)) judge(`tests (${key})`, before?.tests?.files?.[key]?.counts, f.counts);
+  } else judge('tests', before?.tests?.counts, t?.counts);
   return problems;
 }
 
-/** Baseline = suite results for the clean HEAD, cached per HEAD sha (the previous member's passing run is this HEAD's run). */
+/**
+ * The baseline after a selective run: the files that ran replace their entries, every other file keeps the result it had (the gate
+ * map says the diff cannot reach it), and `tests.counts` is summed again over the whole files (a name-filtered run is kept apart).
+ */
+export function mergeSuites(prev, next) {
+  const out = { ...(prev ?? {}), ...next };
+  if (next.tests?.partial) {
+    const pt = prev?.tests;
+    const files = { ...(pt?.files ?? {}), ...next.tests.files };
+    const whole = Object.values(files).filter((f) => !f.pattern);
+    const { partial, ...rest } = next.tests;
+    out.tests = { ...rest, ok: whole.every((f) => f.ok) && rest.ok, files, counts: pt?.files ? sumCounts(whole.map((f) => f.counts)) : pt?.counts ?? rest.counts };
+  }
+  return out;
+}
+
+/**
+ * Baseline = suite results for the clean HEAD, cached per HEAD sha (the previous member's passing run is this HEAD's run). A record
+ * marked `partial` was carried forward through selective gates; `unverified` lists those commits until a full run (`verify`, or a
+ * cold `begin` on a new HEAD) has covered them.
+ */
 async function baselineFor(ctx) {
   const cached = readJsonSafe(headBaselineFile(ctx.root, ctx.head));
-  if (cached?.head === ctx.head && cached.suites) return { suites: cached.suites, cached: true };
-  return { suites: await runSuites(ctx.root, { all: true }), cached: false };
+  if (cached?.head === ctx.head && cached.suites) {
+    return { suites: cached.suites, cached: true, partial: Boolean(cached.partial), unverified: Array.isArray(cached.unverified) ? cached.unverified : [], red: typeof cached.red === 'string' ? cached.red : null };
+  }
+  return { suites: await runSuites(ctx.root, { all: true }), cached: false, partial: false, unverified: [], red: null };
+}
+
+/**
+ * Commits that a selective gate let through and no full run has covered: the baseline's list, else (a new HEAD, a lost temp dir) the
+ * kaizen commits of the last revertWindowDays whose Kaizen-Gate trailer is not `full`. Newest first; these are what `verify` or a red
+ * cold `begin` names as suspects.
+ */
+function gateSuspects(ctx, kz, unverified) {
+  if (unverified?.length) return [...unverified].reverse().slice(0, 20);
+  const r = ctx.g.run(['log', `--since=${kz.revertWindowDays} days ago`, '--grep=^Kaizen-Gate: ', '--format=%H%x1f%B%x1e']);
+  if (!r.ok) return [];
+  const out = [];
+  for (const rec of r.stdout.toString('utf8').split('\x1e')) {
+    const [sha, body = ''] = rec.trim().split('\x1f');
+    const trailer = (key) => new RegExp(`^${key}: (.*)$`, 'm').exec(body)?.[1]?.trim() ?? null;
+    const tier = trailer('Kaizen-Gate');
+    if (!sha || !tier || tier === 'full') continue;
+    out.push({ sha, agent: trailer('Kaizen-Agent'), date: trailer('Kaizen-Date'), tier, files: (trailer('Kaizen-Files') ?? '').split(', ').filter(Boolean) });
+  }
+  return out.slice(0, 20);
 }
 
 /** What a baseline keeps of a run: counts and verdicts. A re-run's details were recorded when it happened and must not be re-reported by the next member. */
 const withoutRetries = (suites) =>
   Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).filter(([key]) => key !== 'retry' && key !== 'failed'))]));
 
-function storeBaseline(ctx, agent, head, suites) {
-  const rec = { schema: 1, head, at: new Date().toISOString(), suites: withoutRetries(suites) };
+function storeBaseline(ctx, agent, head, suites, { partial = false, unverified = [] } = {}) {
+  const rec = { schema: 2, head, at: new Date().toISOString(), suites: withoutRetries(suites), partial, unverified: unverified.slice(-40) };
   writeJsonAtomic(headBaselineFile(ctx.root, head), rec);
   if (agent) writeJsonAtomic(agentBaselineFile(ctx.root, agent), { ...rec, agent });
 }
+
+/** Per-file ms of a baseline, so the next pool starts the longest file first. */
+const timeHints = (suites) => ({
+  ...Object.fromEntries(Object.entries(suites?.tests?.files ?? {}).map(([k, f]) => [k, f.ms])),
+  ...(suites?.selfcheck?.ms ? { [SELFCHECK_FILE]: suites.selfcheck.ms } : {}),
+});
 
 const summarizeSuites = (suites) =>
   Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, {
     ok: v.ok,
     ms: v.ms,
     ...(v.counts ? { pass: v.counts.pass, skipped: v.counts.skipped } : {}),
+    ...(v.partial ? { partial: true, files: Object.keys(v.files ?? {}) } : {}),
     ...(v.retry ? { retried: true, ...(v.retry.flipped.length ? { flaky: v.retry.flipped } : {}) } : {}),
   }]));
 
@@ -1531,7 +1765,7 @@ function reject(ctx, base, reason, extra = {}) {
       const prev = readJsonSafe(agentBaselineFile(ctx.root, base.agent));
       // The restored tree is the tree the baseline was taken on, plus a ledger entry that changes no test: its results are the new HEAD's
       // results too, so the next member's `begin` need not run every suite again (a rejection would otherwise cost a full cold run).
-      if (prev?.suites && prev.head === ctx.head) storeBaseline(ctx, base.agent, sha, prev.suites);
+      if (prev?.suites && prev.head === ctx.head) storeBaseline(ctx, base.agent, sha, prev.suites, { partial: Boolean(prev.partial), unverified: prev.unverified ?? [] });
       else if (prev) writeJsonAtomic(agentBaselineFile(ctx.root, base.agent), { ...prev, head: sha });
     }
   } catch (err) {
@@ -1598,7 +1832,10 @@ async function cmdCommit(ctx, kz, flags, tz) {
     }
 
     const touched = dirtyPaths(ctx);
-    const suites = await runSuites(ctx.root);
+    // The selective gate: a diff of doc paths runs only the suites that read them (GATE_MAP); everything else runs every suite.
+    // A baseline without per-file results (written before the gate was selective) cannot judge a selective run: run everything.
+    const plan = baseline.suites.tests?.files || !baseline.suites.tests ? gatePlan(check.stats.paths, ctx.root) : { ...FULL_PLAN, why: 'the baseline has no per-file results' };
+    const suites = await runSuites(ctx.root, { plan, hints: timeHints(baseline.suites) });
     const flaky = noteFlaky(suites, { date, agent });
     const failure = suiteFailure(suites);
     if (failure) return reject(ctx, base, failure, { suites, linesChanged: check.stats.changedLines, flaky });
@@ -1631,13 +1868,17 @@ async function cmdCommit(ctx, kz, flags, tz) {
 
     let sha;
     try {
-      sha = gitCommit(ctx, commitMessage(entry, [`Kaizen-Files: ${files.join(', ')}`]));
+      sha = gitCommit(ctx, commitMessage(entry, [`Kaizen-Files: ${files.join(', ')}`, `Kaizen-Gate: ${plan.tier}`]));
     } catch (err) {
       return reject(ctx, base, err.message, { suites, linesChanged: check.stats.changedLines, flaky });
     }
     const stampWarning = stampSha(ctx, entry, sha);
     const finalHead = ctx.g.text(['rev-parse', 'HEAD']).trim();
-    storeBaseline(ctx, agent, finalHead, suites);
+    if (plan.files === null) storeBaseline(ctx, agent, finalHead, suites);
+    else {
+      const unverified = [...(baseline.unverified ?? []), { sha, agent, date, tier: plan.tier, files }];
+      storeBaseline(ctx, agent, finalHead, mergeSuites(baseline.suites, suites), { partial: true, unverified });
+    }
     const leftover = dirtyPaths(ctx);
     return {
       ok: true,
@@ -1646,6 +1887,7 @@ async function cmdCommit(ctx, kz, flags, tz) {
       sha,
       files,
       linesChanged: check.stats.changedLines,
+      gate: { tier: plan.tier, why: plan.why },
       suites: summarizeSuites(suites),
       ...(flaky.length ? { flaky } : {}),
       warnings: [...check.warnings, ...flakyNotes(flaky), ...(stampWarning ? [stampWarning] : []), ...(leftover.length ? [`working tree not clean after commit: ${leftover.slice(0, 4).join(', ')}`] : [])],
@@ -1727,13 +1969,19 @@ async function cmdPropose(ctx, kz, flags, tz) {
     if (!stage.ok) return reject(ctx, base, `git add failed: ${firstLine(stage.stderr)}`);
     let sha;
     try {
-      sha = gitCommit(ctx, commitMessage(entry, [`Kaizen-Files: ${rel}`]));
+      sha = gitCommit(ctx, commitMessage(entry, [`Kaizen-Files: ${rel}`, 'Kaizen-Gate: proposal']));
     } catch (err) {
       return reject(ctx, base, err.message);
     }
     const stampWarning = stampSha(ctx, entry, sha);
+    const newHead = ctx.g.text(['rev-parse', 'HEAD']).trim();
     const prev = readJsonSafe(agentBaselineFile(ctx.root, agent));
-    if (prev) writeJsonAtomic(agentBaselineFile(ctx.root, agent), { ...prev, head: ctx.g.text(['rev-parse', 'HEAD']).trim() });
+    // The proposal adds one Markdown file under ops/kaizen/proposals/ (validate ran on it) and a ledger entry: the baselined results
+    // carry over to the new HEAD, so the next member's `begin` is not a cold run of every suite. The suites the gate map names for
+    // proposals did not run, so the commit is listed for the round's full verification.
+    if (prev?.suites && prev.head === ctx.head) {
+      storeBaseline(ctx, agent, newHead, prev.suites, { partial: true, unverified: [...(prev.unverified ?? []), { sha, agent, date, tier: 'proposal', files: [rel] }] });
+    } else if (prev) writeJsonAtomic(agentBaselineFile(ctx.root, agent), { ...prev, head: newHead });
     return { ok: true, status: 'proposed', id: entry.id, sha, file: rel, ...(flaky.length ? { flaky } : {}), ...(stampWarning || flaky.length ? { warnings: [...flakyNotes(flaky), ...(stampWarning ? [stampWarning] : [])] } : {}) };
   });
 }
@@ -1850,9 +2098,56 @@ function cmdStatus(ctx, kz, flags, tz) {
     today: { done, rejected: today.filter((e) => e.status === 'rejected').map((e) => e.agent), pending: kz.members.filter((m) => !done.includes(m)) },
     queue: readQueue().skipped,
     flakySuspects: readFlaky().suspects.length,
+    verification: verificationOf(ctx),
     last: index.entries.at(-1) ?? null,
     caps: { maxChangedLines: kz.maxChangedLines, maxFiles: kz.maxFiles },
+    at: Date.now(),
   };
+}
+
+/** What the cached baseline of HEAD says: none, full, partial (with the commits a full run still has to cover) or red. Read-only. */
+function verificationOf(ctx) {
+  const rec = readJsonSafe(headBaselineFile(ctx.root, ctx.head));
+  if (!rec?.suites || rec.head !== ctx.head) return { state: 'none', unverified: 0 };
+  if (rec.red) return { state: 'red', unverified: rec.unverified?.length ?? 0 };
+  return { state: rec.partial ? 'partial' : 'full', unverified: rec.unverified?.length ?? 0 };
+}
+
+/**
+ * The round's full verification (PLAYBOOK 10.6): every suite at HEAD, on a clean tree. `--if-needed` returns at once when HEAD already
+ * has a full green baseline. Green: the baseline becomes full and its unverified commits are covered. Red: nothing is reverted here;
+ * the HEAD baseline is marked red so no member starts on it, and the output names the suspects (commits a selective gate let through).
+ */
+async function cmdVerify(ctx, kz, flags, tz) {
+  const date = resolveDate(flags, tz);
+  // state/, docs/ and work/ are the orchestrator's (the round's own queue write sits there until its sync); anything else is not HEAD
+  const dirty = dirtyPaths(ctx).filter((p) => !inRuntimeArea(p));
+  if (dirty.length) {
+    throw new KaizenError(`working tree is not clean (${dirty.slice(0, 5).join(', ')}); verify judges HEAD as committed: sync or revert first`, 1, { dirty: dirty.slice(0, 50) });
+  }
+  return withLock(ctx.root, 'ledger', async () => {
+    const rec = readJsonSafe(headBaselineFile(ctx.root, ctx.head));
+    const known = rec?.head === ctx.head && rec.suites ? rec : null;
+    if (flags['if-needed'] && known && !known.partial && !known.red && !suiteFailure(known.suites)) {
+      return { ok: true, status: 'green', head: ctx.head, ran: false, note: 'HEAD already has a full green baseline', at: Date.now() };
+    }
+    const covered = Array.isArray(known?.unverified) ? known.unverified : [];
+    const suites = await runSuites(ctx.root, { all: true, hints: timeHints(known?.suites) });
+    const flaky = noteFlaky(suites, { date, agent: 'verify' });
+    const failure = suiteFailure(suites) ?? (known?.suites ? compareCounts(known.suites, suites).join('; ') || null : null);
+    if (failure) {
+      const suspects = gateSuspects(ctx, kz, covered);
+      // kept with the names of the failing tests, so the next `begin` refuses at once and says what is red
+      const redSuites = Object.fromEntries(Object.entries(suites).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).filter(([key]) => key !== 'retry'))]));
+      writeJsonAtomic(headBaselineFile(ctx.root, ctx.head), { schema: 2, head: ctx.head, at: new Date().toISOString(), suites: redSuites, partial: false, unverified: covered, red: clean(failure, 300) });
+      return {
+        ok: false, status: 'red', head: ctx.head, error: failure, suites: summarizeSuites(suites), suspects, ...(flaky.length ? { flaky } : {}), at: Date.now(),
+        hint: 'Run verify once more (a fresh run). Still red: report it like a red tree with these suspects (PLAYBOOK 10.6); the owner reverts the harmful kaizen with "Revert one" of ops/OPERATING.md. The operator never reverts a kaizen by itself, and nobody edits a test to make it pass.',
+      };
+    }
+    storeBaseline(ctx, null, ctx.head, suites);
+    return { ok: true, status: 'green', head: ctx.head, ran: true, suites: summarizeSuites(suites), verified: covered.map((u) => u.sha), ...(flaky.length ? { flaky } : {}), at: Date.now() };
+  });
 }
 
 async function cmdBegin(ctx, kz, flags, tz) {
@@ -1874,11 +2169,12 @@ async function cmdBegin(ctx, kz, flags, tz) {
     const b = await baselineFor(ctx);
     return { ...b, flaky: b.cached ? [] : noteFlaky(b.suites, { date, agent }) };
   });
-  const failure = suiteFailure(baseline.suites);
+  const failure = suiteFailure(baseline.suites) ?? (baseline.red ? `kaizen.mjs verify found HEAD red: ${baseline.red}` : null);
   if (failure) {
-    throw new KaizenError(`the suites already fail at HEAD (${failure}); a kaizen cannot start on a red tree. Fix it or report it in the handoff`, 1, { suites: summarizeSuites(baseline.suites), ...(baseline.flaky.length ? { flaky: baseline.flaky } : {}) });
+    const suspects = gateSuspects(ctx, kz, baseline.unverified);
+    throw new KaizenError(`the suites already fail at HEAD (${failure}); a kaizen cannot start on a red tree. Fix it or report it in the handoff${suspects.length ? `; commits that skipped suites in a selective gate: ${suspects.slice(0, 4).map((s) => `${s.sha.slice(0, 10)} (${s.agent}, ${s.tier})`).join(', ')} (PLAYBOOK 10.6)` : ''}`, 1, { suites: summarizeSuites(baseline.suites), ...(suspects.length ? { suspects } : {}), ...(baseline.flaky.length ? { flaky: baseline.flaky } : {}) });
   }
-  storeBaseline(ctx, agent, ctx.head, baseline.suites);
+  storeBaseline(ctx, agent, ctx.head, baseline.suites, { partial: baseline.partial, unverified: baseline.unverified });
   const notes = notesFor(date, agent);
   return {
     ok: true,
@@ -1888,7 +2184,7 @@ async function cmdBegin(ctx, kz, flags, tz) {
     clean: true,
     alreadyDone: prior && prior.status !== 'rejected' ? { id: prior.id, status: prior.status, title: prior.title } : null,
     previousAttempt: prior?.status === 'rejected' ? { reason: prior.reason, title: prior.title } : null,
-    baseline: { cached: baseline.cached, suites: summarizeSuites(baseline.suites), ...(baseline.flaky.length ? { flaky: baseline.flaky, notes: flakyNotes(baseline.flaky) } : {}) },
+    baseline: { cached: baseline.cached, partial: baseline.partial, unverified: baseline.unverified.length, suites: summarizeSuites(baseline.suites), ...(baseline.flaky.length ? { flaky: baseline.flaky, notes: flakyNotes(baseline.flaky) } : {}) },
     flakySuspects: flakySummary(),
     rules: { maxChangedLines: kz.maxChangedLines, maxFiles: kz.maxFiles, allowedPaths: kz.allowedPaths, protectedPaths: kz.protectedPaths, docLineCaps: kz.docLineCaps },
     digest: digestOf(kz, { date }),
@@ -1902,7 +2198,7 @@ async function cmdBegin(ctx, kz, flags, tz) {
 async function main() {
   const flags = parseArgs();
   const cmd = flags._[0];
-  const COMMANDS = ['begin', 'scan', 'digest', 'check', 'commit', 'propose', 'status', 'queue'];
+  const COMMANDS = ['begin', 'scan', 'digest', 'check', 'commit', 'propose', 'status', 'queue', 'verify'];
   try {
     if (!COMMANDS.includes(cmd)) throw usage(`usage: kaizen.mjs ${COMMANDS.join('|')} (see ops/kaizen/README.md)`);
     const ctx = openRepo();
@@ -1926,6 +2222,7 @@ async function main() {
     } else if (cmd === 'commit') out = await cmdCommit(ctx, kz, flags, timezone);
     else if (cmd === 'propose') out = await cmdPropose(ctx, kz, flags, timezone);
     else if (cmd === 'status') out = cmdStatus(ctx, kz, flags, timezone);
+    else if (cmd === 'verify') out = await cmdVerify(ctx, kz, flags, timezone);
     else out = cmdQueue(ctx, kz, flags);
     print(out);
     process.exitCode = out.ok === false ? 1 : 0;
