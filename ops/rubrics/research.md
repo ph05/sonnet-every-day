@@ -25,7 +25,7 @@ Required: `id`, `title` (2 to 4 words), `pitch` (2 to 3 concrete sentences), `wh
 
 ## Facts
 
-`research.facts` holds 3 to 8 precise statements the project may rely on: `{claim, sourceIndex, alsoIn, asOf}`. `sourceIndex` points into `sources`; `alsoIn` lists the indexes of the independent sources that agree. `asOf` is the date you saw it (YYYY-MM-DD). News-bound claims name the date of the event inside the claim.
+`research.facts` holds 3 to 8 precise statements the project may rely on: `{claim, sourceIndex, alsoIn, asOf}`. `sourceIndex` points into `sources`; `alsoIn` lists the indexes of the independent sources that agree. `asOf` is the date you saw it (YYYY-MM-DD). News-bound claims name the date of the event inside the claim; take that date and any record from the recap itself, not from the story's publish date, and keep the source's record format (W-L-OTL stays W-L-OTL, a losing streak is not a record).
 
 **Unverified facts never appear as facts.** A fact whose source is `verified:false` may stay in the dossier, flagged. In published copy it is either omitted or shown as "as of <date>, per <source title>" so the visitor can see it is reported, not confirmed. Builders follow the SPEC's facts policy; QA reports anything else as `unverified-claim`.
 

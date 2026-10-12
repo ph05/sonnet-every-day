@@ -244,6 +244,22 @@
       "linesChanged": 2,
       "question": "Should the ideate probe seed network.json with a no-outbound-web flag after the first 5 DNS failures so scouts read one field instead of counting?",
       "reason": null
+    },
+    {
+      "id": "2026-10-12-critic",
+      "date": "2026-10-12",
+      "agent": "critic",
+      "title": "research.md: take a game date and record from the recap, not the publish date; keep W-L-OTL format",
+      "observation": "work/2026-10-12/ideate/cand/engineer-1.json dated a game by the story publish date and mixed a streak with a record (Flyers 0-7 vs 0-5-2); the verifier corrected game date 10-11 to 10-10 and the record in ideate/verified/engineer-1.json. research.md facts paragraph said only to name the event date. Critic notes 2026-10-12 ask for the same. Added one clause to that sentence.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/research.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Should the dossier fact object get an eventDate field apart from asOf so sports claims cannot confuse them?",
+      "reason": null
     }
   ]
 }

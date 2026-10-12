@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · critic · applied · research.md: take a game date and record from the recap, not the publish date; keep W-L-OTL format
+
+- observation: work/2026-10-12/ideate/cand/engineer-1.json dated a game by the story publish date and mixed a streak with a record (Flyers 0-7 vs 0-5-2); the verifier corrected game date 10-11 to 10-10 and the record in ideate/verified/engineer-1.json. research.md facts paragraph said only to name the event date. Critic notes 2026-10-12 ask for the same. Added one clause to that sentence.
+- category: prevention · lines changed: 2 · files: ops/rubrics/research.md
+- question: Should the dossier fact object get an eventDate field apart from asOf so sports claims cannot confuse them?
+
 ## 2026-10-12 · cards · applied · research.md: with no okHosts and 5+ DNS failures, stop trying new hosts and search
 
 - observation: Cards notes 2026-10-12: WebFetch failed on 3 of 3 new hosts (DNS), burning the one-try rule each time. work/DATE/ideas/network.json has okHosts empty on 10-10, 10-11 and 10-12 with 22, 27 and 22 failedHosts, 21 to 26 of them ENOTFOUND each day, yet research.md only said try each host once. Added one sentence to the once-per-host bullet: empty okHosts plus 5 or more ENOTFOUND means no outbound web today, so search instead of probing.
