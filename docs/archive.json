@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-12T12:45:54.876Z",
+  "generatedAt": "2026-10-12T13:32:17.576Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
@@ -25,11 +25,11 @@
   },
   "kaizen": {
     "latest": {
-      "date": "2026-10-11",
+      "date": "2026-10-12",
       "agent": "lab",
-      "title": "ideate: name verification skipped for time and list it under skipped, not verifier unavailable"
+      "title": "FM-47: budget-exhausted with 0 spend at launch is a findable symptom with a one-step recovery"
     },
-    "count": 9
+    "count": 18
   },
   "days": [
     {

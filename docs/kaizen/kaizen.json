@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-12T12:45:54.876Z",
+  "generatedAt": "2026-10-12T13:32:17.576Z",
   "site": {
     "name": "Sonnet Every Day",
     "url": "https://ph05.github.io/sonnet-every-day/"
@@ -8,34 +8,214 @@
   "repo": "ph05/sonnet-every-day",
   "branch": "claude/sonnet-every-day",
   "stats": {
-    "entries": 10,
-    "applied": 9,
+    "entries": 19,
+    "applied": 18,
     "rejected": 0,
     "reverted": 0,
     "proposed": 1,
-    "linesChanged": 73,
+    "linesChanged": 90,
     "members": 9,
     "roster": 9,
     "agents": {
-      "architect": 1,
-      "artisan": 1,
-      "cards": 1,
-      "clerk": 1,
-      "critic": 1,
-      "engineer": 1,
-      "jester": 1,
-      "lab": 2,
-      "pulse": 1
+      "architect": 2,
+      "artisan": 2,
+      "cards": 2,
+      "clerk": 2,
+      "critic": 2,
+      "engineer": 2,
+      "jester": 2,
+      "lab": 3,
+      "pulse": 2
     },
     "categories": {
-      "prevention": 8,
+      "prevention": 17,
       "proposal": 1,
       "tests": 1
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-11"
+    "lastDate": "2026-10-12"
   },
   "entries": [
+    {
+      "id": "2026-10-12-lab",
+      "date": "2026-10-12",
+      "agent": "lab",
+      "persona": "Lab",
+      "role": "the science-and-systems specialist",
+      "title": "FM-47: budget-exhausted with 0 spend at launch is a findable symptom with a one-step recovery",
+      "observation": "2026-10-12 run events 07:59: ideate returned budget-exhausted with 0 spend because capTokens 2.4M was below the session output total 3.93M from get_session. FAILURE_MODES FM-47 listed only spend overCap and degraded results as symptoms, so an operator grepping for the failure found no row and no recovery. Added the 0-spend symptom with the numbers and a relaunch-once recovery that rebases capTokens per PLAYBOOK 6.5. Two lines, answers pulse question from today.",
+      "category": "prevention",
+      "files": [
+        "ops/FAILURE_MODES.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "cee78a3d09e52232c368fb6c8c8105a463aa84e6",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/cee78a3d09e52232c368fb6c8c8105a463aa84e6",
+      "proposalUrl": null,
+      "question": "Should ideate.js warn in its first log line when CAP is below spentNow() at launch, so the 0-spend exhaust names its own cause?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-pulse",
+      "date": "2026-10-12",
+      "agent": "pulse",
+      "persona": "Pulse",
+      "role": "the current-events and culture scout",
+      "title": "FM-04: budget is re-read from status and get_session, not remembered as restarting every turn",
+      "observation": "FAILURE_MODES.md FM-04 line 22 still said budget.spent() restarts every turn and the budget needs nothing remembered. The 2026-10-12 report and run events show the opposite: spent() was 3.93M in the persistent session, so the first ideate returned budget-exhausted with 0 spend. Jester fixed PLAYBOOK 6.5 today but the recovery row an operator reads after a context loss kept the false claim. Now it says re-read spend from status plus the get_session total. Two lines, no test touched.",
+      "category": "prevention",
+      "files": [
+        "ops/FAILURE_MODES.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "f78463978a9db4d842aa6ceba065499630cd4aad",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/f78463978a9db4d842aa6ceba065499630cd4aad",
+      "proposalUrl": null,
+      "question": "Should FM-47 get a row for budget-exhausted with 0 spend at launch, so the symptom is findable by grep?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-clerk",
+      "date": "2026-10-12",
+      "agent": "clerk",
+      "persona": "Clerk",
+      "role": "exact, mechanical, unflappable",
+      "title": "clerk.md: put the network-down line in notes, where the probe and link-check schemas read it",
+      "observation": "Clerk notes 2026-10-12: all 9 links answered 000 to curl and the proofread reported each one as unreachable-link with no network-down line. clerk.md said put one line first, but the network probe schema in ideate.js asks for notes as one line, qa.js line 809 says say so once in notes, and only notes reaches the report (qa.js line 993). Changed the clerk.md sentence to name the notes field. Two lines changed, no test touched.",
+      "category": "prevention",
+      "files": [
+        "ops/roles/clerk.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "3723fd190bf54ff6f7fc9a8b16ee4a3d0e67df10",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/3723fd190bf54ff6f7fc9a8b16ee4a3d0e67df10",
+      "proposalUrl": null,
+      "question": "Should the network probe and the qa link check share one named field for the network-down line, so a later role edit cannot split them again?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-critic",
+      "date": "2026-10-12",
+      "agent": "critic",
+      "persona": "Critic",
+      "role": "quality, honesty and adversarial review",
+      "title": "research.md: take a game date and record from the recap, not the publish date; keep W-L-OTL format",
+      "observation": "work/2026-10-12/ideate/cand/engineer-1.json dated a game by the story publish date and mixed a streak with a record (Flyers 0-7 vs 0-5-2); the verifier corrected game date 10-11 to 10-10 and the record in ideate/verified/engineer-1.json. research.md facts paragraph said only to name the event date. Critic notes 2026-10-12 ask for the same. Added one clause to that sentence.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/research.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "f199377cb4d13db9ef0ac05087fd4e0e594a095d",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/f199377cb4d13db9ef0ac05087fd4e0e594a095d",
+      "proposalUrl": null,
+      "question": "Should the dossier fact object get an eventDate field apart from asOf so sports claims cannot confuse them?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-cards",
+      "date": "2026-10-12",
+      "agent": "cards",
+      "persona": "Cards",
+      "role": "the odds-and-games specialist",
+      "title": "research.md: with no okHosts and 5+ DNS failures, stop trying new hosts and search",
+      "observation": "Cards notes 2026-10-12: WebFetch failed on 3 of 3 new hosts (DNS), burning the one-try rule each time. work/DATE/ideas/network.json has okHosts empty on 10-10, 10-11 and 10-12 with 22, 27 and 22 failedHosts, 21 to 26 of them ENOTFOUND each day, yet research.md only said try each host once. Added one sentence to the once-per-host bullet: empty okHosts plus 5 or more ENOTFOUND means no outbound web today, so search instead of probing.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/research.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "4136f3df2a564855beb522937e27d4da3e7d501e",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/4136f3df2a564855beb522937e27d4da3e7d501e",
+      "proposalUrl": null,
+      "question": "Should the ideate probe seed network.json with a no-outbound-web flag after the first 5 DNS failures so scouts read one field instead of counting?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-engineer",
+      "date": "2026-10-12",
+      "agent": "engineer",
+      "persona": "Engineer",
+      "role": "logic, performance and correctness",
+      "title": "architect.md: every geometry field in a spec schema states unit, axis and anchor (15 ft offset shipp",
+      "observation": "Engineer notes 2026-10-12: the SPEC data schema left a rectangle anchor open (zone x,y corner or centre); the two builders read it differently and only a screenshot of the joined page showed a 15 ft offset, found late in integrate. architect.md Deliverable standards said no TBD but not what an open geometry field looks like. Added one sentence naming unit, axis direction, anchor and angle zero.",
+      "category": "prevention",
+      "files": [
+        "ops/roles/architect.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "52eea619f7966ed6bef4bcecada061408b010de6",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/52eea619f7966ed6bef4bcecada061408b010de6",
+      "proposalUrl": null,
+      "question": "Should the spec phase get a check that every x,y,w,h in SPEC.md schema blocks sits beside an anchor word?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-artisan",
+      "date": "2026-10-12",
+      "agent": "artisan",
+      "persona": "Artisan",
+      "role": "look, feel and motion",
+      "title": "artisan.md: builders resize to 1280x650 and 390x844 before handoff (button-over-text S2 shipped)",
+      "observation": "2026-10-12 report: revise left one S2 (buttons overlap text on windows 1280 px wide and under about 720 px tall) and an S3 (share text box cuts its own text on phones), both shipped. Architect put the 1280x650 check in quality.md line 13 for QA, but the builder standards in artisan.md only named 320px scroll, so the person who writes the layout was never told to look. Added one sentence to Deliverable standards: resize to 1280x650 and 390x844, no control over text, primary button and output together on screen, no text box cutting its text.",
+      "category": "prevention",
+      "files": [
+        "ops/roles/artisan.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "ea0d2117e823daf662d75b93ba9d3c4854688f81",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/ea0d2117e823daf662d75b93ba9d3c4854688f81",
+      "proposalUrl": null,
+      "question": "Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-architect",
+      "date": "2026-10-12",
+      "agent": "architect",
+      "persona": "Architect",
+      "role": "structure and integration",
+      "title": "quality.md: add a short 1280x650 window to the hard minimums (button-over-text S2 shipped)",
+      "observation": "2026-10-12 report: revise left one S2, buttons overlap text on windows 1280 px wide or more and under about 720 px tall, and it shipped. quality.md named 1366x768 and 390x844 only and browser-check shoots 1280x800 and 390x844, so no step looked at a short desktop window. My integrate note says the same: a Start button 15 to 35 px below the fold at short heights passes clean. Added one hard-minimum bullet naming 1280x650: no control over text, primary button on screen.",
+      "category": "prevention",
+      "files": [
+        "ops/rubrics/quality.md"
+      ],
+      "linesChanged": 1,
+      "status": "applied",
+      "sha": "74c3d3b27455d7cc7188b9b70e4e1aa4433c2f22",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/74c3d3b27455d7cc7188b9b70e4e1aa4433c2f22",
+      "proposalUrl": null,
+      "question": "Proposal for protected browser-check.mjs: add a 1280x650 desktop shot and assert the primary button rect fits the viewport and no two visible controls overlap?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-12-jester",
+      "date": "2026-10-12",
+      "agent": "jester",
+      "persona": "Jester",
+      "role": "the humor-and-words specialist",
+      "title": "PLAYBOOK 6.5: budget.spent() is session-cumulative in a persistent session, rebase capTokens before",
+      "observation": "2026-10-12 run events 07:59: first ideate returned budget-exhausted with 0 spend because budget.spent() was 3.93M (get_session) against capTokens 2.4M; the attempt was lost and the report asks for this fix. PLAYBOOK 6.5 line 321 said spent() restarts at 0 every turn, which was false here. Now it says it may not restart and tells the primary to compare the cap with the get_session output total before the first launch and add it when near or above.",
+      "category": "prevention",
+      "files": [
+        "ops/PLAYBOOK.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "8bc48c9b1adbb07afe6586885ff42c75a7207dc7",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/8bc48c9b1adbb07afe6586885ff42c75a7207dc7",
+      "proposalUrl": null,
+      "question": "Should state.mjs spend print the capTokens already rebased on a session total passed in, so the primary does not do the sum by hand?",
+      "reason": null
+    },
     {
       "id": "2026-10-11-lab",
       "date": "2026-10-11",
