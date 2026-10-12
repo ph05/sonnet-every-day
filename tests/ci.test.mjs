@@ -1,6 +1,7 @@
 // Guards the CI workflow files: the test job must provision everything the browser tests need,
 // because tests/qa.test.mjs drives a real Chromium and has no skip logic of its own; and the step of
 // sync-main.yml that moves `main` is run for real against local remotes (it decides the Pages build request).
+import './helpers/env.mjs'; // git identity and isolation for the scratch repositories below
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -8,6 +9,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { tmpDir } from './helpers/env.mjs';
+import { git } from './helpers/git.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (...p) => fs.readFileSync(path.join(ROOT, ...p), 'utf8');
@@ -127,4 +129,169 @@ test('sync-main: a push that changes docs/ moves main and asks for the Pages bui
   const diverged = act(push('docs/a.txt', 'three\n'));
   assert.deepEqual([diverged.outputs.moved, diverged.outputs.docs, remoteMain()], ['false', 'false', before]);
   assert.match(diverged.text, /::warning::main \(.*\) is not an ancestor/);
+});
+
+// ---------------------------------------------------------------------------------------------
+// "Detect changes outside docs/": the step decides whether the unit tests run. It is exercised here as written in the workflow, in scratch
+// repositories, with BASE and GITHUB_OUTPUT set the way GitHub sets them.
+// ---------------------------------------------------------------------------------------------
+
+/** The shell script of a step's `run: |` block, dedented. */
+function script(name) {
+  const lines = step(name).split('\n');
+  const at = lines.findIndex((l) => /^\s+run: \|\s*$/.test(l));
+  assert.notEqual(at, -1, `step "${name}" has a run: | block`);
+  const indent = /^\s*/.exec(lines[at + 1])[0].length;
+  const body = [];
+  for (const l of lines.slice(at + 1)) {
+    if (l.trim() !== '' && /^\s*/.exec(l)[0].length < indent) break;
+    body.push(l.slice(indent));
+  }
+  return body.join('\n');
+}
+
+const ZEROS = '0'.repeat(40);
+
+/** A scratch repository with a commit() helper: files are {path: content}, a null content deletes the file. commit() returns the new HEAD. */
+function scratch() {
+  const dir = tmpDir('sed-ci-detect-');
+  git(dir, 'init', '-q', '-b', 'main');
+  const commit = (files = {}, message = 'c') => {
+    for (const [rel, content] of Object.entries(files)) {
+      const file = path.join(dir, rel);
+      if (content === null) {
+        fs.rmSync(file, { force: true });
+        continue;
+      }
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, content);
+    }
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-q', '--allow-empty', '-m', message);
+    return git(dir, 'rev-parse', 'HEAD');
+  };
+  return { dir, commit };
+}
+
+/**
+ * What the step answers ('true': run the tests, 'false': docs only) for a push whose previous tip was `base`. `gh` is a stand-in for the
+ * API call that asks how many successful runs of this workflow `base` has: `tested` is the total_count it prints, or 'fail' for an API error.
+ */
+function detect(dir, base, tested = '1') {
+  const root = tmpDir('sed-ci-detect-run-');
+  const output = path.join(root, 'github-output');
+  fs.writeFileSync(output, '');
+  fs.mkdirSync(path.join(root, 'bin'));
+  fs.writeFileSync(path.join(root, 'bin', 'gh'), '#!/bin/sh\necho "$*" >> "$GH_CALLS"\n[ "$FAKE_GH_COUNT" = fail ] && exit 1\necho "$FAKE_GH_COUNT"\n', { mode: 0o755 });
+  const env = {
+    ...process.env, BASE: base, GITHUB_OUTPUT: output, GITHUB_REPOSITORY: 'owner/repo', GH_TOKEN: 'x',
+    PATH: `${path.join(root, 'bin')}${path.delimiter}${process.env.PATH}`, FAKE_GH_COUNT: tested, GH_CALLS: path.join(root, 'gh-calls'),
+  };
+  const r = spawnSync('bash', ['-c', script('Detect changes outside docs/')], { cwd: dir, env, encoding: 'utf8' });
+  assert.equal(r.status, 0, `the step itself must not fail: ${r.stdout}${r.stderr}`);
+  const m = /^code=(true|false)$/m.exec(fs.readFileSync(output, 'utf8'));
+  assert.ok(m, `the step writes code=true|false to GITHUB_OUTPUT: ${fs.readFileSync(output, 'utf8')}`);
+  const calls = fs.existsSync(env.GH_CALLS) ? fs.readFileSync(env.GH_CALLS, 'utf8') : '';
+  if (calls) assert.match(calls, new RegExp(`repos/owner/repo/actions/workflows/validate\\.yml/runs\\?head_sha=${base}&status=success`), 'the API is asked about the previous tip');
+  detect.asked = calls !== ''; // whether the API was consulted at all (only a docs-only diff needs it)
+  return m[1];
+}
+
+test('change detection: a push of several commits is judged by the whole push, not by its last commit', () => {
+  const { dir, commit } = scratch();
+  commit({ 'scripts/a.mjs': 'a\n', 'docs/index.html': 'x\n' });
+  const before = git(dir, 'rev-parse', 'HEAD');
+  commit({ 'docs/d/2026-10-12-x/index.html': '1\n' });
+  commit({ 'scripts/a.mjs': 'b\n' });
+  commit({ 'docs/archive.json': '{}\n' }); // the last commit alone is docs only
+  assert.equal(detect(dir, before), 'true');
+});
+
+test('change detection: pushes that only touch docs/ skip the unit tests, however many commits they hold', () => {
+  const { dir, commit } = scratch();
+  commit({ 'scripts/a.mjs': 'a\n', 'docs/index.html': 'x\n' });
+  const before = git(dir, 'rev-parse', 'HEAD');
+  commit({ 'docs/d/2026-10-12-x/index.html': '1\n' });
+  commit({ 'docs/archive.json': '{}\n', 'docs/feed.xml': '<feed/>\n' });
+  assert.equal(detect(dir, before), 'false');
+  // a code change that was reverted inside the same push leaves nothing to test
+  commit({ 'scripts/a.mjs': 'changed\n' });
+  commit({ 'scripts/a.mjs': 'a\n' });
+  assert.equal(detect(dir, before), 'false');
+});
+
+test('change detection: docs only after a previous tip that was never tested (its run was cancelled by this push) runs the tests', () => {
+  const { dir, commit } = scratch();
+  commit({ 'scripts/a.mjs': 'a\n', 'docs/index.html': 'x\n' });
+  const before = git(dir, 'rev-parse', 'HEAD');
+  commit({ 'docs/archive.json': '{}\n' });
+  assert.equal(detect(dir, before, '1'), 'false');
+  assert.equal(detect.asked, true);
+  assert.equal(detect(dir, before, '0'), 'true', 'no successful run of the previous tip');
+  assert.equal(detect(dir, before, 'fail'), 'true', 'the API failed: untested');
+  assert.equal(detect(dir, before, 'garbage'), 'true', 'an answer that is not a number: untested');
+  // code changed: the answer is true without asking anyone
+  commit({ 'scripts/a.mjs': 'b\n' });
+  assert.equal(detect(dir, before, '1'), 'true');
+  assert.equal(detect.asked, false);
+});
+
+test('change detection: the first push of a branch, an unknown or empty previous tip and a force-push run everything', () => {
+  const { dir, commit } = scratch();
+  commit({ 'scripts/a.mjs': 'a\n' });
+  commit({ 'docs/index.html': 'only docs since the root\n' });
+  assert.equal(detect(dir, ZEROS), 'true', 'github.event.before is all zeros on the first push of a branch');
+  assert.equal(detect(dir, ''), 'true', 'no previous tip');
+  assert.equal(detect(dir, '1234567890abcdef1234567890abcdef12345678'), 'true', 'the old tip of a force-push is not in the clone');
+});
+
+test('change detection: a pull request is judged against its base branch', () => {
+  const { dir, commit } = scratch();
+  commit({ 'scripts/a.mjs': 'a\n', 'docs/index.html': 'x\n' });
+  const base = git(dir, 'rev-parse', 'HEAD');
+  git(dir, 'checkout', '-q', '-b', 'feature');
+  commit({ 'docs/index.html': 'y\n' });
+  assert.equal(detect(dir, base), 'false');
+  commit({ 'README.md': 'a root file is not docs/\n' });
+  assert.equal(detect(dir, base), 'true');
+});
+
+test('change detection: moving a file out of code into docs/ is a code change', () => {
+  const { dir, commit } = scratch();
+  const source = 'export const answer = 42;\n'.repeat(20);
+  commit({ 'scripts/answer.mjs': source, 'docs/index.html': 'x\n' });
+  const before = git(dir, 'rev-parse', 'HEAD');
+  commit({ 'scripts/answer.mjs': null, 'docs/answer.mjs': source }); // git reports this as a rename, and --name-only then shows the new name only
+  assert.equal(detect(dir, before), 'true');
+});
+
+test('change detection: a huge code change is not mistaken for docs only (grep -q closing the pipe under pipefail)', () => {
+  const { dir, commit } = scratch();
+  commit({ 'docs/index.html': 'x\n' });
+  const before = git(dir, 'rev-parse', 'HEAD');
+  const files = {};
+  for (let i = 0; i < 3000; i++) files[`a-first-in-sort-order/generated-file-with-a-long-name-so-the-list-fills-the-pipe-${i}.txt`] = `${i}\n`;
+  commit(files);
+  assert.equal(detect(dir, before), 'true');
+});
+
+// ---------------------------------------------------------------------------------------------
+// The two big test modules run in parts (one process each, side by side). A part nobody starts would be a silent loss of tests.
+// ---------------------------------------------------------------------------------------------
+
+test('the e2e and state parts are each started by a test file of their own', () => {
+  const e2e = read('tests', 'e2e.test.mjs');
+  const parts = Object.keys(new Function(`return ${/const PARTS = (\{[\s\S]*?\n\});/.exec(e2e)[1].replace(/\/\/.*$/gm, '')}`)());
+  const defaultPart = /const DEFAULT_PART = '(\w+)'/.exec(e2e)[1];
+  assert.ok(parts.includes(defaultPart) && parts.length >= 4, `e2e parts: ${parts}`);
+  for (const part of parts.filter((p) => p !== defaultPart)) {
+    assert.match(read('tests', `e2e-${part}.test.mjs`), new RegExp(`__sedE2ePart = '${part}';\\nawait import\\('\\./e2e\\.test\\.mjs'\\);`), `tests/e2e-${part}.test.mjs starts part "${part}"`);
+  }
+  const state = read('tests', 'state', 'cases.mjs');
+  const starts = JSON.parse(/const PART_STARTS = (\[[\d, ]+\]);/.exec(state)[1]);
+  assert.equal(starts[0], 0);
+  starts.forEach((_, i) => {
+    assert.match(read('tests', `state-${i + 1}.test.mjs`), new RegExp(`__sedStatePart = ${i + 1};\\nawait import\\('\\./state/cases\\.mjs'\\);`), `tests/state-${i + 1}.test.mjs starts part ${i + 1}`);
+  });
+  assert.equal(fs.existsSync(path.join(ROOT, 'tests', `state-${starts.length + 1}.test.mjs`)), false, 'no state part file without a part');
 });

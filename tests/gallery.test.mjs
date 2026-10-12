@@ -10,6 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { renderIndex, render404, renderKaizen, readSource, SITE_SRC } from '../site-src/dev/render.mjs';
+import { loadFactor } from './helpers/cpu.mjs';
 
 const SAMPLE = JSON.parse(fs.readFileSync(path.join(SITE_SRC, 'dev', 'archive.sample.json'), 'utf8'));
 const SHOTS = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-gallery-shots-'));
@@ -111,6 +112,7 @@ async function open(t, { width = 1280, height = 800, scheme = 'light', reducedMo
   if (!observer) await context.addInitScript(() => { delete window.IntersectionObserver; });
   if (storage) await context.addInitScript((s) => { try { for (const k in s) localStorage.setItem(k, s[k]); } catch { /* ignore */ } }, storage);
   const page = await context.newPage();
+  if (!js) page.noScript = true; // shot() cannot scroll such a page
   const problems = { errors: [], external: [] };
   page.on('console', (m) => { if (m.type() === 'error') problems.errors.push(m.text()); });
   page.on('pageerror', (e) => problems.errors.push(String(e)));
@@ -127,11 +129,14 @@ async function open(t, { width = 1280, height = 800, scheme = 'light', reducedMo
 }
 
 async function shot(page, name) {
-  // lazy thumbnails below the fold only load once scrolled into view
-  await page.evaluate(async () => {
-    for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); }
-    window.scrollTo(0, 0);
-  }).catch(() => {}); // a JavaScript-disabled context cannot run page scripts
+  // lazy thumbnails below the fold only load once scrolled into view. A JavaScript-disabled context cannot run page scripts, and page.evaluate
+  // there does not fail at once: it waits out Playwright's 30 s timeout (this one call was 30 of the file's 70 seconds), so such a page is not scrolled.
+  if (!page.noScript) {
+    await page.evaluate(async () => {
+      for (let y = 0; y < document.body.scrollHeight; y += 600) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 40)); }
+      window.scrollTo(0, 0);
+    }).catch(() => {});
+  }
   await page.waitForTimeout(150);
   await page.screenshot({ path: path.join(SHOTS, `${name}.png`), fullPage: true });
 }
@@ -576,7 +581,7 @@ test('1,500 days: paginates, stays fast and never overflows', async (t) => {
   // exact counts below were a race (once seen: 96 cards where 72 were expected).
   const { page, problems } = await open(t, { width: 390, height: 844, observer: false });
   const loadMs = Date.now() - started;
-  assert.ok(loadMs < 4000, `loaded in ${loadMs}ms`);
+  assert.ok(loadMs < 4000 * loadFactor(), `loaded in ${loadMs}ms`);
   assert.equal(await page.locator('#grid .card').count(), 24, 'only one page rendered');
   assert.match(await page.textContent('#load-more'), /Show 24 more/);
   assert.equal(await page.locator('.run-cell').count() >= days.length, true);
@@ -592,7 +597,7 @@ test('1,500 days: paginates, stays fast and never overflows', async (t) => {
   const t0 = Date.now();
   await page.fill('#q', '');
   await cardCountIs(page, 24);
-  assert.ok(Date.now() - t0 < 2000);
+  assert.ok(Date.now() - t0 < 2000 * loadFactor());
   await shot(page, 'big-mobile');
   assert.deepEqual(problems.errors, []);
   assert.deepEqual(problems.external, []);

@@ -18,9 +18,12 @@ process.once('exit', () => {
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sed-test-gitcfg-'));
 created.add(dir);
 export const GIT_GLOBAL_CONFIG = path.join(dir, 'gitconfig');
+// gc.auto, maintenance.auto and receive.autogc: after every commit, fetch and push git starts `git maintenance run --auto` and `git gc --auto`
+// (the suite makes about 36000 git calls, and 4600 of the processes git started on its own were exactly these checks, on repos of a few files).
 fs.writeFileSync(
   GIT_GLOBAL_CONFIG,
-  '[user]\n\tname = SED Test\n\temail = sed-test@example.invalid\n[init]\n\tdefaultBranch = main\n[commit]\n\tgpgsign = false\n[advice]\n\tdetachedHead = false\n',
+  '[user]\n\tname = SED Test\n\temail = sed-test@example.invalid\n[init]\n\tdefaultBranch = main\n[commit]\n\tgpgsign = false\n[advice]\n\tdetachedHead = false\n'
+    + '[gc]\n\tauto = 0\n[maintenance]\n\tauto = false\n[receive]\n\tautogc = false\n',
 );
 process.env.GIT_CONFIG_GLOBAL = GIT_GLOBAL_CONFIG;
 process.env.GIT_CONFIG_NOSYSTEM = '1';

@@ -2,18 +2,44 @@
 // Everything runs against SED_ROOT sandboxes in temp dirs and temp BARE git remotes.
 // Clock facts of the frozen test config (same as the real one): t1Until 04:45, t2Until 07:00, t3Until 08:45;
 // deadline 08:00 (a guideline), graceUntil 09:30, hardStop 10:30, closer 08:47, lease stale after 35 min.
-import './helpers/env.mjs';
-import test, { describe } from 'node:test';
+//
+// HOW THIS RUNS. 34 top-level suites, 125 s of git and node processes one after another in one process: the longest file of the run by far
+// once the end-to-end scenarios were split. tests/state-1.test.mjs, state-2.test.mjs and state-3.test.mjs set `globalThis.__sedStatePart` and
+// import this module, which registers only the top-level suites of that part (PART_STARTS: the index, in file order, of the first suite of
+// each part; a suite added at the end lands in the last part). Run this file directly (`node --test tests/state/cases.mjs`) for all of them.
+import '../helpers/env.mjs';
+import nodeTest, { after, describe as nodeDescribe } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync, spawn } from 'node:child_process';
-import { etInstant, etIso, plusMinutes, tmpDir, GIT_GLOBAL_CONFIG } from './helpers/env.mjs';
-import { DATE, REPO_ROOT, TEST_CONFIG, makeRepoSandbox, makeSandbox } from './helpers/sandbox.mjs';
-import { BRANCH, git, gitTry, installPushHook, pushCount, remoteFile, remoteHas, remoteSha, removePushHook } from './helpers/git.mjs';
-import * as rs from '../scripts/lib/runstate.mjs';
-import { sync, fetchRemoteHeartbeat, BACKOFF_SECONDS, DEFAULT_PATHS } from '../scripts/lib/gitsync.mjs';
-import { readJson } from '../scripts/lib/common.mjs';
+import { etInstant, etIso, plusMinutes, tmpDir, GIT_GLOBAL_CONFIG } from '../helpers/env.mjs';
+import { DATE, REPO_ROOT, TEST_CONFIG, makeRepoSandbox, makeSandbox } from '../helpers/sandbox.mjs';
+import { BRANCH, git, gitTry, installPushHook, pushCount, remoteFile, remoteHas, remoteSha, removePushHook } from '../helpers/git.mjs';
+import * as rs from '../../scripts/lib/runstate.mjs';
+import { sync, fetchRemoteHeartbeat, BACKOFF_SECONDS, DEFAULT_PATHS } from '../../scripts/lib/gitsync.mjs';
+import { readJson } from '../../scripts/lib/common.mjs';
+
+const PART = globalThis.__sedStatePart ?? null;
+const PART_STARTS = [0, 14, 24]; // "CLI: directive..." and "cross-container..." start parts 2 and 3; about 40, 45 and 40 s
+let topLevel = 0; // how many top-level suites/tests have been declared so far, and how deep in one the declaration currently is
+let nesting = 0;
+/** Declares a top-level suite or test only when it belongs to this process's part; nested ones always come with their parent. */
+const declare = (declareIt) => (...args) => {
+  if (nesting === 0) {
+    const part = PART_STARTS.filter((start) => topLevel >= start).length;
+    topLevel += 1;
+    if (PART !== null && part !== PART) return undefined;
+  }
+  nesting += 1;
+  try {
+    return declareIt(...args);
+  } finally {
+    nesting -= 1;
+  }
+};
+const describe = declare(nodeDescribe);
+const test = declare(nodeTest);
 
 const cfg = TEST_CONFIG;
 const at = (hhmm, date = DATE) => etInstant(date, hhmm);
@@ -712,7 +738,7 @@ describe('decide(): input validation and purity', () => {
 // ---------------------------------------------------------------------------------------
 
 const boxes = [];
-test.after(() => boxes.forEach((b) => b.cleanup()));
+after(() => boxes.forEach((b) => b.cleanup()));
 function sandbox(opts) {
   const b = makeSandbox(opts);
   boxes.push(b);
@@ -2092,7 +2118,7 @@ describe('run file robustness', () => {
     const box = sandbox();
     begin(box, 'primary', 's1', '03:55');
     const base = box.run();
-    const runstate = new URL('../scripts/lib/runstate.mjs', import.meta.url).href;
+    const runstate = new URL('../../scripts/lib/runstate.mjs', import.meta.url).href;
     const code = `
       import { saveRun } from ${JSON.stringify(runstate)};
       const run = ${JSON.stringify(base)};
@@ -2427,35 +2453,54 @@ describe('gitsync: sync()', () => {
     assert.deepEqual(slept, [2000, 4000]);
   });
 
+  /** Runs fn() and returns the delay of every setTimeout of a second or more it asked for: sync()'s real backoff is a setTimeout of 2 s and up, so [] means it did not sleep. */
+  async function longTimers(fn) {
+    const real = globalThis.setTimeout;
+    const asked = [];
+    globalThis.setTimeout = (cb, ms, ...rest) => {
+      if (ms >= 1000) asked.push(ms);
+      return real(cb, ms, ...rest);
+    };
+    try {
+      clearTimeout(setTimeout(() => {}, 4321)); // control: the spy does see a long timer
+      assert.deepEqual(asked, [4321]);
+      asked.length = 0;
+      await fn();
+    } finally {
+      globalThis.setTimeout = real;
+    }
+    return asked;
+  }
+
   test('--no-sleep / SED_NO_SLEEP skip the backoff entirely', async () => {
+    // Not timed: a wall-clock bound failed on loaded machines. The in-process calls are watched for the setTimeout the backoff would make.
     const box = repoSandbox();
     installPushHook(box.remote, { failFirst: 4 });
     box.write('docs/a.txt', 'a');
-    const t0 = Date.now();
-    const r1 = await syncA(box, { noSleep: true });
+    let r1;
+    assert.deepEqual(await longTimers(async () => { r1 = await syncA(box, { noSleep: true }); }), [], 'would take 30 s with real backoff');
     assert.equal(r1.pushed, true);
     assert.equal(r1.attempts, 5);
-    assert.ok(Date.now() - t0 < 5000, 'would take 30 s with real backoff');
 
     const box2 = repoSandbox();
     installPushHook(box2.remote, { failFirst: 4 });
     box2.write('docs/a.txt', 'a');
     process.env.SED_NO_SLEEP = '1';
     try {
-      const t1 = Date.now();
-      const r2 = await syncA(box2, { noSleep: undefined });
+      let r2;
+      assert.deepEqual(await longTimers(async () => { r2 = await syncA(box2, { noSleep: undefined }); }), []);
       assert.equal(r2.pushed, true);
-      assert.ok(Date.now() - t1 < 5000);
     } finally {
       delete process.env.SED_NO_SLEEP;
     }
-    // and through the CLI flag
+    // and through the CLI flag: a child process cannot be watched, so this one is timed against the 30 s the backoff would take (four failures),
+    // with a bound well above a loaded machine's run of five attempts
     const box3 = repoSandbox();
-    installPushHook(box3.remote, { failFirst: 2 });
+    installPushHook(box3.remote, { failFirst: 4 });
     box3.write('docs/a.txt', 'a');
     const t2 = Date.now();
     assert.equal(good(box3.state(['sync', '-m', 'cli', '--no-sleep'])).pushed, true);
-    assert.ok(Date.now() - t2 < 8000);
+    assert.ok(Date.now() - t2 < 25_000, 'would take 30 s with real backoff');
   });
 
   test('first push creates the work branch on the remote and leaves main alone', async () => {
@@ -3382,7 +3427,7 @@ describe('mergeRuns() and mergeHistories()', () => {
   });
 
   test('mergeHistories: per-day 3-way merge; deletions only stand when the other side left the entry alone; better tier wins a true conflict', async () => {
-    const { mergeHistories } = await import('../scripts/lib/gitsync.mjs');
+    const { mergeHistories } = await import('../../scripts/lib/gitsync.mjs');
     const e = (date, tier, slug = 'x') => ({ n: 1, date, slug, tier, path: `d/${date}-${slug}/` });
     const H = (...entries) => ({ schema: 1, startDate: DATE, entries });
     const base = H(e('2026-10-09', 3, 'ideas-day'), e('2026-10-10', 1, 'b'));
@@ -4097,7 +4142,7 @@ describe('CLI: round 2 scenarios', () => {
 
 describe('levelConfigFor: per-level kaizen reserve', () => {
   test('a level may override the global kaizen reserve (minimal reserves nothing, so its build cap is never zero)', async () => {
-    const { levelConfigFor } = await import('../scripts/lib/runstate.mjs');
+    const { levelConfigFor } = await import('../../scripts/lib/runstate.mjs');
     const real = readJson(path.join(REPO_ROOT, 'config.json'));
     assert.equal(levelConfigFor(real, 'balanced').reserveForKaizenTokens, 350_000);
     assert.equal(levelConfigFor(real, 'minimal').reserveForKaizenTokens, 0);

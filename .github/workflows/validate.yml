@@ -3,7 +3,9 @@
 #
 # The daily build commits a new docs/d/<day>/ folder. Those commits only need the
 # validator, not the whole test suite, so the test step is skipped when nothing
-# outside docs/ changed. The validator always runs.
+# outside docs/ changed since the previous tip AND that tip passed this workflow
+# (a push cancels the run of the push before it, so it may never have been tested).
+# The validator always runs. tests/ci.test.mjs runs the detection step in scratch repos.
 name: validate
 
 on:
@@ -12,6 +14,7 @@ on:
 
 permissions:
   contents: read
+  actions: read # the change detection asks whether the previous tip was tested
 
 concurrency:
   group: validate-${{ github.workflow }}-${{ github.ref }}
@@ -43,12 +46,25 @@ jobs:
         id: changes
         env:
           BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           code=true
+          # BASE is the tip before this push (a pull request: its base branch), so a push of several commits is judged by all of them.
+          # It is empty or all zeros on the first push of a branch, and not in the clone after a force-push: both run everything.
+          # `git diff --quiet` with a pathspec answers the question itself. The pipe it replaces (`git diff --name-only | grep -qv '^docs/'`)
+          # read a large diff as docs only (grep -q quits at the first code file, git dies of SIGPIPE, pipefail turns that into
+          # "no match") and, with --name-only, showed a file moved from scripts/ into docs/ under its new name only.
           if [ -n "${BASE:-}" ] && ! [[ "$BASE" =~ ^0+$ ]] && git cat-file -e "${BASE}^{commit}" 2>/dev/null; then
-            if ! git diff --name-only "$BASE" HEAD | grep -qv '^docs/'; then
-              code=false
+            if git diff --quiet --no-renames "$BASE" HEAD -- . ':(exclude)docs'; then
+              # Only docs/ changed since BASE, which counts only if BASE itself was tested: a push cancels the run of the push before it
+              # (concurrency above), so BASE may never have been. No answer from the API means untested.
+              tested=$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/validate.yml/runs?head_sha=${BASE}&status=success&per_page=1" --jq '.total_count' 2>/dev/null || echo 0)
+              if [[ "$tested" =~ ^[0-9]+$ ]] && [ "$tested" -gt 0 ]; then
+                code=false
+              else
+                echo "docs/ only since $BASE, but no successful run of this workflow for it: running the tests"
+              fi
             fi
           fi
           echo "code=$code" >> "$GITHUB_OUTPUT"

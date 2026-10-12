@@ -10,6 +10,7 @@ import path from 'node:path';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { tmpDir } from './helpers/env.mjs';
 import { REPO_ROOT, TEST_CONFIG } from './helpers/sandbox.mjs';
+import { loadFactor } from './helpers/cpu.mjs';
 import { localParts } from '../scripts/lib/common.mjs';
 import {
   fold, badPathReason, isProtected, isAllowed, parseProtected, checkProtectedBlocks, jsContextAt, compareCounts, renderLog, lexSource, testMetrics, failedTests,
@@ -1267,8 +1268,8 @@ describe('commit: rejection restores only the touched files and logs a learning'
     begin(repo, 'artisan');
     repo.w('tests/slow.test.mjs', "import test from 'node:test';\ntest('slow', async () => { await new Promise((r) => setTimeout(r, 60000)); });\n");
     const started = Date.now();
-    const r = repo.kz(commitArgs('artisan'), { SED_KAIZEN_SUITE_TIMEOUT_MS: '4000' });
-    assert.ok(Date.now() - started < 40_000, 'must not wait for the hung test');
+    const r = repo.kz(commitArgs('artisan'), { SED_KAIZEN_SUITE_TIMEOUT_MS: String(Math.round(4000 * loadFactor())) });
+    assert.ok(Date.now() - started < 40_000 * loadFactor(), 'must not wait for the hung test');
     assert.equal(r.code, 1);
     assert.match(r.json.reason, /timed out/);
     assert.ok(!repo.exists('tests/slow.test.mjs'));
@@ -1585,7 +1586,7 @@ describe('flaky suites: a failing suite gets one automatic re-run', () => {
     assert.equal(begin(repo, 'artisan').code, 0);
     repo.w('tests/slow.test.mjs', STUB_HANG_ONCE);
     // the override applies to every suite: 8 s leaves the stub validate and selfcheck runs room on a loaded machine, so only the hung test can time out
-    const r = repo.kz(commitArgs('artisan'), { RUN_LOG: log, SED_KAIZEN_SUITE_TIMEOUT_MS: '8000' });
+    const r = repo.kz(commitArgs('artisan'), { RUN_LOG: log, SED_KAIZEN_SUITE_TIMEOUT_MS: String(Math.round(8000 * loadFactor())) });
     assert.equal(r.code, 1);
     assert.match(r.json.reason, /^tests timed out/);
     assert.equal(lineCount(log), 1, 'the hung test ran once');

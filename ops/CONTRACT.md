@@ -18,7 +18,7 @@ Owners are the implementer ids used in the build workflow. **Edit only files you
 | Path | Owner | Notes |
 |---|---|---|
 | `config.json`, `ops/taxonomy.json`, `ops/CONTRACT.md`, `scripts/lib/common.mjs`, `package.json`, `.gitignore`, `state/*.json` seeds | orchestrator | Read-only for you. Import `common.mjs`. |
-| `scripts/state.mjs`, `scripts/heartbeat.mjs`, `scripts/lib/runstate.mjs`, `scripts/lib/gitsync.mjs`, `scripts/lib/throttle.mjs`, `scripts/lib/phasewatch.mjs`, `scripts/lib/usage.mjs`, `scripts/lib/revisepolicy.mjs`, `tests/state.test.mjs`, `tests/heartbeat.test.mjs`, `tests/phasewatch.test.mjs`, `tests/usage.test.mjs`, `tests/revise-policy.test.mjs`, `tests/helpers/*` | `core` | Run state, lease, decision table, git sync, throttle, out-of-process heartbeat |
+| `scripts/state.mjs`, `scripts/heartbeat.mjs`, `scripts/lib/runstate.mjs`, `scripts/lib/gitsync.mjs`, `scripts/lib/throttle.mjs`, `scripts/lib/phasewatch.mjs`, `scripts/lib/usage.mjs`, `scripts/lib/revisepolicy.mjs`, `tests/state-*.test.mjs`, `tests/state/*`, `tests/heartbeat.test.mjs`, `tests/phasewatch.test.mjs`, `tests/usage.test.mjs`, `tests/revise-policy.test.mjs`, `tests/helpers/*` | `core` | Run state, lease, decision table, git sync, throttle, out-of-process heartbeat |
 | `scripts/validate.mjs`, `scripts/novelty.mjs`, `scripts/lenses.mjs`, `scripts/history.mjs`, `ops/lenses.json`, `tests/validate.test.mjs`, `tests/novelty.test.mjs`, `tests/lenses.test.mjs`, `tests/history.test.mjs` | `gate` | Quality gates |
 | `scripts/build-site.mjs`, `scripts/lib/archive.mjs`, `scripts/verify-live.mjs`, `tests/sitegen.test.mjs` | `sitegen` | Static site generation |
 | `site-src/**` (except `site-src/fallback/**`), `tests/gallery.test.mjs` | `gallery` | Gallery front-end (templates, css, js) |
@@ -27,7 +27,7 @@ Owners are the implementer ids used in the build workflow. **Edit only files you
 | `ops/PLAYBOOK.md`, `ops/FAILURE_MODES.md`, `ops/OPERATING.md` | `playbook` | Operator brain |
 | `ops/workflows/*.js`, `ops/roles/*.md`, `ops/rubrics/*.md` | `workflows` | Workflow scripts, role prompts, rubrics |
 | `README.md`, `.github/workflows/*.yml` | `meta` | Public docs and CI |
-| `tests/e2e.test.mjs` | `integrator` | End-to-end scenarios (runs after the others) |
+| `tests/e2e*.test.mjs` | `integrator` | End-to-end scenarios (runs after the others) |
 | `ops/prompts/*.md` | orchestrator | Exact routine prompts |
 | `docs/**` generated output, `state/runs/**`, `state/ideas/**`, `work/**` | runtime | Written by daily runs only |
 

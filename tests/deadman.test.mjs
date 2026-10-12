@@ -51,7 +51,9 @@ function publishRealBuild(box, { hhmm = '07:30', date = DATE } = {}) {
   box.write('state/history.json', { schema: 1, startDate: DATE, entries: [{ n: 1, date, slug: 'real-thing', title: 'Real Thing', tagline: 't', tier: 1, fingerprint, path: `d/${date}-real-thing/`, publishedAt: iso(hhmm, date), countsForNovelty: true }] });
 }
 
-const run = (box, args, env) => box.cli(DEADMAN, args, { SED_NO_SLEEP: '1', ...env });
+// deadman.mjs passes its own `noSleep` (false unless --no-sleep is given) to sync(), which then ignores SED_NO_SLEEP, so the flag itself is what
+// keeps a refused push from sleeping through the real 2+4+8+16 s backoff (the tests that race a primary used to spend 30 s of wall time in it).
+const run = (box, args, env) => box.cli(DEADMAN, args.includes('--no-sleep') ? args : [...args, '--no-sleep'], { SED_NO_SLEEP: '1', ...env });
 const history = (box) => box.readJson('state/history.json');
 
 function snapshot(root) {

@@ -9,6 +9,7 @@ import os from 'node:os';
 import path from 'node:path';
 import zlib from 'node:zlib';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { loadFactor } from './helpers/cpu.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -44,43 +45,52 @@ const copyFixture = (name) => {
 };
 const fixture = (name) => path.join(FIXTURES, `qa-${name}`);
 
+// The suites that drive Chromium wait on the browser and on fixed in-page timers (a whole run is about 3 s of CPU in 6 to 19 s of wall time).
+// Every run has its own fixture copy, --out directory and process mark, so these suites run side by side (and the independent tests of two of
+// them in pairs): 193 s of waiting became about 45. They are registered together under one parent at the end of the file.
+const browserSuites = [];
+const browserSuite = (name, opts, fn) => browserSuites.push(typeof opts === 'function' ? { name, opts: {}, fn: opts } : { name, opts, fn });
+
 /**
  * Every CLI run gets this marker in its environment; Chromium and its helpers inherit it, so any live process
  * carrying it after a run has finished is a leak (other test files may be running their own browsers).
  */
 const MARK = `sed-qa-test-${process.pid}-${Date.now()}`;
+let runCounter = 0;
 
-function markedPids() {
+/** The live processes (other than this one) whose environment carries `mark`. Every runCheck() has a mark of its own, so suites that run side by side do not see each other's browsers. */
+function markedPids(mark = MARK) {
   const found = [];
   for (const pid of fs.readdirSync('/proc').filter((n) => /^\d+$/.test(n))) {
     if (Number(pid) === process.pid) continue;
     try {
-      if (fs.readFileSync(`/proc/${pid}/environ`, 'latin1').includes(`SED_QA_MARK=${MARK}\0`)) found.push(pid);
+      if (fs.readFileSync(`/proc/${pid}/environ`, 'latin1').includes(`SED_QA_MARK=${mark}\0`)) found.push(pid);
     } catch { /* exited, or not ours to read */ }
   }
   return found;
 }
 
-async function waitForNoLeaks(ms = 5000) {
+async function waitForNoLeaks(mark = MARK, ms = 5000) {
   const end = Date.now() + ms;
-  let left = markedPids();
+  let left = markedPids(mark);
   while (left.length && Date.now() < end) {
     await new Promise((r) => setTimeout(r, 200));
-    left = markedPids();
+    left = markedPids(mark);
   }
   return left;
 }
 
-/** Run browser-check as a CLI. Resolves {code, json, stderr, ms, out}. */
+/** Run browser-check as a CLI. Resolves {code, json, stderr, ms, out, mark} (`mark` is what waitForNoLeaks() looks for after this run). */
 function runCheck(args, { env = {}, timeoutMs = 120000, noOut = false } = {}) {
   const out = scratch('out');
   const full = noOut || args.includes('--out') ? args : [...args, '--out', out];
   const started = Date.now();
+  const mark = `${MARK}-run${++runCounter}`;
   return new Promise((resolve, reject) => {
     execFile(
       process.execPath,
       [CHECK, ...full],
-      { env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: BROWSERS, SED_QA_MARK: MARK, ...env }, timeout: timeoutMs, maxBuffer: 32 << 20 },
+      { env: { ...process.env, PLAYWRIGHT_BROWSERS_PATH: BROWSERS, SED_QA_MARK: mark, ...env }, timeout: timeoutMs, maxBuffer: 32 << 20 },
       (err, stdout, stderr) => {
         let json;
         try {
@@ -88,7 +98,7 @@ function runCheck(args, { env = {}, timeoutMs = 120000, noOut = false } = {}) {
         } catch (e) {
           return reject(new Error(`stdout is not one JSON document: ${e.message}\n--- stdout\n${stdout.slice(0, 2000)}\n--- stderr\n${stderr.slice(0, 2000)}`));
         }
-        resolve({ code: err ? (typeof err.code === 'number' ? err.code : 1) : 0, json, stderr, ms: Date.now() - started, out });
+        resolve({ code: err ? (typeof err.code === 'number' ? err.code : 1) : 0, json, stderr, ms: Date.now() - started, out, mark });
       },
     );
   });
@@ -398,12 +408,12 @@ describe('browser-check: top-level navigation detection', () => {
  * browser-check.mjs against real Chromium
  * ---------------------------------------------------------------------------------------------- */
 
-describe('browser-check: clean sample', () => {
+browserSuite('browser-check: clean sample', () => {
   let r;
   let strays;
   before(async () => {
     r = await runCheck([fixture('clean'), '--seconds', '6', '--seed', '7']);
-    strays = await waitForNoLeaks();
+    strays = await waitForNoLeaks(r.mark);
   });
 
   test('passes with no errors and no warnings', () => {
@@ -487,7 +497,7 @@ describe('browser-check: clean sample', () => {
   });
 });
 
-describe('browser-check: defects are flagged', () => {
+browserSuite('browser-check: defects are flagged', { concurrency: 2 }, () => {
   test('console errors, uncaught errors and broken local resources', async () => {
     const r = await runCheck([fixture('console-errors'), '--seconds', '4']);
     assert.equal(r.code, 1);
@@ -567,7 +577,7 @@ describe('browser-check: defects are flagged', () => {
   });
 });
 
-describe('browser-check: robustness', () => {
+browserSuite('browser-check: robustness', () => {
   test('the leak detector can see a marked process (so "no leaks" means something)', async () => {
     const sleeper = spawn('sleep', ['30'], { env: { ...process.env, SED_QA_MARK: MARK }, stdio: 'ignore' });
     try {
@@ -582,17 +592,17 @@ describe('browser-check: robustness', () => {
     const r = await runCheck([fixture('hang'), '--seconds', '3', '--page-timeout', '2500']);
     assert.equal(r.code, 1);
     assert.match(r.json.errors.join('\n'), /page-timeout: the page did not finish loading within 2500ms/);
-    assert.ok(r.ms < 30000, `took ${r.ms}ms`);
+    assert.ok(r.ms < 30000 * loadFactor(), `took ${r.ms}ms`);
     assert.ok(r.json.metrics.skipped.includes('monkey-desktop'), 'later passes are skipped once the page hangs');
-    assert.deepEqual(await waitForNoLeaks(), []);
+    assert.deepEqual(await waitForNoLeaks(r.mark), []);
   });
 
   test('a page that freezes after loading is detected by the heartbeat', async () => {
     const r = await runCheck([fixture('hang-late'), '--seconds', '3', '--page-timeout', '5000']);
     assert.equal(r.code, 1);
     assert.match(r.json.errors.join('\n'), /unresponsive: the page stopped responding after it loaded/);
-    assert.ok(r.ms < 30000, `took ${r.ms}ms`);
-    assert.deepEqual(await waitForNoLeaks(), []);
+    assert.ok(r.ms < 30000 * loadFactor(), `took ${r.ms}ms`);
+    assert.deepEqual(await waitForNoLeaks(r.mark), []);
   });
 
   test('the hard overall timeout wins over a generous page timeout', async () => {
@@ -600,13 +610,13 @@ describe('browser-check: robustness', () => {
     assert.equal(r.code, 1);
     assert.match(r.json.errors.join('\n'), /overall-timeout: QA did not finish within the 6s hard limit/);
     assert.equal(r.json.timedOut, true);
-    assert.ok(r.ms < 40000, `took ${r.ms}ms`);
-    assert.deepEqual(await waitForNoLeaks(), []);
+    assert.ok(r.ms < 40000 * loadFactor(), `took ${r.ms}ms`);
+    assert.deepEqual(await waitForNoLeaks(r.mark), []);
   });
 
   test('a tiny budget skips passes instead of overrunning', async () => {
     const r = await runCheck([fixture('clean'), '--seconds', '60', '--timeout', '8']);
-    assert.ok(r.ms < 35000, `took ${r.ms}ms`);
+    assert.ok(r.ms < 35000 * loadFactor(), `took ${r.ms}ms`);
     assert.ok((r.json.metrics.monkey?.['monkey-desktop']?.durationMs ?? 0) < 8000, 'the monkey never exceeds the budget');
   });
 
@@ -618,7 +628,7 @@ describe('browser-check: robustness', () => {
     assert.ok(r.json.warnings.some((w) => /^popup: /.test(w)), 'QA says a window was opened and closed it');
     assert.doesNotMatch(r.json.errors.join('\n'), /non-local-request/, 'following a cited-source link is not a policy violation');
     assert.deepEqual(r.json.metrics.nonLocalRequests, []);
-    assert.deepEqual(await waitForNoLeaks(), []);
+    assert.deepEqual(await waitForNoLeaks(r.mark), []);
   });
 
   test('a page that blocks the main thread for 400 ms shows up in the long-task metrics of every pass', async () => {
@@ -639,7 +649,7 @@ describe('browser-check: robustness', () => {
     assert.equal(r.json.error, 'no-browser');
     assert.match(r.json.errors[0], /^no-browser: /);
     assert.deepEqual(r.json.shots, []);
-    assert.ok(r.ms < 60000, `took ${r.ms}ms`);
+    assert.ok(r.ms < 60000 * loadFactor(), `took ${r.ms}ms`);
     assert.ok(fs.existsSync(path.join(r.out, 'report.json')));
   });
 
@@ -668,7 +678,7 @@ describe('browser-check: robustness', () => {
   });
 });
 
-describe('browser-check: thumbnails', () => {
+browserSuite('browser-check: thumbnails', { concurrency: 2 }, () => {
   const sandboxWithCap = (cap) => {
     const root = scratch('sed-root');
     fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify({ limits: { thumbMaxBytes: cap } }));
@@ -775,7 +785,7 @@ describe('browser-check: thumbnails', () => {
  * The page shell and the project.json template
  * ---------------------------------------------------------------------------------------------- */
 
-describe('page shell and project template', () => {
+browserSuite('page shell and project template', () => {
   const buildProject = ({ fill }) => {
     const dir = path.join(scratch('shell'), '2026-10-09-example-project');
     fs.mkdirSync(dir);
@@ -855,4 +865,8 @@ describe('page shell and project template', () => {
     const res = await validateProject(dir, { tier: 4 });
     assert.deepEqual(res.errors.filter((e) => /project-json|fingerprint/.test(e)), []);
   });
+});
+
+describe('browser suites, side by side', { concurrency: 4 }, () => {
+  for (const { name, opts, fn } of browserSuites) describe(name, opts, fn);
 });

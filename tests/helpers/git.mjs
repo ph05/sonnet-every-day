@@ -19,9 +19,26 @@ export function gitTry(cwd, ...args) {
   }
 }
 
+// A finished remote is built once per process and per content (about nine git processes: init, clone, add, commit, push, checkout, push) and
+// every sandbox after that is a file copy of it: a bare repository holds no absolute paths, and each copy gets its own hooks and push counter.
+const remoteTemplates = new Map();
+
 /** Bare remote whose `main` (and optionally the work branch) holds `files` ({relPath: content}). */
 export function makeRemote({ files = { 'README.md': 'seed\n' }, workBranch = true } = {}) {
+  const key = JSON.stringify([files, workBranch]);
+  let template = remoteTemplates.get(key);
+  if (!template) {
+    template = buildRemote({ files, workBranch }).remote;
+    remoteTemplates.set(key, template);
+  }
   const base = tmpDir('sed-remote-');
+  const remote = path.join(base, 'remote.git');
+  fs.cpSync(template, remote, { recursive: true });
+  return { remote, base };
+}
+
+function buildRemote({ files, workBranch }) {
+  const base = tmpDir('sed-remote-template-');
   const remote = path.join(base, 'remote.git');
   execFileSync('git', ['init', '--bare', '-b', 'main', remote], { stdio: 'ignore' });
   const seed = path.join(base, 'seed');

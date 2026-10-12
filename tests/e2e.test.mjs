@@ -21,8 +21,19 @@
 //              tools and the operating model   (n, n2) OPERATING.md recipes   (o) CONTRACT 5 file shapes   (p) missing work branch
 //              (q, q2) budget, QA output   (s) failed runs
 // Set SED_E2E_SHOTS=<dir> to keep the browser tests' screenshots and SED_E2E_KEEP_SITE=<dir> to keep (k)'s built docs/.
+//
+// HOW THIS RUNS. The scenarios are CPU-bound (every step is a real node or git process) and independent of one another, so running them one
+// after another in one process took 417 s, longer than everything else in `npm test` together. They are split over four test files that
+// node --test runs side by side, about 100 s each: this file (part "docs") and the three wrappers tests/e2e-days.test.mjs,
+// e2e-closers.test.mjs and e2e-tools.test.mjs, which only set `globalThis.__sedE2ePart` and import this module. A part registers just its
+// scenarios (PARTS below; a scenario in no part runs in the last one, so a new one is never skipped). Part "docs" is also what this file
+// runs when node --test starts it by itself, because it holds every scenario that reads a document (m, m2..m6, kz1..kz7, bs1, bs2:
+// E2E_DOCS_PATTERN in scripts/kaizen.mjs selects exactly those for a doc-only kaizen diff, and tests/kaizen.test.mjs reads this file to prove it).
+// With --test-name-pattern, or SED_E2E_PART=all, every scenario is registered (the pattern or you choose); SED_E2E_PART=<part> picks one.
+// Scenarios that hand a built site on to a browser scenario ((k) -> (l), (kz1) -> (l2)) stay in one part. Each part builds its own seed remote
+// and its own worlds; nothing is shared between processes.
 import './helpers/env.mjs';
-import test, { after, before, describe } from 'node:test';
+import nodeTest, { after, before, describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -41,6 +52,31 @@ import { copyPristine, pristineFiles } from './helpers/e2e-seed.mjs';
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const REPO = path.resolve(HERE, '..');
 const BENIGN = path.join(HERE, 'fixtures', 'gate-benign', '2026-10-09-sample-toy');
+
+// The parts, balanced by measured run time (seconds on a quiet 4-core machine in brackets).
+const PARTS = {
+  docs: ['m', 'm2', 'm3', 'm4', 'm5', 'm6', 'bs1', 'bs2', 'kz1', 'kz2', 'kz3', 'kz4', 'kz5', 'kz6', 'kz7', 'k', 'l', 'l2'], // [118] documents against the code, the kaizen round, the sites it builds
+  days: ['a', 'b', 'b2', 'b3', 'b3b', 'b4', 'b5', 'b6', 'c', 'c2', 'c3', 'c4', 'c5', 'd', 'd2'], // [105] one role dies, the others take over
+  closers: ['e', 'e2', 'e3', 'e4', 'f', 'f2', 'g', 'g2', 'h', 'i', 'j', 'p', 'q', 's'], // [94] closers, deadman, double fires, DST, carry-over
+  tools: ['n', 'n2', 'o', 'q2', 't', 'hb1', 'ps1'], // [99] OPERATING.md recipes, file shapes, browser-check as the playbook calls it, the heartbeat branch, persistent sessions
+};
+const DEFAULT_PART = 'docs';
+const asked = globalThis.__sedE2ePart ?? process.env.SED_E2E_PART ?? null;
+const filtered = process.execArgv.some((a) => a.startsWith('--test-name-pattern')); // a name filter chooses scenarios itself
+const PART = asked === 'all' || (asked === null && filtered) ? null : (asked ?? DEFAULT_PART);
+if (PART !== null && !Object.hasOwn(PARTS, PART)) throw new Error(`unknown e2e part "${PART}" (parts: ${Object.keys(PARTS).join(', ')}, or all)`);
+const PART_OF = new Map(Object.entries(PARTS).flatMap(([part, ids]) => ids.map((id) => [id, part])));
+for (const [id, part] of PART_OF) {
+  if (/^(?:m\d?|kz\d|bs\d)$/.test(id) && part !== DEFAULT_PART) throw new Error(`scenario (${id}) is in E2E_DOCS_PATTERN, the subset a doc-only kaizen diff runs from this file: it must stay in part "${DEFAULT_PART}"`);
+}
+const LAST_PART = Object.keys(PARTS).at(-1);
+/** Registers a scenario when it belongs to this process's part (every scenario when PART is null). */
+const test = (name, ...rest) => {
+  const id = /^\((\w+)\)/.exec(String(name))?.[1];
+  if (PART !== null && (PART_OF.get(id) ?? LAST_PART) !== PART) return undefined;
+  return nodeTest(name, ...rest);
+};
+console.log(PART === null ? '[e2e] every scenario is registered' : `[e2e] part "${PART}" of ${Object.keys(PARTS).join(', ')} (SED_E2E_PART=all or --test-name-pattern registers every scenario)`);
 const PLAYBOOK = fs.readFileSync(path.join(REPO, 'ops', 'PLAYBOOK.md'), 'utf8');
 const CONFIG = { ...JSON.parse(fs.readFileSync(path.join(REPO, 'config.json'), 'utf8')), startDate: '2026-10-09' }; // frozen fixture clock (the live startDate moves with the project)
 const TAXONOMY = JSON.parse(fs.readFileSync(path.join(REPO, 'ops', 'taxonomy.json'), 'utf8'));

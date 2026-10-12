@@ -4,6 +4,15 @@
 // process has waited for (cutime + cstime of /proc/self/stat; Linux only, elsewhere the children count as 0) and the tests keep a loose
 // wall-clock backstop next to the CPU budget: an order-of-magnitude stall still fails, a busy machine does not.
 import fs from 'node:fs';
+import os from 'node:os';
+
+/**
+ * How many times slower than an idle machine a wall-clock bound should be allowed to be right now: the 1-minute load average per CPU,
+ * at least 1. The "does not hang" and "stays fast" bounds that cannot be CPU budgets (a browser, a timeout) are multiplied by it, so they
+ * keep their full strictness on an idle machine (CI, the kaizen gate) and stop failing on a box shared with other test runs
+ * (it was at 6 runnable processes per CPU while this was written, and a 6 s browser run took 40 s).
+ */
+export const loadFactor = () => Math.max(1, os.loadavg()[0] / Math.max(1, os.availableParallelism()));
 
 /** Clock ticks per second of the /proc counters: USER_HZ, 100 on every Linux the suite runs on (`getconf CLK_TCK`). */
 const TICKS_PER_SECOND = 100;
