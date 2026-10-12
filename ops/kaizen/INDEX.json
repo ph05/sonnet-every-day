@@ -271,7 +271,7 @@
       "files": [
         "ops/roles/clerk.md"
       ],
-      "sha": null,
+      "sha": "3723fd190bf54ff6f7fc9a8b16ee4a3d0e67df10",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the network probe and the qa link check share one named field for the network-down line, so a later role edit cannot split them again?",
