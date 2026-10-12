@@ -19,7 +19,8 @@
 //     {total:null, spent:()=>N, remaining:()=>null} every script honors args.capTokens, skips optional stages, never throws and never
 //     spends past cap plus reserve; budget.remaining() is called in exactly one place per script
 //   * research works with search-only evidence: the network probe and work/<date>/ideas/network.json, extended search for time-sensitive
-//     lenses only, `verified` meaning an opened page or two independent results, unverified facts never shown as facts
+//     lenses only, `verified` meaning an opened page, two independent results or the primary source's own page, unverified facts never
+//     shown as facts
 //   * revise honours reviseLoops on a compact day too, fixes in severity order (S3 only when asked), and never edits the build in place: fix
 //     agents work on a copy, a loop reaches the build only when a critic rechecked it and it is strictly better, so a failed, stalled,
 //     regressing or unverified revise leaves the build as QA saw it
@@ -204,6 +205,10 @@ export function purposePlan(over = {}) {
     windowDays: 7, counts: { tool: 0, lesson: 0, explorer: 0, studio: 0, play: 2 }, lastShipped: { tool: null, lesson: null, explorer: null, studio: null, play: '2026-10-08' },
     wanted: ['tool', 'lesson'], avoid: ['play'], playAllowed: false, playBlockedUntil: '2026-10-11', bonus: REAL_CONFIG.mix?.purposes?.wantedBonus ?? 5, override: null, legacyAssumed: [], ...over,
   };
+}
+/** The plan of `novelty.mjs mix --purpose P` (applyOverride): only P wanted, every other purpose avoided, play paused unless P is play. */
+function overridePlan(p) {
+  return purposePlan({ wanted: [p], avoid: Object.keys(TAXONOMY.purposes).filter((x) => x !== p), playAllowed: p === 'play', playBlockedUntil: p === 'play' ? null : '2026-10-11', override: p });
 }
 
 function baseArgs(sb, extra = {}) {
@@ -1435,8 +1440,15 @@ describe('ideate.js', () => {
         const studio = await scoutPromptsOf(withKinds(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: purposePlan({ wanted: ['explorer', 'studio'], avoid: [], playAllowed: true, playBlockedUntil: null }) } }), { cards: 'useful' }));
         assert.ok(studio.prompt('cards').includes('Today a tool is not wanted: lead with a wanted purpose from this field; your second candidate may be a tool.'));
         assert.ok(studio.prompt('pulse').includes('Avoided today: none.') && !studio.prompt('pulse').includes('Play is paused') && !studio.prompt('pulse').includes('ranked last'));
-        const manual = await scoutPromptsOf(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: purposePlan({ wanted: ['explorer'], avoid: [], playAllowed: true, override: 'explorer' }) } }));
-        assert.ok(manual.prompt('pulse').includes('This is a manual override: the owner asked for an explorer.') && manual.prompt('pulse').includes('Your FIRST candidate is an explorer.'));
+        // a manual override as novelty.mjs writes it: every other purpose is avoided, play is paused unless the override is play
+        const manual = (await scoutPromptsOf(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: overridePlan('explorer') } }))).prompt('pulse');
+        for (const must of [
+          'Wanted today: explorer. Avoided today: tool, lesson, studio, play. Play is paused until 2026-10-11. This is a manual override: the owner asked for an explorer.',
+          'Your FIRST candidate is an explorer.', 'Your second candidate may have any purpose that is not avoided (never tool or lesson or studio or play).',
+          'An idea with an avoided purpose is ranked last in the shortlist and cannot win today.',
+        ]) assert.ok(manual.includes(must), `the override prompt lacks "${must}"`);
+        const playDay = (await scoutPromptsOf(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: overridePlan('play') } }))).prompt('pulse');
+        assert.ok(playDay.includes('Avoided today: tool, lesson, explorer, studio. This is a manual override: the owner asked for a play.') && !playDay.includes('Play is paused'), 'PURPOSE=play: play allowed, every other purpose avoided');
       } finally { t.clean(); }
     } finally { s.clean(); }
   });
@@ -1646,6 +1658,17 @@ describe('ideate.js', () => {
       assert.ok(t.play >= 4 && t.wanted < 6, JSON.stringify(t));
       assert.equal(none.result.purposes, null);
       assert.ok(none.rec.logs.some((l) => l.startsWith('no purpose plan')));
+      s.clean();
+      // a PURPOSE=lesson override avoids every other purpose: the shortlist still reaches 10, keeps all three lessons, and the surplus it
+      // drops is avoided ideas only
+      s = makeSandbox();
+      const lessonDay = await go('ideate', baseArgs(s, { mix: { ...baseArgs(s).mix, purposes: overridePlan('lesson') } }), world(s));
+      checkRunInvariants('ideate', lessonDay);
+      const kept = s.json(s.work('ideas', 'shortlist.json')).ideas.map((i) => i.fingerprint.purpose);
+      assert.deepEqual([kept.length, kept.filter((p) => p === 'lesson').length], [10, 3], kept.join(','));
+      assert.deepEqual([lessonDay.result.purposes.shortlistedWanted, lessonDay.result.purposes.shortlistedAvoided], [3, 7]);
+      const surplus = lessonDay.result.dropped.filter((d) => d.stage === 'shortlist').map((d) => d.id);
+      assert.ok(surplus.length > 0 && surplus.every((id) => purposeOf(id) !== 'lesson'), surplus.join(','));
     } finally { s.clean(); }
   });
 
@@ -1910,6 +1933,35 @@ describe('select.js', () => {
         checkRunInvariants('select', none);
         assert.ok(none.result.ranking.every((r) => r.purposeBonus === 0 && r.total === r.baseTotal));
         assert.ok(!none.rec.logs.some((l) => l.includes('withheld')), 'no plan: nothing is withheld either');
+      } finally { t.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('a PURPOSE= override: only that purpose can win, an idea without a purpose cannot either, and with none of it the best total ships flagged', async () => {
+    // novelty.mjs applyOverride avoids every other purpose; i01 (no purpose) and i03 (tool) are judged far above the weak lesson i02
+    const s = makeSandbox();
+    try {
+      seedShortlist(s, { purpose: { i02: 'lesson', i03: 'tool', i04: 'play' }, durable: () => true });
+      const scoreOf = (k, id) => ({ i01: 9.5, i02: 6.5, i03: 9.4, i04: 9.3 })[id] ?? (k === 'feasibility' ? 3 : undefined);
+      const run = await go(s, selectWorld(s, { scoreOf }), {}, { mix: { ...baseArgs(s).mix, purposes: overridePlan('lesson') } });
+      checkRunInvariants('select', run);
+      const rank = Object.fromEntries(run.result.ranking.map((r) => [r.id, r]));
+      assert.equal(run.result.chosenId, 'i02', 'the weak lesson wins over every other purpose and over the idea without one');
+      assert.deepEqual([rank.i01.eligible, rank.i03.eligible, rank.i04.eligible, rank.i02.total], [false, false, false, 65]);
+      const doc = s.json(s.p('state', 'ideas', `${DATE}.json`));
+      const note = (id) => doc.rejectedNotes.find((x) => x.title === doc.ideas.find((i) => i.id === id).title).reason;
+      assert.ok(note('i01').includes("purpose-missing: today's manual override asks for lesson"), note('i01'));
+      assert.ok(note('i03').includes('purpose-avoid: tool is avoided today'), note('i03'));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('purpose missing for i01') && l.includes('ineligible today (the manual override asks for lesson)')));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('purpose plan: wanted lesson') && l.endsWith('manual override: only lesson can win')));
+      // no lesson at all: the best total ships anyway, whatever its purpose, flagged (FM-137)
+      const t = makeSandbox();
+      try {
+        seedShortlist(t, { purpose: { i02: 'tool', i03: 'play' } });
+        const none = await go(t, selectWorld(t, { scoreOf: (k, id) => ({ i01: 9.5, i02: 7, i03: 9 })[id] ?? (k === 'feasibility' ? 3 : undefined) }), {}, { mix: { ...baseArgs(t).mix, purposes: overridePlan('lesson') } });
+        checkRunInvariants('select', none);
+        assert.deepEqual([none.result.chosenId, none.result.degraded, none.result.reason], ['i01', true, 'no-eligible-idea']);
+        assert.ok(none.rec.logs.some((l) => l.startsWith('NO idea passes the gates')));
       } finally { t.clean(); }
     } finally { s.clean(); }
   });
@@ -4368,9 +4420,8 @@ describe('r4 fixes: budget and time arithmetic, the stranger, QA severities and 
   });
 
   test('the QA probe template: under 80 lines, plain ASCII, valid syntax, no test-runner name and no shebang (the suites never run it)', () => {
-    // read beside this file, not through REAL_REPO: the selective kaizen gate maps ops/templates/ to the doc suites only, and
-    // tests/kaizen.test.mjs would then demand the selfcheck on that row (package 1b asked the lead for that change)
-    const file = path.join(HERE, '..', 'templates', 'qa-probe.example.mjs');
+    // read through REAL_REPO, so tests/kaizen.test.mjs sees this reader and holds the ops/templates/ row of the kaizen gate to the selfcheck
+    const file = path.join(REAL_REPO, 'ops', 'templates', 'qa-probe.example.mjs');
     const text = fs.readFileSync(file, 'utf8');
     assert.ok(text.split('\n').length <= 80, `${text.split('\n').length} lines`);
     assert.ok(/^[\x00-\x7f]*$/.test(text), 'ASCII only');

@@ -30,7 +30,7 @@ node scripts/state.mjs status --date 2026-10-09
 node scripts/kaizen.mjs status
 ```
 
-Read `status` (`in_progress`, `published`, `failed`), `phase`, `tier`, `lease.alive`, `spend` and the plain-English `nextAction`. For the story of a day read `state/reports/<date>.md` (one file per day, written by the operator; it ends with the day's kaizen and a blameless "what went wrong"), and `state/handoff.md`, the note the last session left for tomorrow's. The raw state is in `state/runs/<date>.json`; the gallery's own data is `docs/archive.json`. A push notification arrives when a day publishes ("live", or "late" when it is after 08:30), when it falls back, or when it fails, if the notification tool is available to the routines.
+Read `status` (`in_progress`, `published`, `failed`), `phase`, `tier`, `lease.alive`, `spend` and the plain-English `nextAction`. For the story of a day read `state/reports/<date>.md` (one file per day, written by the operator; it ends with the day's kaizen and a blameless "what went wrong"), and `state/handoff.md`, the note the last session left for tomorrow's. The raw state is in `state/runs/<date>.json`; the gallery's own data is `docs/archive.json`. A push notification arrives when a day publishes ("live", or "late" when it is after 09:15, the end of the planned window), when it falls back, or when it fails, if the notification tool is available to the routines.
 
 ## Steering the mix
 
@@ -41,7 +41,7 @@ node scripts/novelty.mjs mix
 node scripts/novelty.mjs mix --date 2026-10-13
 ```
 
-`summary` starts with the plan in words ("Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Today we want a tool or a lesson (lead with one); play is paused until 2026-10-18.") and `purposes` holds it as fields: `counts` and `lastShipped` (the last 7 days), `wanted` (what the scouts lead with; an idea of a wanted purpose gets `bonus` extra points out of 100 at selection), `avoid` (what cannot win today), `playAllowed` and `playBlockedUntil`, `override` (a `PURPOSE=` run).
+`summary` starts with the plan in words ("Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Today we want a tool or a lesson (lead with one); play is paused until 2026-10-18.") and `purposes` holds it as fields: `counts` and `lastShipped` (the last 7 days), `wanted` (what the scouts lead with; an idea of a wanted purpose gets `bonus` extra points out of 100 at selection when the clarity judge gives it 7 or more, or did not score it), `avoid` (what cannot win today), `playAllowed` and `playBlockedUntil`, `override` (a `PURPOSE=` run).
 
 The numbers live in `config.json` `mix.purposes`:
 
@@ -52,7 +52,7 @@ The numbers live in `config.json` `mix.purposes`:
 | `playCooldownDays` | 3 | Play days are at least 3 days apart. |
 | `maxPlayPer7Days` | 2 | At most 2 play days in any 7. |
 | `wantedCount` | 2 | How many purposes are wanted at once (1 or 2). |
-| `wantedBonus` | 5 | The points out of 100 a wanted purpose adds at selection: a nudge, so a clearly better idea of another purpose still wins. |
+| `wantedBonus` | 5 | The points out of 100 a wanted purpose adds at selection, only to an idea with clarity 7 or more (or unscored): a nudge, so a clearly better idea of another purpose still wins. |
 | `starvedDays` | 6 | A purpose with nothing in the last week and no build for 6 days is starved: while any purpose is starved, only starved ones are wanted. |
 | `windowDays`, `legacyDefault` | 7, `play` | The window the counts cover; the purpose assumed for a day built before purposes existed. |
 
@@ -144,7 +144,7 @@ Ask Claude: "fire the Sonnet Every Day manual routine with the text `ROLE_OVERRI
 
 Routines are just prompts plus a schedule, and the prompts live in the repo. Each role needs a session first and then a trigger that wakes it, so rebuilding is two calls per role, spelled out in [`prompts/README.md`](prompts/README.md): `create_session` (the repo as source, branch `claude/sonnet-every-day`, model `claude-sonnet-5-5`), then `create_trigger` with that session as `persistent_session_id` (never `create_new_session_on_fire`: that session would have no repo) and no text: a scheduled fire carries nothing but the routine's prompt. Cron expressions are written `CRON_TZ=America/New_York <cron>`: `CRON_TZ=America/New_York 55 3 * * *` (primary), `32 5 * * *` (watchdog A), `47 6 * * *` (watchdog B), `47 8 * * *` (closer) and, for the closer backup, `37 9 * * *`; the manual routine has no schedule. The new session ids go into `state/routines.json`. The prompt text comes from `prompts/primary.md`, `watchdog-a.md`, `watchdog-b.md` and `closer.md` (used twice: the backup closer is the same prompt on a second schedule), and `manual.md` for the manual routine, with `{{BOOTSTRAP}}` replaced by the text of `prompts/_bootstrap.md`. An archived session comes back with `unarchive_session`; a deleted one is recreated, and the new ids go into `state/routines.json`. Asking Claude to "recreate the Sonnet Every Day sessions and routines from ops/prompts/README.md" works. `prompts/smoke.md` is a one-off plumbing test.
 
-**Editing a prompt file changes nothing live by itself.** A routine keeps the copy of the prompt it was created with, so after any edit of `_bootstrap.md` or a prompt file all six routines need `update_trigger` with the new text (`prompts/README.md`, "Refresh the routines after editing a prompt", has the commands that list the six routines with their trigger ids and print each text). Ask Claude **in each role's own session** (a routine's prompt can only be changed from the conversation it posts into; the session ids are in `state/routines.json`; asked from any other session the tool refuses): "refresh this routine's prompt from ops/prompts, per ops/prompts/README.md". `get_trigger` shows the stored text (`derived_state.prompt`), so a routine that lags behind the files is easy to spot.
+**Editing a prompt file changes nothing live by itself.** A routine keeps the copy of the prompt it was created with, so after any edit of `_bootstrap.md` or a prompt file all six routines need `update_trigger` with the new text (`prompts/README.md`, "Refresh the routines after editing a prompt", has the commands that list the six routines with their trigger ids and print each text). Ask Claude **in each role's own session** (a routine's prompt can only be changed from the conversation it posts into; the session ids are in `state/routines.json`; asked from any other session the tool refuses): "refresh this routine's prompt from ops/prompts, per ops/prompts/README.md". `get_trigger` shows the stored text (`derived_state.prompt`), so a routine that lags behind the files is easy to spot. Due now: since 2026-10-12 the files carry the purpose mission line (`primary.md`), `PURPOSE=` (`manual.md`, `_bootstrap.md`), the 08:45 to 09:15 live window of a compact day (`_bootstrap.md`, both watchdogs) and wdB's tier rule (`watchdog-b.md`), so all six routines need this refresh.
 
 ## Turn on GitHub Pages (once)
 
@@ -182,7 +182,7 @@ node scripts/validate.mjs repo
 node scripts/state.mjs sync -m "remove bad day 2026-10-09"
 ```
 
-The gallery then lists that date as a missing day. To **rebuild** the same date as well, also remove its run record and staging, and then fire a manual run:
+The gallery then lists that date as a missing day. A directory left behind without its history entry is reported by `build-site` as `unlisted`, with the `history.mjs add` command that would publish it again: delete it instead. To **rebuild** the same date as well, also remove its run record and staging, and then fire a manual run:
 
 ```
 rm -f state/runs/2026-10-09.json state/ideas/2026-10-09.json
@@ -196,7 +196,7 @@ node scripts/state.mjs sync -m "reset 2026-10-09 for a rerun"
 
 The sessions run in an environment with a limited network policy. Verified on 2026-10-09: `registry.npmjs.org` and the git remote work; `en.wikipedia.org`, `www.reddit.com`, `news.ycombinator.com`, `api-web.nhle.com` and `ph05.github.io` do not (curl answers 000, WebFetch fails with `ENOTFOUND`), and WebSearch works. What follows from it:
 
-* **Research is WebSearch-based.** The scouts work from search results (title, URL, date, snippet) and cannot open most pages. Evergreen lenses use the cheap `standard` search mode; only time-sensitive lenses use `extended`, which costs several times more (and `standard` returns stale snapshots for "today" questions). A source counts as verified only when two results agree or a page really opens; an unverified claim never appears in a published page as fact. Ideas are a little thinner than they would be with page access: that is the price of the restriction, not a fault.
+* **Research is WebSearch-based.** The scouts work from search results (title, URL, date, snippet) and cannot open most pages. Evergreen lenses use the cheap `standard` search mode; only time-sensitive lenses use `extended`, which costs several times more (and `standard` returns stale snapshots for "today" questions). A source counts as verified only when a page really opens, two independent results agree, or the result is the primary source's own official page; an unverified claim never appears in a published page as fact. Ideas are a little thinner than they would be with page access: that is the price of the restriction, not a fault.
 * **`verify-live` cannot reach the site.** `live:null, reason:"unreachable"` is the normal answer from the cloud. The operator writes it in the report and moves on; it is never alarming, never a reason to notify you, and says nothing about GitHub Pages. To check a day, open the site yourself.
 * **To widen access**, change the cloud environment's settings (the environment menu in the session's title bar, then Edit, then Network access; steps at <https://code.claude.com/docs/en/cloud-environments#network-access>): either add the hosts under **Allowed domains** (`en.wikipedia.org`, `www.reddit.com`, `news.ycombinator.com`, `api-web.nhle.com`, `ph05.github.io`; leave "Allow package managers" ticked) or choose a broader level such as **Full**. Persistent sessions keep running in their container, so if a role does not pick the change up, recreate its session (`prompts/README.md`). Nothing in the repo needs changing: the research workflow probes each likely host with one WebFetch a day and files the failures in `work/<date>/ideas/network.json`, so a host you allow starts being used the next morning.
 

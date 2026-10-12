@@ -1163,6 +1163,39 @@ test('planner (A4): since 2026-10-13 a narrow compact day plans spec 35 and qa 4
   assert.match(section(PLAYBOOK, '### 5.3 wdB'), /a finished `spec` fits only when the build can start by about 06:50/);
 });
 
+test('wdB (5.3 step 3): a live Tier 1 holder that can still finish compact gets a scope-cut, not a ship-now; only suggestTier 3 or 4 stops it', () => {
+  // a manual Tier 1 run on the 2-slot machine, 32 minutes into its build at 06:47: begin adds no scope-cut (the run is past spec), so
+  // status still says targetTier 1, the planner prices the Tier 1 build as infeasible, and a compact finish fits (suggestTier 2)
+  const text = section(PLAYBOOK, '### 5.3 wdB');
+  const cut = /`suggestTier` 2 \([^)]*\): `node scripts\/state\.mjs (directive --kind scope-cut --tier 2 --by wdB) --date <D>`/.exec(text);
+  assert.ok(cut, 'step 3 names the scope-cut for suggestTier 2');
+  assert.match(text, /`suggestTier` 3 or 4: leave an explicit stop order/);
+  const box = realBox();
+  try {
+    must(box, ['begin', '--role', 'manual', '--session', 'sM', '--target-tier', '1'], '04:10');
+    for (const [phase, hhmm] of [['preflight', '04:15'], ['ideate', '04:45'], ['select', '05:15'], ['spec', '05:45']]) {
+      must(box, ['phase-start', '--phase', phase, '--session', 'sM'], hhmm);
+      box.write(`work/${D}/${phase}/DONE.json`, { ok: true, phase });
+      must(box, ['phase-done', '--phase', phase, '--note', 'test', '--session', 'sM', '--role', 'manual'], hhmm);
+    }
+    must(box, ['phase-start', '--phase', 'build', '--session', 'sM'], '06:15');
+    must(box, ['beat', '--role', 'manual', '--session', 'sM', '--phase', 'build'], '06:40');
+    const b = must(box, ['begin', '--role', 'wdB', '--session', 'sB'], '06:47');
+    assert.deepEqual([b.action, b.directiveAdded], ['exit-alive', false]);
+    const status = must(box, ['status'], '06:47');
+    assert.deepEqual([status.phase, status.targetTier, status.phaseMinutes], ['build', 1, 32]);
+    const plan = runSnippet(box, 'A4', { MTD: String(status.minutesToGraceUntil - 15), TIER: String(status.targetTier), PHASE: status.phase, SPENT: String(status.phaseMinutes), SLOTS: '2' }).json;
+    assert.deepEqual([plan.feasible, plan.suggestTier], [false, 2], 'infeasible at Tier 1, a compact finish fits');
+    // the documented directive works on a foreign lease and turns the holder compact at its next boundary; qa stays in the plan
+    must(box, cut[1].split(' '), '06:48');
+    assert.equal(must(box, ['status'], '06:48').targetTier, 2);
+    assert.deepEqual(must(box, ['beat', '--role', 'manual', '--session', 'sM', '--phase', 'build'], '07:30').directives.map((d) => [d.kind, d.tier]), [['scope-cut', 2]]);
+    assert.equal(must(box, ['phase-done', '--phase', 'build', '--note', 'test', '--session', 'sM', '--role', 'manual'], '08:20').next, 'qa');
+  } finally {
+    box.cleanup();
+  }
+});
+
 test('planner (A4): a mid-run Tier 1 is priced for Tier 2 from the phase it is in, not as a restart from preflight', () => {
   const planner = (mtd, tier, phase, extra = {}) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase, SLOTS: '8', ...extra }).json;
   // the finding: 90 minutes to the offset deadline, Tier 1 about to start build
@@ -1808,6 +1841,7 @@ test('numbers: the purpose and contract numbers the documents quote are the ones
     [/`toolMinSelfTests` \((\d+)\)/g, pc.toolMinSelfTests],
     [/`lessonMinChecks` \((\d+)\)/g, pc.lessonMinChecks],
     [/`minClarity` \((\d+)\)/g, rubric.gates.minClarity],
+    [/`bonusMinClarity` \((\d+)[),]/g, rubric.gates.bonusMinClarity],
     [/`starvedDays` \((\d+)\)/g, mp.starvedDays],
     [/`cooldownDays` \((\d+)\)/g, mp.cooldownDays],
     [/`playCooldownDays` \((\d+)\)/g, mp.playCooldownDays],
@@ -1935,4 +1969,8 @@ test('timetable: every stated live window of a compact day is the narrow planner
     }
   }
   for (const file of ['ops/PLAYBOOK.md', 'ops/CONTRACT.md', 'ops/prompts/_bootstrap.md', 'ops/prompts/watchdog-a.md', 'ops/prompts/watchdog-b.md']) assert.ok(found.includes(file), `${file} states the live window`);
+  // "late" (Appendix B and D, §14, OPERATING) is a publish after the planner's aim, the end of that window: a planned day is never late
+  const lates = files.flatMap((file) => [...read(file).matchAll(/\blate\b[^.\n]{0,40}?\bafter (\d\d:\d\d)/gi)].map((m) => [file, m[1]]));
+  assert.ok(lates.length >= 4, JSON.stringify(lates));
+  for (const [file, t] of lates) assert.equal(t, to, `${file}: "late" after ${t}, but the plan goes live by ${to}`);
 });

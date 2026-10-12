@@ -441,7 +441,7 @@ export function mix({ date, purpose } = {}) {
   pieces.push({
     must: true,
     text: politicsAllowed
-      ? 'A political idea is permitted but rare: playful and satirical only, never partisan.'
+      ? 'A political idea is permitted but rare: playful or satirical, never partisan.'
       : `No political ideas today (cap of ${cfg.mix.politicsMaxPer14Days} per 14 days reached on ${politicalRecent[0]?.date ?? 'a recent day'}).`,
   });
 

@@ -710,7 +710,7 @@ const MIX = str(A.mixSummary, '(no mix summary supplied: treat every slot as equ
 const HISTORY = str(A.historyDigest, '(history digest empty: this may be the first day)');
 const MIX_INFO = isObj(A.mix) ? A.mix : {};
 const OWED = arr(MIX_INFO.owed).filter((s) => SLOT_ORDER.includes(s));
-const POLITICS_NOTE = MIX_INFO.politicsAllowed === false ? 'Politics are NOT allowed today (the 14-day cap is used): no political ideas at all.' : MIX_INFO.politicsAllowed === true ? 'One political idea is allowed today if it is playful and satirical, never partisan; it is not required.' : '';
+const POLITICS_NOTE = MIX_INFO.politicsAllowed === false ? 'Politics are NOT allowed today (the 14-day cap is used): no political ideas at all.' : MIX_INFO.politicsAllowed === true ? 'One political idea is allowed today if it is playful or satirical, never partisan; it is not required.' : '';
 const AVOID_CATEGORIES = arr(MIX_INFO.avoidCategories).map(String);
 // Today's purpose plan (novelty.mjs mix, DESIGN 3 and 5): which purposes to lead with and which to avoid. Absent (a manual run, an old
 // mix.json): no plan, so no purpose is wanted, avoided or reserved; never an argument error.

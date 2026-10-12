@@ -49,7 +49,7 @@ Every suite at every commit cost about 10 minutes on the 4-CPU machine (validate
 | `ops/PLAYBOOK.md` | selfcheck, `playbook`, `revise-policy`, e2e doc subset |
 | `ops/roles/`, `ops/rubrics/`, `ops/CULTURE.md` | selfcheck, `playbook`, e2e doc subset |
 | `ops/FAILURE_MODES.md`, `ops/OPERATING.md`, `README.md`, `ops/kaizen/proposals/` | `playbook`, e2e doc subset |
-| `ops/templates/` | `playbook`, `qa`, e2e doc subset |
+| `ops/templates/` | selfcheck, `playbook`, `qa`, e2e doc subset |
 | `ops/workflows/` | selfcheck, `playbook`, `revise-policy`, e2e doc subset |
 
 The e2e doc subset is `tests/e2e.test.mjs` run with `--test-name-pattern` `E2E_DOCS_PATTERN`: (m)…(m6) (every command, field and cross-reference the docs name), (kz1)…(kz7) (members append to role and rubric files under their caps; kz1 reads the PLAYBOOK 6.1 push budget) and (bs1), (bs2) (PLAYBOOK 14 and 3.3): 15 of 54 scenarios, about 82 s of e2e's 449 s in a full run under load. On top of the table, any test file whose code (comments aside) names a changed file or its directory in a string runs too (`'lab.md'`, `'ops/roles'`, `'roles'`): a suite the table does not know yet, or a sandbox's own stub, is never skipped (today that adds `kaizen`, `validate`, `sitegen` or `heartbeat` fixtures). A doc change thus costs about 2 minutes instead of 10; a selective run is judged file by file against the baseline, and the files it did not run keep their baseline result.

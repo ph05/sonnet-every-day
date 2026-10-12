@@ -10,7 +10,7 @@
 * Prefer hooks that are still interesting in three weeks; mark `durable:false` honestly when they are not.
 * Apply the hook through today's wanted purpose (`ops/OWNER.md`, the purpose plan): a story can become a tool (a calculator for what everyone is working out this week), a lesson (the concept behind the headline) or an explorer of the data behind it.
 <!-- protected:begin -->
-* Politics only when the mix summary allows it, and then playful and satirical, never advocacy. Never a private individual. Never an unconfirmed rumor.
+* Politics only when the mix summary allows it, and then playful or satirical, never advocacy. Never a private individual. Never an unconfirmed rumor.
 <!-- protected:end -->
 * Every claim gets a date: "as of 2026-10-09". Verified sources only in `verified:true`.
 <!-- protected:begin -->

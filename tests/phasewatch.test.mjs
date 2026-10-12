@@ -2290,7 +2290,7 @@ describe('with a real remote', () => {
 // narrow machines (2 agent slots) and the 2026-10-11 run
 // ---------------------------------------------------------------------------------------
 
-describe('narrow machines: the planner\'s budgets (ideate 110, build 88), silent agents, the hard stop and the 2026-10-11 run', () => {
+describe('narrow machines: the planner\'s budgets (ideate 110, build 78 to 105), silent agents, the hard stop and the 2026-10-11 run', () => {
   const at = (t) => Date.parse(stamp(t));
   // the real config's kaizen budget (85) on top of the test budgets
   const REAL_KAIZEN = { ...CFG, phaseBudgetMinutes: { ...BUDGETS, kaizen: 85 } };
@@ -2325,7 +2325,8 @@ describe('narrow machines: the planner\'s budgets (ideate 110, build 88), silent
     touch(box, `work/${DATE}/ideate/cand/lab-1.json`, '05:50');
     assert.equal(good(await chk(box, 'ideate', '06:01')).action, 'extend');
     assert.equal(rs.leaseInfo(CFG, box.run(), lastPushed, at('06:30')).stale, false);
-    // build on the narrow timetable (88 minutes) is covered as before; the planner's cap (110) is covered too
+    // a narrow compact build gets 78 (a start at 06:47) to 105 minutes (06:20) since qa plans 45 (2026-10-13): 88 stands for that
+    // range, and the planner's cap (110) is covered too
     for (const minutes of ['88', '110']) {
       const b = await inPhase('build');
       assert.equal(good(await arm(b, 'build', '07:00', ['--minutes', minutes])).osHeartbeat, true, minutes);

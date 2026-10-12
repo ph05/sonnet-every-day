@@ -836,7 +836,7 @@ export const GATE_MAP = [
   { paths: ['ops/PLAYBOOK.md'], selfcheck: true, files: ['tests/playbook.test.mjs', 'tests/revise-policy.test.mjs', E2E_DOCS] },
   { paths: ['ops/roles/', 'ops/rubrics/', 'ops/CULTURE.md'], selfcheck: true, files: ['tests/playbook.test.mjs', E2E_DOCS] },
   { paths: ['ops/FAILURE_MODES.md', 'ops/OPERATING.md', 'README.md', 'ops/kaizen/proposals/'], selfcheck: false, files: ['tests/playbook.test.mjs', E2E_DOCS] },
-  { paths: ['ops/templates/'], selfcheck: false, files: ['tests/playbook.test.mjs', 'tests/qa.test.mjs', E2E_DOCS] },
+  { paths: ['ops/templates/'], selfcheck: true, files: ['tests/playbook.test.mjs', 'tests/qa.test.mjs', E2E_DOCS] },
   { paths: ['ops/workflows/'], selfcheck: true, files: ['tests/playbook.test.mjs', 'tests/revise-policy.test.mjs', E2E_DOCS] },
 ];
 const FULL_PLAN = Object.freeze({ tier: 'full', selfcheck: true, files: null, why: 'every suite' });

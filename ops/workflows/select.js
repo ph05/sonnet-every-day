@@ -14,7 +14,8 @@ export const meta = {
 //   capTokens, directives, config) plus carryover, mix, mixSummary, historyDigest, politicsAllowed.
 //   mix.purposes (optional) is the purpose plan of novelty.mjs mix: a wanted purpose earns mix.purposes.bonus points (at clarity
 //   GATES.bonusMinClarity or more, or an unscored clarity), an avoided one
-//   cannot win; without it there is no plan (no bonus, nothing avoided), never an argument error.
+//   cannot win, and on a PURPOSE= override day (mix.purposes.override) neither can an idea without a purpose; without it there is no
+//   plan (no bonus, nothing avoided), never an argument error.
 //   Optional: writeCarryover (true = also update state/carryover.json; by default the orchestrator's carry-settle does that).
 // reads: work/<date>/ideas/shortlist.json. writes: state/ideas/<date>.json (the final CONTRACT 5.3 document), work/<date>/select/**
 //   (overlay.json, then DONE.json last of all).
@@ -679,10 +680,11 @@ const PLAN = (() => {
   const p = isObj(A.mix) ? A.mix.purposes : null;
   if (!isObj(p)) return null;
   const list = (v) => uniq(arr(v).filter((x) => typeof x === 'string').map((x) => x.trim().toLowerCase()).filter((x) => /^[a-z]{2,20}$/.test(x)));
-  return { wanted: list(p.wanted), avoid: list(p.avoid), bonus: Math.max(0, Math.min(100, toNum(p.bonus, 0))), playAllowed: p.playAllowed !== false, playBlockedUntil: /^\d{4}-\d{2}-\d{2}$/.test(str(p.playBlockedUntil)) ? str(p.playBlockedUntil) : '' };
+  const override = list([p.override])[0] || '';
+  return { wanted: list(p.wanted), avoid: list(p.avoid), bonus: Math.max(0, Math.min(100, toNum(p.bonus, 0))), playAllowed: p.playAllowed !== false, playBlockedUntil: /^\d{4}-\d{2}-\d{2}$/.test(str(p.playBlockedUntil)) ? str(p.playBlockedUntil) : '', override };
 })();
 if (!PLAN) log('no purpose plan: args.mix.purposes is absent, so no idea gets a purpose bonus and no purpose is avoided');
-else log(`purpose plan: wanted ${PLAN.wanted.join(', ') || 'none'} (+${PLAN.bonus} points each), avoided ${PLAN.avoid.join(', ') || 'none'}`);
+else log(`purpose plan: wanted ${PLAN.wanted.join(', ') || 'none'} (+${PLAN.bonus} points each), avoided ${PLAN.avoid.join(', ') || 'none'}${PLAN.override ? `; manual override: only ${PLAN.override} can win` : ''}`);
 
 const CRITERIA = [
   {
@@ -979,6 +981,7 @@ function aggregate(ideas, judged) {
     if (row.noveltyOk === false) why.push('the novelty gate flags a conflict with history');
     if (row.political && !POLITICS_ALLOWED) why.push('political idea while the 14-day politics cap is used up');
     if (PLAN && row.purpose && PLAN.avoid.includes(row.purpose)) why.push(`purpose-avoid: ${row.purpose} is avoided today${row.purpose === 'play' && PLAN.playBlockedUntil ? ` (play is paused until ${PLAN.playBlockedUntil})` : ''}`);
+    if (PLAN && PLAN.override && !row.purpose) why.push(`purpose-missing: today's manual override asks for ${PLAN.override}`);
     row.eligible = why.length === 0;
     row.ineligibleWhy = why;
   }
@@ -1057,7 +1060,7 @@ try {
     if (room() < 150000) log(`budget: ${kfmt(room())} usable; judging proceeds because selection is mandatory`);
 
     const noPurpose = ideas.filter((i) => !str(i.purpose)).map((i) => i.id);
-    if (PLAN && noPurpose.length) log(`purpose missing for ${noPurpose.join(', ')}: eligible, no purpose bonus`);
+    if (PLAN && noPurpose.length) log(`purpose missing for ${noPurpose.join(', ')}: ${PLAN.override ? `ineligible today (the manual override asks for ${PLAN.override})` : 'eligible, no purpose bonus'}`);
 
     phase('Judge');
     if (NARROW) log(`only ${SLOTS} agent slots: ${GROUPS.length} judges hold two or three criteria each (${GROUPS.map((g) => `${g.judge}: ${g.keys.join(' + ')}`).join('; ')})`);
