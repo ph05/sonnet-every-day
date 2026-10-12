@@ -178,6 +178,23 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Intro and explainer (the page contract's two text slots). Rules copied from the page shell; the colours are the
+     shell tokens, which css/style.css redefines as this page's palette. The intro is a flex item of the title row, so
+     the first screen keeps its picture, its demo lap and its one button: it sits beside the tagline on wide screens,
+     beside the title where the tagline is hidden (short screens) and under the title on narrow ones. */
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .rk-head .sed-intro { flex: 0.6 1 440px; max-width: none; margin: 0 0 0.25rem; font-size: 0.8125rem; line-height: 1.35; }
+  @media (max-height: 699px) { .rk-head .sed-intro { flex: 1 1 360px; align-self: center; } }
+  @media (max-height: 699px) and (max-width: 767px) { .rk-head .sed-intro { align-self: auto; font-size: 0.75rem; line-height: 1.3; } }
+  @media (orientation: landscape) and (max-height: 540px) {
+    .rk-head .sed-intro { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
 </style>
 <link rel="stylesheet" href="css/style.css">
 </head>
@@ -212,6 +229,7 @@
   <div class="rk-head">
     <h1 class="sed-title">Between Periods</h1>
     <p class="sed-tagline">It's intermission and the ice is wrecked. Steer the machine, ration your water, and buff every scar before the buzzer.</p>
+    <p class="sed-intro" data-sed-intro>A game that lets you drive an ice-resurfacing machine around a hockey rink and buff every scar in the ice before the buzzer. For hockey fans and anyone who likes quick challenges. Press Start intermission to take the wheel.</p>
   </div>
 
   <p id="boot-note" class="rk-boot-note">Wheeling out the machine…</p>
@@ -324,6 +342,25 @@
     <div id="toasts" class="rk-toasts" aria-hidden="true"></div>
     <div id="live" class="sed-visually-hidden" aria-live="polite" aria-atomic="true"></div>
   </div>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How it works</h2>
+
+    <h3>What an ice resurfacer does</h3>
+    <p>A real ice resurfacer shaves a thin layer off the ice, carries the shavings to a snow tank, sprays water, and picks up the dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia). In the game, the machine lays an 8-foot stripe of water as it drives (game feet: every number here is invented). Wet ice turns glossy, which the game calls a gleam, and the scars under it vanish. A scar is any groove, divot, ridge or other mark in the ice.</p>
+
+    <h3>Why the machine cannot turn on a dime</h3>
+    <p>Old Glossy, the game's invented machine, only drives forward and cannot turn tighter than a circle 10 feet in radius. That limit is its turning radius, so you plan wide arcs, not sharp corners. The dashed guides show where it will be in about two seconds: one line for the steering you hold now, two for full left and full right.</p>
+
+    <h3>Planning a route</h3>
+    <p>Planning a route that covers every part of an area with little overlap is called coverage path planning. The Watch a lap button lets you pick one of three computer drivers. Skip-lane mow drives parallel lanes end to end, skipping lanes it cannot turn into and returning for them. Spiral drives three closed laps along the boards (the rink's wall), stepping inward, then sweeps up what is left. Racetrack does the same with two laps.</p>
+
+    <h3>Water and scoring</h3>
+    <p>A full water tank is good for about 800 feet of driving. With an empty tank a pass only shaves the ice, and a shaved stripe does not count, so refill at the door, the gap in the boards. Points reward gleaming scars, tidy lanes with little overlap and time left on the clock; each bump into the boards costs points.</p>
+
+    <h3>A new rink every day</h3>
+    <p>A seed is a short piece of text that a program turns into numbers that look random but come out the same every time. The daily rink is seeded from the UTC date (the date on the world's common clock), so everyone gets the same ice on the same day; seeding a daily puzzle from the date is common practice (per the craft notes under About &amp; making of). Type any other seed for a different rink. The game also advances in fixed steps of one sixtieth of a second (a fixed timestep), so the same steering on the same rink always scores the same, on any screen.</p>
+  </section>
 
   <script type="module" src="js/main.js"></script>
 </main>
