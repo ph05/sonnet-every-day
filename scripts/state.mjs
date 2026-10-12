@@ -19,7 +19,8 @@ const COMMANDS = [
 const USAGE = `usage: state.mjs <${COMMANDS.join('|')}> [options]
   today [--date D] [--now ISO]
   begin --role <primary|wdA|wdB|closer|manual> --session ID [--target-tier T] [--force]
-                  (prints heartbeatAvailable: false when the heartbeat branch could not be read; a silent lease is then not declared dead before phaseStuckMinutes)
+                  (prints heartbeatAvailable: false when the heartbeat branch could not be read; a silent lease is then not declared dead before
+                  phaseStuckMinutes, or before the holder's live phase watch is 15 min overdue; a begin that writes nothing leaves the run file as it was)
   beat --role R --session S [--phase P] [--note N]
   phase-start --phase P [--session S]      phase-done --phase P [--note N] [--session S] [--role R]
   skip-phase --phase P --reason R [--session S] [--role R]      (kaizen stays pending after finish until phase-done or skip-phase)
@@ -86,6 +87,42 @@ function remoteView(flags, date, { adopt = false } = {}) {
   return freshenRun({ date, adoptOnDisplaced: adopt });
 }
 
+/** The run file's text, or null when there is none. */
+function runFileText(date) {
+  try {
+    return fs.readFileSync(rs.runPath(date), 'utf8');
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * A command that wrote nothing of its own (`status`, a `begin` that exits quietly) leaves the run file as it found it. Its
+ * remoteView merged the remote run into the working tree so that it could decide; kept, that merge is an uncommitted change in a
+ * persistent clone that never syncs (a watchdog's quiet exit) and the next fire's bootstrap checkout refuses to move the branch
+ * (FM-110). Undoes exactly that write (`view.wrote`: the text freshenRun replaced and the text it wrote, both read under the
+ * per-date lock): puts the old text back, or removes a file it adopted where there was none, and only when nobody wrote the
+ * file since (another process's begin or beat stands). Every command that writes freshens again first, so nothing it needs is
+ * lost. Returns true when it restored.
+ */
+function keepRunFileAsFound(date, view) {
+  const wrote = view?.wrote;
+  if (!wrote || wrote.after === wrote.before) return false;
+  const { before } = wrote;
+  return rs.withLock(rs.runLockPath(date), () => {
+    if (runFileText(date) !== wrote.after) return false;
+    const file = rs.runPath(date);
+    if (before === null) {
+      fs.rmSync(file, { force: true });
+    } else {
+      const tmp = `${file}.${process.pid}.${Date.now()}.tmp`;
+      fs.writeFileSync(tmp, before);
+      fs.renameSync(tmp, file);
+    }
+    return true;
+  });
+}
+
 /**
  * The lease holder's liveness record from the heartbeat branch (CONTRACT 14), fetched after remoteView so the
  * holder is the one the freshest run file names. Null when fetching is off or the run has no lease.
@@ -116,12 +153,14 @@ function assertNotDisplaced(view, date, session) {
 /** Could the heartbeat branch be read? null when it was not looked at (--no-fetch, no lease, no origin): "unknown" is reported as false. */
 const heartbeatAvailable = (beatView) => (!beatView || (!beatView.fetched && !beatView.unknown) ? null : beatView.fetched);
 
-const remoteSummary = (view, beatView) =>
+// `restored`: the command only looked, so the remote run it merged in to decide was taken out of the working tree again (FM-110)
+const remoteSummary = (view, beatView, restored = false) =>
   view
     ? {
         fetched: view.fetched,
         adopted: view.adopted,
         displaced: view.displaced,
+        ...(restored ? { restored: true } : {}),
         ...(view.reason ? { reason: view.reason } : {}),
         ...(beatView ? { heartbeat: { fetched: beatView.fetched, unknown: beatView.unknown === true, found: beatView.heartbeat !== null, ...(beatView.branch ? { branch: beatView.branch } : {}), ...(beatView.reason ? { reason: beatView.reason } : {}) } } : {}),
       }
@@ -248,9 +287,12 @@ const handlers = {
       config,
       heartbeat: beatView?.heartbeat ?? null,
       hbUnknown: beatView?.unknown === true,
+      hbMissing: beatView?.missing === true,
       throttleLevel: throttle.level,
       flags: { targetTier: targetFlag === undefined ? undefined : rs.clampTier(targetFlag, '--target-tier'), force: Boolean(flags.force) },
     });
+    // a quiet exit (exit-alive, exit-published without a write) commits nothing, so it must not leave the merged remote run behind
+    const restored = r.wrote ? false : keepRunFileAsFound(date, view);
     return {
       ok: true,
       action: r.action,
@@ -272,7 +314,7 @@ const handlers = {
       ...(r.usageStop ? { usageStop: r.usageStop } : {}),
       spend: rs.spendSummary(config, r.run, { level: throttle.level }), // workflowCapTokens / kaizenCapTokens: the args.capTokens for a Workflow launched now
       ...(r.publicationBacked === false ? { publicationBacked: false, publicationProblem: r.publicationProblem } : {}),
-      remote: remoteSummary(view, beatView),
+      remote: remoteSummary(view, beatView, restored),
       run: r.run,
       lease: r.lease,
       recovered: r.recovered,
@@ -421,8 +463,10 @@ const handlers = {
     const throttle = th.getThrottle(config, { now });
     const view = remoteView(flags, date, { adopt: true });
     const beatView = remoteBeat(flags, date, config);
-    const summary = rs.statusSummary({ date, now, config, history: historyTail(), heartbeat: beatView?.heartbeat ?? null, hbUnknown: beatView?.unknown === true, level: throttle.level });
-    return { ok: true, dayNumber: dayNumber(date, config.startDate), ...summary, heartbeatAvailable: heartbeatAvailable(beatView), throttle: throttleView(throttle), levelConfig: throttle.levelConfig, ...overrideFields(throttle), remote: remoteSummary(view, beatView) };
+    const summary = rs.statusSummary({ date, now, config, history: historyTail(), heartbeat: beatView?.heartbeat ?? null, hbUnknown: beatView?.unknown === true, hbMissing: beatView?.missing === true, level: throttle.level });
+    // status is read-only: it reports the merged view and leaves the working tree as it found it (FM-110)
+    const restored = keepRunFileAsFound(date, view);
+    return { ok: true, dayNumber: dayNumber(date, config.startDate), ...summary, heartbeatAvailable: heartbeatAvailable(beatView), throttle: throttleView(throttle), levelConfig: throttle.levelConfig, ...overrideFields(throttle), remote: remoteSummary(view, beatView, restored) };
   },
 
   throttle({ flags, positional }) {
@@ -520,6 +564,7 @@ const handlers = {
       paths: paths ? paths.split(',').map((p) => p.trim()).filter(Boolean) : undefined,
       branch: opt(flags, 'branch'),
       noSleep: flags['no-sleep'] ? true : undefined,
+      now: opt(flags, 'now'), // the run date's clock: a leftover of an earlier, finished day is not a displacement (FM-110)
     });
     return result;
   },

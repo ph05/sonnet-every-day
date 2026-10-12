@@ -2855,9 +2855,11 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     // P2 wrote nothing to the shared run; a second sync still says so
     assert.equal(remoteRun(a).lease.session, 'P1');
     assert.equal(push(b).json.reason, 'displaced');
-    // and a fresh `begin` adopts the winner's run instead of fighting it
-    assert.equal(good(begin(b, 'primary', 'P2', '03:58')).action, 'exit-alive');
-    assert.equal(b.run().lease.session, 'P1');
+    // and a fresh `begin` decides on the winner's run instead of fighting it; it writes nothing, so it leaves the tree as it found it (FM-110)
+    const again = good(begin(b, 'primary', 'P2', '03:58'));
+    assert.deepEqual([again.action, again.run.lease.session, again.remote.adopted, again.remote.restored], ['exit-alive', 'P1', 'remote-run', true]);
+    assert.equal(b.run().lease.session, 'P2');
+    assert.equal(b.git('status', '--porcelain'), '');
   });
 
   test('a second `begin` that DOES see the first one (it fetched) simply exits alive', () => {
@@ -2868,7 +2870,106 @@ describe('cross-container: lease, directives and concurrent writers', () => {
     assert.equal(j.action, 'exit-alive');
     assert.equal(j.wrote, false);
     assert.equal(j.remote.adopted, 'remote-run');
-    assert.equal(b.run().lease.session, 'P1');
+    assert.equal(j.run.lease.session, 'P1');
+    // a quiet exit commits nothing, so the adopted copy is not left behind as an untracked file (FM-110)
+    assert.equal(j.remote.restored, true);
+    assert.equal(b.exists(b.runFile()), false);
+    assert.equal(b.git('status', '--porcelain'), '');
+  });
+
+  test('FM-110: a watchdog\'s quiet begin and status leave its persistent clone clean, so the next fire\'s bootstrap checkout moves the branch', () => {
+    const { a, b } = pair(); // a = the primary's clone, b = wdB's persistent clone
+    const refresh = (box) => {
+      box.git('fetch', 'origin', `+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}`);
+      return gitTry(box.root, 'checkout', '-B', BRANCH, `origin/${BRANCH}`);
+    };
+    good(begin(a, 'primary', 'P1', '03:55'));
+    for (const p of ['preflight', 'ideate', 'select', 'spec']) {
+      if (p !== 'preflight') good(st(a, ['phase-start', '--phase', p, '--session', 'P1'], '05:00'));
+      good(st(a, ['phase-done', '--phase', p, '--session', 'P1'], '06:00'));
+    }
+    good(push(a));
+    assert.equal(refresh(b).ok, true); // wdB's bootstrap at 06:47
+    good(st(a, ['phase-start', '--phase', 'build', '--session', 'P1'], '06:47'));
+    good(push(a)); // the primary's build launch lands between wdB's bootstrap and its begin (2026-10-11: 06:47:38)
+    const wd = good(begin(b, 'wdB', 'B1', '06:48'));
+    assert.deepEqual([wd.action, wd.wrote, wd.remote.adopted, wd.remote.restored], ['exit-alive', false, 'merged', true]);
+    assert.equal(wd.run.phase, 'build', 'the decision still saw the remote run');
+    assert.equal(b.git('status', '--porcelain'), '', 'a quiet exit leaves no dirty run file behind');
+    const look = good(st(b, ['status'], '06:49'));
+    assert.deepEqual([look.phase, look.remote.restored], ['build', true]);
+    assert.equal(b.git('status', '--porcelain'), '', 'status is read-only');
+    good(st(a, ['phase-done', '--phase', 'build', '--session', 'P1'], '08:20'));
+    good(push(a));
+    const next = refresh(b); // next morning
+    assert.equal(next.ok, true, next.out);
+    assert.equal(b.git('rev-parse', 'HEAD'), remoteSha(a.remote));
+  });
+
+  test('FM-110: the leftover sync of a stale copy of an earlier, resolved day is not a displacement; today\'s copy or one with that day\'s work still is', () => {
+    const NEXT = '2026-10-10';
+    const setup = () => {
+      const { a, b } = pair(); // b = a watchdog's persistent clone, refreshed before the day began
+      good(begin(a, 'primary', 'P1', '03:55'));
+      good(push(a));
+      const stale = a.read(a.runFile()); // the copy an earlier turn left in b (it names the primary's lease)
+      const c = a.cloneB('c');
+      assert.equal(good(begin(c, 'closer', 'C1', '09:40')).action, 'takeover'); // the closer takes the lease later that day
+      seedPage(c, 4);
+      good(st(c, ['finish', '--tier', '4', '--by', 'closer'], '09:45'));
+      good(push(c));
+      b.write(b.runFile(), stale);
+      return { a, b };
+    };
+    const leftovers = (box, hhmm, date) => box.state(['sync', '-m', 'sed: leftovers before wdB', '--no-sleep', '--now', iso(hhmm, date)]);
+
+    const { a, b } = setup();
+    const r = good(leftovers(b, '06:47', NEXT));
+    assert.deepEqual([r.ok, r.reason], [true, 'nothing-to-commit'], JSON.stringify(r));
+    const remote = remoteRun(a);
+    assert.deepEqual([remote.status, remote.lease.session], ['published', 'C1'], 'the resolved day is untouched');
+    assert.equal(b.git('status', '--porcelain'), '');
+    assert.equal(b.git('rev-parse', 'HEAD'), remoteSha(a.remote), 'the bootstrap checkout has nothing left to refuse');
+
+    // the same leftover on its own day is still a lease race, and so is one whose commits carry that day's work
+    const same = setup();
+    assert.equal(leftovers(same.b, '10:00', DATE).json.reason, 'displaced');
+    const zombie = setup();
+    zombie.b.write(`work/${DATE}/build/site/index.html`, '<html></html>');
+    assert.equal(leftovers(zombie.b, '06:47', NEXT).json.reason, 'displaced');
+  });
+
+  test('FM-110: a merged leftover copy of an earlier, resolved day keeps the remote\'s spend (no double count) and its own notes', () => {
+    const { a, b } = pair(); // b = the closer's persistent clone
+    good(begin(a, 'primary', 'P1', '03:55'));
+    good(push(a));
+    b.git('fetch', 'origin', `+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}`);
+    b.git('checkout', '-B', BRANCH, `origin/${BRANCH}`); // the closer's bootstrap
+    good(st(a, ['spend', '--tokens', '1000', '--calls', '2', '--phase', 'ideate', '--session', 'P1'], '05:00'));
+    good(push(a));
+    // a closer command merges the remote run (spend 1000) into its working tree and writes a note it never pushes (2026-10-11)
+    good(st(b, ['event', '--kind', 'note', '--msg', 'closer babysit note', '--by', 'closer'], '08:47'));
+    assert.equal(b.run().spend.outputTokens, 1000);
+    good(st(a, ['spend', '--tokens', '500', '--calls', '1', '--phase', 'qa', '--session', 'P1'], '09:00'));
+    seedPage(a, 2);
+    good(st(a, ['finish', '--tier', '2', '--by', 'primary'], '09:10'));
+    good(push(a));
+    const r = good(b.state(['sync', '-m', 'sed: leftovers before closer', '--no-sleep', '--now', iso('08:47', '2026-10-10')]));
+    assert.equal(r.ok, true, JSON.stringify(r));
+    const remote = remoteRun(a);
+    assert.deepEqual([remote.spend.outputTokens, remote.spend.agentCalls, remote.spend.byPhase.ideate.outputTokens], [1500, 3, 1000], 'the ideate spend is not counted twice');
+    assert.equal(remote.status, 'published');
+    assert.ok(remote.events.some((e) => e.msg === 'closer babysit note'), 'the leftover note still lands');
+  });
+
+  test('a begin that writes keeps the merged remote run it decided on (only quiet exits are restored)', () => {
+    const { a, b } = pair();
+    good(begin(a, 'primary', 'P1', '03:55'));
+    good(push(a));
+    assert.equal(good(begin(b, 'wdA', 'A1', '05:32', [])).action, 'takeover'); // the primary went silent at 03:55
+    const local = b.run();
+    assert.deepEqual([local.lease.session, local.lease.holder], ['A1', 'wdA']);
+    assert.match(b.git('status', '--porcelain'), /state\/runs\//);
   });
 
   test('a takeover of a partitioned primary: the old primary can no longer write or push, and learns it from beat/sync', () => {
@@ -3720,6 +3821,30 @@ describe('decide(): an unreadable heartbeat channel is not proof of death (hbUnk
     const d = dec('wdB', 'w2', '06:47', inBuild({ lease: lease('primary', 'p1', '05:16') }), { hbUnknown: true });
     assert.equal(d.action, 'takeover');
     assert.match(d.reason, /stale \(91 min/);
+  });
+  test('a healthy slow phase under its own live watch keeps the doubt past 90 min of lease silence, until the watch is 15 min overdue', () => {
+    // 2026-10-11: ideate ran 03:57 to 05:47 on two agent slots without a checkpoint; the watch armed at launch was due 06:07 (budget 120 + 10)
+    const slowIdeate = mkRun({
+      phase: 'ideate',
+      lease: lease('primary', 'p1', '03:57'),
+      phaseStartedAt: { ideate: iso('03:57') },
+      watch: { phase: 'ideate', attempt: 1, session: 'p1', armedAt: iso('03:57'), dueAt: iso('06:07') },
+    });
+    const d = dec('wdA', 'w1', '05:32', slowIdeate, { hbUnknown: true }); // the lease is 95 min silent, the watch due in 35
+    assert.deepEqual([d.action, d.hbUnreadable, d.takeLease], ['exit-alive', true, false], d.reason);
+    assert.match(d.reason, /not declared dead before its phase watch is 15 min overdue/);
+    assert.equal(dec('wdA', 'w1', '06:21', slowIdeate, { hbUnknown: true }).action, 'exit-alive', '14 min overdue: still its own deadline');
+    const dead = dec('wdA', 'w1', '06:23', slowIdeate, { hbUnknown: true });
+    assert.equal(dead.action, 'takeover', 'a dead holder is still taken over once its own watch is 16 min overdue');
+    assert.match(dead.reason, /stale|overdue/);
+    // without a visible watch the doubt still ends at phaseStuckMinutes of silence
+    const { watch, ...unwatched } = slowIdeate;
+    assert.equal(dec('wdA', 'w1', '05:32', unwatched, { hbUnknown: true }).action, 'takeover');
+    // a readable channel with no record keeps the 35-minute rule, watch or not; a heartbeat branch that does not exist (nobody's
+    // pulse lands, hbMissing) keeps the 90-minute rule
+    assert.equal(dec('wdA', 'w1', '05:32', slowIdeate).action, 'takeover');
+    assert.equal(dec('wdA', 'w1', '05:32', slowIdeate, { hbUnknown: true, hbMissing: true }).action, 'takeover');
+    assert.equal(watch.phase, 'ideate');
   });
   test('a phase that has run longer than phaseStuckMinutes is hung whatever the heartbeat channel says', () => {
     const run = inBuild({ phaseStartedAt: { build: iso('05:00') } }); // 107 minutes in build at 06:47

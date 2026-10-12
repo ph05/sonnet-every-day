@@ -17,8 +17,8 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { repoRoot, loadConfig } from './common.mjs';
-import { mergeRuns, parseRunText, readRunFile, saveRun, runLockPath, withLock, validHeartbeat, heartbeatRel, removeFallbackDir, sleepSync } from './runstate.mjs';
+import { repoRoot, loadConfig, localParts, resolveNow } from './common.mjs';
+import { mergeRuns, parseRunText, readRunFile, saveRun, runLockPath, runPath, withLock, validHeartbeat, heartbeatRel, removeFallbackDir, sleepSync } from './runstate.mjs';
 
 export const BACKOFF_SECONDS = [2, 4, 8, 16];
 export const DEFAULT_PATHS = ['state', 'docs', 'work'];
@@ -328,7 +328,7 @@ export function mergeHistories(base, remote, local) {
  * the lease race on a run file, else { merged: Map<relPath, { text, run? }> }. Files whose versions cannot be
  * parsed are left to git.
  */
-function planMerges(g, remoteRef) {
+function planMerges(g, remoteRef, { today = null, log = () => {} } = {}) {
   const base = g.out(['merge-base', 'HEAD', remoteRef]);
   const changed = (from, to) =>
     new Set((g.out(['diff', '--name-only', from, to, '--', 'state/runs', HISTORY_FILE]) ?? '').split('\n').filter((f) => RUN_FILE_RE.test(f) || f === HISTORY_FILE));
@@ -336,9 +336,13 @@ function planMerges(g, remoteRef) {
   const theirs = changed(base ?? EMPTY_TREE, remoteRef);
   // pushing a day's work (build output, pages, ideas) without touching its run file still claims that day
   const touched = new Set(ours);
+  const dayWork = new Set(); // days whose work, pages or ideas the local commits change (beyond the run file)
   for (const f of (g.out(['diff', '--name-only', base ?? EMPTY_TREE, 'HEAD']) ?? '').split('\n')) {
     const day = f.match(DAY_PATH_RE)?.[1];
-    if (day) touched.add(`state/runs/${day}.json`);
+    if (day) {
+      touched.add(`state/runs/${day}.json`);
+      dayWork.add(day);
+    }
   }
   const merged = new Map();
   const show = (ref, file) => g.out(['show', `${ref}:${file}`]) ?? '';
@@ -362,7 +366,24 @@ function planMerges(g, remoteRef) {
     const local = parseRunText(show('HEAD', file), date);
     if (!remote || !local) continue;
     const result = mergeRuns(baseRun, remote, local);
-    if (result.displaced) return { displaced: true, file, remoteLease: result.remoteLease };
+    // A copy of an EARLIER day's run file that the remote has already resolved, with nothing else of that day in the local commits,
+    // is a leftover of an earlier turn in a persistent clone (FM-110), usually a copy a state command merged the remote into.
+    const leftover = today && date < today && (remote.status === 'published' || remote.status === 'failed') && !dayWork.has(date);
+    if (result.displaced) {
+      // There is no lease left to race for, so it is not a displacement of this session: the remote's copy is kept as it is.
+      if (leftover) {
+        log(`${file}: a leftover copy of a finished earlier day (remote lease ${result.remoteLease.holder}/${result.remoteLease.session}); kept the remote's copy`);
+        if (ours.has(file)) {
+          const raw = g.run(['show', `${remoteRef}:${file}`]);
+          if (raw.ok) merged.set(file, { text: raw.stdout, run: remote });
+        }
+        continue;
+      }
+      return { displaced: true, file, remoteLease: result.remoteLease };
+    }
+    // Its spend is the remote's: a merged copy already holds the remote's increments since the old base, and the 3-way sum against
+    // that base would count them twice (a finished day records no new spend; its events and notes are still unioned).
+    if (leftover) result.run.spend = structuredClone(remote.spend);
     if (ours.has(file)) merged.set(file, { text: runText(result.run), run: result.run });
   }
   return { displaced: false, merged };
@@ -407,14 +428,14 @@ function rebaseOnto(g, remoteRef, merged, log) {
  * Brings the checkout up to origin/<branch>. Returns { ok, remoteTip, rebuildSite? } | { ok:false, reason, conflicts?, remoteLease? }
  * with reason 'conflict' | 'displaced' | 'autostash-conflict' | a transient failure message.
  */
-function integrate(g, branch, log) {
+function integrate(g, branch, log, today = null) {
   const remoteRef = `refs/remotes/origin/${branch}`;
   const fetched = g.run(['fetch', '--no-tags', 'origin', `+refs/heads/${branch}:${remoteRef}`], { network: true });
   if (!fetched.ok) return { ok: false, reason: `fetch failed: ${fetched.timedOut ? 'timed out' : firstLine(fetched.stderr)}` };
   const remoteTip = g.out(['rev-parse', remoteRef]);
   if (isAncestor(g, remoteRef, 'HEAD')) return { ok: true, remoteTip };
 
-  const plan = planMerges(g, remoteRef);
+  const plan = planMerges(g, remoteRef, { today, log });
   if (plan.displaced) {
     log(`displaced: ${plan.remoteLease.holder}/${plan.remoteLease.session} holds the lease in ${plan.file}; nothing pushed`);
     return { ok: false, reason: 'displaced', conflicts: [plan.file], remoteLease: plan.remoteLease };
@@ -485,6 +506,14 @@ export async function sync(opts = {}) {
   }
   const problem = branchProblem(g, branch);
   if (problem) return done(false, false, problem, { committed: false });
+  // The local date of this sync (opts.now, else --now/SED_NOW, else the clock): a leftover copy of an earlier, finished day's run
+  // file is not a lease race (planMerges). Without a clock or a config every displacement stays terminal.
+  let today = null;
+  try {
+    today = localParts(resolveNow({ now: opts.now }), (opts.config ?? loadConfig()).timezone).date;
+  } catch {
+    /* keep today null */
+  }
 
   clearStaleIndexLock(g, log);
   if (rebaseInProgress(g)) {
@@ -514,7 +543,7 @@ export async function sync(opts = {}) {
     }
     let remoteTip = null;
     if (remote.state === 'ok') {
-      const merged = integrate(g, branch, log);
+      const merged = integrate(g, branch, log, today);
       if (!merged.ok) {
         const terminal = ['conflict', 'displaced', 'autostash-conflict'].includes(merged.reason);
         if (terminal) {
@@ -603,7 +632,7 @@ export function fetchRemoteHeartbeat({ date, session, root, config, timeoutMs = 
     }
     if (!fetched.ok) {
       // a heartbeat branch that nobody has created yet is not a network failure and must not silence later fetches
-      if (MISSING_REMOTE_REF.test(fetched.stderr)) return { ...out, reason: 'no-heartbeat-branch' };
+      if (MISSING_REMOTE_REF.test(fetched.stderr)) return { ...out, missing: true, reason: 'no-heartbeat-branch' };
       if (breaker) {
         try {
           fs.writeFileSync(breaker, new Date().toISOString());
@@ -637,7 +666,8 @@ export function fetchRemoteHeartbeat({ date, session, root, config, timeoutMs = 
  * (directives, a published/failed status, counters), under the per-date lock. Fails soft: with no git, no
  * origin, no network or a recently failed fetch it reports `fetched:false` and changes nothing.
  *
- * Returns { fetched, reason?, branch?, adopted: null|'remote-run'|'merged', displaced, remoteLease?, remoteStatus?, remoteDirectives? }.
+ * Returns { fetched, reason?, branch?, adopted: null|'remote-run'|'merged', displaced, remoteLease?, remoteStatus?, remoteDirectives?, wrote? }
+ * where `wrote` = { before, after }: the run file text this call replaced (null: none) and the text it wrote.
  * `displaced` = the remote lease belongs to another session and is newer than the local one: the local writer
  * lost and must stop. The local file is then left alone (so `sync` still sees the conflict) unless
  * `adoptOnDisplaced`, which replaces it with the remote run (begin / status / the late finisher's finish).
@@ -680,8 +710,22 @@ export function freshenRun({ date, root, adoptOnDisplaced = false, timeoutMs = F
     withLock(runLockPath(date), () => {
       const local = readRunFile(date);
       if (local.status === 'corrupt') return;
+      // `wrote` = the exact text this freshen replaced (null: there was no file) and the text it wrote, read under the lock, so a
+      // command that only looked can undo exactly this write and nothing another process wrote (state.mjs keepRunFileAsFound).
+      const textNow = () => {
+        try {
+          return fs.readFileSync(runPath(date), 'utf8');
+        } catch {
+          return null;
+        }
+      };
+      const before = textNow();
+      const save = (run) => {
+        saveRun(run);
+        out.wrote = { before, after: textNow() };
+      };
       if (local.status === 'missing') {
-        saveRun(remote);
+        save(remote);
         out.adopted = 'remote-run';
         return;
       }
@@ -693,13 +737,13 @@ export function freshenRun({ date, root, adoptOnDisplaced = false, timeoutMs = F
         out.displaced = true;
         out.remoteLease = result.remoteLease;
         if (adoptOnDisplaced) {
-          saveRun(remote);
+          save(remote);
           out.adopted = 'remote-run';
         }
         return;
       }
       if (canonical(result.run) !== canonical(local.run)) {
-        saveRun(result.run);
+        save(result.run);
         out.adopted = 'merged';
       }
     });

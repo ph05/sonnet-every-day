@@ -539,12 +539,13 @@ function phaseStartMs(run) {
  * `hbUnknown` = the heartbeat channel could not be read at all (fetch failed after retries, branch missing). The
  * lease's own heartbeatAt only moves at checkpoint syncs and routinely ages past leaseStaleMinutes inside a healthy
  * build phase, so silence alone proves nothing then: such a lease keeps the benefit of the doubt (`hbUnreadable`)
- * until it is silent for phaseStuckMinutes, and `stuck` stays the backstop.
+ * until it is silent for phaseStuckMinutes, or, under the holder's own live phase watch, until that watch is
+ * WATCH_STALE_AFTER_MINUTES overdue (`watchDoubt`; not when `hbMissing`: the branch does not exist), and `stuck` stays the backstop.
  */
-export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } = {}) {
+export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false, hbMissing = false } = {}) {
   const lease = run?.lease ?? null;
   if (!lease) {
-    return { present: false, holder: null, session: null, stale: true, beatStale: true, watchStale: false, watchOverdueMinutes: null, hbUnreadable: false, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
+    return { present: false, holder: null, session: null, stale: true, beatStale: true, watchStale: false, watchOverdueMinutes: null, hbUnreadable: false, watchDoubt: false, stuck: false, stuckLimitMinutes: config.phaseStuckMinutes, ageMinutes: null, phaseMinutes: null, lastBeatAt: null, source: null };
   }
   const own = Date.parse(lease.heartbeatAt ?? lease.acquiredAt);
   let last = Number.isFinite(own) ? own : 0;
@@ -563,7 +564,13 @@ export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } =
   // heartbeat channel notwithstanding. The heartbeat staleness above is otherwise untouched.
   const watchLate = watchOverdueMinutes(run, nowMs);
   const watchStale = watchLate !== null && watchLate > WATCH_STALE_AFTER_MINUTES;
-  const hbUnreadable = silent && hbUnknown && ageMinutes <= config.phaseStuckMinutes && !watchStale;
+  // A live phase watch of the holder (armed at its launch and pushed with it, not yet WATCH_STALE_AFTER_MINUTES overdue) is its own
+  // statement that it waits for its Workflow until then, and its turn has ended, so its lease cannot move before the phase is done.
+  // With the heartbeat channel unreadable the doubt therefore lasts as long as that watch (watchStale ends it), not only
+  // phaseStuckMinutes: a healthy slow ideate on two agent slots runs about 110 minutes without a checkpoint. Only for a channel
+  // that could not be READ (`hbMissing`: the branch does not exist, so nobody's pulse is landing: the 90-minute rule stands).
+  const watchDoubt = silent && hbUnknown && !hbMissing && !watchStale && watchLate !== null && ageMinutes > config.phaseStuckMinutes;
+  const hbUnreadable = silent && hbUnknown && !watchStale && (ageMinutes <= config.phaseStuckMinutes || watchDoubt);
   const beatStale = silent && !hbUnreadable;
   const stale = beatStale || watchStale;
   const start = phaseStartMs(run);
@@ -591,6 +598,7 @@ export function leaseInfo(config, run, heartbeat, nowMs, { hbUnknown = false } =
     watchStale,
     watchOverdueMinutes: watchLate === null ? null : round1(watchLate),
     hbUnreadable,
+    watchDoubt, // the holder's own live watch, not phaseStuckMinutes, is what keeps the doubt now
     stuck,
     stuckLimitMinutes: stuckLimit,
     ageMinutes: Number.isFinite(ageMinutes) ? round1(ageMinutes) : null,
@@ -735,6 +743,10 @@ const plan = (p) => ({
   ...p,
 });
 
+/** How long a silent holder keeps the benefit of the doubt while the heartbeat channel is unreadable (leaseInfo `hbUnreadable`). */
+const doubtUntil = (config, info) =>
+  info.watchDoubt ? `its phase watch is ${WATCH_STALE_AFTER_MINUTES} min overdue` : `${config.phaseStuckMinutes} min of silence`;
+
 /** Why a lease no longer counts as alive: the lease half of a takeover reason. */
 function leaseProblem(config, run, info) {
   if (!info.present) return 'no lease';
@@ -751,7 +763,7 @@ function leaseProblem(config, run, info) {
  * Row 1 of the table. A published page is never redone; the only thing a published run can still owe is its
  * kaizen (CONTRACT 12), which any operator role except the closer resumes when its owner is gone, until 12:00.
  */
-function decidePublished({ config, run, role, session, heartbeat, hbUnknown, nowMs, minutes, base }) {
+function decidePublished({ config, run, role, session, heartbeat, hbUnknown, hbMissing, nowMs, minutes, base }) {
   const head = `already published (tier ${run.tier ?? '?'}) at ${run.publishedAt ?? '?'}; only \`finish\` may upgrade it`;
   const exit = (suffix = '', extra = {}) =>
     plan({ ...base, action: 'exit-published', targetTier: run.targetTier, resumePhase: null, reason: `${head}${suffix}`, ...extra });
@@ -761,7 +773,7 @@ function decidePublished({ config, run, role, session, heartbeat, hbUnknown, now
   const stop = usageStopActive(run, nowMs);
   if (stop) return exit(`; its kaizen is pending but a usage stop is in force (${stop.reason}, ${stop.resetsAt ? `until ${stop.resetsAt}` : 'reset time unknown'}): not resumed`);
 
-  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown });
+  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown, hbMissing });
   const self = isSelf(run.lease, role, session);
   if (!self && info.present && !info.stale && !info.stuck) {
     return exit(`; its kaizen is running (${info.holder}/${info.session}, last sign ${info.ageMinutes} min ago)`);
@@ -792,7 +804,7 @@ function decidePublished({ config, run, role, session, heartbeat, hbUnknown, now
 
 /**
  * Pure. Decides what an unattended session in `role` should do right now.
- * input: { role, session, now, date, config?, run?, heartbeat?, hbUnknown?, throttleLevel?, flags?: { targetTier, force } }
+ * input: { role, session, now, date, config?, run?, heartbeat?, hbUnknown?, hbMissing?, throttleLevel?, flags?: { targetTier, force } }
  * When config / run / heartbeat are omitted they are read from disk (CONTRACT 6 signature), pass
  * `run: null` to mean "no run file". Returns the action plus the mutations begin must apply.
  */
@@ -806,6 +818,7 @@ export function decide(input) {
   const heartbeat = input.heartbeat === undefined ? loadHeartbeat(date, run?.lease?.session) : input.heartbeat;
   const flags = input.flags ?? {};
   const hbUnknown = input.hbUnknown === true;
+  const hbMissing = input.hbMissing === true; // the heartbeat branch does not exist (leaseInfo)
   const nowMs = now.getTime();
   const clock = localParts(now, config.timezone).time;
   const minutes = effectiveMinutes(config, now, date);
@@ -818,7 +831,7 @@ export function decide(input) {
   const base = { role, date, minutes, builtSiteAvailable: doneNames(run).includes('build'), kaizenPending: kaizenPending(run) };
 
   // 1. published: never redo the page (a kaizen still owed is the one thing that may resume).
-  if (run?.status === 'published') return decidePublished({ config, run, role, session, heartbeat, hbUnknown, nowMs, minutes, base });
+  if (run?.status === 'published') return decidePublished({ config, run, role, session, heartbeat, hbUnknown, hbMissing, nowMs, minutes, base });
 
   // 2. no run file: start one.
   if (!run) {
@@ -838,7 +851,7 @@ export function decide(input) {
     });
   }
 
-  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown });
+  const info = leaseInfo(config, run, heartbeat, nowMs, { hbUnknown, hbMissing });
   const self = isSelf(run.lease, role, session);
   const leaseGone = run.status === 'failed' || !info.present || info.stale;
   const leaseDead = leaseGone || (!self && info.stuck);
@@ -1016,15 +1029,16 @@ export function decide(input) {
     if (info.hbUnreadable) {
       // Silent by the lease's own clock but the heartbeat channel is unreadable: not evidence of death. Say so once per role.
       const first = !run.events.some((e) => e.code === 'hb-unreadable' && e.by === role);
+      const until = doubtUntil(config, info);
       return plan({
         ...base,
         action: 'exit-alive',
         hbUnreadable: true,
         targetTier: run.targetTier,
         resumePhase: null,
-        reason: `hb-unreadable: ${info.holder}/${info.session} last checkpointed ${info.ageMinutes} min ago (phase ${run.phase}${info.phaseMinutes === null ? '' : `, ${info.phaseMinutes} min in it`}) and the heartbeat branch could not be read, so it is not declared dead before ${config.phaseStuckMinutes} min of silence${note}`,
+        reason: `hb-unreadable: ${info.holder}/${info.session} last checkpointed ${info.ageMinutes} min ago (phase ${run.phase}${info.phaseMinutes === null ? '' : `, ${info.phaseMinutes} min in it`}) and the heartbeat branch could not be read, so it is not declared dead before ${until}${note}`,
         directives,
-        events: first ? [{ kind: 'note', code: 'hb-unreadable', msg: `heartbeat branch unreadable: ${info.holder}/${info.session} is silent ${info.ageMinutes} min on the lease but is not taken over before ${config.phaseStuckMinutes} min` }] : [],
+        events: first ? [{ kind: 'note', code: 'hb-unreadable', msg: `heartbeat branch unreadable: ${info.holder}/${info.session} is silent ${info.ageMinutes} min on the lease but is not taken over before ${until}` }] : [],
       });
     }
     return plan({
@@ -1451,7 +1465,7 @@ export function beginRun(opts) {
       }
     }
     const heartbeat = latestHeartbeat(loadHeartbeat(date, run?.lease?.session), opts.heartbeat ?? null);
-    const input = { ...opts, config, now, date, heartbeat, run, hbUnknown: opts.hbUnknown === true };
+    const input = { ...opts, config, now, date, heartbeat, run, hbUnknown: opts.hbUnknown === true, hbMissing: opts.hbMissing === true };
     let p = decide(input);
 
     // A phase that finished (DONE.json) just before its session died must not be redone or wiped.
@@ -1515,7 +1529,7 @@ export function beginRun(opts) {
       recovered,
       cleaned,
       corrupt,
-      lease: leaseInfo(config, result, heartbeat, now.getTime(), { hbUnknown: opts.hbUnknown === true }),
+      lease: leaseInfo(config, result, heartbeat, now.getTime(), { hbUnknown: opts.hbUnknown === true, hbMissing: opts.hbMissing === true }),
     };
   });
 }
@@ -2001,7 +2015,7 @@ function nextActionHint({ run, info, config, minutes, spend, usageStop = null })
   } else if (!info.present) {
     parts.push('Run has no lease: `begin` takes it over.');
   } else if (info.hbUnreadable) {
-    parts.push(`${info.holder} last checkpointed ${info.ageMinutes} min ago but the heartbeat branch cannot be read (hb-unreadable): its silence is not proof of death, so \`begin\` leaves it alone until ${config.phaseStuckMinutes} min of silence or a phase stuck past ${info.stuckLimitMinutes} min.`);
+    parts.push(`${info.holder} last checkpointed ${info.ageMinutes} min ago but the heartbeat branch cannot be read (hb-unreadable): its silence is not proof of death, so \`begin\` leaves it alone until ${doubtUntil(config, info)} or a phase stuck past ${info.stuckLimitMinutes} min.`);
   } else if (info.watchStale && !info.beatStale) {
     parts.push(`The phase watch for ${run.phase} is ${info.watchOverdueMinutes} min overdue (limit ${WATCH_STALE_AFTER_MINUTES}) although ${info.holder} still beats: treated as hung, \`begin\` takes over at ${firstPending(run.targetTier, doneNames(run))}.`);
   } else if (info.stale) {
@@ -2034,13 +2048,13 @@ function nextActionHint({ run, info, config, minutes, spend, usageStop = null })
   return parts.join(' ');
 }
 
-export function statusSummary({ date, now, config = loadConfig(), history = [], heartbeat = null, hbUnknown = false, level }) {
+export function statusSummary({ date, now, config = loadConfig(), history = [], heartbeat = null, hbUnknown = false, hbMissing = false, level }) {
   const at = toDate(now);
   const day = assertDate(date ?? localParts(at, config.timezone).date);
   const read = readRunFile(day);
   const minutes = effectiveMinutes(config, at, day);
   const run = read.run;
-  const info = leaseInfo(config, run, latestHeartbeat(loadHeartbeat(day, run?.lease?.session), validHeartbeat(heartbeat, run?.lease?.session)), at.getTime(), { hbUnknown });
+  const info = leaseInfo(config, run, latestHeartbeat(loadHeartbeat(day, run?.lease?.session), validHeartbeat(heartbeat, run?.lease?.session)), at.getTime(), { hbUnknown, hbMissing });
   const sched = scheduleMinutes(config);
   const base = {
     date: day,
