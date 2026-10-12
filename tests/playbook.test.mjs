@@ -1196,3 +1196,122 @@ test('workflows: no escape sequence can sit in program text a clerk writes verba
     });
   }
 });
+
+// ---------------------------------------------------------------------------------------------
+// consistency pass (2026-10-12): every number and command the playbook states agrees with the scripts and with itself
+// ---------------------------------------------------------------------------------------------
+
+test('A1: the day\'s own history entry is no slug clash (a rerun after history.mjs add), an earlier day\'s slug still is', () => {
+  const box = realBox();
+  try {
+    const doc = { ...ideasDoc(10), chosenId: 'i01', carryoverOutId: null, rationale: 'the best one' };
+    box.write(`state/ideas/${D}.json`, doc);
+    const entry = (date, slug) => ({ n: 1, date, slug, title: slug, tier: 2, countsForNovelty: false });
+    box.write('state/history.json', { schema: 1, startDate: '2026-10-01', entries: [entry('2026-10-08', 'older-page'), entry(D, 'todays-page')] });
+    const a1 = (slug) => runSnippet(box, 'A1', { FILE: `state/ideas/${D}.json`, D, MODE: 'final', SLUG: slug });
+    const own = a1('todays-page');
+    assert.deepEqual([own.code, own.json.ok, own.json.problems], [0, true, []], 'history.mjs add replaces the same date: A1 must agree');
+    const clash = a1('older-page');
+    assert.equal(clash.code, 1);
+    assert.deepEqual(clash.json.problems, ['slug "older-page" is already used by an earlier project']);
+    assert.match(read('scripts/history.mjs'), /e\.slug === slug && e\.date !== date/, 'the rule A1 mirrors');
+  } finally {
+    box.cleanup();
+  }
+});
+
+test('timetable: the §2 table is the planner\'s (A4, both timetables), the phase watch defaults to its wide caps, and the kaizen budget is one number', async () => {
+  const a4 = snippet('A4');
+  const pair = (name) => {
+    const m = new RegExp(`const ${name} = NARROW\\n\\s*\\? (\\{[\\s\\S]*?\\})\\n\\s*: (\\{[\\s\\S]*?\\});`).exec(a4);
+    assert.ok(m, `A4 has no ${name}`);
+    return { narrow: new Function(`return ${m[1]}`)(), wide: new Function(`return ${m[2]}`)() };
+  };
+  const typical = pair('TYPICAL');
+  const cap = pair('CAP');
+  const two = section(PLAYBOOK, '## 2. The day at a glance');
+  const rows = two.split('\n').filter((l) => /^\| [a-z]/.test(l) && l.split('|').length === 9).map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
+  const phases = ['preflight', 'ideate', 'select', 'spec', 'build', 'qa', 'revise', 'package', 'publish'];
+  assert.deepEqual(rows.map((r) => r[0].split(' ')[0]), phases, 'one row per planned phase, in order');
+  for (const [phase, ...cells] of rows) {
+    const p = phase.split(' ')[0];
+    const want = [typical.wide[1][p], typical.wide[2][p], cap.wide[p], typical.narrow[1][p], typical.narrow[2][p], cap.narrow[p]].map(String);
+    assert.deepEqual(cells, want, `§2 row ${p} differs from A4`);
+  }
+  const pw = await import('../scripts/lib/phasewatch.mjs');
+  assert.deepEqual({ ...pw.DEFAULT_PHASE_MINUTES }, { ...cap.wide, kaizen: 75 }, 'the watch default is "the hard cap column of PLAYBOOK section 2"');
+  assert.match(two, /kaizen round[^\n]*`phaseBudgetMinutes` 75 \(§10\.6\)/);
+  const kaizen = section(PLAYBOOK, '### 10.6 Kaizen phase');
+  assert.match(kaizen, /--phase kaizen --minutes 75/);
+  assert.match(kaizen, /phaseBudgetMinutes: 75/);
+  assert.ok(!/\| kaizen[^\n]*\| 60 \|/.test(PLAYBOOK), 'no "typical 60" kaizen row: the round always ran to its budget');
+  assert.match(section(PLAYBOOK, '### 6.3'), /35 minutes of reserve \(10 on a narrow machine\)/);
+  assert.match(a4, /const RESERVE = NARROW \? 10 : 35;/);
+});
+
+test('liveness loops: the hand-written loops of §6.1 and §7.5 end inside their Bash timeout, like the loops watch arm prints', () => {
+  const timeoutMs = 6_600_000;
+  const canary = section(PLAYBOOK, '## 4. Step 1');
+  assert.match(canary, /`timeout: 6600000`/);
+  const workBranch = /`for i in ([\d ]+); do node -e "setTimeout\(\(\)=>\{\},(\d+)\)"/.exec(canary);
+  assert.ok(workBranch, '§4 heartbeat canary has the work-branch loop');
+  const rounds = workBranch[1].trim().split(/\s+/).length;
+  assert.ok(rounds * Number(workBranch[2]) <= timeoutMs, `${rounds} rounds of ${workBranch[2]} ms outlast the ${timeoutMs} ms timeout: the last rounds never run`);
+  assert.match(read('scripts/lib/phasewatch.mjs'), /workBranch \? Math\.min\(5,/, 'watch arm caps its work-branch loop at the same 5 rounds');
+  const hb = /for i in \$\(seq 1 (\d+)\); do node scripts\/heartbeat\.mjs [^\n]*--wait (\d+)/.exec(section(PLAYBOOK, '### 7.5'));
+  assert.ok(hb && Number(hb[1]) * Number(hb[2]) * 1000 <= timeoutMs, '§7.5 heartbeat loop fits its timeout');
+});
+
+test('timers: a phase-watch timer is deleted only while it is pending, in every place the playbook deletes one', () => {
+  const sevenOneA = section(PLAYBOOK, '### 7.1a');
+  assert.match(sevenOneA, /never `delete_trigger` it/);
+  assert.match(sevenOneA, /the `deleteTrigger` it printed \(null: the timer fired or fell due/);
+  assert.match(section(PLAYBOOK, '### 6.5a'), /the `deleteTrigger` it prints \(null: the timer fired or fell due, delete nothing\)/);
+  assert.match(section(PLAYBOOK, '### 10.6 Kaizen phase'), /`state:"armed"` with `dueInMinutes` above 0 means the timer is still pending/);
+  assert.match(section(PLAYBOOK, '## Appendix C'), /`deleteTrigger` \(null once the timer fired or fell due\)/);
+  assert.match(read('scripts/lib/phasewatch.mjs'), /const timerFired = Boolean\(w\.firedAt \|\| w\.timerFiredAt\) \|\| at\.getTime\(\) >= w\.dueMs;/);
+});
+
+test('remote tools: every claude-code-remote tool the playbook has the operator call is allowed by rule 7 and loaded by the ToolSearch lines', () => {
+  const rules = /<!-- protected:begin -->([\s\S]*?)<!-- protected:end -->/.exec(PLAYBOOK)[1];
+  const allowed = /the only claude-code-remote tools you call are ([^\n]*?)\)\.\n/.exec(rules)?.[1] ?? '';
+  const called = new Set([...PLAYBOOK.matchAll(/`(get_session|send_later|delete_trigger|update_trigger|add_repo|register_repo_root|list_triggers|create_trigger|send_message|archive_session)`/g)].map((m) => m[1]));
+  assert.ok(called.has('update_trigger'), '7.1a falls back to update_trigger when a delete is denied');
+  for (const tool of called) assert.ok(allowed.includes(`\`${tool}\``), `rule 7 does not allow ${tool}, which the playbook tells the operator to call`);
+  const loads = [...PLAYBOOK.matchAll(/select:(mcp__claude-code-remote__[^`]*)`/g)].map((m) => m[1]).join(',');
+  for (const tool of called) assert.ok(loads.includes(`mcp__claude-code-remote__${tool}`), `no ToolSearch line loads ${tool}`);
+});
+
+test('watchdogs and the deadman Action: CONTRACT and PLAYBOOK describe what begin and the workflows really do', () => {
+  const contract = read('ops/CONTRACT.md');
+  const row5 = contract.split('\n').find((l) => l.startsWith('| 5 |'));
+  assert.ok(row5 && !/t2Until/.test(row5) && /no time threshold/.test(row5) && /`preflight` or `ideate` at ≥ 05:30/.test(row5), row5);
+  const box = realBox();
+  try {
+    // wdB at its own 06:47, before t2Until (07:00): the scope-cut is added (the old row 5 said only from 07:00)
+    must(box, ['begin', '--role', 'primary', '--session', 'sP'], '06:00');
+    for (const [phase, hhmm] of [['preflight', '06:01'], ['ideate', '06:05']]) {
+      must(box, ['phase-start', '--phase', phase, '--session', 'sP'], hhmm);
+      if (phase === 'ideate') box.write(`work/${D}/ideate/DONE.json`, { ok: true, phase });
+      must(box, ['phase-done', '--phase', phase, '--note', 'x', '--session', 'sP', '--role', 'primary'], hhmm);
+    }
+    must(box, ['phase-start', '--phase', 'select', '--session', 'sP'], '06:20');
+    const wdB = must(box, ['begin', '--role', 'wdB', '--session', 'wdB-1'], '06:47');
+    assert.deepEqual([wdB.action, wdB.directiveAdded], ['exit-alive', true]);
+  } finally {
+    box.cleanup();
+  }
+  const early = realBox();
+  try {
+    // wdA at 05:32 with the primary still in preflight: a scope-cut (the old row 5 named ideate only)
+    must(early, ['begin', '--role', 'primary', '--session', 'sP'], '05:00');
+    must(early, ['phase-start', '--phase', 'preflight', '--session', 'sP'], '05:01');
+    const wdA = must(early, ['begin', '--role', 'wdA', '--session', 'wdA-1'], '05:32');
+    assert.deepEqual([wdA.action, wdA.directiveAdded], ['exit-alive', true]);
+  } finally {
+    early.cleanup();
+  }
+  for (const [name, text] of [['PLAYBOOK', PLAYBOOK], ['CONTRACT', contract]]) assert.ok(!/dormant/.test(text), `${name} still calls the deadman Action dormant; sync-main keeps main in step (FM-75)`);
+  assert.ok(fs.existsSync(path.join(REPO_ROOT, '.github/workflows/sync-main.yml')));
+  assert.match(read('.github/workflows/deadman.yml'), /cron: '40 13 \* \* \*'/);
+});

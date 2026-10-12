@@ -1594,6 +1594,18 @@ describe('watch disarm', () => {
     assert.deepEqual(pick(good(await W(rebound, 'disarm', [], '06:43')), ['timerFired', 'deleteTrigger']), { timerFired: false, deleteTrigger: { trigger_id: 'trig_new' } });
   });
 
+  test('a timer past its due time is spent even before its PHASEWATCH turn ran watch check: disarm and arm never hand it out for deletion', async () => {
+    // The Workflow's notification and the timer's turn can arrive together; the notification turn disarms first (PLAYBOOK 7.1a).
+    const { box } = await armed(); // ideate armed 04:00, budget 90 + 10: due 05:40; trig_1 bound, never checked
+    assert.equal(good(await W(box, 'status', [], '05:41')).state, 'armed', 'nothing recorded the firing yet');
+    const late = good(await W(box, 'disarm', ['--phase', 'ideate', '--session', 'P1'], '05:41'));
+    assert.deepEqual(pick(late, ['disarmed', 'triggerId', 'timerFired', 'deleteTrigger']), { disarmed: true, triggerId: 'trig_1', timerFired: true, deleteTrigger: null });
+    const { box: early } = await armed();
+    assert.deepEqual(pick(good(await W(early, 'disarm', ['--phase', 'ideate', '--session', 'P1'], '05:39')), ['timerFired', 'deleteTrigger']), { timerFired: false, deleteTrigger: { trigger_id: 'trig_1' } }, 'a minute before its due time it is still pending');
+    const { box: rearm } = await armed();
+    assert.equal(good(await arm(rearm, 'ideate', '05:45')).replaced, null, 're-arming after the due time hands back no spent trigger');
+  });
+
   test('--workflow-task: a notification of another task, or the echo of a TaskStop, is not allowed to unwatch the live attempt', async () => {
     const { box } = await armed('build'); // attempt 1: task wf-1, trigger trig_1
     good(await chk(box, 'build', '06:50')); // fires: wf-1 is to be stopped

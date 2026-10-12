@@ -669,9 +669,10 @@ export function armWatch({ date, phase, session, role, minutes, now, config = lo
     const attempt = reused ? prev.attempt : arms[phase];
     arms[phase] = attempt;
     const dueAt = new Date(due.dueMs).toISOString();
-    // A pending timer of the watch this one replaces must be deleted by the operator (a fired one-shot is spent already: never delete it).
+    // A pending timer of the watch this one replaces must be deleted by the operator (a fired one-shot is spent already: never delete it;
+    // past its due time it has fired or is firing, as disarm judges).
     const replaced =
-      prev && !prev.disarmedAt && !prev.firedAt && !prev.timerFiredAt && (prev.triggerId || prev.workflowTask)
+      prev && !prev.disarmedAt && !prev.firedAt && !prev.timerFiredAt && at.getTime() < prev.dueMs && (prev.triggerId || prev.workflowTask)
         ? { phase: prev.phase, attempt: prev.attempt, triggerId: prev.triggerId, workflowTask: prev.workflowTask }
         : null;
     const stoppedTasks = prev ? prev.stoppedTasks : [];
@@ -824,7 +825,9 @@ export function disarmWatch({ date, phase, session, workflowTask, now, config = 
         return { result: none('other-task', { current: { ...current, workflowTask: w.workflowTask }, note: `the watch belongs to task ${w.workflowTask}, not ${workflowTask}: this notification is another run's. Touch nothing; the watch stays armed.` }) };
       }
     }
-    const timerFired = Boolean(w.firedAt || w.timerFiredAt);
+    // Spent once `watch check` recorded it, or once its due time has passed: send_later fires on the first whole minute at or after
+    // dueAt, so its PHASEWATCH turn may already be queued behind this notification turn. A leftover finds the watch disarmed (stale).
+    const timerFired = Boolean(w.firedAt || w.timerFiredAt) || at.getTime() >= w.dueMs;
     const out = {
       ok: true,
       date: day,
