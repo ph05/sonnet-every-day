@@ -1,220 +1,249 @@
 {
   "schema": 1,
   "idea": {
-    "id": "i03",
-    "title": "Breaking Changes",
-    "pitch": "A plain grey brick-breaker ships as v0.1. Between waves the studio offers two release candidates written in marketing-speak, such as 'Improved ball responsiveness' or 'Ceiling deprecated to improve performance'. You decode the euphemism, pick one, and play the next wave under its real rules while a board of system lamps shows what just went offline. A codex records what each phrase actually meant, and by v1.0 your build is a loud, glorious, thoroughly broken thing you assembled yourself.",
-    "whyNow": "Timeless premise, since everyone has met a vague update note, with a jam-weekend nod: one jam page reportedly lists 'Systems Offline' as its theme (as of 2026-10-11, per itch.io, unconfirmed), and each patch here switches a game system off or on.",
+    "id": "i02",
+    "title": "Drift Harp",
+    "pitch": "A harp of plucked strings that you strum by dragging a finger or cursor across them, each string a Karplus-Strong plucked string tuned in pure just intonation and shown on a live fifths-and-thirds lattice. Play a looping chord progression and hear and see the pitch creep up by a syntonic comma (about a fifth of a semitone) every lap, a trick called a comma pump. A tempering dial lets you squeeze the drift shut and hear exactly what equal temperament trades away.",
+    "whyNow": "Timeless: a tuning-system explorer where the surprise is audible. The visitor discovers on their own that pure intervals do not close a loop, which most explainers only state in words.",
     "origin": {
-      "agent": "artisan",
-      "lens": "itch-jam-watch",
-      "scoutId": "artisan-2"
+      "agent": "architect",
+      "lens": "music-instrument",
+      "scoutId": "architect-1"
     },
     "fingerprint": {
-      "category": "humor-satire",
-      "mechanic": "game",
+      "category": "music-audio",
+      "mechanic": "instrument",
       "tone": [
-        "satirical",
-        "playful",
-        "chaotic"
+        "serene",
+        "nerdy",
+        "playful"
       ],
       "tech": [
-        "canvas2d",
         "webaudio",
-        "pointer-events",
-        "localstorage",
-        "web-animations"
+        "procedural-audio",
+        "canvas2d",
+        "pointer-events"
       ],
       "tags": [
-        "game-jam",
-        "patch-notes",
-        "brick-breaker",
-        "rule-mutation",
-        "roguelite",
-        "game-feel",
-        "juice",
-        "codex",
-        "release-notes",
-        "satire",
-        "systems-offline"
+        "just-intonation",
+        "karplus-strong",
+        "comma-pump",
+        "pitch-lattice",
+        "tuning-systems",
+        "plucked-string",
+        "microtonal",
+        "waveguide"
       ],
       "keywords": [
-        "changelog",
-        "release-candidate",
-        "verb-noun-grammar",
-        "hidden-effects",
-        "system-lamps",
-        "greybox",
-        "hit-stop",
-        "screenshake",
-        "rollback",
-        "version-number"
+        "syntonic-comma",
+        "pitch-drift",
+        "strum",
+        "lattice",
+        "cents",
+        "tempering",
+        "physical-model"
       ],
-      "slot": "humor",
+      "slot": "wildcard",
       "political": false
     },
     "research": {
-      "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own announcements found by search only show earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho showed how layers of feedback transform the feel of a plain game (its demo is reported, without a clear attribution in the results, to be a simple Breakout clone), which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
+      "summary": "A comma pump is a repeating progression whose pure intervals almost, but not exactly, return to the start, so the pitch shifts by a small interval each lap. The standard case is the syntonic comma (81:80, about 21.5 cents) in the progression C G D A E C; both Wikipedia and the Xenharmonic Wiki describe it. A 5-limit just intonation lattice puts fifths (3/2) on one axis and major thirds (5/4) on the other, so a loop that does not close is the drift made visible. Karplus-Strong gives a cheap plucked string: a noise burst circulating in a delay line with an averaging filter, where loop length sets pitch and the filter sets decay. Browser Karplus-Strong demos exist (one was seen), which de-risks the sound engine, but none found combines it with a drifting lattice.",
       "sources": [
         {
-          "title": "Patch Notes v2.0 - itch.io",
-          "url": "https://itch.io/jam/patch-notes",
+          "title": "Comma pump",
+          "url": "https://en.wikipedia.org/wiki/Comma_pump",
           "date": "",
-          "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+          "snippet": "Describes a comma pump as a sequence, often chords, that shifts pitch by a small interval each repetition; the usual example is C G D A E C raising pitch by 81:80 in just intonation.",
           "via": "search",
-          "note": "The jam-weekend nod. One site only and internally inconsistent; no independent mention of v2.0 was found. Show as reported, as of 2026-10-11, never as confirmed.",
-          "verified": false
-        },
-        {
-          "title": "indieformer.beehiiv.com",
-          "url": "https://indieformer.beehiiv.com/p/showcase0725",
-          "date": "",
-          "snippet": "Newsletter edition from the Patch Notes host, as summarized by search: it announced the host's first game jam, Patch Notes, in July 2025.",
-          "via": "search",
-          "note": "Shows the series is real and recurring. Same organization as the jam page, so not independent confirmation of v2.0.",
-          "verified": false
-        },
-        {
-          "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
-          "url": "https://itch.io/jam/patch-notes-v-1-1",
-          "date": "",
-          "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; search summaries gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
-          "via": "search",
-          "note": "Series context only; same organization as the other two entries.",
-          "verified": false
-        },
-        {
-          "title": "August 23, 2013",
-          "url": "https://www.gamedeveloper.com/design/video-is-your-game-juicy-enough-",
-          "date": "August 23, 2013",
-          "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
-          "via": "search",
-          "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and the tween-stretch-squeeze idea; the venue differs from the next entry, so the page says 2012 only. The Breakout-clone demo detail is reported, not confirmed.",
+          "note": "Found again by search on 2026-10-12 (Comma pump article: sequence, often chords, shifting pitch by a comma each pass; C G D A E C raises it by 81:80).",
           "verified": true
         },
         {
-          "title": "Juicy Break",
-          "url": "https://crcdng.itch.io/juicy-break",
+          "title": "Comma pump (Xenharmonic Wiki)",
+          "url": "https://en.xen.wiki/w/Pump",
           "date": "",
-          "snippet": "Independent creator page titled Juicy Break that, per the search summary, refers to the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+          "snippet": "Independent wiki entry covering comma pumps: loops of just intervals that nearly close, tempered out in systems that equate the comma to unison.",
           "via": "search",
-          "note": "Second, independent source for the talk's existence and year. Search only; whether the page is itself a remake of the demo was not visible.",
+          "note": "Found again by search; xenharmonic wiki entry on comma pumps, independent of Wikipedia.",
           "verified": true
         },
         {
-          "title": "first unread message",
-          "url": "https://community.ebay.com/t5/Mobile-Apps/Meaningful-release-notes-for-app-updates/td-p/28639214/jump-to/first-unread-message",
+          "title": "Just Intonation: pitch drift explanation (FIU)",
+          "url": "https://justintonation.fiu.edu/ExplanationDrift.html",
           "date": "",
-          "snippet": "Support-forum thread (slug: Meaningful-release-notes-for-app-updates) where a user asks for release notes that say what changed, arguing the stock phrase bug fixes and performance improvements tells them nothing.",
+          "snippet": "University page explaining that in just intonation one note name can have several pitches a syntonic comma (about 21.5 cents) apart, and that choirs meet this as drift.",
           "via": "search",
-          "note": "Shows stock release-note wording draws complaints. Cite only as a source; the game never names any real company.",
-          "verified": true
-        },
-        {
-          "title": "meaningless release notes 6931757",
-          "url": "https://en.community.sonos.com/speakers-229128/meaningless-release-notes-6931757",
-          "date": "",
-          "snippet": "A second company's community-forum thread where a user calls update notes meaningless after two updates were described only as bug fixes and improved performance.",
-          "via": "search",
-          "note": "Independent second forum, different organization, same complaint. Cite only as a source; the game never names any real company.",
-          "verified": true
-        },
-        {
-          "title": "Mini Jam 219: Nocturne - itch.io",
-          "url": "https://itch.io/jam/mini-jam-219-nocturne",
-          "date": "",
-          "snippet": "Page for a biweekly jam series; per the search summary each jam announces a theme early and reveals a mandatory limitation at the start, and the theme is only inspiration while the limitation is what gets rated.",
-          "via": "search",
-          "note": "Inspires per-wave limitations delivered as patch notes. One site and summary-level only, so unverified.",
+          "note": "Not found again in the 2026-10-12 results; the 21.5 cent size is carried by the xen.wiki 81/80 entry and Wikipedia comma articles instead.",
           "verified": false
+        },
+        {
+          "title": "Karplus-Strong string synthesis",
+          "url": "https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis",
+          "date": "",
+          "snippet": "Physical-modelling method: a burst of noise recirculates through a filtered delay line; loop length sets pitch, filter sets decay. Invented by Alexander Strong and analysed by Kevin Karplus.",
+          "via": "search",
+          "note": "Found again by search at the Wikipedia address (the page itself could not be fetched). Algorithm definition and history.",
+          "verified": true
+        },
+        {
+          "title": "Karplus Strong Algorithm (CCRMA, Stanford)",
+          "url": "https://ccrma.stanford.edu/~jos//pasp//Karplus_Strong_Algorithm.html",
+          "date": "",
+          "snippet": "Stanford physical audio signal processing text on the Karplus-Strong algorithm, a delay line with a lowpass in the feedback loop.",
+          "via": "search",
+          "note": "Not found again at this address; the Blynn Stanford page, Csound manual and others carry the same method.",
+          "verified": false
+        },
+        {
+          "title": "Lattice (music)",
+          "url": "https://en.wikipedia.org/wiki/Lattice_(music)",
+          "date": "",
+          "snippet": "Pitch lattices place just ratios on axes by prime; the 5-limit lattice uses 3/2 and 5/4, drawn as square or hexagonal grids; the gap between a 5/4 third and the Pythagorean third is the syntonic comma.",
+          "via": "search",
+          "note": "Found again by search on 2026-10-12 together with xen.wiki 5-limit and a music-theory article: vertical axis fifths 3/2, horizontal axis thirds 5/4.",
+          "verified": true
+        },
+        {
+          "title": "karplus stress tester (GitHub)",
+          "url": "https://github.com/jackschaedler/karplus-stress-tester",
+          "date": "",
+          "snippet": "A browser project that plucks virtual Karplus-Strong strings as a custom audio processing exercise; notes glitches when the browser cannot keep up.",
+          "via": "search",
+          "note": "Not found again by search; kept only as a performance warning that voice counts must be budgeted.",
+          "verified": false
+        },
+        {
+          "title": "Interval information: 81/80",
+          "url": "https://en.xen.wiki/w/81/80",
+          "date": "",
+          "snippet": "Xenharmonic wiki entry on the ratio 81/80, the syntonic comma, about 21.5 cents.",
+          "via": "search",
+          "note": "Independent confirmation of the comma size and name.",
+          "verified": true
+        },
+        {
+          "title": "Comma (music)",
+          "url": "https://en.wikipedia.org/wiki/Comma_(music)",
+          "date": "",
+          "snippet": "Wikipedia article on commas, including the syntonic comma as the gap between a Pythagorean ditone (81:64) and a just major third (5:4).",
+          "via": "search",
+          "note": "Second site confirming the 81:80 ratio and the roughly 21.5 cent size.",
+          "verified": true
+        },
+        {
+          "title": "The Karplus-Strong Algorithm",
+          "url": "https://theory.stanford.edu/~blynn/sound/karplusstrong.html",
+          "date": "",
+          "snippet": "Explainer: a buffer of random values is repeatedly averaged, the loop length sets the pitch and averaging damps high harmonics faster.",
+          "via": "search",
+          "note": "Independent of Wikipedia; also notes the half-sample delay and the tuning error from integer loop lengths.",
+          "verified": true
+        },
+        {
+          "title": "Csound manual: pluck opcode",
+          "url": "https://csound.com/manual/opcodes/pluck/",
+          "date": "",
+          "snippet": "Manual page for a plucked-string opcode with simple and stretched averaging decay methods.",
+          "via": "search",
+          "note": "Third independent description of the Karplus-Strong decay methods.",
+          "verified": true
+        },
+        {
+          "title": "5 limit (Xenharmonic Wiki)",
+          "url": "https://en.xen.wiki/w/5-limit",
+          "date": "",
+          "snippet": "Wiki entry on the 5-limit: a two-dimensional lattice of pitch classes built from fifths and major thirds.",
+          "via": "search",
+          "note": "Second source for the lattice axes.",
+          "verified": true
         }
       ],
       "facts": [
         {
-          "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' showed how tweening, stretching and extra feedback make a plain game feel alive.",
+          "claim": "A comma pump is a progression that returns almost, but not exactly, to its starting pitch, shifting by a small interval each repetition; the classic syntonic example is C G D A E C, rising by 81:80 per lap in just intonation, and the pump closes exactly in 12-tone equal temperament (Wikipedia and Xenharmonic Wiki, as of 2026-10-12).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The syntonic comma is the ratio 81:80, about 21.5 cents, the gap between a Pythagorean ditone (81:64) and a just major third (5:4) (Xenharmonic Wiki and Wikipedia, as of 2026-10-12).",
+          "sourceIndex": 7,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Karplus-Strong synthesis circulates a burst of noise through a delay line with an averaging low-pass filter; loop length sets pitch and the filter shapes decay, so high harmonics fade faster (Wikipedia, a Stanford explainer and the Csound manual, as of 2026-10-12).",
           "sourceIndex": 3,
           "alsoIn": [
-            4
+            9,
+            10
           ],
-          "asOf": "2026-10-11"
+          "asOf": "2026-10-12"
         },
         {
-          "claim": "As of 2026-10-11, public support forums carry user complaints that stock release-note wording such as 'bug fixes and performance improvements' says nothing about what changed (two separate organizations' forums).",
+          "claim": "A 5-limit pitch lattice puts just fifths (3/2) on one axis and just major thirds (5/4) on the other (Wikipedia Lattice article and Xenharmonic Wiki 5-limit entry, as of 2026-10-12).",
           "sourceIndex": 5,
           "alsoIn": [
-            6
+            11
           ],
-          "asOf": "2026-10-11"
-        },
-        {
-          "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
-          "sourceIndex": 0,
-          "alsoIn": [],
-          "asOf": "2026-10-11"
-        },
-        {
-          "claim": "The Patch Notes jam series ran its v1.1 edition on itch.io from 16 to 26 January 2026 (per the page title; same organization as the v2.0 listing).",
-          "sourceIndex": 2,
-          "alsoIn": [],
-          "asOf": "2026-10-11"
-        },
-        {
-          "claim": "A Mini Jam page is reported to say the theme is only inspiration while a mandatory limitation, revealed at the start, is what gets rated (single site, unconfirmed).",
-          "sourceIndex": 7,
-          "alsoIn": [],
-          "asOf": "2026-10-11"
+          "asOf": "2026-10-12"
         }
       ],
       "inspirations": [
-        "The 2012 juice talk and its greybox-to-gold demo",
-        "Brick-breakers and their roguelite descendants",
-        "Rule-rewriting puzzle games",
-        "Stock app-store release-note phrases",
-        "Live-service balance patches and their notes"
+        "comma pump progressions",
+        "Karplus-Strong plucked string synthesis",
+        "pitch lattice diagrams from xenharmonic tuning software",
+        "browser Karplus-Strong string demos",
+        "a cappella choir pitch drift"
       ]
     },
     "design": {
-      "coreLoop": "Wave loop: you read two patch notes, pick one with 1 or 2 (or a tap), watch the system-lamp board change as its true effect applies, then play a 30 to 40 second brick-breaker wave under every rule accumulated so far. Clearing the wave or losing a ball ends the loop with a 'known issues' reveal that tells you what the euphemism really meant and files it in the codex. Notes follow a learnable grammar (improved means faster with a catch, rebalanced means nerfed, deprecated means removed with compensation, reimagined means shuffled), so minute two is decoding and minute ten is routing synergies, such as a sticky paddle with gravity, around your build's weak spots. Ten waves end in a v1.0 launch card; three rollbacks end the run early. The daily seed makes the offers identical for everyone.",
+      "coreLoop": "Drag across strings to strum, assemble a short loop of chords on the lattice, and let it cycle. Each lap the drift meter shows the pure tuning rising by one syntonic comma while a ghost of the starting pitch stays put. Turn the tempering dial to close the loop and hear what is lost, or chase a lap that lands back home using adaptive retuning. Every chord choice changes how fast and which way the pitch wanders, so there is always another loop to try.",
       "sophisticationHooks": [
-        "A decodable grammar: eight verbs (improved, rebalanced, streamlined, reimagined, modernized, deprecated, added in beta, fixed) act on eight game systems (ball, paddle, ceiling, bricks, gravity, input, audio, juice), so a euphemism means the same kind of change everywhere. A codex fills in as you learn, which is what separates minute two from minute ten.",
-        "Generic modifier engine with synergy and clamps: about 40 valid verb-noun pairs stack, such as a sticky paddle with gravity or multiball with the ceiling deprecated, while a stall watchdog ships an in-fiction hotfix if no brick falls for 25 seconds.",
-        "The juice ladder: feedback layers (hit-stop, squash and stretch, trails, particles, shake, synthesized sound) arrive as patches, so the page shows game feel being built from silent grey boxes at v0.1 to a bright, noisy v1.0. Each layer has a reduced-motion twin and a shake toggle.",
-        "Hero moment: a board of system lamps clicks off or on when a patch lands, an installing-update wipe sweeps the playfield, and the same bricks that were flat grey rectangles burst into confetti by v1.0 while the changelog scrolls alongside."
+        "Karplus-Strong voices with per-string damping, pick position and a stroke-speed-dependent excitation, polyphonic across a harp of 12 strings",
+        "Live 5-limit pitch lattice with ratio and cents readouts; the drift is the distance between where a loop starts and where it ends on the lattice",
+        "Tempering dial that continuously morphs pure ratios toward 12-tone equal temperament, with a seeded generative drone that makes beating audible",
+        "Shareable URL hash holding the chord loop, tempering amount and seed"
       ],
-      "dataNeeds": "bundled",
-      "scopeForOneDay": "Build: fixed-step brick-breaker with sub-stepped collisions, a verb-by-noun patch engine (8 verbs, 8 systems, about 40 valid pairs) with flavor text, two-card picker, system-lamp board, codex, juice ladder with reduced-motion twins, muted-by-default WebAudio blips, ten waves with rollbacks and a v1.0 launch card, URL-hash seed and share string, keyboard and touch controls, about panel with sources. Cut first: unlockable skins, boss wave, extra brick types. Not built: leaderboards, any backend.",
+      "dataNeeds": "none",
+      "scopeForOneDay": "Shrunk and de-risked. Build: Karplus-Strong plucks rendered on demand into AudioBuffers in the main thread (no AudioWorklet, so no CSP issue) with a voice pool, 12 strings, canvas harp and lattice views, pointer/touch strum and keyboard play, loop editor with 6 slots, drift meter with a ghost of the starting pitch, tempering dial, a muted-state visual story (lattice path, cents readout), URL-hash share, about panel. Cut: AudioWorklet, MIDI export, 7-limit and higher primes, recording, presets beyond three.",
       "risks": [
-        "Hook is single-sourced and inconsistent: the page shows 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io (unconfirmed); the game does not depend on it.",
-        "Brick-breakers are crowded: distinctness rides on the decodable verb grammar, the codex and the writing, so the spec should protect those before extra polish.",
-        "Soft-locks and balance: clamp every parameter, ship an in-fiction hotfix that reverts the last patch if no brick falls for 25 seconds, and let the QA monkey test random builds.",
-        "Humor stays generic: invented studio, patches and quotes; aim at the genre of vague release notes, never at a real company or product, and list the forum threads only as sources.",
-        "Motion and flashing: cap flashes below 3 per second, give every shake or flash a reduced-motion twin and a shake toggle, start audio muted.",
-        "Scope: a generic verb-by-noun engine avoids hand-coding dozens of patches; skins, boss waves and extra brick types are cut first."
+        "AudioWorklet from a blob or inline module may be blocked by the page CSP; the plan renders each pluck into an AudioBuffer instead, which needs no worklet.",
+        "Audio only starts after a user gesture and a headless screenshot cannot hear it, so the lattice path, drift meter and cents readout must carry the story when muted.",
+        "Voice cost: each pluck buffer is generated in JavaScript; short buffers (about 2 seconds) and a voice cap keep it responsive, as the stress-test project warns of glitches when the browser cannot keep up (that project was not found again, so it is not cited as fact).",
+        "The pump claim is solid, but the audible effect depends on voice-leading that keeps every chord pure; the spec fixes four tested loops, including the C G D A E C case, and checks the lap drift numerically in a unit test.",
+        "Unverified sources: the FIU drift page, the CCRMA Stanford page and the karplus stress tester were not found again; the page cites only sources seen on 2026-10-12."
       ]
     },
     "durable": true,
     "verification": {
-      "by": "none",
-      "at": "2026-10-11",
-      "status": "unverified",
-      "notes": "not verified: the verifier did not run or its output was unusable"
+      "by": "verifier",
+      "at": "2026-10-12",
+      "evidence": "search-only",
+      "confidence": 8,
+      "feasibleInOneDay": true,
+      "notes": "Comma pump, 81:80 at about 21.5 cents, Karplus-Strong and the 5-limit lattice axes were each found in independent results (WebFetch to ccrma.stanford.edu, en.xen.wiki and justintonation.fiu.edu failed at DNS). Buildable in a morning if plucks render to AudioBuffers; no data needed."
     },
     "scores": {
-      "sophistication": 7,
-      "delight": 8.6,
-      "distinctness": 5.4,
-      "feasibility": 7.1,
-      "timeliness": 4.2,
-      "interestFit": 7,
-      "polishPotential": 8.5,
-      "safety": 6.4
+      "sophistication": 7.4,
+      "delight": 5.3,
+      "distinctness": 7,
+      "feasibility": 6.2,
+      "timeliness": 8,
+      "interestFit": 4.8,
+      "polishPotential": 8.2,
+      "safety": 9.4
     },
-    "total": 68.8,
+    "total": 69.2,
     "noveltyCheck": {
       "ok": true,
       "conflicts": []
     }
   },
-  "savedOn": "2026-10-11",
+  "savedOn": "2026-10-12",
   "carriedCount": 1
 }

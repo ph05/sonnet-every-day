@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en" data-boot="loading" data-phase="boot">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Between Periods</title>
+<meta name="description" content="Steer an invented ice-resurfacing machine that cannot turn on a dime, ration one tank of water and buff every scar to a mirror gleam before the buzzer. Every UTC day brings its own rink, and your finish becomes a postcard and a challenge link.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b1820'/%3E%3Crect x='4' y='9' width='24' height='14' rx='5' fill='%23e9f1f5'/%3E%3Cpath d='M8 16h10' stroke='%235fd3e8' stroke-width='5' stroke-linecap='round'/%3E%3Crect x='17' y='11' width='9' height='10' rx='2' fill='%23f2a900'/%3E%3C/svg%3E">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-prose { max-width: 68ch; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<svg class="rk-sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M9 5v14M15 5v14"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></symbol>
+  <symbol id="i-slow" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M6 20h12"/></symbol>
+  <symbol id="i-door" viewBox="0 0 24 24"><path d="M6 21V4h12v17M3 21h18M14.5 12.5h.01"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><path d="M9 9h11v11H9zM5 15V4h11"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-reset" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></symbol>
+  <symbol id="i-dry" viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M3 3l18 18"/></symbol>
+  <symbol id="i-guide" viewBox="0 0 24 24"><path d="M3 19c3-11 15-11 18 0" stroke-dasharray="3 3"/><circle cx="12" cy="6" r="1.5"/></symbol>
+  <symbol id="i-shake" viewBox="0 0 24 24"><path d="M2 12l3-5 4 10 4-10 4 10 3-5"/></symbol>
+  <symbol id="i-guide-off" viewBox="0 0 24 24"><path d="M3 19c3-11 15-11 18 0" stroke-dasharray="3 3"/><path d="M4 4l16 16"/></symbol>
+  <symbol id="i-shake-off" viewBox="0 0 24 24"><path d="M2 12l3-5 4 10 4-10 4 10 3-5"/><path d="M4 4l16 16"/></symbol>
+</svg>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 3 &middot; 2026-10-12</p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <div class="rk-head">
+    <h1 class="sed-title">Between Periods</h1>
+    <p class="sed-tagline">It's intermission and the ice is wrecked. Steer the machine, ration your water, and buff every scar before the buzzer.</p>
+  </div>
+
+  <p id="boot-note" class="rk-boot-note">Wheeling out the machine…</p>
+  <div id="boot-error" class="rk-boot-error" role="alert" hidden><span id="boot-error-text"></span></div>
+
+  <div id="app" class="rk-app">
+    <div id="banner" class="rk-banner" role="status" hidden>
+      <span id="banner-text"></span>
+      <button type="button" id="banner-action" class="sed-btn is-quiet rk-btn" hidden>Restart</button>
+    </div>
+
+    <div class="rk-stage">
+      <div id="hud" class="rk-hud">
+        <div class="rk-tank">
+          <span class="rk-chip-l">Water</span>
+          <div id="hud-tank" class="rk-gauge" role="meter" aria-label="Water" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 percent">
+            <div id="hud-tank-fill" class="rk-gauge-fill"></div>
+            <svg class="rk-ic rk-dry-ic" aria-hidden="true" focusable="false"><use href="#i-dry"/></svg>
+          </div>
+          <b id="hud-tank-val" class="rk-num">100%</b>
+        </div>
+        <div class="rk-readouts">
+          <span id="demo-chip" class="rk-demo" title="Demo lap. Press Enter to take the wheel.">Demo lap</span>
+          <div class="rk-chip rk-chip-clock"><span id="hud-clock-l" class="rk-chip-l">Time</span><b id="hud-clock" class="rk-num">2:30</b></div>
+          <div class="rk-chip"><span class="rk-chip-l">Gleam</span><b id="hud-gleam" class="rk-num">0%</b></div>
+          <div class="rk-chip" title="A clean lap is a straight pass of at least three seconds, with water in the tank, over ice you have not touched yet."><span class="rk-chip-l">Clean laps</span><b id="hud-laps" class="rk-num">0</b></div>
+          <div class="rk-chip"><span class="rk-chip-l">Distance</span><b id="hud-feet" class="rk-num">0 ft</b></div>
+          <div class="rk-chip rk-chip-grade"><span class="rk-chip-l">Grade</span><b id="hud-grade" class="rk-num">D</b></div>
+        </div>
+        <div class="rk-prefs" role="group" aria-label="Options">
+          <button type="button" id="btn-sound" class="sed-btn is-quiet rk-btn rk-tog rk-sq" aria-pressed="false" aria-label="Sound" title="Sound"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-mute"/></svg><span class="rk-lab">Sound off</span></button>
+          <button type="button" id="btn-assist" class="sed-btn is-quiet rk-btn rk-tog rk-sq" aria-pressed="true" aria-label="Guides" title="Guides"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-guide"/></svg><span class="rk-lab">Guides on</span></button>
+          <button type="button" id="btn-shake" class="sed-btn is-quiet rk-btn rk-tog rk-sq" aria-pressed="true" aria-label="Shake" title="Shake"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-shake"/></svg><span class="rk-lab">Shake on</span></button>
+        </div>
+      </div>
+
+      <div class="rk-rinkwrap">
+        <canvas id="rink" class="rk-rink" tabindex="0" role="img" aria-label="The rink: scars to buff, the refill door and your machine. Steer with the arrow keys or A and D, or drag on the rink."></canvas>
+        <div id="veil" class="rk-veil" aria-hidden="true" hidden><span class="rk-veil-t">Paused.</span><span class="rk-veil-s">Tap the rink or press Space</span></div>
+      </div>
+    </div>
+
+    <div class="rk-below">
+      <div class="rk-dock">
+        <p id="coach" class="rk-coach"></p>
+        <div class="rk-bar">
+          <button type="button" id="btn-start" class="sed-btn rk-btn rk-primary" data-show="ready auto"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-play"/></svg><span>Start intermission</span></button>
+          <button type="button" id="btn-pause" class="sed-btn rk-btn rk-primary" data-show="playing paused"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-pause"/></svg><span>Pause</span></button>
+          <button type="button" id="btn-restart" class="sed-btn is-quiet rk-btn" data-show="paused done"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-reset"/></svg><span>Again</span></button>
+          <button type="button" id="btn-practice" class="sed-btn is-quiet rk-btn" data-show="ready done"><span>Practice (no clock)</span></button>
+          <button type="button" id="btn-slow" class="sed-btn is-quiet rk-btn rk-tog" aria-pressed="false" data-show="playing"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-slow"/></svg><span>Slow</span></button>
+          <button type="button" id="btn-finish" class="sed-btn is-quiet rk-btn" data-show="playing paused"><span>Call it</span></button>
+          <button type="button" id="btn-result" class="sed-btn is-quiet rk-btn" data-show="done"><span>Result</span></button>
+        </div>
+      </div>
+
+      <div class="rk-more">
+        <p id="hint" class="rk-hint">Cover every scar before the buzzer. Steer with <kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd>, or drag on the rink.</p>
+        <div class="rk-watch">
+          <button type="button" id="btn-watch" class="sed-btn is-quiet rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg><span>Watch a lap</span></button>
+          <select id="watch-select" class="rk-select" aria-label="Bot strategy">
+            <option value="mow">Skip-lane mow</option>
+            <option value="spiral">Spiral</option>
+            <option value="race">Racetrack</option>
+          </select>
+        </div>
+        <div class="rk-seed" role="group" aria-label="Rink seed">
+          <label for="seed-input" class="rk-seed-l">Rink</label>
+          <input id="seed-input" class="rk-input" type="text" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="seed-note" placeholder="2026-10-12">
+          <button type="button" id="btn-seed-load" class="sed-btn is-quiet rk-btn"><span>Load rink</span></button>
+          <button type="button" id="btn-seed-today" class="sed-btn is-quiet rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-door"/></svg><span>Today's rink</span></button>
+        </div>
+        <p id="seed-note" class="rk-note"></p>
+        <p id="rink-info" class="rk-info"></p>
+        <p id="best" class="rk-info">Best on this rink: None yet</p>
+      </div>
+    </div>
+
+    <dialog id="result" class="rk-dialog" aria-labelledby="res-title">
+      <div class="rk-res" data-grade="D">
+        <div class="rk-res-a">
+        <div class="rk-res-head">
+          <div id="res-grade" class="rk-stamp" role="img" aria-label="Grade D">D</div>
+          <div class="rk-res-text">
+            <h2 id="res-title" tabindex="-1">Slush</h2>
+            <p id="res-line" class="rk-res-line"></p>
+            <p id="res-meta" class="rk-res-meta"></p>
+          </div>
+        </div>
+        <canvas id="postcard" class="rk-postcard" width="1200" height="630" role="img" aria-label="Postcard: the route you drove, drawn as a glowing stripe on a stylized rink."></canvas>
+        </div>
+        <div class="rk-res-b">
+        <dl id="res-stats" class="rk-stats"></dl>
+        <p id="res-challenge" class="rk-challenge" hidden></p>
+        <label for="share-text" class="rk-share-l">Share text</label>
+        <textarea id="share-text" class="rk-share" readonly rows="5" spellcheck="false"></textarea>
+        <div class="rk-share-actions">
+          <button type="button" id="btn-copy-text" class="sed-btn is-quiet rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><span>Copy result</span></button>
+          <button type="button" id="btn-copy-link" class="sed-btn is-quiet rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-copy"/></svg><span>Copy link</span></button>
+          <button type="button" id="btn-save-card" class="sed-btn is-quiet rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-save"/></svg><span>Save card</span></button>
+        </div>
+        </div>
+        <div class="rk-res-actions">
+          <button type="button" id="btn-result-again" class="sed-btn rk-btn"><svg class="rk-ic" aria-hidden="true" focusable="false"><use href="#i-reset"/></svg><span>Again</span></button>
+          <button type="button" id="btn-result-close" class="sed-btn is-quiet rk-btn"><span>Close</span></button>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="toasts" class="rk-toasts" aria-hidden="true"></div>
+    <div id="live" class="sed-visually-hidden" aria-live="polite" aria-atomic="true"></div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">A fixed-step simulation (60 ticks a second, in logical rink coordinates) scores against a typed-array grid, never canvas pixels, so one seed and one set of inputs always earn the same grade on any screen. Self-tests replay scripted routes with the ticks fed in chunks of 1, 7 and 60 and compare every result, check that a bot driving closed laps gleams at least 95 percent of the scars on each of the next 365 daily rinks, and check that the best of three bot planners (skip-lane mow, spiral, racetrack) out-scores the plain mow. Everything is game scale: the rink is stylized; the machine, its mishaps and every number are invented. One pass has three zones (shave, wash, squeegee), a simplification of a machine that shaves, washes, vacuums and floods in one pass. As of 2026-10-12: the 2026-27 NHL season opened on 29 September 2026 (per nhl.com and Yahoo Sports); a resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water and picks up dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia); the 1949 Model A's four-wheel steering was cut back to front-wheel steering after it jammed against the boards (per Wikipedia and the maker's own history PDF). Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).</p>
+
+      <h2>How it plays</h2>
+      <p>Old Glossy, the invented machine, always rolls forward and cannot turn tighter than a fixed circle, so lanes need room. Steer with <kbd>←</kbd> <kbd>→</kbd> or <kbd>A</kbd> <kbd>D</kbd>, hold <kbd>↓</kbd> or <kbd>S</kbd> to slow down, or drag on the rink and the machine steers toward your finger or pointer. <kbd>Space</kbd> starts and pauses, <kbd>Enter</kbd> starts a timed lap, <kbd>Shift</kbd>+<kbd>Enter</kbd> starts practice, <kbd>R</kbd> goes again, <kbd>M</kbd> toggles sound.</p>
+      <p>Every pass lays one stripe of water. Wet ice turns glossy and the scars under it vanish, which is a gleam. The tank drains with distance and refills in the door zone, the gap in the boards. With an empty tank a pass only shaves the ice, and a shaved stripe does not count. Bumping the boards costs points; tidy lanes with little overlap and time left on the clock earn them. A clean lap is a straight pass of at least three seconds, with water in the tank, over ice you have not touched yet.</p>
+      <p>Your lap ends on the buzzer, when every reachable scar gleams, or when you call it. The grade runs S, A, B, C, D. The result card has a postcard of your lap pattern that gives away no scars, a copy-text strip of ten squares, and a challenge link holding the rink, the grade and the distance. The same rink and the same steering always score the same on any screen.</p>
+
+      <h2>Real and made up</h2>
+      <p>Real, as of 2026-10-12: a resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water, and picks up dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia). The Model A of 1949 (per Mental Floss) had four-wheel steering that was cut back to front-wheel steering after it jammed against the boards (per Wikipedia and the maker's own history PDF). Daily browser puzzles commonly seed the day's puzzle from the date, and many reset at 00:00 UTC (per the three craft notes below).</p>
+      <p>Simplified: one pass here has three zones (shave, wash, squeegee) along the machine and spends tank water, where a real machine shaves, washes, vacuums and floods in one pass. The refill door is a game rule.</p>
+      <p>Made up: the machine and its nickname, its mustard-and-charcoal livery, the mishaps and the hats, the scars and the wear, the clock, the tank units, the speeds, the distances, the grades and the half-foot grid. The rink is stylized and drawn to rough rink proportions. The daily rink is seeded from the UTC date, so the same sheet arrives for everyone at 00:00 UTC; type any seed to get a different one. Nothing here is sent anywhere: best results stay in this browser.</p>
+
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://www.nhl.com/news/nhl-home-openers-for-2026-27-season">NHL.com: 2026-27 season start date (29 September 2026)</a>: the season opener.</li>
+        <li><a href="https://sports.yahoo.com/articles/nhl-games-today-2026-opening-170904210.html">Yahoo Sports: opening-night schedule for 29 September 2026</a>: a second, independent report of the same date.</li>
+        <li><a href="https://science.howstuffworks.com/zamboni.htm">HowStuffWorks: how an ice resurfacer works</a>: shave, augers, snow tank, water, squeegee and vacuum.</li>
+        <li><a href="https://en.wikipedia.org/wiki/Ice_resurfacer">Wikipedia: Ice resurfacer</a>: how a pass works, and the steering history.</li>
+        <li><a href="https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-zamboni">Mental Floss: a brief history of the ice resurfacer (1949)</a>: the 1949 Model A.</li>
+        <li><a href="https://zamboni.com/wp-content/uploads/2011/10/ZamboniStory_ToledoWalleye.pdf">Maker's own history PDF: the early machine and its steering</a>: the four-wheel steering that was dismantled.</li>
+      </ul>
+      <h3>Craft notes</h3>
+      <ul class="sed-sources">
+        <li><a href="https://dev.to/nikhil_657d136fec04f0e0b2/building-a-daily-puzzle-site-what-the-tech-stack-actually-looks-like-1hfj">DEV Community: building a daily puzzle site (craft note)</a>: the date as a seed.</li>
+        <li><a href="https://dev.to/solsticioapp/a-daily-logic-puzzle-with-no-backend-at-all-1ef6">DEV Community: a daily logic puzzle with no backend (craft note)</a>: a daily seed from year, month and day.</li>
+        <li><a href="https://www.cipherssecurity.com/games/">Daily-games roundup: UTC dates, share grids, local stats (craft note)</a>: UTC resets, share grids and local stats.</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by the Sonnet Every Day team</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>

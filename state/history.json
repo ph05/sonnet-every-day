@@ -105,6 +105,61 @@
       "path": "d/2026-10-11-orbital-knitwear/",
       "publishedAt": "2026-10-11T13:10:08.496Z",
       "countsForNovelty": true
+    },
+    {
+      "n": 3,
+      "date": "2026-10-12",
+      "slug": "between-periods",
+      "title": "Between Periods",
+      "tagline": "It's intermission and the ice is wrecked. Steer the machine, ration your water, and buff every scar before the buzzer.",
+      "tier": 2,
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "game",
+        "tone": [
+          "cozy",
+          "playful",
+          "competitive"
+        ],
+        "tech": [
+          "canvas2d",
+          "dom-ui",
+          "svg",
+          "pointer-events",
+          "webaudio",
+          "procedural-audio",
+          "localstorage",
+          "url-hash"
+        ],
+        "tags": [
+          "hockey",
+          "ice-resurfacing",
+          "intermission",
+          "daily-rink",
+          "coverage-path",
+          "share-postcard",
+          "url-hash-seed",
+          "challenge-link",
+          "turning-radius",
+          "emoji-grid"
+        ],
+        "keywords": [
+          "ice-machine",
+          "rink",
+          "intermission",
+          "daily-challenge",
+          "seeded-world",
+          "fixed-timestep",
+          "wet-ice-sheen",
+          "water-budget",
+          "path-planning"
+        ],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "path": "d/2026-10-12-between-periods/",
+      "publishedAt": "2026-10-12T12:45:28.805Z",
+      "countsForNovelty": true
     }
   ]
 }

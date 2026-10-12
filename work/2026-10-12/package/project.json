@@ -101,11 +101,11 @@
       "url": "https://www.cipherssecurity.com/games/"
     }
   ],
-  "makingOf": "A fixed-step simulation (60 ticks a second, in logical rink coordinates) scores against a typed-array grid, never canvas pixels, so one seed and one set of inputs always earn the same grade on any screen. Self-tests replay scripted routes with the ticks fed in chunks of 1, 7 and 60 and compare every result, check that a bot driving closed laps gleams at least 95 percent of the scars on each of the next 365 daily rinks, and check that the best of three bot planners (skip-lane mow, spiral, racetrack) out-scores the plain mow. Everything is game scale: the rink is stylized; the machine, its mishaps and every number are invented. One pass has three zones (shave, wash, squeegee), a simplification of a machine that shaves, washes, vacuums and floods in one pass. As of 2026-10-12: the 2026-27 NHL season opened on 29 September 2026 (per nhl.com and Yahoo Sports); a resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water and picks up dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia); the 1949 Model A's four-wheel steering was cut back to front-wheel steering after it jammed against the boards (per Wikipedia and the maker's own history PDF). Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game). Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).",
+  "makingOf": "A fixed-step simulation (60 ticks a second, in logical rink coordinates) scores against a typed-array grid, never canvas pixels, so one seed and one set of inputs always earn the same grade on any screen. Self-tests replay scripted routes with the ticks fed in chunks of 1, 7 and 60 and compare every result, check that a bot driving closed laps gleams at least 95 percent of the scars on each of the next 365 daily rinks, and check that the best of three bot planners (skip-lane mow, spiral, racetrack) out-scores the plain mow. Everything is game scale: the rink is stylized; the machine, its mishaps and every number are invented. One pass has three zones (shave, wash, squeegee), a simplification of a machine that shaves, washes, vacuums and floods in one pass. As of 2026-10-12: the 2026-27 NHL season opened on 29 September 2026 (per nhl.com and Yahoo Sports); a resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water and picks up dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia); the 1949 Model A's four-wheel steering was cut back to front-wheel steering after it jammed against the boards (per Wikipedia and the maker's own history PDF). Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).",
   "stats": {
-    "files": 0,
-    "bytes": 0,
-    "ownLoc": 0
+    "files": 14,
+    "bytes": 486807,
+    "ownLoc": 4849
   },
   "credits": "Built by the Sonnet Every Day team"
 }

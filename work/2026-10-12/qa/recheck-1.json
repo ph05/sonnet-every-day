@@ -1,0 +1,74 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "loop": 1,
+  "fixed": [
+    "d01",
+    "d02",
+    "d03",
+    "d04",
+    "d05",
+    "d06",
+    "d07",
+    "d08",
+    "d09"
+  ],
+  "filesTouched": [
+    "/home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/index.html",
+    "/home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/css/style.css",
+    "/home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/js/ui.js",
+    "/home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/js/postcard.js",
+    "/home/user/sonnet-every-day/work/2026-10-12/build/notes/revise-artisan.md",
+    "/home/user/sonnet-every-day/work/2026-10-12/kaizen/notes-artisan.md",
+    "js/game.js",
+    "test/selftest.mjs"
+  ],
+  "browser": {
+    "ran": true,
+    "ok": true,
+    "noBrowser": false,
+    "errors": []
+  },
+  "defects": [
+    {
+      "id": "r1-01",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Buttons overlap text on short laptop windows",
+      "detail": "Not caused by this loop: the original build/site renders the same rects. The first QA pass missed it because it measured 1366x768, 1280x800 and 1200x630 but never a window 1280 px or wider and under 720 px tall. From 1280 px up the stylesheet makes .rk-below a two-column grid (minmax(0,1fr) minmax(340px,440px)) whose width follows the rink (--rk-w). On a short window the rink shrinks to 560-730 px, so the dock column is only 146-250 px wide, and .rk-bar (flex: 0 0 auto from 768 px up) cannot shrink or wrap. Practice, Slow, Call it, Again and Result spill into the .rk-more column and sit under or over Watch a lap, the seed row and the rink-info and Best lines: the first screen looks broken...",
+      "evidence": "Chromium 141, light, no touch. (a) 1366x600, #s=qa1, ready: document.elementFromPoint at the centre of #btn-practice (x 561-734, y 552-596) returns #btn-watch (overlap 4,084 px2; .rk-watch is x 565-1005, y 538-582); the screenshot shows Watch a lap drawn over Practice (no clock). Press Enter: #btn-slow (x 503-601, y 551-595) is covered by #best (x 539-979, y 567-585) and #rink-info. (b) 1280x650, #s=qa1&c=D-99999 (challenge link), playing: #btn-finish (x 562-639, y 601-645) has its centre (60...",
+      "suggestedFix": "In css/style.css section 9, change the block that opens with '@media (min-width: 1280px) {' (it sets .rk-below to the two-column grid, .rk-more to a column, .rk-seed, .rk-dock wrap and .rk-coach) to '@media (min-width: 1280px) and (min-height: 720px) {', so windows shorter than 720 px keep the stacked layout that already works from 768 to 1279 px. I tried exactly this in a scratch copy: 56 cells (1280, 1366, 1536 and 1920 wide by 560 to 720 tall, plain and challenge) had no covered or overlap..."
+    },
+    {
+      "id": "r1-02",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Share text box cuts its own text on phones",
+      "detail": "Side effect of the d06 fix: '@media (max-width: 767px) { .rk-share { height: 5rem } }'. On a phone the four-line share text wraps to about seven lines (142 px) but the box is 76 px high, so the strip of squares is cut through the middle and the link line is hidden. The original box was 121 px, which also clipped, but by only 21 px. The tighter dialog also leaves a few phone and short-window cases with the share row under the sticky bar at open. The laptop case (d06) is fixed and not affected.",
+      "evidence": "390x844 light touch, #s=qa1: tap Start, Call it, dialog opens: #share-text clientHeight 76, scrollHeight 142 (same at 360x640, 375x667, 320x568; build/site: 121 and 142). Screenshot /home/user/sonnet-every-day/work/2026-10-12/qa/critic-tmp/recheck/shots/new-open-390x844-timed.png shows the half-cut row of squares. 390x844 with #s=qa1&c=D-99999: dialog scrollHeight 832, clientHeight 806, Save card y 731-775 against sticky bar y 759-825 when the dialog opens (16 px hidden, a 26 px scroll reveal...",
+      "suggestedFix": "Make the box a whole number of lines or size it to its text, so no line is cut in half: for example in ui.js setShareText() set ta.style.height = 'auto' and then ta.style.height = ta.scrollHeight + 'px' (the dialog may scroll under the sticky bar), or keep a fixed height of 4 lines (about 6.6rem). Recover vertical space on phones elsewhere, for example a postcard cap (.rk-postcard max-height: 26dvh with object-fit: contain) and tighter .rk-stats cells (padding 4px 8px). Re-check at 390x844 wi..."
+    },
+    {
+      "id": "r1-03",
+      "severity": "S3",
+      "owner": "architect",
+      "file": "work/2026-10-12/package/project.json",
+      "title": "Packaged project.json still has the removed claim",
+      "detail": "The revise copy deleted the unverified sentence 'Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game)' from index.html (d01, d02). The makingOf field of work/2026-10-12/package/project.json (the draft the packaging step copies to docs/d/<slug>/project.json) and of spec/PROJECT.json still carries it, so the published JSON would differ from the About panel (PLAYBOOK 10.1: makingOf is the same paragraph as the About panel) and would republish a claim with no verified source (my own searches could not confirm the year 2013). The gallery does not render makingOf, so this is a public metadata file only, not page copy.",
+      "evidence": "grep -c 2013 /home/user/sonnet-every-day/work/2026-10-12/package/project.json prints 1; the .sed-making-of paragraph in /home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/index.html contains none of '2013', 'doodle', 'commercial game' or 'own web search'. Comparison script r1-text.mjs (output r1.json): package/project.json makingOf identicalToPage false, sources identical to the page.",
+      "suggestedFix": "At packaging, set makingOf in package/project.json to the exact text of .sed-making-of in the final index.html (it ends '...Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).') before staging. Afterwards grep -c 2013 docs/d/2026-10-12-between-periods/project.json must print 0."
+    },
+    {
+      "id": "r1-04",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Bot lap wording survives in live text and coach",
+      "detail": "d04 relabelled the result card, the postcard and the copied text, but two lines still read as the player's own result after a bot lap: the live-region announcement and the coach line under the rink (the engineer saw the same). A screen-reader user, or anyone who closes the card, hears or reads a grade stamp line for a lap the bot drove.",
+      "evidence": "1366x768, #s=qa1&a=mow: when the card opens #live reads 'Grade S, Mirror. Skate-ready. Nobody can tell you were here. 93.9 percent gleam, 2,464 feet.' and #coach reads 'Skate-ready. Nobody can tell you were here.'; the HUD Grade chip shows S.",
+      "suggestedFix": "In ui.js coachFor() return T.botLap when v.phase === 'done' and v.result.mode === 'auto'; in the app:finish handler begin the announcement with 'Bot lap.' and leave out the grade stamp line when r.mode === 'auto'."
+    }
+  ]
+}

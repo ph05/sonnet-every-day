@@ -25,6 +25,7 @@ const MISHAPS = {
   puddle: 'puddle by the boards',
 };
 
+const RELEASE_FOCUS = new Set(['btn-sound', 'btn-assist', 'btn-shake', 'btn-seed-today', 'btn-seed-load', 'btn-watch']);
 const REASONS = { complete: 'Every scar gleams', buzzer: 'Buzzer', finish: 'Called it' };
 const PREFS = {
   sound: ['btn-sound', 'Sound on', 'Sound off', '#i-sound', '#i-mute'],
@@ -50,6 +51,7 @@ const T = {
   m50: 'Half the sheet shines.',
   m75: 'Three quarters. Nearly skate-ready.',
   badLink: "That link looked odd, so you got today's rink.",
+  botLap: 'A bot drove this lap. Your turn?',
   badSeed: 'Seeds are 1 to 24 letters, digits, - or _.',
   storage: "Can't save settings here. Everything else works.",
   frame: 'Something slipped on the ice. Restart the lap.',
@@ -85,6 +87,7 @@ export function createUI(root, actions) {
   let cardLoad = null;
   let reported = false;
   let quiet = false;
+  let botCard = false;
 
   const call = (name, ...args) => {
     const fn = actions && actions[name];
@@ -174,7 +177,7 @@ export function createUI(root, actions) {
     const done = (fn) => {
       const ok = typeof fn === 'function';
       canvas.hidden = !ok;
-      if (E['btn-save-card']) E['btn-save-card'].hidden = !ok;
+      if (E['btn-save-card']) E['btn-save-card'].hidden = !ok || botCard;
       if (!ok) return;
       try { fn(canvas, result); } catch (err) { canvas.hidden = true; if (E['btn-save-card']) E['btn-save-card'].hidden = true; }
     };
@@ -188,10 +191,12 @@ export function createUI(root, actions) {
     if (dlg && dlg.firstElementChild) dlg.firstElementChild.setAttribute('data-grade', g);
     if (E['res-grade']) { E['res-grade'].textContent = g; E['res-grade'].setAttribute('aria-label', 'Grade ' + g); }
     if (E['res-title']) E['res-title'].textContent = GRADES[g].name;
-    if (E['res-line']) E['res-line'].textContent = GRADES[g].line;
+    botCard = result.mode === 'auto';
+    if (E['res-line']) E['res-line'].textContent = botCard ? T.botLap : GRADES[g].line;
     if (E['res-meta']) {
-      E['res-meta'].textContent = `Rink ${result.seed || (view && view.seed) || ''} · ${REASONS[result.reason] || 'Done'}${result.mode === 'practice' ? ' · Practice' : ''}`;
+      E['res-meta'].textContent = `Rink ${result.seed || (view && view.seed) || ''} · ${REASONS[result.reason] || 'Done'}${result.mode === 'practice' ? ' · Practice' : botCard ? ' · Bot lap' : ''}`;
     }
+    if (E['btn-copy-link']) E['btn-copy-link'].hidden = botCard;
     statRows.forEach((row, i) => { if (statCells[i]) statCells[i].textContent = row[1](result); });
     const ch = E['res-challenge'];
     const c = view && view.challenge;
@@ -206,10 +211,16 @@ export function createUI(root, actions) {
     drawCard(result);
   }
 
+  // A bot lap must never read as the player's own score: the copied text says so on its first line.
+  function shareTextNow() {
+    const t = String(call('shareText') || '');
+    return botCard && t ? t.replace(/^[^\n]*/, (first) => first + ' · Bot lap') : t;
+  }
+
   function setShareText() {
     const ta = E['share-text'];
     if (!ta) return;
-    try { ta.value = String(call('shareText') || ''); } catch (err) { ta.value = ''; }
+    try { ta.value = shareTextNow(); } catch (err) { ta.value = ''; }
   }
 
   function openDialog() {
@@ -278,6 +289,7 @@ export function createUI(root, actions) {
     if (input) input.setAttribute('aria-invalid', ok ? 'false' : 'true');
     if (note) {
       note.textContent = ok ? '' : T.badSeed;
+      if (!ok) say(T.badSeed);
       note.classList.toggle('is-error', !ok);
     }
     if (!ok) userLoad = false;
@@ -299,6 +311,9 @@ export function createUI(root, actions) {
     if (!node) return;
     node.addEventListener(type, (e) => {
       try { fn(e); } catch (err) { fail(err); }
+      // Pointer clicks on settings and rink buttons must not keep focus: Enter and Space go to a focused button first,
+      // so the on-screen advice ("Press Enter to take the wheel") would silently re-press it. Keyboard clicks keep focus.
+      if (type === 'click' && e.detail > 0 && RELEASE_FOCUS.has(id)) { try { node.blur(); } catch (err) { /* nothing focused */ } }
     });
   }
 
@@ -343,13 +358,13 @@ export function createUI(root, actions) {
   });
   on('btn-result-close', 'click', closeDialog);
   on('btn-result-again', 'click', againFromResult);
-  on('btn-copy-text', 'click', () => copyOut(String(call('shareText') || '')));
+  on('btn-copy-text', 'click', () => copyOut(shareTextNow()));
   on('btn-copy-link', 'click', () => copyOut(String(call('shareLink') || '')));
   on('btn-save-card', 'click', saveCard);
   on('result', 'click', (e) => { if (e.target === E.result) closeDialog(); });
   on('result', 'close', () => {
     if (quiet) { quiet = false; return; }
-    if (last && last.phase === 'done') focusNode(E['btn-restart']);
+    if (last && last.phase === 'done') focusNode(E.rink);
   });
 
   if (E['btn-sound'] && !hasAudio) {

@@ -250,7 +250,9 @@ export function createGame({ canvas, toLogical }) {
   function finishRun() {
     const runMode = mode;
     const result = sim.result(runMode, seed);
-    if (challenge && runMode !== 'practice') result.beat = beats(result, challenge);
+    // Only the player's own timed lap answers a challenge. A bot lap (Watch a lap, #a=) or a practice lap keeps
+    // beat null, so the result card never claims the visitor beat, or missed, a bar they did not drive.
+    if (challenge && runMode === 'timed') result.beat = beats(result, challenge);
     if (runMode === 'timed') {
       lastTimed = { grade: result.grade, feet: result.feet };
       recordBest(result);

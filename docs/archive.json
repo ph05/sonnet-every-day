@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-11T14:30:40.048Z",
+  "generatedAt": "2026-10-12T12:45:54.876Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
@@ -8,18 +8,19 @@
     "startDate": "2026-10-10"
   },
   "stats": {
-    "days": 2,
-    "projects": 2,
-    "streak": 2,
+    "days": 3,
+    "projects": 3,
+    "streak": 3,
     "categories": {
+      "hockey-sports": 1,
       "modding-games": 1,
       "science-sim": 1
     },
     "tiers": {
-      "2": 2
+      "2": 3
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-11",
+    "lastDate": "2026-10-12",
     "missingDates": []
   },
   "kaizen": {
@@ -31,6 +32,56 @@
     "count": 9
   },
   "days": [
+    {
+      "n": 3,
+      "date": "2026-10-12",
+      "slug": "between-periods",
+      "path": "d/2026-10-12-between-periods/",
+      "title": "Between Periods",
+      "tagline": "It's intermission and the ice is wrecked. Steer the machine, ration your water, and buff every scar before the buzzer.",
+      "description": "It is intermission and the rink is a wreck: skate grooves, divots and one seeded mishap. Steer an ice-resurfacing machine that cannot turn on a dime, ration one tank of water, and buff every scar to a mirror gleam before the buzzer. Every UTC day brings its own rink, and your finish becomes a spoiler-safe postcard and a challenge link a friend can try to beat.",
+      "tier": 2,
+      "category": "hockey-sports",
+      "mechanic": "game",
+      "tone": [
+        "cozy",
+        "playful",
+        "competitive"
+      ],
+      "tech": [
+        "canvas2d",
+        "dom-ui",
+        "svg",
+        "pointer-events",
+        "webaudio",
+        "procedural-audio",
+        "localstorage",
+        "url-hash"
+      ],
+      "tags": [
+        "hockey",
+        "ice-resurfacing",
+        "intermission",
+        "daily-rink",
+        "coverage-path",
+        "share-postcard",
+        "url-hash-seed",
+        "challenge-link",
+        "turning-radius",
+        "emoji-grid"
+      ],
+      "palette": [
+        "#e9f1f5",
+        "#0b6e82",
+        "#f2a900",
+        "#12212b",
+        "#0b1820",
+        "#5fd3e8",
+        "#c8412f",
+        "#2b5fb4"
+      ],
+      "thumb": "d/2026-10-12-between-periods/thumb.png"
+    },
     {
       "n": 2,
       "date": "2026-10-11",

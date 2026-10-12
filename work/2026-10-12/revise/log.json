@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "loopsRun": 1,
+  "promoted": 1,
+  "promotedBefore": 0,
+  "kept": "revised",
+  "fixSeverity": "S3",
+  "skipped": "",
+  "fixed": [
+    "d01",
+    "d02",
+    "d03",
+    "d04",
+    "d05",
+    "d06",
+    "d07",
+    "d08",
+    "d09"
+  ],
+  "remaining": [
+    {
+      "id": "r1-01",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Buttons overlap text on short laptop windows"
+    }
+  ],
+  "discarded": [],
+  "extraDefects": 0,
+  "loops": [
+    {
+      "loop": 1,
+      "blockingBefore": 9,
+      "blockingAfter": 1,
+      "fixed": 9,
+      "filesTouched": 8,
+      "promoted": true
+    }
+  ],
+  "revision": 1
+}

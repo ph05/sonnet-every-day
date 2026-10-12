@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "revise",
+  "phase": "publish",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -41,6 +41,18 @@
       "at": "2026-10-12T11:49:02.796Z",
       "by": "primary",
       "note": "qa verdict revise S1=0 S2=2"
+    },
+    {
+      "phase": "revise",
+      "at": "2026-10-12T12:45:02.052Z",
+      "by": "primary",
+      "note": "revise: S1=0 S2=1 left, 1 of 1 loops kept"
+    },
+    {
+      "phase": "package",
+      "at": "2026-10-12T12:46:24.305Z",
+      "by": "primary",
+      "note": "packaged between-periods tier 2"
     }
   ],
   "attempts": {
@@ -50,7 +62,8 @@
     "spec": 1,
     "build": 1,
     "qa": 1,
-    "revise": 1
+    "revise": 1,
+    "package": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
@@ -59,13 +72,15 @@
     "spec": "2026-10-12T08:48:53.008Z",
     "build": "2026-10-12T09:17:21.200Z",
     "qa": "2026-10-12T11:16:51.077Z",
-    "revise": "2026-10-12T11:49:10.803Z"
+    "revise": "2026-10-12T11:49:10.803Z",
+    "package": "2026-10-12T12:45:02.657Z",
+    "publish": "2026-10-12T12:46:24.305Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T12:41:57.549Z"
+    "heartbeatAt": "2026-10-12T12:46:24.305Z"
   },
   "directives": [
     {
@@ -83,8 +98,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 2046332,
-    "agentCalls": 64,
+    "outputTokens": 2375750,
+    "agentCalls": 81,
     "byPhase": {
       "ideate": {
         "outputTokens": 454562,
@@ -105,6 +120,14 @@
       "qa": {
         "outputTokens": 209949,
         "agentCalls": 10
+      },
+      "revise": {
+        "outputTokens": 309418,
+        "agentCalls": 17
+      },
+      "package": {
+        "outputTokens": 20000,
+        "agentCalls": 0
       }
     }
   },
@@ -241,6 +264,7 @@
     "attemptsAtArm": 1,
     "boundAt": "2026-10-12T12:41:57.549Z",
     "extensions": 1,
-    "extendedAt": "2026-10-12T12:41:46.705Z"
+    "extendedAt": "2026-10-12T12:41:46.705Z",
+    "disarmedAt": "2026-10-12T12:44:52.638Z"
   }
 }

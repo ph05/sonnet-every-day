@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "date": "2026-10-12",
-  "revision": 0,
+  "revision": 1,
   "tier": 2,
   "verdict": "revise",
   "counts": {
     "S1": 0,
-    "S2": 2,
-    "S3": 7,
-    "S4": 13
+    "S2": 1,
+    "S3": 2,
+    "S4": 14
   },
   "browser": {
     "ok": true,
@@ -71,110 +71,34 @@
   "exercisedInBrowser": true,
   "defects": [
     {
-      "source": "proofread",
+      "id": "r1-01",
       "severity": "S2",
       "owner": "artisan",
-      "file": "index.html",
-      "title": "unverified-claim: Earlier ice-resurfacing games exist (per our own web searches: a browser doodle...",
-      "detail": "unverified-claim: Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game).",
-      "evidence": "Search index.html for the text.",
-      "suggestedFix": "Delete the parenthetical sentence, or attach it to a source listed in research.sources with verified:true. 'Our own web searches' is not a source, and no research fact or source covers a 2013 doodle.",
-      "id": "d01"
+      "file": "css/style.css",
+      "title": "Buttons overlap text on short laptop windows",
+      "detail": "Not caused by this loop: the original build/site renders the same rects. The first QA pass missed it because it measured 1366x768, 1280x800 and 1200x630 but never a window 1280 px or wider and under 720 px tall. From 1280 px up the stylesheet makes .rk-below a two-column grid (minmax(0,1fr) minmax(340px,440px)) whose width follows the rink (--rk-w). On a short window the rink shrinks to 560-730 px, so the dock column is only 146-250 px wide, and .rk-bar (flex: 0 0 auto from 768 px up) cannot shrink or wrap. Practice, Slow, Call it, Again and Result spill into the .rk-more column and sit under or over Watch a lap, the seed row and the rink-info and Best lines: the first screen looks broken...",
+      "evidence": "Chromium 141, light, no touch. (a) 1366x600, #s=qa1, ready: document.elementFromPoint at the centre of #btn-practice (x 561-734, y 552-596) returns #btn-watch (overlap 4,084 px2; .rk-watch is x 565-1005, y 538-582); the screenshot shows Watch a lap drawn over Practice (no clock). Press Enter: #btn-slow (x 503-601, y 551-595) is covered by #best (x 539-979, y 567-585) and #rink-info. (b) 1280x650, #s=qa1&c=D-99999 (challenge link), playing: #btn-finish (x 562-639, y 601-645) has its centre (60...",
+      "suggestedFix": "In css/style.css section 9, change the block that opens with '@media (min-width: 1280px) {' (it sets .rk-below to the two-column grid, .rk-more to a column, .rk-seed, .rk-dock wrap and .rk-coach) to '@media (min-width: 1280px) and (min-height: 720px) {', so windows shorter than 720 px keep the stacked layout that already works from 768 to 1279 px. I tried exactly this in a scratch copy: 56 cells (1280, 1366, 1536 and 1920 wide by 560 to 720 tall, plain and challenge) had no covered or overlap..."
     },
     {
-      "source": "proofread",
-      "severity": "S2",
-      "owner": "artisan",
-      "file": "index.html",
-      "title": "unverified-claim: Earlier ice-resurfacing games exist: a browser doodle from 2013 and at least on...",
-      "detail": "unverified-claim: Earlier ice-resurfacing games exist: a browser doodle from 2013 and at least one commercial game, per our own web searches, as of 2026-10-12.",
-      "evidence": "Search index.html for the text.",
-      "suggestedFix": "Delete the sentence (same claim as the About panel, no verified source behind it), or cite a verified source for it in the same way as the other 'as of 2026-10-12, per <source>' claims.",
-      "id": "d02"
-    },
-    {
-      "source": "critic",
-      "criticId": "d01",
-      "severity": "S3",
-      "owner": "engineer",
-      "file": "js/game.js",
-      "title": "Bot lap can claim you beat the challenge",
-      "detail": "finishRun() sets result.beat = beats(result, challenge) for every mode except practice, so a bot lap (Watch a lap button or the #a= hook) on a challenge link reports 'You beat the challenge.' or 'Not this time...' as though the visitor drove it. share.js shareText() also has no bot marker, so a bot result copies as a plain 'Gleam S (902 pts)' line that can be passed off as a human score. Watch a lap sits on the first screen, so many visitors will meet this within two minutes.",
-      "evidence": "1366x768, light. Open #s=qa1&c=D-99999&a=mow. After about 9 s the result dialog shows title 'Mirror', meta 'Rink qa1 · Called it' and the challenge line 'You beat the challenge.'. Open #s=qa1&c=S-1&a=mow: the same dialog says 'Not this time: grade S in 1 ft is the bar.'. The share textarea reads 'Between Periods · rink qa1 / Gleam S (902 pts) · 2,464 ft · 5 clean laps / ... / http://127.0.0.1:8741/#s=qa1' with no bot marker. The Watch a lap button on a challenge link takes the same path at 2x...",
-      "suggestedFix": "In game.js finishRun() use `if (challenge && runMode === 'timed') result.beat = beats(result, challenge);`. Bot results keep beat = null and ui.js already hides #res-challenge when beat is not a boolean. In share.js shareText() prefix line 2 with 'Bot lap · ' when r.mode === 'auto', the same way 'Practice · ' is done. Extend selftest T4 with a case that runs an auto result through shareText.",
-      "id": "d03"
-    },
-    {
-      "source": "critic",
-      "criticId": "d02",
-      "severity": "S3",
-      "owner": "artisan",
-      "file": "js/ui.js",
-      "title": "Bot-lap result card looks like the player's own",
-      "detail": "fillResult() only labels Practice. For mode 'auto' the dialog shows the full rubber-stamp S 'Mirror', the line 'Nobody can tell you were here', the postcard, Copy result, Copy link and Save card, with nothing saying a bot drove the lap. postcard.js draws the same header. A visitor who clicks the prominent Watch a lap button and then Copy result shares a bot score as their own.",
-      "evidence": "1366x768, light. Open #s=qa1&a=spiral. The dialog shows 'Mirror', meta 'Rink qa1 · Every scar gleams', 948 pts, 2,892 ft, 4 clean laps. No text anywhere says bot or demo. The Watch a lap button gives the same card after the 2x lap.",
-      "suggestedFix": "In ui.js fillResult() append ' · Bot lap' to #res-meta when result.mode === 'auto' and replace the stamp line with 'A bot drove this lap. Your turn?'. Keep Again but hide #btn-copy-link and #btn-save-card, or relabel them. In postcard.js drawHeader() add ' · Bot lap' next to the Practice suffix.",
-      "id": "d04"
-    },
-    {
-      "source": "critic",
-      "criticId": "d03",
+      "id": "r1-02",
       "severity": "S3",
       "owner": "artisan",
       "file": "css/style.css",
-      "title": "Landscape phones push Start below the fold",
-      "detail": "Below 768px wide the portrait-stage layout applies whatever the height. On a landscape phone or any short window the rink, HUD and primary button cannot share the viewport. Start (ready) and Pause (playing) fall below the fold, the HUD wraps to two rows at 844 wide, and the coach line says 'Tap Start to take the wheel' while Start is not visible. While playing, the HUD scrolls away. The three contract viewports pass; this is the viewport class just outside them.",
-      "evidence": "Touch device, light, ready, scrollY 0. 844x390: rink y 206 to 440, Start y 450 to 494 (viewport height 390), docH 848. 667x375: Start 498 to 542. 740x360: Start 499 to 543. 568x320: Start 495 to 539. Non-touch 700x500: Start bottom 542 (viewport 500). 600x450: Start bottom 540 (viewport 450). In the 844x390 playing state, after the page scrolls to reach Pause, the rink spans y -71 to 163 and the clock and tank are off-screen. Contract viewports 1366x768, 390x844 and 360x640 all pass.",
-      "suggestedFix": "Add `@media (orientation: landscape) and (max-height: 540px)`. Hide .sed-tagline and compress .sed-header into the title row. Put .rk-dock (coach plus control bar) in the right-hand readouts column so tank | rink | readouts and the primary button share one row. Set .rk-rinkwrap max-height to calc(100dvh - 16px). Then re-run the rect check at 844x390, 700x500 and 568x320: rink, clock, tank and the primary button must all lie inside the viewport.",
-      "id": "d05"
+      "title": "Share text box cuts its own text on phones",
+      "detail": "Side effect of the d06 fix: '@media (max-width: 767px) { .rk-share { height: 5rem } }'. On a phone the four-line share text wraps to about seven lines (142 px) but the box is 76 px high, so the strip of squares is cut through the middle and the link line is hidden. The original box was 121 px, which also clipped, but by only 21 px. The tighter dialog also leaves a few phone and short-window cases with the share row under the sticky bar at open. The laptop case (d06) is fixed and not affected.",
+      "evidence": "390x844 light touch, #s=qa1: tap Start, Call it, dialog opens: #share-text clientHeight 76, scrollHeight 142 (same at 360x640, 375x667, 320x568; build/site: 121 and 142). Screenshot /home/user/sonnet-every-day/work/2026-10-12/qa/critic-tmp/recheck/shots/new-open-390x844-timed.png shows the half-cut row of squares. 390x844 with #s=qa1&c=D-99999: dialog scrollHeight 832, clientHeight 806, Save card y 731-775 against sticky bar y 759-825 when the dialog opens (16 px hidden, a 26 px scroll reveal...",
+      "suggestedFix": "Make the box a whole number of lines or size it to its text, so no line is cut in half: for example in ui.js setShareText() set ta.style.height = 'auto' and then ta.style.height = ta.scrollHeight + 'px' (the dialog may scroll under the sticky bar), or keep a fixed height of 4 lines (about 6.6rem). Recover vertical space on phones elsewhere, for example a postcard cap (.rk-postcard max-height: 26dvh with object-fit: contain) and tighter .rk-stats cells (padding 4px 8px). Re-check at 390x844 wi..."
     },
     {
-      "source": "critic",
-      "criticId": "d04",
+      "id": "r1-03",
       "severity": "S3",
-      "owner": "artisan",
-      "file": "css/style.css",
-      "title": "Result dialog hides share buttons on laptops",
-      "detail": "At 1366x768 the result dialog is 949 px tall in a 703 px box. The share textarea and the Copy result, Copy link and Save card buttons need an inner scroll; only Again and Close sit in the sticky bar. Sharing is a headline promise (postcard and challenge link) yet the buttons are not visible when the dialog opens. On 390x844 the share row is visible, but Save card sits under the sticky bar until the dialog is scrolled about 65 px.",
-      "evidence": "1366x768, light. Press Enter, then click Call it. Dialog scrollHeight 949, clientHeight 703. Share textarea y 715 to 840. Copy result, Copy link and Save card y 856 to 900, viewport height 768. Again y 681 to 725 (sticky). At 390x844: dialog scrollHeight 837, clientHeight 772, Save card y 751 to 795 overlapped by the sticky bar at 754 to 798.",
-      "suggestedFix": "At min-width 768px lay .rk-res out in two columns. Left: stamp, title and postcard (cap its height around 46dvh). Right: stats, share textarea and the three share buttons. Keep Again and Close sticky. Verify at 1366x768 that btn-copy-text's rect bottom is at most 768 when the dialog opens.",
-      "id": "d06"
-    },
-    {
-      "source": "critic",
-      "criticId": "d05",
-      "severity": "S3",
-      "owner": "artisan",
-      "file": "js/ui.js",
-      "title": "Enter and Space ignore coach advice after clicks",
-      "detail": "By spec, game.js hands Enter and Space to a focused button. Clicking any button leaves focus on it. The coach line still says 'Demo lap. Press Enter to take the wheel.', but after clicking Guides, Sound, Shake, Today's rink and similar, Enter or Space just re-activates that button and the run does not start. After closing the result dialog with Escape, focus sits on Again, so the documented Shift+Enter starts a timed lap instead of practice. A visitor following the on-screen instruction silently toggles a setting.",
-      "evidence": "1366x768, light. Load #s=qa1 (coach reads 'Press Enter to take the wheel', Guides pressed = true). Click #btn-assist (Guides turns off), press Enter: phase stays 'ready', Guides is back to pressed = true, focus on btn-assist. Click #btn-seed-today then press Space: phase stays 'ready'. Finish a run, press Escape (focus lands on btn-restart), press Shift+Enter: phase 'playing', mode 'timed', clock 2:30 label 'Time' (expected practice).",
-      "suggestedFix": "Keep the game.js rule, which matches the spec. In the ui.js on() wrapper, when a click is pointer-initiated (e.detail > 0) on #btn-sound, #btn-assist, #btn-shake, #btn-seed-today, #btn-seed-load or #btn-watch, call e.currentTarget.blur() (or focusNode(E.rink)) after the handler. Keyboard-initiated clicks (detail 0) keep focus. In the result 'close' handler send focus to #rink rather than #btn-restart when the dialog was dismissed with Escape.",
-      "id": "d07"
-    },
-    {
-      "source": "critic",
-      "criticId": "d06",
-      "severity": "S3",
-      "owner": "artisan",
-      "file": "index.html",
-      "title": "Clean laps is never defined for players",
-      "detail": "The HUD chip, the result stats and the share text all say 'clean laps', but neither the UI nor the About panel defines it. In sim.js endRun() it counts a straight pass (|steer| <= 6/32) of at least 3 s with water in the tank where at least 85 percent of the cells touched were untouched. It is not a lap around the rink, and visitors will read it as 'laps without bumps'. Tidy is half-explained in the About panel; clean laps is not.",
-      "evidence": "Open the About panel (details.sed-about) and read 'How it plays', which never mentions clean laps. HUD label 'Clean laps' and the share line '0 clean laps' appear with no definition. sim.js lines 399 to 402: `runTicks >= 180 && runWet && runMarked > 0 && runFresh * 100 >= 85 * runMarked`.",
-      "suggestedFix": "Add one sentence to About, 'How it plays': 'A clean lap is a straight pass of at least three seconds, with water in the tank, over ice you have not touched yet.' Optionally add a title attribute with the same text on the Clean laps HUD chip. Do not change the share text.",
-      "id": "d08"
-    },
-    {
-      "source": "critic",
-      "criticId": "d07",
-      "severity": "S3",
-      "owner": "artisan",
-      "file": "index.html",
-      "title": "Invalid seed message is not announced",
-      "detail": "#seed-note is a plain <p> with no live role. ui.js loadSeedFromInput() only sets its textContent and aria-invalid on the input, and never calls say(). The error toast and #live path is used only for bad URL hashes. A screen-reader user who types a bad seed and presses Load hears nothing.",
-      "evidence": "Type 'hello world!' in #seed-input and press Enter or click Load rink. #seed-note shows 'Seeds are 1 to 24 letters, digits, - or _.' and #seed-input gets aria-invalid=true. Neither #live nor #toasts is updated and #seed-note has no role (index.html line 287). The visual note works; the spoken feedback does not.",
-      "suggestedFix": "Add role='status' to #seed-note (it is empty by default, so it only speaks when filled), or call say(T.badSeed) in loadSeedFromInput() when the load fails.",
-      "id": "d09"
+      "owner": "architect",
+      "file": "work/2026-10-12/package/project.json",
+      "title": "Packaged project.json still has the removed claim",
+      "detail": "The revise copy deleted the unverified sentence 'Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game)' from index.html (d01, d02). The makingOf field of work/2026-10-12/package/project.json (the draft the packaging step copies to docs/d/<slug>/project.json) and of spec/PROJECT.json still carries it, so the published JSON would differ from the About panel (PLAYBOOK 10.1: makingOf is the same paragraph as the About panel) and would republish a claim with no verified source (my own searches could not confirm the year 2013). The gallery does not render makingOf, so this is a public metadata file only, not page copy.",
+      "evidence": "grep -c 2013 /home/user/sonnet-every-day/work/2026-10-12/package/project.json prints 1; the .sed-making-of paragraph in /home/user/sonnet-every-day/work/2026-10-12/tmp/revise-site/index.html contains none of '2013', 'doodle', 'commercial game' or 'own web search'. Comparison script r1-text.mjs (output r1.json): package/project.json makingOf identicalToPage false, sources identical to the page.",
+      "suggestedFix": "At packaging, set makingOf in package/project.json to the exact text of .sed-making-of in the final index.html (it ends '...Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).') before staging. Afterwards grep -c 2013 docs/d/2026-10-12-between-periods/project.json must print 0."
     },
     {
       "source": "critic",
@@ -322,6 +246,16 @@
       "evidence": "Search index.html for the text.",
       "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
       "id": "d22"
+    },
+    {
+      "id": "r1-04",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Bot lap wording survives in live text and coach",
+      "detail": "d04 relabelled the result card, the postcard and the copied text, but two lines still read as the player's own result after a bot lap: the live-region announcement and the coach line under the rink (the engineer saw the same). A screen-reader user, or anyone who closes the card, hears or reads a grade stamp line for a lap the bot drove.",
+      "evidence": "1366x768, #s=qa1&a=mow: when the card opens #live reads 'Grade S, Mirror. Skate-ready. Nobody can tell you were here. 93.9 percent gleam, 2,464 feet.' and #coach reads 'Skate-ready. Nobody can tell you were here.'; the HUD Grade chip shows S.",
+      "suggestedFix": "In ui.js coachFor() return T.botLap when v.phase === 'done' and v.result.mode === 'auto'; in the app:finish handler begin the announcement with 'Bot lap.' and leave out the grade stamp line when r.mode === 'auto'."
     }
   ],
   "browserCheck": {
@@ -352,5 +286,27 @@
     "linksOk": 0,
     "issues": 11,
     "notes": "Sandbox network looks restricted: all 9 links answered 000 once each, with no retries, so the 9 unreachable-link entries are not evidence against the sites. Otherwise no typos, leftovers or source mismatches found; the two unverified-claim entries are the 2013-doodle sentence in the About panel and the Real section. Oddities (research steering wording, Mental Floss attribution) went to kaizen/notes-clerk.md."
+  },
+  "revise": {
+    "loopsRun": 1,
+    "promoted": 1,
+    "promotedBefore": 0,
+    "kept": "revised",
+    "fixed": [
+      "d01",
+      "d02",
+      "d03",
+      "d04",
+      "d05",
+      "d06",
+      "d07",
+      "d08",
+      "d09"
+    ],
+    "skipped": "",
+    "extraDefects": 0,
+    "fixSeverity": "S3",
+    "rescue": false,
+    "discarded": []
   }
 }

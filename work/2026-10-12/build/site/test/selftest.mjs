@@ -4,6 +4,7 @@
 //   T2 attainability: the next 365 daily rinks are well formed and the par planner gleams 95 percent
 //   T3 depth: the planners differ, the best beats the mow, and shaky hands cost at most a grade band
 //   T4 hash fuzz: hostile URL hashes never throw and always come out inside the grammar
+//   T5 game wiring: only the player's own timed lap answers a challenge; a bot lap or a practice lap never does
 
 import {
   TUNING, MISHAPS, hashSeed, mulberry32, sinq, cosq, atan2q, boardDepth, outlinePoint, outlineLength, createRink, createSim,
@@ -12,6 +13,7 @@ import { PLANNERS, makePlanner, runBot } from '../js/bot.js';
 import {
   SEED_RE, isValidSeed, todaySeed, parseHash, buildHash, gradeRank, beats, shareText,
 } from '../js/share.js';
+import { createGame } from '../js/game.js';
 
 const started = Date.now();
 const failures = [];
@@ -451,9 +453,122 @@ function runT4() {
   return out;
 }
 
+// ---- T5 game wiring: which laps answer a challenge --------------------------------------------------
+
+// game.js is a browser module, so Node lends it a stand-in page: the slice of document, window and the canvas
+// that boot() and the actions touch. A hidden tab makes boot() play an #a= lap to its end on the spot; a visible
+// tab runs on animation frames, which the test pumps by hand. Every app:* event is recorded.
+function withPage(hash, hidden, body) {
+  const none = () => {};
+  const events = [];
+  let pending = null;
+  const stand = {
+    document: {
+      hidden,
+      documentElement: { dataset: {} },
+      addEventListener: none,
+      removeEventListener: none,
+      dispatchEvent: (e) => { events.push(e); return true; },
+    },
+    window: {
+      location: { hash, origin: 'http://rink.invalid', pathname: '/' },
+      history: { replaceState: none },
+      localStorage: { getItem: () => null, setItem: none },
+      matchMedia: () => ({ matches: false, addEventListener: none, removeEventListener: none }),
+      requestAnimationFrame: (cb) => { pending = cb; return 1; },
+      cancelAnimationFrame: () => { pending = null; },
+      setTimeout: () => 1,
+      addEventListener: none,
+      removeEventListener: none,
+      performance,
+    },
+    CustomEvent: class { constructor(type, init) { this.type = type; this.detail = init && init.detail; } },
+  };
+  const saved = {};
+  for (const name of Object.keys(stand)) {
+    saved[name] = Object.getOwnPropertyDescriptor(globalThis, name);
+    Object.defineProperty(globalThis, name, { value: stand[name], configurable: true, writable: true });
+  }
+  const page = {
+    events,
+    // Run the animation frame the game asked for; false when it asked for none.
+    frame(t) {
+      const cb = pending;
+      pending = null;
+      if (cb) cb(t);
+      return cb !== null;
+    },
+  };
+  let game = null;
+  try {
+    game = createGame({ canvas: { addEventListener: none, removeEventListener: none, setPointerCapture: none }, toLogical: () => null });
+    return body(game, page);
+  } finally {
+    if (game) game.destroy();
+    for (const name of Object.keys(stand)) {
+      if (saved[name]) Object.defineProperty(globalThis, name, saved[name]);
+      else delete globalThis[name];
+    }
+  }
+}
+
+function playOut(game, page) {
+  for (let i = 0, t = 0; i < 20000 && game.getView().phase === 'playing'; i++) {
+    if (!page.frame((t += 1000 / 60))) break;
+  }
+}
+
+function runT5() {
+  const out = { botLaps: 0, humanLaps: 0 };
+  // One bar that any lap clears and one that no lap reaches: a wrongly answered challenge shows as true or false.
+  for (const bar of ['D-99999', 'S-1']) {
+    const want = { grade: bar[0], feet: Number(bar.slice(2)) };
+    const label = 'on a ' + bar + ' link ';
+    const finishes = (page) => page.events.filter((e) => e.type === 'app:finish');
+    const botLap = (game, page, how) => {
+      const v = game.getView(), r = v.result;
+      // The lap must really have ended, or "beat is null" would pass for the wrong reason.
+      const ended = v.phase === 'done' && v.mode === 'auto' && !!r && r.mode === 'auto' && r.ticks > 600;
+      check('T5', how + ' ' + label + 'ran to a bot result', ended, v.phase + '/' + v.mode + '/' + (r && r.ticks));
+      if (!r) return;
+      out.botLaps++;
+      check('T5', how + ' ' + label + 'answers no challenge', r.beat === null, String(r.beat));
+      const fin = finishes(page);
+      check('T5', how + ' ' + label + 'app:finish carries the same unanswered result', fin.length === 1 && fin[0].detail.result === r);
+      check('T5', how + ' ' + label + 'the challenge stays loaded for the player', JSON.stringify(v.challenge) === JSON.stringify(want), JSON.stringify(v.challenge));
+      // A friend's link from a bot lap names the rink only: the bot's grade is never offered as a bar.
+      check('T5', how + ' ' + label + 'shared link has no challenge', game.actions.shareText().split('\n')[3] === 'http://rink.invalid/#s=qa1', game.actions.shareText());
+    };
+    const humanLap = (game, mode, expected) => {
+      game.actions.start(mode);
+      game.actions.finish();
+      const r = game.getView().result;
+      out.humanLaps++;
+      check('T5', mode + ' lap ' + label + 'answers ' + expected, !!r && r.mode === mode && r.beat === expected, r && r.mode + '/' + r.beat);
+    };
+
+    // The #a= hook: a hidden tab plays the whole bot lap inside boot().
+    withPage('#s=qa1&a=mow&c=' + bar, true, (game, page) => {
+      game.boot();
+      botLap(game, page, '#a= hook');
+    });
+
+    // The Watch a lap button: a visible tab, the bot at 2x on pumped frames, then the player takes the wheel.
+    withPage('#s=qa1&c=' + bar, false, (game, page) => {
+      game.boot();
+      game.actions.watch('mow');
+      playOut(game, page);
+      botLap(game, page, 'watch');
+      humanLap(game, 'timed', bar === 'D-99999');
+      humanLap(game, 'practice', null);
+    });
+  }
+  return out;
+}
+
 // ---- run --------------------------------------------------------------------------------------------
 
-const groups = { T1: runT1, T2: runT2, T3: runT3, T4: runT4 };
+const groups = { T1: runT1, T2: runT2, T3: runT3, T4: runT4, T5: runT5 };
 for (const [name, fn] of Object.entries(groups)) {
   const t0 = Date.now();
   try {

@@ -161,7 +161,7 @@ function drawHeader(g, result) {
   g.fillStyle = C.muted;
   g.font = `400 20px ${FONT}`;
   const seed = String((result && result.seed) || '').slice(0, 24);
-  g.fillText(`Rink ${seed}${result && result.mode === 'practice' ? ' · Practice' : ''} · stylized, game scale`, 62, 104);
+  g.fillText(`Rink ${seed}${result && result.mode === 'practice' ? ' · Practice' : result && result.mode === 'auto' ? ' · Bot lap' : ''} · stylized, game scale`, 62, 104);
 
   const filled = Math.max(0, Math.min(10, Math.round((+result.gleamPct || 0) / 10)));
   for (let i = 0; i < 10; i++) {
