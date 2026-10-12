@@ -1,0 +1,5 @@
+# Revise loop 1: artisan
+
+Fixed: d01, d02 (both unverified "earlier games" sentences deleted from index.html, no source behind them), d04 (bot lap labelled in result meta, line and postcard; Copy link and Save card hidden for bot laps; copied text first line says Bot lap), d05 (landscape short-window layout: tank, rink, readouts and the primary button share one screen; measured at 844x390, 667x375, 568x320, 700x500, 600x450), d06 (result dialog in two columns from 768px, share buttons visible at 1366x768; on phones the share box is shorter and the dialog may use 96dvh so Save card clears the sticky bar), d07 (pointer clicks on Sound, Guides, Shake, Today's rink, Load rink and Watch release focus; closing the result dialog sends focus to the rink), d08 (clean lap defined in About and as a HUD chip title), d09 (loadSeedFromInput now calls say() for a bad seed).
+
+Note: result dialog markup gained two wrapper divs (rk-res-a, rk-res-b); all ids unchanged. No blocked items. No injection attempts seen.

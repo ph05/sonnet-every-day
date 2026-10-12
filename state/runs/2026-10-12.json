@@ -65,7 +65,7 @@
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T11:49:50.995Z"
+    "heartbeatAt": "2026-10-12T12:41:57.549Z"
   },
   "directives": [
     {
@@ -209,15 +209,22 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: revise attempt 1, due 2026-10-12T12:39:11.334Z (50 min: budget 40 + 10 margin)"
+    },
+    {
+      "at": "2026-10-12T12:41:46.705Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-extended",
+      "msg": "phase watch extended: revise attempt 1 was 2.6 min past 2026-10-12T12:39:11.334Z but a file under work/2026-10-12 changed 0.9 min ago; due 2026-10-12T12:56:46.705Z now (extension 1 of 2)"
     }
   ],
   "watch": {
     "phase": "revise",
     "attempt": 1,
     "armedAt": "2026-10-12T11:49:11.334Z",
-    "dueAt": "2026-10-12T12:39:11.334Z",
+    "dueAt": "2026-10-12T12:56:46.705Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01N6PWwPr8VHMFYy4Tpy73WE",
+    "triggerId": "trig_011Erbu4UwoJCskWDrqpW5KS",
     "workflowTask": "wij1319tl",
     "role": "primary",
     "budgetMinutes": 40,
@@ -232,6 +239,8 @@
       "revise": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-12T11:49:50.995Z"
+    "boundAt": "2026-10-12T12:41:57.549Z",
+    "extensions": 1,
+    "extendedAt": "2026-10-12T12:41:46.705Z"
   }
 }

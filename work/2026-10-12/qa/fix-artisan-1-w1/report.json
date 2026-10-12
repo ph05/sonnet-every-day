@@ -1,0 +1,187 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "metrics": {
+    "seed": 800070167,
+    "passes": {
+      "desktop-light": {
+        "domContentLoadedMs": 59,
+        "loadMs": 59,
+        "fcpMs": 68,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 114,
+          "maxMs": 114
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 36,
+          "skipped": 0,
+          "failing": 0,
+          "min": 5.15
+        },
+        "keyboard": {
+          "tabStops": 14,
+          "missingIndicator": 0,
+          "trapped": false
+        },
+        "ms": 979
+      },
+      "desktop-dark": {
+        "domContentLoadedMs": 27,
+        "loadMs": 31,
+        "fcpMs": 56,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 145,
+          "maxMs": 145
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 36,
+          "skipped": 0,
+          "failing": 0,
+          "min": 7.24
+        },
+        "ms": 801
+      },
+      "mobile-light": {
+        "domContentLoadedMs": 20,
+        "loadMs": 26,
+        "fcpMs": 48,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 118,
+          "maxMs": 118
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 36,
+          "skipped": 0,
+          "failing": 0,
+          "min": 5.15
+        },
+        "ms": 873
+      },
+      "mobile-dark": {
+        "domContentLoadedMs": 26,
+        "loadMs": 31,
+        "fcpMs": 48,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 120,
+          "maxMs": 120
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 36,
+          "skipped": 0,
+          "failing": 0,
+          "min": 7.24
+        },
+        "ms": 885
+      },
+      "mobile-320": {
+        "domContentLoadedMs": 44,
+        "loadMs": 44,
+        "fcpMs": 48,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 164,
+          "maxMs": 164
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "ms": 792
+      },
+      "reduced-motion": {
+        "domContentLoadedMs": 23,
+        "loadMs": 31,
+        "fcpMs": 60,
+        "longTasks": {
+          "count": 1,
+          "totalMs": 129,
+          "maxMs": 129
+        },
+        "heapMB": 10,
+        "resources": 9,
+        "domNodes": 278,
+        "focusable": 23,
+        "headings": {
+          "total": 6,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "reducedMotion": {
+          "matches": true,
+          "infinite": 0,
+          "names": []
+        },
+        "ms": 813
+      }
+    },
+    "server": {
+      "requests": 60,
+      "bytes": 1191906,
+      "notFound": []
+    },
+    "nonLocalRequests": [],
+    "cspViolations": [],
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "skipped": [
+      "monkey"
+    ],
+    "browser": "141.0.7390.37",
+    "durationMs": 5906
+  },
+  "shots": [
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/desktop-light.png",
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/desktop-dark.png",
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/mobile-light.png",
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/mobile-dark.png",
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/mobile-320.png",
+    "/home/user/sonnet-every-day/work/2026-10-12/qa/fix-artisan-1-w1/shots/reduced-motion.png"
+  ],
+  "timedOut": false
+}
