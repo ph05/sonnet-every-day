@@ -1,0 +1,14 @@
+{
+  "index.html": "artisan",
+  "css/style.css": "artisan",
+  "js/render.js": "artisan",
+  "js/ui.js": "artisan",
+  "js/audio.js": "artisan",
+  "js/postcard.js": "artisan",
+  "js/main.js": "engineer",
+  "js/sim.js": "engineer",
+  "js/bot.js": "engineer",
+  "js/game.js": "engineer",
+  "js/share.js": "engineer",
+  "test/selftest.mjs": "engineer"
+}

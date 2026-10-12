@@ -1,0 +1,39 @@
+{
+  "phase": "spec",
+  "ok": true,
+  "date": "2026-10-12",
+  "ideaId": "i05",
+  "tier": 2,
+  "compact": true,
+  "slug": "between-periods",
+  "title": "Between Periods",
+  "owners": {
+    "artisan": [
+      "index.html",
+      "css/style.css",
+      "js/render.js",
+      "js/ui.js",
+      "js/audio.js",
+      "js/postcard.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/sim.js",
+      "js/bot.js",
+      "js/game.js",
+      "js/share.js",
+      "test/selftest.mjs"
+    ]
+  },
+  "files": 12,
+  "warnings": [],
+  "openIssues": [
+    "SPEC.md is about 4,950 words and DESIGN.md about 1,250, well over the 900-1500 and 400 word guidance. The 12-file interface contract plus 14 critic items could not fit in less without leaving seams. Lint only has a minimum length.",
+    "Depth proof (T3: three bot planners, 100 seeds, jitter test) is the riskiest build item. It is time-boxed to two tuning rounds. If it still fails, the engineer ships the best numbers and records them. T1 determinism and T2 365-seed attainability never ship failing.",
+    "The prior-art line (F5: a 2013 browser doodle and at least one commercial game) is search-only. It is not in the idea's research.facts and has no verified URL, so it is shown unlinked as 'per our own web searches, as of 2026-10-12'. The orchestrator may drop it.",
+    "The maker's brand appears only inside the source URL zamboni.com/...pdf (needed for the citation). All visible source labels are paraphrased and brand-free. Drop that source if zero occurrences is wanted; the Model A steering fact still has Wikipedia.",
+    "Rink dot positions and the net and crease sizes are common-knowledge proportions plus the critic's search-quoted figures. None of it is verified:true, so the page draws it 'stylized' and prints no dimensions.",
+    "PROJECT.json makingOf says self-tests check par on 365 daily rinks. The integrator must delete that sentence, in both the About panel and project.json, if those tests did not run and pass.",
+    "Fingerprint tags, keywords and tech were adjusted from the idea: ghost-replay and ghost-run became challenge-link and fixed-timestep, web-animations became webaudio. The packaging novelty re-check should still pass."
+  ]
+}

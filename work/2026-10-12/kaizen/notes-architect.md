@@ -1,2 +1,3 @@
 Scout lens lists Wikipedia and Reddit as places to look, but both hosts are known WebFetch failures; trimming the lens text to search-friendly sources would save the first search guesses.
 Judging two criteria from a 158 KB shortlist.json took a custom print pass; a per-idea digest file (pitch, scopeForOneDay, risks) written by the aggregator would save every judge the same step.
+Spec phase: finding out that validate.mjs turns any About link whose host is missing from project.json sources into a tier-2 error (and that ownLoc counts .mjs tests) meant reading about 2,600 lines; a ten-line list of validator gotchas for spec authors, kept beside page-shell.html, would save that read.
