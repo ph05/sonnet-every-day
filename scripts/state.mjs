@@ -36,9 +36,10 @@ const USAGE = `usage: state.mjs <${COMMANDS.join('|')}> [options]
   watch arm --phase P --session S [--role R] [--minutes M]      watch bind --trigger-id T [--workflow-task ID] [--attempt N] [--phase P] [--session S]
   watch check --phase P --session S [--attempt N] [--role R]    watch disarm [--phase P] [--session S] [--workflow-task ID]      watch status
                   (phase watchdog, PLAYBOOK "Launching any Workflow": arm prints the send_later fields; check answers stale|early|overdue; M = the phaseBudgetMinutes the Workflow gets)
-  revise plan [--apply --session S --role R] [--mtd M] [--tier T]
+  revise plan [--apply --session S --role R] [--mtd M] [--tier T] [--slots N]
                   (revise policy, PLAYBOOK 8.6: reads the QA report, the effective level, the run and the clock; decision run|skip|hold, loops, workflow args;
-                  --apply records a skip as phase-done --phase revise --note "skipped: ..."; --mtd = minutesToGraceUntil - 15 when you already hold it)
+                  --apply records a skip as phase-done --phase revise --note "skipped: ..."; --mtd = minutesToGraceUntil - 15 when you already hold it;
+                  --slots = the agent slots the timetable is for, default this machine's min(8, CPUs - 2): below 6 the narrow timetable of A4 applies)
   sync -m "<message>" [--paths a,b,c] [--branch B] [--no-sleep]      (default paths: state,docs,work; config.json only when --paths names it)
 common: --date YYYY-MM-DD, --now <ISO instant> (or env SED_NOW), env SED_ROOT redirects the repo root,
         --no-fetch (or env SED_NO_FETCH=1) skips the bounded git fetches that run-state commands do to see other containers
@@ -507,7 +508,7 @@ const handlers = {
     const session = opt(flags, 'session');
     const view = remoteView(flags, date); // a ship-now directive another container pushed must be seen before deciding
     if (flags.apply) assertNotDisplaced(view, date, session);
-    return rv.planRevise({ date, now, config, apply: Boolean(flags.apply), session, role: opt(flags, 'role'), mtd: opt(flags, 'mtd'), tier: opt(flags, 'tier') });
+    return rv.planRevise({ date, now, config, apply: Boolean(flags.apply), session, role: opt(flags, 'role'), mtd: opt(flags, 'mtd'), tier: opt(flags, 'tier'), slots: opt(flags, 'slots') });
   },
 
   async sync({ flags }) {

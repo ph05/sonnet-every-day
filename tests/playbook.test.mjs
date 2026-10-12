@@ -632,7 +632,7 @@ test('time grace: the closer babysit loop and the planner offset use commands an
     box.cleanup();
   }
   // the offset in §6.3: a run planned to the grace window minus 15 minutes keeps a compact build alive at 06:47
-  const planner = (mtd, tier, phase) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase }).json;
+  const planner = (mtd, tier, phase) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase, SLOTS: '8' }).json;
   const mtdAt = (hhmm, minutesToGrace) => minutesToGrace - 15 + 0 * hhmm.length;
   const at0647 = mtdAt('06:47', (9 * 60 + 30) - (6 * 60 + 47));
   assert.equal(planner(at0647, 2, 'build').feasible, true);
@@ -920,8 +920,36 @@ test('QA gate: a blocking or unreviewed QA report is never rescued or salvaged a
   assert.match(section(PLAYBOOK, '### 6.2'), /`qaBlock: null`/);
 });
 
-test('planner (A4): a mid-run Tier 1 is priced for Tier 2 from the phase it is in, not as a restart from preflight', () => {
+test('planner (A4): the timetable follows the agent slots; below 6 a Tier 1 day never fits and the compact day gets realistic budgets', () => {
   const planner = (mtd, tier, phase, extra = {}) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase, ...extra }).json;
+  // 03:56 on a scheduled day: minutesToGraceUntil 334, MTD 319
+  const wide = planner(319, 1, 'ideate', { SLOTS: '8' });
+  assert.deepEqual([wide.slots, wide.narrow, wide.feasible, wide.suggestTier], [8, false, true, 1]);
+  const narrow = planner(319, 1, 'ideate', { SLOTS: '2' });
+  assert.deepEqual([narrow.slots, narrow.narrow, narrow.feasible, narrow.suggestTier], [2, true, false, 2], 'on 2 slots the full build never fits: go compact before ideate');
+  const compact = planner(319, 2, 'ideate', { SLOTS: '2' });
+  assert.equal(compact.feasible, true, 'the compact day fits from 03:56');
+  assert.ok(compact.phaseBudgetMinutes >= 90 && compact.phaseBudgetMinutes <= 110, `ideate gets a budget that covers 8 scouts in 4 waves plus batched verification (${compact.phaseBudgetMinutes})`);
+  assert.equal(planner(319, 2, 'ideate', { SLOTS: '2' }).available, 319 - 10, 'the narrow reserve is 10 minutes (planned finish about 09:05)');
+  // the measured 2026-10-11 moments: build started at 06:47 (163 minutes to grace, MTD 148) and qa at 08:27 (MTD 48)
+  assert.equal(planner(148, 2, 'build', { SLOTS: '2' }).feasible, true, 'a compact build at 06:47 still fits');
+  assert.ok(planner(148, 2, 'build', { SLOTS: '2' }).phaseBudgetMinutes >= 80, `build is not squeezed (${planner(148, 2, 'build', { SLOTS: '2' }).phaseBudgetMinutes})`);
+  const lateQa = planner(48, 2, 'qa', { SLOTS: '2' });
+  assert.deepEqual([lateQa.feasible, lateQa.available, lateQa.suggestTier], [true, 58, 2], 'from qa on, a built site is measured against the grace window (MTD + 10): the 2026-10-11 qa at 08:27 was right to run');
+  assert.ok(lateQa.phaseBudgetMinutes >= 30, 'and qa keeps a real budget');
+  assert.equal(planner(20, 2, 'qa', { SLOTS: '2' }).feasible, false, 'twenty minutes before 09:15 even qa + package do not fit the window');
+  assert.equal(planner(148, 1, 'build', { SLOTS: '2' }).suggestTier, 2, 'a Tier 1 build at 06:47 is priced compact');
+  assert.equal(planner(5, 3, 'package', { SLOTS: '2' }).feasible, true, 'a fallback publish is never refused');
+  // without SLOTS the snippet measures the machine: either table, never a third
+  const auto = planner(319, 2, 'ideate');
+  assert.ok([8, 7, 6, 5, 4, 3, 2, 1].includes(auto.slots) && auto.narrow === (auto.slots < 6));
+  assert.deepEqual(auto.phaseBudgetMinutes, planner(319, 2, 'ideate', { SLOTS: String(auto.slots) }).phaseBudgetMinutes);
+  assert.match(section(PLAYBOOK, '### 6.3'), /SLOTS=<n>/);
+  assert.match(section(PLAYBOOK, '### 8.1'), /narrow timetable/);
+});
+
+test('planner (A4): a mid-run Tier 1 is priced for Tier 2 from the phase it is in, not as a restart from preflight', () => {
+  const planner = (mtd, tier, phase, extra = {}) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase, SLOTS: '8', ...extra }).json;
   // the finding: 90 minutes to the offset deadline, Tier 1 about to start build
   const b = planner(90, 1, 'build');
   assert.equal(b.feasible, false, 'a full build, qa, package and publish do not fit');

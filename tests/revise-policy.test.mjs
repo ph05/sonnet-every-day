@@ -42,7 +42,8 @@ const lc = (level, config = REAL) => ({ ...rs.levelConfigFor(config, level), lev
 // ---------------------------------------------------------------------------------------
 
 const PLENTY = 200; // minutesToGraceUntil: 06:10 on a normal day
-const decide = (over = {}) => rv.decideRevise({ tier: 2, counts: {}, levelConfig: lc('balanced'), policy: REAL.revisePolicy, minutesToGraceUntil: PLENTY, ...over });
+// slots: 8 pins the wide timetable (the numbers below are A4's at SLOTS=8); the narrow timetable has its own tests.
+const decide = (over = {}) => rv.decideRevise({ tier: 2, counts: {}, levelConfig: lc('balanced'), policy: REAL.revisePolicy, minutesToGraceUntil: PLENTY, slots: 8, ...over });
 const brief = (p) => [p.decision, p.code, p.loops, p.fixSeverity];
 
 describe('config.json: the revise keys', () => {
@@ -384,10 +385,36 @@ describe('shared numbers', () => {
     assert.ok(m, 'PLAYBOOK.md has no snippet A4');
     const lines = m[1].split('\n');
     assert.match(lines[0], /node --input-type=module - <<'EOF'$/);
-    const r = spawnSync(process.execPath, ['--input-type=module', '-'], { cwd: REPO_ROOT, env: { ...process.env, ...env }, input: lines.slice(1, -1).join('\n'), encoding: 'utf8', timeout: 60_000 });
+    const r = spawnSync(process.execPath, ['--input-type=module', '-'], { cwd: REPO_ROOT, env: { ...process.env, SLOTS: '8', ...env }, input: lines.slice(1, -1).join('\n'), encoding: 'utf8', timeout: 60_000 });
     assert.equal(r.status, 0, r.stdout + r.stderr);
     return JSON.parse(r.stdout);
   }
+
+  test('the timetable follows the agent slots: 8 is the wide table, below 6 the narrow one measured on the 4-CPU container, and the default is this machine', () => {
+    assert.deepEqual(rv.plannerFor(8).TYPICAL, rv.PLANNER.TYPICAL);
+    assert.equal(rv.plannerFor(8).narrow, false);
+    const narrow = rv.plannerFor(2);
+    assert.deepEqual([narrow.narrow, narrow.slots, narrow.RESERVE, narrow.LATE_GRACE, narrow.TYPICAL[2].revise, narrow.TYPICAL[2].package], [true, 2, 10, 10, 20, 10]);
+    assert.equal(rv.plannerFor(5).narrow, true);
+    assert.equal(rv.plannerFor(6).narrow, false);
+    assert.equal(rv.plannerFor(undefined).slots, rv.slotsOnThisMachine());
+    assert.equal(rv.slotsOnThisMachine(), 8, 'the test env pins SED_AGENT_SLOTS=8');
+    process.env.SED_AGENT_SLOTS = '2';
+    try { assert.equal(rv.slotsOnThisMachine(), 2); assert.equal(decide({ slots: undefined, counts: { S2: 1 } }).minutes.narrow, true, 'the CLI default follows the env'); } finally { process.env.SED_AGENT_SLOTS = '8'; }
+    // the decision carries the timetable it used
+    assert.deepEqual([decide({ slots: 2, counts: { S2: 1 } }).minutes.slots, decide({ slots: 2, counts: { S2: 1 } }).minutes.narrow], [2, true]);
+    assert.equal(decide({ counts: { S2: 1 } }).minutes.narrow, false);
+    // on 2 slots a compact revise needs 20 + 10 + 5 = 35 minutes against the grace window (MTD + 10): 06:10 fits, the 2026-10-11 moment (09:08, 22 minutes to grace) does not
+    assert.equal(decide({ slots: 2, counts: { S2: 1 } }).decision, 'run');
+    const late = decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 22 });
+    assert.deepEqual([late.decision, late.code, late.minutes.available], ['skip', 'no-time', 17]);
+    // a nominal narrow day (qa done about 08:25, 65 minutes to grace) gets its revise with the full 40-minute budget, ending inside the window
+    const nominal = decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 65 });
+    assert.deepEqual([nominal.decision, nominal.minutes.available, nominal.phaseBudgetMinutes], ['run', 60, 40]);
+    // the S2 bar (25 minutes left) still holds on the narrow clock (available = minutes to grace - 5): 30 minutes to grace is the edge
+    assert.equal(decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 30 }).decision, 'run');
+    assert.deepEqual([decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 29 }).decision, decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 29 }).code], ['skip', 'no-time']);
+  });
 
   test('revise.js and the policy agree on the loop time and the loop ceiling', () => {
     const src = read('ops/workflows/revise.js');
@@ -397,11 +424,12 @@ describe('shared numbers', () => {
     assert.equal(rv.MAX_LOOPS, 3);
   });
 
-  test('the minutes arithmetic is the planner of Appendix A4 with REVISE=1, at both tiers', () => {
-    for (const tier of [1, 2]) for (const m of [0, 60, 71, 72, 89, 90, 120, 245]) {
+  test('the minutes arithmetic is the planner of Appendix A4 with REVISE=1, at both tiers and at both slot counts', () => {
+    for (const slots of [8, 2]) for (const tier of [1, 2]) for (const m of [0, 60, 71, 72, 89, 90, 120, 245]) {
       const mtd = m - 15;
-      const plan = a4({ MTD: String(mtd), TIER: String(tier), PHASE: 'revise', REVISE: '1' });
-      const mine = decide({ tier, counts: { S1: 1 }, minutesToGraceUntil: m }); // an S1 rescue: only the planner decides
+      const plan = a4({ MTD: String(mtd), TIER: String(tier), PHASE: 'revise', REVISE: '1', SLOTS: String(slots) });
+      assert.deepEqual([plan.slots, plan.narrow], [slots, slots < 6], `A4 reports the slots it planned for`);
+      const mine = decide({ tier, counts: { S1: 1 }, minutesToGraceUntil: m, slots }); // an S1 rescue: only the planner decides
       assert.equal(mine.minutes.available, plan.available, `tier ${tier} m ${m}: available`);
       assert.equal(mine.minutes.need, plan.needNow, `tier ${tier} m ${m}: need`);
       assert.equal(mine.minutes.feasible, plan.feasible, `tier ${tier} m ${m}: feasible`);
@@ -480,7 +508,7 @@ describe('state.mjs revise plan', () => {
     assert.deepEqual(p.counts, { S1: 0, S2: 1, S3: 11, S4: 8 });
     assert.deepEqual(p.workflow, { reviseLoops: 1, compact: true, tier: 2, fixSeverity: 'S3', seconds: 10, phaseBudgetMinutes: 40 });
     assert.deepEqual(p.trigger, { by: 'severity', severityHits: 1, s3Threshold: 4, s3ThresholdHit: true, minSeverity: 'S2' });
-    assert.deepEqual(p.minutes, { toGraceUntil: 118, mtd: 103, available: 68, tail: 17, need: 32, slack: 10, feasible: true, min: 25, cap: 40, budget: 40 });
+    assert.deepEqual(p.minutes, { toGraceUntil: 118, mtd: 103, available: 68, tail: 17, need: 32, slack: 10, feasible: true, min: 25, cap: 40, budget: 40, slots: 8, narrow: false });
     assert.deepEqual([p.targetTier, p.manual, p.blocksShipping, p.note], [2, false, false, null]);
     assert.deepEqual(p.policy, { ...REAL.revisePolicy, configured: true });
     assert.deepEqual(p.levelConfig, { level: 'balanced', reviseLoops: 1, reviseLoopsTier2: 1 });

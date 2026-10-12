@@ -1447,10 +1447,10 @@ describe('e2e', () => {
     assert.equal(begin.resumePhase, 'preflight');
     B.sync(`sed(${D}): wdB begin proceed`);
     // PLAYBOOK 6.3 feeds the planner with minutesToGraceUntil - 15, not with the minutes to 08:00
-    const plan = B.snippet('A4', { MTD: String(today.minutesToGraceUntil - 15), TIER: '2', PHASE: 'preflight' });
+    const plan = B.snippet('A4', { MTD: String(today.minutesToGraceUntil - 15), TIER: '2', PHASE: 'preflight', SLOTS: '8' });
     assert.equal(plan.code, 0, plan.stdout + plan.stderr);
     assert.deepEqual([plan.json.feasible, plan.json.suggestTier], [true, 2]);
-    assert.equal(B.snippet('A4', { MTD: String(today.minutesToDeadline - 15), TIER: '2', PHASE: 'preflight' }).json.feasible, false, 'against 08:00 the same start would have been cut to a fallback');
+    assert.equal(B.snippet('A4', { MTD: String(today.minutesToDeadline - 15), TIER: '2', PHASE: 'preflight', SLOTS: '8' }).json.feasible, false, 'against 08:00 the same start would have been cut to a fallback');
 
     runBuiltDay(B, {
       date: D, slug: 'saffron-lantern', title: 'Saffron Lantern', role: 'wdB', session: S, tier: 2, until: 'publish',
@@ -4175,7 +4175,7 @@ describe('e2e', () => {
     const box = w.box('tools');
     const D = D1;
     const planner = (MTD, TIER, PHASE, extra = {}) => {
-      const r = box.snippet('A4', { MTD: String(MTD), TIER: String(TIER), PHASE, ...extra });
+      const r = box.snippet('A4', { MTD: String(MTD), TIER: String(TIER), PHASE, SLOTS: '8', ...extra });
       assert.equal(r.code, 0, r.stdout + r.stderr);
       return r.json;
     };

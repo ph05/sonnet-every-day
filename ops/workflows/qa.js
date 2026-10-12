@@ -785,10 +785,10 @@ function criticPrompt(browser, gate, roster) {
 function proofPrompt() {
   const task = [
     '## Task: proofread the finished page and verify its sources',
-    `Page files: ${SITE}/ . Draft project metadata: ${SPEC_DIR}/PROJECT.json (the site itself has no project.json yet). The idea with its research and which sources were verified: ${IDEA_FILE} (idea ${IDEA_ID}).`,
-    'Do these checks mechanically and report only real findings; do not rewrite copy for style.',
+    `Page files: ${SITE}/ (only these files ship). Draft project metadata, for reading only: ${SPEC_DIR}/PROJECT.json (the site itself has no project.json yet; packaging rewrites this draft, so its placeholder stats and sample fields are expected and are never a finding). The idea with its research and which sources were verified: ${IDEA_FILE} (idea ${IDEA_ID}).`,
+    'Do these checks mechanically and report only real findings; do not rewrite copy for style. Every finding names a file under the page directory; anything you notice in the draft metadata, the spec or the research files goes into notes, never into issues (2026-10-11: a placeholder in the draft PROJECT.json was reported as a blocker and nearly cost the day).',
     '1. Read every user-visible string: index.html text, strings inside the JavaScript and JSON data files (labels, messages, headings, tooltips, aria-labels, the About & making-of panel, the share text). Report typos, grammar errors, inconsistent names or numbers for the same thing (kind typo, grammar or inconsistency), with file, the exact offending text and the fix.',
-    '2. Leftovers: search the site for data-sed-placeholder, TODO, FIXME, lorem, "Project Title", "example.com", "Source title", "0000-00-00", "Day 0" and report each as kind placeholder.',
+    `2. Leftovers: search the page files under ${SITE}/ (and nothing else) for data-sed-placeholder, TODO, FIXME, lorem, "Project Title", "example.com", "Source title", "0000-00-00", "Day 0" and report each as kind placeholder.`,
     '3. Links: collect every external http(s) URL in the About panel and in the draft project sources. For each run curl -s -o /dev/null -L -m 12 -w "%{http_code}" <url> (one at a time). 200 to 399 is fine. 404 or 410 is kind dead-link. Timeouts, 000, 403, 429 and 5xx are kind unreachable-link (they may be our network). If nearly every link answers 000 the sandbox network is restricted, not the links: report each as unreachable-link without retrying and say so once in notes. Count linksChecked and linksOk.',
     '4. Sources vs research: every source the page lists must appear in the idea\'s research.sources with verified:true. If one does not, kind source-mismatch. Every factual claim shown to visitors (a number, a date, a rule, a name) must be traceable to a research.facts entry whose source is verified:true, or be clearly labelled as simulated, estimated or fictional, or be attributed in the text as "as of <date>, per <source>" when its source is verified:false. A claim that is none of these is kind unverified-claim, quoting the text.',
     'Reply with issues [{kind, file, text, fix}], linksChecked, linksOk and a one-line note. An empty issues list is a fine answer.',
@@ -891,6 +891,12 @@ try {
   if (proof) {
     for (const p of arr(proof.issues)) {
       if (!isObj(p) || !str(p.text)) continue;
+      // Only the page ships: a finding in the draft metadata, the spec or the research files is noise, not a defect (2026-10-11: a
+      // placeholder in work/<D>/spec/PROJECT.json was filed as an S1 and would have forced a Tier 3 day).
+      if (/(^|\/)(spec|package|ideas|ideate|qa)\/|(^|\/)PROJECT\.json$|(^|\/)project\.json$|SPEC\.md$|DESIGN\.md$/i.test(String(p.file || ''))) {
+        log(`proofread: ignoring a finding outside the page (${clip(p.file, 80)}): ${clip(p.text, 80)}`);
+        continue;
+      }
       const kind = str(p.kind, 'typo');
       const severity = kind === 'placeholder' ? 'S1' : ['dead-link', 'source-mismatch', 'unverified-claim'].includes(kind) ? 'S2' : kind === 'unreachable-link' ? 'S4' : 'S3';
       const file = normFile(p.file);

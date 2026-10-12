@@ -304,13 +304,13 @@
   },
   "phaseBudgetMinutes": {
     "preflight": 15,
-    "ideate": 90,
+    "ideate": 120,
     "select": 45,
     "spec": 75,
     "build": 150,
     "qa": 90,
     "revise": 90,
     "package": 25,
-    "kaizen": 120
+    "kaizen": 85
   }
 }

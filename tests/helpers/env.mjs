@@ -31,6 +31,8 @@ process.env.GIT_COMMITTER_NAME = 'SED Test';
 process.env.GIT_COMMITTER_EMAIL = 'sed-test@example.invalid';
 delete process.env.SED_ROOT;
 delete process.env.SED_NOW;
+// The planner (PLAYBOOK A4, revisepolicy) follows the machine's agent slots; the tests pin the wide timetable (8) unless a test asks otherwise.
+if (!process.env.SED_AGENT_SLOTS) process.env.SED_AGENT_SLOTS = '8';
 delete process.env.SED_NO_SLEEP;
 delete process.env.SED_HB_DIR;
 

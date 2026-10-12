@@ -539,6 +539,25 @@ export function ideateWorld(sb, cfg = {}) {
         }
         return { revised, dropped };
       }
+      if (label.startsWith('verify-batch ')) {
+        // Narrow machines: one critic verifies several candidates (ideate.js VERIFY_BATCH). Same bookkeeping as the single verifier.
+        sink.verifyBatches = (sink.verifyBatches || 0) + 1;
+        const ids = label.replace(/^verify-batch /, '').replace(/ \(retry\)$/, '').split(',');
+        const verdicts = [];
+        for (const id of ids) {
+          sink.verifies++;
+          if ((cfg.nullVerify || []).includes(id)) { verdicts.push({ id, checked: false, verdict: 'keep', confidence: 3, feasibleInOneDay: true, reason: 'not checked: out of time' }); continue; }
+          const c = sb.json(sb.work('ideate', 'cand', `${id}.json`));
+          if (cfg.dropIds && cfg.dropIds(id)) { verdicts.push({ id, checked: true, verdict: 'drop', confidence: 2, feasibleInOneDay: false, reason: 'premise unverifiable' }); continue; }
+          c.verification = { by: 'verifier', at: DATE, confidence: 7, feasibleInOneDay: true, notes: 'ok' };
+          if (cfg.stripOrigin) c.origin = { agent: c.origin.agent, lens: c.origin.lens };
+          if (cfg.verifyMutate) cfg.verifyMutate(c);
+          sb.write(sb.work('ideate', 'verified', `${id}.json`), c);
+          sink.verifyPrompts = [...(sink.verifyPrompts || []), { id, prompt }];
+          verdicts.push({ id, checked: true, verdict: 'keep', confidence: 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], reason: 'sound' });
+        }
+        return { verdicts, network: cfg.verifyNetwork ? ids.flatMap((id) => cfg.verifyNetwork(id)) : [], notes: '' };
+      }
       if (label.startsWith('verify ')) {
         sink.verifies++;
         const id = /^verify (\S+)/.exec(label)[1];
@@ -1252,7 +1271,7 @@ describe('ideate.js', () => {
           assert.equal(run.result.reason, 'budget-exhausted');
           assert.equal(run.rec.calls.filter((c) => !c.label.startsWith('pulse')).length, 0, 'no agent work starts when the budget cannot cover ideation');
         }
-        if (label === 'mid') assert.ok(run.rec.calls.filter((c) => c.label.startsWith('scout ')).length === 8);
+        if (label === 'mid') assert.equal(run.rec.calls.filter((c) => c.label.startsWith('scout ')).length, 8, `mid budget: ${run.rec.calls.map((c) => c.label).join(' | ')} :: ${run.rec.logs.filter((l) => /budget|skipp|refill/.test(l)).join(' || ')}`);
       } finally { s.clean(); }
     }
   });
@@ -3915,6 +3934,35 @@ describe('heartbeat pulse never gives up on failures, and the work gate follows 
       assert.ok(run.rec.maxActive === 3, `workers used ${run.rec.maxActive} of 3 slots`);
       assert.ok(run.rec.logs.some((l) => l.includes('pulse disabled') && l.includes('OS-level heartbeat')));
     } finally { s.clean(); }
+  });
+
+  test('below 6 slots the verifiers run in batches of at most 4 (2026-10-11 shipped 10 unverified ideas after 16 single verifiers on 2 slots)', async () => {
+    const s = makeSandbox();
+    let s2 = null;
+    try {
+      const run = await runWorkflow('ideate', baseArgs(s, { maxAgents: 2, osHeartbeat: true }), { world: ideateWorld(s, { nullVerify: ['pulse-2'] }) });
+      checkRunInvariants('ideate', run);
+      const batches = run.rec.calls.filter((c) => c.label.startsWith('verify-batch '));
+      assert.ok(batches.length >= 3, `expected batched verification, got ${batches.length} batch calls: ${run.rec.calls.map((c) => c.label).join(' | ')}`);
+      assert.ok(!run.rec.calls.some((c) => /^verify \S+/.test(c.label)), 'no single-candidate verifier on a narrow machine');
+      for (const b of batches) {
+        const ids = b.label.replace(/^verify-batch /, '').split(',');
+        assert.ok(ids.length >= 1 && ids.length <= 4, b.label);
+        assert.ok(b.prompt.includes(`verify ${ids.length} candidates, one after the other`) && ids.every((id) => b.prompt.includes(`${id}.json`)), 'the batch prompt names every dossier');
+        assert.ok(b.prompt.includes('checked:false'), 'the batch prompt explains the out-of-time marker');
+      }
+      assert.equal(run.result.count, 10);
+      const short = s.json(s.work('ideas', 'shortlist.json'));
+      const verified = short.ideas.filter((i) => i.verification && i.verification.by === 'verifier').length;
+      assert.ok(verified >= 8, `${verified} of 10 shortlisted ideas carry a verifier's file`);
+      assert.ok(run.rec.logs.some((l) => /verify-batch .*1 of \d left unchecked \(pulse-2\)/.test(l)), 'an unchecked candidate is logged by id');
+      const unverified = short.ideas.find((i) => i.origin && i.origin.scoutId === 'pulse-2');
+      if (unverified) assert.equal(unverified.verification.status, 'unverified', 'checked:false never counts as verified');
+      // the wide path is untouched: one verifier per candidate
+      const wide = await runWorkflow('ideate', baseArgs(s2 = makeSandbox()), { world: ideateWorld(s2) });
+      checkRunInvariants('ideate', wide);
+      assert.ok(wide.rec.calls.some((c) => /^verify \S+/.test(c.label)) && !wide.rec.calls.some((c) => c.label.startsWith('verify-batch ')));
+    } finally { s.clean(); if (s2) s2.clean(); }
   });
 
   test('with 6 or more slots osHeartbeat does not remove the second signal', async () => {

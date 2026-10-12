@@ -13,6 +13,7 @@
 //     least one loop that fixes S1 defects, at any level, as long as the planner of Appendix A4 says it fits. A build with an S1 that
 //     could not be revised is not shippable (PLAYBOOK 8.6: Tier 3), `blocksShipping` says so.
 import fs from 'node:fs';
+import os from 'node:os';
 import { rp, loadConfig, localParts } from './common.mjs';
 import * as rs from './runstate.mjs';
 import * as th from './throttle.mjs';
@@ -40,8 +41,21 @@ export const LOOP_MINUTES = 14;
 /**
  * The arithmetic of the planner in PLAYBOOK Appendix A4, for the revise phase. A4 stays the planner of every other phase; its
  * numbers are copied here (tests/revise-policy.test.mjs runs the snippet from the playbook and compares them).
+ *
+ * Agent slots: the harness runs min(16, CPUs - 2) agents at once (2 on the 4-CPU cloud container). A4's wide timetable was planned
+ * for 8 slots; below 6 ("narrow") it uses the timetable two real days measured on 2 slots, with a smaller reserve (the planned
+ * finish moves from about 08:40 to about 08:50, still inside the 09:30 grace window). `plannerFor(slots)` gives the matching
+ * numbers; without a slot count the machine is measured, exactly as A4 does.
  */
-export const PLANNER = Object.freeze({
+export const WIDE_SLOTS = 8;
+/** min(8, CPUs - 2), the harness's concurrent agent() cap; SED_AGENT_SLOTS=<n> overrides it (the tests pin 8). */
+export function slotsOnThisMachine() {
+  const forced = process.env.SED_AGENT_SLOTS;
+  if (forced && /^[1-9]\d*$/.test(forced)) return Number(forced);
+  const cpus = typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length;
+  return Math.min(8, Math.max(1, cpus - 2));
+}
+const WIDE = Object.freeze({
   TYPICAL: Object.freeze({
     1: Object.freeze({ revise: 30, package: 15, publish: 5 }),
     2: Object.freeze({ revise: 15, package: 12, publish: 5 }),
@@ -51,6 +65,25 @@ export const PLANNER = Object.freeze({
   SLACK: 10, // the typical numbers are deliberately conservative
   MTD_OFFSET: 15, // MTD = minutesToGraceUntil - 15
 });
+const NARROW = Object.freeze({
+  TYPICAL: Object.freeze({
+    1: Object.freeze({ revise: 30, package: 15, publish: 5 }),
+    2: Object.freeze({ revise: 20, package: 10, publish: 5 }),
+  }),
+  CAP_REVISE: 40,
+  RESERVE: 10, // planned finish = MTD - 10 (about 09:05) for the phases before qa
+  // From qa on a built site exists and PLAYBOOK 13 never cuts a healthy run before the grace window ends (09:30): the late phases
+  // (qa, revise, package, publish) are measured against that window, five minutes short of it: available = MTD + 10.
+  LATE_GRACE: 10,
+  SLACK: 10,
+  MTD_OFFSET: 15,
+});
+export function plannerFor(slots) {
+  const n = Number.isInteger(slots) && slots >= 1 ? slots : slotsOnThisMachine();
+  return Object.freeze({ ...(n < 6 ? NARROW : WIDE), slots: n, narrow: n < 6 });
+}
+/** The wide timetable (8 slots): what Appendix A4 prints with SLOTS=8. */
+export const PLANNER = plannerFor(WIDE_SLOTS);
 
 // ---------------------------------------------------------------------------------------
 // config
@@ -194,19 +227,21 @@ export function decideRevise(input = {}) {
   const fixRank = !compact ? RANK.S2 : floorOnly ? RANK.S1 : Math.max(minRank, thresholdHit ? RANK.S3 : RANK.S1);
   const fixSeverity = FIX_SEVERITIES[fixRank];
 
-  // --- minutes (PLAYBOOK Appendix A4 with REVISE=1, for one revise loop)
+  // --- minutes (PLAYBOOK Appendix A4 with REVISE=1, for one revise loop; the timetable follows the machine's agent slots)
+  const P = plannerFor(input.slots);
   const clock = Number.isFinite(input.minutesToGraceUntil);
-  const typical = PLANNER.TYPICAL[tier];
+  const typical = P.TYPICAL[tier];
   const tail = typical.package + typical.publish;
   const need = typical.revise + tail;
-  const mtd = clock ? input.minutesToGraceUntil - PLANNER.MTD_OFFSET : null;
-  const available = clock ? mtd - PLANNER.RESERVE : null;
-  const feasible = clock ? need <= available + PLANNER.SLACK : true;
+  const mtd = clock ? input.minutesToGraceUntil - P.MTD_OFFSET : null;
+  // revise is a late phase: on a narrow machine it is measured against the grace window (see NARROW.LATE_GRACE)
+  const available = clock ? (P.narrow ? mtd + P.LATE_GRACE : mtd - P.RESERVE) : null;
+  const feasible = clock ? need <= available + P.SLACK : true;
   // A started revise always gets one loop's worth of time (the typical figures carry a slack of 10 minutes for exactly this edge).
-  const cap = typeof input.phaseCapMinutes === 'number' && input.phaseCapMinutes > 0 ? Math.min(PLANNER.CAP_REVISE, input.phaseCapMinutes) : PLANNER.CAP_REVISE;
+  const cap = typeof input.phaseCapMinutes === 'number' && input.phaseCapMinutes > 0 ? Math.min(P.CAP_REVISE, input.phaseCapMinutes) : P.CAP_REVISE;
   const budget = clock ? Math.max(LOOP_MINUTES, Math.min(cap, Math.round(available - tail))) : null;
   const minutes = clock
-    ? { toGraceUntil: input.minutesToGraceUntil, mtd, available, tail, need, slack: PLANNER.SLACK, feasible, min: policy.minMinutesLeftForRevise, cap, budget }
+    ? { toGraceUntil: input.minutesToGraceUntil, mtd, available, tail, need, slack: P.SLACK, feasible, min: policy.minMinutesLeftForRevise, cap, budget, slots: P.slots, narrow: P.narrow }
     : null;
 
   const level = typeof lc.level === 'string' ? lc.level : null;
@@ -257,7 +292,7 @@ export function decideRevise(input = {}) {
   }
   if (input.overCap) return plan('skip', 'over-cap', 'spend is over the cap: start no new agent work (PLAYBOOK 6.5)', 'spend over the cap');
   if (clock && !feasible) {
-    return plan('skip', 'no-time', `the planner says revise does not fit: ${need} min needed for revise, package and publish, ${Math.max(0, available)} min left before the planned finish (+${PLANNER.SLACK} slack)`, `planner: ${Math.max(0, available)} min left, ${need} needed for revise and package`);
+    return plan('skip', 'no-time', `the planner says revise does not fit: ${need} min needed for revise, package and publish, ${Math.max(0, available)} min left before the planned finish (+${P.SLACK} slack)`, `planner: ${Math.max(0, available)} min left, ${need} needed for revise and package`);
   }
   if (clock && !rescue && available < policy.minMinutesLeftForRevise) {
     return plan('skip', 'no-time', `only ${Math.max(0, available)} min are left before the planned finish, revisePolicy.minMinutesLeftForRevise is ${policy.minMinutesLeftForRevise}`, `${Math.max(0, available)} min left, minimum ${policy.minMinutesLeftForRevise}`);
@@ -333,7 +368,7 @@ export function readExtraDefects(date) {
 /**
  * The plan for `date` as of `now`: reads the run, the QA report, the queued extra defects, the effective throttle level (the owner's
  * override while it lasts) and the clock, then decides. `opts`: { date, now, config, mtd (minutes to the planner's MTD, overrides
- * the clock), tier (overrides the run's target tier), apply, session, role }. With `apply` a skip is recorded: `phase-done --phase
+ * the clock), tier (overrides the run's target tier), slots (agent slots for the timetable; default: this machine's), apply, session, role }. With `apply` a skip is recorded: `phase-done --phase
  * revise --note "skipped: <reason>"` (the playbook's own way), so revise is never forgotten in phasesDone. A run is never changed otherwise.
  */
 export function planRevise(opts = {}) {
@@ -349,6 +384,11 @@ export function planRevise(opts = {}) {
   if (throttle.warnings?.length) warn.push(...throttle.warnings);
 
   const targetTier = opts.tier !== undefined ? rs.clampTier(opts.tier, '--tier') : run.targetTier;
+  let slots;
+  if (opts.slots !== undefined) {
+    slots = Number(opts.slots);
+    if (!Number.isInteger(slots) || slots < 1) throw new rs.UsageError(`--slots must be a whole number of agent slots, at least 1 (got ${JSON.stringify(opts.slots)})`);
+  }
   const scopeCut = run.directives.some((d) => d.kind === 'scope-cut');
   const compact = targetTier === 2 || (targetTier === 1 && (lc.forceTier === 2 || scopeCut));
   const manual = run.lease?.holder === 'manual';
@@ -357,7 +397,7 @@ export function planRevise(opts = {}) {
   if (opts.mtd !== undefined) {
     const mtd = Number(opts.mtd);
     if (!Number.isFinite(mtd)) throw new rs.UsageError(`--mtd must be a number of minutes (got ${JSON.stringify(opts.mtd)})`);
-    minutesToGraceUntil = mtd + PLANNER.MTD_OFFSET;
+    minutesToGraceUntil = mtd + WIDE.MTD_OFFSET;
   } else if (!manual) {
     minutesToGraceUntil = rs.scheduleMinutes(config).graceUntil - rs.effectiveMinutes(config, at, date);
   }
@@ -409,6 +449,7 @@ export function planRevise(opts = {}) {
       levelConfig: lc,
       policy,
       minutesToGraceUntil,
+      slots,
       phaseCapMinutes: config.phaseBudgetMinutes?.revise,
       overCap: spend.overCap === true,
       shipNow: run.directives.some((d) => d.kind === 'ship-now' && d.ack !== true),
