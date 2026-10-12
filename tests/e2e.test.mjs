@@ -375,6 +375,7 @@ function makeIdeasDoc(date, { salt = 0, shift = 3 * dayNumber(date, D1), carryov
     const id = `i${String(i + 1).padStart(2, '0')}`;
     const title = `${ideaWord(rnd)} ${NOUNS[Math.floor(rnd() * NOUNS.length)]}`.replace(/^./, (c) => c.toUpperCase());
     const scores = Object.fromEntries(['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety'].map((d) => [d, 4 + Math.floor(rnd() * 6)]));
+    scores.clarity = 6; // the ninth criterion (CONTRACT 5.2), a constant so the random stream (titles, tags) stays as it was
     return {
       id,
       title,
@@ -3491,10 +3492,50 @@ describe('e2e', () => {
       for (const m of line.matchAll(/\bnode\s+(?:--[\w=-]+\s+)*((?:ops|site-src|tests)\/[\w/.-]+\.(?:mjs|js))/g)) if (!fs.existsSync(path.join(REPO, m[1]))) other.push(`${file}:${i + 1}: ${m[1]} does not exist`);
     });
     assert.deepEqual(other, []);
+    // every flag a document names next to a script without `node ` (an Appendix C row, "`novelty.mjs mix --date D [--purpose P]`",
+    // CONTRACT 6's usage lines) is in that script's header usage too, and CONTRACT 6's bare subcommand lines name real flags
+    const spanProblems = [];
+    const docSpans = [...DOC_FILES.filter((f) => f.endsWith('.md')), 'ops/CONTRACT.md'];
+    const scriptPath = (name) => [name, `scripts/${name}`, `scripts/qa/${name}`].find((p) => /\.mjs$/.test(p) && fs.existsSync(path.join(REPO, p)) && fs.statSync(path.join(REPO, p)).isFile()) ?? null;
+    const named = new Set(rows.flatMap((r) => [...r.rest.matchAll(/(?<![\w-])--([a-z][\w-]*)/g)].map((f) => `${r.script} --${f[1]}`)));
+    let spans = 0;
+    for (const file of docSpans) readRepo(file).split('\n').forEach((line, i) => {
+      for (const m of line.matchAll(/`([^`\n]+)`/g)) {
+        const span = m[1].replace(/\\\|/g, '|');
+        if (/\bnode\s/.test(span)) continue; // a full command line: linted above
+        const s = /(?:^|[\s(])((?:scripts\/)?(?:qa\/)?[\w-]+\.mjs)\b(.*)$/.exec(span);
+        if (!s || !/(?<![\w-])--[a-z]/.test(s[2])) continue;
+        spans++;
+        const script = scriptPath(s[1]);
+        if (!script) spanProblems.push(`${file}:${i + 1}: ${s[1]} is not a script`);
+        else for (const p of lintCommand({ script, rest: s[2] }, table)) spanProblems.push(`${file}:${i + 1}: ${p} :: ${span.slice(0, 80)}`);
+        if (script) for (const f of s[2].matchAll(/(?<![\w-])--([a-z][\w-]*)/g)) named.add(`${script} --${f[1]}`);
+      }
+    });
+    for (const sec of readRepo('ops/CONTRACT.md').split(/^(?=### 6\.)/m).slice(1)) {
+      const script = /^### 6\.\w+ `(scripts\/[\w/.-]+\.mjs)`/.exec(sec)?.[1];
+      if (!script || script === 'scripts/state.mjs') continue; // state.mjs subcommands: its handler table is checked through every command above
+      const usage = script === 'scripts/kaizen.mjs' ? kaizenUsage() : headerUsage(script);
+      if (!usage) continue;
+      for (const m of sec.matchAll(/`([a-z][\w|-]*(?: [^`\n]*)?)`/g)) {
+        const first = m[1].split(/\s+/)[0];
+        if (!first.split('|').every((sub) => usage.has(sub)) || !/--[a-z]/.test(m[1])) continue;
+        spans++;
+        for (const p of lintCommand({ script, rest: ` ${m[1]}` }, table)) spanProblems.push(`ops/CONTRACT.md ${script}: ${p} :: ${m[1].slice(0, 80)}`);
+      }
+    }
+    assert.ok(spans > 40, `only ${spans} script spans found: the extractor is broken`);
+    assert.deepEqual(spanProblems, []);
+    // the flags of the purpose plan and the page contract are named where the operator reads them (and so are linted above)
+    for (const pair of ['scripts/novelty.mjs --purpose', 'scripts/lenses.mjs --purpose', 'scripts/validate.mjs --contract', 'scripts/qa/browser-check.mjs --meta', 'scripts/qa/browser-check.mjs --purpose', 'scripts/qa/browser-check.mjs --contract']) {
+      assert.ok(named.has(pair), `no document names ${pair}`);
+    }
     // the linter itself can fail: a typo is caught
     const state = lintCommand({ script: 'scripts/state.mjs', rest: ' phase-start --phasee P' }, table);
     assert.match(state[0], /does not take --phasee/);
     assert.match(lintCommand({ script: 'scripts/history.mjs', rest: ' adds --project x' }, table)[0], /no subcommand/);
+    assert.match(lintCommand({ script: 'scripts/novelty.mjs', rest: ' mix --date D --purposes P' }, table)[0], /does not take --purposes/);
+    assert.match(lintCommand({ script: 'scripts/qa/browser-check.mjs', rest: ' DIR --out OUT --metadata F' }, table)[0], /does not take --metadata/);
     assert.match(lintCommand({ script: 'scripts/nope.mjs', rest: '' }, table)[0], /does not exist/);
   });
 
@@ -3616,8 +3657,19 @@ describe('e2e', () => {
     has(box.sync('doc check'), ['ok', 'pushed', 'sha'], 'sync');
     const hb = box.must('heartbeat', ['--role', 'primary', '--session', S, '--phase', 'ideate', '--wait', '0', '--date', D], { env: { SED_HB_DIR: path.join(w.base, 'hb') } });
     has(hb, ['ok', 'pushed', 'at'], 'heartbeat');
-    has(box.must('lenses', ['--date', D]), ['ok', 'agents'], 'lenses');
-    has(box.must('novelty', ['mix', '--date', D]), ['ok', 'owed', 'categoryCounts', 'politicsAllowed', 'summary'], 'novelty mix');
+    const lensOut = box.must('lenses', ['--date', D]);
+    has(lensOut, ['ok', 'agents', 'owedKinds', 'relaxedDays', 'purposes', 'purposes.wanted', 'purposes.playAllowed'], 'lenses');
+    // PLAYBOOK 8.1 "The purpose plan": every field it tells the operator to read
+    const mixOut = box.must('novelty', ['mix', '--date', D]);
+    const PLAN_FIELDS = ['wanted', 'avoid', 'playAllowed', 'playBlockedUntil', 'counts', 'lastShipped', 'override', 'legacyAssumed', 'bonus'];
+    has(mixOut, ['ok', 'owed', 'categoryCounts', 'politicsAllowed', 'summary', 'avoidCategories', 'avoidMechanics', 'purposes', ...PLAN_FIELDS.map((f) => `purposes.${f}`)], 'novelty mix');
+    const planBullet = /\* \*\*The purpose plan\*\*[^\n]*/.exec(PLAYBOOK)?.[0] ?? '';
+    for (const f of PLAN_FIELDS) assert.ok(planBullet.includes(`\`${f}\``), `PLAYBOOK 8.1 tells the operator to read purposes.${f}`);
+    assert.match(mixOut.summary, /^Purpose mix this week: /, 'the summary starts with the purpose sentence, as PLAYBOOK 8.1 says');
+    assert.deepEqual(lensOut.purposes, mixOut.purposes, 'lenses.json `purposes` echoes the plan of mix.json');
+    const forced = box.must('novelty', ['mix', '--date', D, '--purpose', 'lesson']);
+    assert.deepEqual([forced.purposes.override, forced.purposes.wanted, forced.purposes.avoid, forced.purposes.playAllowed], ['lesson', ['lesson'], [], true], 'PURPOSE=lesson (PLAYBOOK 3.4)');
+    assert.equal(box.must('lenses', ['--date', D, '--purpose', 'lesson']).purposes.override, 'lesson');
     const digest = box.cli('history', ['digest', '--limit', '90', '--text', '--date', D]);
     assert.equal(digest.code, 0);
     assert.throws(() => JSON.parse(digest.stdout), '--text prints plain lines, not JSON');
@@ -3792,7 +3844,7 @@ describe('e2e', () => {
       assert.ok(Array.isArray(doc.rejectedNotes) && typeof doc.rationale === 'string' && ISO.test(doc.selectedAt));
       for (const idea of doc.ideas) {
         assert.deepEqual(fingerprintProblems(idea.fingerprint, idea.id), []);
-        assert.ok(typeof idea.durable === 'boolean' && isObj(idea.scores) && Object.keys(idea.scores).length === 8 && isObj(idea.noveltyCheck));
+        assert.ok(typeof idea.durable === 'boolean' && isObj(idea.scores) && Object.keys(idea.scores).length === 9 && 'clarity' in idea.scores && isObj(idea.noveltyCheck));
         assert.ok(Array.isArray(idea.research.sources) && Array.isArray(idea.research.facts) && isObj(idea.design));
       }
     }

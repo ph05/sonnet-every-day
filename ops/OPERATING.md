@@ -1,6 +1,6 @@
 # Operating Sonnet Every Day
 
-A short guide for the owner. Every morning a team of Claude agents builds one new web toy and puts it on the site around 08:00 America/New_York (a guideline: it is occasionally later, because quality beats punctuality). Once the page is live, each of the nine team members also makes one small improvement to the system itself (the daily "kaizen"). You do not have to do anything for that to happen. This page is for the moments when you want to steer: pause it, change how much it spends, run a build by hand, turn on the site, or clean up a day you do not like.
+A short guide for the owner. Every morning a team of Claude agents builds one new web page (a tool, a lesson, an explorer, a studio or a game) and puts it on the site around 08:00 America/New_York (a guideline: it is occasionally later, because quality beats punctuality). Once the page is live, each of the nine team members also makes one small improvement to the system itself (the daily "kaizen"). You do not have to do anything for that to happen. This page is for the moments when you want to steer: ask for a kind of page, give feedback, pause it, change how much it spends, run a build by hand, turn on the site, or clean up a day you do not like.
 
 The operator's own runbook is [`PLAYBOOK.md`](PLAYBOOK.md) and the list of everything that can go wrong (with what the system already does about it) is [`FAILURE_MODES.md`](FAILURE_MODES.md). You rarely need either.
 
@@ -31,6 +31,38 @@ node scripts/kaizen.mjs status
 ```
 
 Read `status` (`in_progress`, `published`, `failed`), `phase`, `tier`, `lease.alive`, `spend` and the plain-English `nextAction`. For the story of a day read `state/reports/<date>.md` (one file per day, written by the operator; it ends with the day's kaizen and a blameless "what went wrong"), and `state/handoff.md`, the note the last session left for tomorrow's. The raw state is in `state/runs/<date>.json`; the gallery's own data is `docs/archive.json`. A push notification arrives when a day publishes ("live", or "late" when it is after 08:30), when it falls back, or when it fails, if the notification tool is available to the routines.
+
+## Steering the mix
+
+Every page has one purpose: a **tool** (a working utility for a real job people usually pay for or sign up for), a **lesson** (one niche concept, taught with demos), an **explorer** (a model, map or dataset to query), a **studio** (it makes something worth keeping) or **play** (a game or a satire: welcome, but rare). Each morning the preflight plans the day from what shipped in the last 7 days. Read today's plan, or any date's:
+
+```
+node scripts/novelty.mjs mix
+node scripts/novelty.mjs mix --date 2026-10-13
+```
+
+`summary` starts with the plan in words ("Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Today we want a tool or a lesson (lead with one); play is paused until 2026-10-18.") and `purposes` holds it as fields: `counts` and `lastShipped` (the last 7 days), `wanted` (what the scouts lead with; an idea of a wanted purpose gets `bonus` extra points out of 100 at selection), `avoid` (what cannot win today), `playAllowed` and `playBlockedUntil`, `override` (a `PURPOSE=` run).
+
+The numbers live in `config.json` `mix.purposes`:
+
+| Key | Now | What it does |
+|---|---|---|
+| `quota` | tool 2, lesson 2, explorer 1, studio 1 | How many of each a week should hold; the purposes furthest below their quota are wanted first. Raise one to see it more often. |
+| `cooldownDays` | 2 | A purpose shipped in the last 2 days is avoided (never so many that fewer than 3 purposes remain). |
+| `playCooldownDays` | 3 | Play days are at least 3 days apart. |
+| `maxPlayPer7Days` | 2 | At most 2 play days in any 7. |
+| `wantedCount` | 2 | How many purposes are wanted at once (1 or 2). |
+| `wantedBonus` | 5 | The points out of 100 a wanted purpose adds at selection: a nudge, so a clearly better idea of another purpose still wins. |
+| `starvedDays` | 6 | A purpose with nothing in the last week and no build for 6 days is starved: while any purpose is starved, only starved ones are wanted. |
+| `windowDays`, `legacyDefault` | 7, `play` | The window the counts cover; the purpose assumed for a day built before purposes existed. |
+
+Play is never wanted: it wins on merit on the days it is allowed. After an edit run `node scripts/validate.mjs repo` (it names a damaged value), then push with `node scripts/state.mjs sync -m "owner: purpose mix" --paths config.json`; the next preflight uses it.
+
+**Ask for one kind of page.** Fire the manual routine with `PURPOSE=tool RUN_DATE=<date>` (or `lesson`, `explorer`, `studio`, `play`; add `TARGET_TIER` as in "Run a build by hand" below). That run wants only that purpose, avoids nothing (play included) and draws the matching research lenses; the following days count it like any other day. It works for a date whose run has not started (for today, fire it before 03:55: the primary then finds the day taken and stays out) or an unpublished past date; a published day must be removed first ("Remove a bad day").
+
+**Your feedback.** `ops/OWNER.md` holds what you have said, newest first, and the rules that follow from it. Every agent that researches, scores, designs, builds or reviews reads it first; it outranks every other taste signal, and no kaizen can edit it (it is in `kaizen.protectedPaths`). To add an entry, ask Claude "add to ops/OWNER.md under today's date: <your words>", or edit it yourself: a new `## <date>, <occasion>` section above the newest one, your words as bullets, and a rule under "What follows" if one follows; then `node scripts/state.mjs sync -m "owner: feedback" --paths ops/OWNER.md`. The next preflight reads it.
+
+**When the page rules apply.** `config.json` `pageContract.requiredFrom` is `null` or a date. `null`: no page has to carry a purpose, an intro or an explainer (the builders are still asked for both, and the spec's contract findings are only warnings); what a page does carry is still checked: an intro must have 35 to 70 words and match `project.json`, a page whose purpose browser-check knows keeps to the control budget, and a tool must pass its self-test. A date `YYYY-MM-DD`: every Tier 1 or 2 page dated on or after it must have `fingerprint.purpose`, an intro and an explainer (`validate.mjs project` errors, browser-check checks that both are visible and that the intro ends within the first screen, the spec lint fails instead of warning, QA treats a missing intro as a blocker); earlier pages and the fallback pages (Tier 3 and 4) are exempt. The lead sets the first date, the first run after the whole contract landed. Never move it to a date before pages that lack an intro: `build-site` re-validates every page and would drop them from the gallery. The other numbers: `intro` (35 to 70 words, a first sentence of at most 30), `explainer.minWords` and `minHeadings` per purpose (a lesson 700 words and 4 headings, a tool 250 and 2, play 150 and 1), `lessonMinChecks` (2 exercises), `toolMinSelfTests` (8 known-answer cases), `introMaxBottomPx` (the intro ends within 420 px of the top on a laptop, 560 on a phone), `firstScreenControls` (more than 8 visible controls warn, more than 14 fail). To check one page by hand: `node scripts/validate.mjs project docs/d/<dir> --tier 1 --contract`.
 
 ## Pause and resume
 

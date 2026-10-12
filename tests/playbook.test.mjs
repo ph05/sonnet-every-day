@@ -93,7 +93,7 @@ function makeIdeas(n) {
   const slots = Object.keys(tax.slots);
   return Array.from({ length: n }, (_, i) => {
     const w = (k) => `${ideaWords[(i + k) % ideaWords.length]}-${ideaWords[(i * 3 + k + 5) % ideaWords.length]}${i}${k}`;
-    const scores = Object.fromEntries(['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety'].map((d) => [d, 5 + (i % 4)]));
+    const scores = Object.fromEntries(['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety', 'clarity'].map((d) => [d, 5 + (i % 4)]));
     return {
       id: `i${String(i + 1).padStart(2, '0')}`,
       title: `Idea number ${w(1)}`,
@@ -747,7 +747,7 @@ test('reading: the playbook tells the reader to read in chunks to the end, the b
   const headings = [...PLAYBOOK.matchAll(/^## (.+)$/gm)].map((m) => m[1]);
   assert.match(headings[headings.length - 1], /^Appendix D/, 'the last section is the one the bootstrap names');
   // every appendix tool named in the opening paragraph exists
-  for (const id of ['A1', 'A2', 'A3', 'A4', 'A5', 'A6']) assert.ok(new RegExp(`^### ${id} `, 'm').test(PLAYBOOK), `Appendix ${id}`);
+  for (const id of ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7']) assert.ok(new RegExp(`^### ${id} `, 'm').test(PLAYBOOK), `Appendix ${id}`);
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -1149,7 +1149,10 @@ test('spend shares: a full Tier 1 day through revise fits under the workflow cap
     const withPackage = throughRevise + Math.round(SHARES.full.package * lc.capTokens);
     assert.ok(withPackage <= workflowCap, `${level}: the whole day (${withPackage}) leaves no room under ${workflowCap}`);
   }
-  assert.match(PLAYBOOK, /a full day without revise totals 64% of it, with revise 71%/);
+  assert.match(PLAYBOOK, /a full day without revise totals 67% of it, with revise 74%, a compact day 57%, 65% with its revise/);
+  const pct = (kind, phases) => Math.round(phases.reduce((a, p) => a + SHARES[kind][p], 0) * 100);
+  const day = ['ideate', 'select', 'spec', 'build', 'qa', 'package'];
+  assert.deepEqual([pct('full', day), pct('full', [...day, 'revise']), pct('compact', day), pct('compact', [...day, 'revise'])], [67, 74, 57, 65], 'the percentages the playbook prints are the sums of its own spend-shares block');
 });
 
 /** A bare remote whose pre-receive hook refuses every push to a branch with `heartbeat` in its name. */
@@ -1508,4 +1511,244 @@ test('transcripts: below 6 agent slots every workflow caps the default effort at
     assert.match(read(`ops/workflows/${w}.js`), /const BASE_EFFORT = NARROW && \(LEVEL_EFFORT === 'max' \|\| LEVEL_EFFORT === 'xhigh'\) \? 'high' : LEVEL_EFFORT;/, w);
   }
   assert.match(section(PLAYBOOK, '### 6.5a Usage guard'), /below 6 slots the workflows cap the default effort at `high` by themselves/);
+});
+
+// ---------------------------------------------------------------------------------------------
+// the purpose mix and the page contract (2026-10-12): the owner asked for tools and lessons, an intro and an explainer, and clarity
+// ---------------------------------------------------------------------------------------------
+
+const NOVELTY = path.join(REPO_ROOT, 'scripts', 'novelty.mjs');
+const LENSES = path.join(REPO_ROOT, 'scripts', 'lenses.mjs');
+const PLAY_DAYS = [['2026-10-10', 'jokers-in-phase', 'modding-games'], ['2026-10-11', 'orbital-knitwear', 'science-sim'], ['2026-10-12', 'between-periods', 'hockey-sports']];
+/** A sandbox with the real config, taxonomy and lens pool, and the first three (play) days in its history. */
+function mixBox() {
+  const box = realBox();
+  box.write('ops/lenses.json', read('ops/lenses.json'));
+  box.write('state/history.json', {
+    schema: 1, startDate: D, entries: PLAY_DAYS.map(([date, slug, category], i) => ({
+      n: i + 2, date, slug, title: slug, tagline: 't', tier: 2, path: `d/${date}-${slug}/`, publishedAt: `${date}T13:00:00.000Z`, countsForNovelty: true,
+      fingerprint: { purpose: 'play', category, mechanic: 'game', tone: ['playful'], tech: [], tags: [`${slug}-a`, `${slug}-b`, `${slug}-c`], keywords: [`${slug}-d`, `${slug}-e`, `${slug}-f`], slot: 'wildcard', political: false },
+    })),
+  });
+  return box;
+}
+
+test('purpose override: PLAYBOOK §3.4 documents PURPOSE=, and the preflight commands it names give the plan ideate and select read', () => {
+  const orient = section(PLAYBOOK, '**3.4 Clock, date, role.**');
+  const vocab = Object.keys(JSON.parse(TAXONOMY).purposes);
+  assert.deepEqual(vocab, ['tool', 'lesson', 'explorer', 'studio', 'play']);
+  assert.ok(orient.includes(`\`PURPOSE=<${vocab.join('|')}>\``), 'the override list names PURPOSE= with the purposes in canonical order');
+  assert.match(orient, /FORCE=1 and PURPOSE= are overrides even if the prompt lists only three/);
+  const bullet = orient.split('\n').find((l) => l.startsWith('* `PURPOSE=<P>`'));
+  assert.ok(bullet, 'a bullet says what PURPOSE= does');
+  const cmds = [...bullet.matchAll(/`(node scripts\/[^`]+)`/g)].map((m) => m[1]);
+  assert.deepEqual(cmds, ['node scripts/novelty.mjs mix --date <D> --purpose <P>', 'node scripts/lenses.mjs --date <D> --purpose <P>']);
+  for (const needle of [/args\.mix\.purposes/, /`purposes\.override` `<P>`/, /preflight only/, /FM-143/]) assert.match(bullet, needle);
+  assert.match(section(PLAYBOOK, '### 8.1 preflight'), /With `PURPOSE=<P>` in this fire \(§3\.4\) the `lenses\.mjs` and `novelty\.mjs mix` lines get `--purpose <P>`/);
+  assert.match(read('ops/FAILURE_MODES.md'), /^\| FM-143 \| A manual `PURPOSE=` run \|/m);
+  assert.match(section(read('ops/OPERATING.md'), '## Steering the mix'), /`PURPOSE=tool RUN_DATE=<date>`/);
+
+  const box = mixBox();
+  try {
+    const run = (cmd, P) => {
+      const argv = cmd.replace('<D>', '2026-10-13').replace('<P>', P).split(/\s+/).slice(1);
+      return box.cli(path.join(REPO_ROOT, argv[0]), argv.slice(1));
+    };
+    // the plan of 2026-10-13 without an override: three play days, so tools and lessons are wanted and play waits (DESIGN 12.1)
+    const plain = box.cli(NOVELTY, ['mix', '--date', '2026-10-13']).json.purposes;
+    assert.deepEqual([plain.wanted, plain.avoid, plain.playAllowed, plain.playBlockedUntil, plain.override], [['tool', 'lesson'], ['play'], false, '2026-10-18', null]);
+    for (const P of ['tool', 'play']) {
+      const mix = run(cmds[0], P);
+      assert.equal(mix.code, 0, mix.stdout + mix.stderr);
+      assert.deepEqual([mix.json.purposes.override, mix.json.purposes.wanted, mix.json.purposes.avoid, mix.json.purposes.playAllowed], [P, [P], [], true], `PURPOSE=${P}`);
+      assert.match(mix.json.summary, /Manual override/);
+      const lenses = run(cmds[1], P);
+      assert.equal(lenses.code, 0, lenses.stdout + lenses.stderr);
+      assert.equal(lenses.json.purposes.override, P);
+      const kinds = lenses.json.agents.map((a) => a.lens.kind);
+      if (P === 'tool') assert.ok(kinds.filter((k) => k === 'useful').length >= 2 && lenses.json.agents.find((a) => a.agent === 'engineer').lens.kind === 'useful', kinds.join());
+      if (P === 'play') assert.ok(kinds.includes('humor') && kinds.filter((k) => k === 'interest').length >= 2, `a forced play day draws humor and interest lenses even while play is paused: ${kinds}`);
+    }
+    // FM-143: a bare --purpose is a usage error, an unknown one a checked failure
+    assert.equal(box.cli(NOVELTY, ['mix', '--date', '2026-10-13', '--purpose']).code, 2);
+    assert.equal(box.cli(LENSES, ['--date', '2026-10-13', '--purpose']).code, 2);
+    const bogus = box.cli(NOVELTY, ['mix', '--date', '2026-10-13', '--purpose', 'bogus']);
+    assert.deepEqual([bogus.code, bogus.json.ok], [1, false]);
+  } finally {
+    box.cleanup();
+  }
+});
+
+test('purpose plan: the neutral cases of PLAYBOOK §8.1 hold (no mix.purposes gives purposes null; an unreadable history gives the lens draw a planError and the neutral plan)', () => {
+  const pre = section(PLAYBOOK, '### 8.1 preflight');
+  for (const needle of [/`purposes: null`/, /"no purpose plan"/, /`planError`/, /the first two non-play purposes wanted, nothing avoided, play allowed/]) assert.match(pre, needle);
+  const cfg = structuredClone(FIXTURE_CONFIG);
+  delete cfg.mix.purposes;
+  const none = makeSandbox({ config: cfg });
+  try {
+    none.write('ops/taxonomy.json', TAXONOMY);
+    none.write('ops/lenses.json', read('ops/lenses.json'));
+    const mix = none.cli(NOVELTY, ['mix', '--date', D]);
+    assert.equal(mix.code, 0, mix.stdout + mix.stderr);
+    assert.equal(mix.json.purposes, null);
+    assert.ok(!/Purpose mix/.test(mix.json.summary), 'no plan, no purpose sentence');
+  } finally {
+    none.cleanup();
+  }
+  const broken = mixBox();
+  try {
+    broken.write('state/history.json', '{ not json');
+    const lenses = broken.cli(LENSES, ['--date', '2026-10-13']);
+    assert.equal(lenses.code, 0, lenses.stdout + lenses.stderr);
+    assert.equal(typeof lenses.json.planError, 'string');
+    assert.deepEqual([lenses.json.purposes.wanted, lenses.json.purposes.avoid, lenses.json.purposes.playAllowed], [['tool', 'lesson'], [], true]);
+    assert.notEqual(broken.cli(NOVELTY, ['mix', '--date', '2026-10-13']).code, 0, 'mix.json itself fails there: FM-52 to FM-56');
+  } finally {
+    broken.cleanup();
+  }
+});
+
+/** Top-level keys of a `{a, b:{...}, c[]}` field list as the docs and the workflow headers write it. */
+function topKeys(obj) {
+  let s = obj.trim().replace(/^\{/, '').replace(/\}$/, '').replace(/"[^"]*"|'[^']*'/g, '');
+  for (let prev = ''; prev !== s;) {
+    prev = s;
+    s = s.replace(/\{[^{}]*\}|\[[^[\]]*\]|\([^()]*\)/g, '');
+  }
+  return s.split(',').map((k) => k.split(':')[0].trim().replace(/\[\]$/, '')).filter((k) => /^[a-zA-Z]\w*$/.test(k));
+}
+
+test('workflow returns: every field PLAYBOOK §7.2 says a workflow returns is in that workflow\'s own return list, and qa.js writes the documented report fields', () => {
+  const per = PLAYBOOK.slice(PLAYBOOK.indexOf('Per workflow, in addition:'), PLAYBOOK.indexOf('Every return also may carry'));
+  for (const name of ['ideate', 'select', 'spec', 'build', 'qa', 'revise', 'kaizen']) {
+    const row = per.split('\n').find((l) => l.startsWith(`| \`${name}\` |`));
+    assert.ok(row, `§7.2 has a row for ${name}`);
+    const cells = row.split(/(?<!\\)\|/);
+    const documented = topKeys(/`(\{[^`]*\})`/.exec(cells[cells.length - 2])?.[1] ?? '');
+    assert.ok(documented.includes('ok') && documented.includes('spend'), `${name}: ${documented}`);
+    const head = read(`ops/workflows/${name}.js`).split('\n').filter((l) => l.startsWith('//')).map((l) => l.replace(/^\/\/\s?/, '')).join(' ');
+    const at = head.indexOf('returns: {');
+    assert.ok(at >= 0, `${name}.js documents its return`);
+    let depth = 0;
+    let end = at + 'returns: '.length;
+    for (; end < head.length; end++) {
+      if (head[end] === '{') depth++;
+      if (head[end] === '}' && --depth === 0) break;
+    }
+    const own = new Set(topKeys(head.slice(at + 'returns: '.length, end + 1)));
+    for (const k of documented) assert.ok(own.has(k), `PLAYBOOK §7.2 says ${name} returns ${k}, which ${name}.js does not list (${[...own].join(', ')})`);
+  }
+  for (const [name, keys] of [['ideate', ['purposes']], ['select', ['ranking', 'purposes']], ['spec', ['purpose', 'pageContract']], ['qa', ['stranger', 'expertReviewed']]]) {
+    const row = per.split('\n').find((l) => l.startsWith(`| \`${name}\` |`));
+    for (const k of keys) assert.ok(topKeys(/`(\{[^`]*\})`/.exec(row.split(/(?<!\\)\|/).at(-2))?.[1] ?? '').includes(k), `§7.2 ${name} returns ${k}`);
+  }
+  // the QA report: coldRead, expert and pageContract with the fields the playbook names, all written by qa.js
+  const report = /QA report \(`work\/<D>\/qa\/report\.json`\): `(\{[^`]*\})`/.exec(PLAYBOOK)?.[1];
+  assert.ok(report, '§7.2 carries the QA report shape');
+  const qa = read('ops/workflows/qa.js');
+  const objects = [...report.matchAll(/"(coldRead|expert|pageContract)":\{([^}]*)\}/g)];
+  assert.deepEqual(objects.map((m) => m[1]), ['coldRead', 'expert', 'pageContract']);
+  for (const [, obj, inner] of objects) {
+    const line = qa.split('\n').find((l) => new RegExp(`^\\s*${obj}: `).test(l));
+    assert.ok(line, `qa.js writes ${obj}`);
+    for (const [, field] of inner.matchAll(/"(\w+)"/g)) assert.ok(line.includes(`${field}:`), `qa.js ${obj} has no ${field}`);
+  }
+  assert.match(report, /opaque-first-screen/);
+  assert.match(qa, /const OPAQUE_KIND = 'opaque-first-screen';/);
+});
+
+test('page contract: every code the validator and browser-check emit for it is named in CONTRACT and handled by the PLAYBOOK §10.1 triage', () => {
+  const v = read('scripts/validate.mjs');
+  const b = read('scripts/qa/browser-check.mjs');
+  const vCodes = new Set([...v.matchAll(/'((?:intro|explainer)-[a-z-]+)'/g)].map((m) => m[1]).filter((c) => !/-$/.test(c)));
+  vCodes.add('purpose');
+  const bCodes = new Set([...b.matchAll(/\b(?:error|warn)\('((?:intro|explainer|controls|selftest|contract)-[a-z-]+)'/g)].map((m) => m[1]));
+  for (const c of ['intro-missing', 'intro-length', 'intro-placement', 'intro-markup', 'intro-unclosed', 'intro-entity', 'intro-mismatch', 'intro-first-sentence', 'explainer-missing', 'explainer-placement', 'explainer-words', 'explainer-headings', 'explainer-checks']) assert.ok(vCodes.has(c), `validate.mjs emits ${c}`);
+  for (const c of ['intro-missing', 'intro-hidden', 'intro-too-tall', 'explainer-missing', 'explainer-hidden', 'controls-many', 'controls-excess', 'selftest-missing', 'selftest-few', 'selftest-failed', 'selftest-timeout', 'contract-probe-failed']) assert.ok(bCodes.has(c), `browser-check emits ${c}`);
+  const contract = read('ops/CONTRACT.md');
+  const triage = section(PLAYBOOK, '### 10.1 Stage');
+  for (const c of [...vCodes, ...bCodes]) {
+    assert.ok(contract.includes(`\`${c}\``), `CONTRACT names ${c}`);
+    if (c !== 'contract-probe-failed') assert.ok(triage.includes(`\`${c}\``) || triage.includes(`\`${c.split('-')[0]}-*\``), `PLAYBOOK §10.1 triage handles ${c}`);
+  }
+  // the intro field of the package: the page's own text; a mismatch is package authoring, everything else of the page a builder defect
+  assert.match(triage, /\| `intro` \| the exact text of the page's `p\[data-sed-intro\]`, entities decoded/);
+  assert.match(triage, /\| `purpose`, `intro-mismatch`, and `intro-missing` that says project\.json has no "intro" \| You \(package authoring\)/);
+  assert.match(triage, /Builder problem: S1 `extraDefects` for `revise`/);
+  assert.match(read('ops/workflows/build.js'), /intro = the exact text of the page's p\[data-sed-intro\] \(entities decoded, whitespace collapsed/);
+});
+
+test('intro copy (A7): an intro a revise loop rewrote reaches both project.json files exactly as the validator reads it, and intro-mismatch is gone', () => {
+  const box = realBox();
+  try {
+    const date = '2026-10-21';
+    const fixture = path.join(REPO_ROOT, 'tests', 'fixtures', 'contract', `${date}-parity-bit-lesson`);
+    const dir = box.path('work', date, 'tmp', 'pkg', path.basename(fixture));
+    fs.cpSync(fixture, dir, { recursive: true });
+    const html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+    const m = /(<p\b[^>]*data-sed-intro[^>]*>)([\s\S]*?)(<\/p>)/.exec(html);
+    assert.ok(m, 'the fixture has an intro');
+    // the page's new intro: entities, an inline element, tabs and line breaks; the build's draft and the staged copy still hold the old one
+    const rewritten = 'A lesson on parity bits &amp; how one extra bit catches a flipped bit.\n   You flip bits in a byte,\twatch the parity bit, and see which errors it <em>catches</em> and which it misses; no maths is needed&nbsp;to start, and two short exercises check what you learned at the end.';
+    fs.writeFileSync(path.join(dir, 'index.html'), html.replace(m[0], `${m[1]}${rewritten}${m[3]}`));
+    box.write(`work/${date}/package/project.json`, JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8')));
+    const validate = () => spawnSync(process.execPath, [path.join(REPO_ROOT, 'scripts', 'validate.mjs'), 'project', dir, '--tier', '2', '--contract'], { env: { ...process.env, SED_ROOT: box.root }, encoding: 'utf8' });
+    assert.match(validate().stdout, /intro-mismatch/);
+    const r = runSnippet(box, 'A7', { D: date, DIR: dir });
+    assert.equal(r.code, 0, r.stdout + r.stderr);
+    assert.equal(r.json.intro, 'A lesson on parity bits & how one extra bit catches a flipped bit. You flip bits in a byte, watch the parity bit, and see which errors it catches and which it misses; no maths is needed to start, and two short exercises check what you learned at the end.');
+    assert.equal(r.json.changed.length, 2, 'the package draft and the staged project.json');
+    const after = JSON.parse(validate().stdout);
+    assert.deepEqual(after.errors.filter((e) => /^intro-/.test(e)), []);
+    assert.equal(box.readJson(`work/${date}/package/project.json`).intro, r.json.intro);
+    assert.deepEqual(runSnippet(box, 'A7', { D: date, DIR: dir }).json.changed, [], 'a second run changes nothing');
+    fs.writeFileSync(path.join(dir, 'index.html'), html.replace(m[0], ''));
+    const none = runSnippet(box, 'A7', { D: date, DIR: dir });
+    assert.equal(none.code, 1);
+    assert.match(none.json.error, /builder defect/);
+  } finally {
+    box.cleanup();
+  }
+  assert.match(section(PLAYBOOK, '### 10.1 Stage'), /Appendix A7 \(`DIR=<DIR>`\)/);
+});
+
+test('numbers: the purpose and contract numbers the documents quote are the ones config.json, the rubric and the workflows use', () => {
+  const pc = REAL_CONFIG.pageContract;
+  const mp = REAL_CONFIG.mix.purposes;
+  const rubric = JSON.parse(/```json weights\n([\s\S]*?)\n```/.exec(read('ops/rubrics/selection.md'))[1]);
+  const docs = ['ops/PLAYBOOK.md', 'ops/CONTRACT.md', 'ops/FAILURE_MODES.md', 'ops/OPERATING.md'].map((f) => [f, read(f)]);
+  const quoted = [
+    [/`(?:config\.ideation\.)?shortlistMinWanted` \((\d+)\)/g, REAL_CONFIG.ideation.shortlistMinWanted],
+    [/`(?:mix\.purposes\.)?bonus` \((\d+)\)/g, mp.wantedBonus],
+    [/`wantedBonus` \((\d+)\)/g, mp.wantedBonus],
+    [/`toolMinSelfTests` \((\d+)\)/g, pc.toolMinSelfTests],
+    [/`lessonMinChecks` \((\d+)\)/g, pc.lessonMinChecks],
+    [/`minClarity` \((\d+)\)/g, rubric.gates.minClarity],
+    [/`starvedDays` \((\d+)\)/g, mp.starvedDays],
+    [/`cooldownDays` \((\d+)\)/g, mp.cooldownDays],
+    [/`playCooldownDays` \((\d+)\)/g, mp.playCooldownDays],
+    [/`maxPlayPer7Days` \((\d+)\)/g, mp.maxPlayPer7Days],
+    [/`wantedCount` \((\d+)\)/g, mp.wantedCount],
+    [/`firstScreenControls\.warn` \((\d+)\)/g, pc.firstScreenControls.warn],
+    [/`\.error` \((\d+)\)/g, pc.firstScreenControls.error],
+  ];
+  let seen = 0;
+  for (const [file, text] of docs) for (const [re, want] of quoted) for (const m of text.matchAll(re)) {
+    seen++;
+    assert.equal(Number(m[1]), want, `${file}: ${m[0]} but the configured value is ${want}`);
+  }
+  assert.ok(seen >= 12, `only ${seen} quoted numbers found: the patterns are stale`);
+  // CONTRACT 6.2 quotes the explainer minimums per purpose, OPERATING the purpose-mix table: both are config.json's
+  const contract = read('ops/CONTRACT.md');
+  assert.ok(contract.includes(`(prose below \`pageContract.explainer.minWords[purpose]\`: ${Object.entries(pc.explainer.minWords).map(([p, n]) => `${p} ${n}`).join(', ')};`), 'CONTRACT 6.2 explainer word minimums');
+  assert.ok(contract.includes(`below \`minHeadings[purpose]\`: ${Object.entries(pc.explainer.minHeadings).map(([p, n]) => `${p} ${n}`).join(', ')})`), 'CONTRACT 6.2 explainer heading minimums');
+  const table = section(read('ops/OPERATING.md'), '## Steering the mix').split('\n').filter((l) => /^\| `/.test(l));
+  const keys = table.flatMap((l) => [...l.split('|')[1].matchAll(/`(\w+)`/g)].map((m) => m[1]));
+  assert.deepEqual([...keys].sort(), Object.keys(mp).sort(), 'OPERATING "Steering the mix" documents every mix.purposes key once');
+  for (const l of table) {
+    const ks = [...l.split('|')[1].matchAll(/`(\w+)`/g)].map((m) => m[1]);
+    const now = l.split('|')[2].trim().replace(/`/g, '');
+    const want = ks.map((k) => (k === 'quota' ? Object.entries(mp.quota).map(([p, n]) => `${p} ${n}`).join(', ') : String(mp[k]))).join(', ');
+    assert.equal(now, want, `OPERATING: ${ks.join(', ')} is "${now}", config.json says "${want}"`);
+  }
 });

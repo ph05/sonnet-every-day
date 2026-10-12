@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A new sophisticated, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
+  "description": "A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.",
   "engines": { "node": ">=22" },
   "scripts": {
     "test": "node --test --test-concurrency=4 \"tests/*.test.mjs\" ops/workflows/_selfcheck.mjs",

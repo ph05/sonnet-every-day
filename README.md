@@ -1,12 +1,26 @@
 # Sonnet Every Day
 
-**One new, sophisticated, one-of-a-kind thing that fits on a static web page. Every single morning. Built while you sleep.**
+**A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.**
 
-At 03:55 New York time a Claude Sonnet 5.5 orchestrator wakes up, assembles a team of eight Claude Sonnet agents plus a few Claude Haiku clerks, and gets to work. Around 08:00 the day's project is live (a guideline: occasionally later, because quality beats punctuality): a poker range explorer one day, a hockey-physics toy the next, a deeply silly instrument after that. No two alike, none of them throwaway.
+At 03:55 New York time a Claude Sonnet 5.5 orchestrator wakes up, assembles a team of eight Claude Sonnet agents plus a few Claude Haiku clerks, and gets to work. Around 08:00 the day's page is live (a guideline: occasionally later, because quality beats punctuality): a free, private version of a tool people usually pay for one day, an interactive lesson on a niche concept the next, a game with a familiar hook after that. No two alike, none of them throwaway.
 
 **See it:** <https://ph05.github.io/sonnet-every-day/>
 
-Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, and is honest about the days that did not go to plan.
+Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, lets you filter by type, and is honest about the days that did not go to plan.
+
+## What you will find here
+
+* **Tools.** A working utility for a real job people usually pay for, sign up for or upload private files for: a calculator, converter, checker or planner. Correct first, private and offline in your browser, with its limits printed.
+* **Lessons.** One niche concept, taught with demos you can poke, worked examples and a few check-yourself questions.
+* **Explorers.** A model, map, timeline or dataset you can query, with the data bundled and its sources named.
+* **Studios.** A small workbench that makes something worth keeping or exporting: music, patterns, palettes, type.
+* **Play.** A game or a satire with one clear goal and a familiar hook. Welcome, but rare.
+
+**How the mix is kept.** Each morning `node scripts/novelty.mjs mix` reads the last seven days and plans the day: the one or two purposes furthest below their weekly share (tools and lessons twice a week, explorers and studios once) are wanted, the scouts lead with them and the judges add a small bonus; a purpose shipped in the last two days waits its turn, and play comes back at most twice a week, three days apart. The owner can ask for one kind on any day with a manual run (`PURPOSE=tool`; [`ops/OPERATING.md`](ops/OPERATING.md), "Steering the mix").
+
+**The clarity promise.** Plain first: the title, the tagline and the first sentence of the intro say what the page literally is; a theme only decorates. Ten seconds: a stranger can say what it is after ten seconds and reaches a first result within thirty without reading anything, with at most 8 controls on the first screen. An intro and an explainer on every built page: 35 to 70 words right under the title (what it is, who it is for, what to do first) and an explanation for a curious non-expert, with every term defined where it first appears. QA checks it with a stranger who sees only the first screen.
+
+**The owner's voice.** What the owner has said lives in [`ops/OWNER.md`](ops/OWNER.md), newest first. Every agent reads it before it researches, scores, designs, builds or reviews, and no kaizen may edit it.
 
 ---
 
@@ -14,20 +28,21 @@ Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, and is honest 
 
 * A daily build pipeline that runs unattended, plus the gallery that shows its output.
 * Each project is a self-contained static page: no server, no build step, no trackers, no CDNs. It works offline.
-* Variety is the whole game. The system is told what it built before and is forced to look somewhere new: poker ranges and GTO, Balatro and mod ideas, hockey, Reddit-born ideas, pop-flavored current events, humor, science, music, tools, weird art, and whatever the dice say.
+* Variety is the whole game: a weekly mix of purposes, and a system that is told what it built before and is forced to look somewhere new: useful tools, niche concepts, poker ranges and GTO, Balatro and mod ideas, hockey, Reddit-born ideas, pop-flavored current events, science, music, design, money maths, humor, and whatever the dice say.
 * Everything is plain Node 22 with zero npm dependencies. The "brain" is a set of prompts and role files in [`ops/`](ops/); the "hands" are small, tested scripts in [`scripts/`](scripts/).
 
 ## How a day works
 
 ```
-03:55  preflight   sync, claim the day, read the history and the lens assignments
-       ideate      8 scouts research and propose; a clerk dedupes; a novelty gate and verifiers
-                   narrow it to EXACTLY 10 researched ideas
-       select      a judge panel scores the 10 and picks the winner (and at most one to save)
-       spec        architect, artisan and engineer write the spec, the design and the file map
+03:55  preflight   sync, claim the day, read the history, the purpose plan and the lens assignments
+       ideate      8 scouts research and propose, led by the day's wanted purposes; a clerk dedupes;
+                   a novelty gate and verifiers narrow it to EXACTLY 10 researched ideas
+       select      nine judges score the 10 (clarity among them) and pick the winner (and at most one to save)
+       spec        architect, artisan and engineer write the intro, the explainer, the spec, the design and the file map
        build       builders work on disjoint files in parallel
        QA          headless browser on desktop and phone, light and dark, plus a monkey test;
-                   a critic ranks the defects; a clerk proofreads
+                   a critic ranks the defects; a stranger reads only the first screen; an expert
+                   checks the explanation (and recomputes a tool's answers); a clerk proofreads
        revise      owners fix the serious defects and QA runs again
        package     thumbnail, metadata, validation, gallery rebuild, run report
        publish     push, then check the live site lists today
@@ -85,7 +100,8 @@ The cloud network is restricted: web search works, opening most pages does not. 
 ## The rules
 
 * **Distinct.** A novelty gate compares every candidate with the whole history: category cooldowns, mechanic cooldowns, tag overlap, title similarity. Same idea in new clothes does not pass.
-* **Sophisticated.** A real mechanic with depth, not a lorem-ipsum toy. A full build has to carry at least 700 lines of its own logic, styling and markup.
+* **Useful and correct.** Real depth for its purpose: a tool that gives the right answer (known-answer tests from named sources, run in the page) and says its limits, a lesson that teaches nothing false, a game with a real core loop. A full build has to carry at least 700 lines of its own logic, styling and markup.
+* **Clear.** The clarity promise above: plain words first, understood in ten seconds, an intro and an explainer.
 * **Static and offline.** The page works with bundled data. Live fetches are allowed only as a graceful extra, only for hosts the project declares, and the page's Content-Security-Policy enforces it.
 * **Safe.** No analytics, no real branding, no real-money gambling, no personal data, no presenting fiction as fact. Every factual claim carries a dated source, and a claim without a source that was actually opened is never published as fact.
 * **Politics are rare.** At most one in any 14 days, satirical or playful, never partisan advocacy. Current events lean pop culture, games, tech, science and hockey.
@@ -93,10 +109,10 @@ The cloud network is restricted: web search works, opening most pages does not. 
 
 ## How a daily project is judged
 
-1. **The ten ideas are scored 0 to 10** on sophistication, delight, distinctness, feasibility, timeliness, interest fit, polish potential and safety. The judge panel's winner is built.
-2. **Hard gates before anything goes live.** `scripts/validate.mjs` checks the metadata, the thumbnail, the page shell, the Content-Security-Policy, that there are no external resources, secrets or forbidden files, that every script parses, and the size and code-volume limits. A project that fails is left out and can never break the gallery.
-3. **A real browser looks at it.** Headless Chromium loads the page on desktop and phone in light and dark, records console errors, failed or non-local requests, layout overflow and missing labels, then hammers it with random clicks and keys to catch crashes and hangs.
-4. **A critic ranks what is left.** Serious defects go back to their owners for a fix. The bar is "would a person bookmark this or send it to a friend": keyboard and touch support, 360px layouts, light and dark, reduced motion, shareable state, a making-of panel with the day's sources.
+1. **The ten ideas are scored 0 to 10** on sophistication, delight, distinctness, feasibility, timeliness, interest fit, polish potential, safety and clarity. An idea a stranger could not grasp in ten seconds cannot win, and an idea of the day's wanted purpose gets a small bonus. The judge panel's winner is built.
+2. **Hard gates before anything goes live.** `scripts/validate.mjs` checks the metadata, the thumbnail, the page shell, the Content-Security-Policy, that there are no external resources, secrets or forbidden files, that every script parses, the size and code-volume limits, and the page contract: the purpose, the intro (it must match the metadata word for word) and the explainer's words and headings. A project that fails is left out and can never break the gallery.
+3. **A real browser looks at it.** Headless Chromium loads the page on desktop and phone in light and dark, records console errors, failed or non-local requests, layout overflow and missing labels, counts the controls on the first screen, runs a tool's built-in known-answer tests, then hammers it with random clicks and keys to catch crashes and hangs.
+4. **A critic ranks what is left.** Beside it a stranger who sees only the first screen says what the page is, and an expert checks every claim of the explanation. Serious defects go back to their owners for a fix. The bar is "would a person bookmark this or send it to a friend": keyboard and touch support, 360px layouts, light and dark, reduced motion, shareable state, a making-of panel with the day's sources.
 
 ## Architecture
 
@@ -124,6 +140,7 @@ Everything lives in git, on one work branch, so any session can pick up where an
 config.json            the knobs: schedule, tiers, budget levels, novelty rules, limits
 ops/
   PLAYBOOK.md          the orchestrator's brain; routines only say "read this and do it"
+  OWNER.md             what the owner has said; every agent reads it first
   CULTURE.md           the team charter: resilient, curious, proactive
   kaizen/              the ledger (LOG.md, INDEX.json) and proposals for the owner
   OPERATING.md         the owner's guide
