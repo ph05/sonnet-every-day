@@ -138,6 +138,46 @@
       scroll-behavior: auto !important;
     }
   }
+  /* Added 2026-10-12 (page contract): intro, "Start here" panel and explainer. The intro and explainer rules are the shell's,
+     recoloured with this page's tokens; the panel and the two-column masthead keep the map and the controls on the first screen. */
+  .sed-intro { max-width: 68ch; margin: 0 0 1.25rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-start-links { margin: 0; font-size: 0.875rem; font-weight: 600; }
+  .sed-start { order: 1; padding: 12px 14px 8px; border: 2px dashed var(--accent); border-radius: var(--radius); background: var(--surface); }
+  .sed-start-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; margin: 0 0 2px; }
+  .sed-start h2 { margin: 0; font-family: var(--font-display); font-size: 1.1875rem; font-weight: 600; }
+  .sed-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; font-size: 0.9rem; line-height: 1.42; }
+  .sed-steps li { position: relative; margin: 0.4rem 0; padding-left: 2.1rem; counter-increment: step; }
+  .sed-steps li::before { content: counter(step); position: absolute; left: 0; top: 0.02rem; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--accent); color: var(--accent-fg); font-size: 0.8125rem; font-weight: 700; line-height: 1.5rem; text-align: center; }
+  #ctl-alt { scroll-margin-top: 5.5rem; } /* where the Height link in the panel lands: the slider's own heading stays in view under the pinned map */
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 2px dashed var(--border-strong); scroll-margin-top: calc(1rem - var(--kn-pin, 0px)); }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-family: var(--font-display); font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-family: var(--font-display); font-size: 1.15rem; scroll-margin-top: calc(1rem - var(--kn-pin, 0px)); }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-glossary { margin: 0 0 1rem; }
+  .sed-glossary dt { margin: 0.85rem 0 0.1rem; font-weight: 700; }
+  .sed-glossary dd { margin: 0; }
+  @media (min-width: 640px) {
+    .sed-glossary { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 0.6rem 1.25rem; }
+    .sed-glossary dt { margin: 0; }
+  }
+  @media (min-width: 768px) {
+    #ctl-alt { scroll-margin-top: 12rem; }
+    .sed-start { order: -1; grid-column: 1 / -1; }
+    .sed-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1.5rem; }
+  }
+  @media (min-width: 1024px) {
+    .sed-main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; grid-template-rows: auto 1fr; column-gap: 24px; align-items: start; }
+    .sed-main > * { grid-column: 1 / -1; }
+    .sed-main > .sed-title { grid-column: 1; grid-row: 1; }
+    .sed-main > .sed-tagline { grid-column: 1; grid-row: 2; }
+    .sed-main > .sed-intro { grid-column: 2; grid-row: 1 / span 2; max-width: none; margin: 0.4rem 0 1rem; font-size: 0.9375rem; line-height: 1.5; }
+    .sed-start { order: 0; grid-column: auto; }
+    .sed-steps { display: block; }
+  }
+  @media (min-width: 1280px) {
+    .sed-main { grid-template-columns: minmax(0, 1fr) 400px; }
+  }
 </style>
 <link rel="stylesheet" href="style.css">
 <link rel="modulepreload" href="js/ui.js">
@@ -160,6 +200,7 @@
 <main id="main" class="sed-main" tabindex="-1">
   <h1 class="sed-title">Orbital Knitwear</h1>
   <p class="sed-tagline">Tune a satellite's orbit and knit the planet in wool, one pass at a time, while the flat map lies about the holes.</p>
+  <p class="sed-intro" data-sed-intro>A simulation that shows how a satellite's orbit sweeps over the Earth, drawn as a track on a flat map. It is for anyone curious about satellites. Drag the Height or Tilt slider and watch what the orbit covers. The knitting is decoration: needles are satellites.</p>
 
   <div id="app" class="kn-app" data-state="loading" aria-busy="true">
     <div id="fatal" class="kn-fatal" role="alert" hidden>
@@ -224,6 +265,17 @@
       </div>
 
       <div class="kn-rail">
+        <section class="sed-start" id="start-here" data-sed-start aria-labelledby="start-title">
+          <div class="sed-start-head">
+            <h2 id="start-title">Start here</h2>
+            <p class="sed-start-links"><a class="sed-jump" href="#explainer">Jump to the explanation</a> <span aria-hidden="true">&middot;</span> <a class="sed-jump" href="#glossary">word list</a></p>
+          </div>
+          <ol class="sed-steps" role="list">
+            <li><strong>Watch.</strong> Two satellites, called needles, knit their paths onto the map. Paused? Press Play.</li>
+            <li><strong>Reshape.</strong> Drag the <a href="#ctl-alt">Height slider</a>, then Tilt. The map starts over with each new orbit.</li>
+            <li><strong>Go further.</strong> Press Tune sun-sync to tilt the orbit in step with the sun, or pick a pattern card: a puzzle with a goal.</li>
+          </ol>
+        </section>
         <section class="kn-panel kn-goal" aria-labelledby="h-goal">
           <div class="kn-goal-head">
             <h2 id="h-goal" class="kn-h2 kn-display">Free knit</h2>
@@ -400,6 +452,60 @@
       </div>
     </div>
   </div>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How an orbit sweeps over the Earth</h2>
+
+    <h3>What the map shows</h3>
+    <p>A satellite at 420 to 700 km circles the Earth in about 93 to 99 minutes, while the Earth turns beneath it, so every lap crosses a new strip of ground. The line traced by the spot directly below the satellite is its <strong>ground track</strong>.</p>
+    <p>Here the track is knitted. The map is a grid of one-degree squares called <strong>stitches</strong>. Each satellite, called a <strong>needle</strong>, knits every stitch within half a <strong>swath</strong> (the width of ground it can see) of the track. A <strong>pass</strong> is one visit of a needle over a stitch.</p>
+
+    <h3>Height and tilt</h3>
+    <ul>
+      <li><strong>Height (perigee)</strong> sets the height of the orbit's lowest point, its perigee, above the ground: 200 to 2,000 km. A higher orbit takes longer per lap (see Orbit time).</li>
+      <li><strong>Tilt (inclination)</strong> is the angle between the orbit and the equator: 0 degrees hugs it, 90 crosses both poles. Up to 90 degrees, the track never gets farther north or south than the tilt itself, so the International Space Station's 51.6 degrees never reaches the polar caps.</li>
+    </ul>
+
+    <h3>Why the flat map lies</h3>
+    <p>A flat map stretches the polar regions sideways: a stitch near a pole is drawn as wide as one on the equator, though it covers far less ground. The chips on the map show two scores: <strong>Planet covered</strong> adds up true surface area; <strong>Map looks covered</strong> counts every stitch equally. Beyond 60 degrees of latitude (the angle north or south of the equator) lies a third of the flat map but about 13 percent of the planet. <strong>Polar view</strong> draws every stitch at its true relative size.</p>
+
+    <h3>Orbits worth trying</h3>
+    <p>A <strong>sun-synchronous</strong> orbit turns once a year in step with the sun, so the satellite crosses the equator at the same local time every day. Earth's slight bulge does the turning, and about 98 degrees of tilt at 600 to 700 km fits. The Tune sun-sync button sets that tilt.</p>
+    <p>A <strong>repeat orbit</strong> retraces its track after a whole number of days. Tall ticks under the Height slider mark repeat heights whose tracks sit closer together than the swath, so the stitches tile without gaps. Landsat, a series of Earth-observing satellites, repeats its sun-synchronous track every 16 days, after 233 orbits.</p>
+
+    <h3>What this is not</h3>
+    <p>It is a toy, not a tracker: its tracks drift from real satellites over weeks. Coastlines are hand-simplified. Sources are in the About panel below.</p>
+
+    <h3 id="glossary">The words on this page</h3>
+    <dl class="sed-glossary">
+      <dt>Needle</dt>
+      <dd>One satellite and its orbit; up to three, each in its own colour of wool.</dd>
+      <dt>Stitch</dt>
+      <dd>One map square, a degree of latitude by a degree of longitude.</dd>
+      <dt>Hole</dt>
+      <dd>A stitch no needle has covered yet, shown as bare linen.</dd>
+      <dt>Pass</dt>
+      <dd>One visit of a needle over a stitch; point at the map to see a stitch's count.</dd>
+      <dt>Free knit</dt>
+      <dd>The default mode: no goal, no par, 365 days.</dd>
+      <dt>Frog it</dt>
+      <dd>Knitters' word for ripping stitches out: it wipes the map and restarts from day 1.</dd>
+      <dt>Pattern card</dt>
+      <dd>One of eight puzzles, each with a goal, a time limit and a par.</dd>
+      <dt>Par</dt>
+      <dd>The best score the team's own search found for a card. Passing a card earns a swatch badge, 90 percent of par a sweater, and coming within half a point of par an heirloom.</dd>
+      <dt>Ground track</dt>
+      <dd>The line on the map directly below the satellite as it flies.</dd>
+      <dt>Height (perigee)</dt>
+      <dd>The perigee is the orbit's lowest point; the slider sets its height.</dd>
+      <dt>Tilt (inclination)</dt>
+      <dd>The angle between the orbit and the equator.</dd>
+      <dt>Sun-synchronous</dt>
+      <dd>Turns once a year with the sun, so the local time of day stays put.</dd>
+      <dt>Swath</dt>
+      <dd>The width of ground a satellite sees on one pass.</dd>
+    </dl>
+  </section>
 </main>
 
 <footer class="sed-footer">
