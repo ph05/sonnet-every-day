@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "phase": "select",
+  "date": "2026-10-12",
+  "chosenId": "i05",
+  "title": "Between Periods",
+  "slug": "between-periods",
+  "carryoverOutId": "i02"
+}

@@ -1,0 +1,265 @@
+{
+  "writeCarryover": false,
+  "scores": {
+    "i05": {
+      "sophistication": 6.2,
+      "delight": 7.4,
+      "distinctness": 7.3,
+      "feasibility": 6.9,
+      "timeliness": 7,
+      "interestFit": 8,
+      "polishPotential": 9,
+      "safety": 7.6
+    },
+    "i02": {
+      "sophistication": 7.4,
+      "delight": 5.3,
+      "distinctness": 7,
+      "feasibility": 6.2,
+      "timeliness": 8,
+      "interestFit": 4.8,
+      "polishPotential": 8.2,
+      "safety": 9.4
+    },
+    "i01": {
+      "sophistication": 5.4,
+      "delight": 7.9,
+      "distinctness": 6.2,
+      "feasibility": 7.4,
+      "timeliness": 7.6,
+      "interestFit": 5.2,
+      "polishPotential": 7.3,
+      "safety": 8.4
+    },
+    "i06": {
+      "sophistication": 7.2,
+      "delight": 8.8,
+      "distinctness": 5.4,
+      "feasibility": 5.5,
+      "timeliness": 5.4,
+      "interestFit": 6.5,
+      "polishPotential": 9.3,
+      "safety": 6.6
+    },
+    "i07": {
+      "sophistication": 8,
+      "delight": 6.2,
+      "distinctness": 4.8,
+      "feasibility": 5.8,
+      "timeliness": 6.2,
+      "interestFit": 4.5,
+      "polishPotential": 8.6,
+      "safety": 8.8
+    },
+    "i10": {
+      "sophistication": 4.2,
+      "delight": 8,
+      "distinctness": 6.8,
+      "feasibility": 5,
+      "timeliness": 7.4,
+      "interestFit": 4,
+      "polishPotential": 8,
+      "safety": 7.4
+    },
+    "i08": {
+      "sophistication": 6.6,
+      "delight": 4.8,
+      "distinctness": 2.8,
+      "feasibility": 8.6,
+      "timeliness": 6,
+      "interestFit": 8.8,
+      "polishPotential": 5.8,
+      "safety": 8.2
+    },
+    "i09": {
+      "sophistication": 7.6,
+      "delight": 3.8,
+      "distinctness": 4.6,
+      "feasibility": 5.3,
+      "timeliness": 9.3,
+      "interestFit": 7.6,
+      "polishPotential": 6.7,
+      "safety": 6
+    },
+    "i03": {
+      "sophistication": 5.8,
+      "delight": 7,
+      "distinctness": 8.3,
+      "feasibility": 4.6,
+      "timeliness": 6.6,
+      "interestFit": 5,
+      "polishPotential": 6.8,
+      "safety": 5.8
+    },
+    "i04": {
+      "sophistication": 5,
+      "delight": 7.7,
+      "distinctness": 5.8,
+      "feasibility": 4,
+      "timeliness": 6.9,
+      "interestFit": 5.5,
+      "polishPotential": 7.7,
+      "safety": 7.8
+    }
+  },
+  "totals": {
+    "i05": 73,
+    "i02": 69.2,
+    "i01": 68.8,
+    "i06": 68,
+    "i07": 65.1,
+    "i10": 62.9,
+    "i08": 61.2,
+    "i09": 58.8,
+    "i03": 63.5,
+    "i04": 60.8
+  },
+  "chosenId": "i05",
+  "carryoverOutId": "i02",
+  "rejectedNotes": [
+    {
+      "title": "Drift Harp",
+      "reason": "Rank 2, 69.2/100. Weakest on interestFit (4.8): Just-intonation comma-pump harp is a tuning-nerd piece with no link to the owner's interests; neutral to slightly off-taste. Best on safety (9.4)."
+    },
+    {
+      "title": "Memo Teleprinter",
+      "reason": "Rank 3, 68.8/100. Weakest on interestFit (5.2): Teleprinter-code sequencer with office satire has no tie to poker, Balatro, hockey or Reddit; neutral, with a mild rhythm-toy echo of the Balatro mod build. Best on safety (8.4)."
+    },
+    {
+      "title": "Breaking Changes",
+      "reason": "Rank 4, 68/100. Weakest on timeliness (5.4): The only hook is the itch.io 'Systems Offline' jam (9-12 Oct, single-site, conflicting windows, ends today), so it is thin and unverified; the vague-release-... Best on polishPotential (9.3)."
+    },
+    {
+      "title": "Smudged Memos",
+      "reason": "Rank 5, 65.1/100. Weakest on interestFit (4.5): Cipher bench with bureaucratic memos is a pleasant puzzle but sits outside poker, Balatro, hockey and Reddit tastes; neutral to slightly low. Best on safety (8.8)."
+    },
+    {
+      "title": "Frankenword Costume Shop",
+      "reason": "Rank 6, 62.9/100. Weakest on interestFit (4): Halloween portmanteau costume shop is cute wordplay with no tie to the owner's interests and leans a little away from his analytical taste. Best on delight (8)."
+    },
+    {
+      "title": "Commute Or Else",
+      "reason": "Rank 7, 61.2/100. Weakest on distinctness (2.8): Chips-times-mult operator tiles with echo, mirror and exponent is essentially the Balatro scoring-engine subject that shipped two days ago as Jokers In Phase... Best on interestFit (8.8)."
+    },
+    {
+      "title": "Parallel Octobers",
+      "reason": "Rank 8, 58.8/100. Weakest on delight (3.8): Setting a compass needle to forecast a winless team's final points is a niche statistics exercise with calibration scores, little humour or voice, and a stal... Best on timeliness (9.3)."
+    },
+    {
+      "title": "Over Your Shoulder",
+      "reason": "Rank 9, 63.5/100. Gated: feasibility 4.6 < 5. Weakest on feasibility (4.6): About 1,000 words of copy in 3 variants per paragraph plus a behavioural reader model that is hard to test headlessly (dwell, scroll reversals, tab-away) and... Best on distinctness (8.3)."
+    },
+    {
+      "title": "Tolls In Kind",
+      "reason": "Rank 10, 60.8/100. Gated: feasibility 4 < 5. Weakest on feasibility (4): 8 rule families x 2 skins is 16 distinct hidden-rule micro-interactions, each needing keyboard, touch and reduced-motion alternatives plus tuning to be solva... Best on safety (7.8)."
+    }
+  ],
+  "rationale": "Between Periods (i05) scored 73/100, rank 1 of 10. Strongest on polishPotential (9): The dossier names the hero moment: a wet-ice sheen stripe trails the machine and dries to high gloss, plus a gleaming canvas lap-pattern postcard and an intermission chime, which is a gorgeous thum... Weakest on sophistication (6.2): Coverage-planning with turning radius, water budget, three-stage passes and a seeded mishap table gives a real routing puzzle, but it is essentially one good trick (lane planning) plus presentation. Critic check: Approve: no blocker (season-start and machine-history facts check out, brand risk is containable), but the spec must pin deterministic attainable scoring, a one-viewport phone layout and honest wording.",
+  "winnerNotes": {
+    "vetoed": false,
+    "vetoedId": null,
+    "headline": "Approve: no blocker (season-start and machine-history facts check out, brand risk is containable), but the spec must pin deterministic attainable scoring, a one-viewport phone layout and honest wording.",
+    "risks": [
+      "major: Score integrity. The scope says 'coverage mask on an offscreen canvas', which invites scoring by reading canvas pixels and a per-frame integrator. The same route would then score differently by device pixel ratio, antialiasing and refresh rate, and a mid-run resize or rotation (the QA monkey does both) can corrupt state. Corners and the boards margin can also make 100 percent unreachable, so a perfect grade or a shared challenge link would be unfair. -> Score from a logical typed-array grid advanced on a fixed 60 Hz tick; the canvas only renders. Build a reachable mask for scars, and add a Node test that replays scripted routes over many seeds and asserts identical scores and an attainable par.",
+      "major: Phone and laptop layout. A 200 x 85 ft landscape rink is only about 150 to 165 px tall at 390 px wide, so the rink is tiny and the tank gauge, clock and buttons drift below the fold. The same 'output out of view of its controls' S2 shipped on 2026-10-10 and 2026-10-11 with revise skipped, and browser-check asserts nothing about it (premortem item 3). -> Draw the rink with its long axis vertical on portrait screens, keep gauge, clock and primary buttons in the same viewport at 1366x768, 390x844 and 360x640, confine touch-action:none to the canvas, and have the builder run a Playwright bounding-rect and wheel check before QA; QA attaches the numbers as the repro.",
+      "major: Steering feel and depth cannot be judged headlessly and decide whether the first minute delights or frustrates. A half-circle U-turn only joins lanes about 2R apart (R = turning radius), so the ratio of R to swath width W sets how many lanes each turn skips: too small and it is plain mowing with one dominant strategy, too large and nobody can line up the next lane. Holding a straight lane with a finger or mouse is also hard, and a compact day has no revise slack. -> Choose R against W on purpose (start near R = 1 to 1.5 W), show a predicted turn arc, add a hold-straight deadzone and a free overlap allowance, offer a no-clock practice mode, and tune clock, tank and grade bands with a scripted bot that must find at least two viable routes (skip-lane mow, spiral or racetrack) and survive jittered input.",
+      "minor: Pitch ahead of scope. The pitch promises that friends can race your ghost via the link, yet scopeForOneDay makes ghost replay a stretch item and the judges credited it under delight. The rest of the build list (generator with five mishaps, kinematics, grid scoring, tank, sheen, canvas postcard, text strip, hash, procedural audio, About, accessibility) is large for a compact tier-2 day on 2 agent slots. -> Decide now: cut the ghost, ship a challenge link (seed, grade, route length), and strip ghost wording from tagline, description and About unless it is built and deterministic. Publish an ordered cut-list (ghost, then extra mishaps, then canvas postcard, then chime) and protect scoring, tank, practice mode and the viewport contract.",
+      "minor: Wording that outruns the evidence. The dossier says the 'first resurfacing machine (Model A) dates to 1949', but search summaries also describe an abandoned 1947 prototype, and it builds 'three layered passes' on a machine that shaves, washes, vacuums and floods in one pass. The 29 September 2026 season opening itself is solid (nine separate results agree, including nhl.com and Yahoo Sports), but hockeyschedules.net also carries a results table that the search summary flagged as unconfirmed. -> Facts policy in the spec: write 'Model A (1949)', label the three zones a simplification of a one-pass machine, show the season line once in About as 'as of 2026-10-12, per nhl.com and Yahoo Sports' with no scores, banner or player names, drop hockeyschedules.net, and give no real-world numbers (intermission length, tank size, speed) without a dated source.",
+      "minor: Less new than the distinctness score implies. Searches on 2026-10-12 found a playable 2013 Google Doodle where you drive an ice resurfacer to clear scuffs, a commercial game (Zamboni Challenge, Microsoft Store and Xbox listings) whose goal is to clean the ice efficiently, hug the boards and avoid re-driving the same patches, and at least one itch.io browser game. Yesterday's page also showed 'Swath width' and 'Overlap waste' as headline readouts, so the gallery gets two cover-the-surface scorers in a row. -> Make no 'first' or 'never before' claim, credit earlier rink games in one dated About line, lean on what differs (daily seeded rink with realistic wear, turning radius, water budget, sheen, postcard), and score as a 'gleam' grade with clean laps instead of reusing swath, overlap-waste or true-area wording.",
+      "minor: Brand and copyright. The maker's name is a registered mark for ice resurfacing machines (per Wikipedia via search, 2026-10-12) and the cited sources carry it in their titles; the name, its blue-and-white livery, a Z mark or a traced silhouette in UI, title, alt text, file names or project.json would be an S1 under safety.md however small. Related traps: league or team names and logos, real people or incidents (for example the emergency-goalie driver story), and a three-note chime that happens to be G-E-C, the NBC chimes sound mark. -> Say 'ice resurfacer' or 'the machine'; invent the machine's name, look and livery; allow the maker's name only inside cited source titles; league name only in the dated source list and no team names in the UI; mishaps are invented gags labelled as such; synthesize a chime whose contour and rhythm are not G-E-C and use no arena or broadcast melodies.",
+      "minor: Hockey authenticity for an owner who loves hockey: a fan will spot a wrong rink at a glance (marking positions, corner radius, creases). Search results quoting Wikipedia on 2026-10-12 give 200 x 85 ft, 28 ft corners, goal lines 11 ft from the end boards, blue lines 64 ft from the goal line (so 75 ft from the end boards, 50 ft apart) and a 30 ft centre circle. -> Draw to those proportions with red centre line, creases, nets and every faceoff spot, or label the rink stylized; do not print dimensions as page facts unless dated and sourced; seed the wear around creases, faceoff spots and boards so it looks like a used rink.",
+      "minor: First frame and first minute. An untouched scarred rink makes a dull thumbnail, the hero moment (sheen that dries to gloss) appears only after play, and a new visitor must decode scars, tank and a turning-limited machine at once. -> Open on an attract-mode demo lap or a precomputed half-resurfaced rink that sets window.__sedThumbReady, add a ten-second coach line and a no-clock practice mode, and provide an #autoplay or seed hook so QA and the thumbnail reach the postcard state without a human.",
+      "minor: Share link and accessibility floor. A hand-edited hash (long path, huge numbers, markup) can hang or inject, and a continuous-steering game can miss the quality bar on keyboard play, reduced motion and contrast. -> Strict hash parser (charset whitelist, 512 character cap, clamped numbers, unknown keys ignored, textContent only, no free-text names), try/catch localStorage under a versioned key, keyboard-complete play with a focus ring and aria-live status, reduced-motion variants, and scars readable by shape and luminance as well as hue."
+    ],
+    "mustFixInSpec": [
+      "Determinism. Run the simulation on a fixed 60 Hz integer tick in logical rink coordinates (the clock counts ticks and pauses while the tab is hidden); the canvas only renders. Score from a typed-array grid of about 0.5 ft cells and never with getImageData. The same seed and the same inputs must give the same score at any pixel ratio, refresh rate, resize or rotation; add a Node test that replays scripted routes and asserts equal scores.",
+      "Attainable objective. Compute a reachable mask (boards margin, corner radius against turning radius, machine footprint) and place scars only inside it; report percent of reachable scar cells; no mishap may make par unreachable. Test the next 365 daily seeds with the bot: its par route must reach at least 95 percent inside the clock and tank on every seed.",
+      "Controls and geometry. Fix turning radius R against swath W on purpose (a half-circle U-turn joins lanes about 2R apart; start near R = 1 to 1.5 W), say whether reverse exists (default no), draw a predicted turn arc, hold straight inside a deadzone of about 8 degrees and allow about 10 percent free overlap (starting values; tune with the bot). Pointer steers toward the pointer at the maximum turn rate; keys turn at the maximum rate.",
+      "Depth proof instead of vibes. Write a scripted bot with three planners (skip-lane mow, spiral, racetrack), run them on 100 seeds and set clock, tank and grade bands from the results. Accept the numbers only if at least two planners reach 90 percent or more in time, the best beats the simplest by a clear margin on time or overlap, and a bot with plus or minus 3 degrees of input jitter drops at most one grade band; otherwise change R against W or the tank before building more.",
+      "Honest machine model. One pass lays one swath with three zones along the machine (shave, wash, squeegee, in that order) and spends tank water; it is not three separate laps. The About panel says this simplifies a machine that shaves, washes, vacuums and floods in one pass (HowStuffWorks, Wikipedia; as of 2026-10-12). The refill door is labelled a game rule.",
+      "Viewport contract (premortem item 3). At 1366x768, 390x844 and 360x640 the rink, tank gauge, clock and primary buttons share one viewport with no page scroll during play; on portrait the rink is drawn rotated with its long axis vertical; touch-action:none only on the canvas; a wheel over the rink scrolls the page. The builder runs a Playwright script (bounding rects of canvas and each control, scrollY after a wheel) before QA and logs the numbers; QA attaches the same numbers as the repro.",
+      "Facts policy. Safe as dated facts (critic check on 2026-10-12, search-only because every WebFetch host failed with DNS errors): the 2026-27 NHL season opened Tuesday 29 September 2026 (nhl.com and Yahoo Sports plus several more results agree); the Model A of 1949 had four-wheel steering that was cut back to front-wheel after it jammed against the boards (Wikipedia Ice resurfacer and the maker's history PDF); the shave, wash, squeegee order (HowStuffWorks). Write 'Model A (1949)', never 'the first machine'. The season line appears once in About with no scores, banner or player names. Drop hockeyschedules.net, and show the dev.to and cipherssecurity craft posts only as labelled craft notes or not at all. Game-scale numbers are labelled game scale.",
+      "Brand and people hygiene. The maker's name, blue-and-white livery, Z mark or a traced silhouette never appears in copy, title, meta, alt text, slug, file names, project.json or UI (the name may appear only inside the titles of cited sources); invent the machine's name and look. No NHL or team names or logos in the UI, and no real people or incidents (for example the emergency-goalie driver story). Mishaps are invented gags and say so.",
+      "Rink drawing. Use 200 x 85 ft, 28 ft corners, goal lines 11 ft from the end boards, blue lines 75 ft from the end boards (64 ft from the goal line), 30 ft centre circle (seen in search results quoting Wikipedia on 2026-10-12), plus red centre line, creases, nets and every faceoff spot, or label the rink stylized. Do not print dimensions as page facts unless dated and sourced. Cluster the seeded wear around creases, faceoff spots and boards.",
+      "Prior art and vocabulary. No 'first', 'new' or 'never before' claim anywhere. One dated About line credits earlier rink-resurfacing games generically (a 2013 browser doodle, at least one commercial game; as of 2026-10-12, per search results) without copying their art or rules, and links only sources that meet the verified rule. Score as a 'gleam' grade with clean laps; do not reuse yesterday's swath, overlap-waste or true-area wording.",
+      "Pitch versus scope. Unless the ghost is built and deterministic, remove 'race your ghost' from tagline, description, About and share text and ship a challenge link (seed, grade, route length). Cut order if behind: ghost, extra mishaps (start with 2, grow to 5), canvas postcard (keep the text strip), chime. Never cut deterministic scoring, tank and refill, practice mode or the viewport contract.",
+      "Link and storage safety. Hash grammar with a charset whitelist and a 512 character cap, clamped numbers, unknown keys ignored; any error falls back to today's seed with a visible note. No free-text names; dynamic text only via textContent. localStorage in try/catch under a versioned key. The daily seed is the UTC date and the page says so, with a field to type another seed.",
+      "Audio, motion, accessibility. Audio starts muted with a visible toggle and the AudioContext is created on the first gesture; the chime is synthesized and avoids the G-E-C contour of the NBC chimes sound mark. Play is keyboard-complete (arrows or A and D, Space to pause, a refill key) with a focus ring on the canvas and an aria-live status for grade and tank. Reduced motion means static hats, no shake, instant sheen; no flashes above 3 per second; scars readable by shape and luminance, not hue alone.",
+      "First frame and performance. Open on a half-gleaming rink (an attract-mode demo lap that stops at the first input and is off for reduced motion, or a precomputed state) and set window.__sedThumbReady; expose an #autoplay or seed hook so QA and the thumbnail reach the postcard state without a human; the first 15 seconds must pay off with the sheen trail on first movement. Keep the sheen to a short list of recent wet segments, cap the pixel ratio at 2, and avoid per-frame full-canvas readbacks."
+    ],
+    "judgeWarnings": [],
+    "unscoredMandatory": []
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "i05",
+      "title": "Between Periods",
+      "total": 73,
+      "eligible": true
+    },
+    {
+      "rank": 2,
+      "id": "i02",
+      "title": "Drift Harp",
+      "total": 69.2,
+      "eligible": true
+    },
+    {
+      "rank": 3,
+      "id": "i01",
+      "title": "Memo Teleprinter",
+      "total": 68.8,
+      "eligible": true
+    },
+    {
+      "rank": 4,
+      "id": "i06",
+      "title": "Breaking Changes",
+      "total": 68,
+      "eligible": true
+    },
+    {
+      "rank": 5,
+      "id": "i07",
+      "title": "Smudged Memos",
+      "total": 65.1,
+      "eligible": true
+    },
+    {
+      "rank": 6,
+      "id": "i10",
+      "title": "Frankenword Costume Shop",
+      "total": 62.9,
+      "eligible": true
+    },
+    {
+      "rank": 7,
+      "id": "i08",
+      "title": "Commute Or Else",
+      "total": 61.2,
+      "eligible": true
+    },
+    {
+      "rank": 8,
+      "id": "i09",
+      "title": "Parallel Octobers",
+      "total": 58.8,
+      "eligible": true
+    },
+    {
+      "rank": 9,
+      "id": "i03",
+      "title": "Over Your Shoulder",
+      "total": 63.5,
+      "eligible": false
+    },
+    {
+      "rank": 10,
+      "id": "i04",
+      "title": "Tolls In Kind",
+      "total": 60.8,
+      "eligible": false
+    }
+  ]
+}

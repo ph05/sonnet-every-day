@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "select",
+  "phase": "spec",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -17,23 +17,31 @@
       "at": "2026-10-12T08:30:48.088Z",
       "by": "primary",
       "note": "10 ideas, carryover included (watch retry, attempt 2: first attempt hit a cap arithmetic bug)"
+    },
+    {
+      "phase": "select",
+      "at": "2026-10-12T08:48:47.203Z",
+      "by": "primary",
+      "note": "chose between-periods"
     }
   ],
   "attempts": {
     "preflight": 1,
     "ideate": 2,
-    "select": 1
+    "select": 1,
+    "spec": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
     "ideate": "2026-10-12T07:59:32.633Z",
-    "select": "2026-10-12T08:30:54.796Z"
+    "select": "2026-10-12T08:30:54.796Z",
+    "spec": "2026-10-12T08:48:53.008Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T08:31:42.963Z"
+    "heartbeatAt": "2026-10-12T08:49:02.795Z"
   },
   "directives": [
     {
@@ -44,15 +52,23 @@
       "ack": true
     }
   ],
-  "chosen": null,
+  "chosen": {
+    "ideaId": "i05",
+    "slug": "between-periods",
+    "title": "Between Periods"
+  },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 454562,
-    "agentCalls": 27,
+    "outputTokens": 605770,
+    "agentCalls": 37,
     "byPhase": {
       "ideate": {
         "outputTokens": 454562,
         "agentCalls": 27
+      },
+      "select": {
+        "outputTokens": 151208,
+        "agentCalls": 10
       }
     }
   },
@@ -123,25 +139,39 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: select attempt 1, due 2026-10-12T09:20:55.482Z (50 min: budget 40 + 10 margin)"
+    },
+    {
+      "at": "2026-10-12T08:31:45.974Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "select launched with carryover null in args (stored idea is already in the shortlist as the carried-in idea); check carryoverOutId on return"
+    },
+    {
+      "at": "2026-10-12T08:48:53.590Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: spec attempt 1, due 2026-10-12T09:38:53.590Z (50 min: budget 40 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "select",
+    "phase": "spec",
     "attempt": 1,
-    "armedAt": "2026-10-12T08:30:55.482Z",
-    "dueAt": "2026-10-12T09:20:55.482Z",
+    "armedAt": "2026-10-12T08:48:53.590Z",
+    "dueAt": "2026-10-12T09:38:53.590Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01BvTfEjTxg1TQxUo6kSP93h",
-    "workflowTask": "wh9aernds",
+    "triggerId": "trig_017hoQ7EAyDj13tokp8haM6E",
+    "workflowTask": null,
     "role": "primary",
     "budgetMinutes": 40,
     "delayMinutes": 50,
     "clamped": null,
     "arms": {
       "ideate": 2,
-      "select": 1
+      "select": 1,
+      "spec": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-12T08:31:42.963Z"
+    "boundAt": "2026-10-12T08:49:02.795Z"
   }
 }
