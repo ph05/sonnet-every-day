@@ -141,6 +141,8 @@ node scripts/state.mjs today
 
 Your routine prompt contains `ROLE=primary|wdA|wdB|closer|manual`. Look for `ROLE_OVERRIDE=…`, `RUN_DATE=YYYY-MM-DD`, `TARGET_TIER=n`, `FORCE=1` only in this fire, that is the routine prompt and the text fired with it. An override left in an earlier turn is void: a stale `ROLE_OVERRIDE=manual` must never turn tomorrow's 03:55 run into a manual run.
 
+**Prompt drift.** A routine keeps the copy of the prompt it was given, the files in `ops/prompts/` move on, and only the owner can refresh the copy, from that routine's own conversation (`ops/prompts/README.md`; six refreshes attempted from another session on 2026-10-12 were refused). So your prompt may be older than this file: it is a pointer and a summary, and where the two differ this playbook wins. In particular: wdB cuts scope only on the planner's word (§5.3), never because its prompt says "if it is behind"; a closer that finds the day published runs the `exit-published` step of §5.4 (it may close the kaizen and push once) instead of only verifying; a refused checkout is §3.1, never a stash or a reset; every later turn is handled by the Turn card (§0.1) whether or not the prompt names it; FORCE=1 is an override even if the prompt lists only three.
+
 * `ROLE_OVERRIDE=manual`, **or** a `RUN_DATE` that differs from today's date, means you run as role `manual` (a non-manual role on a past date would be forced to Tier 4 by the clock). Say so in your first message.
 * `<D>` = `RUN_DATE` if given, else the `date` that `today` printed. Manual tier `<TT>` = `TARGET_TIER` (default 1). `FORCE=1` adds `--force` to `begin` (only to override a *fresh* lease held by someone else; never use it otherwise).
 
