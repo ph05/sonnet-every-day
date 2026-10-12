@@ -1,0 +1,72 @@
+# Keeps `main` equal to the work branch. GitHub Pages serves the site from `main`
+# (folder /docs) and GitHub runs `schedule` workflows only from the default branch,
+# but the daily build pushes to the work branch (config.json "workBranch"). So every
+# push of the work branch fast-forwards `main` to the same commit. It never merges,
+# rebases or force-pushes: when `main` is not an ancestor of the work branch (someone
+# committed to `main` directly), it only warns, and the fix is one merge of `main`
+# into the work branch (ops/OPERATING.md, "Merge the branch to `main`").
+#
+# A push made with GITHUB_TOKEN does not always start the Pages build, so one is
+# requested explicitly when the push touched docs/. Best effort: `main` moved already.
+name: sync-main
+
+on:
+  push:
+    branches:
+      - claude/sonnet-every-day
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: sync-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # Full history: the ancestry check below needs it, and the repo is small.
+          fetch-depth: 0
+
+      # Only pushes that change what main is for (the site, the workflows, the
+      # config) move main: every push to main starts a Pages build, the daily run
+      # pushes about 25 times a day (9 in one hour on 2026-10-11), and Pages has a
+      # soft limit of about 10 builds an hour. A fast-forward carries every
+      # earlier commit too, so main never skips history.
+      - name: Fast-forward main to this push
+        id: ff
+        run: |
+          set -euo pipefail
+          git fetch origin "+refs/heads/main:refs/remotes/origin/main"
+          echo "moved=false" >> "$GITHUB_OUTPUT"
+          echo "docs=false" >> "$GITHUB_OUTPUT"
+          if ! git merge-base --is-ancestor origin/main "$GITHUB_SHA"; then
+            echo "::warning::main ($(git rev-parse --short origin/main)) is not an ancestor of $GITHUB_SHA; merge main into the work branch once (ops/OPERATING.md)"
+            exit 0
+          fi
+          if [ "$(git rev-parse origin/main)" = "$GITHUB_SHA" ]; then
+            echo "main already at $GITHUB_SHA"
+            exit 0
+          fi
+          if git diff --quiet origin/main "$GITHUB_SHA" -- docs/ .github/ config.json; then
+            echo "nothing under docs/, .github/ or config.json changed since main ($(git rev-parse --short origin/main)): main waits for the next such push"
+            exit 0
+          fi
+          git push origin "$GITHUB_SHA:refs/heads/main"
+          echo "main fast-forwarded to $GITHUB_SHA"
+          echo "moved=true" >> "$GITHUB_OUTPUT"
+          if ! git diff --quiet origin/main "$GITHUB_SHA" -- docs/; then
+            echo "docs=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Request a Pages build
+        if: steps.ff.outputs.moved == 'true' && steps.ff.outputs.docs == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"

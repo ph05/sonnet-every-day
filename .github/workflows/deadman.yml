@@ -5,9 +5,10 @@
 # Claude session, so it still works when the subscription is exhausted.
 #
 # IMPORTANT: GitHub only runs `schedule` triggers from the repository's DEFAULT
-# branch. The daily build lives on the work branch (config.json "workBranch"), so
-# this workflow is dormant until it has been merged to `main`. Manual dispatch
-# ("Run workflow" in the Actions tab) always works, whatever branch holds the file.
+# branch. The daily build lives on the work branch (config.json "workBranch"); the
+# sync-main workflow fast-forwards `main` to every push of the work branch, so the
+# copy of this file on `main` stays current. Manual dispatch ("Run workflow" in the
+# Actions tab) always works, whatever branch holds the file.
 #
 # Two cron lines because GitHub cron is UTC: 13:40 is 09:40 in EDT, 14:40 is 09:40
 # in EST. The script ignores a run that is too early (before the grace period plus
@@ -44,14 +45,15 @@ jobs:
       GIT_COMMITTER_NAME: github-actions[bot]
       GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
     steps:
-      # Checked out twice: the first checkout (the default branch) only supplies
-      # config.json, which names the branch the daily build publishes to.
-      - uses: actions/checkout@v4
+      # The default branch only supplies config.json, which names the branch the
+      # daily build publishes to. A plain (non-sparse) checkout: a sparse checkout
+      # followed by a second checkout into the same directory leaves the tree
+      # sparse, and `scripts/deadman.mjs` was then missing on the runner.
+      - uses: actions/checkout@v5
         with:
-          sparse-checkout: config.json
-          sparse-checkout-cone-mode: false
+          fetch-depth: 1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
 
@@ -67,10 +69,17 @@ jobs:
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
           echo "work branch: $branch"
 
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.cfg.outputs.branch }}
-          fetch-depth: 50
+      # The checkout action keeps the token in the git config, so these git
+      # commands (and the push inside deadman.mjs) are authenticated.
+      - name: Check out the work branch
+        env:
+          BRANCH: ${{ steps.cfg.outputs.branch }}
+        run: |
+          set -euo pipefail
+          git fetch --depth=50 origin "+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"
+          git checkout -B "${BRANCH}" "origin/${BRANCH}"
+          test -f scripts/deadman.mjs
+          git log -1 --oneline
 
       - name: Publish a fallback if the day is unpublished
         id: deadman
@@ -84,11 +93,21 @@ jobs:
           action="$(node -e "process.stdout.write(String(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')).action))" "$RUNNER_TEMP/deadman.json")"
           echo "action=$action" >> "$GITHUB_OUTPUT"
 
-      # A push made with GITHUB_TOKEN does not start the Pages build by itself in
-      # every configuration, so ask for one. Best effort: the push already happened.
-      - name: Request a Pages build
+      # The push went to the work branch; sync-main carries it to `main`, where
+      # GitHub Pages builds from. A push made with GITHUB_TOKEN does not start
+      # other workflows, so do the fast-forward and the Pages build request here.
+      - name: Fast-forward main and request a Pages build
         if: steps.deadman.outputs.action == 'published'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
+          BRANCH: ${{ steps.cfg.outputs.branch }}
+        run: |
+          set -euo pipefail
+          git fetch --depth=50 origin "+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}" "+refs/heads/main:refs/remotes/origin/main"
+          if git merge-base --is-ancestor origin/main "origin/${BRANCH}"; then
+            git push origin "origin/${BRANCH}:refs/heads/main"
+          else
+            echo "::warning::main is not an ancestor of ${BRANCH}; merge main into the work branch once (ops/OPERATING.md)"
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"

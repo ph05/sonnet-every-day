@@ -52,7 +52,7 @@ A day is never allowed to be blank. Watchdog sessions and a model-free GitHub Ac
 | 06:47 | watchdog B | Asks a slow primary to scale down, or takes over. |
 | 08:47 | closer | Waits for a healthy run to finish (until 09:30), salvages a half-built page if there is one, otherwise publishes a fallback. |
 | 09:37 | closer backup | Same prompt, fifty minutes later: stops quietly if the day is published, finishes the job if the closer's session died. |
-| 09:40 | deadman Action | No Claude needed. Publishes a fallback if the day is still empty and nobody is alive, or after the 10:30 hard stop. |
+| 09:40 | deadman Action | No Claude needed (GitHub may start it hours late). Publishes a fallback if the day is still empty and nobody is alive, or after the 10:30 hard stop. |
 
 | Tier | What ships | When it applies |
 |---|---|---|
@@ -152,10 +152,10 @@ tests/                 node:test suites (no dependencies)
 
 ## Setup checklist
 
-1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `claude/sonnet-every-day`, folder `/docs`, **Save**. The site is then at <https://ph05.github.io/sonnet-every-day/> after the first deploy (a few minutes).
+1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `main`, folder `/docs`, **Save**. The site is then at <https://ph05.github.io/sonnet-every-day/> after the first deploy (a few minutes). The daily build pushes the work branch; the `sync-main` Action fast-forwards `main` to it after every push, so the site follows.
 2. **Create the sessions and routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md): one session per role created with this repo as its source, then one cron trigger per session (`persistent_session_id`, no text, `CRON_TZ=America/New_York`). Record the ids in `state/routines.json`.
 3. **Run a day by hand** whenever you want one (the first day was built this way) by firing the manual routine with the text `ROLE_OVERRIDE=manual RUN_DATE=<date> TARGET_TIER=1`; see [`ops/OPERATING.md`](ops/OPERATING.md).
-4. **Optional but recommended: merge the work branch to `main`.** GitHub runs scheduled workflows only from the default branch, so the `deadman` Action sleeps until `.github/workflows/deadman.yml` is on `main`. Until then it can still be started by hand from the Actions tab.
+4. **Do not merge pull requests into `main`.** `main` follows the work branch by fast-forward (`.github/workflows/sync-main.yml`); a merge commit on `main` stops that until `main` is merged back into the work branch once (`ops/OPERATING.md`, "Merge the branch to `main`"). GitHub runs scheduled workflows only from the default branch, which is why the `deadman` Action needs `main` current.
 
 CI (`.github/workflows/validate.yml`) runs the tests and `node scripts/validate.mjs repo` on every push and pull request.
 
