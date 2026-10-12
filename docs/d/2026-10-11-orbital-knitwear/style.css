@@ -87,7 +87,8 @@
 .kn-sub { margin: -2px 0 12px; color: var(--muted); font-size: 0.875rem; }
 .kn-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
-/* 3. Layout. One column on phones (tabs), two columns at 768, stage left and a rail from 1024 (340px, then 400px at 1280). */
+/* 3. Layout. One column on phones (tabs, the map pinned to the top), two columns at 768, stage left and a rail from 1024 (340px, then
+   400px at 1280). The readouts live in the rail under the sliders they describe; only the stage, its caption and the playback bar are pinned. */
 .kn-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 .kn-left, .kn-rail, .kn-side { display: contents; }
 .kn-stage-area { order: 1; }
@@ -116,6 +117,10 @@
   .kn-tabs { display: none; }
   .kn-readouts .kn-dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); column-gap: 28px; }
 }
+@media (min-width: 768px) and (max-width: 1023px) {
+  .kn-left { order: -2; }
+  .kn-readouts { grid-column: 1 / -1; order: -1; } /* full width right under the stage and its playback bar */
+}
 @media (min-width: 1024px) {
   .kn-grid { grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; }
   .kn-left { grid-column: 1; align-self: start; gap: 16px; }
@@ -123,19 +128,13 @@
   .kn-side { display: contents; }
   .kn-goal { grid-column: auto; }
 }
-/* The pinned column (stage, playback, readouts) is 860 to 920 px tall, taller than most laptop windows, so it scrolls inside
-   itself rather than hiding its last rows. The padding and negative margin leave room for shadows without moving anything. */
-@media (min-width: 1024px) and (min-height: 600px) {
-  .kn-left {
-    position: sticky;
-    top: 12px;
-    max-height: calc(100vh - 24px);
-    max-height: calc(100dvh - 24px);
-    padding: 6px 10px 12px;
-    margin: -6px -10px -12px;
-    overflow: hidden auto;
-    scrollbar-width: thin;
-  }
+/* The pinned column is the stage, its caption and the playback bar (about 630 to 700 px). It has no scroller of its own, so a wheel over
+   the map always scrolls the page. A window shorter than about 800 px gets a smaller map (2 x (height - 280) wide; the polar disc is
+   (height - 280) square) so the whole column, with a two-line note under the map, still fits; under 560 px nothing is pinned. */
+@media (min-width: 1024px) and (min-height: 560px) {
+  .kn-left { position: sticky; top: 12px; }
+  .kn-left .kn-stage[data-view="flat"] { max-width: calc(2 * (100vh - 280px)); max-width: calc(2 * (100dvh - 280px)); margin-inline: auto; }
+  .kn-left .kn-stage[data-view="polar"] { max-width: min(100%, 64vh, calc(100vh - 280px)); max-width: min(100%, 64dvh, calc(100dvh - 280px)); }
 }
 @media (min-width: 1280px) {
   .kn-grid { grid-template-columns: minmax(0, 1fr) 400px; }
@@ -416,7 +415,7 @@
 .kn-ro dd { margin: 0; font-size: 0.9375rem; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; }
 
 /* 9. Pattern cards, goal and result */
-.kn-goal { display: grid; gap: 10px; }
+.kn-goal { display: grid; gap: 10px; scroll-margin-top: 12px; }
 .kn-goal-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; }
 .kn-goal-head .kn-h2 { margin: 0; }
 .kn-status { padding: 2px 10px; border: 1.5px solid var(--border-strong); border-radius: 999px; font-size: 0.8125rem; font-weight: 700; }
@@ -537,6 +536,10 @@
 .kn-fatal-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 #app[data-state="error"] .kn-grid { opacity: 0.4; pointer-events: none; }
 .kn-keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 6px 20px; margin: 0; padding: 0; list-style: none; font-size: 0.9375rem; }
+.kn-keys-note { margin: 10px 0 0; font-size: 0.875rem; }
+.kn-textbtn { min-height: 44px; margin: 0; padding: 10px 2px; border: 0; background: none; color: var(--accent); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.kn-textbtn:hover { text-decoration-thickness: 2px; }
+.kn-textbtn:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
 .kn-keys kbd { padding: 1px 7px; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 6px; background: var(--surface); color: var(--fg); font: 600 0.8125rem var(--font-mono); }
 .kn-selftest ul { margin: 6px 0 0; padding: 0; list-style: none; font-size: 0.875rem; }
 .kn-selftest li { margin: 2px 0; padding-left: 1.6em; text-indent: -1.6em; }
@@ -544,7 +547,22 @@
 .kn-selftest li.fail::before { content: "✗ "; color: var(--accent); font-weight: 700; }
 .kn-selftest .sum { color: var(--fg); font-weight: 700; }
 
-/* 12. Narrow screens */
+/* 12. Narrow screens. Phones pin the map to the top of the screen so a slider and the knitting are on screen together. The page is a
+   flex column here and the stage area dissolves into it: a sticky item may only move inside its containing block, and a grid item's
+   is its own row. A short landscape phone (under 520 px tall) keeps the plain flow, and a short window caps the map's height at
+   38% of the screen (a polar disc at 36%). --kn-pin is the pinned height, so focus and anchors never land under the map. */
+@media (max-width: 767px) and (min-height: 520px) {
+  :root { --kn-pin: calc(min((100vw - 2 * var(--gutter)) / 2, 38dvh) + 20px); }
+  :root:has(.kn-stage[data-view="polar"]) { --kn-pin: calc(min(100vw - 2 * var(--gutter), 36dvh) + 20px); }
+  html { scroll-padding-top: var(--kn-pin); }
+  .kn-grid { display: flex; flex-direction: column; align-items: stretch; }
+  .kn-stage-area { display: contents; }
+  /* The mat: a page-coloured band the full width of the screen and 8px above and below the map (a huge spread shadow cut to a strip), so
+     whatever scrolls under the map is hidden whatever the map's own width, flat or polar. */
+  .kn-stage { position: sticky; top: 8px; z-index: 5; max-width: min(100%, 76vh); max-width: min(100%, 76dvh); margin-inline: auto; box-shadow: 0 0 0 100vmax var(--bg); clip-path: inset(-8px -100vmax); }
+  .kn-stage[data-view="polar"] { max-width: min(100%, 36vh); max-width: min(100%, 36dvh); }
+  .kn-caption, .kn-playback { margin-top: -8px; } /* keeps the 8px the stage area's own gap used to leave */
+}
 @media (max-width: 399px) {
   .kn-btn { padding: 8px 10px; font-size: 0.875rem; }
   .kn-speed { margin-left: 0; }

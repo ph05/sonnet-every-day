@@ -644,7 +644,7 @@ function render(v, trace, animate) {
     startCascade(trace, v, prev ? prev.total : 0);
   } else {
     settle(v, animate);
-    if (animate && trace && reduced && !document.hidden) showToast(trace);
+    if (animate && trace && reduced && !document.hidden) showToast(trace, v.total);
   }
   repairFocus(hadFocus);
   ring.resize();
@@ -692,7 +692,7 @@ function startCascade(tr, v, prevTotal) {
     c.toastRaf = 0;
     c.timers.push(setTimeout(() => {
       if (casc !== c) return;
-      const rows = buildToast(tr);
+      const rows = buildToast(tr, v.total);
       if (!rows) return;
       const late = performance.now() - t0;
       const rise = [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }];
@@ -712,13 +712,14 @@ function dropToast() {
 }
 
 // Reduced motion: the summary appears at once and goes after a moment.
-function showToast(tr) {
+function showToast(tr, total) {
   dropToast();
-  if (buildToast(tr)) toast.timer = setTimeout(dropToast, 2500);
+  if (buildToast(tr, total)) toast.timer = setTimeout(dropToast, 2500);
 }
 
 // Returns the row elements (same order as #steps) so the cascade can reveal them at the same delays; null if no toast.
-function buildToast(tr) {
+// The last row also names the running total: the Total panel is below the fold on a phone and on a 768 px tall laptop.
+function buildToast(tr, total) {
   dropToast();
   const panel = E.stepsPanel.getBoundingClientRect();
   if (panel.top >= 0 && panel.bottom <= window.innerHeight) return null; // the real list is already on screen
@@ -732,7 +733,8 @@ function buildToast(tr) {
   list.className = 'steps';
   const rows = [stepRow('', `${HAND_NAME[tr.cat] || 'Hand'}: ${tr.pts0} × ${tr.mult0}`, '', 'step-base')];
   for (const s of tr.steps) rows.push(stepRow(String(s.slot + 1), stepText(s), `${s.pts} × ${s.mult}`, 'kind-' + s.kind));
-  rows.push(stepRow('', `= ${fmt(tr.score)}`, `${tr.pts} × ${tr.mult}`, 'step-total'));
+  const running = Number.isFinite(total) && total !== tr.score ? ` · total ${fmt(total)}` : '';
+  rows.push(stepRow('', `= ${fmt(tr.score)}${running}`, `${tr.pts} × ${tr.mult}`, 'step-total'));
   list.append(...rows);
   el.append(head, list);
   document.body.appendChild(el);

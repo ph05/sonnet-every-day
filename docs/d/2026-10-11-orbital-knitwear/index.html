@@ -221,21 +221,6 @@
             </div>
           </div>
         </section>
-
-        <section id="readouts" class="kn-panel kn-readouts" aria-labelledby="h-readouts">
-          <h2 id="h-readouts" class="kn-h2">Orbit readouts <span id="ro-for" class="kn-h2-sub">Needle A</span></h2>
-          <dl class="kn-dl">
-            <div class="kn-ro"><dt>Orbit time</dt><dd id="ro-period">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Highest point</dt><dd id="ro-apogee">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Node drift</dt><dd id="ro-regress">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Local time at node</dt><dd id="ro-ltan">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Orbits per day</dt><dd id="ro-revs">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Track shift per orbit</dt><dd id="ro-shift">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Repeat</dt><dd id="ro-repeat">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Farthest latitude</dt><dd id="ro-maxlat">&ndash;</dd></div>
-            <div class="kn-ro"><dt>Sun-synchronous</dt><dd id="ro-sunsync">&ndash;</dd></div>
-          </dl>
-        </section>
       </div>
 
       <div class="kn-rail">
@@ -370,6 +355,21 @@
           </div>
         </section>
 
+        <section id="readouts" class="kn-panel kn-readouts" aria-labelledby="h-readouts">
+          <h2 id="h-readouts" class="kn-h2">Orbit readouts <span id="ro-for" class="kn-h2-sub">Needle A</span></h2>
+          <dl class="kn-dl">
+            <div class="kn-ro"><dt>Orbit time</dt><dd id="ro-period">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Highest point</dt><dd id="ro-apogee">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Node drift</dt><dd id="ro-regress">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Local time at node</dt><dd id="ro-ltan">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Orbits per day</dt><dd id="ro-revs">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Track shift per orbit</dt><dd id="ro-shift">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Repeat</dt><dd id="ro-repeat">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Farthest latitude</dt><dd id="ro-maxlat">&ndash;</dd></div>
+            <div class="kn-ro"><dt>Sun-synchronous</dt><dd id="ro-sunsync">&ndash;</dd></div>
+          </dl>
+        </section>
+
         <div class="kn-side">
           <section id="panel-cards" class="kn-panel kn-cards" aria-labelledby="h-cards">
             <h2 id="h-cards" class="kn-h2">Pattern cards</h2>
@@ -410,7 +410,7 @@
         <h2>How it works</h2>
         <p>Up to three satellites fly a two-body orbit with the J2 correction: Earth's bulge slowly turns each orbit's plane and perigee. Each pass is painted into a one-degree grid of stitches as wide as the satellite's swath. Scores weigh every stitch by its true area, so polar holes that look huge on a flat map count for little. This is a toy model, not a tracker: tracks drift from real satellites over weeks, and drag, the Moon and the Sun's pull are not modelled.</p>
         <h2>What the sources say (as of 2026-10-11)</h2>
-        <p>A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day, which Earth's J2 bulge supplies; that takes about 98.2 degrees of tilt at 700 km (NASA primer) and about 97.8 degrees near 600 km (Skill-Lync). The International Space Station flies at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370 to 460 km in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial). Landsat 4 to 9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits, about 98.9 minutes per orbit, tracks about 24.7 degrees (2752 km) apart at the equator, with a design swath of 185 km (NASA, USGS).</p>
+        <p>A sun-synchronous orbit needs its node to drift about 0.9856 degrees per day, which Earth's J2 bulge supplies; that takes about 98.2 degrees of tilt at 700 km (NASA primer) and about 97.8 degrees near 600 km (Skill-Lync). The International Space Station flies at 51.6 degrees inclination, so it never gets farther north or south than 51.6 degrees latitude, at roughly 370 to 460 km in orbits of 90 to 93 minutes; each pass lands about 22.9 degrees of longitude west of the last (NASA tutorial; the altitude range is from the ESA table). Landsat 4 to 9 fly a circular sun-synchronous orbit near 705 km on a 16-day repeat of 233 orbits, about 98.9 minutes per orbit, successive orbits' tracks about 24.7 degrees (2752 km) apart at the equator, with a design swath of 185 km (NASA, USGS).</p>
         <h2>Computed here</h2>
         <p>The model gives 97.79 degrees at 600 km and 98.19 degrees at 700 km, matching both sources. 233 evenly spaced tracks put neighbours about 172 km apart (40,075 km / 233), so a 185 km swath overlaps its neighbour by about 13 km (7 percent); the model's 233-in-16 repeat lands at about 699.6 km, 0.8 percent below Landsat's 705 km. The band beyond 60 degrees latitude is a third of a flat map but about 13 percent of the planet. The model shifts the station's track 23.4 to 23.8 degrees per orbit (370 to 460 km), a few percent more than the NASA tutorial's figure, which matches a slightly shorter orbit. The 63.4 degree tilt where the perigee stops turning comes from the same formula.</p>
         <h2>Reported, unconfirmed</h2>
@@ -437,6 +437,7 @@
         <li><kbd>[</kbd> <kbd>]</kbd> previous and next card</li>
         <li><kbd>?</kbd> open this panel, <kbd>Esc</kbd> close it</li>
       </ul>
+      <p class="kn-keys-note">Letter, number and punctuation keys work while you are in the page, never from links or this panel. <button type="button" id="btn-keys-toggle" class="kn-textbtn">Turn single-key shortcuts off</button> (Space, Esc and ? stay on; every action also has a button.)</p>
       <h2>Sources</h2>
       <p>These seven were found through web search and cross-checked between results as of 2026-10-11; the team did not open every page.</p>
       <ul class="sed-sources">
@@ -445,8 +446,8 @@
         <li><a href="https://eol.jsc.nasa.gov/Tools/orbitTutorial.htm" rel="noopener noreferrer">Space Station Orbit Tutorial</a>: 51.6 degrees of inclination, orbits of 90 to 93 minutes, and about 22.9 degrees of longitude west per pass.</li>
         <li><a href="https://www.nasa.gov/international-space-station-frequently-asked-questions/" rel="noopener noreferrer">International Space Station Frequently Asked Questions - NASA</a>: the 51.6 degree inclination means the station never goes farther north or south than 51.6 degrees latitude.</li>
         <li><a href="https://www.esa.int/esapub/sp/sp1201/a3.htm" rel="noopener noreferrer">Mission &amp; Carrier Characteristics</a>: an ESA table of space station characteristics, with an altitude range of 370 to 460 km.</li>
-        <li><a href="https://landsat.gsfc.nasa.gov/about/worldwide-reference-system" rel="noopener noreferrer">The Worldwide Reference System</a>: Landsat's 16-day cycle of 233 orbits, about 98.9 minutes each near 705 km, tracks about 24.7 degrees (2752 km) apart at the equator.</li>
-        <li><a href="https://pubs.usgs.gov/fs/2003/0023/report.pdf" rel="noopener noreferrer">pubs.usgs.gov</a>: a USGS fact sheet; satellites designed for a 185 km swath from a 705 km sun-synchronous orbit.</li>
+        <li><a href="https://landsat.gsfc.nasa.gov/about/worldwide-reference-system" rel="noopener noreferrer">The Worldwide Reference System</a>: Landsat's 16-day cycle of 233 orbits, about 98.9 minutes each near 705 km, successive orbits' tracks about 24.7 degrees (2752 km) apart at the equator.</li>
+        <li><a href="https://pubs.usgs.gov/fs/2003/0023/report.pdf" rel="noopener noreferrer">USGS fact sheet (pubs.usgs.gov)</a>: satellites designed for a 185 km swath from a 705 km sun-synchronous orbit.</li>
       </ul>
     </div>
   </details>

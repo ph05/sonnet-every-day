@@ -367,6 +367,6 @@ export const CITIES = [
   { name: 'Los Angeles', lat: 34.05, lon: -118.24 },
   { name: 'Mexico City', lat: 19.43, lon: -99.13 },
   { name: 'New York', lat: 40.71, lon: -74.01 },
-  { name: 'Sao Paulo', lat: -23.55, lon: -46.63 },
+  { name: 'São Paulo', lat: -23.55, lon: -46.63 },
   { name: 'Buenos Aires', lat: -34.6, lon: -58.38 },
 ];

@@ -48,6 +48,10 @@ const TOASTS = {
   newBest: 'New personal best on this card.',
   runReset: 'Unravelled. Casting on again.',
   maxSats: 'Three needles is the most this frame holds.',
+  maxSatsOne: 'This card knits with one needle.',
+  maxSatsTwo: 'This card holds two needles.',
+  alreadyFree: 'Already knitting freely. Use Frog it to start over.',
+  runDone: 'This run is finished. Press Play to knit it again.',
   minSats: 'A knitter needs at least one needle.',
   randomized: 'Shuffled. A fresh set of needles.',
 };
@@ -508,7 +512,10 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     if (!t || !t.metrics) return;
     const m = t.metrics;
     const day = Number.isFinite(t.day) ? t.day : 0;
-    setText(el.clock, 'Day ' + (Math.floor(day) + 1) + ' · ' + hhmm(12 + (day - Math.floor(day)) * 24) + ' UTC');
+    const total = S.activeCard ? S.activeCard.days : FREE_DAYS;
+    const dayNo = Math.min(Math.floor(day) + 1, total);
+    const clockTime = hhmm(12 + (day - Math.floor(day)) * 24) + ' UTC';
+    setText(el.clock, isFinished() ? 'Day ' + total + ' done · ' + clockTime : 'Day ' + dayNo + ' · ' + clockTime);
     setText(el['sc-planet'], pct(m.planet, 1));
     setText(el['sc-map'], pct(m.map, 1));
     setText(el['sc-overlap'], pct(m.overlap, 1));
@@ -528,7 +535,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     const now = performance.now();
     if (now - S.labelAt > 2000) {
       S.labelAt = now;
-      el.map.setAttribute('aria-label', 'World map being knitted: day ' + (Math.floor(day) + 1) + ', planet ' + planet + '% covered, flat map ' + map + '% covered.');
+      el.map.setAttribute('aria-label', 'World map being knitted: day ' + dayNo + ', planet ' + planet + '% covered, flat map ' + map + '% covered.');
     }
     const hint = $('empty-hint');
     if (hint) hint.hidden = !(day < 0.05 && !t.running && !planet);
@@ -543,6 +550,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     setText(btn.querySelector('.kn-btn-label'), playing ? 'Pause' : 'Play');
     const use = btn.querySelector('use');
     if (use) use.setAttribute('href', playing ? '#i-pause' : '#i-play');
+    el['btn-step'].setAttribute('aria-disabled', isFinished() ? 'true' : 'false'); // still clickable: main answers with a toast
   }
 
   function renderView() {
@@ -584,7 +592,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
       el.app.dataset.state = 'ready';
       el.app.setAttribute('aria-busy', 'false');
       el.fatal.hidden = true;
-      announce('Ready. The satellites are already knitting; press Space to pause.');
+      announce(S.playing ? 'Ready. The satellites are already knitting; press Space to pause.' : 'Ready. The map is paused; press Space or Play to start knitting.');
     } else if (d.kind === 'error') {
       showFatal(d.message);
     }
@@ -658,7 +666,9 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
 
   on(document, 'app:toast', (e) => {
     const d = e.detail || {};
-    const template = TOASTS[d.key];
+    let template = TOASTS[d.key];
+    // the needle limit is the card's own (one needle on seven cards, two on Two-Needle Cable), not always three
+    if (d.key === 'maxSats' && S.activeCard && S.activeCard.maxSats < 3) template = S.activeCard.maxSats === 1 ? TOASTS.maxSatsOne : TOASTS.maxSatsTwo;
     if (!template) return;
     const params = d.params || {};
     if (d.key === 'cardMissed' && Number.isFinite(Number(params.short))) {
@@ -804,10 +814,23 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
   on(wideQuery, 'change', applyLayout);
   applyLayout();
 
-  // After picking a card on a long page the map may have scrolled away; bring it back without jumping when it is visible.
+  // After picking a card on a long page the map or the goal may be out of sight; bring them back, and do not jump when they are in view.
+  // Phones pin the map to the top, so the playback bar and the goal come back right under it. From 1024 px the map is pinned in the
+  // left column and the goal heads the rail (far above the card list), so the goal scrolls to the top of the window.
   function revealStage() {
+    const behavior = reduced ? 'auto' : 'smooth';
     const r = el.stage.getBoundingClientRect();
-    if (r.top < 0 || r.bottom > innerHeight) el.stage.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    if (r.top < 0 || r.bottom > innerHeight) {
+      el.stage.scrollIntoView({ behavior, block: 'start' });
+      return;
+    }
+    const goal = $('h-goal') && $('h-goal').closest('.kn-goal');
+    if (!goal) return;
+    const pinned = getComputedStyle(el.stage).position === 'sticky';
+    if (goal.getBoundingClientRect().top >= (pinned ? r.bottom : 0)) return;
+    const grid = el.stage.closest('.kn-grid');
+    if (pinned && grid) scrollBy({ top: grid.getBoundingClientRect().top - 8, behavior }); // the map's own place: all of it flows under the pinned map
+    else goal.scrollIntoView({ behavior, block: 'start' });
   }
 
   // ---- About -------------------------------------------------------------------------------------------------------
@@ -829,12 +852,36 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
       setText(box, 'Running the physics checks...');
       clearTimeout(selftestTimer);
       selftestTimer = later(() => {
-        if (!box.querySelector('ul')) setText(box, "The team ran these checks while building the page; they are not run in this browser.");
+        if (!box.querySelector('ul')) setText(box, 'The checks did not finish in this browser; the team ran them while building the page.');
       }, 8000);
     }
   });
 
   // ---- keyboard ----------------------------------------------------------------------------------------------------
+  // Single-character shortcuts (WCAG 2.1.4) can be switched off here, and never fire from links, the About panel or the footer.
+  const KEYS_PREF = 'orbital.v1.keys';
+  const keysBtn = $('btn-keys-toggle');
+  let keysOn = true;
+  try {
+    keysOn = localStorage.getItem(KEYS_PREF) !== 'off';
+  } catch (err) {
+    keysOn = true; // storage is a convenience only
+  }
+  function renderKeysSwitch() {
+    setText(keysBtn, keysOn ? 'Turn single-key shortcuts off' : 'Turn single-key shortcuts on');
+  }
+  renderKeysSwitch();
+  on(keysBtn, 'click', () => {
+    keysOn = !keysOn;
+    try {
+      localStorage.setItem(KEYS_PREF, keysOn ? 'on' : 'off');
+    } catch (err) {
+      // not saved; the switch still works for this visit
+    }
+    renderKeysSwitch();
+    announce(keysOn ? 'Single-key shortcuts on.' : 'Single-key shortcuts off. Every action still has a button.');
+  });
+
   const NATIVE_KEYS = new Set([' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown']);
 
   function onKey(e) {
@@ -868,6 +915,7 @@ export function createUI({ seed = 1011, reducedMotion = false } = {}) {
     if ((e.key === ' ' || e.key === 'Enter') && (tag === 'BUTTON' || tag === 'SUMMARY' || tag === 'A')) return;
     if (e.repeat) return;
     const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+    if (k.length === 1 && k !== ' ' && (!keysOn || (t && t.closest && t.closest('a, summary, .sed-about, .sed-footer, .sed-header')))) return;
     switch (k) {
       case ' ': emit('toggle-play'); break;
       case 'r': emit('reset'); break;

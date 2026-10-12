@@ -412,6 +412,10 @@ function setSeason(value) {
 function pickCard(id) {
   const card = id === 'free' ? null : getCard(id);
   if (id !== 'free' && !card) return;
+  if (!card && state.card === 'free') { // already knitting freely: do not discard the run, say so
+    toast('alreadyFree');
+    return;
+  }
   state.card = card ? card.id : 'free';
   state.peeked = false;
   if (card) {
@@ -537,7 +541,10 @@ function togglePlay() {
 
 function stepDays(days) {
   const n = Number.isFinite(days) && days > 0 ? Math.min(days, 30) : 1;
-  if (finished) return;
+  if (finished) {
+    toast('runDone');
+    return;
+  }
   stepTarget = Math.min(horizon, sim.day + n);
   catchUpTo = 0;
   state.playing = false;
