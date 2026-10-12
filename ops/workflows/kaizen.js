@@ -20,7 +20,7 @@ export const meta = {
 //   selective gates ends with one full run (kaizen.mjs verify) when the budget still has MINUTES.verify; otherwise the next cold begin
 //   does it. Before the selective gate every member paid the full suites (6 of 9 members in 82 minutes on 2026-10-10, 4 of 9 in 79 on
 //   2026-10-11). Pass phaseBudgetMinutes below config.phaseStuckMinutes (90) minus a margin: members who do not fit are queued for the
-//   next day (state/kaizen-queue.json). config.phaseBudgetMinutes.kaizen is 85; PLAYBOOK 7.2 and 10.6 hand this workflow 75, and its
+//   next day (state/kaizen-queue.json). config.phaseBudgetMinutes.kaizen is 85; PLAYBOOK 7.2 and 10.6 hand this workflow phaseBudgetMinutes 75, and its
 //   phase watch falls due at 100 (the kaizen watch margin is 25: a member may start just inside the budget, and the round is never extended).
 // writes: ONLY what the members change through scripts/kaizen.mjs (it commits, never pushes), plus state/kaizen-queue.json at the end
 //   and scratch files under work/<date>/tmp/. The orchestrator syncs afterwards.
