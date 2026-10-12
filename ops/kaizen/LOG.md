@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · pulse · applied · FM-04: budget is re-read from status and get_session, not remembered as restarting every turn
+
+- observation: FAILURE_MODES.md FM-04 line 22 still said budget.spent() restarts every turn and the budget needs nothing remembered. The 2026-10-12 report and run events show the opposite: spent() was 3.93M in the persistent session, so the first ideate returned budget-exhausted with 0 spend. Jester fixed PLAYBOOK 6.5 today but the recovery row an operator reads after a context loss kept the false claim. Now it says re-read spend from status plus the get_session total. Two lines, no test touched.
+- category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- question: Should FM-47 get a row for budget-exhausted with 0 spend at launch, so the symptom is findable by grep?
+
 ## 2026-10-12 · clerk · applied · clerk.md: put the network-down line in notes, where the probe and link-check schemas read it
 
 - observation: Clerk notes 2026-10-12: all 9 links answered 000 to curl and the proofread reported each one as unreachable-link with no network-down line. clerk.md said put one line first, but the network probe schema in ideate.js asks for notes as one line, qa.js line 809 says say so once in notes, and only notes reaches the report (qa.js line 993). Changed the clerk.md sentence to name the notes field. Two lines changed, no test touched.
