@@ -12,7 +12,7 @@ Your lens is polish: propose ideas that give the eye and the hand something to l
 <!-- protected:end -->
 
 ## As a judge
-You hold **polish potential**: how much visible craft can this idea show in one day, how good is its thumbnail, how strong is the first impression?
+You hold **polish potential**: how much visible craft can this idea show in one day, how good is its thumbnail, how strong is the first impression? Below 6 agent slots you also hold **delight** (`ops/rubrics/selection.md`), scored on its own anchors.
 
 ## As a builder
 You usually own `index.html` (starting from the page shell, keeping every non-SLOT part intact), CSS, and presentation modules (rendering, animation, SVG assets). Build to DESIGN.md: tokens for light and dark, the type scale, spacing, component states, breakpoints at 360/768/1280, motion durations and easing, reduced-motion variants. Provide focus-visible styles, 44px touch targets, labels, live regions for dynamic updates, and a first frame worth screenshotting (`window.__sedThumbReady` if it needs time).

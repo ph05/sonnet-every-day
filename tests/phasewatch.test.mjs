@@ -1093,7 +1093,7 @@ describe('watch check: overdue', () => {
     box.write(`work/${DATE}/spec/DESIGN.md`, '');
     const j = good(await chk(box, 'spec', '05:30')); // due 04:00 + 85 = 05:25
     assert.deepEqual(j.outputs.present, [`work/${DATE}/spec/SPEC.md`]); // an empty file does not count
-    assert.deepEqual(j.outputs.missing, [`work/${DATE}/spec/DESIGN.md`, `work/${DATE}/spec/OWNERSHIP.json`, `work/${DATE}/spec/DONE.json`]);
+    assert.deepEqual(j.outputs.missing, [`work/${DATE}/spec/DESIGN.md`, `work/${DATE}/spec/OWNERSHIP.json`, `work/${DATE}/spec/PROJECT.json`, `work/${DATE}/spec/DONE.json`]);
   });
 
   test('without a bound task the steps say how to find the Workflow task', async () => {
@@ -1283,7 +1283,7 @@ describe('watch check: finish by hand', () => {
   const OUT = {
     ideate: { files: { 'ideas/shortlist.json': '{"ideas":[1]}' }, check: /Appendix A1 on work\/2026-10-09\/ideas\/shortlist\.json with MODE=shortlist/ },
     select: { files: { '../state/ideas/2026-10-09.json': '{"ideas":[]}' }, check: /Appendix A1 on state\/ideas\/2026-10-09\.json with MODE=final/ },
-    spec: { files: { 'spec/SPEC.md': '# s', 'spec/DESIGN.md': '# d', 'spec/OWNERSHIP.json': '{"files":{}}' }, check: /SPEC\.md, DESIGN\.md and OWNERSHIP\.json exist and are non-empty/ },
+    spec: { files: { 'spec/SPEC.md': '# s', 'spec/DESIGN.md': '# d', 'spec/OWNERSHIP.json': '{"files":{}}', 'spec/PROJECT.json': '{"slug":"x"}' }, check: /SPEC\.md, DESIGN\.md, OWNERSHIP\.json and PROJECT\.json exist and are non-empty, and OWNERSHIP\.json and PROJECT\.json parse/ },
     build: { files: { 'build/site/index.html': '<html></html>' }, check: /build\/site\/index\.html exists and the trial stage of PLAYBOOK 10\.1 passes/ },
     qa: { files: { 'qa/report.json': '{"counts":{}}' }, check: /qa\/report\.json parses and has counts/ },
     revise: { files: { 'qa/report.json': '{"counts":{}}', 'revise/log.json': '{}' }, check: /qa\/report\.json was rewritten with a higher revision/ },
@@ -1303,7 +1303,8 @@ describe('watch check: finish by hand', () => {
       assert.match(j.steps[0], /^TaskStop\(\{ task_id: "wf-1" \}\)/, phase);
       assert.match(j.steps[1], new RegExp(`^${phase} wrote every required output but its DONE\\.json \\(`), phase);
       assert.match(j.steps[2], OUT[phase].check, phase);
-      assert.match(j.steps[3], new RegExp(`^If the check passes: run: mkdir -p work/${DATE}/${phase} && echo '\\{"ok":true,"phase":"${phase}","by":"orchestrator"\\}' > work/${DATE}/${phase}/DONE\\.json$`), phase);
+      if (phase === 'spec') assert.match(j.steps[3], new RegExp(`^If the check passes: run: node -e '.*work/${DATE}/spec/PROGRESS\\.json.*work/${DATE}/spec/DONE\\.json.*'$`), phase);
+      else assert.match(j.steps[3], new RegExp(`^If the check passes: run: mkdir -p work/${DATE}/${phase} && echo '\\{"ok":true,"phase":"${phase}","by":"orchestrator"\\}' > work/${DATE}/${phase}/DONE\\.json$`), phase);
       assert.match(j.steps[4], /^If the check passes: run: node scripts\/state\.mjs watch disarm --phase \w+ --session P1 --date 2026-10-09 .*delete nothing/, phase);
       assert.match(j.steps[5], new RegExp(`^If the check passes: spend .*checkpoint with note "${phase} ok \\(finished by hand after the phase watch\\)"`), phase);
       const fail = j.steps.indexOf('If the check fails, do exactly this instead (retry):');
@@ -1319,8 +1320,14 @@ describe('watch check: finish by hand', () => {
     const { box } = await armed('spec');
     write(box, 'spec');
     const j = good(await chk(box, 'spec', '05:30'));
+    // the spec Workflow wrote its compact decision before the architect started (spec/PROGRESS.json): the hand-written marker carries it
+    box.write(`work/${DATE}/spec/PROGRESS.json`, { phase: 'spec', compact: false, tier: 1 });
     execFileSync('sh', ['-c', j.steps[3].replace(/^If the check passes: run: /, '')], { cwd: box.root });
-    assert.deepEqual(box.readJson(`work/${DATE}/spec/DONE.json`), { ok: true, phase: 'spec', by: 'orchestrator' });
+    assert.deepEqual(box.readJson(`work/${DATE}/spec/DONE.json`), { ok: true, phase: 'spec', by: 'orchestrator', compact: false, tier: 1 });
+    // no marker (an older Workflow, a failed write): the safe side, compact at tier 2 (FM-83: a full build of a mini-spec fails it)
+    fs.rmSync(`${box.root}/work/${DATE}/spec/PROGRESS.json`);
+    execFileSync('sh', ['-c', j.steps[3].replace(/^If the check passes: run: /, '')], { cwd: box.root });
+    assert.deepEqual(box.readJson(`work/${DATE}/spec/DONE.json`), { ok: true, phase: 'spec', by: 'orchestrator', compact: true, tier: 2 });
     const again = good(await chk(box, 'spec', '05:32'));
     assert.deepEqual([again.next, again.repeat], ['nothing', true]);
     // and the disarm step runs: the timer is recorded as spent
@@ -1333,6 +1340,12 @@ describe('watch check: finish by hand', () => {
     box.write(`work/${DATE}/spec/SPEC.md`, '# s');
     box.write(`work/${DATE}/spec/DESIGN.md`, '# d');
     assert.equal(good(await chk(box, 'spec', '05:30')).next, 'retry', 'OWNERSHIP.json is missing');
+    // build reads spec/PROJECT.json (heading, tagline, the package draft): without it the spec is not finished
+    const noProject = await armed('spec');
+    for (const f of ['SPEC.md', 'DESIGN.md']) noProject.box.write(`work/${DATE}/spec/${f}`, '# x');
+    noProject.box.write(`work/${DATE}/spec/OWNERSHIP.json`, '{"index.html":"artisan"}');
+    const np = good(await chk(noProject.box, 'spec', '05:30'));
+    assert.deepEqual([np.next, np.outputs.missing], ['retry', [`work/${DATE}/spec/PROJECT.json`, `work/${DATE}/spec/DONE.json`]], 'PROJECT.json is missing');
     const empty = await armed('spec');
     for (const f of ['SPEC.md', 'DESIGN.md']) empty.box.write(`work/${DATE}/spec/${f}`, '# x');
     empty.box.write(`work/${DATE}/spec/OWNERSHIP.json`, '');

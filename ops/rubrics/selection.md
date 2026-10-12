@@ -2,6 +2,8 @@
 
 Used by `ops/workflows/select.js`. Eight judges each score ALL shortlisted ideas on ONE criterion, 0 to 10 (one decimal allowed), with a one-line concrete reason per idea. The script (not an agent) computes the weighted total, applies the gates, ranks, and picks the winner and at most one carry-over. A critic then makes a last adversarial check of the winner and may veto once.
 
+**Below 6 agent slots** (`args.maxAgents`) four judges hold two criteria each, so the panel takes two waves on two slots instead of four (2026-10-11: four waves used 25 of the 30 minutes and the critic check was skipped for time): architect `feasibility` + `sophistication`, critic `safety` + `timeliness`, lab `distinctness` + `interestFit`, artisan `polishPotential` + `delight`. Every criterion keeps its own anchors, reasons and weight; a judge that fails loses both of its criteria.
+
 ## Machine-readable settings
 
 `ops/workflows/select.js` carries the same numbers; `ops/workflows/_selfcheck.mjs` fails if they ever differ. Change both together.

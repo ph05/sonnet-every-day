@@ -630,15 +630,14 @@ export function selectWorld(sb, cfg = {}) {
       if (label.startsWith('pulse')) return { ok: true, pushed: true, note: '' };
       if (/^load shortlist|^write selection state|^write select DONE|^clock /.test(label)) return emulateFileClerk(sb, prompt, rec);
       if (label.startsWith('judge ')) {
-        const key = /^judge (\w+)/.exec(label)[1];
-        if ((cfg.failJudges || []).includes(key)) return null;
+        // "judge <key> (<role>)" or, below 6 slots, "judge <key>+<key> (<role>)": a failed agent loses every criterion it holds
+        const keys = /^judge ([\w+]+) /.exec(label)[1].split('+');
+        if (keys.some((k) => (cfg.failJudges || []).includes(k))) return null;
         const ids = [...prompt.matchAll(/^- (i\d+) "/gm)].map((m) => m[1]);
-        return {
-          criterion: key,
-          scores: ids.filter((id) => !(cfg.skip && cfg.skip(key, id))).map((id) => ({ id, score: score(key, id), reason: `${key} reason for ${id}` })),
-          flags: (cfg.flags || []).filter((f) => f.key === key).map((f) => ({ id: f.id, severity: f.severity, text: f.text })),
-          standout: ids[0],
-        };
+        const scoresOf = (key) => ids.filter((id) => !(cfg.skip && cfg.skip(key, id))).map((id) => ({ id, score: score(key, id), reason: `${key} reason for ${id}` }));
+        const flags = (cfg.flags || []).filter((f) => keys.includes(f.key)).map((f) => ({ id: f.id, severity: f.severity, text: f.text }));
+        if (keys.length > 1) return { ...Object.fromEntries(keys.map((k) => [k, scoresOf(k)])), flags, standout: ids[0] };
+        return { criterion: keys[0], scores: scoresOf(keys[0]), flags, standout: ids[0] };
       }
       if (label.startsWith('challenge ') || label.startsWith('risk pass ')) {
         this.challenges.push(label);
@@ -693,13 +692,23 @@ export function specWorld(sb, cfg = {}) {
       }
       if (label.startsWith('architect ')) {
         reconciles++;
+        // what a stall at this moment would leave behind: the progress marker is already on disk
+        rec.progressAtArchitect = rec.progressAtArchitect || (sb.exists(`${sb.work('spec')}/PROGRESS.json`) ? sb.json(`${sb.work('spec')}/PROGRESS.json`) : null);
         const compact = /write the mini-spec/.test(prompt);
         const fixPass = /THIS IS A FIX PASS/.test(prompt);
         const brk = cfg.persistentBreak || (reconciles === 1 ? cfg.break : null) || null;
+        if (cfg.interruptAfter && reconciles === 1) {
+          // an interrupted architect: whole files in the prompt's order up to the cut, one progress line each, then no reply
+          seedSpecFiles(sb, { compact });
+          const order = ['OWNERSHIP.json', 'PROJECT.json', 'SPEC.md', 'DESIGN.md'];
+          for (const f of order.slice(cfg.interruptAfter)) fs.rmSync(`${sb.work('spec')}/${f}`, { force: true });
+          fs.writeFileSync(`${sb.work('spec')}/progress.log`, order.slice(0, cfg.interruptAfter).map((f) => `${f} written\n`).join(''));
+          return null;
+        }
         seedSpecFiles(sb, { compact, break: fixPass && !cfg.persistentBreak ? null : brk });
         return { files: Object.keys(sb.json(`${sb.work('spec')}/OWNERSHIP.json`)).length, owners: ['artisan', 'engineer'], slug: 'glass-ledger', title: 'Glass Ledger', openIssues: [], notes: 'done' };
       }
-      if (/^spec lint|^write spec DONE/.test(label)) return emulateFileClerk(sb, prompt, rec);
+      if (/^spec lint|^write spec DONE|^spec progress/.test(label)) return emulateFileClerk(sb, prompt, rec);
       return undefined;
     },
   };
@@ -1655,6 +1664,82 @@ describe('select.js', () => {
     } finally { s.clean(); }
   });
 
+  test('below 6 slots four judges hold two criteria each: two judge waves on 2 slots, the same totals, and the critic check keeps its time', async () => {
+    // 2026-10-11: eight one-criterion judges on 2 slots took four waves (about 25 of 30 minutes) and the critic check was skipped for time
+    const s = makeSandbox();
+    try {
+      const ideas = seedShortlist(s);
+      const world = selectWorld(s);
+      const run = await go(s, world, {}, { maxAgents: 2, osHeartbeat: true, phaseBudgetMinutes: 30 });
+      checkRunInvariants('select', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 400));
+      assert.ok(run.rec.maxActive <= 2, `${run.rec.maxActive} agents at once on 2 slots`);
+      const judges = run.rec.calls.filter((c) => c.label.startsWith('judge '));
+      assert.deepEqual(judges.map((c) => c.label).sort(), ['judge distinctness+interestFit (lab)', 'judge feasibility+sophistication (architect)', 'judge polishPotential+delight (artisan)', 'judge safety+timeliness (critic)']);
+      assert.ok(judges.length <= 2 * 2, 'at most two waves of judges on 2 slots');
+      for (const j of judges) {
+        const keys = /^judge ([\w+]+) /.exec(j.label)[1].split('+');
+        for (const k of keys) assert.ok(j.prompt.includes(`Criterion "${k}"`), `${j.label} carries the question of ${k}`);
+        assert.ok(j.prompt.includes('score each criterion as if a different judge held it'), j.label);
+        assert.equal(j.effort, 'high', j.label);
+      }
+      assert.ok(judges.find((c) => c.label.includes('distinctness')).prompt.includes('History digest'));
+      assert.ok(judges.find((c) => c.label.includes('safety')).prompt.includes('A blocker means the idea must not be built as pitched'));
+      const rubric = fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'selection.md'), 'utf8');
+      for (const j of judges) {
+        const [, keys, role] = /^judge ([\w+]+) \((\w+)\)/.exec(j.label);
+        assert.ok(rubric.includes(`${role} ${keys.split('+').map((k) => `\`${k}\``).join(' + ')}`), `ops/rubrics/selection.md names the pair of ${j.label}`);
+      }
+      const doc = s.json(s.p('state', 'ideas', `${DATE}.json`));
+      assert.ok(doc.ideas.every((i) => !i.scoresMissing), 'every criterion is scored');
+      const totals = expectedTotals(ideas, defaultScore);
+      for (const i of doc.ideas) assert.equal(i.total, totals[i.id], `total of ${i.id}`);
+      assert.ok(world.challenges.some((l) => l.startsWith('challenge ')), 'the critic check ran');
+      assert.equal(run.result.judgesUsed.length, 8);
+      // state file and marker come from one program run
+      assert.ok(!run.rec.calls.some((c) => c.label === 'write select DONE'));
+      const marker = s.json(s.work('select', 'DONE.json'));
+      assert.deepEqual([marker.ok, marker.chosenId, marker.slug, marker.carryoverOutId], [true, run.result.chosenId, run.result.slug, run.result.carryoverOutId]);
+      // the integrity baseline reads the clock: no separate start tick before it
+      const first = run.rec.calls.findIndex((c) => c.label.startsWith('judge '));
+      assert.deepEqual(run.rec.calls.slice(0, first).map((c) => c.label), ['integrity baseline', 'load shortlist']);
+      // a failed pair loses both criteria; a missing safety criterion still makes the critic stand in
+      const f = makeSandbox();
+      try {
+        seedShortlist(f);
+        const fw = selectWorld(f, { failJudges: ['safety'] });
+        const failed = await go(f, fw, {}, { maxAgents: 2, osHeartbeat: true });
+        checkRunInvariants('select', failed, { skipPhaseUse: true });
+        assert.deepEqual([...failed.result.judgesUsed].sort(), CRIT_KEYS.filter((k) => !['safety', 'timeliness'].includes(k)).sort());
+        assert.deepEqual(JSON.parse(JSON.stringify(failed.result.unscoredMandatory)), ['safety']);
+        assert.ok(failed.rec.challengePrompts.some((c) => c.prompt.includes('produced no scores') && c.prompt.includes('rubrics/safety.md')));
+        assert.equal(failed.rec.calls.filter((c) => c.label.startsWith('judge safety+timeliness')).length, 2, 'the pair is retried once');
+      } finally { f.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('the critic prompt fences the scout-written titles; a slug clash suffix stays within 36 characters', async () => {
+    const s = makeSandbox();
+    try {
+      const ideas = seedShortlist(s);
+      const long = 'Thirty Six Characters Of Pure Title Text Here';
+      const doc = s.json(s.work('ideas', 'shortlist.json'));
+      doc.ideas.forEach((i) => { i.title = i.id === 'i03' ? long : i.title; });
+      s.write(s.work('ideas', 'shortlist.json'), doc);
+      const base = 'thirty-six-characters-of-pure-title'.slice(0, 36);
+      s.write(s.p('state', 'history.json'), { schema: 1, startDate: DATE, entries: [{ n: 1, date: '2026-10-01', slug: base, title: 'Older', tagline: 't', tier: 1, fingerprint: ideas[2].fingerprint, path: 'd/x/', publishedAt: '2026-10-01T10:00:00Z', countsForNovelty: false }] });
+      const run = await go(s, selectWorld(s, { scoreOf: (k, id) => (id === 'i03' ? 9.9 : undefined) }));
+      checkRunInvariants('select', run);
+      assert.equal(run.result.chosenId, 'i03');
+      assert.match(run.result.slug, /^[a-z0-9]+(-[a-z0-9]+)*$/);
+      assert.ok(run.result.slug.length <= 36, `${run.result.slug} (${run.result.slug.length}) breaks the PLAYBOOK 8.3 check`);
+      assert.ok(run.result.slug.endsWith('-2') && run.result.slug !== base);
+      const cp = run.rec.challengePrompts.find((c) => c.label.startsWith('challenge '));
+      assert.ok(cp.prompt.includes(`<untrusted-research label="titles">\ni03: ${long}`), 'the winner title is fenced');
+      assert.ok(!cp.prompt.includes(`picked i03 "${long}"`), 'no title outside the fence');
+    } finally { s.clean(); }
+  });
+
   test('null agents, rate limits, budget errors and tight budgets never throw', async () => {
     for (const scenario of [
       { name: 'null', world: () => ({ respond: () => null }), extra: {} },
@@ -1793,6 +1878,91 @@ describe('spec.js', () => {
       assert.ok(proj.result.errors.join('|').includes('tier must be 1'));
       const slugForced = await runWorkflow('spec', baseArgs(s, { slug: 'other-slug', title: 'Other Title' }), { world: { sb: s, respond: async (ctx) => (ctx.opts.label.startsWith('architect') ? (seedSpecFiles(s), { files: 1, owners: ['artisan'] }) : ctx.opts.label.startsWith('plan') || ctx.opts.label.startsWith('review') ? { file: 'x', headline: 'h' } : w.respond(ctx)) } });
       assert.ok(slugForced.result.errors.join('|').includes('slug must be "other-slug"'), 'the orchestrator-chosen slug and title are enforced');
+    } finally { s.clean(); }
+  });
+
+  test('the compact decision is on disk before the architect starts, and the architect writes whole files in order with a progress line each (2026-10-10 stall)', async () => {
+    for (const [args, compact, tier] of [[{ maxAgents: 2, osHeartbeat: true, phaseBudgetMinutes: 35 }, true, 2], [{ maxAgents: 8 }, false, 1]]) {
+      const s = makeSandbox();
+      try {
+        const run = await go(s, specWorld(s), {}, args);
+        checkRunInvariants('spec', run, { skipPhaseUse: true });
+        assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+        const p = run.rec.progressAtArchitect;
+        assert.ok(p, 'spec/PROGRESS.json exists when the architect starts');
+        assert.deepEqual([p.phase, p.compact, p.tier, p.minOwnLoc, p.slug, p.title], ['spec', compact, tier, compact ? 350 : 700, 'glass-ledger', 'Glass Ledger']);
+        assert.deepEqual(p.order, ['OWNERSHIP.json', 'PROJECT.json', 'SPEC.md', 'DESIGN.md']);
+        assert.deepEqual([run.result.compact, run.result.tier, s.json(s.work('spec', 'DONE.json')).compact], [compact, tier, compact]);
+        const a = run.rec.calls.find((c) => c.label.startsWith('architect ')).prompt;
+        const at = (t) => a.indexOf(t);
+        assert.ok(at('1. OWNERSHIP.json') < at('2. PROJECT.json') && at('2. PROJECT.json') < at('3. SPEC.md') && at('3. SPEC.md') < at('4. DESIGN.md'), 'the small files come first');
+        assert.ok(a.includes('IN THIS ORDER') && a.includes(`>> ${s.work('spec', 'progress.log')}`), 'a progress line after each file');
+        // the baseline and the marker print the clock: no separate start tick
+        assert.deepEqual(run.rec.calls.filter((c) => !c.label.startsWith('pulse')).slice(0, 2).map((c) => c.label), ['integrity baseline', 'spec progress']);
+        assert.ok(!run.rec.calls.some((c) => c.label === 'clock start'));
+      } finally { s.clean(); }
+    }
+    // an architect cut off after three files: whole files, their progress lines and the decision are what a hand finish needs
+    const s = makeSandbox();
+    try {
+      const run = await go(s, specWorld(s, { interruptAfter: 3 }), {}, { maxAgents: 2, osHeartbeat: true });
+      checkRunInvariants('spec', run, { skipPhaseUse: true });
+      assert.ok(run.rec.calls.some((c) => c.label === 'architect reconcile (retry)'), 'the interrupted architect is retried once');
+      assert.equal(run.result.ok, true);
+      assert.equal(s.json(s.work('spec', 'PROGRESS.json')).compact, true);
+    } finally { s.clean(); }
+  });
+
+  test('args.title cannot reach the lint shell command as code, and a malformed slug stops the phase before any agent', async () => {
+    const s = makeSandbox();
+    try {
+      // the clerk runs the lint command from the repo root, so a relative touch lands in the sandbox
+      const evil = 'Glass "$(touch pwned)" Ledger';
+      const world = specWorld(s);
+      const run = await runWorkflow('spec', baseArgs(s, { title: evil, maxAgents: 2, osHeartbeat: true }), { world: { sb: s, respond: async (ctx) => (ctx.opts.label.startsWith('architect') ? (seedSpecFiles(s, { compact: true }), s.write(s.work('spec', 'PROJECT.json'), projectJson(2, { title: /title "([^"]*)"/.exec(ctx.prompt)[1] })), { files: 2, owners: ['artisan', 'engineer'] }) : world.respond(ctx)) } });
+      checkRunInvariants('spec', run, { skipPhaseUse: true });
+      assert.equal(s.exists(s.p('pwned')), false, 'the title ran as a shell command');
+      const lint = run.rec.calls.find((c) => c.label === 'spec lint');
+      const cmd = lint.prompt.split('\n')[lint.prompt.split('\n').findIndex((l) => l.startsWith('3. Run this command from')) + 1];
+      assert.ok(!cmd.includes('Glass') && !cmd.includes('$('), `no title in the lint command: ${cmd}`);
+      assert.equal(s.json(s.work('tmp', 'spec-lint-args.json')).wantTitle, 'Glass touch pwned Ledger', 'the lint reads the cleaned title from its args file');
+      assert.ok(!run.rec.calls.some((c) => c.label === 'write spec DONE'), 'the clean lint wrote DONE.json itself');
+      assert.equal(s.json(s.work('spec', 'DONE.json')).title, 'Glass touch pwned Ledger');
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      assert.equal(run.result.title, 'Glass touch pwned Ledger');
+      for (const slug of ['Glass Ledger', 'glass-ledger"; rm -rf /tmp/x; "', 'x'.repeat(41)]) {
+        const bad = await runWorkflow('spec', baseArgs(s, { slug }), { world: { respond: () => { throw new Error('no agent may run'); } } });
+        assert.deepEqual([bad.result.ok, bad.result.error, bad.result.missing[0]], [false, 'bad-args', 'slug'], slug);
+      }
+    } finally { s.clean(); }
+  });
+
+  test('a five-word title fixed by the orchestrator passes the lint with a warning instead of failing spec twice', async () => {
+    const s = makeSandbox();
+    try {
+      const world = specWorld(s);
+      const run = await runWorkflow('spec', baseArgs(s, { title: 'The Great Big Glass Ledger', maxAgents: 2, osHeartbeat: true }), { world: { sb: s, respond: async (ctx) => (ctx.opts.label.startsWith('architect') ? (seedSpecFiles(s, { compact: true }), s.write(s.work('spec', 'PROJECT.json'), projectJson(2, { title: /title "([^"]*)"/.exec(ctx.prompt)[1] })), { files: 2, owners: ['artisan', 'engineer'] }) : world.respond(ctx)) } });
+      checkRunInvariants('spec', run, { skipPhaseUse: true });
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 400));
+      assert.equal(run.result.title, 'The Great Big Glass Ledger');
+      assert.ok(run.result.warnings.some((w) => w.includes('5 words') && w.includes('kept as given')), run.result.warnings.join(' | '));
+      assert.ok(!run.rec.calls.some((c) => c.label.startsWith('architect spec fix')), 'no fix pass for a title the architect may not change');
+      assert.deepEqual([...run.result.skipped], ['co-planning', 'cross-review'], 'each skipped stage once');
+    } finally { s.clean(); }
+  });
+
+  test('the ownership lint rejects two keys for one file ("js/./main.js") and a path that is also a directory', async () => {
+    const s = makeSandbox();
+    try {
+      const w = specWorld(s);
+      for (const [own, needle] of [
+        [{ 'index.html': 'artisan', 'js/main.js': 'engineer', 'js/./main.js': 'artisan' }, 'js/./main.js: not a clean relative path'],
+        [{ 'index.html': 'artisan', 'data.json': 'engineer', 'data.json/x.js': 'artisan' }, 'data.json: is both a file and a directory'],
+      ]) {
+        const run = await runWorkflow('spec', baseArgs(s), { world: { sb: s, respond: async (ctx) => (ctx.opts.label.startsWith('architect') ? (seedSpecFiles(s, { owners: own }), { files: 3, owners: ['artisan', 'engineer'] }) : ctx.opts.label.startsWith('plan') || ctx.opts.label.startsWith('review') ? { file: 'x', headline: 'h' } : w.respond(ctx)) } });
+        assert.equal(run.result.ok, false, needle);
+        assert.ok(run.result.errors.some((e) => e.includes(needle)), `${needle} in ${run.result.errors.join(' | ')}`);
+      }
     } finally { s.clean(); }
   });
 

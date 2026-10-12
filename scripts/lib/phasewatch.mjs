@@ -94,7 +94,8 @@ export const DEFAULT_PHASE_MINUTES = Object.freeze({
 const REQUIRED_OUTPUTS = {
   ideate: ['work/<D>/ideas/shortlist.json', 'work/<D>/ideate/DONE.json'],
   select: ['state/ideas/<D>.json', 'work/<D>/select/DONE.json'],
-  spec: ['work/<D>/spec/SPEC.md', 'work/<D>/spec/DESIGN.md', 'work/<D>/spec/OWNERSHIP.json', 'work/<D>/spec/DONE.json'],
+  // PROJECT.json too: build reads it (the heading, the tagline, the draft of package/project.json)
+  spec: ['work/<D>/spec/SPEC.md', 'work/<D>/spec/DESIGN.md', 'work/<D>/spec/OWNERSHIP.json', 'work/<D>/spec/PROJECT.json', 'work/<D>/spec/DONE.json'],
   build: ['work/<D>/build/site/index.html', 'work/<D>/build/DONE.json'],
   qa: ['work/<D>/qa/report.json', 'work/<D>/qa/DONE.json'],
   revise: ['work/<D>/qa/report.json', 'work/<D>/revise/log.json', 'work/<D>/revise/DONE.json'],
@@ -347,13 +348,24 @@ function retryWipe(phase, date) {
   return dirs.length ? `rm -rf ${dirs.map((d) => `work/${date}/${d}`).join(' ')}` : null;
 }
 
+/**
+ * The DONE.json a finished-by-hand phase gets. spec: compact and tier come from work/<D>/spec/PROGRESS.json, which the spec Workflow
+ * writes before its architect starts (PLAYBOOK 8.4 reads them from DONE.json when the result is missing); without it the safe side,
+ * compact, tier 2 (a compact build of a full spec only lowers the bar, a full build of a mini-spec fails it: FM-83).
+ */
+function handDone(phase, date) {
+  const dir = `work/${date}/${phase}`;
+  if (phase !== 'spec') return `mkdir -p ${dir} && echo '{"ok":true,"phase":"${phase}","by":"orchestrator"}' > ${dir}/DONE.json`;
+  return `node -e 'const fs=require("fs");let p={};try{p=JSON.parse(fs.readFileSync("${dir}/PROGRESS.json","utf8"))}catch{}const c=p.compact!==false;fs.writeFileSync("${dir}/DONE.json",JSON.stringify({ok:true,phase:"spec",by:"orchestrator",compact:c,tier:c?2:1})+"\\n")'`;
+}
+
 /** What PLAYBOOK 7.3 checks before `phase` is done: what the operator runs on a phase that wrote everything but its DONE.json. */
 function phaseCheck(phase, date) {
   return (
     {
       ideate: `Appendix A1 on work/${date}/ideas/shortlist.json with MODE=shortlist (PARTIAL=1 accepts 7 to 9 ideas, PLAYBOOK 6.7)`,
       select: `Appendix A1 on state/ideas/${date}.json with MODE=final and SLUG=<the slug> (PARTIAL=1 when ideate was accepted partial)`,
-      spec: `work/${date}/spec/SPEC.md, DESIGN.md and OWNERSHIP.json exist and are non-empty, and OWNERSHIP.json parses`,
+      spec: `work/${date}/spec/SPEC.md, DESIGN.md, OWNERSHIP.json and PROJECT.json exist and are non-empty, and OWNERSHIP.json and PROJECT.json parse (the DONE.json command below copies compact and tier from work/${date}/spec/PROGRESS.json: PLAYBOOK 8.4 applies to them)`,
       build: `work/${date}/build/site/index.html exists and the trial stage of PLAYBOOK 10.1 passes`,
       qa: `work/${date}/qa/report.json parses and has counts`,
       revise: `work/${date}/qa/report.json was rewritten with a higher revision than QA wrote`,
@@ -486,7 +498,7 @@ export function planOverdue({ run, config, watch, facts, role, date, session, ov
         stop,
         `${phase} wrote every required output but its DONE.json (${outputs.present.join(', ')}): finish it by hand instead of redoing it (PLAYBOOK 6.7, 7.3).`,
         `Check it as PLAYBOOK 7.3 says for ${phase}: ${check}.`,
-        `If the check passes: run: mkdir -p work/${date}/${phase} && echo '{"ok":true,"phase":"${phase}","by":"orchestrator"}' > work/${date}/${phase}/DONE.json`,
+        `If the check passes: run: ${handDone(phase, date)}`,
         `If the check passes: run: ${disarm}   (the timer that woke you has fired and is spent: delete nothing)`,
         `If the check passes: spend (a stopped Workflow reports none: charge the PLAYBOOK 6.5 estimate), then the checkpoint with note "${phase} ok (finished by hand after the phase watch)" and go on to the next phase.`,
         `If the check fails, do exactly this instead (${base.next}):`,

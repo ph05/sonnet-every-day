@@ -445,7 +445,10 @@ test('shell injection: the documented "$(cat file)" pattern passes a hostile tit
 test('compact spec: the workflows really do derive their mode from args, so the playbook must carry spec\'s decision', () => {
   const spec = read('ops/workflows/spec.js');
   assert.match(spec, /compact: USE_COMPACT,\s*\n\s*tier: BUILD_TIER,\s*\n\s*builders:/, 'spec must return compact and tier');
-  assert.match(spec, /tier: BUILD_TIER,\s*\n\s*compact: USE_COMPACT,/, 'spec/DONE.json must hold compact and tier');
+  // a clean lint writes spec/DONE.json from its args file (the selfcheck asserts the file); a stalled spec keeps them in PROGRESS.json
+  assert.match(spec, /lintArgs = \{ tier: BUILD_TIER, compact: USE_COMPACT,/, 'the lint that writes spec/DONE.json gets compact and tier');
+  assert.match(spec, /const marker = \{ phase: 'spec', ok: true, date, ideaId: a\.done\.ideaId, tier: Number\(tierArg\), compact,/, 'spec/DONE.json must hold compact and tier');
+  assert.match(spec, /compact: USE_COMPACT, tier: BUILD_TIER, minOwnLoc: MIN_LOC/, 'spec/PROGRESS.json holds the decision before the architect starts');
   assert.match(spec, /USE_COMPACT = COMPACT \|\| SCOPE_CUT \|\| room\(\) < 450000/, 'spec still downgrades itself');
   for (const file of ['build', 'qa']) {
     assert.match(read(`ops/workflows/${file}.js`), /const COMPACT = typeof A\.compact === 'boolean' \? A\.compact : TIER === 2;/, `${file}.js takes compact only from args`);

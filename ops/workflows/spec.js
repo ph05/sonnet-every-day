@@ -7,16 +7,17 @@ export const meta = {
     { title: 'Cross-review', detail: 'artisan and engineer review the other drafts' },
     { title: 'Reconcile', detail: 'architect writes SPEC.md, DESIGN.md, OWNERSHIP.json, PROJECT.json' },
     { title: 'Mini-spec', detail: 'compact tier: one architect writes a short spec for two builders' },
-    { title: 'Lint', detail: 'deterministic lint of the ownership map and project metadata, fix pass if needed' },
-    { title: 'Finalize', detail: 'write work/<date>/spec/DONE.json' },
+    { title: 'Lint', detail: 'deterministic lint of the ownership map and project metadata, fix pass if needed; a clean lint writes work/<date>/spec/DONE.json' },
+    { title: 'Finalize', detail: 'report the result' },
   ],
 };
 // args (PLAYBOOK 7.2): the common set (date, repoDir, role, session, phase, level, levelConfig, tier, compact, phaseBudgetMinutes,
 //   capTokens, directives, config) plus ideaId, slug, title.
-// reads: state/ideas/<date>.json. writes: work/<date>/spec/{SPEC.md, DESIGN.md, OWNERSHIP.json, PROJECT.json, DONE.json}.
+// reads: state/ideas/<date>.json. writes: work/<date>/spec/PROGRESS.json first (the compact decision), then {OWNERSHIP.json, PROJECT.json,
+//   SPEC.md, DESIGN.md} (the architect, in that order, logged in progress.log), DONE.json last (the lint program, when the lint is clean).
 //   OWNERSHIP.json is a flat {path: owner} map; paths are relative to the site directory work/<date>/build/site/ and never include
 //   project.json (the packager writes it; PROJECT.json here is the architect's draft of its fields).
-// returns: {ok, phase:'spec', builders[], files, spend, compact, tier, slug, title, owners{owner: fileCount}, warnings[], openIssues[],
+// returns: {ok, phase:'spec', compact, tier, builders[], files, spend, slug, title, owners{owner: fileCount}, warnings[], openIssues[],
 //   degraded, reason, skipped[], notes}
 // A missing or mistyped argument returns {ok:false, error:'bad-args', missing[], problems[]} at once, before any agent runs.
 // Also common and optional: maxAgents (integer >= 1, the harness's concurrent-agent slots = min(16, CPUs - 2), capped at 8; fewer than 6 makes spec and
@@ -651,13 +652,24 @@ function checkArgs(name, need, more = {}) {
 
 const BAD_ARGS = checkArgs('spec', ['date', 'repoDir'], { ideaId: 'string', slug: 'string', title: 'string' });
 if (BAD_ARGS) return BAD_ARGS;
+// The slug and the title end up inside a shell command a clerk runs (the lint) and the title started life on a web page (PLAYBOOK 8.3),
+// so neither is trusted as it arrives: a slug that is not plain kebab-case stops the phase loudly, and the title keeps only the
+// characters PLAYBOOK 8.3 step 2 keeps (an already cleaned title passes unchanged).
+const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+if (str(A.slug) && !(SLUG_RE.test(str(A.slug)) && str(A.slug).length <= 40)) {
+  const problems = [`slug: expected lowercase kebab-case of at most 40 characters, got ${clip(JSON.stringify(A.slug), 50)}`];
+  log(`BAD ARGS for spec: ${problems[0]}`);
+  return { ok: false, phase: 'spec', error: 'bad-args', missing: ['slug'], problems, notes: `The spec workflow did not start. Fix the args and call it again: ${problems[0]}` };
+}
+const cleanTitle = (t) => str(t).replace(/[^\p{L}\p{N} ,.'!?&:-]+/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 80).trim();
 
 // ======================================================================= spec
 const SPEC_DIR = `${WORK}/spec`;
 const IDEA_FILE = `${REPO}/state/ideas/${DATE}.json`;
 const IDEA_ID = str(A.ideaId, '(the chosenId in the ideas file)');
 const WANT_SLUG = str(A.slug);
-const WANT_TITLE = str(A.title);
+const WANT_TITLE = cleanTitle(A.title);
+if (WANT_TITLE !== str(A.title)) log(`args.title was cleaned to the PLAYBOOK 8.3 character set: "${WANT_TITLE}"`);
 const SCOPE_CUT = arr(A.directives).some((d) => isObj(d) && d.kind === 'scope-cut' && d.ack !== true);
 // Co-planning is the expensive part: skip it when asked to, or when the budget or the phase time cannot carry it.
 const MINUTES = { coplan: 22, review: 14 };
@@ -743,16 +755,16 @@ function reconcilePrompt(compact, lintErrors) {
     inputs,
     ...fix,
     '',
-    `Write these four files into ${SPEC_DIR}/ (create it):`,
+    `Write these four files into ${SPEC_DIR}/ (create it) IN THIS ORDER, each one whole with a single Write before you start the next (an interrupted agent must leave whole files behind, never half of one). After each file append one line to ${PROGRESS_LOG} with a Bash >> redirect (never rewrite it): the file name and the word written, for example: echo "OWNERSHIP.json written" >> ${PROGRESS_LOG}`,
     '',
-    '1. SPEC.md. Sections, in this order:',
+    `1. OWNERSHIP.json (decide the file map first; SPEC.md section 3 repeats it). A flat JSON object mapping each file path (relative to work/${DATE}/build/site/, no leading slash, no "..", forward slashes) to exactly ONE owner from {artisan, engineer, pulse, cards, lab, jester, architect}. No shared files, no file listed twice. It MUST include "index.html" and MUST NOT list project.json, thumb.png or DONE.json (the pipeline writes those). Allowed file types: .html .css .js .mjs .json .svg .txt .md .glsl .frag .vert (agents cannot produce PNG, audio or font binaries: draw with SVG/canvas, synthesize audio with WebAudio, use system fonts). ${owners}`,
+    '',
+    `2. PROJECT.json (decide the identity and the palette now; DESIGN.md uses the same hex values). A DRAFT of the fields the packaging step will put into the project's project.json (it is not part of the site) per ${REPO}/ops/templates/project.json.README.md with these fields: schema 1, date "${DATE}", slug (lowercase kebab, at most 40 chars, unique, not generic), title (2 to 4 words, identical to the page <title> and <h1>), tagline (at most 120 characters, makes someone want to try it), description (1 to 3 sentences), tier ${BUILD_TIER}, fingerprint (copy it from the idea, adjust only tags/keywords/tech if the final design requires), palette (2 to 8 hex colors, real page colors first), entry "index.html", thumb "thumb.png", network [] (declare a host only if the page truly fetches it at runtime, and then also in the CSP), sources (the idea's sources with verified:true, as {title, url}), makingOf (a short honest paragraph), stats {files:0, bytes:0, ownLoc:0}, credits "Built by the Sonnet Every Day team".`,
+    '',
+    '3. SPEC.md. Sections, in this order:',
     '   (1) Vision and the wow moment, one paragraph. (2) Core loop and the visitor journey (10 seconds / first minute / tenth minute / coming back). (3) File map: a table of path | owner | responsibility | approx lines | public API. (4) INTERFACE CONTRACT, the heart of the document: state ONE module system (ES modules via <script type="module"> with relative imports, or classic scripts sharing one namespace object, never both); for every file its exports with full signatures and sync/async, the events (custom events on document named app:<name> with the exact detail payload), the data schemas (JSON shapes, who produces the data), the DOM skeleton as a list of ids, data-attributes and classes with the element type and the owner who creates it, the CSS custom properties other owners may rely on, the URL-hash grammar with validation and defaults, the localStorage keys (try/catch, versioned), the boot order and lifecycle (init/start/pause/reset), and the error contract. Anything two owners touch must be spelled out here; nothing may be left to guesses. (5) Algorithms and numbers the engineer needs, with formulas. (6) Input model: keyboard map, pointer and touch gestures. (7) States: loading, empty, error, success, failure. (8) The About & making-of panel and the FACTS POLICY: exactly what the panel says, which sources (only sources with verified:true in the idea file, with their dates), what is simulated or unverified. The policy: a number, date, rule or name appears as plain fact only when its research.facts source is verified:true; a claim whose source is verified:false appears only as "as of <date>, per <source title>" or not at all; anything invented is labelled simulated, estimated or fictional. (9) Acceptance criteria per owner as a checklist, with minimum lines of own code (tier minimum total: ' + MIN_LOC + ') and performance budgets. (10) Cut-list in order of what to drop if behind, and what must survive. (11) Answers to every item of winnerNotes.mustFixInSpec. (12) Test hooks: stable ids, window.__sedThumbReady usage, a seed query/hash parameter so QA can reproduce runs.',
     '',
-    '2. DESIGN.md. The visual system: palette tokens for light and dark (hex values; the first palette colors will become project.json "palette"), type scale, spacing, shape, component list, layout per breakpoint (360 / 768 / 1280), motion spec (durations, easing, reduced-motion variants), icon approach (inline SVG), sound (if any), voice and microcopy list (labels, empty and error messages, share text), and the thumbnail composition.',
-    '',
-    `3. OWNERSHIP.json. A flat JSON object mapping each file path (relative to work/${DATE}/build/site/, no leading slash, no "..", forward slashes) to exactly ONE owner from {artisan, engineer, pulse, cards, lab, jester, architect}. No shared files, no file listed twice. It MUST include "index.html" and MUST NOT list project.json, thumb.png or DONE.json (the pipeline writes those). Allowed file types: .html .css .js .mjs .json .svg .txt .md .glsl .frag .vert (agents cannot produce PNG, audio or font binaries: draw with SVG/canvas, synthesize audio with WebAudio, use system fonts). ${owners}`,
-    '',
-    `4. PROJECT.json. A DRAFT of the fields the packaging step will put into the project's project.json (it is not part of the site) per ${REPO}/ops/templates/project.json.README.md with these fields: schema 1, date "${DATE}", slug (lowercase kebab, at most 40 chars, unique, not generic), title (2 to 4 words, identical to the page <title> and <h1>), tagline (at most 120 characters, makes someone want to try it), description (1 to 3 sentences), tier ${BUILD_TIER}, fingerprint (copy it from the idea, adjust only tags/keywords/tech if the final design requires), palette (2 to 8 hex colors, real page colors first), entry "index.html", thumb "thumb.png", network [] (declare a host only if the page truly fetches it at runtime, and then also in the CSP), sources (the idea's sources with verified:true, as {title, url}), makingOf (a short honest paragraph), stats {files:0, bytes:0, ownLoc:0}, credits "Built by the Sonnet Every Day team".`,
+    '4. DESIGN.md. The visual system: palette tokens for light and dark (hex values; the first palette colors will become project.json "palette"), type scale, spacing, shape, component list, layout per breakpoint (360 / 768 / 1280), motion spec (durations, easing, reduced-motion variants), icon approach (inline SVG), sound (if any), voice and microcopy list (labels, empty and error messages, share text), and the thumbnail composition.',
     '',
     'Constraints that apply to everything you specify: no external requests or CDNs, no analytics, no third-party code or assets (hand-write or generate), CSP from the shell stays unchanged, deterministic where it should be, works without JavaScript only to the extent of the noscript message, tier minimum lines of own code met honestly.',
     `When all four files exist, re-read OWNERSHIP.json and PROJECT.json once to confirm they are valid JSON that follows the rules above. A deterministic lint runs right after you; errors cost a fix pass.`,
@@ -763,13 +775,17 @@ function reconcilePrompt(compact, lintErrors) {
 
 // Runs in node on the clerk's machine; closes over nothing. Deterministic lint of the spec outputs.
 async function lintProgram({ fs, path, argv }) {
-  const [repo, date, tierArg, compactArg, wantSlug, wantTitle] = argv;
+  const [repo, date, argsFile] = argv;
+  const a = JSON.parse(fs.readFileSync(argsFile, 'utf8'));
+  const tierArg = String(a.tier);
+  const wantSlug = String(a.wantSlug || '');
+  const wantTitle = String(a.wantTitle || '');
   const spec = path.join(repo, 'work', date, 'spec');
   const errors = [];
   const warnings = [];
   const read = (f) => { try { return fs.readFileSync(path.join(spec, f), 'utf8'); } catch { return null; } };
   const parse = (f) => { const t = read(f); if (t === null) { errors.push(`${f} is missing`); return null; } try { return JSON.parse(t); } catch (e) { errors.push(`${f} is not valid JSON: ${e.message}`); return null; } };
-  const compact = compactArg === '1';
+  const compact = a.compact === true;
   const builders = ['artisan', 'engineer', 'pulse', 'cards', 'lab', 'jester', 'architect'];
 
   const specText = read('SPEC.md');
@@ -795,7 +811,7 @@ async function lintProgram({ fs, path, argv }) {
     if (entries.length > 60) errors.push(`OWNERSHIP.json lists ${entries.length} files (max 60)`);
     for (const [rel, owner] of entries) {
       if (typeof owner !== 'string' || !builders.includes(owner)) { errors.push(`${rel}: owner "${owner}" is not one of ${builders.join(', ')}`); continue; }
-      if (!rel || rel.startsWith('/') || rel.includes('..') || rel.includes('\\') || rel.endsWith('/') || rel.includes('//') || rel.length > 160) { errors.push(`${rel}: not a clean relative path`); continue; }
+      if (!rel || rel.startsWith('/') || rel.includes('..') || rel.includes('\\') || rel.endsWith('/') || rel.split('/').some((seg) => seg === '' || seg === '.') || rel.length > 160) { errors.push(`${rel}: not a clean relative path`); continue; }
       if (/^(DONE\.json|thumb\.png)$/i.test(rel) || rel.startsWith('.')) { errors.push(`${rel}: reserved or hidden name`); continue; }
       if (!/\.(html|css|js|mjs|json|svg|txt|md|glsl|frag|vert)$/i.test(rel)) { errors.push(`${rel}: file type not allowed (agents cannot make binaries; use svg, canvas, WebAudio and system fonts)`); continue; }
       const key = rel.toLowerCase();
@@ -803,6 +819,8 @@ async function lintProgram({ fs, path, argv }) {
       seen.add(key);
       (owners[owner] = owners[owner] || []).push(rel);
     }
+    // a path that is also the directory of another ("data.json" and "data.json/x.js") cannot exist twice on disk
+    for (const [o, list] of Object.entries(owners)) for (const rel of list) { const pre = rel.toLowerCase() + '/'; if ([...seen].some((k) => k.startsWith(pre))) errors.push(`${rel}: is both a file and a directory in OWNERSHIP.json (owner ${o})`); }
     if (!(own['index.html'])) errors.push('OWNERSHIP.json must include index.html');
     if (Object.keys(own).some((f) => /^project\.json$/i.test(f))) errors.push('project.json must not be in OWNERSHIP.json (the packaging step writes it)');
     const distinct = Object.keys(owners);
@@ -826,7 +844,11 @@ async function lintProgram({ fs, path, argv }) {
     need(pj.schema === 1, 'schema must be 1');
     need(pj.date === date, `date must be ${date}`);
     need(/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug) && slug.length <= 40, 'slug must be lowercase kebab-case, at most 40 characters');
-    need(title.trim().split(/\s+/).length >= 2 && title.trim().split(/\s+/).length <= 4, 'title must be 2 to 4 words');
+    // The orchestrator's fixed title wins over the 2-to-4-word guide (nothing upstream enforces it): demanding both made a
+    // five-word winner unsatisfiable, and two failed fix passes would have cost the day.
+    const words = (t) => t.trim().split(/\s+/).filter(Boolean).length;
+    if (wantTitle && (words(wantTitle) < 2 || words(wantTitle) > 4)) warnings.push(`title "${wantTitle}" was fixed by the orchestrator with ${words(wantTitle)} words (the guide is 2 to 4): kept as given`);
+    else need(words(title) >= 2 && words(title) <= 4, 'title must be 2 to 4 words');
     need(typeof pj.tagline === 'string' && pj.tagline.length > 0 && pj.tagline.length <= 120, 'tagline must be 1 to 120 characters');
     need(typeof pj.description === 'string' && pj.description.length > 10, 'description missing');
     need(pj.tier === Number(tierArg), `tier must be ${tierArg}`);
@@ -852,12 +874,49 @@ async function lintProgram({ fs, path, argv }) {
       if ((hist.entries || []).some((e) => e.slug === slug && e.date !== date)) errors.push(`PROJECT.json: slug "${slug}" already used in history`);
     } catch { /* history is optional for the lint */ }
   }
-  console.log(JSON.stringify({ ok: errors.length === 0, errors, warnings, owners, files: own ? Object.keys(own).length : 0, slug, title, at: performance.timeOrigin + performance.now() }));
+  // A clean lint writes the phase marker itself, last of all (one serial clerk call less, and no gap between a passing lint and DONE.json).
+  let done = false;
+  if (errors.length === 0 && a.done && typeof a.done === 'object') {
+    const marker = { phase: 'spec', ok: true, date, ideaId: a.done.ideaId, tier: Number(tierArg), compact, slug, title, owners, files: own ? Object.keys(own).length : 0, warnings, openIssues: Array.isArray(a.done.openIssues) ? a.done.openIssues : [] };
+    const file = path.join(spec, 'DONE.json');
+    fs.writeFileSync(`${file}.${process.pid}.tmp`, JSON.stringify(marker, null, 2) + '\n');
+    fs.renameSync(`${file}.${process.pid}.tmp`, file);
+    done = true;
+  }
+  console.log(JSON.stringify({ ok: errors.length === 0, errors, warnings, owners, files: own ? Object.keys(own).length : 0, slug, title, done, at: performance.timeOrigin + performance.now() }));
 }
 
-async function runLint(phaseName) {
+// ---- progress marker (2026-10-10: the architect was interrupted after SPEC.md and DESIGN.md, the workflow never returned, and the
+// operator had to rebuild the rest by hand without knowing what the workflow had decided). Before the architect starts, the workflow
+// writes spec/PROGRESS.json with the compact decision; the architect writes the four files whole, in FILE_ORDER, and appends a line to
+// spec/progress.log after each. A stall then leaves whole files and the decision on disk: a phase watch that finds all four answers
+// finish-by-hand, and the hand-written DONE.json copies compact and tier from PROGRESS.json (PLAYBOOK 7.3, 8.4).
+const PROGRESS_FILE = `${SPEC_DIR}/PROGRESS.json`;
+const PROGRESS_LOG = `${SPEC_DIR}/progress.log`;
+const FILE_ORDER = ['OWNERSHIP.json', 'PROJECT.json', 'SPEC.md', 'DESIGN.md'];
+// Runs in node on the clerk's machine; closes over nothing. Re-reads the marker and tells the script the time.
+async function progressProgram({ fs, argv }) {
+  const doc = JSON.parse(fs.readFileSync(argv[0], 'utf8'));
+  console.log(JSON.stringify({ ok: doc.phase === 'spec' && typeof doc.compact === 'boolean', at: performance.timeOrigin + performance.now() }));
+}
+async function writeProgress(stage) {
+  const prog = `${WORK}/tmp/spec-progress.mjs`;
+  const doc = {
+    schema: 1, phase: 'spec', date: DATE, stage, ideaId: str(A.ideaId) || null, slug: WANT_SLUG || null, title: WANT_TITLE || null,
+    compact: USE_COMPACT, tier: BUILD_TIER, minOwnLoc: MIN_LOC, order: FILE_ORDER, log: relPath(PROGRESS_LOG),
+    note: 'Written by the spec workflow before its architect starts. If the phase is finished by hand, DONE.json copies compact and tier from here.',
+  };
+  const r = await runFiles('spec progress', [{ path: prog, content: makeProgram(progressProgram) }, { path: PROGRESS_FILE, content: safeJson(doc) }], `node ${prog} ${PROGRESS_FILE}`, { essential: true });
+  const out = r.ok ? parseJsonOut(r.stdout) : null;
+  if (!out || out.ok !== true) log(`spec progress marker NOT confirmed (${r.problems.join(' | ') || 'unreadable output'}): a hand finish would have to assume compact`);
+  return Boolean(out && out.ok === true);
+}
+
+async function runLint(phaseName, openIssues) {
   const prog = `${WORK}/tmp/spec-lint.mjs`;
-  const r = await runFiles('spec lint', [{ path: prog, content: makeProgram(lintProgram) }], `node ${prog} ${REPO} ${DATE} ${BUILD_TIER} ${USE_COMPACT ? 1 : 0} "${WANT_SLUG}" "${WANT_TITLE}"`, { phase: phaseName });
+  const argsFile = `${WORK}/tmp/spec-lint-args.json`;
+  const lintArgs = { tier: BUILD_TIER, compact: USE_COMPACT, wantSlug: WANT_SLUG, wantTitle: WANT_TITLE, done: { ideaId: IDEA_ID, openIssues: arr(openIssues).map((x) => clip(str(x), 600)).filter(Boolean).slice(0, 20) } };
+  const r = await runFiles('spec lint', [{ path: prog, content: makeProgram(lintProgram) }, { path: argsFile, content: safeJson(lintArgs) }], `node ${prog} ${REPO} ${DATE} ${argsFile}`, { phase: phaseName });
   const out = r.ok ? parseJsonOut(r.stdout) : null;
   if (!out || typeof out.ok !== 'boolean') return { ok: false, errors: [`lint could not run: ${r.problems.join('; ') || 'unreadable output'}`], warnings: [], owners: {}, files: 0, slug: '', title: '', unrun: true };
   return { ...out, errors: arr(out.errors), warnings: arr(out.warnings), owners: isObj(out.owners) ? out.owners : {} };
@@ -867,8 +926,9 @@ async function runLint(phaseName) {
 const pulse = startPulse('spec', 240);
 let finalReport;
 try {
-  await tick('start');
+  // The integrity baseline and the progress marker both print the clock, so there is no separate start tick.
   await integritySnapshot('spec');
+  await writeProgress('architect');
   if (USE_COMPACT && !COMPACT) skipStage('co-planning', NARROW ? `only ${SLOTS} agent slots (args.maxAgents)` : SCOPE_CUT ? 'scope-cut directive' : `${kfmt(room())} usable tokens, phase budget ${PBM === null ? 'none' : `${PBM} minutes`}`);
   const reconcilePhase = USE_COMPACT ? 'Mini-spec' : 'Reconcile';
   let planned = true;
@@ -891,7 +951,7 @@ try {
       skipStage('cross-review', `${got} drafts, ${kfmt(room())} usable tokens, ${PBM === null ? 'no' : Math.round(timeLeftMin())} minutes left`);
     }
   } else {
-    SKIPPED.push('co-planning', 'cross-review');
+    for (const st of ['co-planning', 'cross-review']) if (!SKIPPED.includes(st)) SKIPPED.push(st);
   }
 
   phase(reconcilePhase);
@@ -899,12 +959,12 @@ try {
   if (!arch && !HALT.reason) arch = await specialist('architect', reconcilePrompt(USE_COMPACT || !planned, null), { label: 'architect reconcile (retry)', phase: reconcilePhase, schema: ARCH_SCHEMA });
 
   phase('Lint');
-  let lint = arch ? await runLint('Lint') : null;
+  let lint = arch ? await runLint('Lint', arch.openIssues) : null;
   for (let pass = 1; lint && !lint.ok && !lint.unrun && pass <= 2 && !HALT.reason; pass++) {
     log(`spec lint found ${lint.errors.length} error(s) (pass ${pass}): ${lint.errors.slice(0, 5).map((e) => clip(e, 120)).join(' | ')}`);
     const fixed = await specialist('architect', reconcilePrompt(USE_COMPACT || !planned, lint.errors), { label: `architect spec fix ${pass}`, phase: 'Lint', schema: ARCH_SCHEMA });
     if (!fixed) break;
-    lint = await runLint('Lint');
+    lint = await runLint('Lint', arch.openIssues);
   }
   if (lint && lint.warnings.length) log(`spec lint warnings: ${lint.warnings.slice(0, 6).join(' | ')}`);
 
@@ -919,26 +979,13 @@ try {
       notes: 'no DONE.json written: the spec phase is not complete',
     };
   } else {
-    const done = {
-      phase: 'spec',
-      ok: true,
-      date: DATE,
-      ideaId: IDEA_ID,
-      tier: BUILD_TIER,
-      compact: USE_COMPACT,
-      slug: lint.slug,
-      title: lint.title,
-      owners: lint.owners,
-      files: lint.files,
-      warnings: lint.warnings,
-      openIssues: arr(arch.openIssues),
-    };
-    const w = await writeJsonFiles('write spec DONE', [{ path: `${SPEC_DIR}/DONE.json`, data: done }], { phase: 'Finalize', essential: true });
-    if (!w.ok) log(`spec DONE.json NOT confirmed: ${w.problems.join(' | ')}`);
+    // the lint program wrote DONE.json (phase, ok, date, ideaId, tier, compact, slug, title, owners, files, warnings, openIssues) when it passed
+    const marked = lint.done === true;
+    if (!marked) log('spec DONE.json NOT confirmed by the lint program');
     finalReport = {
-      ok: w.ok,
-      degraded: !w.ok,
-      reason: w.ok ? '' : HALT.reason || 'done-marker-failed',
+      ok: marked,
+      degraded: !marked,
+      reason: marked ? '' : HALT.reason || 'done-marker-failed',
       compact: USE_COMPACT,
       tier: BUILD_TIER,
       builders: Object.keys(lint.owners),
