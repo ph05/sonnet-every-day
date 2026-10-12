@@ -239,7 +239,7 @@
       "files": [
         "ops/rubrics/research.md"
       ],
-      "sha": null,
+      "sha": "4136f3df2a564855beb522937e27d4da3e7d501e",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the ideate probe seed network.json with a no-outbound-web flag after the first 5 DNS failures so scouts read one field instead of counting?",

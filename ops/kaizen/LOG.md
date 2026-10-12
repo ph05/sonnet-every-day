@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: Cards notes 2026-10-12: WebFetch failed on 3 of 3 new hosts (DNS), burning the one-try rule each time. work/DATE/ideas/network.json has okHosts empty on 10-10, 10-11 and 10-12 with 22, 27 and 22 failedHosts, 21 to 26 of them ENOTFOUND each day, yet research.md only said try each host once. Added one sentence to the once-per-host bullet: empty okHosts plus 5 or more ENOTFOUND means no outbound web today, so search instead of probing.
 - category: prevention · lines changed: 2 · files: ops/rubrics/research.md
+- commit: 4136f3df2a
 - question: Should the ideate probe seed network.json with a no-outbound-web flag after the first 5 DNS failures so scouts read one field instead of counting?
 
 ## 2026-10-12 · engineer · applied · architect.md: every geometry field in a spec schema states unit, axis and anchor (15 ft offset shipp
