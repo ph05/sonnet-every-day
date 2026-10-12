@@ -303,7 +303,7 @@
       "files": [
         "ops/FAILURE_MODES.md"
       ],
-      "sha": null,
+      "sha": "cee78a3d09e52232c368fb6c8c8105a463aa84e6",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should ideate.js warn in its first log line when CAP is below spentNow() at launch, so the 0-spend exhaust names its own cause?",

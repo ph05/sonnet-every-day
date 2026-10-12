@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-12 run events 07:59: ideate returned budget-exhausted with 0 spend because capTokens 2.4M was below the session output total 3.93M from get_session. FAILURE_MODES FM-47 listed only spend overCap and degraded results as symptoms, so an operator grepping for the failure found no row and no recovery. Added the 0-spend symptom with the numbers and a relaunch-once recovery that rebases capTokens per PLAYBOOK 6.5. Two lines, answers pulse question from today.
 - category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- commit: cee78a3d09
 - question: Should ideate.js warn in its first log line when CAP is below spentNow() at launch, so the 0-spend exhaust names its own cause?
 
 ## 2026-10-12 · pulse · applied · FM-04: budget is re-read from status and get_session, not remembered as restarting every turn
