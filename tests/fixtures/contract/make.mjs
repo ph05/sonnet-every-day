@@ -70,7 +70,7 @@ write({
       </div>
       <p class="cc-copied" id="copied" aria-live="polite"></p>
     </div>
-    <div class="cc-result" aria-live="polite">
+    <div class="cc-result" aria-live="polite" data-sed-result>
       <p class="cc-ratio"><span id="ratio">7.00</span><small>:1 contrast</small></p>
       <ul class="cc-verdicts" id="verdicts"></ul>
       <p class="cc-sample" id="sample">Sample text in the two colours: the quick brown fox jumps over the lazy dog.</p>
@@ -134,7 +134,7 @@ write({
   app: `  <section class="pb" aria-labelledby="pb-title">
     <h2 id="pb-title" class="pb-title">Try it: four data bits and one parity bit</h2>
     <div class="pb-bits" id="bits" role="group" aria-label="The message, bit by bit"></div>
-    <p class="pb-status" id="status" aria-live="polite"></p>
+    <p class="pb-status" id="status" aria-live="polite" data-sed-result></p>
     <div class="pb-actions">
       <button type="button" class="sed-btn" id="noise">Send it through a noisy wire</button>
       <button type="button" class="sed-btn is-quiet" id="fresh">New message</button>

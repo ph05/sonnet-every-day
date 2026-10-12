@@ -8,7 +8,8 @@
 // --purpose P: the page's purpose for a manual run. --contract: check the page contract whatever the date (DESIGN 7.4).
 // Serves the directory over a loopback HTTP server, drives Chromium through Playwright at desktop and mobile
 // sizes in light and dark, audits the page (console, requests, overflow, accessibility basics), unleashes a
-// seeded random "monkey", and optionally writes <projectDir>/thumb.png (1200x630, under the size cap).
+// seeded random "monkey", and optionally writes <projectDir>/thumb.png (1200x630, under the size cap; a page whose intro ends
+// below 300 px or that marks its sample result with data-sed-result is scrolled so the app fills the frame).
 // Prints ONE JSON document {ok, errors, warnings, metrics, shots}; also written to <out>/report.json.
 // Never hangs: every browser call has its own timeout and the whole run has a hard deadline.
 import fs from 'node:fs';
@@ -34,6 +35,12 @@ const DEFAULTS = {
 const SELFTEST_MS = 10000;
 const THUMB_W = 1200;
 const THUMB_H = 630;
+// The first frame shows a result (OWNER rule 3): the [data-sed-result] element of a tool, lesson, explorer or studio page starts by
+// y=560 at 1280x800 (so the 1200x630 thumbnail shows its first row) and inside the 844 px phone screen at 390x844 (warnings).
+const FIRST_FRAME_MAX_TOP = { desktop: 560, mobile: 844 };
+const FIRST_FRAME_PURPOSES = new Set(['tool', 'lesson', 'explorer', 'studio']);
+// The thumbnail pass scrolls past an intro that ends below this (the 35 to 70 word intro sits above the app).
+const THUMB_INTRO_MAX_BOTTOM = 300;
 const MAX_PER_CODE = 12; // distinct messages kept per issue code; the rest are only counted
 
 const PASS_SPECS = {
@@ -559,9 +566,15 @@ async function decodeInPage({ b64, w, h }) {
  * intro's bottom edge in document pixels) and the visible interactive controls in the first viewport.
  */
 function contractProbeInPage() {
-  const rendered = (el) => {
+  // `text`: the element is read as text (the intro, the explainer), so a fully transparent text colour hides it too
+  const rendered = (el, text = false) => {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden' || cs.visibility === 'collapse') return false;
+    if (text) {
+      const alpha = /^rgba\([^)]*,\s*([\d.]+)\)$/.exec(cs.color);
+      const clipText = cs.backgroundClip === 'text' || cs.webkitBackgroundClip === 'text'; // gradient text paints through the glyphs
+      if ((cs.color === 'transparent' || (alpha && Number(alpha[1]) === 0)) && !clipText) return false;
+    }
     if (el.closest('[hidden]')) return false;
     // the content of a closed <details> keeps its boxes in Chromium (content-visibility), but nobody sees it
     for (let d = el.parentElement && el.parentElement.closest('details:not([open])'); d; d = d.parentElement && d.parentElement.closest('details:not([open])')) {
@@ -573,6 +586,7 @@ function contractProbeInPage() {
     for (let a = el; a; a = a.parentElement) opacity *= Number(getComputedStyle(a).opacity);
     if (opacity < 0.05) return false;
     const r = el.getBoundingClientRect();
+    if (r.right <= 0 || r.left >= innerWidth) return false; // pushed off the page sideways (left: -9999px and the like)
     return el.getClientRects().length > 0 && r.width >= 2 && r.height >= 2;
   };
   const sx = window.scrollX;
@@ -583,28 +597,60 @@ function contractProbeInPage() {
   };
   const out = {};
   const intros = [...document.querySelectorAll('[data-sed-intro]')];
-  const intro = intros.find(rendered) || intros[0];
-  out.intro = { count: intros.length, rendered: !!intro && rendered(intro), box: intro ? box(intro) : null };
+  const asText = (el) => rendered(el, true);
+  const intro = intros.find(asText) || intros[0];
+  out.intro = { count: intros.length, rendered: !!intro && asText(intro), box: intro ? box(intro) : null };
   const explainers = [...document.querySelectorAll('[data-sed-explainer]')];
-  const explainer = explainers.find(rendered) || explainers[0];
-  out.explainer = { count: explainers.length, rendered: !!explainer && rendered(explainer), box: explainer ? box(explainer) : null };
-  const sel = 'button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [role="slider"], [role="tab"], [role="switch"], a.sed-btn';
+  const explainer = explainers.find(asText) || explainers[0];
+  out.explainer = { count: explainers.length, rendered: !!explainer && asText(explainer), box: explainer ? box(explainer) : null };
+  // every focusable widget counts (a div with tabindex 0 or a role=checkbox is a control too); a plain link does not
+  const sel = 'button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [role="slider"], [role="tab"], [role="switch"], [role="checkbox"], [role="radio"], [role="option"], [role="menuitem"], a.sed-btn, [tabindex]:not([tabindex="-1"]):not(a)';
   const seen = new Set();
   const samples = [];
   let count = 0;
-  for (const el of document.querySelectorAll(sel)) {
-    if (seen.has(el) || !rendered(el)) continue;
+  const inFirstScreen = (b) => !(b.bottom - sy <= 0 || b.top - sy >= innerHeight || b.right - sx <= 0 || b.left - sx >= innerWidth);
+  const take = (el, shown) => {
     seen.add(el);
-    const b = box(el);
-    if (b.bottom <= 0 || b.top >= innerHeight || b.right <= 0 || b.left >= innerWidth) continue;
+    if (!inFirstScreen(box(shown))) return;
     count++;
     if (samples.length < 20) {
-      const label = (el.getAttribute('aria-label') || el.innerText || el.value || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+      const label = (el.getAttribute('aria-label') || shown.innerText || el.value || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim().slice(0, 24);
       samples.push(el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (label ? ` "${label}"` : ''));
     }
+  };
+  for (const el of document.querySelectorAll(sel)) {
+    if (seen.has(el) || !rendered(el)) continue;
+    take(el, el);
+  }
+  // a visually hidden radio or checkbox whose label is the visible control (a segmented switch, a row of chips)
+  for (const el of document.querySelectorAll('input[type="radio"], input[type="checkbox"]')) {
+    if (seen.has(el)) continue;
+    const label = [...(el.labels || [])].find((l) => rendered(l));
+    if (label && !seen.has(label)) take(el, label); // a label that is a control itself (role=button) was counted already
   }
   out.controls = { count, samples };
+  // the sample result the first frame must show (data-sed-result): the topmost rendered one
+  const results = [...document.querySelectorAll('[data-sed-result]')];
+  const shown = results.filter((el) => rendered(el)).map((el) => box(el)).sort((a, b) => a.top - b.top);
+  out.result = { count: results.length, rendered: shown.length > 0, box: shown[0] || null };
   return out;
+}
+
+/** Runs inside the page (thumbnail pass): where the intro ends and the sample result sits, in document pixels, and the scroll room. */
+function thumbFrameInPage() {
+  const visible = (el) => {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    return cs.display !== 'none' && cs.visibility !== 'hidden' && !el.closest('[hidden]') && r.width >= 2 && r.height >= 2;
+  };
+  const sy = window.scrollY;
+  const intro = [...document.querySelectorAll('[data-sed-intro]')].find(visible);
+  const results = [...document.querySelectorAll('[data-sed-result]')].filter(visible).map((el) => {
+    const r = el.getBoundingClientRect();
+    return { top: Math.round(r.top + sy), bottom: Math.round(r.bottom + sy) };
+  }).sort((a, b) => a.top - b.top);
+  const se = document.scrollingElement || document.documentElement;
+  return { scrollY: Math.round(sy), introBottom: intro ? Math.round(intro.getBoundingClientRect().bottom + sy) : null, result: results[0] || null, maxScroll: Math.max(0, se.scrollHeight - innerHeight) };
 }
 
 /** Runs inside the page: window.__sedSelfTest (sync or async) once, within `ms`. Never throws. */
@@ -641,6 +687,25 @@ async function selfTestInPage(ms) {
 /* ------------------------------------------------------------------------------------------------
  * Small pure helpers
  * ---------------------------------------------------------------------------------------------- */
+
+/**
+ * Where the thumbnail pass scrolls before its 1200x630 shot. The intro now sits above the app, so a shot from the top of a page
+ * with a long intro shows mostly text. When the page marks its sample result ([data-sed-result]) or its intro ends below
+ * THUMB_INTRO_MAX_BOTTOM, scroll so the app (and the whole result, when it fits) fills the frame. Otherwise, or when the page
+ * scrolled itself while window.__sedThumbReady settled, keep the frame as it is: returns null, or {y, reason: 'result' | 'intro'}.
+ */
+export function thumbScrollTarget({ scrollY = 0, introBottom = null, result = null, maxScroll = Infinity } = {}, height = THUMB_H) {
+  if (scrollY > 0) return null;
+  const tallIntro = typeof introBottom === 'number' && introBottom > THUMB_INTRO_MAX_BOTTOM;
+  if (!result && !tallIntro) return null;
+  let y = tallIntro ? introBottom : 0; // the whole intro above the frame, the app from its top
+  if (result) {
+    if (result.top < y) y = result.top - 16; // never cut off the top of the result
+    else if (result.bottom > y + height) y = Math.min(result.top - 16, result.bottom - height + 16); // bring its end in, never past its top
+  }
+  y = Math.round(Math.max(0, Math.min(y, maxScroll)));
+  return y > 0 ? { y, reason: result ? 'result' : 'intro' } : null;
+}
 
 const KEYS = [
   'Enter', ' ', 'Escape', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab', 'Shift+Tab', 'Backspace', 'Delete',
@@ -743,6 +808,7 @@ export async function runBrowserCheck(options) {
   const exempt = tier === 3 || tier === 4;
   const gate = contractRequired({ contract, date: pj?.date, tier, force: o.contract === true });
   const budget = !exempt && (gate || purpose !== null);
+  const firstFrame = gate && !exempt && FIRST_FRAME_PURPOSES.has(purpose); // play pages are exempt
   if (purpose !== null || gate) metrics.contract = { purpose, gate, tier, requiredFrom: contract.requiredFrom, forced: o.contract === true };
   let entryRel = 'index.html';
   if (typeof pj?.entry === 'string' && pj.entry && !pj.entry.startsWith('/') && !pj.entry.includes('..')) entryRel = pj.entry;
@@ -801,7 +867,7 @@ export async function runBrowserCheck(options) {
     return { kind: 'violation', host: `${u.protocol}//${u.hostname}` };
   };
 
-  const state = { hung: false };
+  const state = { hung: false, passesRun: 0, timeSkips: 0 };
 
   const openPass = async (name) => {
     const spec = PASS_SPECS[name];
@@ -1024,20 +1090,36 @@ export async function runBrowserCheck(options) {
       metrics.firstScreenControls = v.controls.count;
       if (budget) {
         const { warn: warnAt, error: errorAt } = contract.firstScreenControls;
-        const msg = `${v.controls.count} interactive controls are visible in the first ${W}x${H} screen; the budget is ${warnAt} (a warning above ${warnAt}, an error above ${errorAt}: pageContract.firstScreenControls). Move advanced controls behind a "More" toggle or further down: ${v.controls.samples.slice(0, 12).join(', ')}`;
+        const msg = `${v.controls.count} interactive controls are visible in the first ${W}x${H} screen: at most ${warnAt} is the target; above ${warnAt} is a warning, above ${errorAt} an error (pageContract.firstScreenControls). Move advanced controls behind a "More" toggle or further down: ${v.controls.samples.slice(0, 12).join(', ')}`;
         if (v.controls.count > errorAt) error('controls-excess', msg, p.name);
         else if (v.controls.count > warnAt) warn('controls-many', msg, p.name);
       }
     }
     if (!gate) return;
     const label = desktop ? 'desktop' : 'mobile';
+    if (firstFrame) {
+      // the first frame shows a result: the marked element starts inside the first screen (warnings; play pages are exempt)
+      const maxTop = FIRST_FRAME_MAX_TOP[label];
+      const top = v.result.box ? v.result.box.top : null;
+      const ff = (metrics.firstFrame ??= { purpose, marked: v.result.count > 0, desktop: null, mobile: null });
+      ff[label] = { resultTopPx: top, maxTopPx: maxTop, rendered: v.result.rendered };
+      if (!v.result.count) {
+        if (desktop) warn('first-frame-unmarked', `no element carries data-sed-result: a ${purpose} page shows a sample result in its first frame (a sample input with its answer, a demo already running); mark the element that shows it with data-sed-result so QA can see it is in the first screen`, p.name);
+      } else if (!v.result.rendered) {
+        warn('first-frame-late', 'the [data-sed-result] element is not rendered when the page has loaded (hidden, empty or zero size): the first frame must already show the sample result', p.name);
+      } else if (desktop ? top > maxTop : top >= maxTop) {
+        warn('first-frame-late', desktop
+          ? `the sample result ([data-sed-result]) starts ${top}px from the top; at ${W}x${H} it must start by ${maxTop}px so the first screen and the 1200x630 thumbnail show it: move it up or shorten what sits above it`
+          : `the sample result ([data-sed-result]) starts ${top}px from the top, below the ${maxTop}px phone screen at ${W}x${H}: put the result before the inputs or shorten what sits above it`, p.name);
+      }
+    }
     const limit = contract.introMaxBottomPx[label];
     (metrics.passes[p.name] ??= {}).contract = { introBottomPx: v.intro.box?.bottom ?? null, introLimitPx: limit, introRendered: v.intro.rendered, explainerRendered: v.explainer.rendered };
     if (!v.intro.count) error('intro-missing', 'the page has no p[data-sed-intro]: the intro paragraph of the page shell belongs right under the tagline', p.name);
-    else if (!v.intro.rendered) error('intro-hidden', 'the intro p[data-sed-intro] is not rendered (display:none, visibility:hidden, [hidden], zero size or transparent)', p.name);
+    else if (!v.intro.rendered) error('intro-hidden', 'the intro p[data-sed-intro] is not rendered (display:none, visibility:hidden, [hidden], zero size, transparent, pushed off the page sideways, or a fully transparent text colour)', p.name);
     else if (v.intro.box.bottom > limit) error('intro-too-tall', `the intro ends ${v.intro.box.bottom}px from the top of the page; at ${W}x${H} it must end by ${limit}px (pageContract.introMaxBottomPx.${label}): shorten the intro or what sits above it`, p.name);
     if (!v.explainer.count) error('explainer-missing', 'the page has no section[data-sed-explainer]: the explainer section of the page shell', p.name);
-    else if (!v.explainer.rendered) error('explainer-hidden', 'the explainer section[data-sed-explainer] is not rendered (display:none, visibility:hidden, [hidden], a closed <details>, zero size or transparent)', p.name);
+    else if (!v.explainer.rendered) error('explainer-hidden', 'the explainer section[data-sed-explainer] is not rendered (display:none, visibility:hidden, [hidden], a closed <details>, zero size, transparent, pushed off the page sideways, or a fully transparent text colour)', p.name);
   };
 
   /** window.__sedSelfTest, once (desktop-light): any failure is an error; a tool must have one with enough cases. */
@@ -1329,6 +1411,19 @@ export async function runBrowserCheck(options) {
       if (info.ready === 'timeout') warn('thumb-ready-timeout', `window.__sedThumbReady did not settle within ${o.thumbReadyTimeoutMs}ms; the thumbnail was taken anyway`, 'thumb');
       else if (String(info.ready).startsWith('rejected')) warn('thumb-ready-rejected', `window.__sedThumbReady ${info.ready}`, 'thumb');
       await sleep(o.thumbSettleMs);
+      // the intro sits above the app: scroll the app (and the marked result) into the frame; pages without them keep the top
+      const frame = await ev(p.page, thumbFrameInPage, undefined, 5000);
+      const target = frame.ok ? thumbScrollTarget(frame.value) : null;
+      info.scrollY = frame.ok ? frame.value.scrollY : 0; // a page that scrolled itself in __sedThumbReady keeps its frame
+      if (target) {
+        const moved = await ev(p.page, (y) => new Promise((resolve) => {
+          window.scrollTo({ top: y, left: 0, behavior: 'instant' }); // a page with scroll-behavior: smooth still lands at once
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve(Math.round(window.scrollY))));
+        }), target.y, 5000);
+        info.scrollY = moved.ok ? moved.value : 0;
+        info.scrolledFor = target.reason;
+        await sleep(150);
+      }
       const a = await ev(p.page, auditInPage, { viewportWidth: THUMB_W, contrast: false }, 8000);
       if (a.ok && !a.value.content.textChars && !a.value.content.media) {
         error('thumb-failed', 'the page is blank, so no thumbnail was written', 'thumb');
@@ -1384,9 +1479,11 @@ export async function runBrowserCheck(options) {
     }
     if (remaining() < Math.min(needMs, o.timeoutS * 300)) {
       metrics.skipped.push(name);
+      state.timeSkips++;
       warn('skipped-time', `pass ${name} skipped: the ${o.timeoutS}s overall budget is nearly spent`);
       return true;
     }
+    state.passesRun++;
     return false;
   };
 
@@ -1459,6 +1556,10 @@ export async function runBrowserCheck(options) {
       timedOut = true;
       aborted = true;
       error('overall-timeout', `QA did not finish within the ${o.timeoutS}s hard limit; results are partial`);
+    } else if (state.passesRun === 0 && state.timeSkips > 0) {
+      // starting the browser used up the budget (a loaded machine) and every pass was skipped: nothing was checked, so never "ok"
+      timedOut = true;
+      error('overall-timeout', `QA did not finish within the ${o.timeoutS}s hard limit; starting the browser used the whole budget, so no pass ran`);
     }
   } finally {
     aborted = true;

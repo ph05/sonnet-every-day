@@ -26,7 +26,7 @@ after(() => fs.rmSync(TMP, { recursive: true, force: true }));
 
 const { startServer, mimeFor } = await import(pathToFileURL(path.join(ROOT, 'scripts', 'qa', 'serve.mjs')).href);
 const png = await import(pathToFileURL(path.join(ROOT, 'scripts', 'qa', 'png-optimize.mjs')).href);
-const { isTopLevelNavigation } = await import(pathToFileURL(CHECK).href);
+const { isTopLevelNavigation, thumbScrollTarget } = await import(pathToFileURL(CHECK).href);
 
 /* ------------------------------------------------------------------------------------------------
  * helpers
@@ -614,6 +614,17 @@ browserSuite('browser-check: robustness', () => {
     assert.deepEqual(await waitForNoLeaks(r.mark), []);
   });
 
+  test('a budget used up before the first pass is an overall timeout, never an empty "ok" (a loaded machine)', async () => {
+    // in-process, with a budget far below the time a browser takes to start: every pass is skipped for time
+    const { runBrowserCheck } = await import(pathToFileURL(CHECK).href);
+    const report = await runBrowserCheck({ projectDir: copyFixture('clean'), outDir: scratch('out'), timeoutS: 0.05, seconds: 0, monkey: false, keyboard: false });
+    if (report.error === 'no-browser') return; // the other suites report a missing browser
+    assert.equal(report.ok, false, JSON.stringify(report.warnings));
+    assert.equal(report.timedOut, true);
+    assert.match(report.errors.join('\n'), /overall-timeout: QA did not finish within the 0\.05s hard limit; starting the browser used the whole budget, so no pass ran/);
+    assert.ok(report.warnings.some((w) => w.startsWith('skipped-time: pass desktop-light skipped')), JSON.stringify(report.warnings));
+  });
+
   test('a tiny budget skips passes instead of overrunning', async () => {
     const r = await runCheck([fixture('clean'), '--seconds', '60', '--timeout', '8']);
     assert.ok(r.ms < 35000 * loadFactor(), `took ${r.ms}ms`);
@@ -733,6 +744,38 @@ browserSuite('browser-check: thumbnails', { concurrency: 2 }, () => {
     assert.equal(r.code, 1);
     assert.match(r.json.errors.join('\n'), /thumb-too-large: could not get the thumbnail under 60 bytes/);
     assert.equal(fs.existsSync(path.join(dir, 'thumb.png')), false);
+  });
+
+  test('a page whose intro ends below 300 px, or that marks its result, is scrolled so the app fills the thumbnail', async () => {
+    // the result painted in a colour no other element uses, so the thumbnail shows whether it is in the frame
+    // (smooth scrolling on the page must not leave the shot half-way)
+    const marked = contractVariant(TOOL, { html: (s) => s.replace('<div class="cc-result" aria-live="polite" data-sed-result>', '<div class="cc-result" aria-live="polite" data-sed-result style="background:#ff00ff">').replace('</head>', '<style>html { scroll-behavior: smooth; }</style>\n</head>') });
+    const r = await runCheck([marked, '--no-monkey', '--no-keyboard', '--seconds', '0', '--thumb']);
+    assert.equal(r.code, 0, JSON.stringify(r.json.errors));
+    const t = r.json.metrics.thumb;
+    assert.equal(t.scrolledFor, 'result');
+    assert.ok(t.scrollY > 250 && t.scrollY < 400, `scrolled to the app, past the intro: ${t.scrollY}`);
+    const img = decodePng(fs.readFileSync(path.join(marked, 'thumb.png')));
+    const magentaRows = [];
+    for (let y = 0; y < 630; y += 10) if (Array.from({ length: 120 }, (_, i) => pixel(img, i * 10, y)).some((c) => c.join() === '255,0,255')) magentaRows.push(y);
+    assert.ok(magentaRows.length >= 20 && magentaRows[0] < 120, `the result fills the frame from near its top: rows ${magentaRows.join(',')}`);
+    // the same page without the mark: the intro still ends below 300 px, so the app comes first
+    const unmarked = contractVariant(TOOL, { html: (s) => s.replace(' data-sed-result', '') });
+    const r2 = await runCheck([unmarked, '--no-monkey', '--no-keyboard', '--seconds', '0', '--thumb']);
+    assert.equal(r2.json.metrics.thumb.scrolledFor, 'intro');
+    assert.ok(r2.json.metrics.thumb.scrollY > 250, JSON.stringify(r2.json.metrics.thumb));
+  });
+
+  test('the thumbnail scroll target: unchanged without a long intro or a result, and a page that scrolled itself keeps its frame', () => {
+    assert.equal(thumbScrollTarget({}), null, 'a page without an intro or a result: the top of the page, as before');
+    assert.equal(thumbScrollTarget({ introBottom: 251 }), null, 'a short intro');
+    assert.deepEqual(thumbScrollTarget({ introBottom: 327 }), { y: 327, reason: 'intro' });
+    assert.deepEqual(thumbScrollTarget({ introBottom: 327, result: { top: 376, bottom: 686 } }), { y: 327, reason: 'result' });
+    assert.deepEqual(thumbScrollTarget({ introBottom: 200, result: { top: 700, bottom: 760 } }), { y: 146, reason: 'result' }, 'just enough to bring the result in');
+    assert.deepEqual(thumbScrollTarget({ introBottom: 350, result: { top: 400, bottom: 1400 } }), { y: 384, reason: 'result' }, 'a tall result shows from its top');
+    assert.equal(thumbScrollTarget({ introBottom: 120, result: { top: 200, bottom: 300 } }), null, 'a result already in the frame of a page with a short intro');
+    assert.equal(thumbScrollTarget({ scrollY: 40, introBottom: 327, result: { top: 376, bottom: 686 } }), null, 'the page chose its frame in __sedThumbReady');
+    assert.deepEqual(thumbScrollTarget({ introBottom: 900, maxScroll: 100 }), { y: 100, reason: 'intro' }, 'never past the end of the page');
   });
 
   test('waits for window.__sedThumbReady before taking the screenshot', async () => {
@@ -910,6 +953,19 @@ function contractVariant(fixture, { html, app, pj, noProjectJson = false } = {})
 }
 
 const QUICK = ['--no-monkey', '--no-keyboard', '--seconds', '0'];
+/**
+ * A SED_ROOT holding the real config.json with pageContract.requiredFrom set to `requiredFrom` (null = not enforced) and the real taxonomy.
+ * A test about the date gate passes one of these, so it never depends on the live requiredFrom (the lead sets it to a date).
+ */
+function gateRoot(requiredFrom) {
+  const root = scratch('root');
+  fs.mkdirSync(path.join(root, 'ops'));
+  const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
+  cfg.pageContract = { ...cfg.pageContract, requiredFrom };
+  fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(cfg));
+  fs.copyFileSync(path.join(ROOT, 'ops', 'taxonomy.json'), path.join(root, 'ops', 'taxonomy.json'));
+  return root;
+}
 const buttons = (n) => Array.from({ length: n }, (_, i) => `<button type="button" class="sed-btn">Extra ${i + 1}</button>`).join('');
 const atTop = (extra) => (s) => s.replace('<h1 class="sed-title">', `<div class="extra">${extra}</div>\n  <h1 class="sed-title">`);
 
@@ -925,6 +981,10 @@ browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
       assert.deepEqual({ total: m.selfTest.total, passed: m.selfTest.passed, ok: m.selfTest.ok }, { total, passed: total, ok: true });
       assert.equal(m.contract.gate, true);
       assert.ok(m.passes['desktop-light'].contract.introBottomPx <= 420 && m.passes['mobile-light'].contract.introBottomPx <= 560, JSON.stringify(m.passes['desktop-light'].contract));
+      // the sample result (data-sed-result) is in the first screen on both passes, and its position is recorded
+      assert.equal(m.firstFrame.marked, true);
+      assert.ok(m.firstFrame.desktop.resultTopPx <= 560 && m.firstFrame.mobile.resultTopPx < 844, JSON.stringify(m.firstFrame));
+      assert.deepEqual([m.firstFrame.desktop.maxTopPx, m.firstFrame.mobile.maxTopPx], [560, 844]);
     }
   });
 
@@ -938,7 +998,7 @@ browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
     const codes = errorCodes(r);
     for (const c of ['intro-hidden', 'explainer-missing', 'controls-excess', 'selftest-failed', 'selftest-few']) assert.ok(codes.includes(c), `${c} in ${JSON.stringify(r.json.errors)}`);
     const text = r.json.errors.join('\n');
-    assert.match(text, /controls-excess: 16 interactive controls are visible in the first 1280x800 screen; the budget is 8 \(a warning above 8, an error above 14/);
+    assert.match(text, /controls-excess: 16 interactive controls are visible in the first 1280x800 screen: at most 8 is the target; above 8 is a warning, above 14 an error \(pageContract\.firstScreenControls\)/);
     assert.match(text, /selftest-failed: window\.__sedSelfTest \(selftest\.js\): 1 of 5 cases fail: a deliberately wrong vector/);
     assert.match(text, /selftest-few: window\.__sedSelfTest \(selftest\.js\) has 5 cases; a tool needs at least 8 known-answer cases/);
     assert.equal(r.json.metrics.firstScreenControls, 16);
@@ -982,14 +1042,20 @@ browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
 
   test('without --contract and before requiredFrom the intro and explainer are not checked; a known purpose still gets the purpose checks', async () => {
     const dir = contractVariant(TOOL, {
-      html: (s) => s.replace(/<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/, '').replace(' data-sed-explainer', ''),
+      html: (s) => s.replace(/<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/, '').replace(' data-sed-explainer', '').replace(' data-sed-result', ''),
       app: (s) => s.replace('window.__sedSelfTest = function', 'window.__notTheSelfTest = function'),
     });
-    const r = await runCheck([dir, ...QUICK]);
+    // requiredFrom null in a sandbox config: the live value (a date once the lead arms the contract) must not decide this test
+    const r = await runCheck([dir, ...QUICK], { env: { SED_ROOT: gateRoot(null) } });
     const codes = errorCodes(r);
     assert.ok(!codes.some((c) => /^(intro|explainer)-/.test(c)), JSON.stringify(r.json.errors));
     assert.deepEqual(codes, ['selftest-missing'], 'purpose "tool" comes from project.json');
     assert.equal(r.json.metrics.contract.gate, false);
+    assert.equal(r.json.metrics.contract.requiredFrom, null);
+    // the first-frame rule waits for the gate too: no data-sed-result here, and no warning or metric about it
+    assert.ok(!fs.readFileSync(path.join(dir, 'index.html'), 'utf8').includes('data-sed-result'));
+    assert.ok(!warningCodes(r).some((c) => c.startsWith('first-frame')), JSON.stringify(r.json.warnings));
+    assert.equal(r.json.metrics.firstFrame, undefined);
   });
 
   test('--meta stands in for a missing project.json, --purpose names the purpose by hand, and the config date gate arms the checks', async () => {
@@ -1007,20 +1073,58 @@ browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
     const manual = await runCheck([site, '--purpose', 'tool', ...QUICK]);
     assert.deepEqual(errorCodes(manual), ['selftest-missing']);
     // the date gate: a sandbox config with requiredFrom on or before the page date arms the intro and explainer checks
-    const root = scratch('root');
-    fs.mkdirSync(path.join(root, 'ops'));
-    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
-    cfg.pageContract.requiredFrom = '2026-10-20';
-    fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(cfg));
-    fs.copyFileSync(path.join(ROOT, 'ops', 'taxonomy.json'), path.join(root, 'ops', 'taxonomy.json'));
     const broken = contractVariant(TOOL, { html: (s) => s.replace(' data-sed-explainer', '') });
-    const gated = await runCheck([broken, ...QUICK], { env: { SED_ROOT: root } });
+    const gated = await runCheck([broken, ...QUICK], { env: { SED_ROOT: gateRoot('2026-10-20') } });
     assert.deepEqual(errorCodes(gated), ['explainer-missing']);
     assert.equal(gated.json.metrics.contract.requiredFrom, '2026-10-20');
-    cfg.pageContract.requiredFrom = '2026-10-21';
-    fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(cfg));
-    const before = await runCheck([broken, ...QUICK], { env: { SED_ROOT: root } });
+    const before = await runCheck([broken, ...QUICK], { env: { SED_ROOT: gateRoot('2026-10-21') } });
     assert.deepEqual(before.json.errors, [], 'a page dated before requiredFrom is not checked');
+  });
+
+  test('the control count: focusable widgets, role=checkbox and visually hidden radios count, plain links do not; an intro pushed off the page sideways is hidden; an unmarked result warns', async () => {
+    const widgets = [
+      ...Array.from({ length: 3 }, (_, i) => `<span role="checkbox" aria-checked="false" tabindex="0">Bit ${i + 1}</span>`),
+      ...Array.from({ length: 2 }, (_, i) => `<span tabindex="0">Tile ${i + 1}</span>`),
+      '<span class="seg">Mode:',
+      // the Hard label is a control itself (role=button): it and its hidden radio are one control, never two
+      ...['Easy', 'Normal', 'Hard'].map((m) => `<label${m === 'Hard' ? ' role="button" tabindex="0"' : ''}><input type="radio" name="mode" style="position:absolute;opacity:0;width:1px;height:1px">${m}</label>`),
+      '</span>',
+      ...Array.from({ length: 5 }, (_, i) => `<a href="#explainer">Read part ${i + 1}</a>`),
+      '<span tabindex="-1">Not a tab stop</span>',
+    ].join(' ');
+    const dir = contractVariant(TOOL, {
+      html: (s) => atTop(widgets)(s.replace('data-sed-intro>', 'data-sed-intro style="position:absolute;left:-9999px">').replace(' data-sed-result', '')),
+    });
+    const r = await runCheck([dir, '--contract', ...QUICK]);
+    // 6 controls of the page + 3 checkboxes + 2 tiles + 3 radios (one counted as its role=button label); the 5 links and the tabindex=-1 span are not controls
+    assert.equal(r.json.metrics.firstScreenControls, 14, JSON.stringify(r.json.warnings));
+    const warned = r.json.warnings.join('\n');
+    assert.match(warned, /controls-many: 14 interactive controls are visible in the first 1280x800 screen: at most 8 is the target; above 8 is a warning, above 14 an error/);
+    assert.ok(!errorCodes(r).includes('controls-excess'), '14 is the last count that only warns');
+    assert.match(r.json.errors.join('\n'), /intro-hidden: the intro p\[data-sed-intro\] is not rendered \(.*pushed off the page sideways/);
+    assert.match(warned, /first-frame-unmarked: no element carries data-sed-result: a tool page shows a sample result in its first frame/);
+    assert.equal(r.json.metrics.firstFrame.marked, false);
+  });
+
+  test('a transparent intro is hidden, gradient text is not; a result below the first screen is late on desktop and phone; play pages are exempt from the first-frame rule', async () => {
+    const transparent = contractVariant(TOOL, {
+      html: (s) => s.replace('data-sed-intro>', 'data-sed-intro style="color: transparent">').replace('<div class="cc-result"', '<div style="height:720px" aria-hidden="true"></div><div class="cc-result"'),
+    });
+    const late = await runCheck([transparent, '--contract', ...QUICK]);
+    assert.match(late.json.errors.join('\n'), /intro-hidden: .*a fully transparent text colour/);
+    const warned = late.json.warnings.join('\n');
+    assert.match(warned, /first-frame-late: the sample result \(\[data-sed-result\]\) starts \d+px from the top; at 1280x800 it must start by 560px/);
+    assert.match(warned, /first-frame-late: the sample result \(\[data-sed-result\]\) starts \d+px from the top, below the 844px phone screen at 390x844/);
+    assert.ok(late.json.metrics.firstFrame.desktop.resultTopPx > 560 && late.json.metrics.firstFrame.mobile.resultTopPx >= 844, JSON.stringify(late.json.metrics.firstFrame));
+    // gradient text (transparent colour painted through the glyphs) is readable; a play page needs no data-sed-result
+    const play = contractVariant(LESSON, {
+      html: (s) => s.replace('data-sed-intro>', 'data-sed-intro style="color: transparent; background: linear-gradient(90deg, #16181d, #4b32d6); -webkit-background-clip: text; background-clip: text">').replace(' data-sed-result', ''),
+      pj: (p) => { p.fingerprint.purpose = 'play'; },
+    });
+    const ok = await runCheck([play, '--contract', ...QUICK]);
+    assert.deepEqual(ok.json.errors, [], 'gradient text is not hidden');
+    assert.ok(!warningCodes(ok).some((c) => c.startsWith('first-frame')), JSON.stringify(ok.json.warnings));
+    assert.equal(ok.json.metrics.firstFrame, undefined);
   });
 
   test('usage: the header lists every new flag; a bare or unknown --purpose and a bare --meta exit 2', async () => {

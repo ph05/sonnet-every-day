@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { validateProject, validateRepo, analyzeContract, countWords, firstSentence } from '../scripts/validate.mjs';
+import { validateProject, validateRepo, analyzeContract, countWords, firstSentence, fillerStats } from '../scripts/validate.mjs';
 import { MALICIOUS, BENIGN } from './fixtures/gate-vectors.mjs';
 import { startMeter, childCpuMs, childCpuAvailable } from './helpers/cpu.mjs';
 import {
@@ -1207,15 +1207,23 @@ test('page contract: with requiredFrom null nothing new is enforced; the date ga
     }
   };
   const contractCodes = (res) => [...new Set(codesOf(res.errors).filter((c) => /^(purpose|intro-|explainer-)/.test(c)))];
-  const off = await run(undefined, { tier: 1 });
+  // every expectation below names its own requiredFrom: none reads the live config.json value (the lead sets it to a date)
+  const off = await run(withGate(null), { tier: 1 });
   assert.deepEqual(off.errors, [], 'requiredFrom null: an old-style page still passes');
   assert.deepEqual(contractCodes(await run(withGate('2026-10-10'), { tier: 1 })), [], 'a page dated before requiredFrom is not affected');
   const on = await run(withGate('2026-10-09'), { tier: 1 });
   assert.deepEqual(contractCodes(on).sort(), ['explainer-missing', 'intro-missing', 'purpose'], JSON.stringify(on.errors));
   assert.match(on.errors.join('\n'), /pages dated from 2026-10-09 \(pageContract\.requiredFrom\)/);
-  const forced = await run(undefined, { tier: 1, contract: true });
+  const forced = await run(withGate(null), { tier: 1, contract: true });
   assert.deepEqual(contractCodes(forced).sort(), ['explainer-missing', 'intro-missing', 'purpose']);
-  assert.match(forced.errors.join('\n'), /--contract/);
+  assert.match(forced.errors.join('\n'), /the page contract \(--contract\) needs/);
+  // --contract on a page dated before a set requiredFrom: the date rule is not what applies, so the message names --contract
+  const early = await run(withGate('2026-10-13'), { tier: 1, contract: true });
+  assert.deepEqual(contractCodes(early).sort(), ['explainer-missing', 'intro-missing', 'purpose']);
+  assert.match(early.errors.join('\n'), /the page contract \(--contract\) needs/);
+  assert.doesNotMatch(early.errors.join('\n'), /pages dated from/, 'a page dated 2026-10-09 is not "dated from 2026-10-13"');
+  // --contract on a page the date rule covers anyway: the date rule is named
+  assert.match((await run(withGate('2026-10-09'), { tier: 1, contract: true })).errors.join('\n'), /pages dated from 2026-10-09 \(pageContract\.requiredFrom\)/);
   for (const tier of [3, 4]) {
     assert.deepEqual(contractCodes(await run(withGate('2026-10-01'), { tier, contract: true })), [], `tier ${tier} is exempt`);
   }
@@ -1274,11 +1282,27 @@ test('page contract: every rule fails with its own code and a message that names
     const text = `A calculator that measures ${'the contrast between two colours and '.repeat(5)}more. It is for designers who check a palette before they ship it to everyone.`;
     await check(tool, setIntro(text), 'intro-first-sentence', /has 3\d words \(pageContract\.intro\.firstSentenceMaxWords is 30\)/, { warning: true });
   });
-  await t.test('trap: an unclosed intro p', () => check(tool, { html: (s) => s.replace(/(data-sed-intro>[\s\S]*?)<\/p>/, '$1') }, 'intro-unclosed', /no explicit <\/p>/));
-  await t.test('trap: a block inside the intro closes it early', async () => {
-    const res = await check(tool, { html: (s) => s.replace('It is for designers', '<div>It is for designers').replace('Everything runs in your browser.</p>', 'Everything runs in your browser.</div></p>') }, 'intro-unclosed', /explicit/);
+  await t.test('trap: an unclosed intro p', async () => {
+    const res = await check(tool, { html: (s) => s.replace(/(data-sed-intro>[\s\S]*?)<\/p>/, '$1') }, 'intro-unclosed', /no explicit <\/p>, so the browser ends it wherever the next block starts \(here a <section>\)/);
+    assert.match(res.errors.join('\n'), /or the intro contains a block element \(div, p, ul\), which a paragraph cannot hold/);
+  });
+  await t.test('trap: a block inside the intro closes it early (its </p> is still there)', async () => {
+    const res = await check(tool, { html: (s) => s.replace('It is for designers', '<div>It is for designers').replace('Everything runs in your browser.</p>', 'Everything runs in your browser.</div></p>') }, 'intro-unclosed', /is cut short by the <div> inside it: a block element \(div, p, ul \.\.\.\) ends a paragraph/);
+    assert.doesNotMatch(res.errors.join('\n'), /no explicit <\/p>/, 'the </p> exists: the message names the block, not a missing end tag');
     assert.ok(codesOf(res.errors).includes('intro-mismatch'), JSON.stringify(res.errors));
   });
+  await t.test('a list inside the intro is named the same way', () => check(tool, { html: (s) => s.replace('Everything runs in your browser.</p>', '<ul><li>Everything runs in your browser.</li></ul></p>') }, 'intro-unclosed', /cut short by the <ul> inside it/));
+  await t.test('an intro made from a div: the message says it must be a p', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => m.replace('<p class="sed-intro"', '<div class="sed-intro"').replace(/<\/p>$/, '</div>')) }, 'intro-missing', /the page has <div data-sed-intro>: the intro must be a p element, <p class="sed-intro" data-sed-intro>/));
+  await t.test('project.json intro with markup: plain text only', async () => {
+    const res = await check(tool, { pj: (p) => { p.intro = p.intro.replace('contrast ratio', '<b>contrast ratio</b>').replace('colour, the number', 'colour &ndash; the number'); } }, 'project-json', /intro must be plain text only: it holds <b>, <\/b>, &ndash;; write the text exactly as a reader sees it/);
+    assert.ok(codesOf(res.errors).includes('intro-mismatch'), 'the texts still differ');
+  });
+  await t.test('an HTML lesson may show a tag as text: the same text in project.json is not markup', async () => {
+    const text = intro.replace('Type or pick two colours;', 'Type <b> or pick two colours;');
+    const res = await validateProject(variant(box, tool, setIntro(text, intro.replace('Type or pick two colours;', 'Type &lt;b&gt; or pick two colours;'))), { contract: true });
+    assert.deepEqual(res.errors, []);
+  });
+  await t.test('an empty intro (filled by a script): the message says to put the text in the HTML', () => check(tool, { html: (s) => s.replace(INTRO_RE, '<p class="sed-intro" data-sed-intro></p>') }, 'intro-mismatch', /page "", project\.json .*the page's intro element is empty: if a script fills it, put the text in the HTML/));
   await t.test('trap: the intro only inside a template', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `<template>${m}</template>`) }, 'intro-placement', /1 elsewhere: inside <template>/));
   await t.test('trap: the intro only inside noscript', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `<noscript>${m}</noscript>`) }, 'intro-missing', /no p\[data-sed-intro\] inside <main>/));
   await t.test('trap: a template copy next to the real intro is ignored', async () => {
@@ -1303,8 +1327,88 @@ test('page contract: every rule fails with its own code and a message that names
   await t.test('trap: a lesson explainer padded with template and hidden copies', () => check(lesson, { html: (s) => s.replace(/(<h3>A worked example<\/h3>)([\s\S]*?)(<h3>Why one flip)/, '$1<template>$2</template><div hidden>$2</div>$3') }, 'explainer-words', /a lesson needs at least 700/));
   await t.test('trap: the explainer inside a closed details counts nothing', () => check(tool, { html: (s) => s.replace(/<section class="sed-explainer"[\s\S]*?<\/section>/, (m) => `<details><summary>How it works</summary>${m}</details>`) }, 'explainer-words', /has 0 words .* inside a closed <details>/));
   await t.test('too few headings for a lesson', () => check(lesson, { html: (s) => s.replace(/<h3>(Counting the ones|A worked example|Why one flip is always caught|Why two flips slip through|Detecting is not correcting|Where you meet it|Exercise 1|Exercise 2)<\/h3>/g, '<p><strong>$1</strong></p>') }, 'explainer-headings', /has 1 h2\/h3 heading; a lesson needs at least 4 \(pageContract\.explainer\.minHeadings\.lesson/));
-  await t.test('a lesson with one exercise', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<div class="sed-check">') }, 'explainer-checks', /has 1 element with data-sed-check; a lesson needs at least 2 exercises/));
-  await t.test('trap: an exercise copy inside a template does not count', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<template><div data-sed-check>copy</div></template><div class="sed-check">') }, 'explainer-checks', /has 1 element/));
+  await t.test('trap: empty headings do not count toward the minimum', () => check(lesson, { html: (s) => s.replace(/<h3>(Counting the ones|A worked example|Why one flip is always caught|Why two flips slip through|Detecting is not correcting|Where you meet it)<\/h3>/g, '<h3> </h3>').replace(/<h3>(Exercise 1|Exercise 2)<\/h3>/g, '<h3><span></span></h3>') }, 'explainer-headings', /has 1 h2\/h3 heading; a lesson needs at least 4/));
+  await t.test('a lesson with one exercise', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<div class="sed-check">') }, 'explainer-checks', /has 1 exercise with data-sed-check; a lesson needs at least 2 exercises/));
+  await t.test('trap: an exercise copy inside a template does not count', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<template><div data-sed-check>copy</div></template><div class="sed-check">') }, 'explainer-checks', /has 1 exercise/));
+  await t.test('trap: empty data-sed-check elements are not exercises', () => check(lesson, { html: (s) => s.replace(/<div class="sed-check" data-sed-check>[\s\S]*?<\/details>\s*<\/div>/g, '<div class="sed-check" data-sed-check></div>') }, 'explainer-checks', /has 0 exercises with data-sed-check \(2 more have no way to answer: an exercise holds an input, textarea, select, button or details\)/));
+  await t.test('trap: a question without a visible way to answer is not an exercise (hidden input, [hidden] button)', () => check(lesson, { html: (s) => s.replace(/<details><summary>Show the answer<\/summary>(<p>0\.[\s\S]*?)<\/details>/, '<input type="hidden" value="0"><button type="button" hidden>Check</button>$1') }, 'explainer-checks', /has 1 exercise with data-sed-check \(1 more has no way to answer/));
+  await t.test('an exercise answered with an input, a select, a textarea or a button counts like one with details', async () => {
+    const controls = ['<input type="text" aria-label="Your answer">', '<select aria-label="Pick"><option>0</option><option>1</option></select>', '<button type="button">Check</button>', '<textarea aria-label="Your answer"></textarea>'];
+    for (const control of controls) {
+      const res = await validateProject(variant(box, lesson, { html: (s) => s.replace(/<details><summary>Show the answer<\/summary>(<p>0\.[\s\S]*?)<\/details>/, `${control}$1`) }), { contract: true });
+      assert.deepEqual(res.errors, [], control);
+    }
+  });
+  await t.test('an explainer of 0 words (filled by a script): the message says to put the text in the HTML', () => check(tool, { html: (s) => s.replace(/(<section class="sed-explainer"[^>]*>)[\s\S]*?<\/section>/, '$1<h2 id="explainer-title">How it works</h2><h3>Limits</h3></section>') }, 'explainer-words', /has 0 words of prose; a tool needs at least 250 .*; if a script fills it, put the text in the HTML/));
+  await t.test('an explainer hidden in a closed details names the details, not a script', async () => {
+    const res = await check(tool, { html: (s) => s.replace(/<section class="sed-explainer"[\s\S]*?<\/section>/, (m) => `<details><summary>How it works</summary>${m}</details>`) }, 'explainer-words', /inside a closed <details>/);
+    assert.doesNotMatch(res.errors.join('\n'), /if a script fills it/);
+  });
+  // filler that reaches the word minimum (the rehearsals' b22 and m07): one word form over 15 percent, or too few distinct sentences
+  const LOREM = 'lorem ipsum dolor sit amet '.repeat(60);
+  await t.test('filler: lorem ipsum and one word over and over (the share of one word form)', async () => {
+    const res = await check(tool, { html: (s) => s.replace(/(<section class="sed-explainer"[^>]*>)[\s\S]*?<\/section>/, `$1<h2 id="explainer-title">How it works</h2><p>${LOREM}</p><h3>More</h3><p>${'banana banana banana '.repeat(30)}</p></section>`) }, 'explainer-filler', /"banana" makes up 23% of the explainer's 390 words \(more than 15% is filler\)/);
+    assert.match(res.errors.join('\n'), /explainer-filler: the explainer has 2 distinct sentences; a tool needs at least 7 \(max\(4, pageContract\.explainer\.minWords\.tool \/ 40\)\)/);
+  });
+  await t.test('filler: one sentence pasted again and again (distinct sentences)', async () => {
+    const res = await check(lesson, { html: (s) => s.replace(/(<h2 id="explainer-title">How it works<\/h2>)[\s\S]*?(<div class="sed-check")/, `$1<p>${'Lorem ipsum dolor sit amet consectetur adipiscing elit. '.repeat(110)}</p><h3>A</h3><h3>B</h3><h3>C</h3>$2`) }, 'explainer-filler', /the explainer has \d+ distinct sentences; a lesson needs at least 18/);
+    assert.ok(!res.errors.some((e) => /makes up/.test(e)), 'eight words at 12.5% each: the share rule alone would miss it');
+  });
+  await t.test('filler: a long varied explainer passes; a short one gets explainer-words only, never a filler verdict', async () => {
+    const res = await validateProject(variant(box, lesson, {}), { contract: true });
+    assert.deepEqual(res.errors, []);
+    const short = await validateProject(variant(box, tool, { html: (s) => s.replace(/<h3>How it is computed<\/h3>[\s\S]*?<h3>Limits<\/h3>/, '<h3>Limits</h3>') }), { contract: true });
+    assert.ok(codesOf(short.errors).includes('explainer-words') && !codesOf(short.errors).includes('explainer-filler'), JSON.stringify(short.errors));
+  });
+});
+
+test('page contract: the new rules change nothing while the gate is not armed (requiredFrom null, no --contract)', async () => {
+  const box = makeSandbox({ config: withGate(null) });
+  try {
+    const filler = variant(box, TOOL_FIXTURE, { html: (s) => s.replace(/(<section class="sed-explainer"[^>]*>)[\s\S]*?<\/section>/, `$1<h2 id="explainer-title">How it works</h2><p>${'banana '.repeat(300)}</p><h3>More</h3></section>`) });
+    assert.deepEqual((await validateProject(filler, {})).errors, [], 'filler is a contract rule');
+    assert.ok(codesOf((await validateProject(filler, { contract: true })).errors).includes('explainer-filler'), 'and --contract arms it');
+    const empty = variant(box, LESSON_FIXTURE, { html: (s) => s.replace(/<div class="sed-check" data-sed-check>[\s\S]*?<\/details>\s*<\/div>/g, '<div class="sed-check" data-sed-check></div>') });
+    assert.deepEqual((await validateProject(empty, {})).errors, [], 'exercises are a contract rule');
+    assert.ok(codesOf((await validateProject(empty, { contract: true })).errors).includes('explainer-checks'), 'and --contract arms it');
+  } finally {
+    box.cleanup();
+  }
+});
+
+test('page contract: no filler or exercise verdict on the published pages or the conforming fixtures (false-positive guard)', async () => {
+  const live = path.join(REAL_ROOT, 'docs', 'd');
+  const dirs = [TOOL_FIXTURE, LESSON_FIXTURE, BENIGN_FIXTURE];
+  for (const name of fs.readdirSync(live)) {
+    const pj = path.join(live, name, 'project.json');
+    if (fs.existsSync(pj) && JSON.parse(fs.readFileSync(pj, 'utf8')).fingerprint?.purpose) dirs.push(path.join(live, name));
+  }
+  assert.ok(dirs.length >= 6, `${dirs.length} pages`);
+  for (const dir of dirs) {
+    const res = await validateProject(dir, { contract: true });
+    const hits = res.errors.filter((e) => /^(explainer-filler|explainer-checks|intro-unclosed|intro-missing|project-json: intro)/.test(e));
+    assert.deepEqual(hits, [], path.basename(dir));
+  }
+  // the margin under the 15 percent rule, on the fixtures (fixed files): real prose stays under 10% (the published pages measured 5 to 9.5%).
+  // A published page is held to the rule above only: every new day lands in docs/d, and its "the" at 11% is no defect.
+  for (const dir of [TOOL_FIXTURE, LESSON_FIXTURE, BENIGN_FIXTURE]) {
+    const ex = analyzeContract(fs.readFileSync(path.join(dir, 'index.html'), 'utf8')).explainers[0];
+    assert.ok(ex.filler.topWord.share < 0.1, `${path.basename(dir)}: "${ex.filler.topWord.form}" ${ex.filler.topWord.share}: real prose stays under 10%`);
+  }
+});
+
+test('page contract: filler statistics', () => {
+  const f = fillerStats(['The cat sat. The cat sat!', 'the CAT sat.', 'A dog ran? Then it slept', 'no full stop here', 'no full stop here']);
+  assert.equal(f.words, 23);
+  assert.deepEqual([f.topWord.form, f.topWord.count], ['the', 3]);
+  assert.equal(f.distinctSentences, 4, 'case and punctuation do not make a sentence new; each block ends a sentence');
+  assert.equal(fillerStats([]).topWord, null);
+  assert.equal(fillerStats(['3.14 is pi. e.g. this']).distinctSentences, 3, 'a decimal point is not a sentence end; an abbreviation may split one (it only adds)');
+  const ex = analyzeContract('<main><section data-sed-explainer><h2>How</h2><ul><li>first item</li><li>second item</li></ul><p>One. Two.</p></section></main>').explainers[0];
+  assert.equal(ex.filler.distinctSentences, 4, 'list items without a full stop are sentences of their own');
+  assert.equal(ex.wordCount, 6);
+  const wrapped = analyzeContract('<main><section data-sed-explainer><p>A sentence that runs\nover two lines of source. A sentence that runs over two lines of source.</p></section></main>').explainers[0];
+  assert.equal(wrapped.filler.distinctSentences, 1, 'a line break in the source is not a sentence end');
 });
 
 test('page contract: words are counted the way a reader sees them', () => {

@@ -383,6 +383,7 @@ test('every card shows its purpose pill before the category label; the lead show
   assert.equal(await page.locator('.lead-tagline').textContent(), lead.tagline, 'the tagline stays');
   assert.equal(await page.locator('#lead').evaluate((el, desc) => el.textContent.includes(desc), lead.description), false, 'the intro takes the description\'s place');
   assert.equal(await page.locator('.lead-chips .pill-purpose').textContent(), 'Explorer');
+  assert.ok((await page.locator('.lead-chips').allInnerTexts()).join(' ').toLowerCase().includes(lead.mechanic), 'a mechanic unlike the purpose keeps its pill');
   // a lead without an intro keeps its description
   const older = structuredClone(SAMPLE);
   older.days = older.days.map((d) => ({ ...d, intro: '', purpose: '' }));
@@ -425,6 +426,11 @@ test('the conforming contract fixtures (tool, lesson, sample play page) render w
   assert.deepEqual(pills, [['2026-10-21', 'Lesson'], ['2026-10-20', 'Tool'], ['2026-10-09', 'Play']]);
   assert.deepEqual(await page.$$eval('#chips-type .chip', (els) => els.map((e) => e.dataset.value)), ['tool', 'lesson', 'play']);
   assert.equal(await page.locator('.lead-intro').textContent(), projects[2].project.intro, 'the newest page leads with its intro');
+  // the lesson's mechanic is "lesson": one LESSON pill on the lead, not two
+  assert.equal(projects[2].project.fingerprint.mechanic, 'lesson');
+  const chipTexts = (await page.locator('.lead-chips li').allTextContents()).map((x) => x.trim().toLowerCase());
+  assert.equal(chipTexts.filter((x) => x === 'lesson').length, 1, JSON.stringify(chipTexts));
+  assert.equal(await page.locator('.lead-chips .pill-purpose').textContent(), 'Lesson');
   await page.click('.chip[data-key="type"][data-value="tool"]');
   assert.deepEqual(await cardDates(page), ['2026-10-20']);
   await page.waitForFunction(() => [...document.querySelectorAll('#grid .card img')].every((i) => i.complete && i.naturalWidth > 0));

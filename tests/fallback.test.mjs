@@ -109,8 +109,8 @@ function makeIdeas(date = DATE, { evil = false, count = 10 } = {}) {
     },
     design: { coreLoop: 'Poke and observe.', sophisticationHooks: ['Seeded randomness'], dataNeeds: 'bundled', scopeForOneDay: 'One screen.', risks: ['Scope'] },
     durable: i % 2 === 0,
-    scores: { sophistication: 5 + (i % 5), delight: 6 + (i % 4), distinctness: 7 - (i % 3), feasibility: 8 - (i % 6), timeliness: 4 + (i % 7), interestFit: 9 - (i % 4), polishPotential: 6, safety: 10 },
-    total: 50 + ((i * 7) % 25),
+    scores: { sophistication: 5 + (i % 5), delight: 6 + (i % 4), distinctness: 7 - (i % 3), feasibility: 8 - (i % 6), timeliness: 4 + (i % 7), interestFit: 9 - (i % 4), polishPotential: 6, safety: 10, clarity: 5 + (i % 3) },
+    total: 50 + ((i * 7) % 25) + (i === 3 ? 10 : 0), // the pick (i04) scores 81, above the old cap of 80 (select totals run 0 to 100)
     noveltyCheck: { ok: i !== 6, conflicts: i === 6 ? [{ kind: 'tag-overlap', detail: 'overlaps a past build' }] : [] },
   }));
   return { schema: 1, date, lenses: [], carryoverIn: null, ideas, chosenId: 'i04', carryoverOutId: 'i07', rejectedNotes: [{ title: 'Something dull', reason: 'Seen it.' }], rationale: 'Funniest and most buildable in a day.', selectedAt: `${date}T08:00:00Z` };
@@ -472,6 +472,23 @@ describe('sanitizing untrusted ideas', () => {
     assert.throws(() => normalizeIdeas({ nothing: 1 }), /no "ideas" array/);
     assert.throws(() => normalizeIdeas({ ideas: [{ pitch: 'no title' }] }), /no usable idea/);
     assert.equal(normalizeIdeas({ ideas: Array.from({ length: 30 }, (_, i) => ({ title: `t${i}` })) }).doc.ideas.length, 12);
+  });
+
+  test('scores: select\'s nine criteria and its 0 to 100 total are shown as they are (a total above 80 is no longer replaced)', () => {
+    assert.deepEqual(DIMENSIONS, ['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety', 'clarity']);
+    const nine = (v) => Object.fromEntries(DIMENSIONS.map((d) => [d, v]));
+    const { doc } = normalizeIdeas({ chosenId: 'i01', ideas: [
+      { id: 'i01', title: 'Chosen', total: 83, scores: nine(7.8) },
+      { id: 'i02', title: 'Runner-up', total: 79.5, scores: nine(8) },
+      { id: 'i03', title: 'Top of the scale', total: 100, scores: nine(9) },
+      { id: 'i04', title: 'Off the scale', total: 101, scores: nine(6) },
+      { id: 'i05', title: 'No total, eight old scores', scores: { ...nine(7), clarity: undefined } },
+    ] }, { date: DATE });
+    assert.equal(doc.max, 100);
+    assert.deepEqual(doc.dimensions, DIMENSIONS);
+    assert.deepEqual(doc.ideas.map((i) => i.total), [83, 79.5, 100, 60, 70], 'select totals as they are; a damaged one or none: the mean of the given scores times ten');
+    assert.equal(doc.ideas[0].scores.clarity, 7.8);
+    assert.equal(doc.ideas[4].scores.clarity, 0, 'a missing criterion draws as 0 but does not drag the mean down');
   });
 
   test('an unscored shortlist (select never ran) has no ranking and no pick', () => {
@@ -1092,6 +1109,8 @@ describe('in a real browser', () => {
       const panel = page.locator('li.idea .dossier').first();
       assert.equal(await panel.isVisible(), true);
       assert.ok(await panel.locator('svg.radar').count() === 1);
+      assert.ok((await panel.locator('svg.radar').innerHTML()).includes('>CLAR<'), 'the clarity axis is labelled');
+      assert.ok((await panel.innerText()).includes('Clarity'), 'the score bars name clarity');
       assert.ok(await panel.locator('a[href^="https://"]').count() >= 1);
       assert.equal(await panel.locator('a[rel="noopener noreferrer nofollow"]').count(), await panel.locator('a').count());
       assert.ok((await panel.innerText()).includes('unverified'));
@@ -1100,6 +1119,8 @@ describe('in a real browser', () => {
       await page.click('#toggle-all');
       assert.equal(await page.locator('li.idea .dossier:visible').count(), 0);
 
+      // the pick's total above 80 is shown as select wrote it, out of 100
+      assert.match(await page.locator('#pick').innerText(), /Team score 81 of 100/);
       await page.goto(`${url}#idea-i06`);
       assert.equal(await page.locator('#idea-i06 .toggle').getAttribute('aria-expanded'), 'true');
       await page.keyboard.press('/');
@@ -1135,7 +1156,7 @@ describe('in a real browser', () => {
       await page.goto(url);
       assert.equal(await page.locator('li.idea').count(), 10);
       const body = await page.locator('body').innerText();
-      assert.ok(!/highest|top score|team score|of 80/i.test(body), `ranking language on the page: ${body.slice(0, 300)}`);
+      assert.ok(!/highest|top score|team score|of 100\b/i.test(body), `ranking language on the page: ${body.slice(0, 300)}`);
       assert.equal(await page.locator('#pick h2').innerText(), 'No pick was made');
       assert.equal((await page.locator('.pick-label').innerText()).toLowerCase(), 'not ranked yet');
       assert.equal(await page.locator('#pick svg').count(), 0, 'no radar in the hero');

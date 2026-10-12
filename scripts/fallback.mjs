@@ -18,8 +18,9 @@ import {
   escapeHtml, jsonForScript, fillTemplate, readAsset, renderPostcard, THUMB_WIDTH, THUMB_HEIGHT,
 } from './lib/postcard.mjs';
 
-export const DIMENSIONS = ['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety'];
-const MAX_SCORE = DIMENSIONS.length * 10;
+// select's nine criteria in its order; its total is a weighted mean times ten plus the purpose bonus, capped at 100 (selection.md)
+export const DIMENSIONS = ['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety', 'clarity'];
+const MAX_SCORE = 100;
 const MAX_IDEAS = 12;
 const THUMB_MAX_BYTES = 300_000;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -134,13 +135,16 @@ function normalizeIdea(raw, index, usedIds, warnings) {
   const rawScores = isObj(raw.scores) ? raw.scores : {};
   const scores = {};
   let sum = 0;
+  let given = 0;
   for (const d of DIMENSIONS) {
     const v = cleanScore(rawScores[d]);
     scores[d] = v ?? 0;
     sum += v ?? 0;
+    if (v !== null) given++;
   }
+  // select's 0 to 100 total is shown as it is; without one, the plain mean of the given scores on the same scale
   const rawTotal = typeof raw.total === 'number' && Number.isFinite(raw.total) && raw.total >= 0 && raw.total <= MAX_SCORE ? raw.total : null;
-  const total = Math.round((rawTotal ?? sum) * 10) / 10;
+  const total = Math.round((rawTotal ?? (given ? (sum / given) * 10 : 0)) * 10) / 10;
   // ideate writes the shortlist with every score and total at 0 and select fills them in; a zero total is "not scored yet",
   // never a real score, so it must not be drawn as a flat radar or compared to anything.
   const scored = total > 0;
@@ -378,7 +382,7 @@ function drawScoreBoard(cv, { doc, pick, x0, accent, gold, light, muted }) {
   DIMENSIONS.forEach((d, k) => {
     const [px, py, ux, uy] = point(k, R);
     cv.line(cx, cy, px, py, 1.4, light, 0.22);
-    const label = { sophistication: 'SOPH', delight: 'DLGT', distinctness: 'DIST', feasibility: 'FEAS', timeliness: 'TIME', interestFit: 'FIT', polishPotential: 'POL', safety: 'SAFE' }[d];
+    const label = { sophistication: 'SOPH', delight: 'DLGT', distinctness: 'DIST', feasibility: 'FEAS', timeliness: 'TIME', interestFit: 'FIT', polishPotential: 'POL', safety: 'SAFE', clarity: 'CLAR' }[d];
     const lx = cx + ux * (R + 22);
     const ly = cy + uy * (R + 20) - 7;
     cv.text(label, lx, ly, { scale: 2, color: muted, align: ux > 0.3 ? 'left' : ux < -0.3 ? 'right' : 'center' });

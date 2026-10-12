@@ -3744,6 +3744,7 @@ describe('spec.js: purpose, intro first, page-contract lint (DESIGN 8)', () => {
     ]) {
       const s = makeSandbox();
       try {
+        armContract(s, null); // the live requiredFrom becomes a date when the lead arms the contract: this test pins null itself
         seedPurposeIdea(s, purpose);
         const run = await runWorkflow('spec', baseArgs(s), { world: specWorld(s) });
         checkRunInvariants('spec', run);
@@ -3754,7 +3755,7 @@ describe('spec.js: purpose, intro first, page-contract lint (DESIGN 8)', () => {
         for (const m of mustNot) assert.ok(!rec.includes(m), `${purpose}: the reconcile prompt names another purpose's section ${m}`);
         assert.ok(run.rec.calls.find((c) => c.label === 'plan architect').prompt.includes('Start from the intro'), 'the architect drafts the intro first');
         assert.ok(run.rec.calls.find((c) => c.label === 'plan artisan').prompt.includes('the first frame shows the thing working'));
-        // requiredFrom is null in the real config: the contract findings are warnings, never a fix pass
+        // requiredFrom is null in the sandbox config: the contract findings are warnings, never a fix pass
         assert.ok(!run.rec.calls.some((c) => c.label.startsWith('architect spec fix')), 'no fix pass while the contract is not enforced');
         assert.ok(run.result.warnings.some((w) => w.startsWith('page contract (warning only: pageContract.requiredFrom is not set): PROJECT.json: intro is missing')), run.result.warnings.join(' | '));
         assert.deepEqual(c1plain(run.result.pageContract), { enforced: false, requiredFrom: null });
@@ -3872,6 +3873,7 @@ describe('qa.js: the stranger cold read, the expert review and the page contract
   test('beside the critic on 2 slots: the stranger sees only the first-screen shots and texts, a judge compares with plainSentence, the expert gets the tool steps; --meta reaches the full check', async () => {
     const s = makeSandbox();
     try {
+      armContract(s, null); // pinned in the sandbox: the live requiredFrom becomes a date when the lead arms the contract
       seedProject(s);
       seedPurposeIdea(s, 'tool');
       toolProject(s);
@@ -3991,6 +3993,7 @@ describe('qa.js: the stranger cold read, the expert review and the page contract
     // gate off, a page without an intro, a spec PROJECT.json with one: nothing about the intro, and the dry run holds no intro
     let s = makeSandbox();
     try {
+      armContract(s, null); // gate off in the sandbox config, whatever the live requiredFrom says
       seedProject(s);
       toolProject(s);
       seedContractPage(s, { intro: null });

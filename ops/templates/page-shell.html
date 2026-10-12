@@ -24,6 +24,13 @@
     also needs at least two exercises, each an element with data-sed-check (style it with class="sed-check").
   * The intro, the explainer with its headings and prose, and every data-sed-check element are STATIC markup in
     this file. Scripts may enhance them but must never create them: the validator reads the static HTML only.
+    Each data-sed-check exercise holds a visible way to answer: an input, textarea, select, button or details.
+  * FIRST FRAME: a tool, lesson, explorer or studio shows a sample result on load and marks the element that shows
+    it with data-sed-result (a play page needs none). browser-check.mjs warns when none is marked
+    (first-frame-unmarked) or when it starts below 560 px at 1280x800 or below the 844 px phone screen
+    (first-frame-late).
+  * SELF-TEST: a tool defines window.__sedSelfTest in selftest.js with at least 8 known-answer cases. These rules are
+    enforced by browser-check.mjs only (it runs the self-test); validate.mjs does not look for it.
 
   DO NOT EDIT (validate.mjs and browser-check.mjs depend on these)
   * the Content-Security-Policy <meta> (it must stay the first element after <meta charset>)
@@ -38,6 +45,8 @@
 
   THUMBNAIL
   The gallery thumbnail is a 1200x630 screenshot taken by browser-check.mjs --thumb after a short settle delay.
+  When the intro ends below 300 px or the page marks data-sed-result, the screenshot is taken scrolled so the app
+  and its result fill the frame (a page that scrolls itself while __sedThumbReady settles keeps its own frame).
   If the first meaningful frame is not ready right away (assets decoding, a simulation warming up, an intro
   animation), expose a promise or a function returning a promise and the screenshot waits for it:
       window.__sedThumbReady = myAppReady();   // or: window.__sedThumbReady = () => myAppReady();
@@ -295,7 +304,8 @@
       <!-- SLOT: how it works and what was researched (same spirit as project.json "makingOf"). -->
       <p class="sed-making-of" data-sed-placeholder>How this was made: what it does, what was researched, what the interesting design choices were.</p>
       <h2>Sources</h2>
-      <!-- SLOT: one <li> per source actually consulted (title, link, what it established). Remove the placeholder. -->
+      <!-- SLOT: one <li> per verified source (title, link, what it established): a page you opened and read, or one behind a
+           claim two separate search results agree on, labelled "seen in search results". Remove the placeholder. -->
       <ul class="sed-sources">
         <li data-sed-placeholder><a href="https://example.com/source">Source title</a>: what it established.</li>
       </ul>

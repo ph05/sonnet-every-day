@@ -20,7 +20,7 @@ CONTRACT section 5.6; `scripts/validate.mjs project <dir>` enforces it.
 | `entry` | string | Relative path of the page, normally `index.html`. |
 | `thumb` | string | Relative path of the thumbnail, normally `thumb.png`: exactly 1200x630 PNG, at most `limits.thumbMaxBytes` (300 KB). Generate it with `node scripts/qa/browser-check.mjs <dir> --out <qa dir> --thumb`. |
 | `network` | string[] | Bare hostnames (no scheme, port or path) the page fetches at runtime. Default `[]` means fully offline. Every listed host must also be in the page's CSP `connect-src`. Live data is a graceful enhancement only; the page must still work offline. |
-| `sources` | `{title, url}[]` | The pages actually consulted (http or https URLs). Never list a page that was not really read. Tier 1 and 2 need at least one. |
+| `sources` | `{title, url}[]` | The pages the About panel cites, each one verified: opened and read, or the page behind a claim that two separate search results agree on (label that one "seen in search results" where the About panel cites it). Never list a page that appeared in neither. http or https URLs. Tier 1 and 2 need at least one. |
 | `makingOf` | string | A short paragraph, same content as the page's "About & making of" panel. |
 | `stats` | object | `{files, bytes, ownLoc}`: file count, total bytes and lines of the project's own code. The packaging step recomputes it; any numbers are fine in the example. |
 | `credits` | string | Normally `Built by the Sonnet Every Day team`. |
@@ -30,9 +30,15 @@ Notes
 * JSON has no comments; keep this README as the field reference.
 * The page itself carries the intro paragraph and the explainer section as static markup (see the header comment of
   `page-shell.html`). From `pageContract.requiredFrom` on, `validate.mjs project` checks them on tiers 1 and 2: the intro
-  (`intro-*` codes), the explainer's words and headings per purpose (`explainer-*`), and for a lesson at least
-  `lessonMinChecks` elements with `data-sed-check`. `browser-check.mjs` checks that both are rendered, that the intro ends
-  within the first screen, the first-screen control budget, and runs `window.__sedSelfTest` (required for a tool).
+  (`intro-*` codes), the explainer's words, headings and real prose per purpose (`explainer-*`, `explainer-filler` for
+  repeated or lorem-ipsum text), and for a lesson at least `lessonMinChecks` elements with `data-sed-check`, each holding
+  a visible way to answer (an input, textarea, select, button or details). `browser-check.mjs` checks that both are
+  rendered, that the intro ends within the first screen, the first-screen control budget, and that the element marked
+  `data-sed-result` (tool, lesson, explorer, studio) starts inside the first screen (warnings `first-frame-unmarked`,
+  `first-frame-late`).
+* The self-test rules are enforced by `browser-check.mjs` only: a tool defines `window.__sedSelfTest` in `selftest.js`
+  with at least `toolMinSelfTests` known-answer cases, and every case of any page's self-test passes. `validate.mjs project`
+  passes a tool without a self-test.
 * `date` and `slug` must agree with the directory name, or validation fails.
 * The values in `project.json.example` are placeholders (`example.com` is a reserved domain). Replace every one of
   them before publishing.

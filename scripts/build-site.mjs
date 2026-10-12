@@ -200,11 +200,13 @@ function writeAtomic(file, content) {
 /**
  * @param {{now?: Date|string, validate?: Function, concurrency?: number}} [opts] `validate` overrides the
  *   imported validateProject (tests).
- * @returns {Promise<{ok: boolean, projects: number, omitted: {path: string, errors: string[]}[], warnings: string[], error?: string}>}
+ * @returns {Promise<{ok: boolean, projects: number, omitted: {path: string, errors: string[]}[], unlisted: string[], warnings: string[], error?: string}>}
+ *   `unlisted`: docs/d directories without a state/history.json entry (not on the site); their warnings come first.
  */
 export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURRENCY } = {}) {
   const warnings = [];
   const omitted = [];
+  const unlisted = [];
   try {
     const instant = now instanceof Date ? now : resolveNow({ now });
     if (Number.isNaN(instant.getTime())) throw new FatalError(`bad now value: ${now}`);
@@ -243,11 +245,13 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
     const known = new Set(ordered.map((e) => `${e.date}-${e.slug}`));
     try {
       for (const d of fs.readdirSync(rp('docs', 'd'), { withFileTypes: true })) {
-        if (d.isDirectory() && !known.has(d.name)) warnings.push(`docs/d/${d.name} is not in state/history.json; it is not listed on the site`);
+        if (d.isDirectory() && !known.has(d.name)) unlisted.push(`docs/d/${d.name}`);
       }
     } catch {
       // docs/d does not exist yet
     }
+    // first in the list, so the output's 50-warning cut never drops them: a new page missing from the gallery is the usual cause
+    warnings.unshift(...unlisted.map((d) => `${d} is not in state/history.json, so the site does not list it (to publish it: node scripts/history.mjs add --project ${d})`));
 
     const diary = loadDiary(config, warnings);
     const publishedDates = new Set(projects.map((p) => p.project.date));
@@ -295,9 +299,9 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
       if (writeAtomic(rp('docs', rel), content)) changed.push(rel);
     }
 
-    return { ok: true, projects: projects.length, omitted, warnings, generatedAt: archive.generatedAt, changed, diary: { entries: diary.entries.length, rendered: diary.render } };
+    return { ok: true, projects: projects.length, omitted, unlisted, warnings, generatedAt: archive.generatedAt, changed, diary: { entries: diary.entries.length, rendered: diary.render } };
   } catch (e) {
-    return { ok: false, projects: 0, omitted, warnings, error: errMsg(e) };
+    return { ok: false, projects: 0, omitted, unlisted, warnings, error: errMsg(e) };
   }
 }
 

@@ -1599,6 +1599,10 @@ const NON_PROSE_ANCESTORS = new Set(['button', 'label', 'select', 'textarea', 's
 const INLINE_ELEMENTS = new Set(['a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'del', 'dfn', 'em', 'i', 'ins', 'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr']);
 const INTRO_INLINE = new Set(['a', 'abbr', 'b', 'code', 'em', 'i', 'kbd', 'span', 'strong', 'sub', 'sup']);
 const INTRO_ENTITIES = new Set(['amp', 'lt', 'gt', 'quot', 'nbsp']);
+// project.json "intro" is the plain text a reader sees: an HTML tag or a character reference in it is markup copied by mistake
+const INTRO_MARKUP_RE = /<\/?(?:a|abbr|b|br|code|div|em|i|kbd|li|ol|p|q|s|small|span|strong|sub|sup|u|ul)(?:\s+[a-z][a-z0-9-]*(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'<>=]+))?)*\s*\/?>|&(?:[a-z][a-z0-9]{1,31}|#\d{1,7}|#x[0-9a-f]{1,6});/gi;
+// one word form above this share of the explainer's words is filler (real prose stays under 10%: "the" peaks at about 9.5%)
+const FILLER_MAX_WORD_SHARE = 0.15;
 
 /**
  * An open-element-stack tree of a page, built from tokenizeHtml the way a browser's tree builder would for the parts
@@ -1617,6 +1621,7 @@ function contractTree(src, tokens) {
     }
     return -1;
   };
+  let cutP = null; // the last p a block start ended early, until the next p opens: a stray </p> after it means the block sat inside it
   for (const tok of tokens) {
     const top = stack[stack.length - 1];
     if (tok.t === 'text') {
@@ -1632,6 +1637,9 @@ function contractTree(src, tokens) {
       if (k > 0) {
         stack[k].explicitEnd = true;
         stack.length = k;
+      } else if (tok.name === 'p' && cutP) {
+        cutP.strayEnd = true;
+        cutP = null;
       }
       continue;
     }
@@ -1640,8 +1648,13 @@ function contractTree(src, tokens) {
     if (!top.foreign) {
       if (CLOSES_P.has(name)) {
         const k = findOpen(['p'], P_SCOPE_STOP);
-        if (k > 0) stack.length = k;
+        if (k > 0) {
+          stack[k].closedBy = name; // the block start that ended this p (the intro rule names it)
+          cutP = stack[k];
+          stack.length = k;
+        }
       }
+      if (name === 'p') cutP = null;
       if (name === 'li' || name === 'dd' || name === 'dt') {
         const k = findOpen(name === 'li' ? ['li'] : ['dd', 'dt'], ITEM_STOP);
         if (k > 0) stack.length = k;
@@ -1661,17 +1674,69 @@ function contractTree(src, tokens) {
   return root;
 }
 
+// A data-sed-check exercise counts only when it holds a visible way to answer (DESIGN 7.3; an empty div is not an exercise).
+const ANSWER_ELEMENTS = new Set(['input', 'textarea', 'select', 'button', 'details']);
+/** Does `node` (or anything under it outside [hidden] and <template>) offer a way to answer: input (not hidden), textarea, select, button or details? */
+function hasAnswerControl(node) {
+  const ok = (n) => ANSWER_ELEMENTS.has(n.name) && !(n.name === 'input' && String(n.attrs.get('type') ?? '').trim().toLowerCase() === 'hidden');
+  if (ok(node)) return true;
+  const visit = (n) => n.kids.some((k) => k.text === undefined && k.name !== 'template' && !k.attrs.has('hidden') && (ok(k) || visit(k)));
+  return visit(node);
+}
+
+// Marks the end of a prose block in the explainer text: whitespace to the word count (\s matches it), and never in page source
+// formatting, unlike a newline inside a paragraph.
+const BLOCK_END = '\u2029';
+
+/** Does `node` hold a letter or a digit in its text (outside [hidden] and <template>)? */
+function hasWords(node) {
+  return node.kids.some((k) => (k.text !== undefined ? /[\p{L}\p{N}]/u.test(decodeEntities(k.text)) : k.name !== 'template' && !k.attrs.has('hidden') && hasWords(k)));
+}
+
+/** A word as a form: lowercase, without the punctuation around it ("Elit." and "elit" are one form). */
+const wordForm = (w) => w.toLowerCase().replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, '');
+
+/**
+ * Filler statistics of an explainer's prose (`blocks`: the text of each prose block, in order): the most frequent word form and
+ * its share of the words, and the number of distinct sentences (split at . ! ? before a space or the end of a block, compared
+ * lowercase on their words only). Lorem ipsum, one word over and over, or one sentence pasted a hundred times all show here.
+ */
+export function fillerStats(blocks) {
+  const counts = new Map();
+  let words = 0;
+  const sentences = new Set();
+  for (const block of blocks) {
+    for (const w of String(block).split(/\s+/)) {
+      if (!/[\p{L}\p{N}]/u.test(w)) continue;
+      words++;
+      const f = wordForm(w);
+      counts.set(f, (counts.get(f) ?? 0) + 1);
+    }
+    for (const sentence of String(block).split(/[.!?]+(?=\s|$)/)) {
+      const key = sentence.split(/\s+/).map(wordForm).filter(Boolean).join(' ');
+      if (key) sentences.add(key);
+    }
+  }
+  let top = null;
+  for (const [form, n] of counts) if (!top || n > top.count) top = { form, count: n };
+  return { words, topWord: top ? { ...top, share: top.count / words } : null, distinctSentences: sentences.size };
+}
+
 /**
  * What the contract needs from the entry page: the intro candidates, the explainer sections with their prose words
  * and headings, and the data-sed-check elements. Content under <template>, a [hidden] element, or a closed <details>
  * that is NOT inside the explainer is excluded. A text token counts once when it has an ancestor in {p, li, blockquote,
  * figcaption, dd} and none in {button, label, select, textarea, svg, canvas, script, style, template}; <br> is a space.
+ * `checks` counts the exercises with a way to answer; `checksWithoutAnswer` the data-sed-check elements without one.
+ * `introOthers` lists elements other than p that carry data-sed-intro (the intro must be a p).
  */
 export function analyzeContract(src, tokens = tokenizeHtml(src)) {
   const root = contractTree(src, tokens);
   const intros = [];
+  const introOthers = [];
   const explainers = [];
   let checks = 0;
+  let checksWithoutAnswer = 0;
   const walk = (node, ctx) => {
     for (const kid of node.kids) {
       if (kid.text !== undefined) {
@@ -1699,21 +1764,27 @@ export function analyzeContract(src, tokens = tokenizeHtml(src)) {
         explainers.push(ex);
         c.explainer = ex;
       }
-      if (name === 'p' && a.has('data-sed-intro')) intros.push({ node: kid, inMain: c.inMain, inDetails: c.inDetails, hidden: c.hidden, template: c.template });
-      if (a.has('data-sed-check') && !c.excluded) checks++;
-      if ((name === 'h2' || name === 'h3') && c.explainer && !c.template && !c.hidden) c.explainer.headings++;
+      if (a.has('data-sed-intro')) (name === 'p' ? intros : introOthers).push({ node: kid, name, inMain: c.inMain, inDetails: c.inDetails, hidden: c.hidden, template: c.template });
+      if (a.has('data-sed-check') && !c.excluded) {
+        if (hasAnswerControl(kid)) checks++;
+        else checksWithoutAnswer++;
+      }
+      if ((name === 'h2' || name === 'h3') && c.explainer && !c.template && !c.hidden && hasWords(kid)) c.explainer.headings++; // an empty heading is no heading
+      // every element that is not inline ends a word and a prose block (the sentence count never joins two paragraphs)
       const boundary = c.explainer && !INLINE_ELEMENTS.has(name);
-      if (boundary) c.explainer.words.push(' ');
+      if (boundary) c.explainer.words.push(BLOCK_END);
       walk(kid, c);
-      if (boundary) c.explainer.words.push(' ');
+      if (boundary) c.explainer.words.push(BLOCK_END);
     }
   };
   walk(root, { inMain: false, inDetails: false, hidden: false, template: false, excluded: false, prose: false, nonProse: false, explainer: null });
   for (const ex of explainers) {
-    ex.wordCount = countWords(ex.words.join(''));
+    const text = ex.words.join('');
+    ex.wordCount = countWords(text);
+    ex.filler = fillerStats(text.split(BLOCK_END).filter((b) => /[\p{L}\p{N}]/u.test(b)));
     delete ex.words;
   }
-  return { intros, explainers, checks };
+  return { intros, introOthers, explainers, checks, checksWithoutAnswer };
 }
 
 /** The intro element's text (entities decoded, every whitespace run collapsed) and what is wrong with its markup. */
@@ -1745,7 +1816,9 @@ function checkPageContract({ report, pj, contract, req, entrySrc, entryTokens, e
   const where = 'project.json';
   const fp = plainObj(pj?.fingerprint);
   const purposeList = purposes.join(', ');
-  const since = contract.requiredFrom ? `pages dated from ${contract.requiredFrom} (pageContract.requiredFrom) need` : 'the page contract (--contract) needs';
+  // name the date rule only when it is what applies to this page (a page dated before requiredFrom is checked only because of --contract)
+  const byDate = contractRequired({ contract, date: pj?.date, tier: null });
+  const since = byDate ? `pages dated from ${contract.requiredFrom} (pageContract.requiredFrom) need` : 'the page contract (--contract) needs';
   let purpose = null;
   if (fp.purpose !== undefined) {
     if (typeof fp.purpose === 'string' && purposes.includes(fp.purpose)) purpose = fp.purpose;
@@ -1763,6 +1836,7 @@ function checkPageContract({ report, pj, contract, req, entrySrc, entryTokens, e
 
   if (pj?.intro !== undefined && typeof pj.intro !== 'string') report.error('project-json', 'intro must be a string of plain text', where);
   const introText = typeof pj?.intro === 'string' ? collapseWs(pj.intro) : null;
+  let pageIntroText = null;
   const scan = entrySrc === null ? null : analyzeContract(entrySrc, entryTokens ?? undefined);
   const introEls = scan ? scan.intros : [];
 
@@ -1782,23 +1856,38 @@ function checkPageContract({ report, pj, contract, req, entrySrc, entryTokens, e
     if (ok.length !== 1) {
       const why = [...new Set(introEls.filter((x) => !ok.includes(x)).map((x) => (x.template ? 'inside <template>' : x.hidden ? 'inside a [hidden] element' : x.inDetails ? 'inside <details>' : 'outside <main>')))];
       if (ok.length === 0) {
-        report.error(introEls.length ? 'intro-placement' : 'intro-missing', `no p[data-sed-intro] inside <main> outside <details>, [hidden], <noscript> and <template>${introEls.length ? ` (${introEls.length} elsewhere: ${why.join(', ')})` : ''}; put the intro paragraph right under the tagline as static markup`, entryRel);
+        const others = [...new Set(scan.introOthers.map((x) => `<${x.name} data-sed-intro>`))];
+        const notP = others.length ? `; the page has ${others.join(', ')}: the intro must be a p element, <p class="sed-intro" data-sed-intro>` : '';
+        report.error(introEls.length ? 'intro-placement' : 'intro-missing', `no p[data-sed-intro] inside <main> outside <details>, [hidden], <noscript> and <template>${introEls.length ? ` (${introEls.length} elsewhere: ${why.join(', ')})` : ''}${notP}; put the intro paragraph right under the tagline as static markup`, entryRel);
       } else {
         report.error('intro-placement', `${ok.length} p[data-sed-intro] elements inside <main>; exactly one is allowed`, entryRel);
       }
     } else {
       const el = ok[0].node;
       const content = introContent(el);
-      if (!el.explicitEnd) report.error('intro-unclosed', 'the intro p[data-sed-intro] has no explicit </p>, so the browser ends it wherever the next block starts; close it right after the intro text', entryRel);
+      pageIntroText = content.text;
+      if (!el.explicitEnd) {
+        // a </p> after the block that ended the intro: the block sat inside the intro; no </p> at all: the author forgot it
+        report.error('intro-unclosed', el.closedBy && el.strayEnd
+          ? `the intro p[data-sed-intro] is cut short by the <${el.closedBy}> inside it: a block element (div, p, ul ...) ends a paragraph, so the browser moves the rest of the text out of the intro and its </p> closes nothing; use only text and the inline elements a, abbr, b, code, em, i, kbd, span, strong, sub, sup`
+          : `the intro p[data-sed-intro] has no explicit </p>, so the browser ends it wherever the next block starts${el.closedBy ? ` (here a <${el.closedBy}>)` : ''}; close it right after the intro text, or the intro contains a block element (div, p, ul), which a paragraph cannot hold: use only inline elements`, entryRel);
+      }
       if (content.badElements.length) report.error('intro-markup', `the intro holds ${content.badElements.join(', ')}; only text and the inline elements a, abbr, b, code, em, i, kbd, span, strong, sub, sup are allowed`, entryRel);
       if (content.badEntities.length) report.error('intro-entity', `the intro uses ${content.badEntities.join(', ')}; type the character instead (only &amp; &lt; &gt; &quot; &#39; &nbsp; and numeric references are allowed)`, entryRel);
       if (introText !== null && content.text !== introText) {
         let i = 0;
         while (i < content.text.length && content.text[i] === introText[i]) i++;
         const show = (s) => JSON.stringify(s.slice(Math.max(0, i - 20), i + 30));
-        report.error('intro-mismatch', `the page's intro text differs from project.json "intro" at character ${i + 1}: page ${show(content.text)}, project.json ${show(introText)}`, entryRel);
+        const empty = content.text === '' ? '; the page\'s intro element is empty: if a script fills it, put the text in the HTML (the intro is static markup)' : '';
+        report.error('intro-mismatch', `the page's intro text differs from project.json "intro" at character ${i + 1}: page ${show(content.text)}, project.json ${show(introText)}${empty}`, entryRel);
       }
     }
+  }
+
+  if (introText !== null) {
+    // a tag or a character reference in project.json "intro" is markup copied by mistake, unless the page shows it as text (an HTML lesson)
+    const markup = [...new Set([...introText.matchAll(INTRO_MARKUP_RE)].map((m) => m[0]))].filter((m) => pageIntroText === null || !pageIntroText.includes(m));
+    if (markup.length) report.error('project-json', `intro must be plain text only: it holds ${markup.slice(0, 4).join(', ')}; write the text exactly as a reader sees it on the page, with no tags and no character references (type the character)`, where);
   }
 
   if (!req || !scan) return;
@@ -1814,13 +1903,25 @@ function checkPageContract({ report, pj, contract, req, entrySrc, entryTokens, e
   const minWords = contract.explainer.minWords[purpose];
   const minHeadings = contract.explainer.minHeadings[purpose];
   if (e.wordCount < minWords) {
-    report.error('explainer-words', `the explainer has ${e.wordCount} words of prose; a ${purpose} needs at least ${minWords} (pageContract.explainer.minWords.${purpose}). Only text in p, li, blockquote, figcaption or dd counts, never text in controls, svg, canvas, [hidden], <template> or <noscript>${e.excludedBy ? `; this section sits inside ${e.excludedBy}, so none of it counts` : ''}`, entryRel);
+    const scripted = e.wordCount === 0 && !e.excludedBy ? '; if a script fills it, put the text in the HTML (the explainer is static markup)' : '';
+    report.error('explainer-words', `the explainer has ${e.wordCount} words of prose; a ${purpose} needs at least ${minWords} (pageContract.explainer.minWords.${purpose}). Only text in p, li, blockquote, figcaption or dd counts, never text in controls, svg, canvas, [hidden], <template> or <noscript>${e.excludedBy ? `; this section sits inside ${e.excludedBy}, so none of it counts` : ''}${scripted}`, entryRel);
+  } else {
+    // filler that reaches the word minimum (lorem ipsum, one word or one sentence over and over) is not an explanation
+    const f = e.filler;
+    const needSentences = Math.ceil(Math.max(4, minWords / 40));
+    if (f.topWord && f.topWord.share > FILLER_MAX_WORD_SHARE) {
+      report.error('explainer-filler', `"${f.topWord.form}" makes up ${Math.round(f.topWord.share * 100)}% of the explainer's ${f.words} words (more than ${FILLER_MAX_WORD_SHARE * 100}% is filler); write real sentences that explain the page to a newcomer`, entryRel);
+    }
+    if (f.distinctSentences < needSentences) {
+      report.error('explainer-filler', `the explainer has ${f.distinctSentences} distinct sentence${f.distinctSentences === 1 ? '' : 's'}; a ${purpose} needs at least ${needSentences} (max(4, pageContract.explainer.minWords.${purpose} / 40)): repeated or unpunctuated filler is not an explanation`, entryRel);
+    }
   }
   if (e.headings < minHeadings) {
     report.error('explainer-headings', `the explainer has ${e.headings} h2/h3 heading${e.headings === 1 ? '' : 's'}; a ${purpose} needs at least ${minHeadings} (pageContract.explainer.minHeadings.${purpose}, the section's own h2 included)`, entryRel);
   }
   if (purpose === 'lesson' && scan.checks < contract.lessonMinChecks) {
-    report.error('explainer-checks', `the page has ${scan.checks} element${scan.checks === 1 ? '' : 's'} with data-sed-check; a lesson needs at least ${contract.lessonMinChecks} exercises (pageContract.lessonMinChecks), each static markup`, entryRel);
+    const noAnswer = scan.checksWithoutAnswer ? ` (${scan.checksWithoutAnswer} more ${scan.checksWithoutAnswer === 1 ? 'has' : 'have'} no way to answer: an exercise holds an input, textarea, select, button or details)` : '';
+    report.error('explainer-checks', `the page has ${scan.checks} exercise${scan.checks === 1 ? '' : 's'} with data-sed-check${noAnswer}; a lesson needs at least ${contract.lessonMinChecks} exercises (pageContract.lessonMinChecks), each static markup with a visible way to answer`, entryRel);
   }
 }
 

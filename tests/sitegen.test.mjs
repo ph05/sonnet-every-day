@@ -568,6 +568,8 @@ test('failing projects are omitted with their errors, never fatal, and their dir
     assert.ok(res.warnings.some((w) => w.startsWith('omitted d/2026-10-10-rejected/: csp: no CSP; thumb: too big')));
     assert.ok(res.warnings.includes('d/2026-10-09-good/: size: a bit large'), 'validator warnings are passed through');
     assert.ok(res.warnings.some((w) => w.includes('2026-10-20-orphan')), 'orphan directories are reported');
+    assert.deepEqual(res.unlisted, ['docs/d/2026-10-20-orphan']);
+    assert.equal(res.warnings[0], 'docs/d/2026-10-20-orphan is not in state/history.json, so the site does not list it (to publish it: node scripts/history.mjs add --project docs/d/2026-10-20-orphan)', 'the unlisted directory leads the warnings');
 
     const archive = box.readJson('docs/archive.json');
     assert.deepEqual(archive.days.map((d) => d.slug), ['good']);
@@ -813,6 +815,26 @@ test('build-site CLI prints exactly one JSON document and honours --now / SED_NO
     const again = runCli(BUILD_CLI, [], box, { SED_NOW: '2026-10-09T15:00:00Z' });
     assert.equal(again.json.generatedAt, '2026-10-09T15:00:00.000Z');
     assert.deepEqual(again.json.changed, []);
+  });
+});
+
+test('build-site CLI: a docs/d directory without a history entry is always reported, first, even under many warnings', async () => {
+  await withBox({}, async (box) => {
+    box.addAll([{ date: '2026-10-09', slug: 'cli', tier: 3, thumb: FULL_PNG }]);
+    const clean = runCli(BUILD_CLI, ['--now', '2026-10-09T15:00:00Z'], box);
+    assert.deepEqual(clean.json.unlisted, [], 'every directory listed: nothing to report');
+    assert.ok(!/is not in state\/history\.json/.test(clean.stderr));
+    // a new page built straight into docs/d (no history entry yet) next to 60 history entries for days that are not there
+    box.put('docs/d/2026-10-30-new-page/project.json', '{}');
+    const entries = box.readJson('state/history.json').entries;
+    for (let i = 1; i <= 60; i++) entries.push({ ...entries[0], date: `2027-01-${String((i % 28) + 1).padStart(2, '0')}`, slug: `gone-${i}`, path: `d/gone-${i}/` });
+    box.put('state/history.json', JSON.stringify({ schema: 1, startDate: '2026-10-09', entries }));
+    const r = runCli(BUILD_CLI, ['--now', '2026-10-09T15:00:00Z'], box);
+    assert.equal(r.code, 0, r.stderr.slice(0, 400));
+    assert.deepEqual(r.json.unlisted, ['docs/d/2026-10-30-new-page']);
+    assert.match(r.json.warnings[0], /^docs\/d\/2026-10-30-new-page is not in state\/history\.json, so the site does not list it \(to publish it: node scripts\/history\.mjs add --project docs\/d\/2026-10-30-new-page\)$/);
+    assert.match(r.json.warnings.at(-1), /^\.\.\. and \d+ more warnings$/, 'the output was cut, the unlisted line kept');
+    assert.match(r.stderr.split('\n')[0], /^warning: docs\/d\/2026-10-30-new-page is not in state\/history\.json/);
   });
 });
 

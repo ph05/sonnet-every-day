@@ -19,11 +19,11 @@
 
   var LABELS = {
     sophistication: 'Sophistication', delight: 'Delight', distinctness: 'Distinctness', feasibility: 'Feasibility',
-    timeliness: 'Timeliness', interestFit: 'Interest fit', polishPotential: 'Polish potential', safety: 'Safety',
+    timeliness: 'Timeliness', interestFit: 'Interest fit', polishPotential: 'Polish potential', safety: 'Safety', clarity: 'Clarity',
   };
   var SHORT = {
     sophistication: 'SOPH', delight: 'DLGT', distinctness: 'DIST', feasibility: 'FEAS',
-    timeliness: 'TIME', interestFit: 'FIT', polishPotential: 'POL', safety: 'SAFE',
+    timeliness: 'TIME', interestFit: 'FIT', polishPotential: 'POL', safety: 'SAFE', clarity: 'CLAR',
   };
   var label = function (d) { return LABELS[d] || d; };
   var short = function (d) { return SHORT[d] || d.slice(0, 4).toUpperCase(); };
@@ -80,7 +80,7 @@
   var pick = null;
   ideas.forEach(function (idea) { if (idea.id === data.chosenId) pick = idea; });
   var defaults = isRanked ? { sort: 'total', dir: 'desc' } : { sort: 'order', dir: 'asc' };
-  var max = data.max || dims.length * 10 || 80;
+  var max = data.max || 100; // select's total runs 0 to 100
 
   // ---- charts ----
   function radar(idea, size) {
