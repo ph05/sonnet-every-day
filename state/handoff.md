@@ -1,23 +1,22 @@
-# Handoff from 2026-10-11 (day 2, tier 2, written by primary at 10:35)
+# Handoff from 2026-10-11 (day 2, tier 2; rewritten by the owner's Fable improvement pass at 22:40, after the primary's own handoff)
 
 ## What went well
-- Day 2 is live: Orbital Knitwear (tier 2, 5016 own lines, 34 of 34 in-page physics checks, browser QA clean).
-- Select, spec and build each ran inside their budgets; kaizen applied 4.
+- Day 2 is on the work branch: Orbital Knitwear (tier 2, 5016 own lines, browser QA clean). Kaizen applied 4.
 - The phase watch extended ideate, build and qa correctly instead of killing healthy workflows.
 
-## What went badly
-- Ideate ran about 110 min on 2 agent slots (budget 75), so the day published at 09:11 and revise was skipped; 4 S2 layout defects shipped (phone map out of view, laptop column crops the map, card goal far from list). The critic kaizen added a quality.md minimum.
-- QA flagged a false S1 on a draft spec file; the operator downgraded it by hand. The proofread stage should ignore work/spec files.
-- The verifier did not run (time), so all 10 ideas were unverified.
-- Kaizen ran out of phase time: jester, architect, artisan, engineer and cards are queued.
+## What went badly (and what changed tonight)
+- Ideate ran about 110 min on 2 agent slots and shipped 10 UNVERIFIED ideas (16 single verifiers never fit). Now ideate verifies in batches of 4 critics-per-call below 6 slots and refills with one wave; the planner (A4, `revise plan`) measures the slots itself and uses a narrow timetable (ideate about 80, build about 85, planned finish about 09:05; from qa on it measures against the 09:30 grace window). Expect `TIER=1 PHASE=ideate` to answer `feasible:false, suggestTier:2` at 03:56: issue the scope-cut then (PLAYBOOK 6.3, 8.1).
+- QA filed a false S1 for a placeholder in the draft spec PROJECT.json. The proofread stage now ignores files outside the page.
+- GitHub Pages serves `main`, and nothing moved the work branch there: Day 2 was never on the live site. A new Action (`.github/workflows/sync-main.yml`) fast-forwards `main` after pushes that change docs/, .github/ or config.json. The deadman Action had never run (sparse checkout left scripts/ missing); fixed.
+- The permission classifier denied one `delete_trigger`: PLAYBOOK 7.1a now says to `update_trigger enabled:false` instead, else leave the timer.
+- The environment's stop hook complains about uncommitted work/ files while a Workflow runs: expected (PLAYBOOK 7.4), not a fault.
 
 ## Watch tomorrow
-- Kaizen suspects if tomorrow degrades: 80ebbdb, 493f5f1, 77d6aed, 8fd8a73 (plus yesterday's list).
-- Ideate on 2 slots: consider starting with compact:true or 1 candidate per scout so it finishes near 45 min.
-- Count dossiers with more than 12 sources in work/DATE/ideas (pulse's kaizen asked).
-- The permission classifier denied delete_trigger once; a leftover timer may fire harmlessly.
+- The owner override ended 2026-10-11 19:00 ET: the level is `balanced` (pre-kaizen cap 2.4M). Watch `spend.remainingTokens` before qa.
+- First run of batched verification and of the narrow planner: check `verify-batch` lines in the ideate notification and that `phaseBudgetMinutes` for ideate is about 110.
+- Kaizen suspects if tomorrow degrades: 80ebbdb, 493f5f1, 77d6aed, 8fd8a73. Queue starts with jester, architect, artisan, engineer, cards.
+- Known S2 layout issues on both published pages (phone map out of view; cascade below the fold) still await a revise or an owner fix.
 
 ## Open questions
-- Should the second candidate per scout scale with agent slots (lab's question)?
-- Wheel-over-map assertion for the protected browser-check.mjs (critic's question).
+- Should the second candidate per scout scale with agent slots (lab)? Wheel-over-map assertion for browser-check.mjs (critic)?
 - Proposal waiting for the owner: ops/kaizen/proposals/2026-10-10-architect.md.
