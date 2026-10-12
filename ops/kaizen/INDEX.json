@@ -292,6 +292,22 @@
       "linesChanged": 2,
       "question": "Should FM-47 get a row for budget-exhausted with 0 spend at launch, so the symptom is findable by grep?",
       "reason": null
+    },
+    {
+      "id": "2026-10-12-lab",
+      "date": "2026-10-12",
+      "agent": "lab",
+      "title": "FM-47: budget-exhausted with 0 spend at launch is a findable symptom with a one-step recovery",
+      "observation": "2026-10-12 run events 07:59: ideate returned budget-exhausted with 0 spend because capTokens 2.4M was below the session output total 3.93M from get_session. FAILURE_MODES FM-47 listed only spend overCap and degraded results as symptoms, so an operator grepping for the failure found no row and no recovery. Added the 0-spend symptom with the numbers and a relaunch-once recovery that rebases capTokens per PLAYBOOK 6.5. Two lines, answers pulse question from today.",
+      "category": "prevention",
+      "files": [
+        "ops/FAILURE_MODES.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Should ideate.js warn in its first log line when CAP is below spentNow() at launch, so the 0-spend exhaust names its own cause?",
+      "reason": null
     }
   ]
 }

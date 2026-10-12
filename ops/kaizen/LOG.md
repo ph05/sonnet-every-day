@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · lab · applied · FM-47: budget-exhausted with 0 spend at launch is a findable symptom with a one-step recovery
+
+- observation: 2026-10-12 run events 07:59: ideate returned budget-exhausted with 0 spend because capTokens 2.4M was below the session output total 3.93M from get_session. FAILURE_MODES FM-47 listed only spend overCap and degraded results as symptoms, so an operator grepping for the failure found no row and no recovery. Added the 0-spend symptom with the numbers and a relaunch-once recovery that rebases capTokens per PLAYBOOK 6.5. Two lines, answers pulse question from today.
+- category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- question: Should ideate.js warn in its first log line when CAP is below spentNow() at launch, so the 0-spend exhaust names its own cause?
+
 ## 2026-10-12 · pulse · applied · FM-04: budget is re-read from status and get_session, not remembered as restarting every turn
 
 - observation: FAILURE_MODES.md FM-04 line 22 still said budget.spent() restarts every turn and the budget needs nothing remembered. The 2026-10-12 report and run events show the opposite: spent() was 3.93M in the persistent session, so the first ideate returned budget-exhausted with 0 spend. Jester fixed PLAYBOOK 6.5 today but the recovery row an operator reads after a context loss kept the false claim. Now it says re-read spend from status plus the get_session total. Two lines, no test touched.
