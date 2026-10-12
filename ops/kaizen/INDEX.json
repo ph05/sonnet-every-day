@@ -223,7 +223,7 @@
       "files": [
         "ops/roles/architect.md"
       ],
-      "sha": null,
+      "sha": "52eea619f7966ed6bef4bcecada061408b010de6",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the spec phase get a check that every x,y,w,h in SPEC.md schema blocks sits beside an anchor word?",

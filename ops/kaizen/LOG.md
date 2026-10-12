@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: Engineer notes 2026-10-12: the SPEC data schema left a rectangle anchor open (zone x,y corner or centre); the two builders read it differently and only a screenshot of the joined page showed a 15 ft offset, found late in integrate. architect.md Deliverable standards said no TBD but not what an open geometry field looks like. Added one sentence naming unit, axis direction, anchor and angle zero.
 - category: prevention · lines changed: 2 · files: ops/roles/architect.md
+- commit: 52eea619f7
 - question: Should the spec phase get a check that every x,y,w,h in SPEC.md schema blocks sits beside an anchor word?
 
 ## 2026-10-12 · artisan · applied · artisan.md: builders resize to 1280x650 and 390x844 before handoff (button-over-text S2 shipped)
