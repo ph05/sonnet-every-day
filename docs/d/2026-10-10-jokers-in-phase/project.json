@@ -5,8 +5,17 @@
   "title": "Jokers In Phase",
   "tagline": "Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.",
   "description": "An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.",
+  "intro": "A scoring puzzle in the style of a joker-card game: swap jokers into a better order and the same four poker hands score far more. Made for puzzle fans, with no poker knowledge needed. Start with First Beat: tap one joker, then another, to swap them.",
+  "concepts": [
+    "phase",
+    "coupling",
+    "fireflies",
+    "synchronization",
+    "scoring order"
+  ],
   "tier": 2,
   "fingerprint": {
+    "purpose": "play",
     "category": "modding-games",
     "mechanic": "toy",
     "tone": [
@@ -84,8 +93,8 @@
   "makingOf": "Jokers In Phase is an unofficial fan concept in the style of joker-deck roguelikes such as Balatro. It is not affiliated with or endorsed by that game's developer or publisher, it uses no game art, fonts, logos or audio, and every number and drawing is invented. Two community guides say joker effects resolve left to right, so the page uses that rule as the guides describe it. The Firefly joker is a simplified, integer-only cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies. Phases are whole numbers on a 64-step cycle, deals use a seeded shuffle, and an exhaustive solver checks all 17,576 swap lines, so a shared link replays the same scores in any browser. The research was read from search results only; the pages were not opened.",
   "stats": {
     "files": 14,
-    "bytes": 370689,
-    "ownLoc": 4157
+    "bytes": 383904,
+    "ownLoc": 4258
   },
   "credits": "Built by the Sonnet Every Day team"
 }

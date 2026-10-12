@@ -179,6 +179,72 @@
   }
 </style>
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* Page contract additions: the intro, a Start here card, the explainer and two "More" toggles.
+     The .sed-intro and .sed-explainer rules are copied from the page shell and use this page's own colour tokens;
+     the rest only places the new blocks, so everything that was on the page stays where it was. */
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; scroll-margin-top: 1rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol, .sed-explainer dl { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-main > .sed-explainer { grid-column: 1 / -1; }
+  .sed-glossary { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1rem; }
+  .sed-glossary dt { font-weight: 700; }
+  .sed-glossary dd { margin: 0; }
+  @media (max-width: 559px) {
+    .sed-glossary { grid-template-columns: 1fr; gap: 0; }
+    .sed-glossary dd { margin: 0 0 0.6rem; }
+  }
+
+  /* The intro and the Start here card lead the app grid. With two columns they sit at the top of the right column,
+     so the board in the left column stays exactly where it was; with one column they simply come first. */
+  .grid > .sed-intro { margin: 0; }
+  .sed-start { padding: 12px 14px; border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; background: var(--surface); }
+  .sed-start-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 12px; margin-bottom: 8px; }
+  .sed-start h2 { margin: 0; font-size: 1.0625rem; }
+  .sed-start-links { margin: 0; color: var(--muted); font-size: 0.8125rem; }
+  .sed-start-words { margin: 8px 0 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.45; }
+  .sed-start-words b { color: var(--fg); }
+  .sed-steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
+  .sed-steps li { counter-increment: step; display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: baseline; margin: 0 0 6px; }
+  .sed-steps li:last-child { margin-bottom: 0; }
+  .sed-steps li::before { content: counter(step); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 16%, transparent); font-size: 0.75rem; font-weight: 700; }
+  @media (max-width: 767px) {
+    .sed-intro { font-size: 1rem; line-height: 1.5; }
+    .sed-start { padding: 10px 12px; }
+    .sed-start-head { margin-bottom: 6px; }
+    .sed-start-words { margin-top: 6px; }
+    .sed-steps li { gap: 6px; margin-bottom: 4px; font-size: 0.875rem; line-height: 1.4; }
+  }
+  @media (min-width: 768px) {
+    .grid { grid-template-rows: auto auto 1fr; }
+    .grid > .sed-intro { grid-column: 2; grid-row: 1; }
+    .grid > .sed-start { grid-column: 2; grid-row: 2; }
+    .grid > .pane-l { grid-column: 1; grid-row: 1 / span 3; }
+    .grid > .pane-r { grid-column: 2; grid-row: 3; }
+  }
+
+  /* "More" toggles: a native details element around the secondary buttons. Nothing about the buttons changes. */
+  #challenge-nav, .actions { align-items: start; }
+  .more { min-width: 0; }
+  .more > summary { list-style: none; cursor: pointer; }
+  .more > summary::-webkit-details-marker { display: none; }
+  .more > summary .chev { flex: none; width: 7px; height: 7px; margin-left: 2px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
+  .more[open] > summary .chev { transform: translateY(1px) rotate(-135deg); }
+  .more-body { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .more:not([open]) > .more-body { display: none; }
+  .more-levels > summary { width: max-content; max-width: 100%; }
+  .more-actions { grid-column: span 2; }
+  .more-actions > summary { display: flex; }
+  .more-actions .more-body { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  /* the active challenge may sit inside the closed toggle: say so on the toggle */
+  .more-levels:has([aria-current="true"]) > summary { border-color: var(--accent); background: var(--accent); color: var(--accent-fg); }
+  .more-levels:has(#btn-c2[aria-current="true"]) .more-label::after { content: ": Soft Pull"; }
+  .more-levels:has(#btn-c3[aria-current="true"]) .more-label::after { content: ": Shake On It"; }
+  .more-levels:has(#btn-sandbox[aria-current="true"]) .more-label::after { content: ": Sandbox"; }
+</style>
 <script>
 (function () {
   window.__sedThumbReady = new Promise(function (resolve) { window.__sedThumbResolve = resolve; });
@@ -223,12 +289,30 @@
     </div>
 
     <div class="grid">
+      <p class="sed-intro" data-sed-intro>A scoring puzzle in the style of a joker-card game: swap jokers into a better order and the same four poker hands score far more. Made for puzzle fans, with no poker knowledge needed. Start with First Beat: tap one joker, then another, to swap them.</p>
+      <section class="sed-start" id="start-here" aria-labelledby="start-title">
+        <div class="sed-start-head">
+          <h2 id="start-title">Start here</h2>
+          <p class="sed-start-links">New words? <a href="#glossary">Glossary</a> &middot; <a href="#explainer">How it works</a></p>
+        </div>
+        <ol class="sed-steps" role="list">
+          <li>Tap a joker, then tap another to swap them.</li>
+          <li>Watch &ldquo;If played&rdquo; on the Play button change.</li>
+          <li>Press Play. Reach Par (the target) by hand 4.</li>
+        </ol>
+        <p class="sed-start-words"><b>Fireflies</b> are jokers that blink on a beat. Their <b>phase</b> is where they are in it, and <b>coupling</b> is how hard they pull each other into step.</p>
+      </section>
       <div class="pane pane-l">
         <nav id="challenge-nav" class="seg" aria-label="Challenges">
           <button id="btn-c1" class="seg-btn" type="button" data-challenge="1" aria-keyshortcuts="1"><span class="seg-n" aria-hidden="true">1</span>First Beat</button>
+          <details class="more more-levels">
+            <summary class="seg-btn"><span class="more-label">More challenges</span><span class="chev" aria-hidden="true"></span></summary>
+            <div class="more-body">
           <button id="btn-c2" class="seg-btn" type="button" data-challenge="2" aria-keyshortcuts="2"><span class="seg-n" aria-hidden="true">2</span>Soft Pull</button>
           <button id="btn-c3" class="seg-btn" type="button" data-challenge="3" aria-keyshortcuts="3"><span class="seg-n" aria-hidden="true">3</span>Shake On It</button>
           <button id="btn-sandbox" class="seg-btn" type="button" data-challenge="0" aria-keyshortcuts="S"><span class="seg-n" aria-hidden="true">S</span>Sandbox</button>
+            </div>
+          </details>
         </nav>
         <p id="challenge-desc" class="challenge-desc"></p>
         <p id="coach" class="coach">Dealing the cards</p>
@@ -264,8 +348,13 @@
           <button id="btn-play" class="sed-btn play" type="button" aria-keyshortcuts="P" disabled>Play hand</button>
           <button id="btn-undo" class="sed-btn is-quiet" type="button" aria-keyshortcuts="U" disabled>Undo swap</button>
           <button id="btn-retry" class="sed-btn is-quiet" type="button" aria-keyshortcuts="R">Retry round</button>
+          <details class="more more-actions">
+            <summary class="sed-btn is-quiet"><span class="more-label">More: hint, sound</span><span class="chev" aria-hidden="true"></span></summary>
+            <div class="more-body">
           <button id="btn-hint" class="sed-btn is-quiet" type="button" aria-keyshortcuts="H">Hint</button>
           <button id="btn-sound" class="sed-btn is-quiet" type="button" aria-keyshortcuts="M" aria-pressed="false">Sound off</button>
+            </div>
+          </details>
         </div>
         <p id="hint-text" class="hint-text"></p>
         <p id="notice" class="notice" role="status"></p>
@@ -364,6 +453,35 @@
 
     <div id="live" class="sed-visually-hidden" aria-live="polite"></div>
   </div>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How Jokers In Phase works</h2>
+
+    <h3>The puzzle</h3>
+    <p>Each round deals four poker hands. A hand scores <em>points &times; mult</em> (a multiplier). Its poker rank sets the starting numbers (a pair is 6 points &times; 2 mult), then the jokers on your rail (the five scoring slots) act from left to right, each adding to or multiplying them. Hand 1 plays itself. Before each later hand you may make one swap, then press Play. Reach Par, the target total, after hand 4.</p>
+
+    <h3>Why order matters</h3>
+    <p>With the jokers Steady (+4 mult) then Twofold (&times;2 mult), a pair scores 6 &times; 12 = 72. With Twofold first it scores 6 &times; 8 = 48: doubling 6 gains more than doubling 2.</p>
+
+    <h3>Fireflies, phase and coupling</h3>
+    <p>A <strong>phase</strong> is a position on a ring of 64 steps, like a clock face with 0 at the top; the Phase scope shows it. The three <strong>Fireflies</strong> (Lantern, Ember and Spark) each have their own beat, moving 7, 10 or 13 steps per hand, and flash when they pass the top. On the rail, a flash adds mult, and more when several Fireflies flash together. Handshake multiplies mult by 3 when the jokers on both sides are in matching phase.</p>
+    <p><strong>Coupling</strong> lets rail Fireflies pull on each other's beat, nearest first, so they can fall into step. Off, Soft, Medium or Firm sets how hard they pull, and the flash bonus (+6, +5, +4 or +3 mult per Firefly). <strong>Sync</strong> shows how closely they agree, in percent. A sync of 92% or more is a lock: two Fireflies in step earn a Silver lock and all three a Gold lock, but only with coupling on. The Firefly rule is a simplified cousin of Kuramoto-style phase coupling, chosen for play and not a model of real fireflies (sources: About &amp; making of).</p>
+
+    <h3>Par, cards and sharing</h3>
+    <p>Sandbox is free play: you pick any deal number and coupling, and Par is 70% of the best possible score. In the challenges, reaching Par earns a shareable Concept card, and locks earn Silver or Gold ones; Sandbox earns none. Your swaps are kept in the page address, so a shared link replays the round.</p>
+
+    <h3 id="glossary">Glossary</h3>
+    <dl class="sed-glossary">
+      <dt>Rail</dt><dd>The five scoring slots.</dd>
+      <dt>Bench</dt><dd>Three spare slots; benched jokers do not score.</dd>
+      <dt>Par</dt><dd>The target total.</dd>
+      <dt>Firefly</dt><dd>A joker with its own beat that flashes.</dd>
+      <dt>Phase</dt><dd>A position on the 64-step ring.</dd>
+      <dt>Coupling</dt><dd>How hard rail Fireflies pull on each other's beat.</dd>
+      <dt>Sync</dt><dd>How closely rail Fireflies agree, in percent.</dd>
+      <dt>Lock</dt><dd>Sync of 92% or more.</dd>
+    </dl>
+  </section>
 </main>
 
 <footer class="sed-footer">
