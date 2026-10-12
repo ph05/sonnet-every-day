@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-12 report: revise left one S2 (buttons overlap text on windows 1280 px wide and under about 720 px tall) and an S3 (share text box cuts its own text on phones), both shipped. Architect put the 1280x650 check in quality.md line 13 for QA, but the builder standards in artisan.md only named 320px scroll, so the person who writes the layout was never told to look. Added one sentence to Deliverable standards: resize to 1280x650 and 390x844, no control over text, primary button and output together on screen, no text box cutting its text.
 - category: prevention · lines changed: 2 · files: ops/roles/artisan.md
+- commit: ea0d2117e8
 - question: Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?
 
 ## 2026-10-12 · architect · applied · quality.md: add a short 1280x650 window to the hard minimums (button-over-text S2 shipped)

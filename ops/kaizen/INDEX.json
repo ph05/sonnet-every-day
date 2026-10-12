@@ -207,7 +207,7 @@
       "files": [
         "ops/roles/artisan.md"
       ],
-      "sha": null,
+      "sha": "ea0d2117e823daf662d75b93ba9d3c4854688f81",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?",
