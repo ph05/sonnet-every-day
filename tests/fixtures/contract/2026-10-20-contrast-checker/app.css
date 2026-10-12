@@ -1,0 +1,98 @@
+/* Contrast Ratio Checker: the app's own styles (the shell's tokens do the theming). */
+.cc {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(16px, 3vw, 32px);
+  max-width: 960px;
+  padding: clamp(14px, 3vw, 24px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.cc-pickers {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-content: start;
+}
+.cc-field label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+.cc-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.cc-row input[type="text"] {
+  flex: 1 1 auto;
+  width: 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 1rem/1.4 var(--font-mono);
+}
+.cc-row input[type="text"][aria-invalid="true"] { border-color: #c4302b; }
+.cc-row input[type="color"] {
+  flex: none;
+  width: 52px;
+  height: 44px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  cursor: pointer;
+}
+.cc-error {
+  min-height: 1.2em;
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.cc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.cc-ratio {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2.2rem, 1.6rem + 3vw, 3.4rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.cc-ratio small { color: var(--muted); font-size: 0.45em; font-weight: 600; }
+.cc-verdicts {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+.cc-verdicts li { margin: 0.2rem 0; }
+.cc-verdicts .is-pass strong { color: #1d7a3a; }
+.cc-verdicts .is-fail strong { color: #b3261e; }
+@media (prefers-color-scheme: dark) {
+  .cc-verdicts .is-pass strong { color: #6fdc8c; }
+  .cc-verdicts .is-fail strong { color: #ffb4ab; }
+}
+.cc-sample {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 1.1rem;
+}
+.cc-copied {
+  min-height: 1.2em;
+  margin: 0.5rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+@media (max-width: 720px) {
+  .cc { grid-template-columns: minmax(0, 1fr); }
+}

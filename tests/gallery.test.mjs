@@ -10,6 +10,7 @@ import { execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { renderIndex, render404, renderKaizen, readSource, SITE_SRC } from '../site-src/dev/render.mjs';
+import { buildArchive } from '../scripts/lib/archive.mjs';
 import { loadFactor } from './helpers/cpu.mjs';
 
 const SAMPLE = JSON.parse(fs.readFileSync(path.join(SITE_SRC, 'dev', 'archive.sample.json'), 'utf8'));
@@ -146,10 +147,21 @@ const overflow = (page) => page.evaluate(() => document.documentElement.scrollWi
 
 /* ---------- tests ---------- */
 
+const TAXONOMY = JSON.parse(fs.readFileSync(path.join(SITE_SRC, '..', 'ops', 'taxonomy.json'), 'utf8'));
+const PURPOSE_KEYS = Object.keys(TAXONOMY.purposes);
+const SAMPLE_CATEGORIES = new Set(SAMPLE.days.map((d) => d.category));
+
 test('sample data covers what the brief demands', () => {
   const days = SAMPLE.days;
   assert.ok(days.length >= 14);
-  assert.equal(new Set(days.map((d) => d.category)).size, 19, 'all taxonomy categories');
+  assert.ok([...SAMPLE_CATEGORIES].every((c) => Object.hasOwn(TAXONOMY.categories, c)), 'every sample category is a taxonomy category');
+  assert.ok(SAMPLE_CATEGORIES.size >= 19, `${SAMPLE_CATEGORIES.size} categories`);
+  assert.ok(['personal-finance', 'math-concepts', 'stats-literacy'].every((c) => SAMPLE_CATEGORIES.has(c)), 'some of the eleven broader categories');
+  assert.deepEqual(PURPOSE_KEYS.filter((p) => days.some((d) => d.purpose === p)), PURPOSE_KEYS, 'every purpose appears');
+  assert.ok(days.some((d) => d.tier <= 2 && d.purpose === ''), 'a page from before the contract has no purpose');
+  assert.ok(days.filter((d) => d.tier >= 3).every((d) => d.purpose === '' && d.intro === ''), 'stand-ins have no purpose');
+  assert.ok(days[0].intro && days[0].purpose, 'the lead day has an intro and a purpose');
+  assert.deepEqual(Object.keys(SAMPLE.stats.purposes), PURPOSE_KEYS, 'stats.purposes in canonical order');
   assert.ok(days.some((d) => d.tier === 3) && days.some((d) => d.tier === 4) && days.some((d) => d.tier === 2));
   assert.ok(SAMPLE.stats.missingDates.length >= 1);
   assert.ok(days.every((d) => d.thumb.startsWith('data:image/svg+xml,') && d.palette.length === 3));
@@ -213,7 +225,7 @@ test('hero, stats and the run reflect the archive', async (t) => {
   assert.equal(await page.locator('.day-numeral').textContent(), String(latest.n));
   assert.equal(await page.locator('#lead-open').getAttribute('href'), latest.path);
   const stats = await page.locator('.stat-value').allTextContents();
-  assert.deepEqual(stats.slice(0, 3), [String(SAMPLE.days.length), String(SAMPLE.stats.streak), '19']);
+  assert.deepEqual(stats.slice(0, 3), [String(SAMPLE.days.length), String(SAMPLE.stats.streak), String(SAMPLE_CATEGORIES.size)]);
   const cells = await page.locator('.run-cell').count();
   const missing = await page.locator('.run-cell.is-missing').count();
   assert.equal(missing, 2, 'the two gaps are drawn');
@@ -298,6 +310,127 @@ test('search, filters, sort and the URL hash', async (t) => {
   assert.deepEqual(titles, [...titles].sort());
   await page.selectOption('#sort', 'category');
   assert.match(await page.evaluate(() => location.hash), /sort=category/);
+});
+
+test('the Type filter: chips in canonical order, before Category, outside More filters, in the hash, cleared by Clear all', async (t) => {
+  if (!gate(t)) return;
+  const { page, problems } = await open(t);
+  const group = page.locator('#filter-type');
+  assert.equal(await group.isVisible(), true);
+  assert.equal(await page.evaluate(() => {
+    const type = document.querySelector('#filter-type');
+    const cat = document.querySelector('#filter-cat');
+    return Boolean(type.compareDocumentPosition(cat) & Node.DOCUMENT_POSITION_FOLLOWING) && !document.querySelector('#more-filters').contains(type);
+  }), true, 'Type comes before Category and is always visible');
+  const chips = await page.$$eval('#chips-type .chip', (els) => els.map((e) => [e.dataset.value, e.querySelector('span').textContent, Number(e.querySelector('.chip-count').textContent)]));
+  assert.deepEqual(chips, [['tool', 'Tools', 2], ['lesson', 'Lessons', 2], ['explorer', 'Explorers', 2], ['studio', 'Studios', 3], ['play', 'Play', 9]]);
+  await page.click('.chip[data-key="type"][data-value="lesson"]');
+  await page.click('.chip[data-key="type"][data-value="tool"]');
+  await page.waitForFunction(() => location.hash.includes('type=tool,lesson'));
+  const both = await cardDates(page);
+  assert.deepEqual(both.sort(), SAMPLE.days.filter((d) => d.purpose === 'tool' || d.purpose === 'lesson').map((d) => d.date).sort());
+  assert.equal(await page.textContent('#more-filters-label'), 'More filters', 'the type filter is not counted under More filters');
+  assert.equal(await page.locator('.chip[data-value="tool"]').getAttribute('aria-pressed'), 'true');
+  // AND with category, deep link in a fresh page, then Clear all
+  await page.click('.chip[data-key="cat"][data-value="personal-finance"]');
+  assert.deepEqual(await cardDates(page), ['2026-10-22']);
+  const hash = await page.evaluate(() => location.hash);
+  const second = await open(t, { url: '/' + hash });
+  assert.deepEqual(await cardDates(second.page), ['2026-10-22']);
+  await page.click('#clear-filters');
+  assert.equal((await cardDates(page)).length, SAMPLE.days.length);
+  assert.equal(await page.evaluate(() => location.hash), '');
+  // keyboard: a chip is a real button
+  await page.focus('.chip[data-key="type"][data-value="studio"]');
+  await page.keyboard.press('Enter');
+  assert.equal(await page.locator('.chip[data-value="studio"]').getAttribute('aria-pressed'), 'true');
+  assert.equal((await cardDates(page)).length, 3);
+  // unknown types in a hand-made hash are ignored
+  const odd = await open(t, { url: '/#type=nope,explorer,play2' });
+  assert.deepEqual((await cardDates(odd.page)).sort(), SAMPLE.days.filter((d) => d.purpose === 'explorer').map((d) => d.date).sort());
+  assert.equal(await odd.page.evaluate(() => location.hash), '#type=explorer');
+  assert.deepEqual(problems.errors, []);
+});
+
+test('every card shows its purpose pill before the category label; the lead shows the intro instead of the description', async (t) => {
+  if (!gate(t)) return;
+  const { page } = await open(t);
+  for (const d of SAMPLE.days) {
+    const meta = page.locator(`.card[data-date="${d.date}"] .meta`);
+    const pill = meta.locator('.purpose-pill');
+    if (!d.purpose) {
+      assert.equal(await pill.count(), 0, `${d.date} has no purpose, so no pill`);
+      continue;
+    }
+    assert.equal(await pill.textContent(), { tool: 'Tool', lesson: 'Lesson', explorer: 'Explorer', studio: 'Studio', play: 'Play' }[d.purpose]);
+    // the pill sits between the date and the category label
+    const around = await meta.evaluate((el) => {
+      const pillEl = el.querySelector('.purpose-pill');
+      const text = (from, dir) => {
+        let out = '';
+        for (let n = from[dir]; n; n = n[dir]) out = dir === 'nextSibling' ? out + n.textContent : n.textContent + out;
+        return out.trim();
+      };
+      return { before: text(pillEl, 'previousSibling'), after: text(pillEl, 'nextSibling') };
+    });
+    assert.match(around.before, /·$/, `${d.date}: ${JSON.stringify(around)}`);
+    assert.ok(around.after.length > 0, `${d.date}: the category label follows the pill`);
+    if (d.category === 'personal-finance') assert.equal(around.after, 'Personal finance');
+    if (d.category === 'stats-literacy') assert.equal(around.after, 'Stats literacy');
+  }
+  const lead = SAMPLE.days[0];
+  assert.equal(await page.locator('.lead-intro').textContent(), lead.intro);
+  assert.equal(await page.locator('.lead-tagline').textContent(), lead.tagline, 'the tagline stays');
+  assert.equal(await page.locator('#lead').evaluate((el, desc) => el.textContent.includes(desc), lead.description), false, 'the intro takes the description\'s place');
+  assert.equal(await page.locator('.lead-chips .pill-purpose').textContent(), 'Explorer');
+  // a lead without an intro keeps its description
+  const older = structuredClone(SAMPLE);
+  older.days = older.days.map((d) => ({ ...d, intro: '', purpose: '' }));
+  resetRoutes(older);
+  t.after(() => resetRoutes());
+  const plain = await open(t);
+  assert.equal(await plain.page.locator('.lead-desc').textContent(), lead.description);
+  assert.equal(await plain.page.locator('.purpose-pill, .pill-purpose').count(), 0);
+  assert.equal(await plain.page.locator('#filter-type').isVisible(), false, 'no purposes, no Type group');
+});
+
+test('the search finds words that only appear in an intro or a concept', async (t) => {
+  if (!gate(t)) return;
+  const { page } = await open(t);
+  const only = (date) => page.waitForFunction((want) => {
+    const cards = document.querySelectorAll('#grid .card');
+    return cards.length === 1 && cards[0].dataset.date === want;
+  }, date);
+  await page.fill('#q', 'napkin'); // only in the intro of Receipt Roulette
+  await only('2026-10-22');
+  await page.fill('#q', 'expected value'); // only in the concepts of Ruin Odds
+  await only('2026-10-27');
+  assert.deepEqual(await cardDates(page), ['2026-10-27']);
+});
+
+test('the conforming contract fixtures (tool, lesson, sample play page) render with their pill, the Type filter and the intro', async (t) => {
+  if (!gate(t)) return;
+  const fixtures = path.join(SITE_SRC, '..', 'tests', 'fixtures');
+  const dirs = [path.join(fixtures, 'gate-benign', '2026-10-09-sample-toy'), path.join(fixtures, 'contract', '2026-10-20-contrast-checker'), path.join(fixtures, 'contract', '2026-10-21-parity-bit-lesson')];
+  const projects = dirs.map((dir) => {
+    const project = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+    return { project, entry: { date: project.date, slug: project.slug, title: project.title, tagline: project.tagline, tier: project.tier } };
+  });
+  const archive = buildArchive({ projects, config: { name: 'Sonnet Every Day', startDate: '2026-10-09' }, siteUrl: 'https://example.invalid/', now: new Date('2026-10-21T12:00:00Z'), through: '2026-10-21' });
+  const thumbs = Object.fromEntries(dirs.map((dir, i) => [`/${archive.days.find((d) => d.slug === projects[i].project.slug).thumb}`, { type: 'image/png', body: fs.readFileSync(path.join(dir, 'thumb.png')) }]));
+  resetRoutes(archive, thumbs);
+  t.after(() => resetRoutes());
+  const { page, problems } = await open(t);
+  const pills = await page.$$eval('#grid .card', (els) => els.map((e) => [e.dataset.date, e.querySelector('.purpose-pill')?.textContent ?? '']));
+  assert.deepEqual(pills, [['2026-10-21', 'Lesson'], ['2026-10-20', 'Tool'], ['2026-10-09', 'Play']]);
+  assert.deepEqual(await page.$$eval('#chips-type .chip', (els) => els.map((e) => e.dataset.value)), ['tool', 'lesson', 'play']);
+  assert.equal(await page.locator('.lead-intro').textContent(), projects[2].project.intro, 'the newest page leads with its intro');
+  await page.click('.chip[data-key="type"][data-value="tool"]');
+  assert.deepEqual(await cardDates(page), ['2026-10-20']);
+  await page.waitForFunction(() => [...document.querySelectorAll('#grid .card img')].every((i) => i.complete && i.naturalWidth > 0));
+  await shot(page, 'contract-fixtures-desktop');
+  assert.deepEqual(problems.errors, []);
+  assert.deepEqual(problems.external, []);
 });
 
 test('unknown hash values are ignored and a hash change re-filters', async (t) => {
@@ -522,7 +655,7 @@ test('robust to missing optional fields, junk entries and hostile strings', asyn
     schema: 1,
     days: [
       { date: '2026-11-03' },
-      { date: '2026-11-02', title: '<img src=x onerror="window.__pwned=1">', path: 'javascript:window.__pwned=2', thumb: 'javascript:alert(1)', palette: ['red; background:url(//evil.example/x)', 'not a color'], tags: [null, 5, 'ok-tag'], tier: 'three', category: 'brand-new-category' },
+      { date: '2026-11-02', title: '<img src=x onerror="window.__pwned=1">', path: 'javascript:window.__pwned=2', thumb: 'javascript:alert(1)', palette: ['red; background:url(//evil.example/x)', 'not a color'], tags: [null, 5, 'ok-tag'], tier: 'three', category: 'brand-new-category', purpose: '<b>tool</b>', intro: '<img src=x onerror="window.__pwned=3">', concepts: 'not a list' },
       { date: '2026-11-02', title: 'duplicate date is dropped' },
       { title: 'no date is dropped' },
       null,
@@ -540,6 +673,8 @@ test('robust to missing optional fields, junk entries and hostile strings', asyn
   assert.equal(await page.locator('.card[data-date="2026-10-31"] .card-link').getAttribute('href'), 'd/2026-10-31-only-a-slug/');
   assert.equal(await page.locator('.card[data-date="2026-11-02"] .card-link').evaluate((e) => e.tagName), 'SPAN', 'no safe link, no anchor');
   assert.match(await page.textContent('.card[data-date="2026-11-02"] .meta'), /Brand new category/);
+  assert.equal(await page.locator('.purpose-pill').count(), 0, 'an unknown purpose gets no pill');
+  assert.equal(await page.locator('#filter-type').isVisible(), false);
   assert.equal(await page.locator('.run-cell.is-missing').count(), 1, 'Nov 1 is a gap');
   assert.ok((await overflow(page)) <= 0);
   assert.deepEqual(problems.errors, []);

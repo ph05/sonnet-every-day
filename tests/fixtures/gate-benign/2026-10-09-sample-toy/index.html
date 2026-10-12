@@ -13,6 +13,7 @@
 <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
 <main id="app">
   <h1>Sample Toy</h1>
+  <p class="sed-intro" data-sed-intro>A toy that draws an elementary cellular automaton: a row of cells where each new row follows from the one above by a fixed rule. It is for anyone curious how simple rules make complex patterns. Press Step to grow one row, or Play to watch it run; change the rule number to see another pattern.</p>
   <canvas id="stage" width="480" height="480" aria-label="Cellular automaton grid"></canvas>
   <div class="controls">
     <label>Rule <input id="rule" type="number" min="0" max="255" value="110"></label>
@@ -20,9 +21,11 @@
     <button id="play" type="button" aria-pressed="false">Play</button>
     <button id="reset" type="button">Reset</button>
   </div>
-  <section id="about" aria-labelledby="about-h">
-    <h2 id="about-h">About</h2>
-    <p>Elementary cellular automata, drawn one generation per row. See <a href="https://en.wikipedia.org/wiki/Cellular_automaton" rel="noopener">the background reading</a>.</p>
+  <section id="about" class="sed-explainer" data-sed-explainer aria-labelledby="about-h">
+    <h2 id="about-h">How it works</h2>
+    <p>An elementary cellular automaton is a single row of cells, each either on or off. Every step draws a new row underneath the last one. A cell in the new row looks at three cells in the row above it: the one straight above and its two neighbours. Those three cells can be on or off in eight different ways, and the rule says, for each of the eight, whether the new cell is on.</p>
+    <p>Eight yes-or-no answers make an eight-bit number, so every rule has a number from 0 to 255. Rule 110, the one this toy starts with, grows a busy, irregular pattern from a single cell. Rule 90 draws a neat triangle made of smaller triangles. Type another number into the Rule box, then press Step or Play to compare them, and Reset to start again from one cell.</p>
+    <p>Each row on the canvas is one moment in time, so the whole picture is the history of the row at once. Elementary cellular automata, drawn one generation per row. See <a href="https://en.wikipedia.org/wiki/Cellular_automaton" rel="noopener">the background reading</a>.</p>
   </section>
   <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><use href="#glyph"></use></svg>
   <svg style="display:none"><symbol id="glyph" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></symbol></svg>

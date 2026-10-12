@@ -572,7 +572,7 @@ browserSuite('browser-check: defects are flagged', { concurrency: 2 }, () => {
     fs.copyFileSync(SHELL, path.join(dir, 'index.html'));
     const r = await runCheck([dir, '--no-monkey']);
     assert.equal(r.code, 1);
-    assert.match(r.json.errors.join('\n'), /shell-placeholder: 3 element\(s\)/);
+    assert.match(r.json.errors.join('\n'), /shell-placeholder: 5 element\(s\)/);
     assert.equal(errorCodes(r).filter((c) => c !== 'shell-placeholder').length, 0, JSON.stringify(r.json.errors));
   });
 });
@@ -785,6 +785,9 @@ browserSuite('browser-check: thumbnails', { concurrency: 2 }, () => {
  * The page shell and the project.json template
  * ---------------------------------------------------------------------------------------------- */
 
+// 256 words of plain prose: enough for the explainer of a play page (pageContract.explainer.minWords.play is 150) or a tool (250).
+const SHELL_EXPLAINER = Array.from({ length: 16 }, (_, i) => `Sentence ${i + 1} explains one more part of the example in plain words for a curious reader.`).join(' ');
+
 browserSuite('page shell and project template', () => {
   const buildProject = ({ fill }) => {
     const dir = path.join(scratch('shell'), '2026-10-09-example-project');
@@ -793,6 +796,8 @@ browserSuite('page shell and project template', () => {
     if (fill) {
       html = html
         .replace(/\n\s*<div class="sed-placeholder" data-sed-placeholder>.*?<\/div>\n/, '\n  <p class="sed-prose">Hello from the shell.</p>\n')
+        .replace(/<span data-sed-placeholder>[^<]*<\/span>/, JSON.parse(fs.readFileSync(EXAMPLE, 'utf8')).intro)
+        .replace('<p data-sed-placeholder>The explanation goes here.</p>', `<p>${SHELL_EXPLAINER}</p>`)
         .replace('<p class="sed-making-of" data-sed-placeholder>', '<p class="sed-making-of">')
         .replace('<li data-sed-placeholder>', '<li>');
     }
@@ -863,7 +868,169 @@ browserSuite('page shell and project template', () => {
     fs.writeFileSync(path.join(dir, 'thumb.png'), png.encodeRgbPng(Buffer.alloc(1200 * 630 * 4, 90), 1200, 630));
     const { validateProject } = await import(pathToFileURL(path.join(ROOT, 'scripts', 'validate.mjs')).href);
     const res = await validateProject(dir, { tier: 4 });
-    assert.deepEqual(res.errors.filter((e) => /project-json|fingerprint/.test(e)), []);
+    assert.deepEqual(res.errors.filter((e) => /project-json|fingerprint|purpose|intro/.test(e)), []);
+    // the example's intro, purpose and concepts are valid shapes, and on a builder tier its intro is caught as a template leftover
+    for (const key of ['intro', 'concepts']) assert.ok(doc.includes(`\`${key}\``), `README documents ${key}`);
+    assert.ok(doc.includes('`purpose`'), 'README documents fingerprint.purpose');
+    fs.writeFileSync(path.join(dir, 'project.json'), JSON.stringify({ ...example, tier: 2 }));
+    const builder = await validateProject(dir, { tier: 2 });
+    assert.ok(builder.errors.some((e) => /^placeholder-text: intro is still the text from project\.json\.example/.test(e)), JSON.stringify(builder.errors));
+  });
+});
+
+/* ------------------------------------------------------------------------------------------------
+ * The page contract in a real browser (DESIGN 7.4): --meta, --purpose, --contract, the self-test, intro, explainer, controls
+ * ---------------------------------------------------------------------------------------------- */
+
+const CONTRACT = path.join(FIXTURES, 'contract');
+const TOOL = path.join(CONTRACT, '2026-10-20-contrast-checker');
+const LESSON = path.join(CONTRACT, '2026-10-21-parity-bit-lesson');
+
+/** A scratch copy of a contract fixture with edits to index.html, app.js and project.json (or without project.json). */
+function contractVariant(fixture, { html, app, pj, noProjectJson = false } = {}) {
+  const dir = path.join(scratch('contract'), path.basename(fixture));
+  fs.cpSync(fixture, dir, { recursive: true });
+  const edit = (rel, fn) => {
+    if (!fn) return;
+    const file = path.join(dir, rel);
+    const before = fs.readFileSync(file, 'utf8');
+    const after = fn(before);
+    assert.notEqual(after, before, `the variant must change ${rel}`);
+    fs.writeFileSync(file, after);
+  };
+  edit('index.html', html);
+  edit('app.js', app);
+  if (pj) {
+    const p = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+    pj(p);
+    fs.writeFileSync(path.join(dir, 'project.json'), JSON.stringify(p, null, 2));
+  }
+  if (noProjectJson) fs.rmSync(path.join(dir, 'project.json'));
+  return dir;
+}
+
+const QUICK = ['--no-monkey', '--no-keyboard', '--seconds', '0'];
+const buttons = (n) => Array.from({ length: n }, (_, i) => `<button type="button" class="sed-btn">Extra ${i + 1}</button>`).join('');
+const atTop = (extra) => (s) => s.replace('<h1 class="sed-title">', `<div class="extra">${extra}</div>\n  <h1 class="sed-title">`);
+
+browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
+  test('the conforming tool and lesson pass with --contract: intro in the first screen, explainer rendered, self-test run, controls counted', async () => {
+    for (const [dir, total, controls] of [[TOOL, 12, 6], [LESSON, 6, 7]]) {
+      const r = await runCheck([dir, '--contract', ...QUICK]);
+      assert.equal(r.code, 0, JSON.stringify(r.json.errors));
+      assert.deepEqual(r.json.errors, []);
+      assert.deepEqual(r.json.warnings, []);
+      const m = r.json.metrics;
+      assert.equal(m.firstScreenControls, controls, path.basename(dir));
+      assert.deepEqual({ total: m.selfTest.total, passed: m.selfTest.passed, ok: m.selfTest.ok }, { total, passed: total, ok: true });
+      assert.equal(m.contract.gate, true);
+      assert.ok(m.passes['desktop-light'].contract.introBottomPx <= 420 && m.passes['mobile-light'].contract.introBottomPx <= 560, JSON.stringify(m.passes['desktop-light'].contract));
+    }
+  });
+
+  test('broken pages fail with the named rule: intro hidden, explainer missing, too many controls, a failing and too short self-test', async () => {
+    const dir = contractVariant(TOOL, {
+      html: (s) => atTop(buttons(10))(s.replace('data-sed-intro>', 'data-sed-intro style="display:none">').replace(' data-sed-explainer', '')),
+      app: (s) => s.replace("const VECTORS = [", "const VECTORS = [\n    { name: 'a deliberately wrong vector', fg: '#000000', bg: '#ffffff', ratio: 20 },").replace('const cases = VECTORS.map(runCase);', 'const cases = VECTORS.slice(0, 5).map(runCase);'),
+    });
+    const r = await runCheck([dir, '--contract', ...QUICK]);
+    assert.equal(r.code, 1);
+    const codes = errorCodes(r);
+    for (const c of ['intro-hidden', 'explainer-missing', 'controls-excess', 'selftest-failed', 'selftest-few']) assert.ok(codes.includes(c), `${c} in ${JSON.stringify(r.json.errors)}`);
+    const text = r.json.errors.join('\n');
+    assert.match(text, /controls-excess: 16 interactive controls are visible in the first 1280x800 screen; the budget is 8 \(a warning above 8, an error above 14/);
+    assert.match(text, /selftest-failed: window\.__sedSelfTest \(selftest\.js\): 1 of 5 cases fail: a deliberately wrong vector/);
+    assert.match(text, /selftest-few: window\.__sedSelfTest \(selftest\.js\) has 5 cases; a tool needs at least 8 known-answer cases/);
+    assert.equal(r.json.metrics.firstScreenControls, 16);
+    assert.deepEqual({ total: r.json.metrics.selfTest.total, passed: r.json.metrics.selfTest.passed }, { total: 5, passed: 4 });
+  });
+
+  test('broken pages fail with the named rule: intro missing, explainer hidden in a closed details, a tool without a self-test; 10 controls warn', async () => {
+    const dir = contractVariant(TOOL, {
+      html: (s) => atTop(buttons(4))(s.replace(/<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/, '').replace(/<section class="sed-explainer"[\s\S]*?<\/section>/, (m) => `<details><summary>Read more</summary>${m}</details>`)),
+      app: (s) => s.replace('window.__sedSelfTest = function', 'window.__notTheSelfTest = function'),
+    });
+    const r = await runCheck([dir, '--contract', ...QUICK]);
+    assert.equal(r.code, 1);
+    const codes = errorCodes(r);
+    for (const c of ['intro-missing', 'explainer-hidden', 'selftest-missing']) assert.ok(codes.includes(c), `${c} in ${JSON.stringify(r.json.errors)}`);
+    assert.ok(!codes.includes('controls-excess'));
+    assert.ok(warningCodes(r).includes('controls-many'), JSON.stringify(r.json.warnings));
+    assert.match(r.json.errors.join('\n'), /selftest-missing: a tool page must define window\.__sedSelfTest in selftest\.js with at least 8 known-answer cases/);
+  });
+
+  test('an intro that pushes the app below the first screen is intro-too-tall, on desktop and on the phone', async () => {
+    const dir = contractVariant(LESSON, { html: (s) => s.replace('data-sed-intro>', 'data-sed-intro style="padding-top: 600px">') });
+    const r = await runCheck([dir, '--contract', ...QUICK]);
+    assert.equal(r.code, 1);
+    const text = r.json.errors.join('\n');
+    assert.match(text, /intro-too-tall: the intro ends \d+px from the top of the page; at 1280x800 it must end by 420px \(pageContract\.introMaxBottomPx\.desktop\)/);
+    assert.match(text, /intro-too-tall: the intro ends \d+px from the top of the page; at 390x844 it must end by 560px \(pageContract\.introMaxBottomPx\.mobile\)/);
+  });
+
+  test('a self-test that fails or hangs is an error for every purpose, and the run still finishes', async () => {
+    const failing = contractVariant(LESSON, { app: (s) => s.replace('run: () => parityBit([1, 0, 1, 1]) === 1', 'run: () => parityBit([1, 0, 1, 1]) === 0') });
+    const r1 = await runCheck([failing, ...QUICK]);
+    assert.equal(r1.code, 1);
+    assert.match(r1.json.errors.join('\n'), /selftest-failed: window\.__sedSelfTest \(selftest\.js\): 1 of 6 cases fail: 1011 has three ones/);
+    const hanging = contractVariant(LESSON, { app: (s) => s.replace('window.__sedSelfTest = function () {', 'window.__sedSelfTest = function () {\n    return new Promise(() => {});') });
+    const r2 = await runCheck([hanging, ...QUICK]);
+    assert.equal(r2.code, 1);
+    assert.match(r2.json.errors.join('\n'), /selftest-timeout: window\.__sedSelfTest \(selftest\.js\) did not finish within 10 s/);
+    assert.equal(r2.json.metrics.selfTest.timedOut, true);
+  });
+
+  test('without --contract and before requiredFrom the intro and explainer are not checked; a known purpose still gets the purpose checks', async () => {
+    const dir = contractVariant(TOOL, {
+      html: (s) => s.replace(/<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/, '').replace(' data-sed-explainer', ''),
+      app: (s) => s.replace('window.__sedSelfTest = function', 'window.__notTheSelfTest = function'),
+    });
+    const r = await runCheck([dir, ...QUICK]);
+    const codes = errorCodes(r);
+    assert.ok(!codes.some((c) => /^(intro|explainer)-/.test(c)), JSON.stringify(r.json.errors));
+    assert.deepEqual(codes, ['selftest-missing'], 'purpose "tool" comes from project.json');
+    assert.equal(r.json.metrics.contract.gate, false);
+  });
+
+  test('--meta stands in for a missing project.json, --purpose names the purpose by hand, and the config date gate arms the checks', async () => {
+    const noSelfTest = { app: (s) => s.replace('window.__sedSelfTest = function', 'window.__notTheSelfTest = function') };
+    const meta = path.join(scratch('meta'), 'PROJECT.json');
+    fs.copyFileSync(path.join(TOOL, 'project.json'), meta);
+    const site = contractVariant(TOOL, { ...noSelfTest, noProjectJson: true });
+    const bare = await runCheck([site, ...QUICK]);
+    assert.deepEqual(bare.json.errors, [], 'no metadata: no purpose known, nothing new is checked');
+    assert.equal(bare.json.metrics.contract, undefined);
+    const withMeta = await runCheck([site, '--meta', meta, ...QUICK]);
+    assert.deepEqual(errorCodes(withMeta), ['selftest-missing']);
+    const unreadable = await runCheck([site, '--meta', path.join(scratch('meta'), 'missing.json'), ...QUICK]);
+    assert.deepEqual(unreadable.json.errors, [], 'an unreadable --meta file means the purpose is unknown');
+    const manual = await runCheck([site, '--purpose', 'tool', ...QUICK]);
+    assert.deepEqual(errorCodes(manual), ['selftest-missing']);
+    // the date gate: a sandbox config with requiredFrom on or before the page date arms the intro and explainer checks
+    const root = scratch('root');
+    fs.mkdirSync(path.join(root, 'ops'));
+    const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'config.json'), 'utf8'));
+    cfg.pageContract.requiredFrom = '2026-10-20';
+    fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(cfg));
+    fs.copyFileSync(path.join(ROOT, 'ops', 'taxonomy.json'), path.join(root, 'ops', 'taxonomy.json'));
+    const broken = contractVariant(TOOL, { html: (s) => s.replace(' data-sed-explainer', '') });
+    const gated = await runCheck([broken, ...QUICK], { env: { SED_ROOT: root } });
+    assert.deepEqual(errorCodes(gated), ['explainer-missing']);
+    assert.equal(gated.json.metrics.contract.requiredFrom, '2026-10-20');
+    cfg.pageContract.requiredFrom = '2026-10-21';
+    fs.writeFileSync(path.join(root, 'config.json'), JSON.stringify(cfg));
+    const before = await runCheck([broken, ...QUICK], { env: { SED_ROOT: root } });
+    assert.deepEqual(before.json.errors, [], 'a page dated before requiredFrom is not checked');
+  });
+
+  test('usage: the header lists every new flag; a bare or unknown --purpose and a bare --meta exit 2', async () => {
+    const head = fs.readFileSync(CHECK, 'utf8').split('\n').slice(0, 12).join('\n');
+    for (const flag of ['--meta FILE', '--purpose P', '--contract']) assert.ok(head.includes(flag), `header names ${flag}`);
+    for (const args of [[TOOL, '--purpose'], [TOOL, '--purpose', 'game'], [TOOL, '--meta']]) {
+      const r = await runCheck(args);
+      assert.equal(r.code, 2, JSON.stringify(r.json));
+      assert.equal(r.json.ok, false);
+    }
   });
 });
 

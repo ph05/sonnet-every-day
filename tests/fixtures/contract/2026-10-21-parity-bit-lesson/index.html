@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Parity Bit Lesson</title>
+<meta name="description" content="An interactive lesson on the parity bit: how one extra bit tells a receiver that a message was damaged, and what it cannot tell.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <!-- Required: the way back to the gallery. Keep the href exactly "../../". -->
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 13 &middot; 2026-10-21</p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Parity Bit Lesson</h1>
+  <div class="sed-lede">
+    <p class="sed-tagline">A short lesson on the parity bit: one extra bit that tells you a message was damaged.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+  <p class="sed-intro" data-sed-intro>A lesson on the parity bit, the simplest way a computer notices that data was damaged on the way. It is for anyone curious about error detection; no maths beyond counting is needed. Flip the bits in the demo below and watch the check react, then try the two exercises at the end.</p>
+
+  <section class="pb" aria-labelledby="pb-title">
+    <h2 id="pb-title" class="pb-title">Try it: four data bits and one parity bit</h2>
+    <div class="pb-bits" id="bits" role="group" aria-label="The message, bit by bit"></div>
+    <p class="pb-status" id="status" aria-live="polite"></p>
+    <div class="pb-actions">
+      <button type="button" class="sed-btn" id="noise">Send it through a noisy wire</button>
+      <button type="button" class="sed-btn is-quiet" id="fresh">New message</button>
+    </div>
+  </section>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How it works</h2>
+    <p>Every time data moves, from a disk to memory or from one computer to another, a bit can flip: a 0 arrives as a 1, or a 1 as a 0. Cosmic rays, electrical noise and worn-out storage all do it. Most of the time nothing goes wrong, but when something does, the receiver has to notice. The parity bit is the oldest and simplest trick for noticing.</p>
+    <h3>Counting the ones</h3>
+    <p>Take a message of four bits, say 1011. Count its ones: there are three. With even parity, the sender adds one extra bit, the parity bit, chosen so that the total number of ones becomes even. Three ones need one more, so the parity bit is 1 and the sender transmits 10111. A message with two ones, such as 1001, would get a parity bit of 0, because two is already even.</p>
+    <p>The receiver does the same count on all five bits. If the number of ones is even, the check passes. If it is odd, at least one bit must have flipped on the way, so the receiver throws the message away or asks for it again. That is the whole idea: one extra bit, one count.</p>
+    <h3>A worked example</h3>
+    <p>Follow one message all the way. The sender wants to send 1011 and adds the parity bit 1, so 10111 leaves. On the wire, the second bit flips and 11111 arrives. The receiver counts five ones. Five is odd, so it rejects the message and asks for it again. The second time nothing flips, 10111 arrives, the count is four, four is even, and the receiver keeps the four data bits 1011 and drops the parity bit, which has done its job.</p>
+    <p>Notice what the receiver never needed: it did not know the original message, and it did not compare anything with the sender. Everything it needs travels inside the message itself. That is what makes a parity bit so cheap. The price is one extra bit for every four data bits here, or one for every seven or eight in real systems.</p>
+    <h3>Why one flip is always caught</h3>
+    <p>Flipping a single bit changes the number of ones by exactly one, up or down. An even count plus or minus one is always odd. So whichever bit flips, even the parity bit itself, the receiver sees an odd count and knows the message is damaged. In the demo above, click any one bit and the check fails at once.</p>
+    <h3>Why two flips slip through</h3>
+    <p>Here is the common misconception: that a parity bit catches every error. It does not. Flip two bits and the count changes by two, or by zero if one flip removes a one and the other adds one. Either way an even count stays even, and the check passes on a damaged message. In general a parity bit catches any odd number of flipped bits and misses any even number. Try it in the demo: flip two bits and watch the check pass.</p>
+    <h3>Detecting is not correcting</h3>
+    <p>A failed parity check says that something flipped, not which bit. The receiver cannot repair the message, because flipping any of the five bits would make the count even again. Codes that correct errors, such as Hamming codes, add several parity bits, each covering a different group of positions, so that the pattern of failed checks points at the broken bit. They cost more bits for the same message, which is the price of knowing where the damage is.</p>
+    <h3>Where you meet it</h3>
+    <p>Parity is cheap, so it shows up where errors are rare and a resend is easy: old serial links between computers sent seven data bits and a parity bit per character, and some memory chips keep a parity bit for every byte. Where errors come in bursts, as on a scratched disc or a radio link, stronger checks such as checksums and cyclic redundancy checks take over, because a burst often flips two bits at once.</p>
+    <div class="sed-check" data-sed-check>
+      <h3>Exercise 1</h3>
+      <p>The four data bits are 0110 and the sender uses even parity. What parity bit does the sender add?</p>
+      <details><summary>Show the answer</summary><p>0. The data already has two ones, an even number, so the parity bit stays 0 and the sender transmits 01100.</p></details>
+    </div>
+    <div class="sed-check" data-sed-check>
+      <h3>Exercise 2</h3>
+      <p>The receiver gets 11010 with even parity. Was the message damaged, and can the receiver tell which bit flipped?</p>
+      <details><summary>Show the answer</summary><p>Yes. 11010 has three ones, an odd number, so at least one bit flipped. The receiver cannot tell which one: flipping any of the five bits would make the count even again, so it asks for the message again.</p></details>
+    </div>
+  </section>
+
+  <script src="app.js" defer></script>
+</main>
+
+<footer class="sed-footer">
+  <!-- Required "about / making of" panel. Collapsed by default so it never competes with the app. It holds the sources
+       and the making-of, never the explanation (that is the explainer section above). -->
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">The demo counts ones exactly as the explainer does; the two exercises were checked by hand and by the page self-test.</p>
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://en.wikipedia.org/wiki/Parity_bit">Parity bit (Wikipedia)</a>: even and odd parity, and that a parity bit detects any odd number of flipped bits but no even number</li>
+        <li><a href="https://en.wikipedia.org/wiki/Error_detection_and_correction">Error detection and correction (Wikipedia)</a>: the difference between detecting an error and correcting it</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by the Sonnet Every Day team</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>

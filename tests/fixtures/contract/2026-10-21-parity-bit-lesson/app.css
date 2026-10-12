@@ -1,0 +1,68 @@
+/* Parity Bit Lesson: the demo's own styles (the shell's tokens do the theming). */
+.pb {
+  max-width: 760px;
+  padding: clamp(14px, 3vw, 24px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+.pb-title {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+}
+.pb-bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 1rem;
+}
+.pb-bit {
+  width: 56px;
+  height: 64px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 700 1.8rem/1 var(--font-mono);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.pb-bit:hover { border-color: var(--accent); }
+.pb-bit:active { transform: translateY(1px); }
+.pb-bit.is-parity {
+  margin-left: 0.8rem;
+  border-style: dashed;
+}
+.pb-bit.is-flipped {
+  border-color: #b3261e;
+  background: rgb(179 38 30 / 10%);
+}
+.pb-status {
+  min-height: 3.2em;
+  margin: 0 0 1rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 4px solid var(--border);
+  border-radius: 6px;
+}
+.pb-status.is-pass { border-left-color: #1d7a3a; }
+.pb-status.is-fail { border-left-color: #b3261e; }
+@media (prefers-color-scheme: dark) {
+  .pb-bit.is-flipped { border-color: #ffb4ab; background: rgb(255 180 171 / 12%); }
+  .pb-status.is-pass { border-left-color: #6fdc8c; }
+  .pb-status.is-fail { border-left-color: #ffb4ab; }
+}
+.pb-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.sed-check details > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.sed-check details[open] > summary { margin-bottom: 0.4rem; }
+@media (max-width: 420px) {
+  .pb-bit { width: 48px; height: 56px; font-size: 1.5rem; }
+  .pb-bit.is-parity { margin-left: 0.3rem; }
+}

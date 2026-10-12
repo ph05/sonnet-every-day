@@ -151,7 +151,8 @@ select { appearance: none; padding-right: 2.2em;
   transition: background 0.12s ease, transform 0.12s ease;
 }
 .chip::before { content: ""; width: 0.6em; height: 0.6em; border-radius: 50%; background: var(--cat, currentColor); border: 1.5px solid var(--ink); }
-.chip:not([data-key="cat"])::before { display: none; }
+.chip:not([data-key="cat"]):not([data-key="type"])::before { display: none; }
+.chip[data-key="type"]::before { border-radius: 2px; background: var(--purpose, currentColor); }
 .chip:hover { background: var(--card); transform: translateY(-1px); }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .chip[aria-pressed="true"]::before { border-color: var(--paper); }
@@ -264,6 +265,23 @@ select { appearance: none; padding-right: 2.2em;
   border: 1.5px solid var(--ink); border-radius: 999px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
 }
 .dot { display: inline-block; width: 0.65em; height: 0.65em; border-radius: 50%; background: var(--cat); border: 1.5px solid var(--ink); flex: none; }
+/* The purpose of a day: a marker colour per purpose (decorative; the word carries the meaning). */
+.purpose-tool { --purpose: #1f6f8b; }
+.purpose-lesson { --purpose: #7a3fb8; }
+.purpose-explorer { --purpose: #2f7d3a; }
+.purpose-studio { --purpose: #c0601d; }
+.purpose-play { --purpose: #b82d17; }
+.chip[data-value="tool"] { --purpose: #1f6f8b; }
+.chip[data-value="lesson"] { --purpose: #7a3fb8; }
+.chip[data-value="explorer"] { --purpose: #2f7d3a; }
+.chip[data-value="studio"] { --purpose: #c0601d; }
+.chip[data-value="play"] { --purpose: #b82d17; }
+.purpose-pill {
+  display: inline-flex; align-items: center; gap: 0.35em; margin-right: 0.1em; padding: 0 0.5em;
+  border: 1.5px solid var(--ink); border-radius: 999px; background: var(--card); color: var(--ink); line-height: 1.5; white-space: nowrap;
+}
+.purpose-pill::before, .pill-purpose::before { content: ""; width: 0.6em; height: 0.6em; border-radius: 2px; background: var(--purpose, var(--ink)); flex: none; }
+.lead-intro { color: var(--ink); font-size: 1.02rem; line-height: 1.55; }
 .lead-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; }
 
 .lead.is-empty { grid-template-columns: minmax(0, 1fr); }

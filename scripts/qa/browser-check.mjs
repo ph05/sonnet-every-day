@@ -3,6 +3,9 @@
 //   browser-check.mjs <projectDir> --out <dir> [--thumb] [--seconds N] [--no-monkey]
 //                     [--seed N] [--timeout S] [--page-timeout MS] [--settle MS]
 //                     [--thumb-settle MS] [--thumb-ready-timeout MS] [--no-keyboard]
+//                     [--meta FILE] [--purpose P] [--contract]
+// --meta FILE: a project.json-shaped file read when <projectDir>/project.json is absent (spec/PROJECT.json while building).
+// --purpose P: the page's purpose for a manual run. --contract: check the page contract whatever the date (DESIGN 7.4).
 // Serves the directory over a loopback HTTP server, drives Chromium through Playwright at desktop and mobile
 // sizes in light and dark, audits the page (console, requests, overflow, accessibility basics), unleashes a
 // seeded random "monkey", and optionally writes <projectDir>/thumb.png (1200x630, under the size cap).
@@ -15,6 +18,7 @@ import { pathToFileURL } from 'node:url';
 import { parseArgs, print, die, readJson, rp, writeJsonAtomic, hashStr, mulberry32 } from '../lib/common.mjs';
 import { startServer } from './serve.mjs';
 import { fitPng, readPngSize } from './png-optimize.mjs';
+import { purposesOf, pageContractOf, contractRequired } from '../validate.mjs';
 
 export { readPngSize };
 
@@ -27,6 +31,7 @@ const DEFAULTS = {
   thumbReadyTimeoutMs: 8000,
   thumbMaxBytes: 307200,
 };
+const SELFTEST_MS = 10000;
 const THUMB_W = 1200;
 const THUMB_H = 630;
 const MAX_PER_CODE = 12; // distinct messages kept per issue code; the rest are only counted
@@ -549,6 +554,88 @@ async function decodeInPage({ b64, w, h }) {
   for (let i = 0; i < px.length; i += 32768) bin += String.fromCharCode.apply(null, px.subarray(i, i + 32768));
   return btoa(bin);
 }
+/**
+ * Runs inside the page: the page-contract view of the first screen. The intro and the explainer (rendered or not, the
+ * intro's bottom edge in document pixels) and the visible interactive controls in the first viewport.
+ */
+function contractProbeInPage() {
+  const rendered = (el) => {
+    const cs = getComputedStyle(el);
+    if (cs.display === 'none' || cs.visibility === 'hidden' || cs.visibility === 'collapse') return false;
+    if (el.closest('[hidden]')) return false;
+    // the content of a closed <details> keeps its boxes in Chromium (content-visibility), but nobody sees it
+    for (let d = el.parentElement && el.parentElement.closest('details:not([open])'); d; d = d.parentElement && d.parentElement.closest('details:not([open])')) {
+      const summary = d.querySelector(':scope > summary');
+      if (!summary || !summary.contains(el)) return false;
+    }
+    if (typeof el.checkVisibility === 'function' && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) return false;
+    let opacity = 1;
+    for (let a = el; a; a = a.parentElement) opacity *= Number(getComputedStyle(a).opacity);
+    if (opacity < 0.05) return false;
+    const r = el.getBoundingClientRect();
+    return el.getClientRects().length > 0 && r.width >= 2 && r.height >= 2;
+  };
+  const sx = window.scrollX;
+  const sy = window.scrollY;
+  const box = (el) => {
+    const r = el.getBoundingClientRect();
+    return { top: Math.round(r.top + sy), bottom: Math.round(r.bottom + sy), left: Math.round(r.left + sx), right: Math.round(r.right + sx) };
+  };
+  const out = {};
+  const intros = [...document.querySelectorAll('[data-sed-intro]')];
+  const intro = intros.find(rendered) || intros[0];
+  out.intro = { count: intros.length, rendered: !!intro && rendered(intro), box: intro ? box(intro) : null };
+  const explainers = [...document.querySelectorAll('[data-sed-explainer]')];
+  const explainer = explainers.find(rendered) || explainers[0];
+  out.explainer = { count: explainers.length, rendered: !!explainer && rendered(explainer), box: explainer ? box(explainer) : null };
+  const sel = 'button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [role="slider"], [role="tab"], [role="switch"], a.sed-btn';
+  const seen = new Set();
+  const samples = [];
+  let count = 0;
+  for (const el of document.querySelectorAll(sel)) {
+    if (seen.has(el) || !rendered(el)) continue;
+    seen.add(el);
+    const b = box(el);
+    if (b.bottom <= 0 || b.top >= innerHeight || b.right <= 0 || b.left >= innerWidth) continue;
+    count++;
+    if (samples.length < 20) {
+      const label = (el.getAttribute('aria-label') || el.innerText || el.value || el.getAttribute('title') || '').replace(/\s+/g, ' ').trim().slice(0, 24);
+      samples.push(el.tagName.toLowerCase() + (el.id ? '#' + el.id : '') + (label ? ` "${label}"` : ''));
+    }
+  }
+  out.controls = { count, samples };
+  return out;
+}
+
+/** Runs inside the page: window.__sedSelfTest (sync or async) once, within `ms`. Never throws. */
+async function selfTestInPage(ms) {
+  const fn = window.__sedSelfTest;
+  if (fn === undefined) return { present: false };
+  if (typeof fn !== 'function') return { present: true, error: 'window.__sedSelfTest is not a function' };
+  let timer;
+  const timeout = new Promise((r) => {
+    timer = setTimeout(() => r({ present: true, timedOut: true }), ms);
+  });
+  const run = Promise.resolve()
+    .then(() => fn())
+    .then(
+      (value) => {
+        if (!value || typeof value !== 'object' || !Array.isArray(value.cases)) return { present: true, error: 'returned no {cases: [...]} result' };
+        const cases = value.cases.map((c, i) => ({
+          name: String((c && c.name) || `case ${i + 1}`).slice(0, 160),
+          ok: !!c && c.ok === true,
+          detail: c && c.detail !== undefined ? String(c.detail).slice(0, 200) : undefined,
+        }));
+        return { present: true, cases };
+      },
+      (err) => ({ present: true, error: 'threw: ' + String((err && err.message) || err).split('\n')[0].slice(0, 200) }),
+    );
+  try {
+    return await Promise.race([run, timeout]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
 /* eslint-enable no-undef */
 
 /* ------------------------------------------------------------------------------------------------
@@ -579,7 +666,8 @@ export async function runBrowserCheck(options) {
   const outDir = path.resolve(o.outDir);
   const shotsDir = path.join(outDir, 'shots');
   const seed = Number.isFinite(Number(o.seed)) ? Number(o.seed) >>> 0 : hashStr(path.basename(projectDir));
-  const cfgLimits = readJson(rp('config.json'), {}).limits ?? {};
+  const cfg = readJson(rp('config.json'), {}) ?? {};
+  const cfgLimits = cfg.limits ?? {};
   const thumbCap = Number(cfgLimits.thumbMaxBytes) || o.thumbMaxBytes;
 
   const issues = new Map(); // key -> {level, code, detail, passes:Set}
@@ -638,11 +726,24 @@ export async function runBrowserCheck(options) {
 
   fs.mkdirSync(shotsDir, { recursive: true });
 
-  // project and entry
+  // project and entry; --meta stands in for project.json while the page is still being built (spec/PROJECT.json)
   let pj = null;
   try {
     pj = readJson(path.join(projectDir, 'project.json'), null);
   } catch { /* optional */ }
+  if (!pj && typeof o.meta === 'string' && o.meta) pj = readJson(path.resolve(o.meta), null);
+  if (!pj || typeof pj !== 'object' || Array.isArray(pj)) pj = null;
+
+  // the page contract (DESIGN 7.4): purpose checks need a known purpose, the intro and explainer checks the date gate
+  const contract = pageContractOf(cfg);
+  const purposes = purposesOf(readJson(rp('ops', 'taxonomy.json'), null));
+  const metaPurpose = typeof pj?.fingerprint?.purpose === 'string' && purposes.includes(pj.fingerprint.purpose) ? pj.fingerprint.purpose : null;
+  const purpose = typeof o.purpose === 'string' && purposes.includes(o.purpose) ? o.purpose : metaPurpose;
+  const tier = Number.isInteger(pj?.tier) ? pj.tier : null;
+  const exempt = tier === 3 || tier === 4;
+  const gate = contractRequired({ contract, date: pj?.date, tier, force: o.contract === true });
+  const budget = !exempt && (gate || purpose !== null);
+  if (purpose !== null || gate) metrics.contract = { purpose, gate, tier, requiredFrom: contract.requiredFrom, forced: o.contract === true };
   let entryRel = 'index.html';
   if (typeof pj?.entry === 'string' && pj.entry && !pj.entry.startsWith('/') && !pj.entry.includes('..')) entryRel = pj.entry;
   if (!fs.existsSync(path.join(projectDir, entryRel))) {
@@ -907,6 +1008,78 @@ export async function runBrowserCheck(options) {
     if (r.ok) shots.push(target);
     else warn('screenshot-failed', `${file}: ${r.error}`, p.name);
     return r.ok;
+  };
+
+  /** The first screen against the page contract: the control budget, and (gate only) the intro and the explainer. */
+  const contractChecks = async (p) => {
+    const desktop = p.name === 'desktop-light';
+    const r = await ev(p.page, contractProbeInPage, undefined, 5000);
+    if (!r.ok) {
+      if (gate || (desktop && budget)) warn('contract-probe-failed', `the page-contract probe could not run: ${r.error}`, p.name);
+      return;
+    }
+    const v = r.value;
+    const { width: W, height: H } = p.spec.viewport;
+    if (desktop) {
+      metrics.firstScreenControls = v.controls.count;
+      if (budget) {
+        const { warn: warnAt, error: errorAt } = contract.firstScreenControls;
+        const msg = `${v.controls.count} interactive controls are visible in the first ${W}x${H} screen; the budget is ${warnAt} (a warning above ${warnAt}, an error above ${errorAt}: pageContract.firstScreenControls). Move advanced controls behind a "More" toggle or further down: ${v.controls.samples.slice(0, 12).join(', ')}`;
+        if (v.controls.count > errorAt) error('controls-excess', msg, p.name);
+        else if (v.controls.count > warnAt) warn('controls-many', msg, p.name);
+      }
+    }
+    if (!gate) return;
+    const label = desktop ? 'desktop' : 'mobile';
+    const limit = contract.introMaxBottomPx[label];
+    (metrics.passes[p.name] ??= {}).contract = { introBottomPx: v.intro.box?.bottom ?? null, introLimitPx: limit, introRendered: v.intro.rendered, explainerRendered: v.explainer.rendered };
+    if (!v.intro.count) error('intro-missing', 'the page has no p[data-sed-intro]: the intro paragraph of the page shell belongs right under the tagline', p.name);
+    else if (!v.intro.rendered) error('intro-hidden', 'the intro p[data-sed-intro] is not rendered (display:none, visibility:hidden, [hidden], zero size or transparent)', p.name);
+    else if (v.intro.box.bottom > limit) error('intro-too-tall', `the intro ends ${v.intro.box.bottom}px from the top of the page; at ${W}x${H} it must end by ${limit}px (pageContract.introMaxBottomPx.${label}): shorten the intro or what sits above it`, p.name);
+    if (!v.explainer.count) error('explainer-missing', 'the page has no section[data-sed-explainer]: the explainer section of the page shell', p.name);
+    else if (!v.explainer.rendered) error('explainer-hidden', 'the explainer section[data-sed-explainer] is not rendered (display:none, visibility:hidden, [hidden], a closed <details>, zero size or transparent)', p.name);
+  };
+
+  /** window.__sedSelfTest, once (desktop-light): any failure is an error; a tool must have one with enough cases. */
+  const selfTest = async (p) => {
+    const t0 = Date.now();
+    const r = await ev(p.page, selfTestInPage, SELFTEST_MS, SELFTEST_MS + 3000);
+    const res = r.ok ? r.value : { present: true, timedOut: true };
+    const required = purpose === 'tool' && !exempt;
+    if (!res.present) {
+      if (required) {
+        metrics.selfTest = { present: false, total: 0, passed: 0, ok: false };
+        error('selftest-missing', `a tool page must define window.__sedSelfTest in selftest.js with at least ${contract.toolMinSelfTests} known-answer cases (pageContract.toolMinSelfTests)`, p.name);
+      }
+      return;
+    }
+    const st = { present: true, ms: Date.now() - t0 };
+    metrics.selfTest = st;
+    if (res.timedOut) {
+      st.ok = false;
+      st.timedOut = true;
+      error('selftest-timeout', `window.__sedSelfTest (selftest.js) did not finish within ${SELFTEST_MS / 1000} s`, p.name);
+      const hb = await ev(p.page, () => 1, undefined, 2500);
+      if (!hb.ok) state.hung = true;
+      return;
+    }
+    if (res.error) {
+      st.ok = false;
+      st.error = res.error;
+      error('selftest-failed', `window.__sedSelfTest (selftest.js) ${res.error}`, p.name);
+      return;
+    }
+    const failing = res.cases.filter((c) => !c.ok);
+    st.total = res.cases.length;
+    st.passed = st.total - failing.length;
+    st.ok = failing.length === 0;
+    if (failing.length) {
+      st.failing = failing.slice(0, 12).map((c) => c.name);
+      error('selftest-failed', `window.__sedSelfTest (selftest.js): ${failing.length} of ${st.total} cases fail: ${failing.slice(0, 5).map((c) => c.name + (c.detail ? ` (${c.detail})` : '')).join('; ')}`, p.name);
+    }
+    if (required && st.total < contract.toolMinSelfTests) {
+      error('selftest-few', `window.__sedSelfTest (selftest.js) has ${st.total} case${st.total === 1 ? '' : 's'}; a tool needs at least ${contract.toolMinSelfTests} known-answer cases (pageContract.toolMinSelfTests)`, p.name);
+    }
   };
 
   const keyboardSmoke = async (p) => {
@@ -1228,8 +1401,10 @@ export async function runBrowserCheck(options) {
         if (await loadPage(p)) {
           await collectPerf(p);
           await runAudit(p, { contrast: name !== 'mobile-320' && name !== 'reduced-motion' });
+          if (name === 'desktop-light' || name === 'mobile-light') await contractChecks(p);
           if (name === 'reduced-motion') await reducedMotionCheck(p);
           await shot(p);
+          if (name === 'desktop-light' && !state.hung) await selfTest(p);
           if (name === 'desktop-light' && o.keyboard && !state.hung) await keyboardSmoke(p);
         }
         (metrics.passes[name] ??= {}).ms = Date.now() - t0;
@@ -1316,15 +1491,21 @@ function number(flags, key, fallback, { min = 0 } = {}) {
 async function main() {
   const flags = parseArgs();
   // a bare boolean flag placed before the directory would swallow it as its value
-  for (const k of ['thumb', 'no-monkey', 'no-keyboard']) {
+  for (const k of ['thumb', 'no-monkey', 'no-keyboard', 'contract']) {
     if (typeof flags[k] === 'string') {
       flags._.unshift(flags[k]);
       flags[k] = true;
     }
   }
   const dir = flags._[0];
-  if (!dir || !flags.out || flags.out === true) die('usage: browser-check.mjs <projectDir> --out <dir> [--thumb] [--seconds N] [--no-monkey]', 2);
+  const usage = 'usage: browser-check.mjs <projectDir> --out <dir> [--thumb] [--seconds N] [--no-monkey] [--meta FILE] [--purpose P] [--contract]';
+  if (!dir || !flags.out || flags.out === true) die(usage, 2);
   if (!fs.existsSync(dir) || !fs.statSync(dir).isDirectory()) die(`not a directory: ${dir}`, 2);
+  if (flags.meta === true) die(`--meta needs a file (${usage})`, 2);
+  if (flags.purpose !== undefined) {
+    const purposes = purposesOf(readJson(rp('ops', 'taxonomy.json'), null));
+    if (flags.purpose === true || !purposes.includes(flags.purpose)) die(`--purpose must be one of ${purposes.join(', ')} (${usage})`, 2);
+  }
   const report = await runBrowserCheck({
     projectDir: dir,
     outDir: flags.out,
@@ -1338,6 +1519,9 @@ async function main() {
     settleMs: number(flags, 'settle', DEFAULTS.settleMs),
     thumbSettleMs: number(flags, 'thumb-settle', DEFAULTS.thumbSettleMs),
     thumbReadyTimeoutMs: number(flags, 'thumb-ready-timeout', DEFAULTS.thumbReadyTimeoutMs),
+    meta: typeof flags.meta === 'string' ? flags.meta : undefined,
+    purpose: typeof flags.purpose === 'string' ? flags.purpose : undefined,
+    contract: flags.contract === true,
   });
   print(report);
   process.exit(report.ok ? 0 : 1);

@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Last line of defense before unreviewed content goes live.
-//   validate.mjs project <dir> [--tier T] [--now ISO]
+//   validate.mjs project <dir> [--tier T] [--now ISO] [--contract]
 //   validate.mjs repo [--no-projects]   (project contents are checked by default)
+// --contract applies the page contract (purpose, intro, explainer: DESIGN 7.3) whatever config.pageContract.requiredFrom says.
 // Static analysis only: nothing under test is ever executed (JS is parsed with vm.Script / node --check).
 // Strategy: parse HTML the way browsers do (spec tokenizer, first attribute wins, entity-decoded URLs),
 // lex CSS and JS properly (comments, strings, escapes, templates) and judge sinks by their arguments.
@@ -1187,7 +1188,7 @@ function scanMarkup(src, S, extra = {}) {
   const lineOf = (off) => S.lineOf(S.base + off);
   const dir = extra.dir ?? S.dir;
   const result = {
-    commentRanges: [], inlineModules: [], title: null, lang: null, viewport: false, backLink: false, csp: [], earlyLoader: null,
+    commentRanges: [], inlineModules: [], title: null, lang: null, viewport: false, backLink: false, csp: [], earlyLoader: null, tokens,
   };
   let headOpen = true;
   let noscript = 0;
@@ -1508,6 +1509,322 @@ function srcsetCheck(value, tag, line, S, dir) {
 }
 
 /* ------------------------------------------------------------------------------------------------
+ * Page contract (DESIGN 7.3): purpose, intro paragraph and explainer section, read from the STATIC entry HTML
+ * ---------------------------------------------------------------------------------------------- */
+
+/** Canonical purpose order (ops/taxonomy.json `purposes` key order); the taxonomy is authoritative when it has the block. */
+export const PURPOSES = ['tool', 'lesson', 'explorer', 'studio', 'play'];
+const PAGE_CONTRACT_DEFAULTS = {
+  intro: { minWords: 35, maxWords: 70, firstSentenceMaxWords: 30 },
+  explainer: {
+    minWords: { tool: 250, lesson: 700, explorer: 350, studio: 200, play: 150 },
+    minHeadings: { tool: 2, lesson: 4, explorer: 3, studio: 2, play: 1 },
+  },
+  lessonMinChecks: 2,
+  toolMinSelfTests: 8,
+  introMaxBottomPx: { desktop: 420, mobile: 560 },
+  firstScreenControls: { warn: 8, error: 14 },
+};
+
+const posNum = (v) => typeof v === 'number' && Number.isFinite(v) && v > 0;
+const isDay = (v) => {
+  if (typeof v !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const t = new Date(`${v}T00:00:00Z`);
+  return !Number.isNaN(t.getTime()) && t.toISOString().slice(0, 10) === v;
+};
+const plainObj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+
+/** The purposes in canonical order: ops/taxonomy.json `purposes` keys when the block exists, else PURPOSES. */
+export function purposesOf(taxonomy) {
+  const keys = Object.keys(plainObj(taxonomy?.purposes));
+  return keys.length ? keys : PURPOSES;
+}
+
+/**
+ * config.pageContract laid over the defaults. A missing block (or a damaged number) means the default number; only
+ * `requiredFrom` has no default: null (or anything that is not a real YYYY-MM-DD) means nothing is required.
+ */
+export function pageContractOf(cfg) {
+  const raw = plainObj(cfg?.pageContract);
+  const D = PAGE_CONTRACT_DEFAULTS;
+  const num = (v, d) => (posNum(v) ? v : d);
+  const perPurpose = (v, d) => Object.fromEntries(Object.keys(d).map((p) => [p, num(plainObj(v)[p], d[p])]));
+  const intro = plainObj(raw.intro);
+  const explainer = plainObj(raw.explainer);
+  return {
+    present: Object.keys(raw).length > 0,
+    requiredFrom: isDay(raw.requiredFrom) ? raw.requiredFrom : null,
+    intro: { minWords: num(intro.minWords, D.intro.minWords), maxWords: num(intro.maxWords, D.intro.maxWords), firstSentenceMaxWords: num(intro.firstSentenceMaxWords, D.intro.firstSentenceMaxWords) },
+    explainer: { minWords: perPurpose(explainer.minWords, D.explainer.minWords), minHeadings: perPurpose(explainer.minHeadings, D.explainer.minHeadings) },
+    lessonMinChecks: num(raw.lessonMinChecks, D.lessonMinChecks),
+    toolMinSelfTests: num(raw.toolMinSelfTests, D.toolMinSelfTests),
+    introMaxBottomPx: { desktop: num(plainObj(raw.introMaxBottomPx).desktop, D.introMaxBottomPx.desktop), mobile: num(plainObj(raw.introMaxBottomPx).mobile, D.introMaxBottomPx.mobile) },
+    firstScreenControls: { warn: num(plainObj(raw.firstScreenControls).warn, D.firstScreenControls.warn), error: num(plainObj(raw.firstScreenControls).error, D.firstScreenControls.error) },
+  };
+}
+
+/**
+ * Does the page contract apply? Never on tiers 3 and 4 (generated fallbacks, exempt); then `force` (the --contract
+ * flag) or a set `requiredFrom` with the project date on or after it. Every date gate of the page contract reads this.
+ */
+export function contractRequired({ contract, date, tier, force = false }) {
+  if (tier === 3 || tier === 4) return false;
+  if (force) return true;
+  return Boolean(contract.requiredFrom && typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) && date >= contract.requiredFrom);
+}
+
+/** Words as a reader counts them: whitespace-separated runs (U+00A0 included) that hold a letter or a digit. */
+export function countWords(text) {
+  let n = 0;
+  for (const w of String(text).split(/\s+/)) if (/[\p{L}\p{N}]/u.test(w)) n++;
+  return n;
+}
+
+/** The first sentence: up to the first . ! or ? that ends a word (followed by whitespace or the end). */
+export function firstSentence(text) {
+  const s = String(text).replace(/\s+/g, ' ').trim();
+  const m = /^.*?[.!?](?=\s|$)/.exec(s);
+  return m ? m[0] : s;
+}
+
+const collapseWs = (s) => String(s).replace(/\s+/g, ' ').trim();
+const VOID_ELEMENTS = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'source', 'track', 'wbr']);
+const CLOSES_P = new Set(['address', 'article', 'aside', 'blockquote', 'details', 'div', 'dl', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hr', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul']);
+// "p in button scope", and the special elements that end the search for an open li / dd / dt (address, div and p do not).
+const P_SCOPE_STOP = new Set(['button', 'table', 'td', 'th', 'caption', 'template', 'object', 'marquee', 'applet', 'html', 'svg', 'math']);
+const ITEM_STOP = new Set(['ul', 'ol', 'menu', 'dl', 'table', 'td', 'th', 'caption', 'button', 'template', 'object', 'section', 'article', 'aside', 'nav', 'main', 'header', 'footer', 'blockquote', 'details', 'summary', 'figure', 'fieldset', 'form', 'body', 'html', 'svg', 'math']);
+const PROSE_ANCESTORS = new Set(['p', 'li', 'blockquote', 'figcaption', 'dd']);
+const NON_PROSE_ANCESTORS = new Set(['button', 'label', 'select', 'textarea', 'svg', 'canvas', 'script', 'style', 'template']);
+// Phrasing elements that do not break a word where they start or end; every other element is a word boundary.
+const INLINE_ELEMENTS = new Set(['a', 'abbr', 'b', 'bdi', 'bdo', 'cite', 'code', 'data', 'del', 'dfn', 'em', 'i', 'ins', 'kbd', 'mark', 'q', 's', 'samp', 'small', 'span', 'strong', 'sub', 'sup', 'time', 'u', 'var', 'wbr']);
+const INTRO_INLINE = new Set(['a', 'abbr', 'b', 'code', 'em', 'i', 'kbd', 'span', 'strong', 'sub', 'sup']);
+const INTRO_ENTITIES = new Set(['amp', 'lt', 'gt', 'quot', 'nbsp']);
+
+/**
+ * An open-element-stack tree of a page, built from tokenizeHtml the way a browser's tree builder would for the parts
+ * the contract reads: void elements are never pushed, a block start closes an open p, li / dd / dt close an open
+ * sibling, an end tag closes everything above its element and marks it explicitly closed. Raw-text bodies (script,
+ * style, textarea, title, noscript, iframe ...) are not tokenized, so a noscript copy of the intro never appears here.
+ */
+function contractTree(src, tokens) {
+  const root = { name: '#document', attrs: new Map(), kids: [], explicitEnd: true, foreign: false };
+  const stack = [root];
+  const findOpen = (names, stops) => {
+    for (let k = stack.length - 1; k > 0; k--) {
+      const n = stack[k].name;
+      if (names.includes(n)) return k;
+      if (stops && stops.has(n)) return -1;
+    }
+    return -1;
+  };
+  for (const tok of tokens) {
+    const top = stack[stack.length - 1];
+    if (tok.t === 'text') {
+      top.kids.push({ text: src.slice(tok.start, tok.end) });
+      continue;
+    }
+    if (tok.t === 'end') {
+      if (tok.name === 'br') {
+        top.kids.push({ name: 'br', attrs: new Map(), kids: [], explicitEnd: true });
+        continue;
+      }
+      const k = findOpen([tok.name]);
+      if (k > 0) {
+        stack[k].explicitEnd = true;
+        stack.length = k;
+      }
+      continue;
+    }
+    if (tok.t !== 'start') continue;
+    const name = tok.name;
+    if (!top.foreign) {
+      if (CLOSES_P.has(name)) {
+        const k = findOpen(['p'], P_SCOPE_STOP);
+        if (k > 0) stack.length = k;
+      }
+      if (name === 'li' || name === 'dd' || name === 'dt') {
+        const k = findOpen(name === 'li' ? ['li'] : ['dd', 'dt'], ITEM_STOP);
+        if (k > 0) stack.length = k;
+      }
+    }
+    const parent = stack[stack.length - 1];
+    const attrs = new Map();
+    for (const a of tok.attrs) if (!attrs.has(a.name)) attrs.set(a.name, a.value);
+    const node = { name, attrs, kids: [], explicitEnd: false, foreign: parent.foreign || name === 'svg' || name === 'math' };
+    parent.kids.push(node);
+    if ((VOID_ELEMENTS.has(name) && !parent.foreign) || (node.foreign && tok.selfClosing)) {
+      node.explicitEnd = true;
+      continue;
+    }
+    stack.push(node);
+  }
+  return root;
+}
+
+/**
+ * What the contract needs from the entry page: the intro candidates, the explainer sections with their prose words
+ * and headings, and the data-sed-check elements. Content under <template>, a [hidden] element, or a closed <details>
+ * that is NOT inside the explainer is excluded. A text token counts once when it has an ancestor in {p, li, blockquote,
+ * figcaption, dd} and none in {button, label, select, textarea, svg, canvas, script, style, template}; <br> is a space.
+ */
+export function analyzeContract(src, tokens = tokenizeHtml(src)) {
+  const root = contractTree(src, tokens);
+  const intros = [];
+  const explainers = [];
+  let checks = 0;
+  const walk = (node, ctx) => {
+    for (const kid of node.kids) {
+      if (kid.text !== undefined) {
+        if (ctx.explainer && !ctx.excluded && ctx.prose && !ctx.nonProse) ctx.explainer.words.push(decodeEntities(kid.text));
+        continue;
+      }
+      const name = kid.name;
+      if (name === 'br') {
+        if (ctx.explainer) ctx.explainer.words.push(' ');
+        continue;
+      }
+      const a = kid.attrs;
+      const c = { ...ctx };
+      if (name === 'main') c.inMain = true;
+      if (name === 'template') c.template = c.excluded = true;
+      if (a.has('hidden')) c.hidden = c.excluded = true;
+      if (name === 'details') {
+        c.inDetails = true;
+        if (!a.has('open') && !ctx.explainer) c.excluded = true;
+      }
+      if (PROSE_ANCESTORS.has(name)) c.prose = true;
+      if (NON_PROSE_ANCESTORS.has(name)) c.nonProse = true;
+      if (name === 'section' && a.has('data-sed-explainer')) {
+        const ex = { words: [], headings: 0, inMain: c.inMain, template: c.template, excludedBy: c.template ? '<template>' : c.hidden ? 'a [hidden] element' : c.excluded ? 'a closed <details>' : null };
+        explainers.push(ex);
+        c.explainer = ex;
+      }
+      if (name === 'p' && a.has('data-sed-intro')) intros.push({ node: kid, inMain: c.inMain, inDetails: c.inDetails, hidden: c.hidden, template: c.template });
+      if (a.has('data-sed-check') && !c.excluded) checks++;
+      if ((name === 'h2' || name === 'h3') && c.explainer && !c.template && !c.hidden) c.explainer.headings++;
+      const boundary = c.explainer && !INLINE_ELEMENTS.has(name);
+      if (boundary) c.explainer.words.push(' ');
+      walk(kid, c);
+      if (boundary) c.explainer.words.push(' ');
+    }
+  };
+  walk(root, { inMain: false, inDetails: false, hidden: false, template: false, excluded: false, prose: false, nonProse: false, explainer: null });
+  for (const ex of explainers) {
+    ex.wordCount = countWords(ex.words.join(''));
+    delete ex.words;
+  }
+  return { intros, explainers, checks };
+}
+
+/** The intro element's text (entities decoded, every whitespace run collapsed) and what is wrong with its markup. */
+function introContent(node) {
+  const parts = [];
+  const badElements = new Set();
+  const badEntities = new Set();
+  const visit = (n) => {
+    for (const kid of n.kids) {
+      if (kid.text !== undefined) {
+        for (const m of kid.text.matchAll(/&([A-Za-z][A-Za-z0-9]*);/g)) if (!INTRO_ENTITIES.has(m[1])) badEntities.add(`&${m[1]};`);
+        parts.push(decodeEntities(kid.text));
+        continue;
+      }
+      if (!INTRO_INLINE.has(kid.name)) badElements.add(`<${kid.name}>`);
+      if (kid.name === 'br') parts.push(' ');
+      visit(kid);
+    }
+  };
+  visit(node);
+  return { text: collapseWs(parts.join('')), badElements: [...badElements], badEntities: [...badEntities] };
+}
+
+/**
+ * The project rules of the page contract (DESIGN 7.3), tiers 1 and 2 only. `req`: the contract is required for this
+ * page (date gate or --contract). A present purpose, concepts list, intro or intro element is validated either way.
+ */
+function checkPageContract({ report, pj, contract, req, entrySrc, entryTokens, entryRel, purposes }) {
+  const where = 'project.json';
+  const fp = plainObj(pj?.fingerprint);
+  const purposeList = purposes.join(', ');
+  const since = contract.requiredFrom ? `pages dated from ${contract.requiredFrom} (pageContract.requiredFrom) need` : 'the page contract (--contract) needs';
+  let purpose = null;
+  if (fp.purpose !== undefined) {
+    if (typeof fp.purpose === 'string' && purposes.includes(fp.purpose)) purpose = fp.purpose;
+    else report.error('purpose', `fingerprint.purpose ${JSON.stringify(fp.purpose)} is not one of ${purposeList}`, where);
+  } else if (req) {
+    report.error('purpose', `fingerprint.purpose is missing: ${since} one of ${purposeList}`, where);
+  }
+
+  if (pj?.concepts !== undefined) {
+    const c = pj.concepts;
+    if (!Array.isArray(c) || c.length < 1 || c.length > 6 || c.some((x) => typeof x !== 'string' || x.trim().length < 2 || x.trim().length > 40)) {
+      report.error('project-json', 'concepts must be an array of 1 to 6 strings of 2 to 40 characters', where);
+    }
+  }
+
+  if (pj?.intro !== undefined && typeof pj.intro !== 'string') report.error('project-json', 'intro must be a string of plain text', where);
+  const introText = typeof pj?.intro === 'string' ? collapseWs(pj.intro) : null;
+  const scan = entrySrc === null ? null : analyzeContract(entrySrc, entryTokens ?? undefined);
+  const introEls = scan ? scan.intros : [];
+
+  if (introText === null && pj?.intro === undefined) {
+    if (req) report.error('intro-missing', `project.json has no "intro": ${since} ${contract.intro.minWords} to ${contract.intro.maxWords} words of plain text, also shown as the page's p.sed-intro[data-sed-intro]`, where);
+    else if (introEls.length) report.error('intro-missing', 'the page has a p[data-sed-intro] but project.json has no "intro"; copy the paragraph\'s text into project.json', entryRel);
+  }
+  if (introText !== null) {
+    const { minWords, maxWords, firstSentenceMaxWords } = contract.intro;
+    const n = countWords(introText);
+    if (n < minWords || n > maxWords) report.error('intro-length', `project.json intro has ${n} words; pageContract.intro allows ${minWords} to ${maxWords}`, where);
+    const first = countWords(firstSentence(introText));
+    if (first > firstSentenceMaxWords) report.warn('intro-first-sentence', `the first sentence of the intro has ${first} words (pageContract.intro.firstSentenceMaxWords is ${firstSentenceMaxWords}); say what the thing literally is in fewer words`, where);
+  }
+  if (scan && (req || introText !== null || introEls.length)) {
+    const ok = introEls.filter((x) => x.inMain && !x.inDetails && !x.hidden && !x.template);
+    if (ok.length !== 1) {
+      const why = [...new Set(introEls.filter((x) => !ok.includes(x)).map((x) => (x.template ? 'inside <template>' : x.hidden ? 'inside a [hidden] element' : x.inDetails ? 'inside <details>' : 'outside <main>')))];
+      if (ok.length === 0) {
+        report.error(introEls.length ? 'intro-placement' : 'intro-missing', `no p[data-sed-intro] inside <main> outside <details>, [hidden], <noscript> and <template>${introEls.length ? ` (${introEls.length} elsewhere: ${why.join(', ')})` : ''}; put the intro paragraph right under the tagline as static markup`, entryRel);
+      } else {
+        report.error('intro-placement', `${ok.length} p[data-sed-intro] elements inside <main>; exactly one is allowed`, entryRel);
+      }
+    } else {
+      const el = ok[0].node;
+      const content = introContent(el);
+      if (!el.explicitEnd) report.error('intro-unclosed', 'the intro p[data-sed-intro] has no explicit </p>, so the browser ends it wherever the next block starts; close it right after the intro text', entryRel);
+      if (content.badElements.length) report.error('intro-markup', `the intro holds ${content.badElements.join(', ')}; only text and the inline elements a, abbr, b, code, em, i, kbd, span, strong, sub, sup are allowed`, entryRel);
+      if (content.badEntities.length) report.error('intro-entity', `the intro uses ${content.badEntities.join(', ')}; type the character instead (only &amp; &lt; &gt; &quot; &#39; &nbsp; and numeric references are allowed)`, entryRel);
+      if (introText !== null && content.text !== introText) {
+        let i = 0;
+        while (i < content.text.length && content.text[i] === introText[i]) i++;
+        const show = (s) => JSON.stringify(s.slice(Math.max(0, i - 20), i + 30));
+        report.error('intro-mismatch', `the page's intro text differs from project.json "intro" at character ${i + 1}: page ${show(content.text)}, project.json ${show(introText)}`, entryRel);
+      }
+    }
+  }
+
+  if (!req || !scan) return;
+  const ex = scan.explainers.filter((x) => x.inMain && !x.template);
+  if (ex.length !== 1) {
+    const outside = scan.explainers.length - ex.length;
+    if (ex.length === 0) report.error('explainer-missing', `no section[data-sed-explainer] inside <main>${outside ? ` (${outside} outside <main> or inside <template>)` : ''}; ${since} the explainer section of the page shell, as static markup`, entryRel);
+    else report.error('explainer-placement', `${ex.length} section[data-sed-explainer] elements inside <main>; exactly one is allowed`, entryRel);
+    return;
+  }
+  if (!purpose) return; // the thresholds are per purpose; the purpose error above already says what is missing
+  const e = ex[0];
+  const minWords = contract.explainer.minWords[purpose];
+  const minHeadings = contract.explainer.minHeadings[purpose];
+  if (e.wordCount < minWords) {
+    report.error('explainer-words', `the explainer has ${e.wordCount} words of prose; a ${purpose} needs at least ${minWords} (pageContract.explainer.minWords.${purpose}). Only text in p, li, blockquote, figcaption or dd counts, never text in controls, svg, canvas, [hidden], <template> or <noscript>${e.excludedBy ? `; this section sits inside ${e.excludedBy}, so none of it counts` : ''}`, entryRel);
+  }
+  if (e.headings < minHeadings) {
+    report.error('explainer-headings', `the explainer has ${e.headings} h2/h3 heading${e.headings === 1 ? '' : 's'}; a ${purpose} needs at least ${minHeadings} (pageContract.explainer.minHeadings.${purpose}, the section's own h2 included)`, entryRel);
+  }
+  if (purpose === 'lesson' && scan.checks < contract.lessonMinChecks) {
+    report.error('explainer-checks', `the page has ${scan.checks} element${scan.checks === 1 ? '' : 's'} with data-sed-check; a lesson needs at least ${contract.lessonMinChecks} exercises (pageContract.lessonMinChecks), each static markup`, entryRel);
+  }
+}
+
+/* ------------------------------------------------------------------------------------------------
  * Project validation
  * ---------------------------------------------------------------------------------------------- */
 
@@ -1571,6 +1888,7 @@ const TEMPLATE_TEXT = {
   sourceTitle: 'Name of a page that was actually consulted',
   pageTitle: 'Project Title',
   pageDescription: 'One or two sentences about what this page does.',
+  intro: 'An example project that shows the shape of a page',
 };
 const WAIVABLE = new Set(['privacy-api', 'guardrail-gambling', 'politics-undeclared', 'brand-impersonation']);
 
@@ -1734,7 +2052,7 @@ function walkProject(root, report) {
   return files.sort();
 }
 
-export async function validateProject(dir, { tier, now } = {}) {
+export async function validateProject(dir, { tier, now, contract: forceContract = false } = {}) {
   const report = new Report();
   const stats = { files: 0, bytes: 0, ownLoc: 0 };
   const done = () => ({ ok: report.errors.length === 0, errors: report.errors, warnings: report.warnings, stats });
@@ -1749,6 +2067,8 @@ export async function validateProject(dir, { tier, now } = {}) {
     return done();
   }
   const limits = cfg.limits;
+  const contract = pageContractOf(cfg);
+  const purposes = purposesOf(taxonomy);
 
   let root = path.resolve(String(dir));
   if (!fs.existsSync(root) && !path.isAbsolute(String(dir)) && fs.existsSync(rp(String(dir)))) root = rp(String(dir));
@@ -1846,7 +2166,7 @@ export async function validateProject(dir, { tier, now } = {}) {
     }
     // Template leftovers matter for the builder-made tiers; tiers 3 and 4 are generated by scripts, never from the templates.
     if (effTier <= 2) {
-      for (const [k, marker] of [['tagline', TEMPLATE_TEXT.tagline], ['description', TEMPLATE_TEXT.description], ['makingOf', TEMPLATE_TEXT.makingOf]]) {
+      for (const [k, marker] of [['tagline', TEMPLATE_TEXT.tagline], ['description', TEMPLATE_TEXT.description], ['makingOf', TEMPLATE_TEXT.makingOf], ['intro', TEMPLATE_TEXT.intro]]) {
         if (typeof pj[k] === 'string' && pj[k].includes(marker)) report.error('placeholder-text', `${k} is still the text from project.json.example`, 'project.json');
       }
       if (pj.title === 'Example Project' || pj.slug === 'example-project') report.error('placeholder-text', 'title or slug is still the example value', 'project.json');
@@ -1916,6 +2236,7 @@ export async function validateProject(dir, { tier, now } = {}) {
   let ownLoc = 0;
   const acc = { text: [], script: [], links: [], placeholders: [] };
   let entryInfo = null;
+  let entrySrc = null;
   const pageInfos = [];
 
   for (const rel of textFiles) {
@@ -1966,7 +2287,10 @@ export async function validateProject(dir, { tier, now } = {}) {
         const info = scanMarkup(text, S, { dir: fileDir });
         commentRanges = info.commentRanges;
         pageInfos.push({ rel, info, isEntry });
-        if (isEntry) entryInfo = info;
+        if (isEntry) {
+          entryInfo = info;
+          entrySrc = text;
+        }
         for (const m of info.inlineModules) pendingChecks.push({ rel, line: m.line, file: tmpFile(m.code) });
       } else if (ext === '.css') {
         commentRanges = scanCss(text, S, { dir: fileDir }).comments;
@@ -2034,6 +2358,12 @@ export async function validateProject(dir, { tier, now } = {}) {
   }
   if (effTier <= 2 && entryInfo?.title === TEMPLATE_TEXT.pageTitle) report.error('placeholder-text', `<title> is still "${TEMPLATE_TEXT.pageTitle}"`, entryRel);
   if (effTier <= 2 && entryInfo?.description === TEMPLATE_TEXT.pageDescription) report.error('placeholder-text', 'meta description is still the page-shell text', entryRel);
+
+  // the page contract (DESIGN 7.3): purpose, intro, explainer; tiers 1 and 2 only, required from pageContract.requiredFrom or with --contract
+  if (effTier <= 2 && pj && typeof pj === 'object' && !Array.isArray(pj)) {
+    const req = contractRequired({ contract, date: pj.date, tier: effTier, force: forceContract === true });
+    checkPageContract({ report, pj, contract, req, entrySrc: entryInfo ? entrySrc : null, entryTokens: entryInfo?.tokens, entryRel, purposes });
+  }
 
   // content guardrails (config.guardrails.forbidden), cheap and mechanical; a human still reads the tier-1 pages
   const sourceHosts = new Set([...declared, ...(Array.isArray(pj?.sources) ? pj.sources.map((x) => classifyUrl(String(x?.url ?? '')).host).filter(Boolean) : [])]);
@@ -2455,6 +2785,104 @@ function checkReviseKeys(report, cfg, f) {
   for (const problem of warnings) report.warn('config', problem, f);
 }
 
+/**
+ * The purpose mix and the page contract (DESIGN 2): config.mix.purposes, config.pageContract and taxonomy.purposes.
+ * A missing block is a warning (readers treat it as "no plan" / "no requirement"); a damaged value is an error,
+ * because the readers would silently fall back to a default.
+ */
+function checkPurposeKeys(report, cfg, taxonomy, f) {
+  const tf = 'ops/taxonomy.json';
+  const purposes = Object.keys(plainObj(taxonomy?.purposes));
+  if (taxonomy && !purposes.length) report.warn('taxonomy', 'taxonomy.purposes is missing: no purpose vocabulary, so the purpose plan and the page contract cannot name a purpose', tf);
+  else if (taxonomy && !purposes.includes('play')) report.error('taxonomy', 'taxonomy.purposes must contain "play" (a reserved key: the purpose plan special-cases it)', tf);
+  const vocab = purposes.length ? purposes : PURPOSES;
+
+  const mp = cfg.mix?.purposes;
+  if (mp === undefined) report.warn('config', 'mix.purposes is missing: no purpose plan (old lens counts, no wanted or avoided purpose)', f);
+  else if (!mp || typeof mp !== 'object' || Array.isArray(mp)) report.error('config', 'mix.purposes must be an object', f);
+  else {
+    for (const k of ['windowDays', 'cooldownDays', 'playCooldownDays', 'maxPlayPer7Days', 'wantedCount', 'wantedBonus', 'starvedDays']) {
+      if (mp[k] !== undefined && !posNum(mp[k])) report.error('config', `mix.purposes.${k} must be a positive number`, f);
+    }
+    if (mp.wantedCount !== undefined && mp.wantedCount !== 1 && mp.wantedCount !== 2) report.error('config', 'mix.purposes.wantedCount must be 1 or 2', f);
+    if (mp.legacyDefault !== undefined && !vocab.includes(mp.legacyDefault)) report.error('config', `mix.purposes.legacyDefault ${JSON.stringify(mp.legacyDefault)} is not a purpose (${vocab.join(', ')})`, f);
+  }
+  if (cfg.ideation?.shortlistMinWanted !== undefined && !(Number.isInteger(cfg.ideation.shortlistMinWanted) && cfg.ideation.shortlistMinWanted >= 0)) {
+    report.error('config', 'ideation.shortlistMinWanted must be a non-negative integer', f);
+  }
+
+  const pc = cfg.pageContract;
+  if (pc === undefined) {
+    report.warn('config', 'pageContract is missing: no purpose, intro or explainer requirement anywhere', f);
+    return;
+  }
+  if (!pc || typeof pc !== 'object' || Array.isArray(pc)) {
+    report.error('config', 'pageContract must be an object', f);
+    return;
+  }
+  if (pc.requiredFrom !== null && pc.requiredFrom !== undefined && !isDay(pc.requiredFrom)) report.error('config', `pageContract.requiredFrom must be null or a date YYYY-MM-DD (got ${JSON.stringify(pc.requiredFrom)})`, f);
+  const positive = (pathName, v) => {
+    if (v !== undefined && !posNum(v)) report.error('config', `pageContract.${pathName} must be a positive number`, f);
+  };
+  const intro = plainObj(pc.intro);
+  for (const k of ['minWords', 'maxWords', 'firstSentenceMaxWords']) positive(`intro.${k}`, intro[k]);
+  if (posNum(intro.minWords) && posNum(intro.maxWords) && intro.minWords > intro.maxWords) report.error('config', 'pageContract.intro.minWords is above maxWords', f);
+  for (const key of ['minWords', 'minHeadings']) {
+    const table = pc.explainer?.[key];
+    if (table === undefined) continue;
+    if (!table || typeof table !== 'object' || Array.isArray(table)) {
+      report.error('config', `pageContract.explainer.${key} must map purposes to positive numbers`, f);
+      continue;
+    }
+    for (const [p, v] of Object.entries(table)) {
+      if (!vocab.includes(p)) report.error('config', `pageContract.explainer.${key}.${p}: "${p}" is not a purpose (${vocab.join(', ')})`, f);
+      positive(`explainer.${key}.${p}`, v);
+    }
+    for (const p of vocab) if (!Object.hasOwn(table, p)) report.warn('config', `pageContract.explainer.${key} has no "${p}" (the validator uses its default)`, f);
+  }
+  positive('lessonMinChecks', pc.lessonMinChecks);
+  positive('toolMinSelfTests', pc.toolMinSelfTests);
+  for (const k of ['desktop', 'mobile']) positive(`introMaxBottomPx.${k}`, pc.introMaxBottomPx?.[k]);
+  for (const k of ['warn', 'error']) positive(`firstScreenControls.${k}`, pc.firstScreenControls?.[k]);
+  const fsc = plainObj(pc.firstScreenControls);
+  if (posNum(fsc.warn) && posNum(fsc.error) && fsc.warn > fsc.error) report.error('config', 'pageContract.firstScreenControls.warn is above error', f);
+}
+
+// The lens kinds every day needs: scripts/lenses.mjs is the authority (its MAIN_KINDS literal); this list is the fallback.
+const LENS_MAIN_KINDS = ['interest', 'current', 'humor', 'wildcard', 'useful', 'teach'];
+const LENS_MIN_PER_KIND = 3;
+
+function lensMainKinds(declared) {
+  try {
+    const src = fs.readFileSync(new URL('./lenses.mjs', import.meta.url), 'utf8');
+    const m = /\bMAIN_KINDS\s*=\s*(?:Object\.freeze\(\s*)?\[([^\]]*)\]/.exec(src);
+    const kinds = m ? [...m[1].matchAll(/'([\w-]+)'|"([\w-]+)"/g)].map((x) => x[1] ?? x[2]) : [];
+    if (kinds.length) return kinds;
+  } catch { /* fall back */ }
+  return LENS_MAIN_KINDS.filter((k) => declared.includes(k));
+}
+
+/** ops/lenses.json must hold at least LENS_MIN_PER_KIND lenses of every main kind, or preflight's lens draw breaks. */
+function checkLensPool(report) {
+  const rel = 'ops/lenses.json';
+  if (!fs.existsSync(rp('ops', 'lenses.json'))) {
+    report.warn('lenses', `${rel} is missing`, rel);
+    return;
+  }
+  const pool = tryParse(rp('ops', 'lenses.json'), report, 'lenses');
+  if (pool === undefined) return;
+  if (!Array.isArray(pool?.lenses)) {
+    report.error('lenses', `${rel} must be {kinds, lenses: [...]}`, rel);
+    return;
+  }
+  const counts = {};
+  for (const l of pool.lenses) if (l && typeof l.kind === 'string') counts[l.kind] = (counts[l.kind] ?? 0) + 1;
+  for (const k of lensMainKinds(Object.keys(plainObj(pool.kinds)))) {
+    const n = counts[k] ?? 0;
+    if (n < LENS_MIN_PER_KIND) report.error('lenses', `${rel} has ${n} lens${n === 1 ? '' : 'es'} of kind "${k}"; every main kind needs at least ${LENS_MIN_PER_KIND} (scripts/lenses.mjs draws each main kind every day)`, rel);
+  }
+}
+
 // `projects` defaults to true: whatever sits under docs/d is served by Pages, so the repo gate must look inside it.
 export async function validateRepo({ projects = true } = {}) {
   const report = new Report();
@@ -2495,7 +2923,9 @@ export async function validateRepo({ projects = true } = {}) {
     if (!cfg.workBranch || !cfg.siteUrl) report.error('config', 'workBranch and siteUrl are required', f);
     checkBudgetKeys(report, cfg, f);
     checkReviseKeys(report, cfg, f);
+    checkPurposeKeys(report, cfg, taxonomy, f);
   }
+  checkLensPool(report);
 
   // state files
   const throttle = tryParse(rp('state', 'throttle.json'), report, 'state-throttle');
@@ -2547,7 +2977,10 @@ export async function validateRepo({ projects = true } = {}) {
       else if (e.tier >= 3 && e.countsForNovelty) report.warn('state-history', `${tag}: fallback tiers should not count for novelty`, f);
       if (Number.isNaN(Date.parse(e.publishedAt))) report.error('state-history', `${tag}: publishedAt is not a timestamp`, f);
       if (!e.fingerprint || typeof e.fingerprint !== 'object') report.error('state-history', `${tag}: missing fingerprint`, f);
-      else if (taxonomy && !Object.hasOwn(taxonomy.categories, e.fingerprint.category)) report.error('state-history', `${tag}: unknown category ${JSON.stringify(e.fingerprint.category)}`, f);
+      else {
+        if (taxonomy && !Object.hasOwn(taxonomy.categories, e.fingerprint.category)) report.error('state-history', `${tag}: unknown category ${JSON.stringify(e.fingerprint.category)}`, f);
+        if (e.fingerprint.purpose !== undefined && !purposesOf(taxonomy).includes(e.fingerprint.purpose)) report.error('state-history', `${tag}: unknown purpose ${JSON.stringify(e.fingerprint.purpose)}`, f);
+      }
       if (e.path !== `d/${e.date}-${e.slug}/`) report.error('state-history', `${tag}: path should be d/${e.date}-${e.slug}/`, f);
       if (e.slug) {
         const prior = slugs.get(e.slug);
@@ -2633,11 +3066,16 @@ async function main() {
   const cmd = flags._[0];
   try {
     if (cmd === 'project') {
+      // a bare --contract placed before the directory would swallow it as its value
+      if (typeof flags.contract === 'string') {
+        flags._.splice(1, 0, flags.contract);
+        flags.contract = true;
+      }
       const dir = flags._[1];
-      if (!dir) die('usage: validate.mjs project <dir> [--tier T]', 2);
+      if (!dir) die('usage: validate.mjs project <dir> [--tier T] [--contract]', 2);
       const tier = flags.tier !== undefined && flags.tier !== true ? Number(flags.tier) : undefined;
       if (tier !== undefined && ![1, 2, 3, 4].includes(tier)) die('--tier must be 1, 2, 3 or 4', 2);
-      const res = await validateProject(dir, { tier, now: flags.now || process.env.SED_NOW ? resolveNow(flags) : undefined });
+      const res = await validateProject(dir, { tier, now: flags.now || process.env.SED_NOW ? resolveNow(flags) : undefined, contract: flags.contract === true });
       print(res);
       process.exitCode = res.ok ? 0 : 1;
     } else if (cmd === 'repo') {
@@ -2645,7 +3083,7 @@ async function main() {
       print(res);
       process.exitCode = res.ok ? 0 : 1;
     } else {
-      die('usage: validate.mjs project <dir> [--tier T] | repo [--no-projects]', 2);
+      die('usage: validate.mjs project <dir> [--tier T] [--contract] | repo [--no-projects]', 2);
     }
   } catch (err) {
     die(`validator crashed: ${err.stack || err.message}`, 1);

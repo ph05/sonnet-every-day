@@ -5,8 +5,14 @@
   "title": "Sample Toy",
   "tagline": "A fixture that stands in for a well-behaved daily build.",
   "description": "A tiny cellular automaton with a palette picker. It exists only to prove the validator accepts honest work.",
+  "intro": "A toy that draws an elementary cellular automaton: a row of cells where each new row follows from the one above by a fixed rule. It is for anyone curious how simple rules make complex patterns. Press Step to grow one row, or Play to watch it run; change the rule number to see another pattern.",
+  "concepts": [
+    "cellular automaton",
+    "rule number"
+  ],
   "tier": 1,
   "fingerprint": {
+    "purpose": "play",
     "category": "math-puzzle",
     "mechanic": "toy",
     "tone": [

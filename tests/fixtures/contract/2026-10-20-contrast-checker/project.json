@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "slug": "contrast-checker",
+  "title": "Contrast Ratio Checker",
+  "tagline": "A calculator for the contrast ratio between two colours, with the WCAG pass or fail for text.",
+  "description": "Type or pick a text colour and a background colour; the page shows their WCAG 2.2 contrast ratio and whether it passes each level. Everything runs locally.",
+  "intro": "A calculator that measures the contrast ratio between a text colour and a background colour, the number the Web Content Accessibility Guidelines use to judge readable text. It is for designers and developers checking a palette. Type or pick two colours; the ratio and the pass or fail verdicts update at once. Everything runs in your browser.",
+  "concepts": [
+    "contrast ratio",
+    "relative luminance",
+    "WCAG levels"
+  ],
+  "tier": 2,
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "design-craft",
+    "mechanic": "checker",
+    "tone": [
+      "analytical"
+    ],
+    "tech": [
+      "dom-ui"
+    ],
+    "tags": [
+      "contrast",
+      "accessibility",
+      "colour",
+      "wcag"
+    ],
+    "keywords": [
+      "luminance",
+      "ratio",
+      "readability"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#f6f5f1",
+    "#4b32d6",
+    "#595959",
+    "#1d7a3a"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Web Content Accessibility Guidelines (WCAG) 2.2",
+      "url": "https://www.w3.org/TR/WCAG22/"
+    },
+    {
+      "title": "Understanding Success Criterion 1.4.3: Contrast (Minimum)",
+      "url": "https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html"
+    },
+    {
+      "title": "WebAIM: Contrast Checker",
+      "url": "https://webaim.org/resources/contrastchecker/"
+    }
+  ],
+  "makingOf": "The formulas come straight from the WCAG 2.2 definitions; twelve known-answer tests from WCAG and WebAIM run in the page and in QA.",
+  "stats": {
+    "files": 5,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

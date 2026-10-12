@@ -1,5 +1,5 @@
 // Regenerates site-src/dev/archive.sample.json (its `kaizen` teaser comes from kaizen.sample.json): 21 fake days with generated SVG
-// thumbnails (data URIs) so the gallery can be previewed with no project files.
+// thumbnails (data URIs), every purpose, intros and concepts, so the gallery can be previewed with no project files.
 // Usage: node site-src/dev/make-sample.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -25,16 +25,37 @@ const ROWS = [
   ['2026-10-19', 'Moire Garden', 'Two lattices, one slider, endless flowers.', 'A compact build: overlay rotating line gratings and harvest the interference patterns as wallpapers.', 'generative-art', 'toy', ['serene'], ['canvas2d', 'shaders'], ['moire', 'patterns', 'wallpaper'], 2],
   ['2026-10-20', 'Pun Foundry', 'Feed it a word, receive an unreasonable number of puns.', 'A phoneme-aware wordplay engine with a groan meter. Bundled pronunciation data, no network, many regrets.', 'language-text', 'generator', ['playful', 'absurd'], ['dom-ui', 'worker'], ['puns', 'wordplay', 'phonemes', 'groans'], 1],
   ['2026-10-21', 'Postcard from the 21st', 'No build today. Here is a sky instead.', 'A stand-in edition: a generative postcard made from nothing but the date. Same date, same sky, every time.', 'generative-art', 'generator', ['serene'], ['canvas2d'], ['postcard', 'generative', 'date-seed'], 4],
-  ['2026-10-22', 'Receipt Roulette', 'Split any bill fairly, or dramatically.', 'Paste a receipt, pick a mood, and settle the tab with fair shares, weighted dice, or a tiny round of poker for the appetizers.', 'tools-utility', 'calculator', ['playful', 'competitive'], ['dom-ui', 'localstorage'], ['bills', 'split', 'dice', 'utility'], 1],
+  ['2026-10-22', 'Receipt Roulette', 'Split any bill fairly, or dramatically.', 'Paste a receipt, pick a mood, and settle the tab with fair shares, weighted dice, or a tiny round of poker for the appetizers.', 'personal-finance', 'calculator', ['playful', 'competitive'], ['dom-ui', 'localstorage'], ['bills', 'split', 'dice', 'utility'], 1],
   ['2026-10-24', 'Gravel Rally', 'A one-thumb rally game with tire physics you can feel.', 'Top-down gravel racing with weight transfer, handbrake slides and five hand-drawn stages. Keyboard, touch and gamepad.', 'games-arcade', 'game', ['competitive', 'chaotic'], ['canvas2d', 'gamepad'], ['racing', 'arcade', 'physics', 'rally'], 1],
   ['2026-10-25', 'Green Phosphor Terminal', 'A 1980s mainframe that only runs text adventures about its own uptime.', 'A faithful-feeling terminal emulator with a scanline shader, a fake filesystem and a game hidden in the man pages.', 'retro-tech', 'story', ['nerdy', 'cozy'], ['canvas2d', 'shaders'], ['terminal', 'retro', 'adventure', 'crt'], 1],
-  ['2026-10-26', 'How Compound Interest Lies', 'A calm explainer about why the last decade is worth more than the first three.', 'Interactive curves that show exactly where intuition fails: slide the rate, the time and the fees. Simulated money only.', 'education-explainer', 'explorer', ['analytical', 'serene'], ['svg', 'dom-ui'], ['interest', 'exponential', 'explainer', 'fees'], 1],
-  ['2026-10-27', 'Ruin Odds', 'How long does a bankroll last? Simulate ten thousand lifetimes.', 'A risk-of-ruin visualizer for made-up money: pick a win rate and a bet size and watch the fan of possible futures.', 'finance-economics', 'simulator', ['analytical', 'dramatic'], ['canvas2d', 'worker'], ['risk', 'probability', 'bankroll', 'monte-carlo'], 1],
+  ['2026-10-26', 'How Compound Interest Lies', 'A calm explainer about why the last decade is worth more than the first three.', 'Interactive curves that show exactly where intuition fails: slide the rate, the time and the fees. Simulated money only.', 'math-concepts', 'lesson', ['analytical', 'serene'], ['svg', 'dom-ui'], ['interest', 'exponential', 'explainer', 'fees'], 1],
+  ['2026-10-27', 'Ruin Odds', 'How long does a bankroll last? Simulate ten thousand lifetimes.', 'A risk-of-ruin visualizer for made-up money: pick a win rate and a bet size and watch the fan of possible futures.', 'stats-literacy', 'lesson', ['analytical', 'dramatic'], ['canvas2d', 'worker'], ['risk', 'probability', 'bankroll', 'monte-carlo'], 1],
   ['2026-10-28', 'Pantry Chess', 'Plan a week of dinners from what is already in the cupboard.', 'Tell it what you have; it searches for a week of meals that uses it all before it expires, and explains each trade-off.', 'life-food-craft', 'solver', ['cozy', 'analytical'], ['dom-ui', 'localstorage'], ['cooking', 'planning', 'pantry', 'solver'], 1],
   ['2026-10-29', 'Headline Bingo, Satire Edition', 'A playful, clearly fictional bingo card for every news cycle.', 'Generates absurd, obviously invented headlines and lets you mark them off. Parody only, no real names, never partisan.', 'news-politics', 'game', ['satirical', 'playful'], ['dom-ui'], ['bingo', 'satire', 'headlines', 'fiction'], 1],
   ['2026-10-30', 'The Unbuttoned Page', 'A web page that politely refuses to behave.', 'Every control on this page does something adjacent to what it says. A study in expectation, with a secret ending.', 'weird-experimental', 'toy', ['chaotic', 'absurd'], ['dom-ui', 'pointer-events'], ['weird', 'ui', 'expectation', 'secret'], 1],
   ['2026-10-31', 'Eleven Years of Overtime', 'A scrolling data essay about the sudden-death minutes that decide seasons.', 'Bundled game data, one long scroll, and a handful of annotated charts about how overtime actually ends.', 'data-viz', 'visualizer', ['analytical', 'dramatic'], ['svg', 'canvas2d'], ['hockey', 'overtime', 'charts', 'data-essay'], 1],
 ];
+
+// What each day is for (ops/taxonomy.json purposes), its intro and concepts. Day 1 stands for a page from before the
+// page contract (no purpose, no intro); the stand-ins (tiers 3 and 4) never have one.
+const PURPOSE = {
+  '2026-10-10': 'play', '2026-10-11': 'studio', '2026-10-12': 'play', '2026-10-13': 'play', '2026-10-15': 'explorer', '2026-10-17': 'play',
+  '2026-10-18': 'studio', '2026-10-19': 'studio', '2026-10-20': 'play', '2026-10-22': 'tool', '2026-10-24': 'play', '2026-10-25': 'play',
+  '2026-10-26': 'lesson', '2026-10-27': 'lesson', '2026-10-28': 'tool', '2026-10-29': 'play', '2026-10-30': 'play', '2026-10-31': 'explorer',
+};
+const INTRO = {
+  '2026-10-31': 'An explorer of eleven seasons of hockey overtime: every sudden-death goal on one long, scrolling page. It is for fans who wonder how overtime really ends. Scroll down to read the story, or tap any dot in a chart to see the game it stands for and the minute the goal came.',
+  '2026-10-28': 'A planner that turns what is already in your cupboard into a week of dinners, using everything before it goes off. It is for anyone who hates throwing food away. Tick what you have; the plan and a short shopping list appear at once, and each swap says why.',
+  '2026-10-27': 'A lesson on the risk of ruin: how likely a pot of pretend money is to run out, even when every bet is in your favour. It is for anyone who has wondered why gamblers go broke. Pick a win rate and a bet size, then watch a thousand futures fan out.',
+  '2026-10-26': 'A lesson on compound growth: why money that grows by a steady percentage gains most of its value in the last years, not the first. It is for anyone saving for something far away. Slide the rate and the years and watch where the curve bends, with simulated money only.',
+  '2026-10-22': 'A calculator that splits a restaurant bill between friends, fairly by what each person ordered or evenly with tax and tip shared. It is for anyone who has done this sum on a napkin. Paste or type the receipt, tick who had what, and copy the result to the group chat.',
+  '2026-10-15': 'An explorer of a small rock pool that keeps time by the moon: anemones, crabs and a starfish react to a real tide table. It is for curious people of any age. Drag the moon to fast-forward a season and see which creatures cope with the tides and which do not.',
+  '2026-10-10': 'A hockey bench game: you are the coach, and you decide when each of three lines goes on the ice during one game. It is for hockey fans and for anyone who likes a quick tactics puzzle. Press Start, then tap a line to change it before the players get too tired.',
+};
+const CONCEPTS = {
+  '2026-10-31': ['sudden death', 'overtime'], '2026-10-27': ['risk of ruin', 'expected value'], '2026-10-26': ['compound growth', 'exponential curve'],
+  '2026-10-22': ['bill splitting'], '2026-10-15': ['tides', 'lunar cycle'],
+};
 
 function hex(h, s, l) {
   s /= 100; l /= 100;
@@ -97,6 +118,7 @@ const days = ROWS.map(([date, title, tagline, description, category, mechanic, t
   return {
     n: dayNumber(date, START), date, slug, path: `d/${date}-${slug}/`, title, tagline, description, tier,
     category, mechanic, tone, tech, tags, palette, thumb: thumb(date, palette, i),
+    purpose: PURPOSE[date] ?? '', intro: INTRO[date] ?? '', concepts: CONCEPTS[date] ?? [],
   };
 }).sort((x, y) => (x.date < y.date ? 1 : -1));
 
@@ -105,18 +127,23 @@ for (let d = days[0].date; days.some((x) => x.date === d); d = addDays(d, -1)) s
 
 const categories = {};
 for (const d of days) categories[d.category] = (categories[d.category] || 0) + 1;
+const purposes = {};
+for (const p of ['tool', 'lesson', 'explorer', 'studio', 'play']) {
+  const n = days.filter((d) => d.purpose === p).length;
+  if (n) purposes[p] = n;
+}
 
 const archive = {
   schema: 1,
   generatedAt: '2026-10-31T09:12:44.000Z',
   site: {
     name: 'Sonnet Every Day',
-    tagline: 'One new, slightly ridiculous, surprisingly sophisticated thing on the web every morning.',
+    tagline: 'A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.',
     url: 'https://example.invalid/sonnet-every-day/',
     startDate: START,
   },
   stats: {
-    days: days.length, projects: days.length, streak, categories,
+    days: days.length, projects: days.length, streak, categories, purposes,
     firstDate: days[days.length - 1].date, lastDate: days[0].date, missingDates: MISSING,
   },
   kaizen: kaizenTeaser(normalizeKaizen(JSON.parse(fs.readFileSync(path.join(HERE, 'kaizen.sample.json'), 'utf8'))).entries),

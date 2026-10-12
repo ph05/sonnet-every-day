@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "date": "2026-10-21",
+  "slug": "parity-bit-lesson",
+  "title": "Parity Bit Lesson",
+  "tagline": "A short lesson on the parity bit: one extra bit that tells you a message was damaged.",
+  "description": "An interactive lesson: flip bits in a five-bit message and see why a parity bit catches one flipped bit but never two.",
+  "intro": "A lesson on the parity bit, the simplest way a computer notices that data was damaged on the way. It is for anyone curious about error detection; no maths beyond counting is needed. Flip the bits in the demo below and watch the check react, then try the two exercises at the end.",
+  "concepts": [
+    "parity bit",
+    "even parity",
+    "error detection"
+  ],
+  "tier": 2,
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "algorithms-cs",
+    "mechanic": "lesson",
+    "tone": [
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "dom-ui"
+    ],
+    "tags": [
+      "parity",
+      "bits",
+      "errors",
+      "lesson"
+    ],
+    "keywords": [
+      "error-detection",
+      "binary",
+      "checksum"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#0e1016",
+    "#a99cff",
+    "#4b32d6",
+    "#f6f5f1"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Parity bit (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Parity_bit"
+    },
+    {
+      "title": "Error detection and correction (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Error_detection_and_correction"
+    }
+  ],
+  "makingOf": "The demo counts ones exactly as the explainer does; the two exercises were checked by hand and by the page self-test.",
+  "stats": {
+    "files": 5,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

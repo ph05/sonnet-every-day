@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { buildSite } from '../scripts/build-site.mjs';
 import {
   escapeHtml, escapeXml, jsonForScript, renderTemplate, streakOf, missingDatesBetween, buildArchive,
-  renderFeed, renderSitemap, renderRobots, normalizeSiteUrl, absoluteUrl, FEED_LIMIT,
+  renderFeed, renderSitemap, renderRobots, normalizeSiteUrl, absoluteUrl, FEED_LIMIT, DEFAULT_TAGLINE, PURPOSE_ORDER, INTRO_MAX_CHARS,
   normalizeKaizen, kaizenTeaser, summarizeKaizen, renderKaizenPage, renderKaizenJson,
 } from '../scripts/lib/archive.mjs';
 import { verifyLive, archiveUrl, diagnoseSite, HINTS } from '../scripts/verify-live.mjs';
@@ -306,7 +306,7 @@ test('buildArchive derives day numbers, stats and the missing-date list', () => 
   });
   assert.deepEqual(archive.days.map((d) => [d.n, d.date]), [[4, '2026-10-12'], [3, '2026-10-11'], [1, '2026-10-09']]);
   assert.deepEqual(archive.stats, {
-    days: 5, projects: 3, streak: 2, categories: { 'cards-odds': 2, 'generative-art': 1 }, tiers: { 1: 2, 3: 1 },
+    days: 5, projects: 3, streak: 2, categories: { 'cards-odds': 2, 'generative-art': 1 }, purposes: {}, tiers: { 1: 2, 3: 1 },
     firstDate: '2026-10-09', lastDate: '2026-10-12', missingDates: ['2026-10-10', '2026-10-13'],
   });
   assert.equal(archive.generatedAt, NOW.toISOString());
@@ -315,7 +315,43 @@ test('buildArchive derives day numbers, stats and the missing-date list', () => 
   assert.equal(archive.days[0].thumb, 'd/2026-10-12-c/thumb.png');
   assert.equal(archive.days[0].path, 'd/2026-10-12-c/');
   const empty = buildArchive({ projects: [], config, siteUrl: SITE_URL, now: NOW, through: '2026-10-08' });
-  assert.deepEqual(empty.stats, { days: 0, projects: 0, streak: 0, categories: {}, tiers: {}, firstDate: null, lastDate: null, missingDates: [] });
+  assert.deepEqual(empty.stats, { days: 0, projects: 0, streak: 0, categories: {}, purposes: {}, tiers: {}, firstDate: null, lastDate: null, missingDates: [] });
+});
+
+test('the archive carries purpose, intro and concepts per day and purpose counts in canonical order; the feed summary prefers the intro', () => {
+  const config = { name: 'Site', startDate: '2026-10-09' };
+  const mk = (date, slug, purpose, extra = {}) => {
+    const project = projectJson({ date, slug, ...extra });
+    if (purpose !== undefined) project.fingerprint = { ...project.fingerprint, purpose };
+    return { entry: historyEntry({ date, slug }, config.startDate), project };
+  };
+  const longIntro = `${'x'.repeat(INTRO_MAX_CHARS - 1)}\u{1F600}tail`;
+  const archive = buildArchive({
+    projects: [
+      mk('2026-10-09', 'a', 'play'), mk('2026-10-10', 'b', 'lesson', { intro: '  A lesson on parity bits.  ', concepts: ['parity bit', 7, 'error detection'] }),
+      mk('2026-10-11', 'c', 'tool', { intro: longIntro }), mk('2026-10-12', 'd'), mk('2026-10-13', 'e', 'play'), mk('2026-10-14', 'f', 'oddity'),
+    ],
+    config, siteUrl: SITE_URL, now: NOW, through: '2026-10-14',
+  });
+  assert.deepEqual(Object.entries(archive.stats.purposes), [['tool', 1], ['lesson', 1], ['play', 2], ['oddity', 1]], 'canonical order, unknown values last, days without a purpose not counted');
+  const byDate = Object.fromEntries(archive.days.map((d) => [d.date, d]));
+  assert.equal(byDate['2026-10-12'].purpose, '');
+  assert.equal(byDate['2026-10-10'].intro, 'A lesson on parity bits.');
+  assert.deepEqual(byDate['2026-10-10'].concepts, ['parity bit', 'error detection']);
+  assert.equal(byDate['2026-10-11'].intro.length, INTRO_MAX_CHARS - 1, 'clipped to 700 characters without splitting a surrogate pair');
+  const custom = buildArchive({ projects: [mk('2026-10-09', 'a', 'play'), mk('2026-10-10', 'b', 'tool')], config, siteUrl: SITE_URL, now: NOW, through: '2026-10-10', purposes: ['play', 'tool'] });
+  assert.deepEqual(Object.keys(custom.stats.purposes), ['play', 'tool'], 'the taxonomy order wins when given');
+  assert.deepEqual(PURPOSE_ORDER, ['tool', 'lesson', 'explorer', 'studio', 'play']);
+  assert.equal(DEFAULT_TAGLINE, 'A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.');
+  assert.equal(archive.site.tagline, DEFAULT_TAGLINE);
+  const feed = renderFeed({ archive });
+  const summaries = Object.fromEntries([...feed.matchAll(/<id>[^<]*d\/(\d{4}-\d{2}-\d{2})-[^<]*<\/id>[\s\S]*?<summary>([^<]*)<\/summary>/g)].map((m) => [m[1], m[2]]));
+  assert.equal(summaries['2026-10-10'], 'A lesson on parity bits.', 'intro first');
+  assert.equal(summaries['2026-10-09'], 'Description of Probe.', 'then the description');
+  const bare = buildArchive({ projects: [mk('2026-10-09', 'a', undefined, { description: '' }), mk('2026-10-10', 'b', undefined, { description: '', tagline: '' })], config, siteUrl: SITE_URL, now: NOW, through: '2026-10-10' });
+  const bareFeed = renderFeed({ archive: bare });
+  assert.match(bareFeed, /<summary>Tagline for Probe<\/summary>/, 'then the tagline');
+  assert.match(bareFeed, /<summary>Probe<\/summary>/, 'then the title');
 });
 
 // ---------- buildSite ----------
@@ -347,12 +383,14 @@ test('buildSite writes the whole site from history and project.json', async () =
     assert.deepEqual(archive.days.map((d) => d.n), [4, 2, 1]);
     // 07:00 on Oct 13 is before the 08:00 deadline, so Oct 13 is not yet "missing"; Oct 11 is.
     assert.deepEqual(archive.stats, {
-      days: 4, projects: 3, streak: 1, categories: { 'cards-odds': 2, 'hockey-sports': 1 }, tiers: { 1: 2, 3: 1 },
+      days: 4, projects: 3, streak: 1, categories: { 'cards-odds': 2, 'hockey-sports': 1 }, purposes: {}, tiers: { 1: 2, 3: 1 },
       firstDate: '2026-10-09', lastDate: '2026-10-12', missingDates: ['2026-10-11'],
     });
     assert.deepEqual(Object.keys(archive.days[0]), [
       'n', 'date', 'slug', 'path', 'title', 'tagline', 'description', 'tier', 'category', 'mechanic', 'tone', 'tech', 'tags', 'palette', 'thumb',
+      'purpose', 'intro', 'concepts',
     ]);
+    assert.deepEqual([archive.days[0].purpose, archive.days[0].intro, archive.days[0].concepts], ['', '', []], 'a day without the new fields gets empty values');
     assert.equal(archive.days[0].thumb, 'd/2026-10-12-ideas-day/thumb.png');
 
     const index = box.read('docs/index.html');

@@ -5,10 +5,25 @@
   HOW TO USE
   1. Copy this file to docs/d/<date>-<slug>/index.html (work/<date>/build/ while building).
   2. Replace ONLY the places marked "SLOT" below: <title>, meta description, the header day label, the
-     heading and tagline, the <main> content, and the making-of panel. Everything else is the contract.
+     heading and tagline, the intro paragraph, the app, the explainer section, and the making-of panel.
+     Everything else is the contract.
   3. Add your own files (app.js, style.css, data/*.json, assets/*) next to index.html and reference them with
      RELATIVE paths. Nothing may be loaded from another host (see the CSP below).
-  4. Delete every element that carries data-sed-placeholder. browser-check.mjs reports any that are left over.
+  4. Replace or delete every element that carries data-sed-placeholder (in the intro, the app, the explainer and
+     the making-of panel). validate.mjs and browser-check.mjs report any that are left over.
+
+  INTRO AND EXPLAINER (the page contract: validate.mjs project and browser-check.mjs enforce them)
+  * p.sed-intro[data-sed-intro], right under the tagline: 35 to 70 words of plain text saying what this is, who it
+    is for and what to do first. Its text must equal project.json "intro" exactly (entities decoded, whitespace
+    collapsed). Only text and the inline elements a, abbr, b, code, em, i, kbd, span, strong, sub, sup inside it;
+    type characters such as an en dash or curly quotes directly, never as named entities (only &amp; &lt; &gt;
+    &quot; &#39; &nbsp; and numeric references are allowed). Close it with an explicit </p>. Exactly one, inside
+    <main>, never inside <details>, <template>, <noscript> or a [hidden] element.
+  * section.sed-explainer[data-sed-explainer]: the explanation for a curious non-expert, with its own <h2> and
+    more <h2>/<h3> headings and prose (minimum words and headings per purpose: config.json pageContract). A lesson
+    also needs at least two exercises, each an element with data-sed-check (style it with class="sed-check").
+  * The intro, the explainer with its headings and prose, and every data-sed-check element are STATIC markup in
+    this file. Scripts may enhance them but must never create them: the validator reads the static HTML only.
 
   DO NOT EDIT (validate.mjs and browser-check.mjs depend on these)
   * the Content-Security-Policy <meta> (it must stay the first element after <meta charset>)
@@ -147,8 +162,27 @@
 
   .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
   .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
   .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
   .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
   .sed-card {
     padding: clamp(14px, 3vw, 24px);
     border: 1px solid var(--border);
@@ -230,18 +264,31 @@
 <!-- SLOT: everything the visitor interacts with goes inside <main>. Keep one <h1>. -->
 <main id="main" class="sed-main" tabindex="-1">
   <h1 class="sed-title">Project Title</h1>
-  <!-- SLOT: one-line tagline (same as project.json "tagline", at most 120 characters) -->
-  <p class="sed-tagline">One line that makes someone want to try it.</p>
+  <div class="sed-lede">
+    <!-- SLOT: one-line tagline (same as project.json "tagline", at most 120 characters): plain words, what it is -->
+    <p class="sed-tagline">One line that makes someone want to try it.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+  <!-- SLOT: the intro, static text equal to project.json "intro". Replace the placeholder span with the text itself. -->
+  <p class="sed-intro" data-sed-intro><span data-sed-placeholder>35 to 70 words: what this is, who it is for, what to do first.</span></p>
 
   <!-- SLOT: the app. Remove this placeholder (browser-check.mjs flags it if it is still here). -->
   <div class="sed-placeholder" data-sed-placeholder>The project goes here.</div>
+
+  <!-- SLOT: the explainer, static headings and prose (see INTRO AND EXPLAINER above). Keep the section, its id and its h2. -->
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How it works</h2>
+    <p data-sed-placeholder>The explanation goes here.</p>
+    <!-- lessons: at least two exercises, each an element with data-sed-check, e.g. <div class="sed-check" data-sed-check>...</div> -->
+  </section>
 
   <!-- Add scripts with a relative path, e.g. <script type="module" src="app.js"></script>.
        Keep them at the end of <main> or use "defer"/type="module" so the markup exists first. -->
 </main>
 
 <footer class="sed-footer">
-  <!-- Required "about / making of" panel. Collapsed by default so it never competes with the app. -->
+  <!-- Required "about / making of" panel. Collapsed by default so it never competes with the app. It holds the sources
+       and the making-of, never the explanation (that is the explainer section above). -->
   <details class="sed-about">
     <summary>About &amp; making of</summary>
     <div class="sed-about-body">

@@ -95,6 +95,16 @@ function loadHistoryEntries() {
   return history.entries;
 }
 
+/** The canonical purpose order: ops/taxonomy.json `purposes` keys; the archive's built-in order when the taxonomy has none. */
+function purposeOrder() {
+  try {
+    const keys = Object.keys(readJson(rp('ops', 'taxonomy.json'))?.purposes ?? {});
+    return keys.length ? keys : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /** Last date that counts as "should have a project": today once it is past the deadline or published, else yesterday. */
 function missingThrough({ now, config, publishedDates }) {
   const { date: today, minutes } = localParts(now, config.timezone);
@@ -243,7 +253,7 @@ export async function buildSite({ now, validate, concurrency = DEFAULT_CONCURREN
     const publishedDates = new Set(projects.map((p) => p.project.date));
     const archive = buildArchive({
       projects, config, siteUrl, now: instant, through: missingThrough({ now: instant, config, publishedDates }),
-      kaizen: diary.render ? kaizenTeaser(diary.entries) : null,
+      kaizen: diary.render ? kaizenTeaser(diary.entries) : null, purposes: purposeOrder(),
     });
 
     const index = renderTemplate(indexTemplate, archive);

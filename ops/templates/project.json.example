@@ -5,8 +5,11 @@
   "title": "Example Project",
   "tagline": "One line that makes someone want to try it (120 characters at most).",
   "description": "One to three sentences on what the page is and what you can do with it. Plain words, no hype.",
+  "intro": "An example project that shows the shape of a page: what it is in one plain sentence, who it is for, and what to do first. Replace this paragraph with 35 to 70 words. Say what the thing literally is before any theme or metaphor. Then tell the visitor the first thing to try.",
+  "concepts": ["page shell", "intro paragraph"],
   "tier": 1,
   "fingerprint": {
+    "purpose": "play",
     "category": "weird-experimental",
     "mechanic": "toy",
     "tone": ["playful", "nerdy"],

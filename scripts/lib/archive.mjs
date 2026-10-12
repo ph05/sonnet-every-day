@@ -2,7 +2,10 @@
 // No filesystem or clock access here, so everything is deterministic and unit-testable.
 import { addDays, dayNumber, hashStr } from './common.mjs';
 
-export const DEFAULT_TAGLINE = 'A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.';
+export const DEFAULT_TAGLINE = 'A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.';
+/** Canonical purpose order (ops/taxonomy.json `purposes` key order); build-site passes the taxonomy's own list. */
+export const PURPOSE_ORDER = ['tool', 'lesson', 'explorer', 'studio', 'play'];
+export const INTRO_MAX_CHARS = 700;
 export const FEED_LIMIT = 30;
 export const PLACEHOLDERS = ['SITE_NAME', 'SITE_TAGLINE', 'SITE_URL', 'ARCHIVE_JSON', 'NOSCRIPT_LIST', 'GENERATED_AT'];
 
@@ -78,6 +81,14 @@ export function missingDatesBetween(from, through, have) {
 }
 
 const strArray = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
+
+/** Cuts `v` to `max` characters without splitting a surrogate pair. */
+function clip(v, max) {
+  const s = String(v ?? '');
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max);
+  return /[\uD800-\uDBFF]$/.test(cut) ? cut.slice(0, -1) : cut;
+}
 const sortedCounts = (map) => Object.fromEntries([...map.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 
 /** One archive.json `days[]` item from a validated project.json plus its history entry. */
@@ -101,7 +112,18 @@ export function dayRecord({ entry, project, startDate }) {
     tags: strArray(fp.tags),
     palette: strArray(project.palette),
     thumb: `${dirPath}${thumb}`,
+    purpose: typeof fp.purpose === 'string' ? fp.purpose : '',
+    intro: typeof project.intro === 'string' ? clip(project.intro.trim(), INTRO_MAX_CHARS) : '',
+    concepts: strArray(project.concepts).slice(0, 6),
   };
+}
+
+/** Purpose counts over the days that have one, keys in canonical order (unknown values last, alphabetically). */
+function purposeCounts(days, order) {
+  const counts = new Map();
+  for (const d of days) if (d.purpose) counts.set(d.purpose, (counts.get(d.purpose) ?? 0) + 1);
+  const rank = (p) => (order.includes(p) ? order.indexOf(p) : order.length);
+  return Object.fromEntries([...counts.entries()].sort(([a], [b]) => rank(a) - rank(b) || (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 /**
@@ -110,7 +132,7 @@ export function dayRecord({ entry, project, startDate }) {
  * the gallery does not need it and it would make the file churn when history is re-added.
  * `kaizen` is the optional teaser from kaizenTeaser(); it is left out when there is nothing to tease.
  */
-export function buildArchive({ projects, config, siteUrl, now, through, kaizen = null }) {
+export function buildArchive({ projects, config, siteUrl, now, through, kaizen = null, purposes = PURPOSE_ORDER }) {
   const days = projects
     .map((p) => dayRecord({ ...p, startDate: config.startDate }))
     .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -139,6 +161,7 @@ export function buildArchive({ projects, config, siteUrl, now, through, kaizen =
       projects: days.length,
       streak: streakOf(dates),
       categories: sortedCounts(categories),
+      purposes: purposeCounts(days, Array.isArray(purposes) && purposes.length ? purposes : PURPOSE_ORDER),
       tiers: sortedCounts(tiers),
       firstDate,
       lastDate,
@@ -190,7 +213,7 @@ export function renderTemplate(template, archive) {
   }, PLACEHOLDERS);
 }
 
-/** Atom feed of the newest FEED_LIMIT days. `publishedAt` comes from history entries keyed by date. */
+/** Atom feed of the newest FEED_LIMIT days. `publishedAt` comes from history entries keyed by date. The summary is the intro, else the description, tagline or title. */
 export function renderFeed({ archive, publishedAtByDate = {}, diary = false }) {
   const siteUrl = archive.site.url;
   const items = archive.days.slice(0, FEED_LIMIT).map((d) => {
@@ -224,7 +247,7 @@ export function renderFeed({ archive, publishedAtByDate = {}, diary = false }) {
       `    <updated>${escapeXml(updated)}</updated>`,
     );
     if (d.category) lines.push(`    <category term="${escapeXml(d.category)}"/>`);
-    lines.push(`    <summary>${escapeXml(d.description || d.tagline || d.title)}</summary>`, '  </entry>');
+    lines.push(`    <summary>${escapeXml(d.intro || d.description || d.tagline || d.title)}</summary>`, '  </entry>');
   }
   lines.push('</feed>', '');
   return lines.join('\n');

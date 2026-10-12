@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { validateProject, validateRepo } from '../scripts/validate.mjs';
+import { validateProject, validateRepo, analyzeContract, countWords, firstSentence } from '../scripts/validate.mjs';
 import { MALICIOUS, BENIGN } from './fixtures/gate-vectors.mjs';
 import { startMeter, childCpuMs, childCpuAvailable } from './helpers/cpu.mjs';
 import {
@@ -1135,4 +1135,274 @@ test('importing validate.mjs has no side effects', () => {
   const r = spawnSync(process.execPath, ['-e', `import(${JSON.stringify(path.join(REAL_ROOT, 'scripts', 'validate.mjs'))}).then(() => console.log('imported'))`], { encoding: 'utf8' });
   assert.equal(r.stdout.trim(), 'imported');
   assert.equal(r.stderr, '');
+});
+
+/* ---- the page contract (DESIGN 7.3): purpose, intro, explainer ------------------------------- */
+
+const CONTRACT_FIXTURES = path.join(REAL_ROOT, 'tests', 'fixtures', 'contract');
+const TOOL_FIXTURE = path.join(CONTRACT_FIXTURES, '2026-10-20-contrast-checker');
+const LESSON_FIXTURE = path.join(CONTRACT_FIXTURES, '2026-10-21-parity-bit-lesson');
+const withGate = (date) => (c) => {
+  c.pageContract = { ...c.pageContract, requiredFrom: date };
+  return c;
+};
+
+/** Copies a fixture into the sandbox, applies `html` / `pj` edits and returns the directory. */
+function variant(box, fixture, { html, pj } = {}) {
+  const dir = path.join(box.root, 'docs', 'd', path.basename(fixture));
+  fs.rmSync(dir, { recursive: true, force: true });
+  fs.cpSync(fixture, dir, { recursive: true });
+  const project = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+  if (pj) pj(project);
+  fs.writeFileSync(path.join(dir, 'project.json'), `${JSON.stringify(project, null, 2)}\n`);
+  if (html) {
+    const page = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
+    const next = html(page);
+    assert.notEqual(next, page, 'the variant must change the page');
+    fs.writeFileSync(path.join(dir, 'index.html'), next);
+  }
+  return dir;
+}
+
+const introOf = (dir) => JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8')).intro;
+const INTRO_RE = /<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/;
+const setIntro = (text, markup = text) => ({
+  html: (s) => s.replace(INTRO_RE, `<p class="sed-intro" data-sed-intro>${markup}</p>`),
+  pj: (p) => { p.intro = text; },
+});
+/** An old-style page: the sample fixture without purpose, intro or explainer markup. */
+const oldStyle = {
+  html: (s) => s.replace(/\n {2}<p class="sed-intro" data-sed-intro>[\s\S]*?<\/p>/, '').replace(' class="sed-explainer" data-sed-explainer', ''),
+  pj: (p) => {
+    delete p.intro;
+    delete p.concepts;
+    delete p.fingerprint.purpose;
+  },
+};
+
+test('page contract: the conforming tool, lesson and sample pages pass with --contract and with the date gate armed', async () => {
+  for (const config of [undefined, withGate('2026-10-01')]) {
+    const box = makeSandbox(config ? { config } : {});
+    try {
+      for (const dir of [TOOL_FIXTURE, LESSON_FIXTURE, BENIGN_FIXTURE]) {
+        for (const contract of [false, true]) {
+          const res = await validateProject(dir, { contract });
+          assert.deepEqual(res.errors, [], `${path.basename(dir)} contract=${contract}: ${JSON.stringify(res.errors)}`);
+          assert.deepEqual(res.warnings, [], `${path.basename(dir)}: ${JSON.stringify(res.warnings)}`);
+        }
+      }
+    } finally {
+      box.cleanup();
+    }
+  }
+});
+
+test('page contract: with requiredFrom null nothing new is enforced; the date gate and --contract arm it; tiers 3 and 4 are exempt', async () => {
+  const run = async (config, opts = {}) => {
+    const box = makeSandbox(config ? { config } : {});
+    try {
+      return await validateProject(variant(box, BENIGN_FIXTURE, oldStyle), opts);
+    } finally {
+      box.cleanup();
+    }
+  };
+  const contractCodes = (res) => [...new Set(codesOf(res.errors).filter((c) => /^(purpose|intro-|explainer-)/.test(c)))];
+  const off = await run(undefined, { tier: 1 });
+  assert.deepEqual(off.errors, [], 'requiredFrom null: an old-style page still passes');
+  assert.deepEqual(contractCodes(await run(withGate('2026-10-10'), { tier: 1 })), [], 'a page dated before requiredFrom is not affected');
+  const on = await run(withGate('2026-10-09'), { tier: 1 });
+  assert.deepEqual(contractCodes(on).sort(), ['explainer-missing', 'intro-missing', 'purpose'], JSON.stringify(on.errors));
+  assert.match(on.errors.join('\n'), /pages dated from 2026-10-09 \(pageContract\.requiredFrom\)/);
+  const forced = await run(undefined, { tier: 1, contract: true });
+  assert.deepEqual(contractCodes(forced).sort(), ['explainer-missing', 'intro-missing', 'purpose']);
+  assert.match(forced.errors.join('\n'), /--contract/);
+  for (const tier of [3, 4]) {
+    assert.deepEqual(contractCodes(await run(withGate('2026-10-01'), { tier, contract: true })), [], `tier ${tier} is exempt`);
+  }
+  // a config without the block (the test helpers' TEST_CONFIG) requires nothing and never throws
+  const none = await run((c) => { delete c.pageContract; return c; }, { tier: 1 });
+  assert.deepEqual(none.errors, []);
+});
+
+test('page contract: a present purpose, intro or intro element is validated at any date', async (t) => {
+  const box = makeSandbox();
+  t.after(() => box.cleanup());
+  const errorsOf = async (spec) => validateProject(variant(box, BENIGN_FIXTURE, spec), { tier: 1 });
+  await t.test('an unknown purpose', async () => {
+    const res = await errorsOf({ pj: (p) => { p.fingerprint.purpose = 'game'; } });
+    assert.ok(res.errors.some((e) => /^purpose: fingerprint\.purpose "game" is not one of tool, lesson, explorer, studio, play/.test(e)), JSON.stringify(res.errors));
+  });
+  await t.test('an intro element without a project.json intro', async () => {
+    const res = await errorsOf({ pj: (p) => { delete p.intro; } });
+    assert.ok(res.errors.some((e) => /^intro-missing: the page has a p\[data-sed-intro\] but project\.json has no "intro"/.test(e)), JSON.stringify(res.errors));
+  });
+  await t.test('an intro that is too long', async () => {
+    const long = `${'word '.repeat(70)}end.`;
+    const res = await errorsOf(setIntro(long));
+    assert.ok(res.errors.some((e) => /^intro-length: project\.json intro has 71 words; pageContract\.intro allows 35 to 70/.test(e)), JSON.stringify(res.errors));
+  });
+  await t.test('concepts with the wrong shape', async () => {
+    const res = await errorsOf({ pj: (p) => { p.concepts = ['x']; } });
+    assert.ok(res.errors.some((e) => /^project-json: concepts must be an array of 1 to 6 strings of 2 to 40 characters/.test(e)), JSON.stringify(res.errors));
+  });
+  await t.test('the template intro left in project.json', async () => {
+    // the opening words of ops/templates/project.json.example "intro" (tests/qa.test.mjs ties the two together; reading the template here
+    // would put this suite on the kaizen gate's ops/templates/ row)
+    const example = 'An example project that shows the shape of a page: what it is in one plain sentence, who it is for, and what to do first. Replace this paragraph with 35 to 70 words. Say what the thing literally is before any theme or metaphor. Then tell the visitor the first thing to try.';
+    const res = await errorsOf(setIntro(example));
+    assert.ok(codesOf(res.errors).includes('placeholder-text'), JSON.stringify(res.errors));
+  });
+});
+
+test('page contract: every rule fails with its own code and a message that names the measured value and the limit', async (t) => {
+  const box = makeSandbox();
+  t.after(() => box.cleanup());
+  const check = async (fixture, spec, code, pattern, { warning = false } = {}) => {
+    const res = await validateProject(variant(box, fixture, spec), { contract: true });
+    const list = warning ? res.warnings : res.errors;
+    assert.ok(list.some((e) => e.startsWith(`${code}: `) && pattern.test(e)), `expected ${code} ${pattern}; errors ${JSON.stringify(res.errors)} warnings ${JSON.stringify(res.warnings)}`);
+    if (!warning) assert.equal(res.ok, false);
+    return res;
+  };
+  const tool = TOOL_FIXTURE;
+  const lesson = LESSON_FIXTURE;
+  const intro = introOf(tool);
+  await t.test('purpose missing', () => check(tool, { pj: (p) => { delete p.fingerprint.purpose; } }, 'purpose', /fingerprint\.purpose is missing/));
+  await t.test('intro missing from project.json', () => check(tool, { pj: (p) => { delete p.intro; } }, 'intro-missing', /project\.json has no "intro"/));
+  await t.test('intro too short', () => check(tool, setIntro('A calculator for contrast.'), 'intro-length', /has 4 words; pageContract\.intro allows 35 to 70/));
+  await t.test('first sentence too long (a warning)', async () => {
+    const text = `A calculator that measures ${'the contrast between two colours and '.repeat(5)}more. It is for designers who check a palette before they ship it to everyone.`;
+    await check(tool, setIntro(text), 'intro-first-sentence', /has 3\d words \(pageContract\.intro\.firstSentenceMaxWords is 30\)/, { warning: true });
+  });
+  await t.test('trap: an unclosed intro p', () => check(tool, { html: (s) => s.replace(/(data-sed-intro>[\s\S]*?)<\/p>/, '$1') }, 'intro-unclosed', /no explicit <\/p>/));
+  await t.test('trap: a block inside the intro closes it early', async () => {
+    const res = await check(tool, { html: (s) => s.replace('It is for designers', '<div>It is for designers').replace('Everything runs in your browser.</p>', 'Everything runs in your browser.</div></p>') }, 'intro-unclosed', /explicit/);
+    assert.ok(codesOf(res.errors).includes('intro-mismatch'), JSON.stringify(res.errors));
+  });
+  await t.test('trap: the intro only inside a template', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `<template>${m}</template>`) }, 'intro-placement', /1 elsewhere: inside <template>/));
+  await t.test('trap: the intro only inside noscript', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `<noscript>${m}</noscript>`) }, 'intro-missing', /no p\[data-sed-intro\] inside <main>/));
+  await t.test('trap: a template copy next to the real intro is ignored', async () => {
+    const res = await validateProject(variant(box, tool, { html: (s) => s.replace(INTRO_RE, (m) => `${m}<template>${m}</template><noscript>${m}</noscript>`) }), { contract: true });
+    assert.deepEqual(res.errors, []);
+  });
+  await t.test('trap: the intro inside a details panel', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `<details open><summary>About</summary>${m}</details>`) }, 'intro-placement', /inside <details>/));
+  await t.test('the intro hidden', () => check(tool, { html: (s) => s.replace('data-sed-intro>', 'data-sed-intro hidden>') }, 'intro-placement', /inside a \[hidden\] element/));
+  await t.test('two intros', () => check(tool, { html: (s) => s.replace(INTRO_RE, (m) => `${m}\n${m}`) }, 'intro-placement', /2 p\[data-sed-intro\] elements inside <main>; exactly one/));
+  await t.test('trap: br inside the intro', () => check(tool, setIntro(intro, intro.replace('colour, the number', 'colour,<br>the number')), 'intro-markup', /holds <br>/));
+  await t.test('a control inside the intro', () => check(tool, { html: (s) => s.replace('Type or pick two colours;', 'Type or pick two colours <button type="button">now</button>;') }, 'intro-markup', /holds <button>/));
+  await t.test('trap: typographic entities in the intro', () => check(tool, setIntro(intro.replace('colour, the number', 'colour – the “number”'), intro.replace('colour, the number', 'colour &ndash; the &ldquo;number&rdquo;')), 'intro-entity', /uses &ndash;, &ldquo;, &rdquo;; type the character instead/));
+  await t.test('allowed entities and typed characters are fine', async () => {
+    const text = intro.replace('colour, the number', 'colour – the “number” & more');
+    const res = await validateProject(variant(box, tool, setIntro(text, intro.replace('colour, the number', 'colour &#8211; the “number”&nbsp;&amp; more'))), { contract: true });
+    assert.deepEqual(res.errors, []);
+  });
+  await t.test('page text and project.json differ', () => check(tool, { html: (s) => s.replace('designers and developers', 'designers and engineers') }, 'intro-mismatch', /differs from project\.json "intro" at character \d+: page ".*engineers/));
+  await t.test('explainer missing', () => check(tool, { html: (s) => s.replace(' data-sed-explainer', '') }, 'explainer-missing', /no section\[data-sed-explainer\] inside <main>/));
+  await t.test('two explainers', () => check(tool, { html: (s) => s.replace('</main>', '<section data-sed-explainer><h2>Again</h2></section>\n</main>') }, 'explainer-placement', /2 section\[data-sed-explainer\] elements/));
+  await t.test('explainer too short for a tool', () => check(tool, { html: (s) => s.replace(/<h3>How it is computed<\/h3>[\s\S]*?<h3>Limits<\/h3>/, '<h3>Limits</h3>') }, 'explainer-words', /has \d+ words of prose; a tool needs at least 250 \(pageContract\.explainer\.minWords\.tool\)/));
+  await t.test('trap: a lesson explainer padded with template and hidden copies', () => check(lesson, { html: (s) => s.replace(/(<h3>A worked example<\/h3>)([\s\S]*?)(<h3>Why one flip)/, '$1<template>$2</template><div hidden>$2</div>$3') }, 'explainer-words', /a lesson needs at least 700/));
+  await t.test('trap: the explainer inside a closed details counts nothing', () => check(tool, { html: (s) => s.replace(/<section class="sed-explainer"[\s\S]*?<\/section>/, (m) => `<details><summary>How it works</summary>${m}</details>`) }, 'explainer-words', /has 0 words .* inside a closed <details>/));
+  await t.test('too few headings for a lesson', () => check(lesson, { html: (s) => s.replace(/<h3>(Counting the ones|A worked example|Why one flip is always caught|Why two flips slip through|Detecting is not correcting|Where you meet it|Exercise 1|Exercise 2)<\/h3>/g, '<p><strong>$1</strong></p>') }, 'explainer-headings', /has 1 h2\/h3 heading; a lesson needs at least 4 \(pageContract\.explainer\.minHeadings\.lesson/));
+  await t.test('a lesson with one exercise', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<div class="sed-check">') }, 'explainer-checks', /has 1 element with data-sed-check; a lesson needs at least 2 exercises/));
+  await t.test('trap: an exercise copy inside a template does not count', () => check(lesson, { html: (s) => s.replace('<div class="sed-check" data-sed-check>', '<template><div data-sed-check>copy</div></template><div class="sed-check">') }, 'explainer-checks', /has 1 element/));
+});
+
+test('page contract: words are counted the way a reader sees them', () => {
+  const words = (inner) => analyzeContract(`<main><section data-sed-explainer>${inner}</section></main>`).explainers[0].wordCount;
+  assert.equal(words('<p>one<br>two</p>'), 2, 'br is a space, it never glues two words');
+  assert.equal(words('<p>wo<b>rd</b></p>'), 1, 'inline markup does not split a word');
+  assert.equal(words('<p>one</p><p>two</p>'), 2, 'a block boundary separates words');
+  assert.equal(words('<p>one <button>two three</button> four</p>'), 2, 'text inside controls does not count');
+  assert.equal(words('<p>one <svg><text>two</text></svg> <canvas>three</canvas></p>'), 1);
+  assert.equal(words('<div>loose text outside prose</div><h3>heading</h3><p>counted</p>'), 1, 'only prose counts');
+  assert.equal(words('<details><summary>More</summary><details><p>deep nested words</p></details></details>'), 3, 'nested details inside the explainer do count');
+  assert.equal(words('<p hidden>gone</p><template><p>gone</p></template><noscript><p>gone</p></noscript><p>kept</p>'), 1);
+  assert.equal(words('<ul><li>one<li>two</ul><dl><dt>term</dt><dd>three</dd></dl>'), 3, 'li closes an open li; dt is not prose');
+  assert.equal(words('<p>caf&eacute;&nbsp;au&#160;lait &amp; more</p>'), 4, 'entities are decoded and nbsp separates words');
+  assert.equal(countWords(' a  b c — d '), 4, 'a lone dash is not a word');
+  assert.equal(firstSentence('One two. Three four.'), 'One two.');
+  assert.equal(firstSentence('No full stop at all'), 'No full stop at all');
+});
+
+test('validateRepo: the purpose mix, the page contract, the purpose vocabulary and the lens pool', async (t) => {
+  const check = async (config, mutate) => {
+    const box = makeSandbox(config ? { config } : {});
+    try {
+      mutate?.(box);
+      const res = await validateRepo({ projects: false });
+      return { res, e: res.errors.filter((x) => /^(config|taxonomy|lenses|state-history):/.test(x)), w: res.warnings };
+    } finally {
+      box.cleanup();
+    }
+  };
+  await t.test('the real config and taxonomy pass', async () => {
+    const { e } = await check();
+    assert.deepEqual(e, []);
+  });
+  await t.test('absent blocks are warnings, never errors', async () => {
+    const { e, w } = await check((c) => { delete c.pageContract; delete c.mix.purposes; return c; });
+    assert.deepEqual(e, []);
+    assert.ok(w.some((x) => /mix\.purposes is missing/.test(x)) && w.some((x) => /pageContract is missing/.test(x)), JSON.stringify(w));
+  });
+  const damaged = {
+    'requiredFrom must be null or a date': [(c) => { c.pageContract.requiredFrom = '2026-13-01'; }, /pageContract\.requiredFrom must be null or a date/],
+    'requiredFrom may not be a word': [(c) => { c.pageContract.requiredFrom = 'tomorrow'; }, /pageContract\.requiredFrom/],
+    'wantedCount 1 or 2': [(c) => { c.mix.purposes.wantedCount = 3; }, /mix\.purposes\.wantedCount must be 1 or 2/],
+    'numbers are positive': [(c) => { c.mix.purposes.cooldownDays = -1; }, /mix\.purposes\.cooldownDays must be a positive number/],
+    'legacyDefault is a purpose': [(c) => { c.mix.purposes.legacyDefault = 'toy'; }, /legacyDefault "toy" is not a purpose/],
+    'minWords keys are purposes': [(c) => { c.pageContract.explainer.minWords.game = 100; }, /explainer\.minWords\.game: "game" is not a purpose/],
+    'minHeadings are positive': [(c) => { c.pageContract.explainer.minHeadings.tool = 0; }, /explainer\.minHeadings\.tool must be a positive number/],
+    'intro bounds are positive and ordered': [(c) => { c.pageContract.intro.minWords = 90; }, /intro\.minWords is above maxWords/],
+    'control budget is ordered': [(c) => { c.pageContract.firstScreenControls.warn = 20; }, /firstScreenControls\.warn is above error/],
+    'self-test minimum is positive': [(c) => { c.pageContract.toolMinSelfTests = 'eight'; }, /toolMinSelfTests must be a positive number/],
+  };
+  for (const [label, [mutate, pattern]] of Object.entries(damaged)) {
+    await t.test(label, async () => {
+      const { e } = await check((c) => { mutate(c); return c; });
+      assert.ok(e.some((x) => pattern.test(x)), `${label}: ${JSON.stringify(e)}`);
+    });
+  }
+  await t.test('taxonomy.purposes must keep "play"', async () => {
+    const { e } = await check(undefined, (box) => {
+      const tax = box.readJson('ops/taxonomy.json');
+      delete tax.purposes.play;
+      box.write('ops/taxonomy.json', tax);
+    });
+    assert.ok(e.some((x) => /^taxonomy: taxonomy\.purposes must contain "play"/.test(x)), JSON.stringify(e));
+  });
+  await t.test('a history entry with an unknown purpose', async () => {
+    const { e } = await check(undefined, (box) => {
+      box.write('state/history.json', { schema: 1, startDate: box.cfg.startDate, entries: [historyEntry({ fingerprint: fingerprint({ purpose: 'game' }) })] });
+      buildProject(path.join(box.root, 'docs', 'd'), { slug: 'sample-toy' });
+    });
+    assert.ok(e.some((x) => /unknown purpose "game"/.test(x)), JSON.stringify(e));
+  });
+  await t.test('every main lens kind keeps at least three lenses', async () => {
+    const { e } = await check(undefined, (box) => {
+      const pool = box.readJson('ops/lenses.json');
+      let kept = 0;
+      pool.lenses = pool.lenses.filter((l) => l.kind !== 'humor' || kept++ < 2);
+      box.write('ops/lenses.json', pool);
+    });
+    assert.ok(e.some((x) => /^lenses: ops\/lenses\.json has 2 lenses of kind "humor"; every main kind needs at least 3/.test(x)), JSON.stringify(e));
+  });
+});
+
+test('CLI: validate.mjs project --contract (before or after the directory)', async () => {
+  const box = makeSandbox();
+  try {
+    const dir = variant(box, BENIGN_FIXTURE, oldStyle);
+    assert.equal(cli(['project', dir, '--tier', '1'], box.root).code, 0);
+    for (const args of [['project', dir, '--tier', '1', '--contract'], ['project', '--contract', dir, '--tier', '1']]) {
+      const r = cli(args, box.root);
+      assert.equal(r.code, 1, r.out);
+      const codes = codesOf(JSON.parse(r.out).errors);
+      for (const c of ['purpose', 'intro-missing', 'explainer-missing']) assert.ok(codes.includes(c), `${args.join(' ')}: ${c} in ${codes}`);
+    }
+    assert.equal(cli(['project', TOOL_FIXTURE, '--contract'], box.root).code, 0);
+    const head = fs.readFileSync(VALIDATE, 'utf8').split('\n').slice(0, 12).join('\n');
+    assert.match(head, /validate\.mjs project <dir> \[--tier T\] \[--now ISO\] \[--contract\]/, 'the header usage line names the flag');
+  } finally {
+    box.cleanup();
+  }
 });
