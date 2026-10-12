@@ -64,7 +64,8 @@
     "qa": 1,
     "revise": 1,
     "package": 1,
-    "publish": 1
+    "publish": 1,
+    "kaizen": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
@@ -76,13 +77,14 @@
     "revise": "2026-10-12T11:49:10.803Z",
     "package": "2026-10-12T12:45:02.657Z",
     "publish": "2026-10-12T12:46:54.562Z",
-    "kaizen": "2026-10-12T12:46:55.364Z"
+    "kaizen": "2026-10-12T12:47:20.914Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T12:46:54.562Z"
+    "heartbeatAt": "2026-10-12T12:47:32.163Z",
+    "phase": "kaizen"
   },
   "directives": [
     {
@@ -247,19 +249,26 @@
       "by": "primary",
       "kind": "note",
       "msg": "published at tier 2"
+    },
+    {
+      "at": "2026-10-12T12:47:21.634Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: kaizen attempt 1, due 2026-10-12T14:27:21.634Z (100 min: budget 75 + 25 margin)"
     }
   ],
   "watch": {
-    "phase": "revise",
+    "phase": "kaizen",
     "attempt": 1,
-    "armedAt": "2026-10-12T11:49:11.334Z",
-    "dueAt": "2026-10-12T12:56:46.705Z",
+    "armedAt": "2026-10-12T12:47:21.634Z",
+    "dueAt": "2026-10-12T14:27:21.634Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_011Erbu4UwoJCskWDrqpW5KS",
-    "workflowTask": "wij1319tl",
+    "triggerId": "trig_015YZWYQrzkyrGhoNcVhmLQr",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 40,
-    "delayMinutes": 50,
+    "budgetMinutes": 75,
+    "delayMinutes": 100,
     "clamped": null,
     "arms": {
       "ideate": 2,
@@ -267,12 +276,10 @@
       "spec": 1,
       "build": 1,
       "qa": 1,
-      "revise": 1
+      "revise": 1,
+      "kaizen": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-12T12:41:57.549Z",
-    "extensions": 1,
-    "extendedAt": "2026-10-12T12:41:46.705Z",
-    "disarmedAt": "2026-10-12T12:44:52.638Z"
+    "boundAt": "2026-10-12T12:47:32.163Z"
   }
 }
