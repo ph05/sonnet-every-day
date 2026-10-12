@@ -572,7 +572,9 @@
     if (d.purpose) chips.append(h('li', { class: 'pill mono pill-purpose purpose-' + d.purpose, text: PURPOSE_PILLS[d.purpose] }));
     chips.append(h('li', { class: 'pill mono' }, h('span', { class: 'dot', 'aria-hidden': 'true' }), d.categoryLabel));
     if (d.tier === 2) chips.append(h('li', { class: 'pill mono', text: TIER_LABELS[2] }));
-    if (d.mechanic) chips.append(h('li', { class: 'pill mono', text: d.mechanic }));
+    // a mechanic that only repeats the purpose (a lesson whose mechanic is "lesson") would show the same word twice
+    const sameAsPurpose = d.purpose && [d.purpose, PURPOSE_PILLS[d.purpose]].some((p) => p.toLowerCase() === d.mechanic.toLowerCase());
+    if (d.mechanic && !sameAsPurpose) chips.append(h('li', { class: 'pill mono', text: d.mechanic }));
     for (const t of d.tone.slice(0, 2)) chips.append(h('li', { class: 'pill mono', text: t }));
 
     const actions = h('div', { class: 'lead-actions' });

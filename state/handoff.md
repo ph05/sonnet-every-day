@@ -1,21 +1,20 @@
-# Handoff from 2026-10-12 (day 3, tier 2, written by primary at 09:40)
+# Handoff from the 2026-10-12 owner-feedback pass (written by the lead, before the 2026-10-13 run)
 
-## What went well
-- Day 3 is live at 08:46: Between Periods (tier 2, 4849 own lines, selftest and browser QA clean). The compact plan held: ideate 30 min, build 2 h, publish 08:46.
-- Revise fixed 9 defects in one loop, including the unverified prior-art claim; kaizen applied 9 of 9 and the full suites are green.
-- Spent phase timers are switched off with `update_trigger enabled:false`; no classifier denial.
-
-## What went badly
-- `budget.spent()` is the persistent session's cumulative output, not per turn: the first ideate launch returned budget-exhausted at 0 spend and cost one attempt. Workflows now need `capTokens` = the session output total from `get_session` + the day's `spend.workflowCapTokens`. PLAYBOOK 6.5, FM-04 and FM-47 say so after tonight's kaizens, but `begin` and `status` still print the net figure.
-- One S2 (button overlap on 1280 px wide windows under about 720 px tall) and one S3 (share box on phones) shipped.
-- The scouts cannot fetch any host (DNS fails), so every dossier is search-only.
+## What changed (read ops/OWNER.md first)
+- The owner said the pages were all games or gimmicks and asked for a mix: a useful tool that is paywalled elsewhere, an interactive lesson on a niche concept, broader subjects, more explaining, an intro paragraph. Day 3 (Between Periods) was the only page liked; day 1 was too complex and day 2 had no clear meaning.
+- Every page now has a purpose (tool, lesson, explorer, studio or play). `node scripts/novelty.mjs mix` prints the plan: one or two wanted purposes with a bonus of 5 points (only for an idea with clarity 7 or more), avoided purposes cannot win. Expected for 2026-10-13: wanted tool and lesson, play paused until 2026-10-18. Then roughly tool, lesson, explorer, studio, with a game at most twice a week.
+- The page contract is armed from 2026-10-13 (`config.json` `pageContract.requiredFrom`): a plain intro paragraph (35 to 70 words), a visible explainer sized by purpose, a first frame that shows a result, at most 8 controls on the first screen, tools carry 8 or more self-tests, lessons carry 2 or more answerable checks. Validator and browser-check codes are in CONTRACT 6.2 and 6.9; QA adds a stranger cold read, an expert review (only when the token budget allows) and an intro accuracy check.
+- Selection weighs clarity as much as feasibility (1.8) and gates on clarity 5. The lens pool was audited against the web: three weak tool lenses dropped, false claims fixed, niche lessons added (ops/lenses.json).
+- The three live pages got an intro, an explainer and plain taglines. Days 1 and 2 still warn controls-many (14 and 11 first-screen controls, mostly game cards); do not rebuild them, a future Ideas Day could slim them.
 
 ## Watch tomorrow
-- Take `capTokens` from `get_session` output_tokens plus `spend.workflowCapTokens`/`kaizenCapTokens` for every launch; check the first ideate returns ideas.
-- The level is `balanced`: only about 2.7M output tokens a day (workflow cap 2.4M); today used 2.36M before kaizen. Watch `spend.workflowCapTokens` before qa and revise.
-- Kaizen suspects if tomorrow degrades: 8bc48c9, 74c3d3b, ea0d211, 52eea61, 4136f3d, f199377, 3723fd1, f784639, cee78a3.
-- Builders and QA now owe a 1280x650 check (quality.md, artisan.md).
+- The routines still hold their OLD prompt text (nobody can change it from outside). PLAYBOOK 3.4 says the playbook wins; the owner must refresh all six routines from `ops/prompts/` using the recipe in `ops/prompts/README.md`. Until then trust the playbook, not the routine text.
+- The first run under the new contract is unattended: expect extra QA agents (cold read, expert). Watch the qa and spec minutes and `spend.workflowCapTokens` before qa and revise; revise may now spend the publish reserve for an open S1.
+- A PURPOSE=<tool|lesson|explorer|studio|play> manual run forces that kind. Watchdogs and the closer still act on a manual run for today.
+- Tool pages must say honestly what is and is not paywalled elsewhere; the scouts verify the premise by search and print the real remaining gap (research.md, safety.md clean-room rules).
+- If a day ships without the contract (validator errors), see PLAYBOOK 10.1 triage and FM-137 to FM-143 before degrading.
 
 ## Open questions
-- Should `state.mjs spend` print a rebased cap when given the session total? Should browser-check.mjs (protected) shoot 1280x650 and assert no overlap?
+- `budget.spent()` is the session's cumulative output (see the 2026-10-12 note in PLAYBOOK 6.5): keep passing `capTokens` = session total + the day's cap.
+- The 665k-token gate for the QA expert is an estimate; check whether the expert ever runs on a balanced day and move the gate if QA starves revise.
 - Proposal waiting for the owner: ops/kaizen/proposals/2026-10-10-architect.md.

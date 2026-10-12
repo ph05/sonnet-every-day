@@ -194,7 +194,7 @@
   },
   "pageContract": {
     "_note": "requiredFrom null = the contract (purpose, intro, explainer) is not enforced yet. The lead sets it to the date of the first run that starts after the whole contract has landed; every date gate reads this key.",
-    "requiredFrom": null,
+    "requiredFrom": "2026-10-13",
     "intro": { "minWords": 35, "maxWords": 70, "firstSentenceMaxWords": 30 },
     "explainer": {
       "minWords": { "tool": 250, "lesson": 700, "explorer": 350, "studio": 200, "play": 150 },
