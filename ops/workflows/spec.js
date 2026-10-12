@@ -276,7 +276,7 @@ function preamble(role, task, { notes = true } = {}) {
     ].join('\n');
   }
   return [
-    `You are ${roleTitle(role)} on the "Sonnet Every Day" studio team: every day a team of agents builds one sophisticated, fun, one-of-a-kind static web page and publishes it around 08:00 America/New_York. That time is a guideline, not a deadline: quality beats punctuality, so never rush the work for the clock.`,
+    `You are ${roleTitle(role)} on the "Sonnet Every Day" studio team: every day a team of agents builds one clear, useful or delightful, one-of-a-kind static web page (a tool, a lesson, an explorer, a creative studio or a game, never a gimmick) and publishes it around 08:00 America/New_York. That time is a guideline, not a deadline: quality beats punctuality, so never rush the work for the clock.`,
     `Repo root: ${REPO} . Run date: ${DATE} . Staging dir: ${WORK} . Always use absolute paths.`,
     `Before anything else read your persona file ${REPO}/ops/roles/${role}.md and work in that voice and to those standards. The system contract is ${REPO}/ops/CONTRACT.md; the parts that bind you are section 5 (data shapes), 10 (safety) and 11 (quality bar).`,
     '',
