@@ -197,6 +197,14 @@ function makeSandbox() {
   };
 }
 const TAXONOMY = JSON.parse(fs.readFileSync(path.join(REAL_REPO, 'ops', 'taxonomy.json'), 'utf8'));
+const REAL_CONFIG = JSON.parse(fs.readFileSync(path.join(REAL_REPO, 'config.json'), 'utf8'));
+/** A purpose plan as `novelty.mjs mix` prints it (DESIGN 3): tools and lessons wanted, play paused. baseArgs pass it as args.mix.purposes. */
+export function purposePlan(over = {}) {
+  return {
+    windowDays: 7, counts: { tool: 0, lesson: 0, explorer: 0, studio: 0, play: 2 }, lastShipped: { tool: null, lesson: null, explorer: null, studio: null, play: '2026-10-08' },
+    wanted: ['tool', 'lesson'], avoid: ['play'], playAllowed: false, playBlockedUntil: '2026-10-11', bonus: REAL_CONFIG.mix?.purposes?.wantedBonus ?? 5, override: null, legacyAssumed: [], ...over,
+  };
+}
 
 function baseArgs(sb, extra = {}) {
   const lens = (agent, i) => ({
@@ -219,7 +227,7 @@ function baseArgs(sb, extra = {}) {
     directives: [],
     config: { ...JSON.parse(fs.readFileSync(sb.p('config.json'), 'utf8')), heartbeatEverySeconds: 30 },
     lenses: SCOUTS.map(lens),
-    mix: { window: 14, owed: ['interest', 'humor'], avoidCategories: ['cards-odds'], politicsAllowed: true, summary: 'Last 14 days: nothing built yet. Owed: interest, humor.' },
+    mix: { window: 14, owed: ['interest', 'humor'], avoidCategories: ['cards-odds'], politicsAllowed: true, purposes: purposePlan(), summary: 'Last 14 days: nothing built yet. Owed: interest, humor.' },
     mixSummary: 'Last 14 days: nothing built yet. Owed: interest, humor.',
     historyDigest: '(no previous projects)',
     carryover: null,
@@ -448,7 +456,10 @@ function makeDossier(prefix, n, agent, lensId) {
   return {
     id: `${prefix}-${n}`,
     title: `Idea Number ${seed} ${String.fromCharCode(96 + (seed % 26) + 1)}${String.fromCharCode(96 + ((seed * 7) % 26) + 1)}`,
+    plainSentence: `A page that lets you try idea ${seed}.`,
     pitch: `A concrete pitch ${seed}.`,
+    firstMinute: 'A sample is already running. You change one value and see the result at once.',
+    conceptsToLearn: ['one idea'],
     whyNow: 'Because.',
     origin: { agent, lens: lensId },
     fingerprint: {
@@ -491,7 +502,7 @@ export function ideateWorld(sb, cfg = {}) {
         if (cfg.corruptScout === who) sb.write(file, '{ "candidates": [ {oops');
         else sb.write(file, { schema: 1, agent: who, lens: lensId, candidates });
         sink.scoutPrompts = [...(sink.scoutPrompts || []), { who, prompt }];
-        return { agent: who, file, candidates: candidates.map((c) => ({ id: c.id, title: c.title, category: c.fingerprint.category, sourcesRecorded: 3, sourcesOpened: 0, sourcesVerified: 3, unverifiedClaims: 0 })), network: cfg.scoutNetwork ? cfg.scoutNetwork(who) : [], notes: '' };
+        return { agent: who, file, candidates: candidates.map((c) => ({ id: c.id, title: c.title, category: c.fingerprint.category, ...(typeof c.fingerprint.purpose === 'string' ? { purpose: c.fingerprint.purpose } : {}), sourcesRecorded: 3, sourcesOpened: 0, sourcesVerified: 3, unverifiedClaims: 0 })), network: cfg.scoutNetwork ? cfg.scoutNetwork(who) : [], notes: '' };
       }
       if (label.startsWith('normalize split') || label.startsWith('normalize check')) {
         sink.normalizeCalls++;
@@ -502,12 +513,13 @@ export function ideateWorld(sb, cfg = {}) {
         sink.fixPrompt = prompt;
         const fixed = [];
         for (const m of prompt.matchAll(/^- (\S+): (\w+) is ([^;]*); allowed:/gm)) {
-          const [, id, field] = m;
+          const [, id, field, value] = m;
           if ((cfg.noFix || []).includes(id)) continue;
           const f = sb.work('ideate', 'cand', `${id}.json`);
           const c = sb.json(f);
           if (field === 'category') c.fingerprint.category = 'hockey-sports';
           else if (field === 'tags') c.fingerprint.tags = ['fixed-a', 'fixed-b', 'fixed-c'];
+          else if (field === 'purpose') c.fingerprint.purpose = ({ utility: 'tool', calculator: 'tool', explainer: 'lesson', missing: 'lesson' })[value.trim().toLowerCase()] || 'explorer';
           sb.write(f, c);
           fixed.push({ id, field, to: 'x' });
         }
@@ -557,7 +569,7 @@ export function ideateWorld(sb, cfg = {}) {
           if (cfg.verifyMutate) cfg.verifyMutate(c);
           sb.write(sb.work('ideate', 'verified', `${id}.json`), c);
           sink.verifyPrompts = [...(sink.verifyPrompts || []), { id, prompt }];
-          verdicts.push({ id, checked: true, verdict: 'keep', confidence: 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], reason: 'sound' });
+          verdicts.push({ id, checked: true, verdict: 'keep', confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], reason: 'sound' });
         }
         return { verdicts, network: cfg.verifyNetwork ? ids.flatMap((id) => cfg.verifyNetwork(id)) : [], notes: '' };
       }
@@ -572,7 +584,7 @@ export function ideateWorld(sb, cfg = {}) {
         if (cfg.verifyMutate) cfg.verifyMutate(c);
         sb.write(sb.work('ideate', 'verified', `${id}.json`), c);
         sink.verifyPrompts = [...(sink.verifyPrompts || []), { id, prompt }];
-        return { id, verdict: 'keep', confidence: 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], network: cfg.verifyNetwork ? cfg.verifyNetwork(id) : [], reason: 'sound' };
+        return { id, verdict: 'keep', confidence: cfg.confidence ? cfg.confidence(id) : 5 + (id.length % 4), feasibleInOneDay: true, durable: c.durable, evidence: 'search-only', sourcesRechecked: 3, sourcesOpened: 0, sourcesDead: 0, factsChecked: 3, factsCorrected: 0, claimsFlagged: 0, issues: [], network: cfg.verifyNetwork ? cfg.verifyNetwork(id) : [], reason: 'sound' };
       }
       if (label.startsWith('network probe')) {
         sink.probePrompt = prompt;
@@ -589,18 +601,25 @@ export function ideateWorld(sb, cfg = {}) {
     },
   };
 }
+/** ideate.js's research-text sanitizer, compiled on its own (it closes over nothing: the clerk programs ship it as text). */
+export function loadSanitizer() {
+  const src = fs.readFileSync(path.join(HERE, 'ideate.js'), 'utf8');
+  const m = /^function sanitizeDossier\(doc\) \{[\s\S]*?\n\}$/m.exec(src);
+  assert.ok(m, 'function sanitizeDossier(doc) not found in ideate.js');
+  return vm.runInNewContext(`${m[0]}\nsanitizeDossier`, Object.create(null));
+}
 
 // ---- select: judges score deterministically, the record program writes the real state files
 const hash32 = (s) => { let h = 0x811c9dc5; for (const ch of s) { h ^= ch.charCodeAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h; };
-const CRIT_KEYS = ['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety'];
+const CRIT_KEYS = ['sophistication', 'delight', 'distinctness', 'feasibility', 'timeliness', 'interestFit', 'polishPotential', 'safety', 'clarity'];
 export function rubricConfig() {
   const text = fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'selection.md'), 'utf8');
   const m = /```json weights\n([\s\S]*?)```/.exec(text);
   assert.ok(m, 'ops/rubrics/selection.md needs a ```json weights block');
   return JSON.parse(m[1]);
 }
-export function seedShortlist(sb, { n = 10, durable = (i) => i % 2 === 1, carriedIn = {}, political = {}, noveltyBad = {} } = {}) {
-  const zero = { sophistication: 0, delight: 0, distinctness: 0, feasibility: 0, timeliness: 0, interestFit: 0, polishPotential: 0, safety: 0 };
+export function seedShortlist(sb, { n = 10, durable = (i) => i % 2 === 1, carriedIn = {}, political = {}, noveltyBad = {}, purpose = {} } = {}) {
+  const zero = { sophistication: 0, delight: 0, distinctness: 0, feasibility: 0, timeliness: 0, interestFit: 0, polishPotential: 0, safety: 0, clarity: 0 };
   let carried = null;
   const ideas = Array.from({ length: n }, (_, i) => {
     const d = makeDossier('seed', i + 1, 'pulse', 'lens');
@@ -610,6 +629,7 @@ export function seedShortlist(sb, { n = 10, durable = (i) => i % 2 === 1, carrie
       ? { agent: 'carryover', originalAgent: 'cards', lens: 'lens', scoutId: 'carry-1', carriedFrom: '2026-10-08' }
       : { agent: 'pulse', lens: 'lens', scoutId: `seed-${i + 1}` };
     d.fingerprint.political = Boolean(political[d.id]);
+    if (purpose[d.id]) d.fingerprint.purpose = purpose[d.id];
     d.scores = { ...zero };
     d.total = 0;
     d.noveltyCheck = { ok: !noveltyBad[d.id], conflicts: [] };
@@ -1112,7 +1132,7 @@ describe('ideate.js', () => {
   test('novelty failures go to one reviser and are re-checked; unrevisable ones are dropped and logged', async () => {
     const s = makeSandbox();
     try {
-      const w = ideateWorld(s, { forceFail: ['pulse-1', 'cards-1'], reviserDrops: ['cards-1'] });
+      const w = ideateWorld(s, { forceFail: ['pulse-1', 'cards-1'], reviserDrops: ['cards-1'], mutate: (c) => { if (c.id === 'pulse-1') c.fingerprint.purpose = 'tool'; } });
       const run = await go('ideate', baseArgs(s), w);
       checkRunInvariants('ideate', run);
       assert.equal(w.sink.revisers, 1);
@@ -1121,8 +1141,9 @@ describe('ideate.js', () => {
       assert.equal(run.result.count, 10);
       const short = s.json(s.work('ideas', 'shortlist.json'));
       const rev = short.ideas.find((i) => i.origin.scoutId === 'pulse-1');
-      if (rev) assert.ok(rev.title.endsWith('Reborn') && rev.fingerprint.category === 'music-audio');
-      assert.ok(run.rec.logs.some((l) => l.includes('revised pulse-1 is now') && l.includes('Reborn') && l.includes('music-audio')), 'pool metadata follows the revised file');
+      assert.ok(rev && rev.title.endsWith('Reborn') && rev.fingerprint.category === 'music-audio' && rev.fingerprint.purpose === 'tool', 'the revised tool is still wanted, so the floor keeps it');
+      assert.ok(run.rec.logs.some((l) => l.includes('revised pulse-1 is now') && l.includes('Reborn') && l.includes('music-audio') && l.includes('purpose tool')), 'pool metadata follows the revised file');
+      assert.ok(run.rec.calls.find((c) => c.label === 'novelty reviser').prompt.includes('Keep each idea\'s purpose (fingerprint.purpose): a re-angled tool stays a tool'));
     } finally { s.clean(); }
   });
 
@@ -1133,6 +1154,10 @@ describe('ideate.js', () => {
       const run = await go('ideate', baseArgs(s), w);
       checkRunInvariants('ideate', run);
       assert.ok(run.result.refillRounds >= 1, 'refill ran');
+      // a refill is triggered by count alone; its "needs" line names the wanted purposes first and never asks for humor while play is paused
+      const refill = run.rec.calls.filter((c) => /^scout \w+ r1$/.test(c.label));
+      assert.ok(refill.length >= 2 && refill.every((c) => c.prompt.includes('so favour: ideas with a wanted purpose (tool or lesson): 0 of the 8 alive ideas have one, and never play')), refill.map((c) => c.prompt.split('\n').find((l) => l.startsWith('This is a refill round'))).join(' || '));
+      assert.ok(refill.every((c) => !/slots with no candidate yet: [^;]*humor/.test(c.prompt)));
       assert.equal(run.result.count, 10, `refill should have restored 10: ${JSON.stringify(run.result.notes)}`);
       s.clean();
       s = makeSandbox();
@@ -1280,6 +1305,238 @@ describe('ideate.js', () => {
     } finally { s.clean(); }
   });
 
+  test('sanitizer: a dev-tool title ("Chmod Calculator") survives; a command with an option, path or variable in a title, or a command in the pitch or core loop, still drops the candidate', () => {
+    // Reproduced first (commit "selfcheck: reproduce the sanitizer dropping ..."): both the title and the pitch below were dropped.
+    const sanitize = loadSanitizer();
+    const dossier = (over) => ({ title: 'File Permission Calculator', pitch: 'Tick who may read, write and run a file and see the mode.', design: { coreLoop: 'tick boxes, read the mode, copy it' }, research: { summary: 'ok', sources: [] }, ...over });
+    assert.equal(sanitize(dossier({})).critical, false, 'a plain dev-tool dossier is clean');
+    for (const title of ['Chmod Calculator', 'SSH Key Explainer', 'Curl Command Builder', 'Git Push Visualizer', 'NC State Shot Map', 'Sudo Explained']) {
+      const r = sanitize(dossier({ title }));
+      assert.equal(r.critical, false, `${title}: an ordinary dev-tool title`);
+      assert.equal(r.value.title, title);
+    }
+    for (const title of ['chmod -R 777 Tool', 'curl --data Helper', 'ssh ~/.ssh Viewer', 'scp /etc Copier', 'curl $HOME Grabber', 'git push --force Fun']) {
+      assert.equal(sanitize(dossier({ title })).critical, true, `${title}: an option, path, home or variable after a command still reads as a command`);
+    }
+    // a source title that only mentions the command keeps its text; one with an option is blanked (a source title is not critical)
+    const src = sanitize(dossier({ research: { summary: 'ok', sources: [{ title: 'chmod - Wikipedia', url: 'https://en.wikipedia.org/wiki/Chmod', verified: true }, { title: 'Use chmod -R carefully', url: 'https://example.org/a', verified: true }] } }));
+    assert.equal(src.critical, false);
+    assert.deepEqual(src.value.research.sources.map((x) => x.title.startsWith('[redacted')), [false, true]);
+    // outside titles the broad pattern stays: a command in the pitch or core loop drops the idea; scouts are told to write it in words
+    assert.equal(sanitize(dossier({ pitch: 'See exactly what git push sends to the server.' })).critical, true, 'a pitch that names git push still drops the candidate');
+    assert.equal(sanitize(dossier({ pitch: 'See exactly what a push sends to the server.' })).critical, false, 'the same pitch in words is kept');
+    assert.equal(sanitize(dossier({ design: { coreLoop: 'type chmod 755 and read the bits' } })).critical, true);
+    const detail = sanitize(dossier({ purposeDetail: { inputs: 'an octal mode such as 755', oracle: 'chmod 755 file per POSIX' } }));
+    assert.equal(detail.critical, false, 'a literal command inside purposeDetail never drops the idea');
+    assert.ok(detail.value.purposeDetail.oracle.startsWith('[redacted') && detail.value.purposeDetail.inputs === 'an octal mode such as 755');
+  });
+
+  /** The eight scout prompts of a run whose agents all return nothing (cheap: nothing is researched, filed or verified). */
+  async function scoutPromptsOf(args) {
+    const run = await runWorkflow('ideate', args, { world: { respond: () => null } });
+    checkRunInvariants('ideate', run, { skipPhaseUse: true });
+    return { run, prompt: (who) => (run.rec.calls.find((c) => c.label === `scout ${who}`) || {}).prompt || '' };
+  }
+  const withKinds = (args, kinds) => ({ ...args, lenses: args.lenses.map((e) => (kinds[e.agent] ? { ...e, lens: { ...e.lens, kind: kinds[e.agent] } } : e)) });
+
+  test('purpose plan: scouts read OWNER.md and get the plan, the clarity fields and the commands-in-words rule; a useful lens leads with a tool, a teach lens with a lesson; verifiers check the purpose facts', async () => {
+    const s = makeSandbox();
+    try {
+      const run = await go('ideate', withKinds(baseArgs(s), { cards: 'useful', lab: 'teach' }), ideateWorld(s));
+      checkRunInvariants('ideate', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      const scout = (who) => run.rec.calls.find((c) => c.label === `scout ${who}`).prompt;
+      for (const who of SCOUTS) {
+        const p = scout(who);
+        for (const must of [
+          'ops/OWNER.md before you search', '### Purpose plan for today', 'Wanted today: tool, lesson. Avoided today: play. Play is paused until 2026-10-11.', 'An idea with an avoided purpose is ranked last',
+          'Your second candidate may have any purpose that is not avoided (never play)', '"plainSentence": "A <thing> that lets you <do what>', '"firstMinute":', '"conceptsToLearn":', '"purpose": "tool | lesson | explorer | studio | play',
+          '"paywallEvidence":', '"factIndex": 0', 'lesson {concept, whyNiche', 'At most 2: more than 2 is a defect', 'At most 8 controls on the first screen', 'Write commands in words in title, pitch and design.coreLoop',
+          'date | title | category | mechanic | tags | purpose', '- tool: correct', '- lesson: ONE niche concept', '- explorer:', '- studio:', '- play: a real mechanic with depth', 'what they get out of it', "the visitor's repeatable path",
+          'paywallEvidence points at it by factIndex',
+        ]) assert.ok(p.includes(must), `scout ${who} lacks "${must}"`);
+        assert.ok(!p.includes('Not a lorem-ipsum toy, not a pile of facts.') && !p.includes('why it is fun'), 'the game-shaped definition of a strong candidate is gone');
+        assert.ok(!p.includes('manual override'), 'override null is no override');
+      }
+      assert.ok(scout('cards').includes('Lens kind useful: a source of USEFUL TOOLS') && scout('cards').includes('Lead with a tool.') && scout('cards').includes('Your FIRST candidate is a tool.'));
+      assert.ok(scout('lab').includes('Lens kind teach: a source of LESSONS') && scout('lab').includes('Lead with a lesson.') && scout('lab').includes('Your FIRST candidate is a lesson.'));
+      assert.ok(!scout('pulse').includes('Lens kind') && scout('pulse').includes('Your FIRST candidate is a tool or a lesson.'));
+      const lines = scout('cards').split('\n');
+      assert.ok(lines[lines.findIndex((l) => l.startsWith('Lens: ')) + 1].startsWith('Lens kind useful:'), 'the kind sits next to the Lens line');
+      const verify = run.rec.calls.find((c) => c.label.startsWith('verify ')).prompt;
+      for (const must of ['Do not change fingerprint.category, mechanic, slot or purpose', '7. Purpose facts', 'purposeDetail.oracle', 'paywallEvidence entry points (factIndex)', 'misconception is one people really hold', '8. Clarity fields', 'Fill a missing purposeDetail, plainSentence, firstMinute or conceptsToLearn', 'a tool for which no source of known correct answers exists']) assert.ok(verify.includes(must), `verify prompt lacks "${must}"`);
+      const short = s.json(s.work('ideas', 'shortlist.json'));
+      assert.ok(short.ideas.every((i) => i.plainSentence && i.firstMinute && Array.isArray(i.conceptsToLearn) && i.scores.clarity === 0), 'the shortlist keeps the clarity fields');
+      assert.ok(run.rec.logs.includes('purpose plan: wanted tool, lesson; avoided play; play paused until 2026-10-11'), run.rec.logs.filter((l) => l.startsWith('purpose plan')).join(' | '));
+      assert.deepEqual(JSON.parse(JSON.stringify(run.result.purposes)), { wanted: ['tool', 'lesson'], avoid: ['play'], playAllowed: false, minWanted: 6, shortlistedWanted: 0, shortlistedAvoided: 0 });
+      // a kind whose purpose is avoided or merely not wanted today, and a manual override
+      const t = makeSandbox();
+      try {
+        const avoidTools = await scoutPromptsOf(withKinds(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: purposePlan({ wanted: ['lesson', 'explorer'], avoid: ['tool', 'play'] }) } }), { cards: 'useful', lab: 'teach' }));
+        assert.ok(avoidTools.prompt('cards').includes('Today tools are avoided: use this field for a wanted purpose instead.') && avoidTools.prompt('cards').includes('Your FIRST candidate is a lesson or an explorer.'));
+        assert.ok(avoidTools.prompt('lab').includes('Lead with a lesson.') && avoidTools.prompt('lab').includes('Your FIRST candidate is a lesson.'));
+        const studio = await scoutPromptsOf(withKinds(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: purposePlan({ wanted: ['explorer', 'studio'], avoid: [], playAllowed: true, playBlockedUntil: null }) } }), { cards: 'useful' }));
+        assert.ok(studio.prompt('cards').includes('Today a tool is not wanted: lead with a wanted purpose from this field; your second candidate may be a tool.'));
+        assert.ok(studio.prompt('pulse').includes('Avoided today: none.') && !studio.prompt('pulse').includes('Play is paused') && !studio.prompt('pulse').includes('ranked last'));
+        const manual = await scoutPromptsOf(baseArgs(t, { mix: { ...baseArgs(t).mix, purposes: purposePlan({ wanted: ['explorer'], avoid: [], playAllowed: true, override: 'explorer' }) } }));
+        assert.ok(manual.prompt('pulse').includes('This is a manual override: the owner asked for an explorer.') && manual.prompt('pulse').includes('Your FIRST candidate is an explorer.'));
+      } finally { t.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('no purpose plan (mix without purposes, a malformed plan, no mix at all): logged, never bad-args, no wanted or avoided purpose', async () => {
+    const s = makeSandbox();
+    try {
+      const mixNoPlan = { ...baseArgs(s).mix };
+      delete mixNoPlan.purposes;
+      for (const mix of [mixNoPlan, { ...mixNoPlan, purposes: 'tool' }, undefined]) {
+        const args = withKinds(baseArgs(s, { mix }), { cards: 'useful' });
+        if (mix === undefined) delete args.mix;
+        const { run, prompt } = await scoutPromptsOf(args);
+        assert.notEqual(run.result.error, 'bad-args', JSON.stringify(run.result).slice(0, 200));
+        assert.ok(run.rec.logs.some((l) => l.startsWith('no purpose plan')), 'the missing plan is logged');
+        assert.ok(prompt('pulse').includes('No purpose plan reached this run') && !prompt('pulse').includes('Wanted today'));
+        assert.ok(prompt('cards').includes('Lens kind useful') && prompt('cards').includes('Lead with a tool.'), 'without a plan a useful lens still leads with a tool');
+      }
+    } finally { s.clean(); }
+  });
+
+  test('a dev-tool title such as "Chmod Calculator" is filed and shortlisted; a pitch that names a command is still dropped', async () => {
+    const s = makeSandbox();
+    try {
+      const w = ideateWorld(s, {
+        mutate: (c) => {
+          if (c.id === 'pulse-1') { c.title = 'Chmod Calculator'; c.fingerprint.purpose = 'tool'; }
+          if (c.id === 'cards-1') { c.title = 'Push Payload Lesson'; c.pitch = 'See exactly what git push sends to the server.'; c.fingerprint.purpose = 'lesson'; }
+        },
+      });
+      const run = await go('ideate', baseArgs(s), w);
+      checkRunInvariants('ideate', run);
+      const why = (id) => (run.result.dropped.find((d) => d.id === id) || {}).reason || '';
+      assert.equal(why('pulse-1'), '', 'the dev-tool title is not an injection');
+      assert.ok(why('cards-1').startsWith('prompt injection suspected: pitch'), why('cards-1'));
+      assert.equal(s.json(s.work('ideate', 'cand', 'pulse-1.json')).title, 'Chmod Calculator');
+      assert.ok(run.rec.logs.some((l) => l.startsWith('scout pulse (r0): pulse-1 "Chmod Calculator" (tool)')), 'the scout log shows each candidate\'s purpose');
+      const short = s.json(s.work('ideas', 'shortlist.json'));
+      assert.ok(short.ideas.some((i) => i.title === 'Chmod Calculator' && i.fingerprint.purpose === 'tool'), 'the only wanted idea is kept by the wanted floor');
+    } finally { s.clean(); }
+  });
+
+  test('normalize maps fingerprint.purpose into the vocabulary like the other fields; a missing purpose is repaired only once the page contract is in force', async () => {
+    let s = makeSandbox();
+    try {
+      const w = ideateWorld(s, {
+        mutate: (c) => {
+          if (c.id === 'pulse-1') c.fingerprint.purpose = 'Utility';
+          if (c.id === 'cards-1') c.fingerprint.purpose = ' Tool ';
+          if (c.id === 'lab-1') c.fingerprint.purpose = 'nonsense';
+          if (c.id === 'jester-1') c.fingerprint.purpose = '';
+        },
+        noFix: ['lab-1'],
+      });
+      const run = await go('ideate', baseArgs(s), w);
+      checkRunInvariants('ideate', run);
+      const filed = (id) => s.json(s.work('ideate', 'cand', `${id}.json`));
+      assert.equal(filed('pulse-1').fingerprint.purpose, 'tool', 'the clerk mapped "Utility" into the vocabulary');
+      assert.equal(filed('cards-1').fingerprint.purpose, 'tool', 'case and spaces are fixed by the program');
+      assert.equal('purpose' in filed('jester-1').fingerprint, false, 'an empty purpose is removed, never invented, while the contract is not in force');
+      assert.ok(w.sink.fixPrompt.includes('- pulse-1: purpose is Utility; allowed: tool, lesson, explorer, studio, play'), w.sink.fixPrompt.slice(0, 600));
+      assert.ok(w.sink.fixPrompt.includes('for purpose, the one key whose definition'));
+      assert.ok(!w.sink.fixPrompt.includes('cards-1: purpose') && !w.sink.fixPrompt.includes('jester-1: purpose'));
+      const why = (id) => (run.result.dropped.find((d) => d.id === id) || {}).reason || '';
+      assert.ok(why('lab-1').includes('could not be normalized: purpose: nonsense'), why('lab-1'));
+      // the pool follows the repaired purpose: both tools are wanted and the floor keeps them
+      const short = s.json(s.work('ideas', 'shortlist.json'));
+      assert.deepEqual(short.ideas.filter((i) => i.fingerprint.purpose === 'tool').map((i) => i.origin.scoutId).sort(), ['cards-1', 'pulse-1']);
+      assert.equal(run.result.purposes.shortlistedWanted, 2);
+      s.clean();
+      // contract in force: a missing purpose is a vocabulary problem the clerk repairs (and the novelty gate would refuse it otherwise)
+      s = makeSandbox();
+      const cfg = s.json(s.p('config.json'));
+      s.write(s.p('config.json'), { ...cfg, pageContract: { ...cfg.pageContract, requiredFrom: DATE } });
+      const w2 = ideateWorld(s, { mutate: (c) => { if (c.id !== 'jester-1') c.fingerprint.purpose = 'lesson'; } });
+      const run2 = await go('ideate', baseArgs(s), w2);
+      checkRunInvariants('ideate', run2);
+      assert.ok(w2.sink.fixPrompt.includes('- jester-1: purpose is missing; allowed: tool, lesson'), w2.sink.fixPrompt.slice(0, 400));
+      assert.equal(s.json(s.work('ideate', 'cand', 'jester-1.json')).fingerprint.purpose, 'lesson');
+      assert.equal(run2.result.count, 10);
+      const a1 = playbookA1(s, { mode: 'shortlist', file: `work/${DATE}/ideas/shortlist.json` });
+      assert.equal(a1.ok, true, JSON.stringify(a1.problems));
+    } finally { s.clean(); }
+  });
+
+  test('shortlist: at least 6 wanted-purpose ideas when the pool has them (a wanted carry-over counts), avoided purposes last; no plan, no purpose logic', async () => {
+    const cats = Object.keys(TAXONOMY.categories).filter((c) => c !== 'cards-odds');
+    const purposeOf = (id) => (id === 'carry-1' ? 'lesson' : id.endsWith('-1') ? (id.length % 2 ? 'tool' : 'lesson') : ({ pulse: 'explorer', cards: 'studio', artisan: 'explorer', engineer: 'studio' })[id.split('-')[0]] || 'play');
+    const world = (s, extra = {}) => ideateWorld(s, {
+      mutate: (c) => {
+        const at = SCOUTS.indexOf(c.id.split('-')[0]) * 2 + Number(c.id.split('-')[1]);
+        Object.assign(c.fingerprint, { purpose: purposeOf(c.id), slot: 'wildcard', category: cats[at] });
+      },
+      // wanted ideas rank lowest, so only the floor can keep them
+      confidence: (id) => (['tool', 'lesson'].includes(purposeOf(id)) ? 2 : 9),
+      ...extra,
+    });
+    const carried = () => {
+      const c = makeDossier('old', 1, 'lab', 'lens-2');
+      Object.assign(c, { id: 'i03', durable: true, title: 'A Carried Lesson' });
+      Object.assign(c.fingerprint, { purpose: 'lesson', slot: 'wildcard', category: cats[20] });
+      return c;
+    };
+    const tally = (s) => {
+      const short = s.json(s.work('ideas', 'shortlist.json'));
+      const by = (p) => short.ideas.filter((i) => i.fingerprint.purpose === p).length;
+      return { n: short.ideas.length, wanted: by('tool') + by('lesson'), play: by('play'), carry: short.ideas.some((i) => i.origin.agent === 'carryover') };
+    };
+    let s = makeSandbox();
+    try {
+      const run = await go('ideate', baseArgs(s, { carryover: carried() }), world(s));
+      checkRunInvariants('ideate', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      // 9 wanted (8 scouts' first ideas and the carry-over) rank below 4 explorers and studios: the floor keeps 6, the carry-over among them
+      assert.deepEqual(tally(s), { n: 10, wanted: 6, play: 0, carry: true });
+      const playDrops = run.result.dropped.filter((d) => d.stage === 'shortlist' && ['lab-2', 'jester-2', 'architect-2', 'critic-2'].includes(d.id));
+      assert.equal(playDrops.length, 4, 'every avoided idea is surplus while enough others survive');
+      assert.ok(run.result.notes.includes('purpose plan: 6 of 10 shortlisted have a wanted purpose (tool, lesson)'), run.result.notes);
+      assert.deepEqual([run.result.purposes.shortlistedWanted, run.result.purposes.shortlistedAvoided], [6, 0]);
+      s.clean();
+      // too few others survive: the avoided ideas fill the last places, after every idea that is not avoided
+      s = makeSandbox();
+      const thin = await go('ideate', baseArgs(s), world(s, { dropIds: (id) => ['pulse-2', 'cards-2', 'artisan-2', 'engineer-2', 'pulse-1', 'cards-1'].includes(id) }));
+      checkRunInvariants('ideate', thin);
+      assert.deepEqual(tally(s), { n: 10, wanted: 6, play: 4, carry: false });
+      assert.ok(thin.result.notes.includes('4 with an avoided purpose (play) fill the last places'), thin.result.notes);
+      s.clean();
+      // no plan: rank alone decides, so play is not held back and the wanted ideas lose their places
+      s = makeSandbox();
+      const args = baseArgs(s, { carryover: carried() });
+      delete args.mix.purposes;
+      const none = await go('ideate', args, world(s));
+      checkRunInvariants('ideate', none);
+      const t = tally(s);
+      assert.ok(t.play >= 4 && t.wanted < 6, JSON.stringify(t));
+      assert.equal(none.result.purposes, null);
+      assert.ok(none.rec.logs.some((l) => l.startsWith('no purpose plan')));
+    } finally { s.clean(); }
+  });
+
+  test('no humor place is reserved while play is paused; with play allowed the humor slot is still covered', async () => {
+    const world = (s) => ideateWorld(s, {
+      mutate: (c) => { Object.assign(c.fingerprint, { purpose: 'explorer', slot: c.id === 'pulse-2' ? 'humor' : 'wildcard' }); },
+      confidence: (id) => (id === 'pulse-2' ? 1 : 9),
+    });
+    const humorIn = (s) => s.json(s.work('ideas', 'shortlist.json')).ideas.some((i) => i.origin.scoutId === 'pulse-2');
+    let s = makeSandbox();
+    try {
+      await go('ideate', baseArgs(s), world(s));
+      assert.equal(humorIn(s), false, 'play paused: the lowest-ranked humor idea is not reserved a place');
+      s.clean();
+      s = makeSandbox();
+      await go('ideate', baseArgs(s, { mix: { ...baseArgs(s).mix, purposes: purposePlan({ avoid: [], playAllowed: true, playBlockedUntil: null }) } }), world(s));
+      assert.equal(humorIn(s), true, 'play allowed: the owed humor slot is covered as before');
+    } finally { s.clean(); }
+  });
+
   test('tight, mid and exhausted budgets never throw', async () => {
     for (const [total, burn, label] of [[400000, 0, 'tight'], [1500000, 20000, 'mid'], [600000, 60000, 'drains']]) {
       const s = makeSandbox();
@@ -1345,6 +1602,7 @@ describe('ideate.js', () => {
       checkRunInvariants('ideate', run, { skipPhaseUse: true });
       assert.equal(run.result.count, 10);
       assert.ok(run.rec.logs.some((l) => l.includes('pulse disabled')));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('no purpose plan')) && run.result.purposes === null, 'without args.mix there is no purpose plan');
       const run2 = await go('ideate', undefined, { respond: () => null });
       checkRunInvariants('ideate', run2, { skipPhaseUse: true });
       assert.equal(run2.result.error, 'bad-args', 'no args at all is a loud failure, not a quiet degrade');
@@ -1400,6 +1658,137 @@ describe('select.js', () => {
       const cfg = W();
       assert.equal(JSON.stringify(Object.entries(run.result.weights).sort()), JSON.stringify(Object.entries(cfg.weights).sort()));
       assert.equal(JSON.stringify(Object.entries(run.result.gates).sort()), JSON.stringify(Object.entries(cfg.gates).sort()));
+      assert.deepEqual(Object.keys(cfg.weights).sort(), [...CRIT_KEYS].sort(), 'nine criteria, each with a weight');
+      // the bonus has one source (config.json mix.purposes.wantedBonus, copied into the plan by novelty.mjs); the rubric documents it
+      assert.equal(cfg.purposeBonus, REAL_CONFIG.mix.purposes.wantedBonus, 'ops/rubrics/selection.md purposeBonus differs from config.json mix.purposes.wantedBonus');
+      const rubric = fs.readFileSync(path.join(REAL_REPO, 'ops', 'rubrics', 'selection.md'), 'utf8');
+      for (const k of CRIT_KEYS) {
+        const sec = rubric.split(/^### /m).find((x) => x.startsWith(k));
+        assert.ok(sec, `selection.md has no anchors for ${k}`);
+        for (const a of ['* 2:', '* 5:', '* 8:', '* 10:']) assert.ok(sec.includes(a), `selection.md ${k} lacks the ${a} anchor`);
+      }
+    } finally { s.clean(); }
+  });
+
+  test('purpose plan: a wanted purpose earns the bonus and ranks, an avoided one cannot win, an idea without a purpose is eligible without a bonus; baseTotal drives the carry-over and the rejected notes', async () => {
+    const s = makeSandbox();
+    try {
+      // i02 (tool, wanted) is judged 2 points below i01 (no purpose); the +5 bonus lifts it to the top. i03 (play, avoided) is judged best
+      // of all. i04 (lesson) ranks second on its bonus (82) but is judged below i01 (77 < 80), so it is not the carry-over.
+      const purpose = { i02: 'tool', i03: 'play', i04: 'lesson', i05: 'explorer' };
+      seedShortlist(s, { purpose, durable: () => true });
+      const scoreOf = (k, id) => ({ i01: 8, i02: 7.8, i03: 9.5, i04: 7.7, i05: 7.9 })[id] ?? (k === 'feasibility' ? 3 : undefined);
+      const world = selectWorld(s, { scoreOf });
+      const run = await go(s, world);
+      checkRunInvariants('select', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      const rank = Object.fromEntries(run.result.ranking.map((r) => [r.id, r]));
+      assert.equal(run.result.chosenId, 'i02', 'the wanted tool wins on its bonus');
+      assert.deepEqual([rank.i02.baseTotal, rank.i02.purposeBonus, rank.i02.total, rank.i02.purpose], [78, 5, 83, 'tool']);
+      assert.deepEqual([rank.i01.baseTotal, rank.i01.purposeBonus, rank.i01.total, rank.i01.purpose], [80, 0, 80, null], 'no purpose: no bonus, still eligible');
+      assert.equal(rank.i01.eligible, true);
+      assert.deepEqual([rank.i04.purposeBonus, rank.i04.total, rank.i04.rank], [5, 82, 2], 'every wanted purpose gets the bonus, and the bonus ranks');
+      assert.deepEqual([rank.i05.purposeBonus, rank.i05.total], [0, 79], 'a purpose that is neither wanted nor avoided gets nothing');
+      assert.equal(rank.i03.eligible, false, 'the avoided purpose cannot win, whatever its score');
+      assert.ok(rank.i03.rank > rank.i05.rank, 'an ineligible idea ranks below every eligible one');
+      const doc = s.json(s.p('state', 'ideas', `${DATE}.json`));
+      const note = (title) => doc.rejectedNotes.find((x) => x.title === title).reason;
+      assert.ok(note(doc.ideas.find((i) => i.id === 'i03').title).includes('purpose-avoid: play is avoided today (play is paused until 2026-10-11)'));
+      assert.ok(note(doc.ideas.find((i) => i.id === 'i04').title).includes('Rank 2, 77/100 before the 5-point purpose bonus'), 'rejected notes cite the judged total');
+      // the carry-over is the best durable non-winner by baseTotal: i01 (80), not i04 (ranked second on its bonus, judged 77)
+      assert.equal(doc.carryoverOutId, 'i01');
+      assert.equal(doc.chosenId, 'i02');
+      assert.deepEqual(doc.winnerNotes.purpose, { purpose: 'tool', wanted: ['tool', 'lesson'], avoid: ['play'], bonus: 5, bonusApplied: 5, baseTotal: 78 });
+      assert.ok(doc.rationale.includes('78 from the judges plus the 5-point bonus for a wanted purpose, tool'));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('purpose missing for ') && l.includes('i01')), 'an idea without a purpose is logged');
+      assert.ok(run.rec.logs.some((l) => l.startsWith('purpose plan: wanted tool, lesson (+5 points each), avoided play')));
+      // the bonus never lifts an idea over the carry floor: i02 judged 57.7 (62.7 with the bonus) passes every other carry rule
+      const t = makeSandbox();
+      try {
+        seedShortlist(t, { purpose: { i01: 'tool', i02: 'lesson' }, durable: () => true });
+        const i02 = (k) => (k === 'feasibility' || k === 'safety' ? 6 : 5.7);
+        const low = await go(t, selectWorld(t, { scoreOf: (k, id) => (id === 'i01' ? 9 : id === 'i02' ? i02(k) : k === 'feasibility' ? 3 : undefined) }));
+        checkRunInvariants('select', low);
+        const r2 = Object.fromEntries(low.result.ranking.map((r) => [r.id, r]));
+        assert.deepEqual([r2.i02.baseTotal, r2.i02.total, r2.i02.eligible], [57.7, 62.7, true]);
+        assert.ok(r2.i02.total >= W().gates.carryMinTotal && r2.i02.baseTotal < W().gates.carryMinTotal);
+        assert.equal(low.result.carryoverOutId, null, 'the carry-over floor reads baseTotal, never the bonus');
+      } finally { t.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('clarity gate: clarity below 5 cannot win; an unscored clarity is no gate (unlike safety and feasibility)', async () => {
+    const s = makeSandbox();
+    try {
+      seedShortlist(s);
+      const world = selectWorld(s, { scoreOf: (k, id) => (id === 'i03' ? (k === 'clarity' ? 4.9 : 9.9) : id === 'i04' ? 9 : undefined) });
+      const run = await go(s, world);
+      checkRunInvariants('select', run);
+      const rank = Object.fromEntries(run.result.ranking.map((r) => [r.id, r]));
+      assert.equal(rank.i03.eligible, false);
+      assert.equal(run.result.chosenId, 'i04');
+      const doc = s.json(s.p('state', 'ideas', `${DATE}.json`));
+      assert.ok(doc.rejectedNotes.find((x) => x.title === doc.ideas.find((i) => i.id === 'i03').title).reason.includes('clarity 4.9 < 5'));
+      assert.equal(doc.ideas.find((i) => i.id === 'i03').scores.clarity, 4.9);
+      // the clarity judge skipped i03: no gate, and the weights renormalize for it
+      const t = makeSandbox();
+      try {
+        seedShortlist(t);
+        const skipped = await go(t, selectWorld(t, { scoreOf: (k, id) => (id === 'i03' ? 9.9 : undefined), skip: (k, id) => k === 'clarity' && id === 'i03' }));
+        assert.equal(skipped.result.chosenId, 'i03', 'an unscored clarity does not gate the idea');
+        assert.deepEqual(t.json(t.p('state', 'ideas', `${DATE}.json`)).ideas.find((i) => i.id === 'i03').scoresMissing, ['clarity']);
+        // the whole clarity judge failing is no stand-in case either: the run is degraded, not failed closed
+        const t2 = makeSandbox();
+        try {
+          seedShortlist(t2);
+          const gone = await go(t2, selectWorld(t2, { failJudges: ['clarity'] }));
+          assert.equal(gone.result.ok, true);
+          assert.equal(gone.result.reason, 'judges-missing');
+          assert.deepEqual(JSON.parse(JSON.stringify(gone.result.unscoredMandatory)), []);
+        } finally { t2.clean(); }
+      } finally { t.clean(); }
+    } finally { s.clean(); }
+  });
+
+  test('no purpose plan: the selection is unchanged (no bonus, nothing avoided) and says so; judges read OWNER.md and the purpose; the critic asks the purpose questions', async () => {
+    const s = makeSandbox();
+    try {
+      const purpose = { i02: 'tool', i03: 'play' };
+      seedShortlist(s, { purpose });
+      const scoreOf = (k, id) => ({ i01: 8, i02: 7.8, i03: 9.5 })[id] ?? (k === 'feasibility' ? 3 : undefined);
+      const args = baseArgs(s);
+      delete args.mix.purposes;
+      const run = await runWorkflow('select', args, { world: selectWorld(s, { scoreOf }) });
+      checkRunInvariants('select', run);
+      assert.equal(run.result.chosenId, 'i03', 'without a plan the best judged idea wins, play or not');
+      assert.ok(run.result.ranking.every((r) => r.purposeBonus === 0 && r.total === r.baseTotal));
+      assert.ok(run.rec.logs.some((l) => l.startsWith('no purpose plan')));
+      assert.equal(run.result.purposes, null);
+      assert.equal(s.json(s.p('state', 'ideas', `${DATE}.json`)).winnerNotes.purpose, null);
+      for (const mix of [{ ...baseArgs(s).mix, purposes: 'tool' }, undefined]) {
+        const a = baseArgs(s, { mix });
+        if (mix === undefined) delete a.mix;
+        const r = await runWorkflow('select', a, { world: { respond: () => null } });
+        assert.notEqual(r.result.error, 'bad-args', 'an absent or malformed plan is never an argument error');
+      }
+      // prompts (with the plan)
+      const t = makeSandbox();
+      try {
+        seedShortlist(t, { purpose });
+        const p = await go(t, selectWorld(t, { scoreOf }), {}, { historyDigest: '2026-10-08 | Old Thing | science-sim | toy | a,b,c | play' });
+        const judges = p.rec.calls.filter((c) => c.label.startsWith('judge '));
+        assert.ok(judges.every((c) => c.prompt.includes('ops/OWNER.md first') && c.prompt.includes('Judge each idea for its own purpose')));
+        assert.ok(judges.every((c) => /^- i02 "[^"]*" \[tool \//m.test(c.prompt) && /^- i01 "[^"]*" \[no purpose \//m.test(c.prompt)), 'the idea list shows each purpose');
+        const ask = (key) => judges.find((c) => c.label.startsWith(`judge ${key} `)).prompt;
+        assert.ok(ask('distinctness').includes('History digest (date | title | category | mechanic | tags | purpose)') && ask('distinctness').includes('the purpose is part of variety'));
+        assert.ok(ask('sophistication').includes('Depth is discoverable, never required') && ask('sophistication').includes('correctness and completeness against the paid equivalents'));
+        assert.ok(ask('delight').includes('save a real hour') && ask('delight').includes('aha moment'));
+        assert.ok(ask('interestFit').includes('a faithful free version of a gated tool, a lesson on a niche concept, and a simple game with a familiar hook like day 3'));
+        assert.ok(ask('safety').includes('clean-room rules') && ask('safety').includes('never a form that takes a real password'));
+        assert.ok(ask('clarity').includes('plainSentence, firstMinute and conceptsToLearn') && ask('clarity').includes('ten seconds'));
+        const cp = p.rec.challengePrompts.find((c) => c.label.startsWith('challenge ')).prompt;
+        for (const must of ['ops/OWNER.md', 'would a tool give a wrong answer', 'Would a lesson teach a wrong thing', 'Would the paywall claim embarrass us', 'Could a stranger say what this is after ten seconds', 'a premise so opaque that no plain title and intro would let a stranger say what it is', '(purpose tool, total']) assert.ok(cp.includes(must), `critic prompt lacks "${must}"`);
+      } finally { t.clean(); }
     } finally { s.clean(); }
   });
 
@@ -1415,7 +1804,7 @@ describe('select.js', () => {
       assert.equal(run.result.ok, true, JSON.stringify(run.result));
       assert.equal(run.result.phase, 'select');
       const totals = expectedTotals(ideas, defaultScore);
-      const gated = (i) => defaultScore('feasibility', i.id) < 5 || defaultScore('safety', i.id) < 5;
+      const gated = (i) => defaultScore('feasibility', i.id) < 5 || defaultScore('safety', i.id) < 5 || defaultScore('clarity', i.id) < 5;
       const best = ideas.filter((i) => !gated(i)).sort((a, b) => totals[b.id] - totals[a.id])[0];
       assert.equal(run.result.chosenId, best.id);
       assert.equal(run.result.title, best.title);
@@ -1440,7 +1829,7 @@ describe('select.js', () => {
         assert.equal(c.durable, true);
         assert.notEqual(c.id, doc.chosenId);
         assert.ok(c.total >= W().gates.carryMinTotal);
-        const cands = doc.ideas.filter((i) => i.id !== doc.chosenId && i.durable && i.total >= W().gates.carryMinTotal && i.scores.feasibility >= 5 && i.scores.safety >= 6);
+        const cands = doc.ideas.filter((i) => i.id !== doc.chosenId && i.durable && i.total >= W().gates.carryMinTotal && i.scores.feasibility >= 5 && i.scores.safety >= 6 && i.scores.clarity >= 5);
         assert.equal(c.id, cands.sort((a, b) => b.total - a.total)[0].id, 'carry-over is the best durable non-winner');
       }
       assert.equal(fs.readFileSync(s.p('state', 'carryover.json'), 'utf8'), carryBefore, 'the carry-settle step of the orchestrator owns state/carryover.json');
@@ -1451,8 +1840,9 @@ describe('select.js', () => {
       assert.equal(run.result.ranking[0].id, best.id);
       assert.ok(world.challenges.some((l) => l.startsWith('challenge ')));
       const judges = run.rec.calls.filter((c) => c.label.startsWith('judge '));
-      assert.equal(judges.length, 8);
+      assert.equal(judges.length, 9, 'nine criteria, one judge each on a wide machine');
       assert.deepEqual(judges.map((c) => c.label.split(' ')[1]).sort(), [...CRIT_KEYS].sort());
+      assert.ok(judges.some((c) => c.label === 'judge clarity (cards)'), 'the clarity judge persona is cards');
       assert.ok(judges.every((c) => c.model === 'sonnet' && c.effort === 'high'));
       assert.ok(judges.find((c) => c.label.includes('distinctness')).prompt.includes('History digest'));
       assert.ok(judges.every((c) => c.prompt.includes('Heartbeat') === false));
@@ -1665,10 +2055,10 @@ describe('select.js', () => {
       assert.equal(run.result.ok, true);
       assert.equal(run.result.degraded, true);
       assert.equal(run.result.reason, 'judges-missing');
-      assert.equal(run.result.judgesUsed.length, 6);
+      assert.equal(run.result.judgesUsed.length, 7);
       s = makeSandbox();
       seedShortlist(s);
-      const run2 = await go(s, selectWorld(s, { failJudges: ['timeliness', 'interestFit', 'delight', 'polishPotential', 'sophistication'] }));
+      const run2 = await go(s, selectWorld(s, { failJudges: ['timeliness', 'interestFit', 'delight', 'polishPotential', 'sophistication', 'clarity'] }));
       checkRunInvariants('select', run2);
       assert.equal(run2.result.ok, false);
       assert.equal(run2.result.reason, 'judging-failed');
@@ -1692,7 +2082,7 @@ describe('select.js', () => {
     } finally { s.clean(); }
   });
 
-  test('below 6 slots four judges hold two criteria each: two judge waves on 2 slots, the same totals, and the critic check keeps its time', async () => {
+  test('below 6 slots four judges hold the nine criteria (architect 2, critic safety and clarity, lab 3, artisan 2): two judge waves on 2 slots, the same totals, and the critic check keeps its time', async () => {
     // 2026-10-11: eight one-criterion judges on 2 slots took four waves (about 25 of 30 minutes) and the critic check was skipped for time
     const s = makeSandbox();
     try {
@@ -1703,12 +2093,13 @@ describe('select.js', () => {
       assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 400));
       assert.ok(run.rec.maxActive <= 2, `${run.rec.maxActive} agents at once on 2 slots`);
       const judges = run.rec.calls.filter((c) => c.label.startsWith('judge '));
-      assert.deepEqual(judges.map((c) => c.label).sort(), ['judge distinctness+interestFit (lab)', 'judge feasibility+sophistication (architect)', 'judge polishPotential+delight (artisan)', 'judge safety+timeliness (critic)']);
+      assert.deepEqual(judges.map((c) => c.label).sort(), ['judge distinctness+interestFit+timeliness (lab)', 'judge feasibility+sophistication (architect)', 'judge polishPotential+delight (artisan)', 'judge safety+clarity (critic)']);
       assert.ok(judges.length <= 2 * 2, 'at most two waves of judges on 2 slots');
       for (const j of judges) {
         const keys = /^judge ([\w+]+) /.exec(j.label)[1].split('+');
         for (const k of keys) assert.ok(j.prompt.includes(`Criterion "${k}"`), `${j.label} carries the question of ${k}`);
         assert.ok(j.prompt.includes('score each criterion as if a different judge held it'), j.label);
+        assert.ok(j.prompt.includes(`judge holds ${keys.length === 3 ? 'three' : 'two'} criteria`) && j.prompt.includes('ops/OWNER.md'), j.label);
         assert.equal(j.effort, 'high', j.label);
       }
       assert.ok(judges.find((c) => c.label.includes('distinctness')).prompt.includes('History digest'));
@@ -1723,7 +2114,7 @@ describe('select.js', () => {
       const totals = expectedTotals(ideas, defaultScore);
       for (const i of doc.ideas) assert.equal(i.total, totals[i.id], `total of ${i.id}`);
       assert.ok(world.challenges.some((l) => l.startsWith('challenge ')), 'the critic check ran');
-      assert.equal(run.result.judgesUsed.length, 8);
+      assert.equal(run.result.judgesUsed.length, 9);
       // state file and marker come from one program run
       assert.ok(!run.rec.calls.some((c) => c.label === 'write select DONE'));
       const marker = s.json(s.work('select', 'DONE.json'));
@@ -1738,10 +2129,10 @@ describe('select.js', () => {
         const fw = selectWorld(f, { failJudges: ['safety'] });
         const failed = await go(f, fw, {}, { maxAgents: 2, osHeartbeat: true });
         checkRunInvariants('select', failed, { skipPhaseUse: true });
-        assert.deepEqual([...failed.result.judgesUsed].sort(), CRIT_KEYS.filter((k) => !['safety', 'timeliness'].includes(k)).sort());
+        assert.deepEqual([...failed.result.judgesUsed].sort(), CRIT_KEYS.filter((k) => !['safety', 'clarity'].includes(k)).sort());
         assert.deepEqual(JSON.parse(JSON.stringify(failed.result.unscoredMandatory)), ['safety']);
         assert.ok(failed.rec.challengePrompts.some((c) => c.prompt.includes('produced no scores') && c.prompt.includes('rubrics/safety.md')));
-        assert.equal(failed.rec.calls.filter((c) => c.label.startsWith('judge safety+timeliness')).length, 2, 'the pair is retried once');
+        assert.equal(failed.rec.calls.filter((c) => c.label.startsWith('judge safety+clarity')).length, 2, 'the group is retried once');
       } finally { f.clean(); }
     } finally { s.clean(); }
   });
