@@ -862,9 +862,10 @@ function memberPrompt(m, n, total) {
     `Repo root: ${REPO} . Run date: ${DATE} (day ${DAY}). Always use absolute paths. The working tree is shared and only one member works at a time: it must be clean when you start and clean when you finish.`,
     '',
     'Read these first, in this order (each is short):',
-    `1. ${REPO}/ops/CULTURE.md (the charter: resilient, curious, proactive)`,
-    `2. ${REPO}/ops/roles/${m}.md (who you are; its "Culture & kaizen" section is written for you)`,
-    `3. ${REPO}/ops/rubrics/kaizen.md (how a kaizen is judged: small, real, safe, reversible, evidenced, not thrash)`,
+    `1. ${REPO}/ops/OWNER.md (the owner's words and the rules that follow: no kaizen may weaken one of them, the page contract or the clarity bar)`,
+    `2. ${REPO}/ops/CULTURE.md (the charter: resilient, curious, proactive)`,
+    `3. ${REPO}/ops/roles/${m}.md (who you are; its "Culture & kaizen" section is written for you)`,
+    `4. ${REPO}/ops/rubrics/kaizen.md (how a kaizen is judged: small, real, safe, reversible, evidenced, not thrash)`,
     '',
     'Kaizen rules (non-negotiable):',
     // protected:begin

@@ -19,7 +19,7 @@ Binding source: `config.json` `guardrails` and `ops/CONTRACT.md` section 10. Thi
 * **Clean room.** An original implementation. No vendor names, logos, UI or proprietary data on the page; the dossier may name products as context only. No claim of parity ("as good as X", "a free X"). Bundled datasets are public domain or licence-compatible and credited on the page.
 * **Honest numbers.** Money, health and legal maths say "estimates, not advice". Every tool states its assumptions and limits. Never fake precision: show no more significant figures than the method supports.
 * **No sensitive inputs.** No tool takes a real password, card, bank or identity number. A password-strength lesson uses generated samples and a plain text input (never `type=password`) with "do not type a real password". IBAN and card checkers are out of scope. Keys are shown as hex or base64, never with "-----BEGIN" armor.
-* **Civic topics.** A lesson or explorer about elections, parliaments or voting maths sets `political: true` (it uses the 14-day politics slot) and stays non-partisan; satire is not required.
+* **Civic topics.** A lesson or explorer about elections, parliaments or voting maths sets `political: true` (it uses the 14-day politics slot), stays non-partisan and keeps the playful or satirical tone that red line 4 (`config.json` `guardrails.politics`) requires.
 
 ## Agent hygiene (prompt injection)
 
