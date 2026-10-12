@@ -242,6 +242,7 @@
       "ops/CONTRACT.md",
       "ops/rubrics/safety.md",
       "ops/taxonomy.json",
+      "ops/OWNER.md",
       "ops/kaizen/LOG.md",
       "ops/kaizen/INDEX.json",
       "scripts/validate.mjs",
