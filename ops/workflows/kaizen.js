@@ -14,9 +14,11 @@ export const meta = {
 //   degradedDay (true, or a sentence about what degraded: today's shared theme is prevention), notesDir (default work/<date>/kaizen).
 // The working tree must be clean when the phase starts, so every diff is exactly one member's: run phase-start for kaizen, then sync,
 //   then call this workflow, and write nothing to the tree while it runs (a dirty tree stops the round and queues everyone).
-// Timing: a member's turn is mostly the three test suites that kaizen.mjs commit runs (about 7 minutes) plus its own work, so a full round
-//   of 9 is about 90 minutes. Pass phaseBudgetMinutes below config.phaseStuckMinutes (90) minus a margin: members who do not fit are
-//   queued for the next day instead of running into the stuck-phase limit.
+// Timing: a member's turn is mostly the test suites that kaizen.mjs runs (about 7 minutes a run) plus its own work. Measured: 6 of 9 members
+//   in 82 minutes on 2026-10-10 and 4 of 9 in 79 on 2026-10-11 (14 to 20 minutes each), so a full round of 9 fits no budget below the stuck
+//   limit. Pass phaseBudgetMinutes below config.phaseStuckMinutes (90) minus a margin: members who do not fit are queued for the next day
+//   (state/kaizen-queue.json) instead of running into the stuck-phase limit. config.phaseBudgetMinutes.kaizen is 85 (it was 120, above the
+//   stuck limit); PLAYBOOK 7.2 and 10.6 hand this workflow phaseBudgetMinutes 75, so its phase watch falls due at 85.
 // writes: ONLY what the members change through scripts/kaizen.mjs (it commits, never pushes), plus state/kaizen-queue.json at the end
 //   and scratch files under work/<date>/tmp/. The orchestrator syncs afterwards.
 // returns: {ok, phase:'kaizen', results:[{agent,title,observation,outcome,detail,...}], skipped:[agent], skippedWhy:{agent:reason},

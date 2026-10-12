@@ -1,7 +1,8 @@
 # Keeps `main` equal to the work branch. GitHub Pages serves the site from `main`
 # (folder /docs) and GitHub runs `schedule` workflows only from the default branch,
-# but the daily build pushes to the work branch (config.json "workBranch"). So every
-# push of the work branch fast-forwards `main` to the same commit. It never merges,
+# but the daily build pushes to the work branch (config.json "workBranch"). So a push
+# of the work branch that changes docs/, .github/ or config.json (about 3 of the 25 a
+# day, see the step below) fast-forwards `main` to that commit. It never merges,
 # rebases or force-pushes: when `main` is not an ancestor of the work branch (someone
 # committed to `main` directly), it only warns, and the fix is one merge of `main`
 # into the work branch (ops/OPERATING.md, "Merge the branch to `main`").
@@ -57,12 +58,15 @@ jobs:
             echo "nothing under docs/, .github/ or config.json changed since main ($(git rev-parse --short origin/main)): main waits for the next such push"
             exit 0
           fi
+          # Decide before the push: a successful push moves origin/main to $GITHUB_SHA itself, and the diff is empty from then on.
+          docs=false
+          if ! git diff --quiet origin/main "$GITHUB_SHA" -- docs/; then
+            docs=true
+          fi
           git push origin "$GITHUB_SHA:refs/heads/main"
           echo "main fast-forwarded to $GITHUB_SHA"
           echo "moved=true" >> "$GITHUB_OUTPUT"
-          if ! git diff --quiet origin/main "$GITHUB_SHA" -- docs/; then
-            echo "docs=true" >> "$GITHUB_OUTPUT"
-          fi
+          echo "docs=$docs" >> "$GITHUB_OUTPUT"
 
       - name: Request a Pages build
         if: steps.ff.outputs.moved == 'true' && steps.ff.outputs.docs == 'true'

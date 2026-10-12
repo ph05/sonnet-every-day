@@ -233,6 +233,174 @@ test('backup closer: the documents describe the second routine consistently', ()
 });
 
 // ---------------------------------------------------------------------------------------------
+// routines, prompt files and the Pages setup (F12): what the routines are called, how a prompt edit reaches them, what the owner is told
+// ---------------------------------------------------------------------------------------------
+
+test('bootstrap: step 2 keeps unpushed commits with ONE conditional command, a backup branch only when there is something to keep', () => {
+  const boot = read('ops/prompts/_bootstrap.md');
+  const cmd = /with this single command[\s\S]*?: `(cd \/home\/user\/sonnet-every-day && \{[^`]*\})`/.exec(boot)?.[1];
+  assert.ok(cmd, 'the bootstrap has its one-command backup step');
+  assert.ok(!/`git branch backup-\$\(date \+%s\) HEAD`/.test(boot), 'the unconditional branch command is not quoted on its own any more');
+  const base = tmpDir('sed-bootstrap-backup-');
+  const run = (c) => spawnSync('bash', ['-c', c], { cwd: base, encoding: 'utf8' });
+  const git = (cwd, ...args) => {
+    const r = spawnSync('git', args, { cwd, encoding: 'utf8' });
+    assert.equal(r.status, 0, `git ${args.join(' ')}: ${r.stderr}`);
+    return r.stdout.trim();
+  };
+  const work = REAL_CONFIG.workBranch;
+  git(base, 'init', '-q', '--bare', 'remote.git');
+  git(base, 'clone', '-q', 'remote.git', 'clone');
+  const clone = path.join(base, 'clone');
+  fs.writeFileSync(path.join(clone, 'a.txt'), 'one\n');
+  git(clone, 'add', '-A');
+  git(clone, 'commit', '-q', '-m', 'one');
+  git(clone, 'push', '-q', 'origin', 'main');
+  git(clone, 'checkout', '-q', '-b', work);
+  git(clone, 'push', '-q', '-u', 'origin', work);
+  const backups = (dir) => git(dir, 'branch', '--list', 'backup-*').split('\n').map((l) => l.trim()).filter(Boolean);
+  const at = (dir) => cmd.replaceAll('/home/user/sonnet-every-day', dir);
+
+  // everything is pushed: nothing to keep, nothing created, and a quiet exit 0
+  let r = run(at(clone));
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(r.stdout.trim(), '');
+  assert.deepEqual(backups(clone), []);
+
+  // an unpushed commit: exactly one backup branch, at that commit
+  fs.writeFileSync(path.join(clone, 'a.txt'), 'two\n');
+  git(clone, 'commit', '-q', '-am', 'two, never pushed');
+  r = run(at(clone));
+  assert.equal(r.status, 0, r.stderr);
+  const made = backups(clone);
+  assert.equal(made.length, 1, `one backup branch, got ${made}`);
+  assert.equal(git(clone, 'rev-parse', made[0]), git(clone, 'rev-parse', 'HEAD'));
+  assert.equal(run(at(clone)).status, 0, 'a name already taken (same second) must not stop the bootstrap');
+
+  // a clone of another branch has never seen the work branch: nothing to compare with, nothing created
+  git(base, 'clone', '-q', '--single-branch', '--branch', 'main', 'remote.git', 'other');
+  const other = path.join(base, 'other');
+  fs.writeFileSync(path.join(other, 'b.txt'), 'local\n');
+  git(other, 'add', '-A');
+  git(other, 'commit', '-q', '-m', 'local on main');
+  r = run(at(other));
+  assert.equal(r.status, 0, r.stderr);
+  assert.deepEqual(backups(other), []);
+
+  // no clone at all: the step fails at `cd`, which is where the bootstrap's "directory does not exist" branch takes over
+  assert.notEqual(run(at(path.join(base, 'missing'))).status, 0);
+});
+
+test('routines: the README table carries the names the routines really have, and its print recipe renders every stored prompt', () => {
+  const readme = read('ops/prompts/README.md');
+  const s = REAL_CONFIG.schedule;
+  const escape = (t) => t.replace(/[()]/g, '\\$&');
+  for (const [role, name] of [
+    ['primary', `Sonnet Every Day: primary (${s.primary} ET)`],
+    ['wdA', `Sonnet Every Day: watchdog A (${s.watchdogA} ET)`],
+    ['wdB', `Sonnet Every Day: watchdog B (${s.watchdogB} ET)`],
+    ['closer', `Sonnet Every Day: closer (${s.closer} ET)`],
+    ['closerBackup', `Sonnet Every Day: closer backup (${s.closerBackup} ET)`],
+  ]) assert.match(readme, new RegExp(`^\\| ${role} \\| ${escape(name)} \\|`, 'm'), `${role} is called "${name}" (routine and session)`);
+  assert.match(readme, /^\| manual \|[^\n]*Sonnet Every Day: manual run \(button\)[^\n]*Sonnet Every Day: manual operator \(ad hoc runs, demo\)[^\n]*`manual\.md`/m);
+  assert.match(read('ops/OPERATING.md'), /Sonnet Every Day: manual run \(button\)/);
+  assert.ok(!/stays empty until someone records them/.test(read('ops/OPERATING.md')), 'state/routines.json already holds every trigger id');
+  const routines = JSON.parse(read('state/routines.json'));
+  assert.match(routines.note, /cse_/, 'the registry explains the cse_ form of a session id');
+  for (const id of Object.values(routines.sessions)) assert.match(id, /^session_/);
+
+  // the recipe that prints a routine's prompt (what update_trigger must be given after an edit) runs and renders every prompt file
+  const recipe = /```\n(node --input-type=module -e "[^\n]*" primary\.md)\n```/.exec(readme)?.[1];
+  assert.ok(recipe, 'ops/prompts/README.md has the print recipe');
+  assert.match(readme, /update_trigger/);
+  // ...and the listing that pairs every trigger id with its prompt file agrees with the table above and with the registry
+  const listing = /```\n(node --input-type=module -e "[^\n]*console\.log\(role\.padEnd[^\n]*")\n```/.exec(readme)?.[1];
+  assert.ok(listing, 'ops/prompts/README.md has the listing command');
+  const listed = spawnSync('bash', ['-c', listing], { cwd: REPO_ROOT, encoding: 'utf8' });
+  assert.equal(listed.status, 0, listed.stderr);
+  const rows = listed.stdout.trim().split('\n').map((line) => line.trim().split(/\s+/));
+  assert.deepEqual(rows.map((r) => r[0]), ['primary', 'wdA', 'wdB', 'closer', 'closerBackup', 'manualButton']);
+  const tableFile = Object.fromEntries([...readme.matchAll(/^\| (primary|wdA|wdB|closer|closerBackup|manual) \|[^\n]*\| `([\w-]+\.md)`/gm)].map((m) => [m[1] === 'manual' ? 'manualButton' : m[1], m[2]]));
+  for (const [role, id, file] of rows) {
+    assert.equal(id, routines.triggers[role], `${role}: the trigger id is the one in state/routines.json`);
+    assert.match(id, /^trig_/);
+    assert.equal(file, tableFile[role], `${role}: the prompt file is the one in the table`);
+    assert.ok(fs.existsSync(path.join(REPO_ROOT, 'ops/prompts', file)), `${file} exists`);
+  }
+  const boot = read('ops/prompts/_bootstrap.md').trimEnd();
+  for (const file of ['primary.md', 'watchdog-a.md', 'watchdog-b.md', 'closer.md', 'manual.md']) {
+    const r = spawnSync('bash', ['-c', recipe.replace(/ primary\.md$/, ` ${file}`)], { cwd: REPO_ROOT, encoding: 'utf8' });
+    assert.equal(r.status, 0, `${file}: ${r.stderr}`);
+    const source = read(`ops/prompts/${file}`).trimEnd();
+    assert.ok(source.includes('{{BOOTSTRAP}}'), `${file} has the slot`);
+    assert.ok(!r.stdout.includes('{{'), `${file}: no placeholder is left`);
+    assert.ok(r.stdout.startsWith('ultracode\n\n'), `${file}: the prompt starts with ultracode`);
+    assert.ok(r.stdout.includes(boot), `${file}: the whole bootstrap is inside`);
+    assert.equal(r.stdout.length, source.length - '{{BOOTSTRAP}}'.length + boot.length, `${file}: nothing else changed`);
+  }
+});
+
+test('docs: no stale word about the Pages source, the deadman Action, agent slots or the push rate remains, and the Pages fix is written down', () => {
+  const problems = [];
+  const files = ['README.md', 'ops/OPERATING.md', 'ops/FAILURE_MODES.md', 'ops/PLAYBOOK.md', 'ops/CONTRACT.md', 'ops/prompts/README.md', 'ops/prompts/_bootstrap.md'];
+  const stale = [
+    [/\bdormant\b/i, 'the deadman Action is not dormant: main follows the work branch (sync-main)'],
+    [/activate the deadman/i, 'nothing has to be merged to activate the deadman Action'],
+    [/(?:Pages|Deploy from a branch)[^\n]{0,120}`claude\/sonnet-every-day`[^\n]{0,40}`\/docs`/, 'the Pages source is main, folder /docs'],
+    [/work branch[^\n]{0,60}works too/i, 'Pages must not be pointed at the work branch (a build per push)'],
+    [/every push to the work branch starts a (?:GitHub )?Pages build/i, 'Pages reads main, which sync-main moves only for docs pushes'],
+    [/Workflows use pools of 8/, 'a Workflow pool is args.maxAgents wide (2 on the 4-CPU container)'],
+    [/use pools of 8\b/, 'a Workflow pool is min(8, args.maxAgents) wide'],
+  ];
+  for (const file of files) {
+    read(file).split('\n').forEach((line, i) => {
+      for (const [re, why] of stale) if (re.test(line)) problems.push(`${file}:${i + 1}: ${why}: ${line.trim().slice(0, 90)}`);
+    });
+  }
+  assert.deepEqual(problems, []);
+
+  // Pages points at main + /docs and the owner can fix the folder in one click
+  const operating = read('ops/OPERATING.md');
+  const pages = section(operating, '## Turn on GitHub Pages (once)');
+  assert.match(pages, /Branch `main`, and in the second dropdown the folder \*\*`\/docs`\*\*/);
+  assert.match(pages, /The one-click fix when the site shows the README/);
+  assert.match(pages, /What you see if the folder is wrong/);
+  assert.match(pages, /`\/ \(root\)`/);
+  assert.match(read('README.md'), /the folder is `\/ \(root\)`/);
+  assert.match(read('ops/FAILURE_MODES.md'), /^\| FM-65 \|[^\n]*`\/ \(root\)`[^\n]*`main` > `\/docs` > Save/m);
+
+  // the deadman's schedule is a best-effort one (2026-10-11: both runs about 4.5 hours late)
+  assert.match(section(operating, '## Merge the branch to `main`'), /best-effort basis: on 2026-10-11 the two deadman runs began at 18:25 and 19:09 UTC, about 4\.5 hours late/);
+  assert.match(read('ops/FAILURE_MODES.md'), /^\| FM-75 \|[^\n]*best-effort[^\n]*4\.5 hours late/m);
+});
+
+test('config: the models block is documented as unread, and is unread; the kaizen header quotes the real budgets', () => {
+  assert.equal(typeof REAL_CONFIG._note_models, 'string');
+  assert.match(REAL_CONFIG._note_models, /nothing reads the models block/);
+  const listJs = (dir) => fs.readdirSync(path.join(REPO_ROOT, dir), { withFileTypes: true }).flatMap((e) => {
+    const rel = `${dir}/${e.name}`;
+    return e.isDirectory() ? listJs(rel) : /\.m?js$/.test(e.name) ? [rel] : [];
+  });
+  const readers = [];
+  for (const file of [...listJs('scripts'), ...listJs('ops/workflows')]) {
+    read(file).split('\n').forEach((line, i) => {
+      if (/^\s*(?:\/\/|\*|\/\*)/.test(line)) return;
+      if (/\.models\b|\[\s*['"]models['"]\s*\]|[{,]\s*models\s*[,}=]/.test(line.split('//')[0])) readers.push(`${file}:${i + 1}: ${line.trim().slice(0, 90)}`);
+    });
+  }
+  assert.deepEqual(readers, [], 'something reads config.models now: drop the note in config.json (_note_models) or the reader');
+
+  const head = read('ops/workflows/kaizen.js').split('\n').slice(0, 25).join('\n');
+  assert.match(head, /Pass phaseBudgetMinutes below config\.phaseStuckMinutes \(90\) minus a margin/);
+  assert.equal(REAL_CONFIG.phaseStuckMinutes, 90);
+  const quoted = /config\.phaseBudgetMinutes\.kaizen is (\d+)/.exec(head)?.[1];
+  assert.equal(Number(quoted), REAL_CONFIG.phaseBudgetMinutes.kaizen, 'the header quotes the budget config.json has');
+  assert.ok(REAL_CONFIG.phaseBudgetMinutes.kaizen < REAL_CONFIG.phaseStuckMinutes, 'below the stuck limit, as the header asks');
+  const handed = /hand this workflow phaseBudgetMinutes (\d+)/.exec(head)?.[1];
+  assert.match(PLAYBOOK, new RegExp(`phaseBudgetMinutes: ${handed}\\b`), 'the playbook hands the workflow the budget the header names');
+});
+
+// ---------------------------------------------------------------------------------------------
 // finding 3: untrusted text never reaches a shell line
 // ---------------------------------------------------------------------------------------------
 

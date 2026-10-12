@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "note": "Registry of the persistent role sessions and the cron routines that wake them (ids are not secrets). Recreate procedure: ops/prompts/README.md. Routines are cron triggers with persistent_session_id (fresh-session routines cannot attach the repo in this org).",
+  "note": "Registry of the persistent role sessions and the cron routines that wake them (ids are not secrets). Recreate procedure: ops/prompts/README.md. Routines are cron triggers with persistent_session_id (fresh-session routines cannot attach the repo in this org). Ids here are the session_ form; a session's own CLAUDE_CODE_REMOTE_SESSION_ID (what leases and heartbeat files carry, and last_run.session_id in get_trigger) is the same id with the prefix cse_ instead of session_ (session_011MmHKF9EADvVeN8KnZuFsm is cse_011MmHKF9EADvVeN8KnZuFsm).",
   "environmentId": "env_01NMckaFSWQxdM8aUNsJ96A5",
   "model": "claude-sonnet-5-5",
   "sessions": {

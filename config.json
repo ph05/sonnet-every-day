@@ -23,6 +23,7 @@
   },
   "leaseStaleMinutes": 35,
   "maxAttemptsPerPhase": 2,
+  "_note_models": "Documentation only: nothing reads the models block (tests/playbook.test.mjs fails when a script or workflow starts to). The workflows pass the aliases 'sonnet' and 'haiku' straight to agent() (CONTRACT section 3), roster.*.model only names a key of it, and a session's own model is fixed when the session is created (ops/prompts/README.md, step 1: claude-sonnet-5-5). Changing a value here changes nothing.",
   "models": {
     "orchestrator": "claude-sonnet-5-5",
     "specialist": "sonnet",

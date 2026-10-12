@@ -63,6 +63,8 @@ A day is never allowed to be blank. Watchdog sessions and a model-free GitHub Ac
 
 Fallback days count as days but do not use up a category. A primary that recovers late can still replace a fallback until 23:59.
 
+How many of the eight agents run at once depends on the machine: the Workflow tool runs `min(16, CPUs - 2)` agent calls at a time, which is two on the current 4-CPU cloud container. With fewer than six slots the planner prices a full build as infeasible at 03:55, so the day is a compact T2 build from the start (both days so far ended as T2); six or more slots bring T1 back.
+
 ## A swarm that improves itself
 
 The team is built to be resilient, curious and proactive, and the repo shows it.
@@ -112,7 +114,7 @@ flowchart TD
     B --> G["GitHub Pages: /docs"]
     P --> Z["kaizen phase, after publish<br/>one gated change per member"]
     S -.->|"lease and heartbeats"| H["state/ history, runs, ideas"]
-    X["GitHub Action: deadman<br/>09:40 ET, no model needed"] -.->|"fallback if still empty"| F["scripts/fallback.mjs<br/>Ideas Day, Postcard"]
+    X["GitHub Action: deadman<br/>from 09:40 ET, no model needed"] -.->|"fallback if still empty"| F["scripts/fallback.mjs<br/>Ideas Day, Postcard"]
     F --> D
 ```
 
@@ -146,14 +148,14 @@ scripts/
   qa/                  headless browser checks
 site-src/              the gallery front-end
 state/                 history, carry-over idea, throttle, per-day runs and ideas
-docs/                  the published site (GitHub Pages root)
+docs/                  the published site (the folder GitHub Pages serves, /docs)
 tests/                 node:test suites (no dependencies)
 ```
 
 ## Setup checklist
 
-1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `main`, folder `/docs`, **Save**. The site is then at <https://ph05.github.io/sonnet-every-day/> after the first deploy (a few minutes). The daily build pushes the work branch; the `sync-main` Action fast-forwards `main` to it after every push, so the site follows.
-2. **Create the sessions and routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md): one session per role created with this repo as its source, then one cron trigger per session (`persistent_session_id`, no text, `CRON_TZ=America/New_York`). Record the ids in `state/routines.json`.
+1. **Enable GitHub Pages.** Repo **Settings**, **Pages**, **Build and deployment**: **Deploy from a branch**, branch `main`, folder `/docs` (the second dropdown; the preselected `/ (root)` is wrong), **Save**. The site is then at <https://ph05.github.io/sonnet-every-day/> after the first deploy (a few minutes). The daily build pushes the work branch; the `sync-main` Action fast-forwards `main` to it after every push that changes `docs/`, `.github/` or `config.json`, so the site follows. **If that address shows this README instead of the gallery, the folder is `/ (root)`:** open Settings, Pages, choose `/docs` in that dropdown and Save, one click (`ops/OPERATING.md`, "Turn on GitHub Pages", says what each wrong setting looks like).
+2. **Create the sessions and routines** (primary, watchdog A, watchdog B, closer, closer backup) from the table and files in [`ops/prompts/README.md`](ops/prompts/README.md): one session per role created with this repo as its source, then one cron trigger per session (`persistent_session_id`, no text, `CRON_TZ=America/New_York`). Record the ids in `state/routines.json`. A routine keeps its own copy of its prompt: after `ops/prompts/_bootstrap.md` or a prompt file is edited, refresh the six routines with `update_trigger` (`ops/prompts/README.md`, "Refresh the routines after editing a prompt", prints the text).
 3. **Run a day by hand** whenever you want one (the first day was built this way) by firing the manual routine with the text `ROLE_OVERRIDE=manual RUN_DATE=<date> TARGET_TIER=1`; see [`ops/OPERATING.md`](ops/OPERATING.md).
 4. **Do not merge pull requests into `main`.** `main` follows the work branch by fast-forward (`.github/workflows/sync-main.yml`); a merge commit on `main` stops that until `main` is merged back into the work branch once (`ops/OPERATING.md`, "Merge the branch to `main`"). GitHub runs scheduled workflows only from the default branch, which is why the `deadman` Action needs `main` current.
 

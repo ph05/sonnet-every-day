@@ -3487,9 +3487,9 @@ describe('e2e', () => {
 
     // --- no doc says a `+N` directive sets the budget, quotes the old argument name, or tells anyone to read budget.remaining()
     // (the workflows' own prelude is the one sanctioned reader of budget.remaining(), inside left(): _selfcheck.mjs pins that;
-    // ops/prompts/smoke.md is the field test that discovered the +N directive does nothing, so it uses one on purpose)
+    // ops/prompts/smoke.md used a +300k directive on purpose to discover that it does nothing, and says so now without carrying one)
     const FRESH = /(?:fresh|new|brand-new) (?:session|container)[^.|]{0,40}\b(?:per|each|every) (?:firing|fire|routine|turn|run)|\b(?:each|every) (?:routine )?(?:firing|fire|run)\b[^.|]{0,60}(?:fresh|new|brand-new) (?:session|container)/i;
-    for (const file of [...docs, 'ops/prompts/_bootstrap.md', ...listDir('ops/workflows', '.js')].filter((f) => f !== 'ops/prompts/smoke.md')) {
+    for (const file of [...docs, 'ops/prompts/_bootstrap.md', ...listDir('ops/workflows', '.js')]) {
       const isScript = file.endsWith('.js');
       for (const { at, text } of lines(file)) {
         if (/capRemainingTokens/.test(text)) problems.push(`${at}: capRemainingTokens is not an argument any more (capTokens)`);
