@@ -7,5 +7,5 @@ work/*/tmp/
 state/usage.json
 *.lock
 *.lock.stale.*
-# worktrees the Agent tool makes for fleet agents (local, never committed)
-.claude/
+# worktrees the Agent tool makes for fleet agents (local, never committed); project settings under .claude/ stay committable
+.claude/worktrees/

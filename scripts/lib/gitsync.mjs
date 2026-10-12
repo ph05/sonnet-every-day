@@ -13,7 +13,7 @@
 // The push target is pinned: the branch comes from the COMMITTED config.json (an agent can edit the
 // working copy), must be a claude/* branch, and may never be the remote's default branch. config.json is
 // only staged when --paths names it explicitly. Liveness heartbeats never ride on the work branch (every push
-// to it can rebuild GitHub Pages): they live on config.heartbeatBranch, see fetchRemoteHeartbeat and heartbeat.mjs.
+// to it starts the CI and sync-main Actions, and one that reaches main rebuilds GitHub Pages): they live on config.heartbeatBranch, see fetchRemoteHeartbeat and heartbeat.mjs.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -214,7 +214,7 @@ export const committedWorkBranch = (g, config) => committedBranch(g, config, 'wo
 
 /**
  * The branch heartbeats go to (CONTRACT 14): { branch, problem }. It must pass the same checks as the work
- * branch and must be a different branch, otherwise every beat would trigger a Pages build.
+ * branch and must be a different branch, otherwise every beat would start the CI and sync-main Actions (and a Pages build once on main).
  */
 export function resolveHeartbeatBranch(g, config) {
   const { branch } = committedBranch(g, config, 'heartbeatBranch');
@@ -222,7 +222,7 @@ export function resolveHeartbeatBranch(g, config) {
   const problem = branchProblem(g, branch);
   if (problem) return { branch, problem };
   const work = committedWorkBranch(g, config).branch;
-  if (branch === work) return { branch, problem: `heartbeatBranch must differ from the work branch (${work}): heartbeats there would rebuild GitHub Pages` };
+  if (branch === work) return { branch, problem: `heartbeatBranch must differ from the work branch (${work}): heartbeats there would start the CI and sync-main Actions on every beat` };
   return { branch, problem: null };
 }
 

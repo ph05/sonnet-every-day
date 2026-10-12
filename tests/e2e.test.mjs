@@ -2516,7 +2516,7 @@ describe('e2e', () => {
     assert.equal(prim.dirty(), '');
     assert.equal(prim.git('rev-parse', 'HEAD'), w.remoteSha());
 
-    // hb2: the push budget of PLAYBOOK 6.1, counted on the remote and by the sync log (every push is a Pages build)
+    // hb2: the push budget of PLAYBOOK 6.1, counted on the remote and by the sync log (every push starts the Actions; those that move main start a Pages build)
     const budget = pushBudget();
     const pushes = w.pushesTo(BRANCH);
     assert.equal(pushes, w.pushed.length, 'every push to the work branch came from a sync the scenario knows about');
@@ -2964,7 +2964,7 @@ describe('e2e', () => {
     assert.ok(w.hbLog().some((m) => m === `heartbeat ${D} primary select`));
     assert.deepEqual(w.hbJson(`state/heartbeats/${D}/${S}.json`), { holder: 'primary', session: S, phase: 'select', at: etIso(D, '04:55'), note: '' });
 
-    // ...and nothing of it ever reaches the work branch (every push there starts a Pages build)
+    // ...and nothing of it ever reaches the work branch (every push there starts the CI and sync-main Actions)
     for (const hhmm of ['05:05', '05:15', '05:25']) beat(hhmm);
     assert.equal(w.remoteSha(), workTip, 'four beats, the work branch has not moved');
     assert.equal(w.pushesTo(BRANCH), workPushes);
