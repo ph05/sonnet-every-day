@@ -1,5 +1,12 @@
 {
   "schema": 1,
+  "purposes": {
+    "tool": "A working utility that does a real job people otherwise pay for, sign up for, install or struggle to find free: a calculator, converter, checker, formatter, planner, generator with real output. Correct first, charming second. Runs entirely in the browser, no account, no upload.",
+    "lesson": "An interactive lesson that teaches ONE niche concept deeply: plain explanation, manipulable demos, worked examples, check-yourself questions. The visitor's mental model must change.",
+    "explorer": "An explorable reference or dataset: a model, map, timeline, table or system the visitor can query and poke, with the story told alongside. All data bundled and sourced.",
+    "studio": "A creative workbench that makes something worth keeping or exporting: music, art, type, pattern, palette, text.",
+    "play": "A game, toy, satire or experiment whose main point is fun. Welcome, but rare; it must win on merit."
+  },
   "categories": {
     "cards-odds": "Poker, probability, card games, Balatro-like deckbuilders, odds and ranges",
     "hockey-sports": "Hockey first, then any sport: stats, simulators, fandom toys",
@@ -19,11 +26,23 @@
     "modding-games": "Mod concepts, mod tools, game-design experiments (Balatro and beyond)",
     "finance-economics": "Markets, economics toys, probability of ruin (simulated money only)",
     "life-food-craft": "Cooking, home, gardening, crafts, travel, everyday life",
-    "weird-experimental": "Genuinely strange, form-breaking, art-adjacent web experiments"
+    "weird-experimental": "Genuinely strange, form-breaking, art-adjacent web experiments",
+    "dev-tools": "Developer and data utilities: formats, regex, schemas, encodings, diffs, cron, network calculators",
+    "design-craft": "Colour, type, layout, icon and image utilities for designers and makers",
+    "writing-reading": "Tools and explainers for writing, editing, readability, citations and reading",
+    "learning-memory": "Study aids, spaced repetition, memory techniques, how-learning-works explainers",
+    "personal-finance": "Loans, savings, budgeting and planning calculators, clearly estimates and not advice (real-world money maths, unlike the simulated-money finance-economics toys)",
+    "engineering-calc": "Electronics, mechanics, thermal, civil, optics and unit-aware formula calculators",
+    "stats-literacy": "Statistics and probability intuition, experiment design, reading charts and claims critically",
+    "privacy-security": "Local-only privacy and security tools and explainers: hashes, entropy, metadata, threat models (never a form that takes a real password, card or identity number)",
+    "algorithms-cs": "Algorithms, data structures, distributed systems, cryptography and other computer-science concepts",
+    "math-concepts": "Mathematical ideas explained interactively: linear algebra, calculus, number theory, topology, symmetry",
+    "history-atlas": "Timelines, maps and historical or geographic data explorers built on bundled data"
   },
   "mechanics": [
     "simulator", "solver", "generator", "game", "toy", "visualizer", "tool",
-    "quiz", "instrument", "editor", "story", "explorer", "puzzle", "calculator"
+    "quiz", "instrument", "editor", "story", "explorer", "puzzle", "calculator",
+    "lesson", "checker", "converter", "planner", "reference"
   ],
   "tones": [
     "playful", "analytical", "absurd", "cozy", "dramatic", "nerdy",
@@ -38,6 +57,7 @@
     "interest": ["cards-odds", "hockey-sports", "modding-games"],
     "currentEvents": ["pop-culture", "news-politics", "hockey-sports", "data-viz"],
     "humor": ["humor-satire", "weird-experimental", "language-text"],
-    "wildcard": ["science-sim", "math-puzzle", "music-audio", "generative-art", "tools-utility", "games-arcade", "retro-tech", "education-explainer", "finance-economics", "life-food-craft", "weird-experimental"]
+    "wildcard": ["science-sim", "math-puzzle", "music-audio", "generative-art", "tools-utility", "games-arcade", "retro-tech", "education-explainer", "finance-economics", "life-food-craft", "weird-experimental",
+      "dev-tools", "design-craft", "writing-reading", "learning-memory", "personal-finance", "engineering-calc", "stats-literacy", "privacy-security", "algorithms-cs", "math-concepts", "history-atlas"]
   }
 }

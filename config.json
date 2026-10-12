@@ -137,6 +137,7 @@
     "agents": 8,
     "candidatesPerAgent": 2,
     "shortlist": 10,
+    "shortlistMinWanted": 6,
     "carryover": {
       "maxIdeas": 1,
       "maxCarries": 1
@@ -162,13 +163,24 @@
         "note": "skew pop/fun/hockey; politics is rare"
       },
       "humor": {
-        "minPer7Days": 1
+        "minPer7Days": 0,
+        "note": "humor lenses are drawn only on days when play is allowed (mix.purposes)"
       },
       "wildcard": {
         "minPer7Days": 1
       }
     },
-    "politicsMaxPer14Days": 1
+    "politicsMaxPer14Days": 1,
+    "purposes": {
+      "windowDays": 7,
+      "cooldownDays": 2,
+      "playCooldownDays": 3,
+      "maxPlayPer7Days": 2,
+      "wantedCount": 2,
+      "wantedBonus": 5,
+      "starvedDays": 6,
+      "legacyDefault": "play"
+    }
   },
   "limits": {
     "projectMaxBytes": 8388608,
@@ -178,6 +190,19 @@
     "siteWarnBytes": 700000000,
     "minOwnLinesOfCodeTier1": 700,
     "minOwnLinesOfCodeTier2": 350
+  },
+  "pageContract": {
+    "_note": "requiredFrom null = the contract (purpose, intro, explainer) is not enforced yet. The lead sets it to the date of the first run that starts after the whole contract has landed; every date gate reads this key.",
+    "requiredFrom": null,
+    "intro": { "minWords": 35, "maxWords": 70, "firstSentenceMaxWords": 30 },
+    "explainer": {
+      "minWords": { "tool": 250, "lesson": 700, "explorer": 350, "studio": 200, "play": 150 },
+      "minHeadings": { "tool": 2, "lesson": 4, "explorer": 3, "studio": 2, "play": 1 }
+    },
+    "lessonMinChecks": 2,
+    "toolMinSelfTests": 8,
+    "introMaxBottomPx": { "desktop": 420, "mobile": 560 },
+    "firstScreenControls": { "warn": 8, "error": 14 }
   },
   "guardrails": {
     "politics": "rare (at most one per 14 days), satirical or playful, never partisan advocacy or electioneering",
@@ -290,24 +315,24 @@
       "tests/revise-policy.test.mjs"
     ],
     "docLineCaps": {
-      "ops/PLAYBOOK.md": 1400,
-      "ops/CONTRACT.md": 420,
-      "ops/FAILURE_MODES.md": 330,
-      "README.md": 250,
+      "ops/PLAYBOOK.md": 1470,
+      "ops/CONTRACT.md": 470,
+      "ops/FAILURE_MODES.md": 370,
+      "README.md": 280,
       "ops/CULTURE.md": 80,
-      "ops/roles/architect.md": 38,
-      "ops/roles/artisan.md": 39,
-      "ops/roles/cards.md": 40,
-      "ops/roles/clerk.md": 32,
-      "ops/roles/critic.md": 43,
-      "ops/roles/engineer.md": 34,
-      "ops/roles/jester.md": 44,
-      "ops/roles/lab.md": 37,
-      "ops/roles/pulse.md": 40,
+      "ops/roles/architect.md": 50,
+      "ops/roles/artisan.md": 51,
+      "ops/roles/cards.md": 52,
+      "ops/roles/clerk.md": 44,
+      "ops/roles/critic.md": 55,
+      "ops/roles/engineer.md": 46,
+      "ops/roles/jester.md": 56,
+      "ops/roles/lab.md": 49,
+      "ops/roles/pulse.md": 52,
       "ops/rubrics/kaizen.md": 52,
-      "ops/rubrics/quality.md": 64,
-      "ops/rubrics/research.md": 50,
-      "ops/rubrics/selection.md": 117
+      "ops/rubrics/quality.md": 100,
+      "ops/rubrics/research.md": 66,
+      "ops/rubrics/selection.md": 170
     }
   },
   "phaseBudgetMinutes": {
