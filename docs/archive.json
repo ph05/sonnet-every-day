@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-12T13:32:17.576Z",
+  "generatedAt": "2026-10-12T18:12:56.044Z",
   "site": {
     "name": "Sonnet Every Day",
-    "tagline": "A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.",
+    "tagline": "A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.",
     "url": "https://ph05.github.io/sonnet-every-day/",
     "startDate": "2026-10-10"
   },
@@ -15,6 +15,9 @@
       "hockey-sports": 1,
       "modding-games": 1,
       "science-sim": 1
+    },
+    "purposes": {
+      "play": 3
     },
     "tiers": {
       "2": 3
@@ -80,7 +83,16 @@
         "#c8412f",
         "#2b5fb4"
       ],
-      "thumb": "d/2026-10-12-between-periods/thumb.png"
+      "thumb": "d/2026-10-12-between-periods/thumb.png",
+      "purpose": "play",
+      "intro": "A game that lets you drive an ice-resurfacing machine around a hockey rink and buff every scar in the ice before the buzzer. For hockey fans and anyone who likes quick challenges. Press Start intermission to take the wheel.",
+      "concepts": [
+        "ice resurfacing",
+        "turning radius",
+        "coverage path planning",
+        "daily seed",
+        "fixed timestep"
+      ]
     },
     {
       "n": 2,
@@ -88,8 +100,8 @@
       "slug": "orbital-knitwear",
       "path": "d/2026-10-11-orbital-knitwear/",
       "title": "Orbital Knitwear",
-      "tagline": "Tune a satellite's orbit and knit the planet in wool, one pass at a time, while the flat map lies about the holes.",
-      "description": "Tune a satellite's height, tilt and orbit shape and watch its ground track knit a wool-textured world map, one ribbon of stitches per pass, in a flat or a polar view. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map's inflated poles cannot flatter you.",
+      "tagline": "See how a satellite's orbit sweeps over the Earth: tune it and watch the map fill in like knitting.",
+      "description": "A simulation of a satellite's orbit, drawn as a ground track on a world map. Tune its height, tilt and orbit shape and watch the track fill in like wool knitting, one ribbon of stitches per pass, in a flat or a polar view. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map's inflated poles cannot flatter you.",
       "tier": 2,
       "category": "science-sim",
       "mechanic": "simulator",
@@ -127,7 +139,17 @@
         "#efe6d4",
         "#17151c"
       ],
-      "thumb": "d/2026-10-11-orbital-knitwear/thumb.png"
+      "thumb": "d/2026-10-11-orbital-knitwear/thumb.png",
+      "purpose": "play",
+      "intro": "A simulation that shows how a satellite's orbit sweeps over the Earth, drawn as a track on a flat map. It is for anyone curious about satellites. Drag the Height or Tilt slider and watch what the orbit covers. The knitting is decoration: needles are satellites.",
+      "concepts": [
+        "satellite orbit",
+        "ground track",
+        "orbit inclination",
+        "sun-synchronous orbit",
+        "repeat ground track",
+        "map distortion"
+      ]
     },
     {
       "n": 1,
@@ -135,8 +157,8 @@
       "slug": "jokers-in-phase",
       "path": "d/2026-10-10-jokers-in-phase/",
       "title": "Jokers In Phase",
-      "tagline": "Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.",
-      "description": "An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.",
+      "tagline": "A scoring puzzle: put the jokers in the right order and the same four poker hands score far more.",
+      "description": "A scoring puzzle in the style of a joker-card game, an unofficial fan concept. Arrange five jokers over four seeded poker hands, watch a phase ring show which are in step, and share your exact line as a link.",
       "tier": 2,
       "category": "modding-games",
       "mechanic": "toy",
@@ -175,7 +197,16 @@
         "#fffdf8",
         "#a3225f"
       ],
-      "thumb": "d/2026-10-10-jokers-in-phase/thumb.png"
+      "thumb": "d/2026-10-10-jokers-in-phase/thumb.png",
+      "purpose": "play",
+      "intro": "A scoring puzzle in the style of a joker-card game: swap jokers into a better order and the same four poker hands score far more. Made for puzzle fans, with no poker knowledge needed. Start with First Beat: tap one joker, then another, to swap them.",
+      "concepts": [
+        "phase",
+        "coupling",
+        "fireflies",
+        "synchronization",
+        "scoring order"
+      ]
     }
   ]
 }

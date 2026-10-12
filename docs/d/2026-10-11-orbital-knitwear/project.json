@@ -3,8 +3,8 @@
   "date": "2026-10-11",
   "slug": "orbital-knitwear",
   "title": "Orbital Knitwear",
-  "tagline": "Tune a satellite's orbit and knit the planet in wool, one pass at a time, while the flat map lies about the holes.",
-  "description": "Tune a satellite's height, tilt and orbit shape and watch its ground track knit a wool-textured world map, one ribbon of stitches per pass, in a flat or a polar view. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map's inflated poles cannot flatter you.",
+  "tagline": "See how a satellite's orbit sweeps over the Earth: tune it and watch the map fill in like knitting.",
+  "description": "A simulation of a satellite's orbit, drawn as a ground track on a world map. Tune its height, tilt and orbit shape and watch the track fill in like wool knitting, one ribbon of stitches per pass, in a flat or a polar view. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map's inflated poles cannot flatter you.",
   "intro": "A simulation that shows how a satellite's orbit sweeps over the Earth, drawn as a track on a flat map. It is for anyone curious about satellites. Drag the Height or Tilt slider and watch what the orbit covers. The knitting is decoration: needles are satellites.",
   "concepts": [
     "satellite orbit",

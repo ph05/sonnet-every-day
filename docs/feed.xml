@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>https://ph05.github.io/sonnet-every-day/</id>
   <title>Sonnet Every Day</title>
-  <subtitle>A new, one-of-a-kind web toy every day at 4am ET, built by a team of Sonnet agents.</subtitle>
+  <subtitle>A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.</subtitle>
   <updated>2026-10-12T12:45:28.805Z</updated>
   <link rel="self" type="application/atom+xml" href="https://ph05.github.io/sonnet-every-day/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://ph05.github.io/sonnet-every-day/"/>
@@ -16,7 +16,7 @@
     <published>2026-10-12T12:45:28.805Z</published>
     <updated>2026-10-12T12:45:28.805Z</updated>
     <category term="hockey-sports"/>
-    <summary>It is intermission and the rink is a wreck: skate grooves, divots and one seeded mishap. Steer an ice-resurfacing machine that cannot turn on a dime, ration one tank of water, and buff every scar to a mirror gleam before the buzzer. Every UTC day brings its own rink, and your finish becomes a spoiler-safe postcard and a challenge link a friend can try to beat.</summary>
+    <summary>A game that lets you drive an ice-resurfacing machine around a hockey rink and buff every scar in the ice before the buzzer. For hockey fans and anyone who likes quick challenges. Press Start intermission to take the wheel.</summary>
   </entry>
   <entry>
     <id>https://ph05.github.io/sonnet-every-day/d/2026-10-11-orbital-knitwear/</id>
@@ -26,7 +26,7 @@
     <published>2026-10-11T13:10:08.496Z</published>
     <updated>2026-10-11T13:10:08.496Z</updated>
     <category term="science-sim"/>
-    <summary>Tune a satellite&apos;s height, tilt and orbit shape and watch its ground track knit a wool-textured world map, one ribbon of stitches per pass, in a flat or a polar view. Eight pattern cards set goals such as seeing latitudes the space station never reaches, repeating the same track every 16 days, or keeping one local time of day. Scores count true surface area, so the map&apos;s inflated poles cannot flatter you.</summary>
+    <summary>A simulation that shows how a satellite&apos;s orbit sweeps over the Earth, drawn as a track on a flat map. It is for anyone curious about satellites. Drag the Height or Tilt slider and watch what the orbit covers. The knitting is decoration: needles are satellites.</summary>
   </entry>
   <entry>
     <id>https://ph05.github.io/sonnet-every-day/d/2026-10-10-jokers-in-phase/</id>
@@ -36,6 +36,6 @@
     <published>2026-10-10T11:33:11.181Z</published>
     <updated>2026-10-10T11:33:11.181Z</updated>
     <category term="modding-games"/>
-    <summary>An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.</summary>
+    <summary>A scoring puzzle in the style of a joker-card game: swap jokers into a better order and the same four poker hands score far more. Made for puzzle fans, with no poker knowledge needed. Start with First Beat: tap one joker, then another, to swap them.</summary>
   </entry>
 </feed>

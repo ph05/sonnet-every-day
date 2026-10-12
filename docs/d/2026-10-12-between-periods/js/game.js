@@ -498,12 +498,22 @@ export function createGame({ canvas, toLogical }) {
     return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable === true;
   }
 
+  function rinkMostlyOutOfView() {
+    if (!canvas || !canvas.getBoundingClientRect) return false;
+    const r = canvas.getBoundingClientRect();
+    if (!(r.height > 0)) return false;
+    const visible = Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0);
+    return visible < r.height * 0.5;
+  }
+
   const actionable = (t) => !!t && !!t.tagName && (t.tagName === 'BUTTON' || t.tagName === 'A' || t.tagName === 'SUMMARY');
 
   const onKeyDown = guard('key', (e) => {
     if (e.ctrlKey || e.metaKey || e.altKey || typing(e.target)) return;
     if (e.target && e.target.closest && e.target.closest('dialog[open]')) return;
     if (typeof e.key !== 'string') return;
+    // the page continues below the rink (the explainer): with the rink mostly out of view a key press is for scrolling, not for the game
+    if (phase !== 'playing' && rinkMostlyOutOfView()) return;
     const key = e.key.length === 1 ? e.key.toLowerCase() : e.key;
     const steering = key === 'ArrowLeft' || key === 'ArrowRight' || key === 'ArrowDown' || key === 'a' || key === 'd' || key === 's';
     if (e.repeat && !steering) return;
@@ -609,7 +619,10 @@ export function createGame({ canvas, toLogical }) {
   const onBlur = () => { keys.left = keys.right = keys.down = false; };
 
   const onHashChange = guard('hash', () => {
-    if (window.location.hash.slice(1) === lastHash) return;
+    const h = window.location.hash.slice(1);
+    if (h === lastHash) return;
+    // an in-page link such as #main or #explainer is not a shared line: leave the game as it is
+    if (h !== '' && !/(^|&)[sca]=/.test(h)) return;
     applyHash(parseHash(window.location.hash, Date.now()), 'load');
   });
 

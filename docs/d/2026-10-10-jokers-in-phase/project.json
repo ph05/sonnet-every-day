@@ -3,8 +3,8 @@
   "date": "2026-10-10",
   "slug": "jokers-in-phase",
   "title": "Jokers In Phase",
-  "tagline": "Five jokers, one beat. Swap them into step, lock three fireflies in phase, and beat par.",
-  "description": "An unofficial fan concept sandbox for joker-deck roguelikes where jokers have a beat. Arrange five jokers over four seeded poker hands, watch a phase ring show who is in sync, and share the exact line as a link.",
+  "tagline": "A scoring puzzle: put the jokers in the right order and the same four poker hands score far more.",
+  "description": "A scoring puzzle in the style of a joker-card game, an unofficial fan concept. Arrange five jokers over four seeded poker hands, watch a phase ring show which are in step, and share your exact line as a link.",
   "intro": "A scoring puzzle in the style of a joker-card game: swap jokers into a better order and the same four poker hands score far more. Made for puzzle fans, with no poker knowledge needed. Start with First Beat: tap one joker, then another, to swap them.",
   "concepts": [
     "phase",

@@ -33,7 +33,22 @@
     'finance-economics': 'Finance toys',
     'life-food-craft': 'Life & food',
     'weird-experimental': 'Weird & experimental',
+    'dev-tools': 'Dev tools',
+    'design-craft': 'Design craft',
+    'writing-reading': 'Writing & reading',
+    'learning-memory': 'Learning & memory',
+    'personal-finance': 'Personal finance',
+    'engineering-calc': 'Engineering calcs',
+    'stats-literacy': 'Stats literacy',
+    'privacy-security': 'Privacy & security',
+    'algorithms-cs': 'Algorithms & CS',
+    'math-concepts': 'Math concepts',
+    'history-atlas': 'History & atlas',
   };
+  // The purpose of a day (ops/taxonomy.json `purposes`, canonical order): chip labels, and the pill on every card.
+  const PURPOSES = ['tool', 'lesson', 'explorer', 'studio', 'play'];
+  const PURPOSE_CHIPS = { tool: 'Tools', lesson: 'Lessons', explorer: 'Explorers', studio: 'Studios', play: 'Play' };
+  const PURPOSE_PILLS = { tool: 'Tool', lesson: 'Lesson', explorer: 'Explorer', studio: 'Studio', play: 'Play' };
   const TIER_LABELS = { 2: 'Compact build', 3: 'Ideas Day', 4: 'Postcard' };
   const TIER_NOTES = {
     3: 'A stand-in edition: the build did not finish, so the day’s researched ideas were published instead.',
@@ -45,12 +60,16 @@
     title: (a, b) => cmp(a.title.toLowerCase(), b.title.toLowerCase()) || cmp(b.date, a.date),
     category: (a, b) => cmp(a.categoryLabel, b.categoryLabel) || cmp(b.date, a.date),
   };
+  // `main` facets are always visible; the rest live under "More filters" (and only those count in its label).
   const FACETS = [
-    { key: 'cat', field: 'category', title: 'Category' },
+    { key: 'type', field: 'purpose', title: 'Type', main: true },
+    { key: 'cat', field: 'category', title: 'Category', main: true },
     { key: 'tone', field: 'tone', title: 'Tone' },
     { key: 'tech', field: 'tech', title: 'Tech' },
     { key: 'tag', field: 'tags', title: 'Tags' },
   ];
+  const MORE_FACETS = FACETS.filter((f) => !f.main);
+  const SINGLE_FIELDS = { category: true, purpose: true };
 
   /* ---------- small utilities ---------- */
 
@@ -167,8 +186,14 @@
       tags: list(r.tags, 16),
       palette: paletteOf(r.palette, r.date + slug),
       thumb: safeImage(r.thumb),
+      purpose: PURPOSES.indexOf(r.purpose) >= 0 ? r.purpose : '',
+      intro: text(r.intro, 700),
+      concepts: list(r.concepts, 6),
     };
-    day.haystack = [day.title, day.tagline, day.description, day.categoryLabel, day.category, day.mechanic, day.date, day.tone.join(' '), day.tech.join(' '), day.tags.join(' ')]
+    day.haystack = [
+      day.title, day.tagline, day.description, day.intro, day.concepts.join(' '), day.purpose, day.categoryLabel, day.category, day.mechanic, day.date,
+      day.tone.join(' '), day.tech.join(' '), day.tags.join(' '),
+    ]
       .join(' \u0001 ')
       .toLowerCase();
     return day;
@@ -221,7 +246,7 @@
     for (const f of FACETS) facets[f.key] = new Map();
     for (const d of days) {
       for (const f of FACETS) {
-        const vals = f.field === 'category' ? (d.category ? [d.category] : []) : d[f.field];
+        const vals = SINGLE_FIELDS[f.field] ? (d[f.field] ? [d[f.field]] : []) : d[f.field];
         for (const v of vals) facets[f.key].set(v, (facets[f.key].get(v) || 0) + 1);
       }
     }
@@ -261,7 +286,7 @@
 
   /* ---------- state + hash ---------- */
 
-  const state = { q: '', sort: 'new', kind: '', cat: new Set(), tone: new Set(), tech: new Set(), tag: new Set() };
+  const state = { q: '', sort: 'new', kind: '', type: new Set(), cat: new Set(), tone: new Set(), tech: new Set(), tag: new Set() };
   let data = null;
   let filtered = [];
   let shown = 0;
@@ -288,8 +313,14 @@
     if (state.q) p.set('q', state.q);
     if (state.sort !== 'new') p.set('sort', state.sort);
     if (state.kind) p.set('kind', state.kind);
-    for (const f of FACETS) if (state[f.key].size) p.set(f.key, Array.from(state[f.key]).join(','));
-    const hash = p.toString();
+    for (const f of FACETS) {
+      if (!state[f.key].size) continue;
+      const values = Array.from(state[f.key]);
+      if (f.key === 'type') values.sort((a, b) => PURPOSES.indexOf(a) - PURPOSES.indexOf(b));
+      p.set(f.key, values.join(','));
+    }
+    // commas stay readable (type=tool,lesson); values never contain one and URLSearchParams reads them back as is
+    const hash = p.toString().replace(/%2C/gi, ',');
     try {
       history.replaceState(null, '', location.pathname + location.search + (hash ? '#' + hash : ''));
     } catch (e) {
@@ -305,6 +336,7 @@
   function matches(d, tokens) {
     if (state.kind === 'built' && d.tier >= 3) return false;
     if (state.kind === 'standin' && d.tier < 3) return false;
+    if (state.type.size && !state.type.has(d.purpose)) return false;
     if (state.cat.size && !state.cat.has(d.category)) return false;
     if (state.tone.size && !d.tone.some((t) => state.tone.has(t))) return false;
     if (state.tech.size && !d.tech.some((t) => state.tech.has(t))) return false;
@@ -344,6 +376,10 @@
     return box;
   }
 
+  function purposePill(d, cls) {
+    return d.purpose ? h('span', { class: cls + ' purpose-' + d.purpose, text: PURPOSE_PILLS[d.purpose] }) : null;
+  }
+
   function card(d, index) {
     const li = h('li', { class: 'card' + (d.tier >= 3 ? ' is-standin' : ''), 'data-date': d.date });
     setPalette(li, d.palette);
@@ -360,7 +396,7 @@
     const body = h(
       'div',
       { class: 'card-body' },
-      h('p', { class: 'meta mono' }, h('span', { class: 'dot', 'aria-hidden': 'true' }), h('time', { datetime: d.date, text: fmtShort.format(utcDate(d.date)) }), ' · ' + d.categoryLabel),
+      h('p', { class: 'meta mono' }, h('span', { class: 'dot', 'aria-hidden': 'true' }), h('time', { datetime: d.date, text: fmtShort.format(utcDate(d.date)) }), ' · ', ...(d.purpose ? [purposePill(d, 'purpose-pill'), ' '] : []), d.categoryLabel),
       h('h3', { class: 'card-title' }, title),
       d.tagline ? h('p', { class: 'card-tagline', text: d.tagline }) : null
     );
@@ -403,7 +439,7 @@
     $('#empty-results').hidden = filtered.length > 0;
     grid.hidden = filtered.length === 0;
     $('#clear-filters').hidden = !anyFilter();
-    const more = FACETS.slice(1).reduce((n, f) => n + state[f.key].size, 0) + (state.kind ? 1 : 0);
+    const more = MORE_FACETS.reduce((n, f) => n + state[f.key].size, 0) + (state.kind ? 1 : 0);
     $('#more-filters-label').textContent = more ? 'More filters (' + more + ' on)' : 'More filters';
     for (const chip of doc.querySelectorAll('.chip')) {
       const on = chip.dataset.key === 'kind' ? state.kind === chip.dataset.value : state[chip.dataset.key].has(chip.dataset.value);
@@ -426,6 +462,15 @@
   }
 
   function renderFilters() {
+    const types = $('#chips-type');
+    if (types) {
+      types.textContent = '';
+      for (const p of PURPOSES) {
+        const n = data.facets.type.get(p);
+        if (n) types.append(chip('type', p, PURPOSE_CHIPS[p], n));
+      }
+      $('#filter-type').hidden = !types.children.length;
+    }
     const cats = $('#chips-cat');
     cats.textContent = '';
     for (const [slug, n] of sortedFacet('cat')) {
@@ -444,7 +489,7 @@
     kinds.append(kindChips);
     body.append(kinds);
 
-    for (const f of FACETS.slice(1)) {
+    for (const f of MORE_FACETS) {
       const entries = sortedFacet(f.key);
       if (!entries.length) continue;
       const labelId = 'fl-' + f.key;
@@ -523,7 +568,9 @@
       relativeLabel(d.date) + ' · Day ' + d.n + ' · ',
       h('time', { datetime: d.date, text: fmtLong.format(utcDate(d.date)) })
     );
-    const chips = h('ul', { class: 'lead-chips' }, h('li', { class: 'pill mono' }, h('span', { class: 'dot', 'aria-hidden': 'true' }), d.categoryLabel));
+    const chips = h('ul', { class: 'lead-chips' });
+    if (d.purpose) chips.append(h('li', { class: 'pill mono pill-purpose purpose-' + d.purpose, text: PURPOSE_PILLS[d.purpose] }));
+    chips.append(h('li', { class: 'pill mono' }, h('span', { class: 'dot', 'aria-hidden': 'true' }), d.categoryLabel));
     if (d.tier === 2) chips.append(h('li', { class: 'pill mono', text: TIER_LABELS[2] }));
     if (d.mechanic) chips.append(h('li', { class: 'pill mono', text: d.mechanic }));
     for (const t of d.tone.slice(0, 2)) chips.append(h('li', { class: 'pill mono', text: t }));
@@ -539,7 +586,8 @@
       h('p', { class: 'day-numeral', 'aria-hidden': 'true', text: String(d.n) }),
       h('h2', { class: 'lead-title', id: 'lead-title', text: d.title }),
       d.tagline ? h('p', { class: 'lead-tagline', text: d.tagline }) : null,
-      d.description ? h('p', { class: 'lead-desc', text: d.description }) : null,
+      // the intro says what it is, who it is for and what to do first, so it takes the description's place
+      d.intro ? h('p', { class: 'lead-desc lead-intro', text: d.intro }) : d.description ? h('p', { class: 'lead-desc', text: d.description }) : null,
       d.tier >= 3 ? h('p', { class: 'lead-note', text: TIER_NOTES[d.tier] }) : null,
       chips,
       actions
