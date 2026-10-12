@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · jester · applied · PLAYBOOK 6.5: budget.spent() is session-cumulative in a persistent session, rebase capTokens before
+
+- observation: 2026-10-12 run events 07:59: first ideate returned budget-exhausted with 0 spend because budget.spent() was 3.93M (get_session) against capTokens 2.4M; the attempt was lost and the report asks for this fix. PLAYBOOK 6.5 line 321 said spent() restarts at 0 every turn, which was false here. Now it says it may not restart and tells the primary to compare the cap with the get_session output total before the first launch and add it when near or above.
+- category: prevention · lines changed: 2 · files: ops/PLAYBOOK.md
+- question: Should state.mjs spend print the capTokens already rebased on a session total passed in, so the primary does not do the sum by hand?
+
 ## 2026-10-11 · lab · applied · ideate: name verification skipped for time and list it under skipped, not verifier unavailable
 
 - observation: 2026-10-11 ideate on 2 slots (args maxAgents 2, phaseBudgetMinutes 75): 8 scouts at 2 candidates each finished about 105 min in (dossier mtimes 08:23 to 09:43), so timeFor(4) was false and every verify call returned null. All 10 shortlisted ideas are unverified, yet the shortlist note, run phase note and report all say verifier unavailable, and skipStage was never called for verify. Now it is listed as verify r0 with minutes used, notes and log say phase budget spent; a real outage keeps the old wording. New selfcheck test fails without the fix.
