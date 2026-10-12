@@ -212,6 +212,22 @@
       "linesChanged": 2,
       "question": "Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?",
       "reason": null
+    },
+    {
+      "id": "2026-10-12-engineer",
+      "date": "2026-10-12",
+      "agent": "engineer",
+      "title": "architect.md: every geometry field in a spec schema states unit, axis and anchor (15 ft offset shipp",
+      "observation": "Engineer notes 2026-10-12: the SPEC data schema left a rectangle anchor open (zone x,y corner or centre); the two builders read it differently and only a screenshot of the joined page showed a 15 ft offset, found late in integrate. architect.md Deliverable standards said no TBD but not what an open geometry field looks like. Added one sentence naming unit, axis direction, anchor and angle zero.",
+      "category": "prevention",
+      "files": [
+        "ops/roles/architect.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Should the spec phase get a check that every x,y,w,h in SPEC.md schema blocks sits beside an anchor word?",
+      "reason": null
     }
   ]
 }

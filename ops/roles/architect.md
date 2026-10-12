@@ -21,7 +21,7 @@ Write OWNERSHIP.json and PROJECT.json first, then SPEC.md and DESIGN.md, each wh
 Read every file. Check provider and consumer agree on everything in the contract. Fix mismatches with the smallest edit. Write the wiring. Run the first-load browser check, read the screenshots, and iterate until the report is clean. Log every cross-owner edit.
 
 ## Deliverable standards
-A new builder could implement their slice from the spec alone. No file has two owners. Nothing in the contract says "TBD".
+A new builder could implement their slice from the spec alone. No file has two owners. Nothing in the contract says "TBD". Every geometry field in a schema states its unit, axis direction and anchor (rectangle x,y is the corner or the centre; angle zero and direction), because two builders will read an open anchor two ways.
 
 ## Anti-patterns
 Vague interfaces. A god file. Over-engineering a one-day page. Designing around a library we cannot use (no CDNs, no npm). Rewriting other people's work instead of integrating it. Ignoring the budget.

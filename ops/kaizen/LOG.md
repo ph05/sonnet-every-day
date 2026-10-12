@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · engineer · applied · architect.md: every geometry field in a spec schema states unit, axis and anchor (15 ft offset shipp
+
+- observation: Engineer notes 2026-10-12: the SPEC data schema left a rectangle anchor open (zone x,y corner or centre); the two builders read it differently and only a screenshot of the joined page showed a 15 ft offset, found late in integrate. architect.md Deliverable standards said no TBD but not what an open geometry field looks like. Added one sentence naming unit, axis direction, anchor and angle zero.
+- category: prevention · lines changed: 2 · files: ops/roles/architect.md
+- question: Should the spec phase get a check that every x,y,w,h in SPEC.md schema blocks sits beside an anchor word?
+
 ## 2026-10-12 · artisan · applied · artisan.md: builders resize to 1280x650 and 390x844 before handoff (button-over-text S2 shipped)
 
 - observation: 2026-10-12 report: revise left one S2 (buttons overlap text on windows 1280 px wide and under about 720 px tall) and an S3 (share text box cuts its own text on phones), both shipped. Architect put the 1280x650 check in quality.md line 13 for QA, but the builder standards in artisan.md only named 320px scroll, so the person who writes the layout was never told to look. Added one sentence to Deliverable standards: resize to 1280x650 and 390x844, no control over text, primary button and output together on screen, no text box cutting its text.
