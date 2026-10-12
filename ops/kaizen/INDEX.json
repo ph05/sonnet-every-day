@@ -175,7 +175,7 @@
       "files": [
         "ops/PLAYBOOK.md"
       ],
-      "sha": null,
+      "sha": "8bc48c9b1adbb07afe6586885ff42c75a7207dc7",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should state.mjs spend print the capTokens already rebased on a session total passed in, so the primary does not do the sum by hand?",
