@@ -95,4 +95,6 @@
 }
 @media (max-width: 720px) {
   .cc { grid-template-columns: minmax(0, 1fr); }
+  /* on a phone the result comes first, so the first screen shows the answer whatever font the platform draws */
+  .cc-result { order: -1; }
 }
