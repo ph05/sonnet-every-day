@@ -27,6 +27,8 @@ export const DEADMAN_GRACE_EXTRA_MINUTES = 5;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SESSION = 'deadman';
 const MAX_ROUNDS = 3;
+/** What to do when sync refuses the work branch because origin/HEAD names it (gitsync branchProblem). */
+export const DEFAULT_BRANCH_FIX = 'make main the default branch again (GitHub: Settings > General > Default branch) and run "git remote set-head origin --auto" in this clone; the fallback stays local until a later run pushes it';
 
 async function optional(spec) {
   try {
@@ -166,8 +168,16 @@ export async function refreshFromRemote({ day, config }) {
   // The push target sync will use: the committed config's branch, never an unvetted one.
   const branch = gs.committedWorkBranch?.(g, config)?.branch ?? config.workBranch;
   const problem = gs.branchProblem?.(g, branch);
-  if (problem) return { action: 'skipped', reason: problem };
+  // A work branch that origin/HEAD names (the remote's default branch) is refused for pushing, not for reading:
+  // still bring the checkout to the remote tip, so the decision below never publishes over a day the remote has.
+  const pushRefused = problem && g.out(['symbolic-ref', '-q', '--short', 'refs/remotes/origin/HEAD']) === `origin/${branch}` ? problem : null;
+  if (problem && !pushRefused) return { action: 'skipped', reason: problem };
   if (g.out(['symbolic-ref', '--short', '-q', 'HEAD']) !== branch) return { action: 'skipped', reason: `not on ${branch}` };
+  const refreshed = refreshCheckout({ g, gs, branch, day });
+  return pushRefused ? { ...refreshed, pushRefused } : refreshed;
+}
+
+function refreshCheckout({ g, gs, branch, day }) {
 
   gs.clearStaleIndexLock?.(g);
   gs.abortRebase?.(g);
@@ -241,10 +251,15 @@ export async function deadman({ force = false, now, date, git = true, dryRun = f
   // regenerable, so refresh to the new remote tip and build it again (bounded; the primary checkpoints slowly).
   const refreshes = [];
   let out;
+  let pushRefused = null;
   for (let round = 1; round <= MAX_ROUNDS; round++) {
     if (git && !dryRun) {
       const fresh = await refreshFromRemote({ day, config });
       if (fresh.action === 'skipped' && fresh.reason !== 'gitsync-missing') ctx.warnings.push(`could not refresh from the remote: ${fresh.reason}`);
+      if (fresh.pushRefused && !pushRefused) {
+        pushRefused = fresh.pushRefused;
+        ctx.warnings.push(`the work branch is the remote's default branch (origin/HEAD), so sync refuses every push from this clone: ${DEFAULT_BRANCH_FIX}`);
+      }
       if (fresh.action !== 'current' && fresh.action !== 'skipped') refreshes.push(fresh);
       if (round > 1 && !['reset', 'fast-forwarded', 'rebased'].includes(fresh.action)) break;
     }
@@ -252,6 +267,7 @@ export async function deadman({ force = false, now, date, git = true, dryRun = f
     if (!(git && !dryRun) || (out.sync ?? out.recovered)?.reason !== 'conflict') break;
     ctx.warnings.push(`the push conflicted with a newer remote tip (round ${round}); refreshing and regenerating the fallback`);
   }
+  if (pushRefused && out.ok === false && out.error) out = { ...out, error: `${out.error} (fix: ${DEFAULT_BRANCH_FIX})` };
   return refreshes.length ? { ...out, refreshed: refreshes } : out;
 }
 
@@ -290,6 +306,7 @@ async function attempt({ config, instant, local, day, force, git, dryRun, noSlee
     if (git && !dryRun && (await pendingPublication())) {
       out.recovered = await pushChanges({ summary: `deadman: push pending publication for ${day}`, noSleep, warnings });
       out.ok = out.recovered.ok;
+      if (!out.recovered.ok) out.error = `the pending publication could not be pushed: ${out.recovered.reason}`;
     }
     return { ...out, warnings };
   }

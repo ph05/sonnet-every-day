@@ -124,7 +124,7 @@ The address is the `siteUrl` in `config.json` (`https://ph05.github.io/sonnet-ev
 
 ## Merge the branch to `main`
 
-`main` follows the work branch by itself: `sync-main` pushes `main` forward (a fast-forward, never a merge or a force-push) after every push to `claude/sonnet-every-day`. Two things depend on that: GitHub Pages reads `main`, and **GitHub only runs scheduled workflows from the default branch**, so the model-free safety net (the deadman GitHub Action, `.github/workflows/deadman.yml`) only wakes on its schedule (13:40 and 14:40 UTC, which is 09:40 New York time) while its current file is on `main`.
+`main` follows the work branch by itself: `sync-main` pushes `main` forward (a fast-forward, never a merge or a force-push) after every push to `claude/sonnet-every-day`. Two things depend on that: GitHub Pages reads `main`, and **GitHub only runs scheduled workflows from the default branch**, so the model-free safety net (the deadman GitHub Action, `.github/workflows/deadman.yml`) only wakes on its schedule (13:40, 14:40 and 15:40 UTC: 09:40 New York time, and 10:40 after the hard stop) while its current file is on `main`.
 
 The sync stops with a warning when `main` holds a commit the work branch does not (a pull request merged on GitHub creates one, a direct commit to `main` too). Fix it once: on a clone of the work branch run `git fetch origin main && git merge --no-edit origin/main && git push origin claude/sonnet-every-day`; the next push fast-forwards `main` again. Never merge pull requests into `main` for the daily build; nothing needs merging.
 

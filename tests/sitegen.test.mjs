@@ -16,7 +16,7 @@ import {
   renderFeed, renderSitemap, renderRobots, normalizeSiteUrl, absoluteUrl, FEED_LIMIT,
   normalizeKaizen, kaizenTeaser, summarizeKaizen, renderKaizenPage, renderKaizenJson,
 } from '../scripts/lib/archive.mjs';
-import { verifyLive, archiveUrl } from '../scripts/verify-live.mjs';
+import { verifyLive, archiveUrl, diagnoseSite, HINTS } from '../scripts/verify-live.mjs';
 import { startMeter } from './helpers/cpu.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -872,17 +872,128 @@ test('verifyLive times out as ok:false when the site answers but never lists the
   }
 });
 
-test('verifyLive reports a persistent 404 as not live (ok:false)', async () => {
+test('verifyLive reports a persistent 404 everywhere as not live (ok:false) with reason site-not-found', async () => {
   const srv = await serve((req, res) => {
     res.statusCode = 404;
     res.end('missing');
   });
   try {
     const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
-    assert.deepEqual({ ok: r.ok, live: r.live, status: r.status, checked: r.checked, reason: r.reason }, { ok: false, live: false, status: 404, checked: 1, reason: 'http-404' });
+    assert.deepEqual({ ok: r.ok, live: r.live, status: r.status, checked: r.checked, reason: r.reason, was: r.was }, { ok: false, live: false, status: 404, checked: 1, reason: 'site-not-found', was: 'http-404' });
+    assert.match(r.hint, /Settings > Pages/);
+    assert.match(r.hint, /folder \/docs/);
   } finally {
     await srv.close();
   }
+});
+
+// GitHub Pages set to "main, / (root)" instead of "/docs" (2026-10-11): the site root is the rendered README (or, since
+// the root index.html, a redirect to docs/), <site>archive.json is a 404 and the gallery lives under <site>docs/.
+const README_PAGE = '<!DOCTYPE html>\n<html lang="en-US"><head><meta charset="UTF-8"><title>Sonnet Every Day | sonnet-every-day</title></head><body><h1>Sonnet Every Day</h1><p>A new web toy every day.</p></body></html>';
+const ROOT_REDIRECT = '<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0; url=docs/"><title>Sonnet Every Day</title></head><body><a href="docs/">docs/</a></body></html>';
+const GALLERY_PAGE = '<!doctype html><html><head><link rel="stylesheet" href="assets/gallery.css"></head><body><script type="application/json" id="archive">{}</script></body></html>';
+
+function pagesSite({ root, docsArchive = null, archive = null, archiveType = 'application/json' }) {
+  const hits = [];
+  return serve((req, res) => {
+    const { pathname } = new URL(req.url, 'http://x');
+    hits.push(pathname);
+    const send = (status, type, body) => {
+      res.statusCode = status;
+      res.setHeader('content-type', type);
+      res.end(body);
+    };
+    if (pathname === '/site/archive.json' && archive !== null) return send(200, archiveType, archive);
+    if (pathname === '/site/' && root !== null) return send(200, 'text/html; charset=utf-8', root);
+    if (pathname === '/site/docs/archive.json' && docsArchive !== null) return send(200, 'application/json', docsArchive);
+    return send(404, 'text/html', '<!DOCTYPE html><html><body>404 File not found</body></html>');
+  }).then((srv) => ({ ...srv, hits }));
+}
+
+test('verifyLive names site-root-is-readme when Pages publishes the repository root (README at /, gallery under docs/)', async () => {
+  const srv = await pagesSite({ root: README_PAGE, docsArchive: archiveBody(['2026-10-09']) });
+  try {
+    const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+    assert.deepEqual(
+      { ok: r.ok, live: r.live, status: r.status, checked: r.checked, reason: r.reason, was: r.was, docsListed: r.docsListed },
+      { ok: false, live: false, status: 404, checked: 1, reason: 'site-root-is-readme', was: 'http-404', docsListed: true },
+    );
+    assert.equal(r.hint, HINTS['site-root-is-readme']);
+    assert.match(r.hint, /Settings > Pages > Build and deployment > Deploy from a branch, branch main, folder \/docs/);
+    assert.ok(srv.hits.includes('/site/') && srv.hits.includes('/site/docs/archive.json'), srv.hits.join(' '));
+  } finally {
+    await srv.close();
+  }
+});
+
+test('verifyLive: the root redirect page and a README without docs/ also read as site-root-is-readme', async () => {
+  for (const [root, docsArchive, docsListed] of [[ROOT_REDIRECT, archiveBody(['2026-10-08']), false], [README_PAGE, null, null]]) {
+    const srv = await pagesSite({ root, docsArchive });
+    try {
+      const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+      assert.equal(r.reason, 'site-root-is-readme');
+      assert.equal(r.docsListed, docsListed);
+      assert.equal(r.ok, false);
+    } finally {
+      await srv.close();
+    }
+  }
+});
+
+test('verifyLive: a 200 that is HTML instead of archive.json is html-not-json, and site-root-is-readme when the root is not the gallery', async () => {
+  let srv = await pagesSite({ root: GALLERY_PAGE, archive: README_PAGE, archiveType: 'text/html' });
+  try {
+    const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+    assert.deepEqual({ ok: r.ok, reason: r.reason, status: r.status }, { ok: false, reason: 'html-not-json', status: 200 });
+    assert.equal(r.hint, undefined);
+  } finally {
+    await srv.close();
+  }
+  srv = await pagesSite({ root: README_PAGE, archive: README_PAGE, archiveType: 'text/html' });
+  try {
+    const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+    assert.deepEqual({ reason: r.reason, was: r.was }, { reason: 'site-root-is-readme', was: 'html-not-json' });
+  } finally {
+    await srv.close();
+  }
+});
+
+test('verifyLive keeps http-404 when the root is the gallery itself, and bad-json for broken JSON', async () => {
+  let srv = await pagesSite({ root: GALLERY_PAGE });
+  try {
+    const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+    assert.deepEqual({ reason: r.reason, hint: r.hint }, { reason: 'http-404', hint: undefined });
+  } finally {
+    await srv.close();
+  }
+  srv = await pagesSite({ root: GALLERY_PAGE, archive: '{"days": [', archiveType: 'application/json' });
+  try {
+    const r = await verifyLive({ date: '2026-10-09', url: srv.url, timeoutS: 0, intervalS: 0.1 });
+    assert.equal(r.reason, 'bad-json');
+    assert.ok(!srv.hits.includes('/site/docs/archive.json'), 'no diagnosis for a truncated archive');
+  } finally {
+    await srv.close();
+  }
+});
+
+test('diagnoseSite returns null when the root cannot be reached', async () => {
+  const r = await diagnoseSite({ target: new URL('http://127.0.0.1:9/site/archive.json'), date: '2026-10-09', requestTimeoutS: 1 });
+  assert.equal(r, null);
+});
+
+test('verify-live CLI prints the site-root-is-readme reason, its fix on stderr, and exits 1', async () => {
+  await withBox({}, async (box) => {
+    const srv = await pagesSite({ root: README_PAGE, docsArchive: archiveBody(['2026-10-09']) });
+    try {
+      const r = await runCliAsync(VERIFY_CLI, ['--date', '2026-10-09', '--url', srv.url, '--timeout-s', '0'], box);
+      assert.equal(r.code, 1, r.stdout + r.stderr);
+      assert.equal(r.json.reason, 'site-root-is-readme');
+      assert.equal(r.json.docsListed, true);
+      assert.match(r.stderr, /site-root-is-readme .*folder \/docs/);
+    } finally {
+      await srv.close();
+    }
+  });
 });
 
 test('verifyLive: an unreachable site is ok:true, live:null', async () => {

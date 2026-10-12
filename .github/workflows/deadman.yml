@@ -10,16 +10,19 @@
 # copy of this file on `main` stays current. Manual dispatch ("Run workflow" in the
 # Actions tab) always works, whatever branch holds the file.
 #
-# Two cron lines because GitHub cron is UTC: 13:40 is 09:40 in EDT, 14:40 is 09:40
-# in EST. The script ignores a run that is too early (before the grace period plus
-# a few minutes) or whose lease is still alive (until the 10:30 hard stop), and it
-# never touches a day that is already published, so the extra run is harmless.
+# Three cron lines because GitHub cron is UTC: 13:40 is 09:40 in EDT, 14:40 is 09:40
+# in EST, and a run after the 10:30 hard stop is needed too (a lease that still looks
+# alive at 09:40 is only overruled then): 14:40 is 10:40 in EDT, 15:40 is 10:40 in EST.
+# The script ignores a run that is too early (before the grace period plus a few
+# minutes) or whose lease is still alive (until the hard stop), and it never touches
+# a day that is already published, so the extra runs are harmless.
 name: deadman
 
 on:
   schedule:
     - cron: '40 13 * * *'
     - cron: '40 14 * * *'
+    - cron: '40 15 * * *'
   workflow_dispatch:
     inputs:
       force:

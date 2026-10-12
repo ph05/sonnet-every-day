@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { etIso } from './helpers/env.mjs';
+import { localParts } from '../scripts/lib/common.mjs';
 import { DATE, REPO_ROOT, makeRepoSandbox, makeSandbox } from './helpers/sandbox.mjs';
 import { installPushHook, pushCount, remoteFile, remoteHas, removePushHook } from './helpers/git.mjs';
 import { deadman, deadmanThresholds, DEADMAN_GRACE_EXTRA_MINUTES } from '../scripts/deadman.mjs';
@@ -132,6 +133,20 @@ describe('deadman: time gate and no-op cases', () => {
       } finally {
         box.cleanup();
       }
+    }
+  });
+
+  test('the deadman Action wakes inside the grace window and again after the hard stop, in EDT and in EST', () => {
+    const yml = fs.readFileSync(path.join(REPO_ROOT, '.github', 'workflows', 'deadman.yml'), 'utf8');
+    const crons = [...yml.matchAll(/^\s*-\s*cron:\s*'(\d+) (\d+) \* \* \*'/gm)].map((m) => `${m[2].padStart(2, '0')}:${m[1].padStart(2, '0')}`);
+    assert.ok(crons.length >= 2, yml);
+    const cfg = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'config.json'), 'utf8'));
+    const { staleAfter, hardStop } = deadmanThresholds(cfg);
+    for (const date of ['2026-10-12', '2027-01-12']) {
+      const local = crons.map((utc) => localParts(new Date(`${date}T${utc}:00Z`), cfg.timezone).minutes);
+      assert.ok(local.some((m) => m >= staleAfter && m < hardStop), `${date}: a run between ${staleAfter} and ${hardStop} minutes (local ${local})`);
+      // A lease that still looks alive at the grace run is only overruled after the hard stop: some run must come then.
+      assert.ok(local.some((m) => m >= hardStop && m < hardStop + 90), `${date}: a run within 90 minutes after the hard stop (local ${local})`);
     }
   });
 
@@ -757,6 +772,46 @@ exit 0
         assert.equal(r.json.tier, 1);
         assert.equal(box.exists(`docs/d/${DATE}-postcard`), false);
         assert.equal(box.exists(`docs/d/${DATE}-real-thing/index.html`), true);
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('a clone whose origin/HEAD names the work branch still reads the remote first: no fallback over a day the remote published', () => {
+      const { box, primary } = racedCloser();
+      try {
+        publishRealBuild(primary, { hhmm: '07:30' });
+        assert.equal(primary.state(['sync', '-m', 'primary publishes', '--no-sleep']).json.pushed, true);
+        // The remote's default branch is the work branch (an owner switched it, or the clone predates main):
+        // sync refuses every push from here, but reading the remote is still fine and decides the day.
+        box.git('remote', 'set-head', 'origin', 'claude/sonnet-every-day');
+        const r = run(box, ['--force', '--now', iso('09:40')]);
+        assert.equal(r.json.action, 'none', r.stderr + r.stdout);
+        assert.equal(r.json.reason, 'already-published');
+        assert.equal(r.json.tier, 1);
+        assert.equal(box.exists(`docs/d/${DATE}-postcard`), false, 'no fallback was generated over the real build');
+        assert.equal(box.exists(`docs/d/${DATE}-real-thing/index.html`), true);
+        assert.ok(r.json.warnings.some((w) => /default branch \(origin\/HEAD\).*Settings > General > Default branch/.test(w)), r.stdout);
+        assert.ok(!r.json.warnings.some((w) => /could not refresh/.test(w)), r.stdout);
+        // Recording the run as published is the one thing left to push, and the push guard refuses it: say so and how to fix it.
+        assert.equal(r.code, 1);
+        assert.equal(r.json.recovered.pushed, false);
+        assert.match(r.json.error, /pending publication could not be pushed: .*default branch.*fix: make main the default branch again/);
+      } finally {
+        box.cleanup();
+      }
+    });
+
+    test('origin/HEAD naming the work branch: an unpublished day is generated locally and the refused push names the fix', () => {
+      const box = prepare(makeRepoSandbox(), { ideas: false });
+      try {
+        box.git('remote', 'set-head', 'origin', 'claude/sonnet-every-day');
+        const r = run(box, ['--now', iso('09:40'), '--no-sleep']);
+        assert.equal(r.code, 1, r.stdout);
+        assert.equal(r.json.action, 'published');
+        assert.equal(r.json.sync.pushed, false);
+        assert.match(r.json.error, /could not be pushed: .*default branch.*fix: make main the default branch again/);
+        assert.equal(box.exists(`docs/d/${DATE}-postcard/index.html`), true, 'the page waits locally for a later push');
       } finally {
         box.cleanup();
       }
