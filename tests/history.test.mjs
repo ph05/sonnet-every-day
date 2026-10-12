@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { addProject, removeDate, digest, loadHistory } from '../scripts/history.mjs';
+import {
+  addProject, removeDate, digest, loadHistory, purposeOf, purposeVocabulary,
+} from '../scripts/history.mjs';
 import { makeSandbox, projectJson, fingerprint, REAL_ROOT } from './fixtures/gate-helpers.mjs';
 
 const HISTORY_CLI = path.join(REAL_ROOT, 'scripts', 'history.mjs');
@@ -244,16 +246,57 @@ test('digest: one plain line per project, oldest first, limit keeps the newest',
     addProject(makeProject(box, { date: '2026-10-11', slug: 'c', title: 'Gamma\nLine' }), {});
     const lines = digest().split('\n');
     assert.equal(lines.length, 3);
-    assert.equal(lines[0], '2026-10-09 | Alpha Pipe | cards-odds | solver | poker,gto,ranges');
-    assert.equal(lines[1], '2026-10-10 | Postcard (fallback day) | math-puzzle | toy | automaton,cells,palette');
-    assert.equal(lines[2], '2026-10-11 | Gamma Line | math-puzzle | toy | automaton,cells,palette');
-    for (const l of lines) assert.equal(l.split(' | ').length, 5);
+    // purpose is the last column: no fingerprint.purpose on a counted entry reads as the legacy default (play), a fallback day as -
+    assert.equal(lines[0], '2026-10-09 | Alpha Pipe | cards-odds | solver | poker,gto,ranges | play');
+    assert.equal(lines[1], '2026-10-10 | Postcard (fallback day) | math-puzzle | toy | automaton,cells,palette | -');
+    assert.equal(lines[2], '2026-10-11 | Gamma Line | math-puzzle | toy | automaton,cells,palette | play');
+    for (const l of lines) assert.equal(l.split(' | ').length, 6);
     assert.deepEqual(digest({ limit: 2 }).split('\n').map((l) => l.slice(0, 10)), ['2026-10-10', '2026-10-11']);
     assert.equal(digest({ limit: '1' }).split('\n').length, 1);
     assert.equal(digest({ limit: 0 }).split('\n').length, 3);
   } finally {
     box.cleanup();
   }
+});
+
+test('digest: the purpose column holds the entry purpose, the legacy default for a missing or unknown one, - when it does not count', () => {
+  const box = makeSandbox();
+  try {
+    addProject(makeProject(box, { date: '2026-10-09', slug: 'a', fingerprint: fingerprint({ purpose: 'lesson' }) }), {});
+    addProject(makeProject(box, { date: '2026-10-10', slug: 'b', fingerprint: fingerprint({ purpose: 'bogus' }) }), {});
+    addProject(makeProject(box, { date: '2026-10-11', slug: 'c', fingerprint: fingerprint({ purpose: 'tool' }) }), { countsForNovelty: false });
+    addProject(makeProject(box, { date: '2026-10-12', slug: 'd', fingerprint: fingerprint({ purpose: 'tool' }) }), {});
+    assert.deepEqual(digest().split('\n').map((l) => l.split(' | ').at(-1)), ['lesson', 'play', '-', 'tool']);
+    // the legacy default comes from config.mix.purposes.legacyDefault
+    const cfg = box.readJson('config.json');
+    cfg.mix.purposes.legacyDefault = 'explorer';
+    box.write('config.json', cfg);
+    assert.deepEqual(digest().split('\n').map((l) => l.split(' | ').at(-1)), ['lesson', 'explorer', '-', 'tool']);
+    // a config without mix.purposes (tests/helpers/test-config.json) and a damaged taxonomy never stop the digest
+    delete cfg.mix.purposes;
+    box.write('config.json', cfg);
+    box.write('ops/taxonomy.json', '{broken');
+    assert.deepEqual(digest().split('\n').map((l) => l.split(' | ').at(-1)), ['lesson', 'bogus', '-', 'tool'], 'no vocabulary: purposes print as they are');
+  } finally {
+    box.cleanup();
+  }
+});
+
+test('purposeOf and purposeVocabulary', () => {
+  const tax = JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'ops', 'taxonomy.json'), 'utf8'));
+  const vocab = purposeVocabulary(tax);
+  assert.deepEqual(vocab, ['tool', 'lesson', 'explorer', 'studio', 'play'], 'canonical order is the key order of taxonomy.purposes');
+  assert.equal(purposeVocabulary({}), null);
+  assert.equal(purposeVocabulary({ purposes: [] }), null);
+  assert.equal(purposeVocabulary(null), null);
+  const e = (purpose) => ({ fingerprint: { purpose } });
+  assert.equal(purposeOf(e('studio'), vocab), 'studio');
+  assert.equal(purposeOf(e('Studio'), vocab), 'play', 'the vocabulary is exact');
+  assert.equal(purposeOf(e(undefined), vocab), 'play');
+  assert.equal(purposeOf({}, vocab, 'lesson'), 'lesson');
+  assert.equal(purposeOf(null, vocab), 'play');
+  assert.equal(purposeOf(e('anything'), null), 'anything');
+  assert.equal(purposeOf(e(''), null), 'play');
 });
 
 function cli(box, args) {
@@ -284,6 +327,7 @@ test('CLI: add, digest, remove print one JSON document', () => {
     const text = cli(box, ['digest', '--text']);
     assert.equal(text.code, 0);
     assert.match(text.out, /^2026-10-09 \| Probe \|/);
+    assert.match(text.out, / \| play\n$/, 'the purpose is the last column');
 
     const rm = JSON.parse(cli(box, ['remove', '--date', '2026-10-09']).out);
     assert.equal(rm.removed, true);

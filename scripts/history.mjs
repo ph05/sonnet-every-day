@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import {
-  rp, readJson, writeJsonAtomic, loadConfig, dayNumber, parseArgs, resolveNow, print, die,
+  rp, readJson, writeJsonAtomic, loadConfig, loadTaxonomy, dayNumber, parseArgs, resolveNow, print, die,
 } from './lib/common.mjs';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
@@ -126,21 +126,57 @@ export function removeDate(date, { deleteDir = false } = {}) {
   return { removed: true, entry, dirDeleted };
 }
 
+/** The purpose vocabulary in canonical order (the keys of taxonomy.purposes), or null when the taxonomy has none. */
+export function purposeVocabulary(taxonomy) {
+  const p = taxonomy?.purposes;
+  return p && typeof p === 'object' && !Array.isArray(p) && Object.keys(p).length ? Object.keys(p) : null;
+}
+
+/**
+ * An entry's purpose: fingerprint.purpose when it is in the vocabulary, else `legacyDefault` (config.mix.purposes.legacyDefault):
+ * entries from before the purpose axis count as that purpose. With no vocabulary any non-empty string is taken as it is.
+ */
+export function purposeOf(entry, vocab, legacyDefault = 'play') {
+  const p = entry?.fingerprint?.purpose;
+  if (typeof p !== 'string' || !p) return legacyDefault;
+  return !vocab || vocab.includes(p) ? p : legacyDefault;
+}
+
+/** Vocabulary and legacy default for the digest; a damaged taxonomy or config never stops it. */
+function purposeContext() {
+  let vocab = null;
+  let legacy = 'play';
+  try {
+    vocab = purposeVocabulary(loadTaxonomy());
+  } catch { /* no vocabulary: purposes are printed as they are */ }
+  try {
+    const d = loadConfig().mix?.purposes?.legacyDefault;
+    if (typeof d === 'string' && d) legacy = d;
+  } catch { /* keep 'play' */ }
+  return { vocab, legacy };
+}
+
 function cell(v) {
   return String(v ?? '').replace(/[\r\n|\s]+/g, ' ').trim();
 }
 
-/** One line per past project: "YYYY-MM-DD | title | category | mechanic | tags". Most recent `limit` entries. */
+/**
+ * One line per past project: "YYYY-MM-DD | title | category | mechanic | tags | purpose". Most recent `limit` entries.
+ * The purpose is the last column: the entry's purpose (the legacy default for an entry without one, as the purpose plan counts it),
+ * or "-" for an entry that does not count for novelty (fallback days).
+ */
 export function digest({ limit } = {}) {
   const entries = [...loadHistory().entries].sort((a, b) => (a.date < b.date ? -1 : 1));
   const n = Number(limit);
   const shown = Number.isFinite(n) && n > 0 ? entries.slice(-Math.floor(n)) : entries;
   if (!shown.length) return '(no past projects yet)';
+  const { vocab, legacy } = purposeContext();
   return shown
     .map((e) => {
       const fp = e.fingerprint ?? {};
       const title = e.countsForNovelty === false ? `${cell(e.title)} (fallback day)` : cell(e.title);
-      return [e.date, title, cell(fp.category), cell(fp.mechanic), (fp.tags ?? []).map(cell).join(',')].join(' | ');
+      const purpose = e.countsForNovelty === true ? cell(purposeOf(e, vocab, legacy)) : '-';
+      return [e.date, title, cell(fp.category), cell(fp.mechanic), (Array.isArray(fp.tags) ? fp.tags : []).map(cell).join(','), purpose].join(' | ');
     })
     .join('\n');
 }

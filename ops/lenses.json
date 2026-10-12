@@ -1,11 +1,13 @@
 {
   "schema": 1,
   "kinds": {
-    "interest": "The owner's standing passions: poker and GTO, Balatro and mods, hockey, Reddit-born ideas, game design.",
+    "interest": "The owner's standing passions: poker and GTO, Balatro and mods, hockey, Reddit-born ideas, game design. They are as good a familiar hook for a tool or a lesson as for a game.",
     "current": "Anchored to what is happening this week: pop culture, hockey tonight, tech chatter, the calendar.",
-    "humor": "Jokes with mechanics: absurdist, satirical, deadpan, word-driven.",
-    "wildcard": "Anything else worth a day: science, math, music, art, tools, language, life, plus the anti-lenses.",
-    "craft": "A quality lens: how to make the idea deep, tactile and shareable rather than what it is about."
+    "humor": "Jokes with mechanics: absurdist, satirical, deadpan, word-driven. Drawn only on days when play is allowed (novelty.mjs mix, purposes.playAllowed).",
+    "wildcard": "Anything else worth a day: science, math, music, art, tools, language, life, plus the anti-lenses; also studio sources (things worth making and exporting) and explorer sources (bundled, sourced data to query).",
+    "craft": "A quality lens: how to make the idea deep, tactile and shareable rather than what it is about.",
+    "useful": "A source of USEFUL TOOLS: a job people pay for, sign up for or upload private files for, rebuilt as an exact, private, offline browser tool with a named correctness oracle and its limits printed on the page.",
+    "teach": "A source of LESSONS: a niche concept that is badly explained elsewhere, taught with a ladder of interactive demos, the misconception it busts and the aha moment it earns."
   },
   "lenses": [
     {
@@ -702,6 +704,704 @@
         "Wikipedia: System dynamics, Feedback, Bullwhip effect",
         "arXiv nlin and physics.soc-ph listings",
         "Hacker News systems-thinking essays"
+      ]
+    },
+    {
+      "id": "tool-regex-workbench",
+      "name": "Regex Workbench",
+      "kind": "useful",
+      "brief": "Regular expressions are where developers lose an afternoon, and popular online testers commonly keep saved patterns, shareable links, history or bigger inputs behind an account or a paid tier. A tester is small enough to rebuild exactly and privately: it runs the browser's own engine on text that never leaves the page, highlights every match and capture group, explains the pattern token by token and keeps a table of test strings with expected results. The oracle is ECMA-262, the specification the engine implements, plus the test cases the visitor writes. Print the limits: it speaks the JavaScript flavour only, and a pattern that backtracks catastrophically gets a timeout warning instead of a frozen tab.",
+      "sourceHints": [
+        "Pricing and feature pages of online regex testers (what needs an account)",
+        "\"offline regex tester\" and \"regex tester with saved tests\" threads on r/webdev and Hacker News",
+        "ECMA-262, the RegExp chapter (tc39.es/ecma262)",
+        "Wikipedia: Regular expression, ReDoS (catastrophic backtracking)"
+      ]
+    },
+    {
+      "id": "tool-data-formats",
+      "name": "Data Format Desk",
+      "kind": "useful",
+      "brief": "Converting and checking JSON, CSV and YAML is daily work, and many web converters want the file uploaded, cap its size, or keep batch jobs and schema validation for a paid plan. Every one of these jobs is a pure function (parse, validate, transform, serialize) that a page can run offline on a file that never leaves the machine. Use RFC 8259 for JSON, RFC 4180 for CSV and the public JSON Schema Test Suite (draft 2020-12) as the known-answer oracle, and show the line and column of every error. Print the limits: very large files are bound by browser memory, and YAML corner cases (anchors, tags, implicit typing) get a clear list of what is and is not supported.",
+      "sourceHints": [
+        "\"convert CSV to JSON without uploading\" and \"is there a free JSON schema validator\" searches",
+        "RFC 8259 (JSON) and RFC 4180 (CSV) at rfc-editor.org",
+        "JSON Schema Test Suite (github.com/json-schema-org)",
+        "YAML 1.2.2 specification (yaml.org)",
+        "r/dataengineering and r/webdev tool threads"
+      ]
+    },
+    {
+      "id": "tool-cron-time-zones",
+      "name": "Cron and Time Zone Planner",
+      "kind": "useful",
+      "brief": "When will this job really run? Cron explainers and scheduling services often stop at a one-line description, or keep run calendars, time-zone views and alerts behind a sign-up. A local tool can parse the five-field expression, list the next fifty runs in any IANA time zone through the browser's Intl API, and mark the runs that a daylight-saving change skips or doubles. The oracle is the crontab(5) manual, including the rule that a job with both day-of-month and day-of-week restricted runs when either matches, checked against hand-computed calendars. Print the limits: dialects differ (six-field Quartz, seconds, @reboot), and the page says which one it speaks.",
+      "sourceHints": [
+        "crontab(5) manual page (Vixie cron and cronie)",
+        "IANA Time Zone Database (iana.org/time-zones)",
+        "\"cron expression next run time zone\" threads on Stack Overflow and r/sysadmin",
+        "Wikipedia: Cron, Daylight saving time"
+      ]
+    },
+    {
+      "id": "tool-subnet-calculator",
+      "name": "Subnet Calculator",
+      "kind": "useful",
+      "brief": "Subnetting is a classic chore: split a block into subnets, find the broadcast address and usable range, check whether two ranges overlap, write an IPv6 address in its canonical short form. Many network calculator sites are ad-heavy, stop at IPv4, or keep planning and export features for paid tiers. All of it is exact integer arithmetic on 32-bit and 128-bit numbers (BigInt in the browser), so a private offline version can be complete. The oracles are RFC 4632 (CIDR), RFC 4291 (IPv6 addressing), RFC 5952 (IPv6 text form) and RFC 1918 (private ranges), with the worked examples they contain. Print the limits: it plans address space and never scans or touches a network.",
+      "sourceHints": [
+        "RFC 4632, RFC 4291, RFC 5952 and RFC 1918 at rfc-editor.org",
+        "\"free subnet calculator ipv6 vlsm\" searches and r/networking threads",
+        "Wikipedia: Classless Inter-Domain Routing, IPv6 address",
+        "Networking course notes on VLSM and supernetting"
+      ]
+    },
+    {
+      "id": "tool-unicode-inspector",
+      "name": "Unicode and Encoding Inspector",
+      "kind": "useful",
+      "brief": "Why does this string compare unequal, break a URL, or look identical to a different one? The helpers for it are often scattered across ad-filled single-purpose pages. One local inspector can show every code point with its name and UTF-8 bytes, normalize to NFC or NFD, flag look-alike characters, and convert base64, percent-encoding and Punycode both ways. The oracles are the Unicode Character Database, UAX #15 (normalization), UTS #39 (confusables), RFC 4648 (base64), RFC 3986 (URIs) and RFC 3492 (Punycode), each with published examples. Print the limits: names come from a bundled table of one Unicode version, named on the page, and a decoder shows bytes and never runs them.",
+      "sourceHints": [
+        "Unicode Character Database and UAX #15 (unicode.org)",
+        "UTS #39 Unicode Security Mechanisms (confusables data)",
+        "RFC 4648, RFC 3986 and RFC 3492 at rfc-editor.org",
+        "\"string looks the same but is not equal\" threads on Stack Overflow and r/programming"
+      ]
+    },
+    {
+      "id": "tool-diff-desk",
+      "name": "Diff Desk",
+      "kind": "useful",
+      "brief": "Comparing two versions of a contract, a config file or a chapter is a weekly job, and desktop diff tools and online services commonly put three-way merge, folder comparison or large files behind a licence or an upload. A diff is an algorithm with a classic paper: Myers' O(ND) method finds a shortest edit script, and a page can run it by line, word or character on text that never leaves the machine. Check it against GNU diff output on prepared pairs and against the property that applying the edit script to the old text gives the new one. Print the limits: it compares text, not formatted documents, and very long files switch to a line-only mode.",
+      "sourceHints": [
+        "Myers, An O(ND) Difference Algorithm and Its Variations (1986)",
+        "GNU diffutils manual: the unified format",
+        "\"compare two texts offline\" and \"free three-way merge tool\" threads",
+        "Wikipedia: Diff, Longest common subsequence"
+      ]
+    },
+    {
+      "id": "tool-contrast-color-vision",
+      "name": "Contrast and Color Vision Checker",
+      "kind": "useful",
+      "brief": "Designers check text contrast and color-blind safety on every palette, and the convenient tools often test one pair at a time, want a screenshot uploaded, or keep whole-palette matrices and export for paid plans. Both jobs are formulas: WCAG 2 relative luminance and contrast ratio, and published simulations of color-vision deficiency, all exact and offline. Use the WCAG 2.2 definitions with their thresholds (4.5:1 for body text), the sRGB transfer function of IEC 61966-2-1, and the simulation matrices from Brettel, Viénot and Mollon or Machado and colleagues. Print the limits: a simulation approximates one kind of vision, not a person, and APCA is a proposed method, not part of WCAG 2.2.",
+      "sourceHints": [
+        "WCAG 2.2: contrast minimum and relative luminance definitions (w3.org)",
+        "Machado, Oliveira and Fernandes (2009) and Brettel, Viénot and Mollon (1997) on simulating color vision deficiency",
+        "\"palette contrast matrix free\" and \"color blind check without upload\" searches",
+        "r/accessibility and r/web_design palette threads"
+      ]
+    },
+    {
+      "id": "tool-image-without-upload",
+      "name": "Image Utilities Without Upload",
+      "kind": "useful",
+      "brief": "Resize, crop, convert, compress, strip location data, pick a palette: online image converters commonly want the photo uploaded, cap the batch, add a watermark or ask for an account. A canvas can do all of it locally, file by file, with before and after side by side and a one-click download. The oracles are what the page can measure itself (dimensions, bytes, pixels), the Exif specification (CIPA DC-008) for which metadata exists and what was removed, and median-cut or k-means quantization checked on test images with known colors. Print the limits: which formats this browser can encode (AVIF and WebP support varies), and that re-encoding a JPEG always loses some quality.",
+      "sourceHints": [
+        "\"resize images without uploading\" and \"remove exif data offline\" searches",
+        "CIPA DC-008 (Exif) and the W3C PNG specification",
+        "Wikipedia: Median cut, Color quantization, Exif",
+        "r/privacy and r/photography tool threads"
+      ]
+    },
+    {
+      "id": "tool-local-pdf",
+      "name": "Local PDF Helpers",
+      "kind": "useful",
+      "brief": "Merging, splitting, reordering and numbering PDF pages are tiny jobs, and freemium PDF suites commonly cap pages or files per day, add watermarks, or require an upload and an account. The simple jobs can be rebuilt in a clean-room page: the PDF specification (ISO 32000) is available at no cost, and assembling images into pages or copying page objects between simple unencrypted files is a few hundred lines. Check every output by reopening it in the browser's own viewer, counting pages and comparing extracted text with the input. Print the limits loudly: encrypted, damaged or exotic files are refused with a clear message, and nothing is ever uploaded.",
+      "sourceHints": [
+        "\"merge pdf without uploading\" and \"split pdf free no watermark\" searches",
+        "ISO 32000 (PDF) free copies: Adobe (PDF 1.7) and the PDF Association (PDF 2.0)",
+        "Wikipedia: PDF (file structure, cross-reference table)",
+        "r/privacy and r/software threads on offline PDF tools"
+      ]
+    },
+    {
+      "id": "tool-chord-scale-finder",
+      "name": "Chord, Scale and Key Finder",
+      "kind": "useful",
+      "brief": "Musicians look up chord shapes, the scales that fit a progression, and the key of a song; the apps that do it commonly gate other instruments, custom tunings, saved progressions or playback behind a subscription. Music theory is a closed system: intervals in semitones, chord formulas, scale degrees, transposition and fretboard positions for any tuning, all computable and playable through Web Audio. The oracle is a standard theory text's tables plus the MIDI tuning formula, f = 440 x 2^((n-69)/12), checked note by note. Print the limits: chord naming follows conventions (slash chords, enharmonic spellings), and the page says which ones it uses.",
+      "sourceHints": [
+        "\"free chord finder custom tuning\" and \"scale finder for guitar\" searches",
+        "Open Music Theory (open textbook, openmusictheory.github.io)",
+        "Wikipedia: Equal temperament, Chord names and symbols (popular music), MIDI tuning standard",
+        "r/musictheory and r/guitar resource threads"
+      ]
+    },
+    {
+      "id": "tool-tuner-metronome",
+      "name": "Tuner and Metronome",
+      "kind": "useful",
+      "brief": "A tuner and a metronome are the tools musicians open every day, and app-store versions commonly carry ads, lock custom temperaments, subdivisions or practice logs, or want an account. Both rebuild well in a page: pitch detection with the published YIN algorithm on the microphone (audio never leaves the device), and a metronome scheduled ahead on the Web Audio clock, which keeps time better than timers. Check the tuner against generated tones of known frequency and the metronome against its measured click times. Print the limits: a noisy room or a weak microphone degrades detection, and the page shows its confidence instead of a confident wrong note.",
+      "sourceHints": [
+        "de Cheveigné and Kawahara, YIN, a fundamental frequency estimator for speech and music (2002)",
+        "\"free tuner no ads\" and \"metronome with subdivisions free\" searches",
+        "MDN: AudioContext.currentTime, and the article A Tale of Two Clocks on Web Audio scheduling",
+        "r/WeAreTheMusicMakers and r/piano practice-tool threads"
+      ]
+    },
+    {
+      "id": "tool-exposure-depth-of-field",
+      "name": "Exposure and Depth of Field",
+      "kind": "useful",
+      "brief": "Photographers work out depth of field, hyperfocal distance, long exposures behind ND filters and equivalent exposures, and the polished apps for this are commonly paid or ad-supported. The maths is classic optics: the thin-lens depth-of-field formulas, a circle-of-confusion convention, exposure value (EV = log2(N^2/t)) and stops, all exact and offline. Check against worked examples in photography references and against the property that equivalent exposures keep the same EV. Print the limits: depth of field depends on the chosen circle of confusion (state it and let the visitor change it), and real lenses only approximate the thin-lens model.",
+      "sourceHints": [
+        "Wikipedia: Depth of field, Hyperfocal distance, Exposure value, Circle of confusion",
+        "\"depth of field calculator free\" and \"ND filter exposure calculator\" searches",
+        "r/photography and r/AskPhotography technical threads",
+        "Optics textbooks: the thin lens equation chapters"
+      ]
+    },
+    {
+      "id": "tool-sun-moon-planner",
+      "name": "Sun, Moon and Golden Hour Planner",
+      "kind": "useful",
+      "brief": "Photographers, gardeners and campers want sunrise, sunset, twilight, the sun's direction at any hour and the moon's phase, and the planning apps that draw this on a map are commonly paid. The astronomy is public and compact: the NOAA solar calculator equations and the algorithms of Meeus' Astronomical Algorithms run offline in milliseconds for any place and date. Check against NOAA's own calculator and published almanac times for a few cities and dates. Print the limits: NOAA states its sunrise and sunset times are good to about a minute below 72 degrees of latitude, and terrain, altitude and unusual refraction shift what you actually see.",
+      "sourceHints": [
+        "NOAA Global Monitoring Laboratory solar calculator and its equations",
+        "Meeus, Astronomical Algorithms (sun, moon and phase chapters)",
+        "\"golden hour calculator free\" and \"sun path planner alternative\" searches",
+        "Wikipedia: Twilight, Sunrise equation, Lunar phase"
+      ]
+    },
+    {
+      "id": "tool-electronics-bench",
+      "name": "Electronics Bench Calculator",
+      "kind": "useful",
+      "brief": "Hobbyists and students look up resistor color codes, the nearest standard value, voltage dividers, LED series resistors, RC filter cut-offs and op-amp gains; many calculator sites are ad-heavy, and design suites keep the good versions behind a licence. Each is a closed formula or a published table, so one offline bench can be exact: IEC 60062 for the color code, IEC 60063 for the E-series values, textbook circuit formulas checked by hand. Show the standard values picked and the error they introduce, and draw the circuit beside the answer. Print the limits: ideal components (no parasitics, tolerances only where shown), and mains voltage is out of scope.",
+      "sourceHints": [
+        "IEC 60062 (marking codes) and IEC 60063 (E-series preferred numbers) summaries",
+        "Horowitz and Hill, The Art of Electronics (filter and op-amp chapters)",
+        "\"resistor calculator offline\" and \"voltage divider standard values\" searches",
+        "r/AskElectronics and r/arduino tool threads"
+      ]
+    },
+    {
+      "id": "tool-beam-and-air",
+      "name": "Beam and Moist Air Calculator",
+      "kind": "useful",
+      "brief": "Two engineering staples often sit behind paid software: deflection and stress of a beam for common supports and loads, and the state of moist air (dew point, relative humidity, enthalpy) for heating, cooling and drying. Both are published closed forms: Euler-Bernoulli beam cases as tabulated in Roark's Formulas for Stress and Strain, and the moist-air equations of the ASHRAE Handbook of Fundamentals, all unit-aware and offline. Check against the worked examples in those references and against NIST SP 811 for unit conversions. Print the limits loudly: for learning and estimates, never for structural sign-off; linear elastic materials only; the air equations hold within a stated temperature range.",
+      "sourceHints": [
+        "Roark's Formulas for Stress and Strain (beam tables)",
+        "ASHRAE Handbook Fundamentals, psychrometrics chapter",
+        "NIST Special Publication 811, Guide for the Use of the SI",
+        "\"free beam deflection calculator\" and \"psychrometric calculator online\" searches; r/StructuralEngineering and r/HVAC"
+      ]
+    },
+    {
+      "id": "tool-chemistry-bench",
+      "name": "Chemistry Bench",
+      "kind": "useful",
+      "brief": "Students and lab technicians need molar masses from formulas, balanced equations, dilutions, solution recipes and buffer pH, and the polished chemistry apps commonly keep step-by-step working behind a subscription. Each job is exact: a formula parser plus the IUPAC standard atomic weights, equation balancing as a small integer linear-algebra problem, C1V1 = C2V2, and the Henderson-Hasselbalch equation for buffers. Check against textbook problems with published answers and against the conservation of every element on both sides. Print the limits: buffer pH is an approximation at extreme concentrations, and the page shows its working so a student learns rather than copies.",
+      "sourceHints": [
+        "IUPAC CIAAW standard atomic weights (ciaaw.org)",
+        "OpenStax Chemistry 2e (open textbook) worked examples",
+        "\"balance chemical equations step by step free\" searches",
+        "Wikipedia: Chemical equation (balancing by matrix method), Henderson-Hasselbalch equation"
+      ]
+    },
+    {
+      "id": "tool-loan-savings",
+      "name": "Loan and Savings Maths",
+      "kind": "useful",
+      "brief": "Before signing a loan people want the full amortization schedule, the effect of an extra payment, the total interest, and the difference between APR and APY; bank calculators commonly hide the schedule, skip export or ask for contact details first. The maths is the standard annuity formula and compound interest, exact to the cent with stated rounding, offline, with a CSV export of every row. Check against textbook examples and against a spreadsheet's PMT function on the same inputs. Print the limits on the page: estimates, not advice; lenders round and count days differently, and fees, taxes and insurance are left out unless entered.",
+      "sourceHints": [
+        "Wikipedia: Amortization calculator, Annual percentage rate, Compound interest",
+        "Consumer-protection regulator guides on APR and loan disclosures",
+        "\"amortization schedule with extra payments free\" searches and r/personalfinance threads",
+        "Spreadsheet PMT and IPMT function documentation"
+      ]
+    },
+    {
+      "id": "tool-time-zone-critical-path",
+      "name": "Meeting and Critical Path Planner",
+      "kind": "useful",
+      "brief": "Teams across time zones need a meeting time that is humane for everyone, and small projects need a critical path; meeting planners and project tools commonly keep these behind seats, sign-ups or a higher tier. Both are exact: overlapping working hours through the IANA time-zone rules built into the browser, and the forward and backward passes of the critical path method over a task graph, with the slack of every task. Check against textbook critical-path examples and against daylight-saving transitions in the IANA data. Print the limits: it plans and books nothing, and holidays are only the ones the visitor enters.",
+      "sourceHints": [
+        "Kelley and Walker, Critical-Path Planning and Scheduling (1959); Wikipedia: Critical path method",
+        "IANA Time Zone Database and MDN: Intl.DateTimeFormat timeZone",
+        "\"free meeting planner time zones\" and \"critical path calculator free\" searches",
+        "r/projectmanagement and r/remotework tool threads"
+      ]
+    },
+    {
+      "id": "tool-spaced-repetition",
+      "name": "Spaced Repetition Scheduler",
+      "kind": "useful",
+      "brief": "Spaced, self-tested review is one of the best-evidenced study habits, and the popular flashcard apps commonly charge for sync, statistics or particular platforms. The scheduling algorithms are published: SM-2 is fully described by its author, and FSRS publishes its formulas and a reference implementation, so a local scheduler with CSV import and export can be exact. Check intervals against the SM-2 description and against the FSRS reference outputs for the same review histories. Print the limits: decks live in this browser until exported, nothing syncs, and the scheduler's assumptions are explained in plain words.",
+      "sourceHints": [
+        "SM-2 algorithm description by Piotr Wozniak (supermemo.com)",
+        "open-spaced-repetition: FSRS formulas and reference implementation (GitHub)",
+        "Dunlosky et al., Improving Students' Learning With Effective Learning Techniques (2013)",
+        "\"spaced repetition app without account\" searches and r/Anki threads"
+      ]
+    },
+    {
+      "id": "tool-script-drills",
+      "name": "Script and Sound Drills",
+      "kind": "useful",
+      "brief": "Learners drill new writing systems and sounds (kana, Hangul, Cyrillic, Greek, the IPA symbols in a dictionary), and drill apps commonly lock decks, statistics or offline use behind a subscription. The character sets and their standard romanizations are public, so a local drill can be exact and adaptive: Unicode blocks for the characters, the official romanization tables, and the IPA chart, which its publisher releases under a Creative Commons licence. Check every mapping against the standard tables and keep the scoring simple and visible. Print the limits: romanization systems differ (name the one used), and audio appears only from openly licensed recordings with credit.",
+      "sourceHints": [
+        "Unicode code charts (Hiragana, Katakana, Hangul Jamo, Cyrillic, Greek)",
+        "IPA chart from the International Phonetic Association (CC BY-SA)",
+        "Hepburn romanization and the Revised Romanization of Korean tables",
+        "\"kana drill offline\" and \"free IPA chart with examples\" searches",
+        "r/LearnJapanese, r/Korean and r/languagelearning resource threads"
+      ]
+    },
+    {
+      "id": "tool-readability-citations",
+      "name": "Readability and Citation Desk",
+      "kind": "useful",
+      "brief": "Writers check reading level, sentence length and passive voice, and format citations; writing assistants commonly gate full reports, history and style options behind a subscription and want the text sent to a server. The classic readability formulas are published (Flesch Reading Ease, Flesch-Kincaid grade level) and a citation is a rule-driven template over fields, so a private page can score and format locally. Check scores on texts with published values and citations against the examples in each style guide. Print the limits: syllable counting is a heuristic, formulas measure sentences and syllables rather than clarity, and styles change between editions (name the edition).",
+      "sourceHints": [
+        "Wikipedia: Flesch-Kincaid readability tests (with the 1948 and 1975 sources)",
+        "Purdue OWL pages with APA and MLA citation examples",
+        "\"readability checker without uploading\" and \"citation generator no ads\" searches",
+        "r/writing and r/AskAcademia tool threads"
+      ]
+    },
+    {
+      "id": "tool-hash-entropy-lab",
+      "name": "Local Hash and Entropy Lab",
+      "kind": "useful",
+      "brief": "Checking a download against its published SHA-256, stripping metadata before sharing, and knowing how strong a generated passphrase is are everyday security chores; the convenient tools often want the file uploaded or a secret typed into someone else's page. All three run locally: SubtleCrypto computes SHA hashes, a parser shows and removes Exif fields, and entropy is exact arithmetic on how a sample was generated (dice words, random characters). The oracles are the NIST example values for FIPS 180-4, the RFC 4231 HMAC test vectors and the EFF dice word list. Print the limits and the rule: it never asks for a real password, card or identity number, and estimates apply to generated samples only.",
+      "sourceHints": [
+        "NIST FIPS 180-4 and the CSRC example values for SHA-2",
+        "RFC 4231 (HMAC-SHA test vectors) at rfc-editor.org",
+        "EFF dice-generated passphrase word lists (CC BY)",
+        "\"verify sha256 without uploading\" and \"remove exif offline\" searches; r/privacy threads"
+      ]
+    },
+    {
+      "id": "tool-experiment-calculator",
+      "name": "Experiment and Survey Calculator",
+      "kind": "useful",
+      "brief": "Before an A/B test or a survey people need a sample size, and afterwards a confidence interval and a test result; the friendly calculators are often ad-supported, and statistics suites keep power analysis in paid modules. These are closed formulas and well-studied approximations (Wilson intervals, two-proportion tests, chi-square) that run offline and can show their working. Check against NIST's Statistical Reference Datasets and textbook examples with published answers. Print the limits: every method's assumptions (independent samples, large enough counts), and that a p-value is not the probability that the hypothesis is true.",
+      "sourceHints": [
+        "NIST Statistical Reference Datasets (StRD)",
+        "OpenIntro Statistics (open textbook) worked examples",
+        "\"ab test sample size calculator free\" and \"wilson interval calculator\" searches",
+        "Wikipedia: Binomial proportion confidence interval, Power of a test"
+      ]
+    },
+    {
+      "id": "tool-map-distance-coordinates",
+      "name": "Map Distance and Coordinates",
+      "kind": "useful",
+      "brief": "Hikers, sailors and surveyors convert coordinates (decimal, degrees-minutes-seconds, UTM, MGRS), measure great-circle distances and areas, and view a GPX track; mapping apps commonly put these behind a subscription or an account. Geodesy has exact public algorithms: Karney's geodesic algorithms on the WGS84 ellipsoid and the published UTM and MGRS conversions, all offline over a bundled public-domain world outline. Check against GeographicLib's published test set and the NGA conversion examples. Print the limits: no live map tiles, the outline is coarse, and a phone's GPS error is far larger than the arithmetic's.",
+      "sourceHints": [
+        "Karney, Algorithms for geodesics (2013) and the GeographicLib geodesic test data",
+        "NGA.SIG.0012, the UTM, UPS and MGRS standard",
+        "Natural Earth public-domain map data",
+        "\"view gpx file offline\" and \"utm to latitude longitude converter free\" searches"
+      ]
+    },
+    {
+      "id": "lesson-probabilistic-structures",
+      "name": "Data Structures That Guess",
+      "kind": "teach",
+      "brief": "Bloom filters, count-min sketches and HyperLogLog answer 'have I seen this?' and 'how many distinct?' in a sliver of memory by allowing a controlled error. They sit inside databases and browsers, yet the usual explanation is a formula on a slide that nobody can feel. Let the visitor insert items into a visible bit array, watch the bits fill, and query words that were never added until a false positive appears, with the predicted rate (1 - e^(-kn/m))^k drawn beside the measured one. Bust the misconception that a filter can say a definite yes: it can only say a definite no. The aha is trading certainty for memory on purpose, for developers who use these structures without having seen one work.",
+      "sourceHints": [
+        "Bloom, Space/Time Trade-offs in Hash Coding with Allowable Errors (1970)",
+        "Flajolet et al., HyperLogLog (2007); Cormode and Muthukrishnan, the count-min sketch (2005)",
+        "Wikipedia: Bloom filter, Count-min sketch, HyperLogLog",
+        "University algorithms course notes on sketching and streaming"
+      ]
+    },
+    {
+      "id": "lesson-consensus-replication",
+      "name": "Agreement Over Bad Networks",
+      "kind": "teach",
+      "brief": "How do five servers agree on one log when messages are lost and machines crash? Raft, vector clocks and CRDTs answer it, but their explanations are walls of state diagrams that hide the failures they exist for. Let the visitor cut, slow and heal the network between a handful of nodes and replay elections and writes step by step, so a split brain is attempted and visibly refused. Bust two misconceptions: that a majority vote alone is enough, and that timestamps can order events across machines. The aha is that safety comes from terms, quorums and logs that refuse to forget, for developers who run distributed systems they have never watched fail on purpose.",
+      "sourceHints": [
+        "Ongaro and Ousterhout, In Search of an Understandable Consensus Algorithm (Raft, 2014)",
+        "Shapiro, Preguiça, Baquero and Zawirski, Conflict-free Replicated Data Types (2011)",
+        "Lamport, Time, Clocks, and the Ordering of Events in a Distributed System (1978)",
+        "MIT 6.5840 Distributed Systems public lecture notes"
+      ]
+    },
+    {
+      "id": "lesson-storage-engines",
+      "name": "How Databases Keep Things",
+      "kind": "teach",
+      "brief": "Under every database sits a storage engine: B-trees that update pages in place, LSM trees that write sorted runs and compact them later, and Merkle trees that let two replicas find their differences quickly. Most explanations show finished diagrams, so the costs (write amplification, read amplification, compaction) stay invisible. Let the visitor stream keys into two engines side by side, count every page written and read, and trigger compaction to watch levels merge. Bust the misconception that a write goes straight to its final place on disk. The aha is that every engine trades reads against writes and space, for developers choosing a database and students meeting the words.",
+      "sourceHints": [
+        "O'Neil, Cheng, Gawlick and O'Neil, The Log-Structured Merge-Tree (1996)",
+        "Comer, The Ubiquitous B-Tree (1979)",
+        "Kleppmann, Designing Data-Intensive Applications (storage and retrieval chapter)",
+        "Wikipedia: Log-structured merge-tree, B-tree, Merkle tree"
+      ]
+    },
+    {
+      "id": "lesson-compression",
+      "name": "Why Files Shrink",
+      "kind": "teach",
+      "brief": "Compression feels like magic until you see that it is counting: Huffman codes give frequent symbols short codes, LZ77 replaces repeats with back-references, and entropy sets a floor no method can beat on average. Textbooks jump to the code tree and skip the intuition of surprise. Let the visitor type text and watch the frequency table, the tree and the bit string grow live, then paste random bytes and see the output get bigger. Bust the misconception that a clever enough algorithm can shrink anything; the pigeonhole principle forbids it. The aha is that predictable data is short data, for anyone who has zipped a file and wondered.",
+      "sourceHints": [
+        "Huffman, A Method for the Construction of Minimum-Redundancy Codes (1952)",
+        "Ziv and Lempel, A Universal Algorithm for Sequential Data Compression (1977)",
+        "Shannon, A Mathematical Theory of Communication (1948)",
+        "Wikipedia: Huffman coding, LZ77 and LZ78, Entropy (information theory)"
+      ]
+    },
+    {
+      "id": "lesson-consistent-hashing",
+      "name": "Where Does the Key Go",
+      "kind": "teach",
+      "brief": "Caches and databases spread keys over servers by hashing, and the naive rule (hash mod N) quietly fails the day a server is added: almost every key moves. Consistent hashing and rendezvous hashing fix that, but the usual ring diagram never shows the move happening. Let the visitor add and remove servers and watch which keys migrate under each scheme, with a counter of moved keys and a load chart per server, then add virtual nodes to even out the load. Bust the misconception that a good hash function alone balances load. The aha is that only the keys landing on the newcomer move, about one in N+1, for backend developers and curious operators.",
+      "sourceHints": [
+        "Karger et al., Consistent Hashing and Random Trees (1997)",
+        "Thaler and Ravishankar, rendezvous (highest random weight) hashing (1998)",
+        "Wikipedia: Consistent hashing, Rendezvous hashing",
+        "Engineering blog posts on sharding and virtual nodes (describe in your own words)"
+      ]
+    },
+    {
+      "id": "lesson-type-inference",
+      "name": "How Types Are Inferred",
+      "kind": "teach",
+      "brief": "Languages of the ML family (OCaml, Haskell, F#) work out types the programmer never wrote by unification: give everything a type variable, collect equations, solve them. Explanations usually start with inference rules full of Greek letters, which loses everyone but theorists. Let the visitor pick a small expression and step through Algorithm W, watching each equation appear and each variable get substituted, including the moment the occurs check refuses an infinite type. Bust the misconception that inference guesses from usage the way a person would. The aha is that a type error is a set of equations with no solution, for programmers who meet confusing type errors every day.",
+      "sourceHints": [
+        "Damas and Milner, Principal Type-Schemes for Functional Programs (1982)",
+        "Pierce, Types and Programming Languages (type reconstruction chapter)",
+        "Wikipedia: Hindley-Milner type system, Unification (computer science)",
+        "University compiler course notes on type inference"
+      ]
+    },
+    {
+      "id": "lesson-memory-caches",
+      "name": "Memory, Caches and Garbage",
+      "kind": "teach",
+      "brief": "Why is walking an array row by row much faster than column by column, and what does a garbage collector actually do while a program runs? Caches and collectors decide real-world speed, yet explanations stop at a pyramid of memory levels or the word automatic. Let the visitor run access patterns against a simulated cache with visible lines and hit counters, and watch a mark-and-sweep or generational collector trace live objects through a heap drawn as boxes and arrows. Bust the misconception that every memory access costs the same. The aha is locality, for programmers who never took a systems course.",
+      "sourceHints": [
+        "Drepper, What Every Programmer Should Know About Memory (2007)",
+        "Jones, Hosking and Moss, The Garbage Collection Handbook",
+        "Wikipedia: CPU cache, Locality of reference, Tracing garbage collection",
+        "Bryant and O'Hallaron, Computer Systems: A Programmer's Perspective (memory chapters)"
+      ]
+    },
+    {
+      "id": "lesson-linear-algebra",
+      "name": "What Matrices Do",
+      "kind": "teach",
+      "brief": "A matrix is a machine that moves every point of the plane at once, and an eigenvector is a direction it only stretches. Courses teach determinants and eigenvalues as recipes, so students compute them without ever seeing one. Let the visitor drag the columns of a 2x2 matrix and watch a grid, a picture and a few arrows transform, with the eigen-directions lighting up when an arrow stays on its own line, then apply the matrix again and again to see every arrow swing toward the dominant eigenvector (the idea behind PageRank). Bust the misconception that eigenvalues are abstract numbers with no picture. The aha is that the determinant is an area scale, for students and self-taught programmers.",
+      "sourceHints": [
+        "Strang, Introduction to Linear Algebra and the MIT OpenCourseWare 18.06 lectures",
+        "Margalit and Rabinoff, Interactive Linear Algebra (Georgia Tech, open textbook)",
+        "Wikipedia: Eigenvalues and eigenvectors, Determinant, Power iteration, PageRank",
+        "r/learnmath and r/math threads on eigenvector intuition"
+      ]
+    },
+    {
+      "id": "lesson-fourier-sampling",
+      "name": "Signals Made of Circles",
+      "kind": "teach",
+      "brief": "Every sound and image can be rebuilt from sine waves, and sampling it too slowly creates frequencies that were never there. Fourier analysis is usually taught as integrals, so the picture of spinning circles adding up, and of aliasing, never forms. Let the visitor draw a waveform and watch it decompose into rotating phasors, then play a tone while lowering the sample rate until it folds back as a lower pitch. Bust the misconception that a sampled signal is just a blurrier copy of the original: below twice its highest frequency it becomes a different signal. The aha is the wagon wheel that spins backwards on film, for musicians, photographers and engineering students.",
+      "sourceHints": [
+        "Smith, The Scientist and Engineer's Guide to Digital Signal Processing (free online book)",
+        "Wikipedia: Fourier series, Nyquist-Shannon sampling theorem, Aliasing",
+        "MIT OpenCourseWare 6.003 Signals and Systems",
+        "r/DSP and r/audioengineering threads on aliasing"
+      ]
+    },
+    {
+      "id": "lesson-bayes-markov",
+      "name": "Updating Beliefs",
+      "kind": "teach",
+      "brief": "Bayes' rule says how much a piece of evidence should change your mind, and Markov chains describe systems that remember only their present state. Both are taught as formulas, so people still believe that a positive result from a 99 percent accurate test means a 99 percent chance of disease. Let the visitor fill a grid of 1,000 people, set the base rate and the test's accuracy, and watch the positives split into true and false, then run a weather or board-game Markov chain until it settles. Bust the misconception, the base-rate fallacy, with the visitor's own numbers. The aha is that rare things stay fairly unlikely even after a good test, for anyone who reads medical or security news.",
+      "sourceHints": [
+        "Wikipedia: Bayes' theorem, Base rate fallacy, Markov chain",
+        "Gigerenzer and Hoffrage, How to Improve Bayesian Reasoning Without Instruction: Frequency Formats (1995)",
+        "OpenIntro Statistics (probability chapter)",
+        "Seeing Theory (Brown University), described in your own words"
+      ]
+    },
+    {
+      "id": "lesson-symmetry-groups",
+      "name": "Symmetry as Algebra",
+      "kind": "teach",
+      "brief": "Group theory is the mathematics of symmetry: every frieze, wallpaper and Rubik's cube move set obeys the same few rules. It is usually met as abstract axioms, so the surprises (there are exactly 17 wallpaper groups) stay hidden. Let the visitor stamp a motif, apply reflections, rotations and glides and compose them, discovering that two mirrors make a rotation and that the moves form a closed table. Bust the misconception that group theory is only about numbers. The aha is that a pattern is defined by what you can do to it without changing it, for designers, puzzlers and math-curious adults.",
+      "sourceHints": [
+        "Conway, Burgiel and Goodman-Strauss, The Symmetries of Things",
+        "Carter, Visual Group Theory (MAA)",
+        "Wikipedia: Wallpaper group, Frieze group, Dihedral group",
+        "r/math and r/Cubers threads on cube group theory"
+      ]
+    },
+    {
+      "id": "lesson-topology-knots",
+      "name": "Shapes That Bend",
+      "kind": "teach",
+      "brief": "Topology studies what survives stretching, and knot theory asks when two tangles are secretly the same. The popular explanation stops at the coffee mug and the doughnut, so the real tools never appear. Let the visitor drag a knot diagram through the three Reidemeister moves, color it to test tricolorability, and count vertices, edges and faces on bendable shapes to find the Euler characteristic. Bust the misconception that two diagrams that look different must be different knots. The aha is an invariant, a number that cannot change however you bend, for puzzle lovers and students.",
+      "sourceHints": [
+        "Adams, The Knot Book",
+        "Wikipedia: Reidemeister move, Tricolorability, Euler characteristic",
+        "KnotInfo and the Knot Atlas (public knot tables)",
+        "r/math threads on knot invariants"
+      ]
+    },
+    {
+      "id": "lesson-strange-numbers",
+      "name": "Strange Number Systems",
+      "kind": "teach",
+      "brief": "Clock arithmetic, continued fractions, p-adic numbers (and their decimal cousins, in which ...999 equals -1) and generating functions that turn counting into algebra: number theory is full of systems that break schoolbook intuition. They are taught as definitions, so the surprise never lands. Let the visitor add digits leftward in a 10-adic calculator, approximate pi with continued fractions until 355/113 appears, and count ways to make change by multiplying polynomials. Bust the misconception that infinitely many digits must mean infinitely large. The aha is that a different idea of closeness builds a different number world, for math-curious adults and competition students.",
+      "sourceHints": [
+        "Wikipedia: p-adic number, Continued fraction, Generating function, Modular arithmetic",
+        "Wilf, generatingfunctionology (free online book)",
+        "Gouvêa, p-adic Numbers: An Introduction",
+        "r/math and r/learnmath threads on p-adics"
+      ]
+    },
+    {
+      "id": "lesson-orbits-energy",
+      "name": "Physics by Energy and Orbits",
+      "kind": "teach",
+      "brief": "Orbits break everyday physics: to catch a spacecraft ahead of you in the same orbit you slow down, drop lower and go faster. Lagrangian mechanics and phase space explain why, but they are taught as calculus after years of forces and arrows. Let the visitor fly burns in a two-body simulator with the orbit redrawn live, then switch to a pendulum's phase portrait, where energy contours show every possible motion at once. Bust the misconception that pushing forward always gets you there sooner. The aha is energy as a map of all motions, for space fans, players of orbital games and physics students.",
+      "sourceHints": [
+        "Wikipedia: Hohmann transfer orbit, Orbital mechanics, Phase space, Lagrangian mechanics",
+        "Taylor, Classical Mechanics (Lagrangian chapter)",
+        "NASA Basics of Space Flight (public)",
+        "r/KerbalSpaceProgram and r/askscience threads on orbital rendezvous"
+      ]
+    },
+    {
+      "id": "lesson-light-heat",
+      "name": "Light, Color and Heat",
+      "kind": "teach",
+      "brief": "Hot things glow, and their color is a thermometer: black-body radiation, Wien's law and Rayleigh scattering explain why stars are red or blue, why the sky is blue and why sunsets turn orange. Explanations show a Planck curve nobody reads, or skip to 'because physics'. Let the visitor heat an object and watch its spectrum and color shift, send sunlight through more or less air to redden the sun, and trace rays through a lens to form an image. Bust the misconception that red means hottest: a blue-white star is far hotter than a red one. The aha is that color is a measurement, for stargazers, photographers and students.",
+      "sourceHints": [
+        "Wikipedia: Black-body radiation, Wien's displacement law, Rayleigh scattering, Snell's law",
+        "OpenStax University Physics, Volume 3 (light and optics)",
+        "HyperPhysics (Georgia State University) pages on radiation and optics",
+        "r/askscience and r/Astronomy threads on star colors"
+      ]
+    },
+    {
+      "id": "lesson-chemical-equilibrium",
+      "name": "Reactions That Push Back",
+      "kind": "teach",
+      "brief": "Chemical equilibrium is a tug of war that never stops: forward and reverse reactions run at once, and Le Chatelier's principle predicts how the balance shifts when you add, heat or squeeze. It is usually taught as a rule to memorize, so students cannot predict a case they have not seen. Let the visitor add reactant or change temperature and volume in a particle simulation and watch both reaction rates and the concentrations settle into a new balance, with the equilibrium constant computed live. Bust the misconception that a catalyst shifts the equilibrium; it only gets there faster. The aha is dynamic balance, for chemistry students and curious cooks and brewers.",
+      "sourceHints": [
+        "OpenStax Chemistry 2e (equilibrium chapters)",
+        "Wikipedia: Le Chatelier's principle, Chemical equilibrium, Equilibrium constant",
+        "LibreTexts Chemistry pages on equilibrium",
+        "r/chemhelp threads on Le Chatelier misconceptions"
+      ]
+    },
+    {
+      "id": "lesson-statistics-traps",
+      "name": "Numbers That Mislead Honestly",
+      "kind": "teach",
+      "brief": "Simpson's paradox, regression to the mean, p-hacking and underpowered studies all produce true numbers that point the wrong way. Statistics courses name them in one lecture and move on, so people meet them again in headlines without recognizing them. Let the visitor split data by a hidden group until a trend reverses, run twenty fake experiments until one comes out 'significant', and watch a team's best season be followed by a worse one with no cause at all. Bust the misconception that a significant result means a large or real effect. The aha is seeing each trap from the inside, for anyone who reads studies, polls or sports stats.",
+      "sourceHints": [
+        "Bickel, Hammel and O'Connell, Sex Bias in Graduate Admissions: Data from Berkeley (1975)",
+        "Ioannidis, Why Most Published Research Findings Are False (2005)",
+        "Wikipedia: Simpson's paradox, Regression toward the mean, Data dredging, Power of a test",
+        "OpenIntro Statistics and r/statistics threads"
+      ]
+    },
+    {
+      "id": "lesson-markets-games",
+      "name": "How Markets and Games Decide",
+      "kind": "teach",
+      "brief": "Comparative advantage says two countries gain from trade even when one is better at everything; a second-price auction makes honest bidding the best strategy; the prisoner's dilemma shows rational players both losing. These ideas are taught as conclusions, so they sound like opinions rather than arithmetic. Let the visitor run a two-country production table, bid against simulated rivals under different auction rules, draw a Lorenz curve to get a Gini coefficient, and play repeated dilemmas against strategies like tit-for-tat. Bust the misconception that trade only helps the stronger side. The aha is that the rules of the game shape the behaviour, for anyone who argues about economics.",
+      "sourceHints": [
+        "Ricardo, On the Principles of Political Economy and Taxation (1817), on foreign trade",
+        "Vickrey, Counterspeculation, Auctions, and Competitive Sealed Tenders (1961)",
+        "Axelrod, The Evolution of Cooperation",
+        "Wikipedia: Comparative advantage, Vickrey auction, Gini coefficient, Prisoner's dilemma"
+      ]
+    },
+    {
+      "id": "lesson-population-dynamics",
+      "name": "How Populations Change",
+      "kind": "teach",
+      "brief": "Genes, predators and epidemics follow small sets of rules: Hardy-Weinberg keeps allele frequencies fixed until something disturbs them, Lotka-Volterra makes predators and prey cycle, and the SIR model gives an epidemic its curve. Biology classes show the equations and one textbook graph. Let the visitor run populations with sliders for selection, drift, migration, predation and contact rate, and watch cycles, fixation and herd immunity emerge. Bust the misconception that a dominant allele spreads because it is dominant. The aha is that simple rules make rich dynamics, for students, gardeners and anyone who followed an epidemic curve.",
+      "sourceHints": [
+        "Wikipedia: Hardy-Weinberg principle, Lotka-Volterra equations, Compartmental models in epidemiology",
+        "Kermack and McKendrick, A Contribution to the Mathematical Theory of Epidemics (1927)",
+        "OpenStax Biology 2e (population genetics and ecology)",
+        "r/biology and r/epidemiology explainer threads"
+      ]
+    },
+    {
+      "id": "lesson-tuning-harmony",
+      "name": "Why Music Works",
+      "kind": "teach",
+      "brief": "Why do some notes sound good together? The harmonic series, the compromises of temperament and the habits of voice leading answer it, but music theory teaches names and rules while acoustics books teach equations. Let the visitor hear and see the overtones of a string, stack pure fifths until the circle misses closing by the Pythagorean comma, and compare a major third in just intonation and in equal temperament side by side. Bust the misconception that a piano is perfectly in tune: equal temperament makes every interval except the octave slightly impure on purpose. The aha is that tuning is a compromise you can hear, for musicians and listeners.",
+      "sourceHints": [
+        "Wikipedia: Harmonic series (music), Pythagorean comma, Equal temperament, Just intonation",
+        "Benson, Music: A Mathematical Offering (free online)",
+        "Open Music Theory (voice-leading chapters)",
+        "r/musictheory threads on tuning and temperament"
+      ]
+    },
+    {
+      "id": "lesson-language-structure",
+      "name": "Grammar Nobody Taught You",
+      "kind": "teach",
+      "brief": "Languages organize the world differently: in an ergative language the subject of 'she slept' is marked like the object of 'he saw her', vowel harmony makes suffixes change their vowels to match the word, and phonotactics decides which sound sequences feel like words at all. Linguistics is taught through glossed examples only linguists can read. Let the visitor build sentences in a toy ergative language, attach suffixes that harmonize, and generate pseudo-words that do or do not sound English, with the rule behind each result shown. Bust the misconception that every language is English with different words. The aha is that grammar is a set of choices, for language learners, conlangers and word lovers.",
+      "sourceHints": [
+        "World Atlas of Language Structures (WALS Online, CC BY)",
+        "Wikipedia: Ergative-absolutive alignment, Vowel harmony, Phonotactics",
+        "Dixon, Ergativity (Cambridge Studies in Linguistics)",
+        "r/linguistics and r/conlangs explainer threads"
+      ]
+    },
+    {
+      "id": "lesson-map-projections",
+      "name": "Every Map Distorts",
+      "kind": "teach",
+      "brief": "A flat map of a round Earth must distort area, shape, distance or direction, and every projection chooses which. Most people learn it as 'Greenland looks too big' and never see the trade-off itself. Let the visitor drag countries across a Mercator map and watch them shrink toward the equator, switch projections with Tissot's circles drawn on them, and plot a great-circle flight that looks curved on one map and straight on another. Bust the misconception that one projection is the true one: Africa is about 14 times the area of Greenland, yet Mercator draws them alike. The aha is that every map is an argument, for travellers, geography fans and students.",
+      "sourceHints": [
+        "Snyder, Map Projections: A Working Manual (USGS Professional Paper 1395, public domain)",
+        "Wikipedia: Map projection, Tissot's indicatrix, Mercator projection, Great circle",
+        "Natural Earth public-domain country outlines",
+        "r/MapPorn and r/geography projection threads"
+      ]
+    },
+    {
+      "id": "lesson-typography",
+      "name": "Why Text Looks Right",
+      "kind": "teach",
+      "brief": "Good typography is invisible, which is why its rules feel like a mystery: letters are spaced by sidebearings and kerning pairs rather than equal boxes, x-height decides how big a font feels, and line length and leading decide whether the eye finds the next line. Typography books describe it in words and finished examples. Let the visitor kern a word by eye and compare with the font's own pairs, change x-height and leading on a paragraph, and stretch a line until reading gets hard. Bust the misconception that equal spacing looks even. The aha is optical correction, for designers, developers and anyone who makes slides.",
+      "sourceHints": [
+        "Bringhurst, The Elements of Typographic Style",
+        "Butterick's Practical Typography (free online)",
+        "Wikipedia: Kerning, X-height, Leading, Line length",
+        "r/typography and r/Design threads on spacing"
+      ]
+    },
+    {
+      "id": "lesson-cryptography",
+      "name": "Secrets in Public",
+      "kind": "teach",
+      "brief": "How can two strangers agree on a secret while everyone listens? Diffie-Hellman key exchange, public-key encryption and hash functions make the internet work, but explanations either drown in modular arithmetic or stop at a paint-mixing analogy without the maths. Let the visitor mix colors, then run the same exchange with small numbers on a clock face, break it by brute force, and watch the cost explode as the numbers grow. Bust the misconception that hashing is encryption: no key turns a hash back into its input. The aha is a one-way function, for anyone who has wondered about the padlock in a browser.",
+      "sourceHints": [
+        "Diffie and Hellman, New Directions in Cryptography (1976)",
+        "Boneh and Shoup, A Graduate Course in Applied Cryptography (free online)",
+        "Wikipedia: Diffie-Hellman key exchange, RSA (cryptosystem), Cryptographic hash function",
+        "r/crypto and r/explainlikeimfive threads on key exchange"
+      ]
+    },
+    {
+      "id": "lesson-feedback-control",
+      "name": "Feedback That Behaves",
+      "kind": "teach",
+      "brief": "Thermostats, cruise control, drones and showers all run feedback loops, and PID control is the workhorse: react to the error now, to its history and to its trend. Control theory is taught with Laplace transforms, so the everyday intuition never forms. Let the visitor tune a heater or a balancing robot with three sliders and watch overshoot, oscillation and steady-state error appear and vanish on a live plot, integral windup included. Bust the misconception that more gain always means a faster, better response. The aha is stability, for makers, gamers and engineering students.",
+      "sourceHints": [
+        "Åström and Murray, Feedback Systems (free online book)",
+        "Wikipedia: PID controller, Integral windup, Control theory",
+        "University control-engineering lecture notes on PID tuning",
+        "r/ControlTheory and r/arduino PID threads"
+      ]
+    },
+    {
+      "id": "lesson-search-algorithms",
+      "name": "How Computers Search",
+      "kind": "teach",
+      "brief": "Route planners, puzzle solvers and SAT solvers all search enormous spaces, and the clever ones prune almost all of it: Dijkstra and A* with a good heuristic, dynamic programming that remembers sub-answers, unit propagation in a SAT solver. Algorithm courses show pseudocode, so the scale of the pruning never registers. Let the visitor race algorithms on the same maze or puzzle with every expanded node colored, and solve a small logic puzzle as SAT clauses while propagation cascades. Bust the misconception that a faster computer matters more than a better search. The aha is that a good heuristic beats brute force by orders of magnitude, for programmers and puzzle fans.",
+      "sourceHints": [
+        "Hart, Nilsson and Raphael, A Formal Basis for the Heuristic Determination of Minimum Cost Paths (1968)",
+        "Wikipedia: Dijkstra's algorithm, A* search algorithm, Dynamic programming, DPLL algorithm",
+        "Knuth, The Art of Computer Programming, Volume 4B (satisfiability)",
+        "r/algorithms and r/puzzles solver threads"
+      ]
+    },
+    {
+      "id": "studio-generative-music",
+      "name": "Generative Music Studio",
+      "kind": "wildcard",
+      "brief": "Make a studio where rules write the music: Euclidean rhythms spread beats as evenly as possible, Markov chains continue a melody, and scales keep everything consonant. The output must be worth keeping: a loop the visitor tweaks, then exports as a WAV file or a MIDI file for their own software. Web Audio synthesizes every sound, so nothing is sampled or licensed.",
+      "sourceHints": [
+        "Toussaint, The Euclidean Algorithm Generates Traditional Musical Rhythms (2005)",
+        "Standard MIDI File specification (MIDI Association)",
+        "Wikipedia: Euclidean rhythm, Algorithmic composition",
+        "r/generative and r/synthesizers threads"
+      ]
+    },
+    {
+      "id": "studio-pattern-tiling",
+      "name": "Pattern and Tiling Studio",
+      "kind": "wildcard",
+      "brief": "A workbench for repeating patterns: Truchet tiles, Islamic star patterns built from polygons in contact, and the 17 wallpaper symmetries as stamps. The visitor designs one tile and the symmetry fills the plane, then exports a seamless SVG or PNG for fabric, wallpaper or a game. Name the symmetry group on screen so the making teaches a little too.",
+      "sourceHints": [
+        "Wikipedia: Truchet tiles, Wallpaper group, Girih tiles",
+        "Kaplan, Islamic Star Patterns from Polygons in Contact (2005)",
+        "r/generative and r/geometry pattern threads",
+        "Are.na channels on pattern and ornament"
+      ]
+    },
+    {
+      "id": "studio-palette-gradient",
+      "name": "Palette and Gradient Studio",
+      "kind": "wildcard",
+      "brief": "A palette maker with a point of view: build palettes and gradients in perceptual color spaces (OKLCH, CIELAB) so steps look evenly spaced and gradients never pass through mud. The visitor locks the colors they love, generates the rest, sees them on interface and illustration mock-ups, and exports CSS variables, SVG swatches or a JSON token file. Show the contrast of every text pair as a quiet badge.",
+      "sourceHints": [
+        "Ottosson, A perceptual color space for image processing (Oklab, 2020)",
+        "CSS Color Module Level 4 (oklch, color-mix) at w3.org",
+        "Wikipedia: CIELAB color space, Color gradient",
+        "r/web_design and r/graphic_design palette threads"
+      ]
+    },
+    {
+      "id": "studio-pixel-dither-ascii",
+      "name": "Pixel, Dither and ASCII Studio",
+      "kind": "wildcard",
+      "brief": "Turn any local image into something new: pixel art in a chosen palette, Floyd-Steinberg or ordered dithering like an old screen, or ASCII and emoji mosaics. Everything happens on the visitor's device, with live sliders, a side-by-side comparison and export to PNG, SVG or plain text. Explain each dithering method beside its output in one plain sentence.",
+      "sourceHints": [
+        "Floyd and Steinberg, An Adaptive Algorithm for Spatial Greyscale (1976)",
+        "Wikipedia: Dither, Ordered dithering, ASCII art, Color quantization",
+        "r/PixelArt and r/generative threads",
+        "Lospec palette list (check each palette's licence before bundling)"
+      ]
+    },
+    {
+      "id": "studio-svg-paths",
+      "name": "SVG Path Workshop",
+      "kind": "wildcard",
+      "brief": "A small vector studio for people who hand-edit icons: drag Bezier handles and watch the path data update, simplify a noisy path with Ramer-Douglas-Peucker, round coordinates and see the byte count drop. Export clean, minimal SVG that pastes straight into code. The making is the lesson: every curve shows its control points and the command letters that draw it.",
+      "sourceHints": [
+        "SVG 2 specification, the paths chapter (w3.org)",
+        "Wikipedia: Bezier curve, De Casteljau's algorithm, Ramer-Douglas-Peucker algorithm",
+        "Pomax, A Primer on Bezier Curves (free online)",
+        "r/svg and r/webdev icon threads"
+      ]
+    },
+    {
+      "id": "studio-letterforms",
+      "name": "Letterform Workshop",
+      "kind": "wildcard",
+      "brief": "A studio for letters: build glyphs from strokes and modular parts, set them in a specimen with sample words, and export an SVG alphabet sheet. Show the rules that make a family coherent (stem width, x-height, overshoot) as live guides. No existing typeface is copied; every shape is drawn from scratch in code.",
+      "sourceHints": [
+        "Wikipedia: Typeface anatomy, Overshoot (typography), Type design",
+        "Google Fonts Knowledge (glossary of type design terms)",
+        "r/typography and r/Design threads",
+        "Are.na channels on type specimens"
+      ]
+    },
+    {
+      "id": "explore-science-data",
+      "name": "Bundled Science Data Explorer",
+      "kind": "wildcard",
+      "brief": "An explorer over public scientific data the visitor can query: periodic trends of the elements, a year of earthquakes from the USGS catalog, or confirmed exoplanets from the NASA archive. Bundle a dated snapshot, credit it, and let the visitor filter, sort and plot while the page tells the story of what the data shows. Every number carries its source and its date.",
+      "sourceHints": [
+        "USGS Earthquake Hazards Program catalog (public domain)",
+        "NASA Exoplanet Archive (credit it as the archive asks)",
+        "Wikipedia: Periodic trends, with the data sources it cites",
+        "r/dataisbeautiful and r/askscience threads"
+      ]
+    },
+    {
+      "id": "explore-history-places",
+      "name": "Bundled History and Places Explorer",
+      "kind": "wildcard",
+      "brief": "An explorer over the past and the map: historical series such as population or life expectancy, the languages of the world and their features, or how borders and place names changed. Bundle openly licensed snapshots (Our World in Data, WALS, Natural Earth), credit them, and let the visitor ask questions with filters, timelines and maps. The story is told alongside the data, never instead of it.",
+      "sourceHints": [
+        "Our World in Data datasets (CC BY)",
+        "World Atlas of Language Structures (WALS Online, CC BY)",
+        "Natural Earth public-domain map data",
+        "r/MapPorn, r/AskHistorians and r/dataisbeautiful threads"
       ]
     }
   ],

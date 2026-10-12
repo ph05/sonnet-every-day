@@ -1,27 +1,39 @@
 #!/usr/bin/env node
 // Deterministic daily assignment of one research lens (plus 3 provocation words) to each of the 8 scouts.
-//   lenses.mjs --date YYYY-MM-DD [--now ISO]
+//   lenses.mjs --date YYYY-MM-DD [--now ISO] [--purpose tool|lesson|explorer|studio|play]
 // Same date + same state/ideas history => same output. Day D's own ideas file is ignored so reruns are stable.
+// How many lenses of each kind a day gets follows the day's purpose plan (novelty.mjs mix, `purposes`): a wanted tool brings
+// useful lenses, a wanted lesson teach lenses, and humor lenses are drawn only when play is allowed. --purpose P is the manual
+// override, passed through to the plan.
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import {
-  rp, readJson, loadConfig, parseArgs, resolveNow, localParts, hashStr, mulberry32, print, die,
+  rp, readJson, loadConfig, loadTaxonomy, parseArgs, resolveNow, localParts, hashStr, mulberry32, print, die,
 } from './lib/common.mjs';
-import { mix } from './novelty.mjs';
+import { mix, PLAY } from './novelty.mjs';
+import { purposeVocabulary } from './history.mjs';
 
 export const AGENTS = ['pulse', 'cards', 'lab', 'jester', 'architect', 'artisan', 'engineer', 'critic'];
-const KINDS = ['interest', 'current', 'humor', 'wildcard', 'craft'];
-const MAIN_KINDS = ['interest', 'current', 'humor', 'wildcard'];
+export const KINDS = ['interest', 'current', 'humor', 'wildcard', 'craft', 'useful', 'teach'];
+// The kinds loadLensPool needs at least 3 lenses of (validate.mjs repo checks the same minimum before a commit).
+export const MAIN_KINDS = ['interest', 'current', 'humor', 'wildcard', 'useful', 'teach'];
 const SLOT_TO_KIND = { interest: 'interest', currentEvents: 'current', humor: 'humor', wildcard: 'wildcard' };
-// Each scout's natural home kind; the other four agents take whatever extra lenses the plan produces.
-const AFFINITY = { pulse: 'current', cards: 'interest', lab: 'wildcard', jester: 'humor' };
-// Max lenses of one kind per day, and the relative appetite for extras beyond the guaranteed one per main kind.
-const CAP = { interest: 3, current: 2, humor: 2, wildcard: 3, craft: 1 };
-const EXTRA_WEIGHT = { interest: 3, current: 2, humor: 2, wildcard: 2, craft: 1.5 };
+// Each scout's natural home kind; the other two agents take whatever extra lenses the plan produces. jester's home (humor) is
+// empty on days when play is not allowed, and jester then takes an extra lens too.
+const AFFINITY = { pulse: 'current', cards: 'interest', lab: 'wildcard', jester: 'humor', engineer: 'useful', architect: 'teach' };
+// Max lenses of one kind per day.
+const CAP = { interest: 2, current: 2, humor: 2, wildcard: 3, craft: 1, useful: 3, teach: 3 };
+// Lenses a wanted purpose asks for (play only through an override: it is never wanted on its own).
+const DEMAND = {
+  tool: { useful: 2 }, lesson: { teach: 2 }, explorer: { teach: 1, wildcard: 2 }, studio: { wildcard: 2 }, play: { humor: 1, interest: 2 },
+};
+// Relative appetite for the slots left after the plan's lenses and the owed ones (humor 0 when play is not allowed).
+const EXTRA_WEIGHT = { useful: 2.5, teach: 2.5, wildcard: 2, craft: 2, interest: 1.5, current: 1.5, humor: 1.5 };
 const NO_REPEAT_DAYS = 3;
 const USAGE_WINDOW_FILES = 40;
 const PROVOCATIONS_PER_AGENT = 3;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const DEFAULT_PURPOSES = ['tool', 'lesson', 'explorer', 'studio', 'play'];
 
 export function loadLensPool() {
   const file = rp('ops', 'lenses.json');
@@ -74,11 +86,51 @@ function readHistory(date) {
     .filter(Boolean);
 }
 
-function owedKinds(date) {
+/** The purpose vocabulary of the taxonomy (canonical order), or the design's five purposes when it cannot be read. */
+function vocabulary() {
   try {
-    return mix({ date }).owed.map((s) => SLOT_TO_KIND[s]).filter(Boolean);
+    return purposeVocabulary(loadTaxonomy());
   } catch {
-    return [];
+    return null;
+  }
+}
+
+/**
+ * The plan used when novelty mix cannot run (an unreadable history): the first wantedCount non-play purposes, nothing avoided,
+ * play allowed; or the override. counts and lastShipped are unknown (null).
+ */
+export function neutralPlan(purpose = null) {
+  let wantedCount = 2;
+  let bonus = 5;
+  let windowDays = 7;
+  try {
+    const pc = loadConfig().mix?.purposes ?? {};
+    if (Number.isInteger(pc.wantedCount) && pc.wantedCount > 0) wantedCount = pc.wantedCount;
+    if (Number.isFinite(pc.wantedBonus) && pc.wantedBonus >= 0) bonus = pc.wantedBonus;
+    if (Number.isInteger(pc.windowDays) && pc.windowDays > 0) windowDays = pc.windowDays;
+  } catch { /* defaults */ }
+  const vocab = vocabulary() ?? DEFAULT_PURPOSES;
+  return {
+    windowDays,
+    counts: null,
+    lastShipped: null,
+    wanted: purpose ? [purpose] : vocab.filter((p) => p !== PLAY).slice(0, wantedCount),
+    avoid: [],
+    playAllowed: true,
+    playBlockedUntil: null,
+    bonus,
+    override: purpose ?? null,
+    legacyAssumed: [],
+  };
+}
+
+/** The day's purpose plan and owed lens kinds from novelty mix; the neutral plan and the error when mix cannot run. */
+function planFor(date, purpose) {
+  try {
+    const m = mix({ date, purpose: purpose ?? undefined });
+    return { plan: m.purposes ?? null, owed: m.owed.map((s) => SLOT_TO_KIND[s]).filter(Boolean), planError: null };
+  } catch (err) {
+    return { plan: neutralPlan(purpose), owed: [], planError: err.message };
   }
 }
 
@@ -93,43 +145,90 @@ function pickWeighted(rng, items, weight) {
   return items.length - 1;
 }
 
+const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+
 /**
- * @param {{date:string, owedKinds?:string[]}} opts  `owedKinds` overrides the novelty-derived owed slots (tests).
+ * Lenses each kind needs today before any extra: one of each main kind (humor only when play is allowed), raised by what the
+ * wanted purposes ask for (DEMAND, at most CAP). Above 8 (only possible with more than two wanted purposes) the kinds no wanted
+ * purpose asked for are trimmed first, last kinds first, never below 1 for a main kind other than humor.
  */
-export function assignLenses({ date, owedKinds: owedOverride } = {}) {
+export function lensNeed(plan) {
+  const playAllowed = plan ? plan.playAllowed !== false : true;
+  const need = { interest: 1, current: 1, humor: playAllowed ? 1 : 0, wildcard: 1, craft: 0, useful: 1, teach: 1 };
+  const demanded = new Set();
+  for (const p of Array.isArray(plan?.wanted) ? plan.wanted : []) {
+    for (const [k, n] of Object.entries(DEMAND[p] ?? {})) {
+      need[k] = Math.max(need[k], Math.min(n, CAP[k]));
+      demanded.add(k);
+    }
+  }
+  if (!playAllowed) need.humor = 0;
+  const floor = (k) => (MAIN_KINDS.includes(k) && k !== 'humor' ? 1 : 0);
+  let total = sum(need);
+  for (const anyKind of [false, true]) {
+    for (const k of [...KINDS].reverse()) {
+      while (total > AGENTS.length && need[k] > floor(k) && (anyKind || !demanded.has(k))) {
+        need[k]--;
+        total--;
+      }
+    }
+  }
+  return need;
+}
+
+/**
+ * @param {{date:string, purpose?:string, owedKinds?:string[], plan?:object|null}} opts
+ *   `purpose` is the manual override (passed to novelty mix). `owedKinds` and `plan` replace the novelty-derived values (tests).
+ */
+export function assignLenses({ date, purpose, owedKinds: owedOverride, plan: planOverride } = {}) {
   if (!DATE_RE.test(String(date))) throw new Error(`bad date: ${date}`);
+  if (purpose !== undefined && purpose !== null) {
+    const vocab = vocabulary();
+    if (!vocab?.includes(purpose)) throw new Error(`unknown purpose ${JSON.stringify(purpose)}${vocab ? ` (one of ${vocab.join(', ')})` : ': the taxonomy has no purposes'}`);
+  }
   const { lenses, provocationWords } = loadLensPool();
   const past = readHistory(date);
-  const owed = owedOverride ?? owedKinds(date);
+  const fromMix = owedOverride === undefined || planOverride === undefined ? planFor(date, purpose) : null;
+  const plan = planOverride !== undefined ? planOverride : fromMix.plan;
+  const owed = owedOverride ?? fromMix.owed;
+  const planError = planOverride !== undefined ? null : fromMix.planError;
+  const playAllowed = plan ? plan.playAllowed !== false : true;
+  const need = lensNeed(plan);
 
   const uses = new Map();
   for (const day of past) for (const id of day.ids) uses.set(id, (uses.get(id) ?? 0) + 1);
 
-  // Relax the no-repeat window (oldest day first) only if the remaining pool cannot satisfy the plan.
+  // Relax the no-repeat window (oldest day first) only if the remaining pool cannot satisfy the plan: every kind needs as many
+  // fresh lenses as `need` asks for (not merely one), and the kinds that may be drawn must hold 8 (humor is left out when play
+  // is not allowed).
   let window = NO_REPEAT_DAYS;
   let avail;
+  const drawable = KINDS.filter((k) => k !== 'humor' || playAllowed);
   for (; window >= 0; window--) {
     const excluded = new Set(past.slice(0, window).flatMap((d) => d.ids));
     avail = Object.fromEntries(KINDS.map((k) => [k, lenses.filter((l) => l.kind === k && !excluded.has(l.id))]));
-    const capacity = KINDS.reduce((s, k) => s + Math.min(CAP[k], avail[k].length), 0);
-    if (MAIN_KINDS.every((k) => avail[k].length >= 1) && capacity >= AGENTS.length) break;
+    const capacity = drawable.reduce((s, k) => s + Math.min(CAP[k], avail[k].length), 0);
+    if (KINDS.every((k) => avail[k].length >= need[k]) && capacity >= AGENTS.length) break;
   }
   if (window < 0) throw new Error('lens pool cannot satisfy the daily constraints');
   const relaxedDays = NO_REPEAT_DAYS - window;
 
   const rng = mulberry32(hashStr(date));
-  const limit = (k) => Math.min(CAP[k], avail[k].length);
-  const counts = Object.fromEntries(KINDS.map((k) => [k, MAIN_KINDS.includes(k) ? 1 : 0]));
-  let total = MAIN_KINDS.length;
+  const limit = (k) => (k === 'humor' && !playAllowed ? 0 : Math.min(CAP[k], avail[k].length));
+  const weight = (k) => (k === 'humor' && !playAllowed ? 0 : EXTRA_WEIGHT[k]);
+  const counts = { ...need };
+  let total = sum(counts);
+  // owed slots are best effort after the purpose demand
   for (const k of owed) {
-    if (total < AGENTS.length && counts[k] < limit(k)) {
+    if (total < AGENTS.length && counts[k] < limit(k) && weight(k) > 0) {
       counts[k]++;
       total++;
     }
   }
   while (total < AGENTS.length) {
-    const open = KINDS.filter((k) => counts[k] < limit(k));
-    const k = open[pickWeighted(rng, open, (x) => EXTRA_WEIGHT[x])];
+    const open = KINDS.filter((k) => counts[k] < limit(k) && weight(k) > 0);
+    if (!open.length) throw new Error('lens pool cannot fill the day');
+    const k = open[pickWeighted(rng, open, weight)];
     counts[k]++;
     total++;
   }
@@ -146,7 +245,10 @@ export function assignLenses({ date, owedKinds: owedOverride } = {}) {
   }
 
   const assignment = {};
-  for (const [agent, kind] of Object.entries(AFFINITY)) assignment[agent] = chosen[kind].shift();
+  for (const [agent, kind] of Object.entries(AFFINITY)) {
+    const lens = chosen[kind].shift();
+    if (lens) assignment[agent] = lens;
+  }
   const leftovers = KINDS.flatMap((k) => chosen[k]);
   for (let i = leftovers.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
@@ -157,8 +259,8 @@ export function assignLenses({ date, owedKinds: owedOverride } = {}) {
   // 24 distinct words (Fisher-Yates prefix) from their own stream so lens choice never shifts the words.
   const wordRng = mulberry32(hashStr(`${date}|provocation`));
   const words = [...provocationWords];
-  const need = AGENTS.length * PROVOCATIONS_PER_AGENT;
-  for (let i = 0; i < need; i++) {
+  const needWords = AGENTS.length * PROVOCATIONS_PER_AGENT;
+  for (let i = 0; i < needWords; i++) {
     const j = i + Math.floor(wordRng() * (words.length - i));
     [words[i], words[j]] = [words[j], words[i]];
   }
@@ -171,7 +273,9 @@ export function assignLenses({ date, owedKinds: owedOverride } = {}) {
       provocation: words.slice(i * PROVOCATIONS_PER_AGENT, (i + 1) * PROVOCATIONS_PER_AGENT),
     };
   });
-  return { date, agents, owedKinds: owed, relaxedDays };
+  const out = { date, agents, owedKinds: owed, relaxedDays, purposes: plan };
+  if (planError) out.planError = planError;
+  return out;
 }
 
 function main() {
@@ -180,7 +284,12 @@ function main() {
     const date = flags.date && flags.date !== true
       ? flags.date
       : localParts(resolveNow(flags), loadConfig().timezone).date;
-    print({ ok: true, ...assignLenses({ date }) });
+    let purpose;
+    if (flags.purpose !== undefined) {
+      if (flags.purpose === true || flags.purpose === '') die('usage: lenses.mjs --date YYYY-MM-DD [--purpose tool|lesson|explorer|studio|play]', 2);
+      purpose = String(flags.purpose);
+    }
+    print({ ok: true, ...assignLenses({ date, purpose }) });
   } catch (err) {
     die(err.message, 1);
   }

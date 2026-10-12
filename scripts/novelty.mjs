@@ -1,17 +1,27 @@
 #!/usr/bin/env node
-// Novelty gate and recent-mix report for ideation.
+// Novelty gate, recent-mix report and purpose plan for ideation.
 //   novelty.mjs check --candidates <file.json> [--date D] [--now ISO]
-//   novelty.mjs mix [--date D] [--now ISO]
+//   novelty.mjs mix [--date D] [--now ISO] [--purpose tool|lesson|explorer|studio|play]
 // Only history entries with countsForNovelty:true that are dated before the target date count.
+// mix also prints the purpose plan (`purposes`: what to make today, what to avoid, whether play is allowed; see purposePlan);
+// --purpose P is the manual override (wanted [P], nothing avoided). check takes no --purpose: a purpose is never a novelty conflict.
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import {
   readJson, loadConfig, loadTaxonomy, parseArgs, resolveNow, localParts, addDays, print, die,
 } from './lib/common.mjs';
-import { loadHistory } from './history.mjs';
+import { loadHistory, purposeOf, purposeVocabulary } from './history.mjs';
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SLOT_ORDER = ['interest', 'currentEvents', 'humor', 'wildcard'];
+/** The reserved purpose the plan special-cases: never wanted, capped and cooled down on its own (validate.mjs repo requires it). */
+export const PLAY = 'play';
+/** Used when a config.mix.purposes value is missing or damaged (validate.mjs repo reports the damage). */
+const PURPOSE_DEFAULTS = {
+  windowDays: 7, cooldownDays: 2, playCooldownDays: 3, maxPlayPer7Days: 2, wantedCount: 2, wantedBonus: 5, starvedDays: 6, legacyDefault: PLAY,
+};
+/** Fewer allowed purposes than this and the oldest cooldowns are lifted (never the play block). */
+const MIN_ALLOWED_PURPOSES = 3;
 
 export function daysBetween(later, earlier) {
   return Math.round((Date.parse(`${later}T00:00:00Z`) - Date.parse(`${earlier}T00:00:00Z`)) / 86400000);
@@ -71,7 +81,17 @@ function pastEntries(history, date) {
   return history.entries.filter((e) => e.countsForNovelty === true && e.date < date);
 }
 
-function validateFingerprint(fp, taxonomy) {
+/** config.pageContract.requiredFrom when it is a date, else null (null: the page contract is not enforced yet). */
+function requiredFromOf(cfg) {
+  const r = cfg?.pageContract?.requiredFrom;
+  return typeof r === 'string' && DATE_RE.test(r) ? r : null;
+}
+
+/**
+ * A present purpose outside the vocabulary is a problem at any date; a missing one only from `requiredFrom` on.
+ * Without a vocabulary in the taxonomy the purpose is not checked.
+ */
+function validateFingerprint(fp, taxonomy, { day = null, requiredFrom = null } = {}) {
   const problems = [];
   if (!fp || typeof fp !== 'object') return ['fingerprint missing'];
   if (!Object.hasOwn(taxonomy.categories, fp.category)) problems.push(`unknown category ${JSON.stringify(fp.category)}`);
@@ -80,6 +100,14 @@ function validateFingerprint(fp, taxonomy) {
     problems.push('tone must be a non-empty subset of the taxonomy tones');
   }
   if (!SLOT_ORDER.includes(fp.slot)) problems.push(`unknown slot ${JSON.stringify(fp.slot)}`);
+  const vocab = purposeVocabulary(taxonomy);
+  if (vocab) {
+    if (fp.purpose !== undefined && fp.purpose !== null) {
+      if (!vocab.includes(fp.purpose)) problems.push(`unknown purpose ${JSON.stringify(fp.purpose)} (one of ${vocab.join(', ')})`);
+    } else if (requiredFrom && day && day >= requiredFrom) {
+      problems.push(`purpose missing (required from ${requiredFrom}; one of ${vocab.join(', ')})`);
+    }
+  }
   return problems;
 }
 
@@ -101,13 +129,14 @@ export function checkCandidates(candidates, { date } = {}) {
   const past = pastEntries(loadHistory(), day);
   const ago = (e) => daysBetween(day, e.date);
   const conflict = (kind, e, detail) => ({ kind, date: e?.date ?? null, slug: e?.slug ?? null, detail });
+  const requiredFrom = requiredFromOf(cfg);
 
   const results = candidates.map((cand, idx) => {
     const id = cand?.id ?? `#${idx}`;
     const fp = cand?.fingerprint;
     const conflicts = [];
 
-    const bad = validateFingerprint(fp, taxonomy);
+    const bad = validateFingerprint(fp, taxonomy, { day, requiredFrom });
     if (bad.length) conflicts.push(conflict('invalid-fingerprint', null, bad.join('; ')));
     if (!cand?.title || typeof cand.title !== 'string') conflicts.push(conflict('invalid-fingerprint', null, 'title missing'));
 
@@ -192,6 +221,111 @@ export function checkCandidates(candidates, { date } = {}) {
   return { ok: true, results };
 }
 
+/** Positive integer settings from config.mix.purposes, each falling back to its default when missing or damaged. */
+function purposeSettings(raw, vocab) {
+  const s = {};
+  for (const k of ['windowDays', 'cooldownDays', 'playCooldownDays', 'maxPlayPer7Days', 'wantedCount', 'starvedDays']) {
+    s[k] = Number.isInteger(raw[k]) && raw[k] > 0 ? raw[k] : PURPOSE_DEFAULTS[k];
+  }
+  s.wantedBonus = Number.isFinite(raw.wantedBonus) && raw.wantedBonus >= 0 ? raw.wantedBonus : PURPOSE_DEFAULTS.wantedBonus;
+  s.legacyDefault = vocab.includes(raw.legacyDefault) ? raw.legacyDefault : PLAY;
+  return s;
+}
+
+/**
+ * Today's purpose plan (DESIGN section 3), a pure function of the history: which purposes the scouts should lead with
+ * (`wanted`), which to avoid, and whether play is allowed. Entries count when countsForNovelty is true and they are dated
+ * before `date`; an entry without a known purpose counts as config.mix.purposes.legacyDefault (listed in `legacyAssumed`).
+ * `purpose` is the manual override: wanted [purpose], nothing avoided, play allowed. Returns null (no plan) when config.mix.purposes
+ * or taxonomy.purposes (with play) is missing; then an override throws, as does an unknown override.
+ * @param {{date?:string, purpose?:string|null, history?:{entries:object[], startDate?:string}, config?:object, taxonomy?:object}} opts
+ *   `history`, `config` and `taxonomy` default to the files of the repo.
+ */
+export function purposePlan({ date, purpose, history, config, taxonomy } = {}) {
+  const day = targetDate(date);
+  const cfg = config ?? loadConfig();
+  const vocab = purposeVocabulary(taxonomy ?? loadTaxonomy());
+  const raw = cfg?.mix?.purposes;
+  const override = purpose === undefined || purpose === null ? null : String(purpose);
+  if (override !== null && !vocab?.includes(override)) {
+    throw new Error(`unknown purpose ${JSON.stringify(override)}${vocab ? ` (one of ${vocab.join(', ')})` : ': the taxonomy has no purposes'}`);
+  }
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw) || !vocab?.includes(PLAY)) {
+    if (override !== null) throw new Error('no purpose plan: config.mix.purposes or taxonomy.purposes is missing, so a purpose override cannot apply');
+    return null;
+  }
+  const s = purposeSettings(raw, vocab);
+  const h = history ?? loadHistory();
+  const ago = (d) => daysBetween(day, d);
+
+  const counts = Object.fromEntries(vocab.map((p) => [p, 0]));
+  const lastShipped = Object.fromEntries(vocab.map((p) => [p, null]));
+  const legacyAssumed = [];
+  const plays = [];
+  for (const e of pastEntries(h, day)) {
+    const p = purposeOf(e, vocab, s.legacyDefault);
+    if (!vocab.includes(e.fingerprint?.purpose)) legacyAssumed.push(e.date);
+    // the six days before `day`: with `day` itself, the 7-day window ending today
+    if (ago(e.date) <= s.windowDays - 1) counts[p]++;
+    if (!lastShipped[p] || e.date > lastShipped[p]) lastShipped[p] = e.date;
+    if (p === PLAY) plays.push(e.date);
+  }
+  legacyAssumed.sort();
+  plays.sort().reverse();
+  const start = typeof h.startDate === 'string' && DATE_RE.test(h.startDate) ? h.startDate : null;
+  const gap = (p) => (lastShipped[p] ? ago(lastShipped[p]) : start ? Math.max(0, ago(start)) : Infinity);
+
+  const playAllowed = !plays.some((d) => ago(d) <= s.playCooldownDays - 1) && counts[PLAY] < s.maxPlayPer7Days;
+  // the first date on which play would be allowed if nothing new ships
+  let playBlockedUntil = null;
+  if (!playAllowed) {
+    const bounds = [addDays(plays[0], s.playCooldownDays)];
+    if (plays.length >= s.maxPlayPer7Days) bounds.push(addDays(plays[s.maxPlayPer7Days - 1], s.windowDays));
+    playBlockedUntil = bounds.sort().at(-1);
+  }
+  const plan = {
+    windowDays: s.windowDays, counts, lastShipped, wanted: [], avoid: [], playAllowed, playBlockedUntil, bonus: s.wantedBonus, override: null, legacyAssumed,
+  };
+  if (override !== null) return { ...plan, wanted: [override], avoid: [], playAllowed: true, playBlockedUntil: null, override };
+
+  const canonical = (a, b) => vocab.indexOf(a) - vocab.indexOf(b);
+  const cooling = vocab.filter((p) => lastShipped[p] && ago(lastShipped[p]) <= s.cooldownDays);
+  const avoid = new Set(cooling);
+  if (!playAllowed) avoid.add(PLAY);
+  // fewer than three purposes left: lift the oldest cooldowns first, never the play block
+  const liftable = cooling
+    .filter((p) => p !== PLAY || playAllowed)
+    .sort((a, b) => (lastShipped[a] < lastShipped[b] ? -1 : lastShipped[a] > lastShipped[b] ? 1 : canonical(a, b)));
+  while (vocab.length - avoid.size < MIN_ALLOWED_PURPOSES && liftable.length) avoid.delete(liftable.shift());
+
+  const candidates = vocab.filter((p) => p !== PLAY && !avoid.has(p));
+  // a purpose idle for starvedDays with nothing in the window becomes the only wanted one, so whichever wanted purpose wins,
+  // every purpose ships within a week
+  const starved = candidates.filter((p) => counts[p] === 0 && gap(p) >= s.starvedDays).sort((a, b) => gap(b) - gap(a) || canonical(a, b));
+  const ranked = starved.length ? starved : [...candidates].sort((a, b) => counts[a] - counts[b] || gap(b) - gap(a) || canonical(a, b));
+  return { ...plan, wanted: ranked.slice(0, s.wantedCount), avoid: vocab.filter((p) => avoid.has(p)) };
+}
+
+const PURPOSE_PHRASE = { tool: 'a tool', lesson: 'a lesson', explorer: 'an explorer', studio: 'a studio', play: 'a play idea (a game, toy or satire)' };
+const phrase = (p) => PURPOSE_PHRASE[p] ?? `a ${p}`;
+const listWith = (items, word) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} ${word} ${items.at(-1)}`);
+
+/** The purpose sentence of the mix summary (always pieces[0]). */
+function purposeSentence(plan, cfg) {
+  const counts = `Purpose mix this week: ${Object.entries(plan.counts).map(([p, n]) => `${p} ${n}`).join(', ')}.`;
+  if (plan.override) return `${counts} Manual override: today we want ${phrase(plan.override)}. Lead with it; no purpose is avoided.`;
+  const parts = [];
+  if (plan.wanted.length) parts.push(`Today we want ${listWith(plan.wanted.map(phrase), 'or')} (lead with ${plan.wanted.length > 1 ? 'one' : 'it'})`);
+  const cooling = plan.avoid.filter((p) => p !== PLAY || plan.playAllowed);
+  if (cooling.length) {
+    const days = Number.isInteger(cfg.mix?.purposes?.cooldownDays) && cfg.mix.purposes.cooldownDays > 0 ? cfg.mix.purposes.cooldownDays : PURPOSE_DEFAULTS.cooldownDays;
+    parts.push(`${parts.length ? 'skip' : 'Skip'} ${listWith(cooling, 'and')} (shipped in the last ${days} days)`);
+  }
+  if (!plan.playAllowed) parts.push(`${parts.length ? 'play' : 'Play'} is paused until ${plan.playBlockedUntil}`);
+  else if (!plan.avoid.includes(PLAY)) parts.push(`${parts.length ? 'play' : 'Play'} is allowed but must win on merit`);
+  return parts.length ? `${counts} ${parts.join('; ')}.` : counts;
+}
+
 function slotNote(cfg, slot) {
   const note = cfg.mix?.targets?.[slot]?.note;
   return note ? `${slot} (${note})` : slot;
@@ -201,13 +335,19 @@ function wordCount(s) {
   return s.split(/\s+/).filter(Boolean).length;
 }
 
-/** Recent-mix report: what was built lately, what is owed, what to avoid. `summary` is pasted into scout prompts. */
-export function mix({ date } = {}) {
+/**
+ * Recent-mix report: what was built lately, what is owed, what to avoid, and the purpose plan (`purposes`, null without
+ * config.mix.purposes). `summary` is pasted into scout prompts and starts with the purpose sentence.
+ * @param {{date?:string, purpose?:string}} opts  `purpose` is the manual override of the plan (see purposePlan).
+ */
+export function mix({ date, purpose } = {}) {
   const day = targetDate(date);
   const cfg = loadConfig();
   const nov = cfg.novelty;
   const windowDays = cfg.mix.windowDays;
-  const past = pastEntries(loadHistory(), day);
+  const history = loadHistory();
+  const purposes = purposePlan({ date: day, purpose, history, config: cfg });
+  const past = pastEntries(history, day);
   const ago = (e) => daysBetween(day, e.date);
   const inWindow = past.filter((e) => ago(e) <= windowDays);
 
@@ -256,6 +396,7 @@ export function mix({ date } = {}) {
     .map(([c, n]) => `${c} x${n}`);
 
   const pieces = [];
+  if (purposes) pieces.push({ must: true, text: purposeSentence(purposes, cfg) });
   pieces.push({
     must: true,
     text: inWindow.length
@@ -278,16 +419,17 @@ export function mix({ date } = {}) {
       : `No political ideas today (cap of ${cfg.mix.politicsMaxPer14Days} per 14 days reached on ${politicalRecent[0]?.date ?? 'a recent day'}).`,
   });
 
-  // Drop optional sentences, then shorten the list of owed slot notes, until the paragraph is under 120 words.
+  // Under 150 words: drop optional sentences at 140, then shorten the list of owed slot notes, then cut hard at 147 words
+  // (the purpose sentence comes first, so the cut never reaches it).
   let kept = pieces;
   const render = (ps) => ps.map((p) => p.text).join(' ');
-  if (wordCount(render(kept)) >= 110) kept = kept.filter((p) => p.must);
+  if (wordCount(render(kept)) >= 140) kept = kept.filter((p) => p.must);
   let summary = render(kept);
-  if (wordCount(summary) >= 110 && owed.length) {
+  if (wordCount(summary) >= 140 && owed.length) {
     summary = render(kept.map((p) => (p.text.startsWith('Owed this week') ? { text: `Owed this week, so at least one idea each: ${owed.join(', ')}.` } : p)));
   }
-  while (wordCount(summary) >= 118) {
-    summary = summary.split(/\s+/).slice(0, 117).join(' ');
+  while (wordCount(summary) >= 148) {
+    summary = summary.split(/\s+/).slice(0, 147).join(' ');
   }
 
   return {
@@ -299,6 +441,7 @@ export function mix({ date } = {}) {
     avoidCategories,
     avoidMechanics,
     politicsAllowed,
+    purposes,
     summary,
   };
 }
@@ -317,7 +460,12 @@ function main() {
       if (candidates && !Array.isArray(candidates) && Array.isArray(candidates.candidates)) candidates = candidates.candidates;
       print(checkCandidates(candidates, { date }));
     } else if (cmd === 'mix') {
-      print({ ok: true, ...mix({ date }) });
+      let purpose;
+      if (flags.purpose !== undefined) {
+        if (flags.purpose === true || flags.purpose === '') die('usage: novelty.mjs mix [--date D] [--purpose tool|lesson|explorer|studio|play]', 2);
+        purpose = String(flags.purpose);
+      }
+      print({ ok: true, ...mix({ date, purpose }) });
     } else {
       die('usage: novelty.mjs check|mix (see ops/CONTRACT.md 6.3)', 2);
     }

@@ -47,7 +47,8 @@
           "share-hash"
         ],
         "slot": "interest",
-        "political": false
+        "political": false,
+        "purpose": "play"
       },
       "path": "d/2026-10-10-jokers-in-phase/",
       "publishedAt": "2026-10-10T11:33:11.181Z",
@@ -100,7 +101,8 @@
           "nodal-precession"
         ],
         "slot": "wildcard",
-        "political": false
+        "political": false,
+        "purpose": "play"
       },
       "path": "d/2026-10-11-orbital-knitwear/",
       "publishedAt": "2026-10-11T13:10:08.496Z",
@@ -155,7 +157,8 @@
           "path-planning"
         ],
         "slot": "currentEvents",
-        "political": false
+        "political": false,
+        "purpose": "play"
       },
       "path": "d/2026-10-12-between-periods/",
       "publishedAt": "2026-10-12T12:45:28.805Z",

@@ -1,4 +1,5 @@
-// Tests for scripts/novelty.mjs: every conflict kind, cooldown edges, politics cap, similarity maths, mix summary.
+// Tests for scripts/novelty.mjs: every conflict kind, cooldown edges, politics cap, similarity maths, mix summary, purpose checks.
+// The purpose plan itself (purposePlan) is tested in tests/purpose-plan.test.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -36,11 +37,11 @@ function withHistory(entries, fn, opts) {
   }
 }
 
-/** A candidate that conflicts with nothing unless overridden. */
+/** A candidate that conflicts with nothing unless overridden (purpose tool: valid at every date, whatever requiredFrom says). */
 function cand(over = {}, fpOver = {}) {
   return {
     id: 'c1', title: 'Zebra Quartz Harbor Lens',
-    fingerprint: fingerprint({ category: 'music-audio', mechanic: 'instrument', tags: ['zzz-one', 'zzz-two', 'zzz-three'], keywords: ['zzz-four', 'zzz-five', 'zzz-six'], slot: 'wildcard', ...fpOver }),
+    fingerprint: fingerprint({ category: 'music-audio', mechanic: 'instrument', tags: ['zzz-one', 'zzz-two', 'zzz-three'], keywords: ['zzz-four', 'zzz-five', 'zzz-six'], slot: 'wildcard', purpose: 'tool', ...fpOver }),
     ...over,
   };
 }
@@ -259,6 +260,66 @@ test('invalid fingerprints are reported instead of crashing', () => {
   });
 });
 
+test('purpose: a present purpose outside the vocabulary is invalid at any date', () => {
+  for (const requiredFrom of [null, '2026-12-01', '2026-01-01']) {
+    withHistory([], () => {
+      const res = check([cand({ id: 'bad' }, { purpose: 'game' }), cand({ id: 'empty' }, { purpose: '' }), cand({ id: 'case' }, { purpose: 'Tool' }), cand({ id: 'good' }, { purpose: 'lesson' })]);
+      assert.deepEqual(res.results.map((r) => r.ok), [false, false, false, true], `requiredFrom ${requiredFrom}`);
+      assert.deepEqual(kinds(res, 0), ['invalid-fingerprint']);
+      assert.match(res.results[0].conflicts[0].detail, /unknown purpose "game" \(one of tool, lesson, explorer, studio, play\)/);
+    }, { config: (c) => { c.pageContract.requiredFrom = requiredFrom; return c; } });
+  }
+});
+
+test('purpose: a missing purpose is invalid only from pageContract.requiredFrom on', () => {
+  const missing = () => cand({ id: 'm' }, { purpose: undefined });
+  const nullish = () => cand({ id: 'n' }, { purpose: null });
+  // requiredFrom null (the default until the lead arms the contract): nothing is required
+  withHistory([], () => {
+    assert.deepEqual(check([missing(), nullish()]).results.map((r) => r.ok), [true, true]);
+  }, { config: (c) => { c.pageContract.requiredFrom = null; return c; } });
+  // the day before requiredFrom: still not required; on and after it: invalid-fingerprint
+  withHistory([], () => {
+    assert.deepEqual(check([missing()]).results[0].conflicts, []);
+  }, { config: (c) => { c.pageContract.requiredFrom = dayBefore(-1); return c; } });
+  for (const from of [TODAY, dayBefore(30)]) {
+    withHistory([], () => {
+      const res = check([missing(), nullish(), cand()]);
+      assert.deepEqual(res.results.map((r) => r.ok), [false, false, true], from);
+      assert.deepEqual(kinds(res, 0), ['invalid-fingerprint']);
+      assert.match(res.results[0].conflicts[0].detail, new RegExp(`purpose missing \\(required from ${from}`));
+    }, { config: (c) => { c.pageContract.requiredFrom = from; return c; } });
+  }
+  // a config without pageContract (tests/helpers/test-config.json) requires nothing; a damaged requiredFrom is ignored
+  withHistory([], () => {
+    assert.equal(check([missing()]).results[0].ok, true);
+  }, { config: (c) => { delete c.pageContract; return c; } });
+  withHistory([], () => {
+    assert.equal(check([missing()]).results[0].ok, true);
+  }, { config: (c) => { c.pageContract.requiredFrom = 'tomorrow'; return c; } });
+});
+
+test('purpose: never a novelty conflict, even when the plan avoids it', () => {
+  // three play days in the window: play is paused, yet a play candidate passes the novelty check (ideate and select handle avoidance)
+  const plays = [1, 2, 3].map((d) => entry(d, { fp: { category: ['science-sim', 'math-puzzle', 'data-viz'][d - 1], mechanic: ['simulator', 'puzzle', 'visualizer'][d - 1], purpose: 'play' } }));
+  withHistory(plays, () => {
+    assert.deepEqual(mix({ date: TODAY }).purposes.avoid, ['play']);
+    const res = check([cand({ id: 'p' }, { purpose: 'play' }), cand({ id: 't' })]);
+    assert.deepEqual(res.results.map((r) => [r.id, r.ok, r.conflicts.length]), [['p', true, 0], ['t', true, 0]]);
+    assert.equal(res.results[0].score, res.results[1].score, 'the purpose does not change the score');
+  });
+});
+
+test('purpose: a taxonomy without purposes does not check the purpose at all', () => {
+  withHistory([], (box) => {
+    const tax = box.readJson('ops/taxonomy.json');
+    delete tax.purposes;
+    box.write('ops/taxonomy.json', tax);
+    assert.equal(check([cand({}, { purpose: 'anything' })]).results[0].ok, true);
+    assert.equal(check([cand({}, { purpose: undefined })]).results[0].ok, true);
+  }, { config: (c) => { c.pageContract.requiredFrom = '2026-01-01'; return c; } });
+});
+
 test('results keep candidate order and ids; candidates must be an array', () => {
   withHistory([], () => {
     const res = check([cand({ id: 'x' }), cand({ id: 'y' }), { title: 'no id', fingerprint: cand().fingerprint }]);
@@ -286,19 +347,24 @@ test('date defaults to today in the configured timezone (SED_NOW)', () => {
 
 const words = (s) => s.split(/\s+/).filter(Boolean).length;
 
-test('mix with an empty history owes every slot and allows politics', () => {
+test('mix with an empty history owes every slot with a weekly minimum and allows politics', () => {
   withHistory([], () => {
     const m = mix({ date: TODAY });
-    assert.deepEqual(m.owed.sort(), ['currentEvents', 'humor', 'interest', 'wildcard']);
+    // humor has minPer7Days 0: humor lenses are drawn only on days when play is allowed (config.mix.purposes)
+    assert.deepEqual(m.owed.sort(), ['currentEvents', 'interest', 'wildcard']);
     assert.deepEqual(m.categoryCounts, {});
     assert.deepEqual(m.avoidCategories, []);
     assert.deepEqual(m.avoidMechanics, []);
     assert.equal(m.politicsAllowed, true);
     assert.equal(m.window.days, 14);
     assert.equal(m.window.builds, 0);
-    assert.ok(words(m.summary) < 120);
+    assert.ok(words(m.summary) < 150);
+    assert.ok(m.summary.startsWith('Purpose mix'), m.summary);
+    assert.match(m.summary, /^Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 0\. Today we want a tool or a lesson \(lead with one\); play is allowed but must win on merit\. /);
     assert.match(m.summary, /wide open/);
     assert.match(m.summary, /poker/i, 'owed interest slot mentions its note');
+    assert.deepEqual(m.purposes.wanted, ['tool', 'lesson']);
+    assert.equal(m.purposes.playAllowed, true);
   });
 });
 
@@ -316,17 +382,32 @@ test('mix reports counts, owed slots, avoid lists and politics', () => {
     const m = mix({ date: TODAY });
     assert.deepEqual(m.categoryCounts, { 'cards-odds': 2, 'hockey-sports': 1, 'humor-satire': 1, 'news-politics': 1 });
     assert.deepEqual(m.slotCounts, { interest: 2, currentEvents: 2, humor: 1, wildcard: 0 });
-    assert.deepEqual(m.owed, ['wildcard', 'humor'].sort((a, b) => (a === 'wildcard' ? -1 : 1) - (b === 'wildcard' ? -1 : 1)), 'least recently used first: wildcard 20 days, humor 9 days');
+    assert.deepEqual(m.owed, ['wildcard'], 'humor has no weekly minimum any more');
     assert.deepEqual(m.owedDetail.map((o) => o.slot), m.owed);
     assert.equal(m.owedDetail[0].daysSince, 20);
     assert.deepEqual(m.avoidCategories, ['cards-odds'], 'yesterday plus twice this week');
     assert.deepEqual(m.avoidMechanics, ['game', 'quiz', 'solver', 'visualizer']);
     assert.equal(m.politicsAllowed, false);
-    assert.ok(words(m.summary) < 120, m.summary);
+    assert.ok(words(m.summary) < 150, m.summary);
+    assert.ok(m.summary.startsWith('Purpose mix'), m.summary);
+    // the entries have no purpose: every counted one is legacy play (4 in the 7-day window ending today)
+    assert.match(m.summary, /^Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 4\. Today we want a tool or a lesson \(lead with one\); play is paused until \d{4}-\d{2}-\d{2}\. /);
+    assert.deepEqual(m.purposes.legacyAssumed, [dayBefore(20), dayBefore(9), dayBefore(5), dayBefore(4), dayBefore(3), dayBefore(1)]);
     assert.match(m.summary, /cards-odds/);
     assert.match(m.summary, /No political/);
     assert.ok(!/\n/.test(m.summary));
   });
+  // with a weekly humor minimum the owed slots come least recently used first: wildcard 20 days, humor 9 days
+  withHistory([
+    entry(9, { fp: { category: 'humor-satire', mechanic: 'toy', slot: 'humor' } }),
+    entry(20, { fp: { category: 'math-puzzle', mechanic: 'puzzle', slot: 'wildcard' } }),
+    entry(1, { fp: { slot: 'interest' } }),
+    entry(2, { fp: { category: 'pop-culture', slot: 'currentEvents' } }),
+  ], () => {
+    const m = mix({ date: TODAY });
+    assert.deepEqual(m.owed, ['wildcard', 'humor']);
+    assert.deepEqual(m.owedDetail.map((o) => o.daysSince), [20, 9]);
+  }, { config: (c) => { c.mix.targets.humor.minPer7Days = 1; return c; } });
 });
 
 test('mix owed edge: a slot used 6 days ago is satisfied, 7 days ago is owed', () => {
@@ -348,17 +429,62 @@ test('mix politicsAllowed: 14 days ago is outside the cap window', () => {
   withHistory([polit(14)], () => assert.equal(mix({ date: TODAY }).politicsAllowed, true));
 });
 
-test('mix summary stays under 120 words even with every category on cooldown', () => {
-  const cats = ['cards-odds', 'hockey-sports', 'pop-culture', 'news-politics', 'humor-satire', 'science-sim', 'math-puzzle', 'data-viz', 'music-audio', 'generative-art', 'language-text', 'tools-utility', 'games-arcade', 'retro-tech', 'education-explainer', 'modding-games', 'finance-economics', 'life-food-craft', 'weird-experimental'];
-  const mechs = ['simulator', 'solver', 'generator', 'game', 'toy', 'visualizer', 'tool'];
-  const entries = cats.map((category, i) => entry(1 + (i % 6), { date: dayBefore(1 + i), fp: { category, mechanic: mechs[i % mechs.length], slot: ['interest', 'currentEvents', 'humor', 'wildcard'][i % 4] } }));
+test('mix summary stays under 150 words even with every category on cooldown, every slot owed and politics capped', () => {
+  const taxonomy = JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'ops', 'taxonomy.json'), 'utf8'));
+  const cats = Object.keys(taxonomy.categories);
+  assert.ok(cats.length >= 30, 'the eleven broader categories are in the taxonomy');
+  const mechs = taxonomy.mechanics;
+  // every category built in the last 30 days but none in the last week: all of them on a 30-day cooldown, every slot owed
+  const entries = cats.map((category, i) => entry(8 + i, { fp: { category, mechanic: mechs[i % mechs.length], slot: 'wildcard', political: category === 'news-politics', purpose: ['tool', 'lesson', 'explorer', 'studio', 'play'][i % 5] } }));
   withHistory(entries, () => {
     const m = mix({ date: TODAY });
-    assert.equal(m.avoidCategories.length, 19);
-    assert.ok(words(m.summary) < 120, `${words(m.summary)} words: ${m.summary}`);
-    assert.ok(m.summary.length > 40);
+    assert.equal(m.avoidCategories.length, cats.length);
+    assert.equal(m.politicsAllowed, false);
+    assert.deepEqual([...m.owed].sort(), ['currentEvents', 'humor', 'interest', 'wildcard']);
+    assert.ok(words(m.summary) < 150, `${words(m.summary)} words: ${m.summary}`);
+    assert.ok(m.summary.startsWith('Purpose mix'), m.summary);
+    assert.match(m.summary, /Today we want [^.]+\(lead with one\)/, 'the purpose sentence survives the cut whole');
     assert.match(m.summary, /Do not propose/);
-  }, { config: (c) => { c.novelty.categoryCooldownDays = 30; return c; } });
+  }, { config: (c) => { c.novelty.categoryCooldownDays = 60; c.novelty.mechanicCooldownDays = 60; c.mix.politicsMaxPer14Days = 1; for (const s of Object.values(c.mix.targets)) s.minPer7Days = 1; return c; } });
+  // an absurdly long owed note: the optional pieces drop, then the owed list shrinks to plain slot names
+  withHistory([], () => {
+    const m = mix({ date: TODAY });
+    assert.ok(words(m.summary) < 140, `${words(m.summary)} words`);
+    assert.ok(m.summary.startsWith('Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 0. Today we want a tool or a lesson (lead with one)'), m.summary);
+    assert.match(m.summary, /Owed this week, so at least one idea each: interest, currentEvents, wildcard\./);
+  }, { config: (c) => { c.mix.targets.interest.note = 'word '.repeat(200).trim(); return c; } });
+  // 160 categories on cooldown: the must pieces alone pass 147 words, so the hard cut applies, and it never reaches the purpose sentence
+  withHistory(Array.from({ length: 160 }, (_, i) => entry(1 + i, { fp: { category: `fake-category-${i}`, purpose: 'tool' } })), () => {
+    const m = mix({ date: TODAY });
+    assert.equal(m.avoidCategories.length, 160);
+    assert.equal(words(m.summary), 147);
+    assert.ok(m.summary.startsWith('Purpose mix this week: tool 6, lesson 0, explorer 0, studio 0, play 0. Today we want a lesson or an explorer (lead with one); skip tool (shipped in the last 2 days); play is allowed but must win on merit. '), m.summary);
+  }, { config: (c) => { c.novelty.categoryCooldownDays = 200; return c; } });
+});
+
+test('mix: purposes is the purpose plan and the summary leads with it; no config block means no plan', () => {
+  withHistory([entry(1, { fp: { purpose: 'tool' } }), entry(2, { fp: { category: 'math-puzzle', mechanic: 'puzzle', purpose: 'lesson' } })], () => {
+    const m = mix({ date: TODAY });
+    assert.deepEqual(Object.keys(m.purposes), ['windowDays', 'counts', 'lastShipped', 'wanted', 'avoid', 'playAllowed', 'playBlockedUntil', 'bonus', 'override', 'legacyAssumed']);
+    assert.deepEqual(m.purposes.counts, { tool: 1, lesson: 1, explorer: 0, studio: 0, play: 0 });
+    assert.deepEqual(m.purposes.wanted, ['explorer', 'studio']);
+    assert.deepEqual(m.purposes.avoid, ['tool', 'lesson']);
+    assert.equal(m.purposes.bonus, 5);
+    assert.equal(m.purposes.override, null);
+    assert.match(m.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Today we want an explorer or a studio \(lead with one\); skip tool and lesson \(shipped in the last 2 days\); play is allowed but must win on merit\. In the last 14 days/);
+    // the manual override
+    const o = mix({ date: TODAY, purpose: 'play' });
+    assert.deepEqual([o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [['play'], [], true, 'play']);
+    assert.match(o.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Manual override: today we want a play idea \(a game, toy or satire\)\. Lead with it; no purpose is avoided\. /);
+    assert.throws(() => mix({ date: TODAY, purpose: 'game' }), /unknown purpose "game"/);
+  });
+  // tests/helpers/test-config.json has no mix.purposes: no plan, no purpose sentence, nothing throws
+  withHistory([entry(1)], () => {
+    const m = mix({ date: TODAY });
+    assert.equal(m.purposes, null);
+    assert.match(m.summary, /^In the last 14 days/);
+    assert.throws(() => mix({ date: TODAY, purpose: 'tool' }), /no purpose plan/);
+  }, { config: (c) => { delete c.mix.purposes; delete c.pageContract; return c; } });
 });
 
 test('mix ignores fallback entries and entries on or after the date', () => {
@@ -399,6 +525,36 @@ test('CLI: check and mix print one JSON document', () => {
     const viaNow = JSON.parse(cli(box, ['mix', '--now', '2026-11-10T15:00:00Z']).out);
     assert.equal(viaNow.window.to, '2026-11-09');
   });
+});
+
+test('CLI: mix --purpose is the manual override; a bare --purpose exits 2, an unknown one exits 1', () => {
+  withHistory([entry(1, { fp: { purpose: 'play' } })], (box) => {
+    const plain = JSON.parse(cli(box, ['mix', '--date', TODAY]).out);
+    assert.deepEqual([plain.purposes.wanted, plain.purposes.avoid, plain.purposes.playAllowed], [['tool', 'lesson'], ['play'], false]);
+    for (const args of [['mix', '--date', TODAY, '--purpose', 'play'], ['mix', '--purpose=play', '--date', TODAY]]) {
+      const r = cli(box, args);
+      assert.equal(r.code, 0, r.err);
+      const o = JSON.parse(r.out);
+      assert.deepEqual([o.ok, o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [true, ['play'], [], true, 'play']);
+      assert.ok(o.summary.startsWith('Purpose mix'));
+    }
+    for (const args of [['mix', '--date', TODAY, '--purpose'], ['mix', '--purpose', '--date', TODAY], ['mix', '--purpose=', '--date', TODAY]]) {
+      const r = cli(box, args);
+      assert.equal(r.code, 2, args.join(' '));
+      assert.equal(JSON.parse(r.out).ok, false);
+      assert.match(JSON.parse(r.out).error, /usage: novelty\.mjs mix .*--purpose/);
+    }
+    const unknown = cli(box, ['mix', '--date', TODAY, '--purpose', 'game']);
+    assert.equal(unknown.code, 1);
+    assert.equal(JSON.parse(unknown.out).ok, false);
+    assert.match(JSON.parse(unknown.out).error, /unknown purpose "game"/);
+  });
+});
+
+test('CLI: the header usage lines list every flag of every subcommand', () => {
+  const head = fs.readFileSync(NOVELTY_CLI, 'utf8').split('\n').slice(0, 10).join('\n');
+  assert.match(head, /^\/\/ {3}novelty\.mjs check --candidates <file\.json> \[--date D\] \[--now ISO\]$/m);
+  assert.match(head, /^\/\/ {3}novelty\.mjs mix \[--date D\] \[--now ISO\] \[--purpose tool\|lesson\|explorer\|studio\|play\]$/m);
 });
 
 test('CLI: usage errors exit 2, bad data exits 1', () => {
