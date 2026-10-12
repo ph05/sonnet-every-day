@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: FAILURE_MODES.md FM-04 line 22 still said budget.spent() restarts every turn and the budget needs nothing remembered. The 2026-10-12 report and run events show the opposite: spent() was 3.93M in the persistent session, so the first ideate returned budget-exhausted with 0 spend. Jester fixed PLAYBOOK 6.5 today but the recovery row an operator reads after a context loss kept the false claim. Now it says re-read spend from status plus the get_session total. Two lines, no test touched.
 - category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- commit: f78463978a
 - question: Should FM-47 get a row for budget-exhausted with 0 spend at launch, so the symptom is findable by grep?
 
 ## 2026-10-12 · clerk · applied · clerk.md: put the network-down line in notes, where the probe and link-check schemas read it

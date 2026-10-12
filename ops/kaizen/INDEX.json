@@ -287,7 +287,7 @@
       "files": [
         "ops/FAILURE_MODES.md"
       ],
-      "sha": null,
+      "sha": "f78463978a9db4d842aa6ceba065499630cd4aad",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should FM-47 get a row for budget-exhausted with 0 spend at launch, so the symptom is findable by grep?",
