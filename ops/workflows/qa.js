@@ -749,7 +749,11 @@ async function gateProgram({ fs, path, cp, argv }) {
 }
 async function runGate() {
   const prog = `${WORK}/tmp/qa-gate.mjs`;
-  const r = await runFiles('validate dry run', [{ path: prog, content: makeProgram(gateProgram) }], `node ${prog} ${REPO} ${DATE} ${COMPACT ? 2 : 1} ${SITE} ${str(A.slug)}`.trim(), { phase: 'Checks' });
+  // The slug is untrusted text from an earlier phase: only a plain kebab-case one goes into the clerk's shell line (the program
+  // falls back to its own default otherwise), so nothing a scout wrote can run here (PLAYBOOK 1 rule 11).
+  const safeSlug = /^[a-z0-9]+(-[a-z0-9]+)*$/.test(str(A.slug)) && str(A.slug).length <= 40 ? str(A.slug) : '';
+  if (str(A.slug) && !safeSlug) log(`validate dry run: args.slug ${JSON.stringify(clip(A.slug, 60))} is not a plain kebab-case slug; the dry run uses its default name`);
+  const r = await runFiles('validate dry run', [{ path: prog, content: makeProgram(gateProgram) }], `node ${prog} ${REPO} ${DATE} ${COMPACT ? 2 : 1} ${SITE} ${safeSlug}`.trim(), { phase: 'Checks' });
   const out = r.ok ? parseJsonOut(r.stdout) : null;
   if (!out || typeof out.ran !== 'boolean') return { ran: false, ok: false, errors: [], warnings: [], note: `validate dry run unavailable: ${r.problems.join('; ') || 'unreadable output'}` };
   if (!out.ran) return { ran: false, ok: false, errors: [], warnings: [], note: str(out.error, 'validate did not run') };
