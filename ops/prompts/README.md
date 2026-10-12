@@ -1,6 +1,6 @@
 # Routine prompts
 
-The scheduled routines (cron triggers made with the claude-code-remote `create_trigger` tool) each wake ONE persistent session with `persistent_session_id`; every firing is a new turn appended to that long-lived conversation. They use these prompt files with `{{BOOTSTRAP}}` replaced by the contents of `_bootstrap.md`. The prompts are deliberately thin: all behavior lives in `ops/PLAYBOOK.md`, so changing the system never requires editing a routine. Earlier turns are not state; only the repo is.
+The scheduled routines (cron triggers made with the claude-code-remote `create_trigger` tool) each wake ONE persistent session with `persistent_session_id`; every firing is a new turn appended to that long-lived conversation. They use these prompt files with `{{BOOTSTRAP}}` replaced by the contents of `_bootstrap.md`. The prompts are deliberately thin: all behavior lives in `ops/PLAYBOOK.md`, so changing the system never requires editing a routine. A routine holds a copy of its prompt text, though: an edit to these files reaches it only when the owner or the orchestrator runs `update_trigger` with the new `prompt`, assembled as in step 2 below (never an operator). `smoke.md` takes steps 1 and 2 of `_bootstrap.md` in place of `{{BOOTSTRAP_STEPS_1_TO_2_ONLY}}`. Earlier turns are not state; only the repo is.
 
 Why persistent sessions: a routine that starts a fresh session per firing gets no repo, no credentials and no claude-code-remote tools in this organization (`git clone` fails and `add_repo` is absent), and the `connectors` option is not available. A session created with the repo as its source has `/home/user/sonnet-every-day` checked out on `claude/sonnet-every-day` and can push to it.
 
@@ -11,7 +11,7 @@ Why persistent sessions: a routine that starts a fresh session per firing gets n
 | wdB | Sonnet Every Day: watchdog B | `47 6 * * *` | `watchdog-b.md` |
 | closer | Sonnet Every Day: closer | `47 8 * * *` | `closer.md` |
 | closerBackup | Sonnet Every Day: closer backup | `37 9 * * *` | `closer.md` (same prompt as the closer; it exits quietly when the day is published and covers a closer whose session died, see PLAYBOOK §5.4) |
-| manual | Sonnet Every Day: manual | none (poke-only, fired by hand) | `primary.md` (the fire text carries the override) |
+| manual | Sonnet Every Day: manual | none (poke-only, fired by hand) | `manual.md` (`ROLE=manual`; the fire text carries `RUN_DATE`, `TARGET_TIER`, `FORCE`; `primary.md` with `ROLE_OVERRIDE=manual` in the fire text works the same) |
 
 `state/routines.json` is the registry of the session ids and trigger ids; the orchestrator writes it, operators never do. Ids are not secrets.
 

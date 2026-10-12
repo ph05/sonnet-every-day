@@ -273,7 +273,7 @@ A tier-1 project: a real mechanic with depth (not a lorem-ipsum toy), ≥ 700 li
 * Decision table row 3 (replaces the old closer row): `role == closer` and run not published: if the lease is fresh and `phase ∈ {qa, revise, package, publish}` and `now < graceUntil` → `exit-alive` with a `grace` event (the closer then *babysits*: foreground wait ≤ 9 min, re-run `begin`, repeat until published, lease stale, or `graceUntil`); otherwise (`fresh` lease in an earlier phase, or `now ≥ graceUntil`, or `now ≥ hardStop`) → `force-degrade`. A stale or absent lease falls to row 4 (`takeover`). Before falling back, the closer attempts **salvage**: if `work/<date>/build/index.html` exists and `validate.mjs project` passes at tier 2 rules, package and publish it as Tier 2.
 * Rule for `wdB` (06:47): a fresh run whose phase is before `build` gets a `scope-cut` directive (no time threshold); `wdA` (05:32): a fresh run still in `preflight` or `ideate` at 05:30 or later gets a `scope-cut` directive.
 * `deadman.mjs` (model-free): acts when today is unpublished and (the lease is stale/absent and `now ≥ graceUntil + 5 min`, or `now ≥ hardStop`); the GitHub workflow runs at 13:40, 14:40 and 15:40 UTC (09:40 ET in EDT/EST, and 10:40 ET after the hard stop).
-* Prose in README/OPERATING/PLAYBOOK says "live around 8am ET (a guideline: occasionally later)".
+* Prose in README/OPERATING/PLAYBOOK says "live around 8am ET (a guideline: occasionally later)"; the PLAYBOOK adds that below 6 agent slots (the 4-CPU container) a compact day goes live between 08:30 and 09:15 by plan, which is never a reason to cut scope.
 
 ## 14. Heartbeat branch (keeps GitHub Pages builds quiet)
 

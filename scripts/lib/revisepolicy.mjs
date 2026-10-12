@@ -352,17 +352,26 @@ export function readQaReport(date) {
   };
 }
 
-/** work/<date>/qa/extra-defects.json (validator errors queued by the build's trial stage): { count, warning? }. */
+/**
+ * The validator errors the build's trial stage queued (PLAYBOOK 8.5): work/<date>/build/extra-defects.json, plus the older location
+ * work/<date>/qa/extra-defects.json. The queue lives under build/ because a qa retry or a takeover at qa wipes work/<date>/qa, and
+ * the defects belong to the build anyway (a build retry wipes them with it). Returns { count, warning? }.
+ */
 export function readExtraDefects(date) {
-  const file = rp('work', date, 'qa', 'extra-defects.json');
-  if (!fs.existsSync(file)) return { count: 0 };
-  try {
-    const list = JSON.parse(fs.readFileSync(file, 'utf8'));
-    if (!Array.isArray(list)) return { count: 0, warning: 'work/<date>/qa/extra-defects.json is not an array: ignored' };
-    return { count: list.filter((d) => isObj(d) && ((typeof d.title === 'string' && d.title.trim()) || (typeof d.detail === 'string' && d.detail.trim()))).length };
-  } catch (err) {
-    return { count: 0, warning: `work/<date>/qa/extra-defects.json is unreadable (${err.message}): ignored` };
+  let count = 0;
+  const warnings = [];
+  for (const dir of ['build', 'qa']) {
+    const file = rp('work', date, dir, 'extra-defects.json');
+    if (!fs.existsSync(file)) continue;
+    try {
+      const list = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (!Array.isArray(list)) warnings.push(`work/<date>/${dir}/extra-defects.json is not an array: ignored`);
+      else count += list.filter((d) => isObj(d) && ((typeof d.title === 'string' && d.title.trim()) || (typeof d.detail === 'string' && d.detail.trim()))).length;
+    } catch (err) {
+      warnings.push(`work/<date>/${dir}/extra-defects.json is unreadable (${err.message}): ignored`);
+    }
   }
+  return warnings.length ? { count, warning: warnings.join('; ') } : { count };
 }
 
 /**

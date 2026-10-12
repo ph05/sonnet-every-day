@@ -765,6 +765,33 @@ describe('state.mjs revise plan', () => {
     assert.match(bad.warnings.join(' '), /extra-defects\.json is unreadable/);
   });
 
+  test('extra defects queued under work/<D>/build survive the qa retry wipe (PLAYBOOK 8.5): the old qa/ location did not', () => {
+    const box = sandbox();
+    atQa(box);
+    ok(st(box, ['throttle', 'set', '--level', 'minimal', '--reason', 'test'], '03:50'));
+    putReport(box, {});
+    const defect = [{ title: 'validate: missing viewport meta', detail: 'index.html has no viewport meta' }];
+    // the old place: the qa retry of PLAYBOOK 6.7 and the phase watch run `rm -rf work/<D>/qa` (stagingDirs('qa')), and the queue is gone
+    box.write(`work/${DATE}/qa/extra-defects.json`, defect);
+    assert.equal(plan(box, '07:32').decision, 'run');
+    assert.deepEqual(rs.stagingDirs('qa'), ['qa']);
+    fs.rmSync(path.join(box.root, 'work', DATE, 'qa'), { recursive: true, force: true });
+    putReport(box, {});
+    assert.equal(plan(box, '07:32').decision, 'skip', 'the wipe lost the queued S1');
+    // the new place: the same wipe leaves it, so revise still runs for the build's validator error
+    box.write(`work/${DATE}/build/extra-defects.json`, defect);
+    fs.rmSync(path.join(box.root, 'work', DATE, 'qa'), { recursive: true, force: true });
+    putReport(box, {});
+    const p = plan(box, '07:32');
+    assert.deepEqual([p.decision, p.extraDefects, p.fixSeverity], ['run', 1, 'S1']);
+    // both files count, and a broken one is named in the warning
+    box.write(`work/${DATE}/qa/extra-defects.json`, defect);
+    assert.equal(plan(box, '07:32').extraDefects, 2);
+    box.write(`work/${DATE}/build/extra-defects.json`, '{{');
+    assert.match(plan(box, '07:32').warnings.join(' '), /build\/extra-defects\.json is unreadable/);
+    assert.match(PLAYBOOK, /save to `work\/<D>\/build\/extra-defects\.json`/);
+  });
+
   test('tier handling: --tier overrides the run, tiers 3 and 4 have no revise, a full build uses reviseLoops and A4\'s 20 minute tail', () => {
     const box = sandbox();
     atQa(box, { compact: false });
