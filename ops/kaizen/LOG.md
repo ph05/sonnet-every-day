@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · architect · applied · quality.md: add a short 1280x650 window to the hard minimums (button-over-text S2 shipped)
+
+- observation: 2026-10-12 report: revise left one S2, buttons overlap text on windows 1280 px wide or more and under about 720 px tall, and it shipped. quality.md named 1366x768 and 390x844 only and browser-check shoots 1280x800 and 390x844, so no step looked at a short desktop window. My integrate note says the same: a Start button 15 to 35 px below the fold at short heights passes clean. Added one hard-minimum bullet naming 1280x650: no control over text, primary button on screen.
+- category: prevention · lines changed: 1 · files: ops/rubrics/quality.md
+- question: Proposal for protected browser-check.mjs: add a 1280x650 desktop shot and assert the primary button rect fits the viewport and no two visible controls overlap?
+
 ## 2026-10-12 · jester · applied · PLAYBOOK 6.5: budget.spent() is session-cumulative in a persistent session, rebase capTokens before
 
 - observation: 2026-10-12 run events 07:59: first ideate returned budget-exhausted with 0 spend because budget.spent() was 3.93M (get_session) against capTokens 2.4M; the attempt was lost and the report asks for this fix. PLAYBOOK 6.5 line 321 said spent() restarts at 0 every turn, which was false here. Now it says it may not restart and tells the primary to compare the cap with the get_session output total before the first launch and add it when near or above.

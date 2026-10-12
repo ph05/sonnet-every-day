@@ -10,6 +10,7 @@ The bar is CONTRACT section 11. A tier-1 project feels like something a person w
 * Works offline from a static server. The CSP meta from the page shell is intact. No external resources.
 * Keyboard and touch support for every action; visible focus; sensible tab order; `Escape`/`Enter`/`Space` behave as users expect.
 * Responsive down to 360px; follows `prefers-color-scheme`; honors `prefers-reduced-motion`.
+* Check one short desktop window too, 1280x650 (a laptop with browser toolbars): no control overlaps text or another control, and the primary button is on screen. The browser-check shots are only 1280x800 and 390x844, and on 2026-10-12 a button-over-text S2 shipped on windows 1280 px wide and under about 720 px tall.
 * At 1366x768 and 390x844 the main output stays in view while its controls are used, and the result of the main action appears without scrolling. No inner scroller crops the output: a wheel over it scrolls the page unless it zooms on purpose. `browser-check.mjs` shots are static and its monkey wheels assert nothing, so builders and QA test both with a Playwright script (scroll each control into view and compare element rects; `mouse.wheel` over the output and compare `scrollY`).
 * Deterministic where it should be (seeded randomness; same seed, same result). Shareable state in the URL hash where it makes sense, and the hash is validated defensively.
 * Empty, loading and error states exist and read well. Nothing says "TODO", "lorem", "placeholder", "example.com", "Project Title".
