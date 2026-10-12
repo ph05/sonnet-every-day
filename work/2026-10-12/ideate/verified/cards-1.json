@@ -1,0 +1,198 @@
+{
+  "id": "cards-1",
+  "title": "Commute Or Else",
+  "pitch": "Each day deals a rack of seven operator tiles (add chips, add mult, multiply mult, echo the previous two tiles, mirror a neighbour, raise mult to a power) plus one immovable bedrock tile, and you slide them into the order that scores highest. A live score tree shows chips and mult after every tile, then a histogram of all 5,040 possible orderings reveals where your arrangement sits in a wildly long-tailed distribution, and an exact solver tells you the par. The delight is the first time you see one swap turn 400 into 4,000, and the palindrome rule that rewards symmetric racks.",
+  "whyNow": "Timeless: ordering effects in chips-times-mult scoring are a perennial talking point among deckbuilder players, and a daily seeded puzzle with a shareable result grid keeps the page worth revisiting.",
+  "origin": {
+    "agent": "cards",
+    "lens": "balatro-score-math"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "puzzle",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "operator-order",
+      "permutations",
+      "non-commutative",
+      "multiplier-algebra",
+      "daily-puzzle",
+      "score-histogram",
+      "retrigger",
+      "exact-enumeration"
+    ],
+    "keywords": [
+      "order-of-operations",
+      "chips-times-mult",
+      "factorial",
+      "par-score",
+      "score-tree",
+      "palindrome-bonus",
+      "bedrock-tile",
+      "share-grid"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Community guides agree that, in the inspiration game, joker effects resolve left to right and flat mult belongs left of multiplicative mult (Destructoid and two Steam threads), and that two copy jokers read a neighbour or the leftmost slot (a strategy guide and a tier list). One player reported otherwise in an uncontrolled test, so edge cases are disputed. That makes the scoring a non-commutative algebra, which is exactly what this puzzle is built on, and the page uses its own invented tiles and stated rules and does not claim to reproduce any commercial game. The arithmetic was recomputed by the verifier: 8! = 40320 and 7! = 5040, small enough to enumerate every ordering in milliseconds. The page needs none of the community claims as fact.",
+    "sources": [
+      {
+        "title": "Best Joker Order in Balatro",
+        "url": "https://progameguides.com/balatro/best-joker-order-in-balatro/",
+        "date": "",
+        "snippet": "Guide reasoning that flat mult sources go left of multiplicative ones, that effects resolve left to right, with a worked example where moving a multiplier to the end raises a hand total (46 to 58.5).",
+        "via": "search",
+        "note": "Not returned by the verifier's searches (host also failed a fetch today); the left-to-right and flat-before-multiplier points are supported by other results.",
+        "verified": false
+      },
+      {
+        "title": "destructoid.com (joker order result)",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "Result returned for a query on joker scoring order; the search summary says jokers generally trigger left to right and recommends flat mult before X mult.",
+        "via": "search",
+        "note": "Re-found by the verifier: result summary says jokers trigger left to right, flat mult before X mult, with a reorder example that roughly doubled a score.",
+        "verified": true
+      },
+      {
+        "title": "Steam community discussion on joker order",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4334231842063363125",
+        "date": "",
+        "snippet": "Forum thread returned for both order queries; a user reports seeing multipliers apply first regardless of position but admits the test was uncontrolled.",
+        "via": "search",
+        "note": "Re-found: a thread with one user's uncontrolled report that multipliers applied first, so edge cases are disputed. Single forum post, shown only as anecdotal.",
+        "verified": false
+      },
+      {
+        "title": "Balatro Strategy Guide: The Joker Combos That Actually Win Runs",
+        "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+        "date": "",
+        "snippet": "Strategy guide returned for copy-effect queries; summary says one copy joker reads its right neighbour, another reads the leftmost slot, and copies can chain.",
+        "via": "search",
+        "note": "Re-found by the verifier: Blueprint copies the joker to its right, Brainstorm copies the leftmost, copies can chain.",
+        "verified": true
+      },
+      {
+        "title": "balatro jokers guide (games.gg)",
+        "url": "https://games.gg/balatro/guides/balatro-jokers-guide/",
+        "date": "",
+        "snippet": "Jokers guide returned for the Blueprint/Brainstorm query; indicates position-dependent copy behaviour.",
+        "via": "search",
+        "note": "Not re-found at this URL (a different games.gg page surfaced); not relied on.",
+        "verified": false
+      },
+      {
+        "title": "8! == 40320 (Wolfram Functions)",
+        "url": "https://functions.wolfram.com/GammaBetaErf/Factorial/03/02/0011",
+        "date": "",
+        "snippet": "Reference page whose title states the factorial identity 8! = 40320.",
+        "via": "search",
+        "note": "Not re-found; the identity 8! = 40320 was recomputed by the verifier instead (arithmetic, no source needed).",
+        "verified": false
+      },
+      {
+        "title": "Counting handout (Georgia Tech)",
+        "url": "https://www2.isye.gatech.edu/~hsharp/math3070/counting.pdf",
+        "date": "",
+        "snippet": "Course handout that, per the search summary, uses 8! for the number of ways to order eight things (a salesman visiting eight cities).",
+        "via": "search",
+        "note": "Not re-found; arithmetic recomputed by the verifier.",
+        "verified": false
+      },
+      {
+        "title": "Steam community discussion on joker order (second thread)",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4634862878162187094",
+        "date": "",
+        "snippet": "Forum thread on joker order.",
+        "via": "search",
+        "note": "Players agree that effects go left to right and flat mult belongs left of X mult, with some same-category ordering caveats.",
+        "verified": true
+      },
+      {
+        "title": "Balatro Joker tier list (PocketGamer)",
+        "url": "https://www.pocketgamer.com/balatro/joker-tier-list/",
+        "date": "",
+        "snippet": "Tier list describing Blueprint and Brainstorm.",
+        "via": "search",
+        "note": "Independent description of the two copy jokers (right neighbour versus leftmost).",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In the inspiration game, joker effects resolve left to right, so flat +mult is advised left of multiplicative mult (community guides; the page treats this as inspiration only, as of 2026-10-12).",
+        "sourceIndex": 1,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In the inspiration game, one copy joker copies the joker to its right and another copies the leftmost joker, and copies can chain (guide and tier list).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per one Steam user's uncontrolled test, multipliers applied first regardless of position; edge cases are disputed, so the page uses its own stated rules.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "There are 8! = 40320 orderings of eight distinct items, so seven movable tiles around one fixed tile give 7! = 5040 orderings (recomputed by the verifier with exact integer arithmetic).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "joker-order debates in deckbuilder communities",
+      "puzzle-a-day share grids",
+      "histogram of all outcomes as in solver reports",
+      "golf par scoring"
+    ]
+  },
+  "design": {
+    "coreLoop": "Read today's rack and target, drag or keyboard-move tiles into slots, watch the score tree update tile by tile, submit, then see your rank among all 5,040 orderings and the solver's par. The second minute is learning that add-before-multiply is not always best (echo and mirror tiles and the exponent tile bend it); the tenth is hunting palindromic racks and chasing par with fewer moves. A seeded daily rack plus unlimited practice racks by hash keeps it fresh.",
+    "sophisticationHooks": [
+      "Exact enumeration of all orderings with a histogram showing where the player's order lands (percentile, par, worst)",
+      "Score tree waterfall that shows chips and mult after each tile, with a reverse-the-rack toggle to show non-commutativity",
+      "Tile set with echo (repeat previous two tiles, the riff), mirror (copy right neighbour), exponent, bedrock (fixed slot) and a palindrome symmetry bonus",
+      "Seeded generator guarantees a unique optimum, and a node self-check validates the evaluator against hand-computed racks"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: tile evaluator and enumerator as pure functions with a node self-check against hand-computed racks (tile semantics fixed in the spec before coding), seeded rack generator that retries until the optimum is unique, tap-to-swap and keyboard slotting with drag as an enhancement, score-tree SVG, histogram of all 5,040 orderings computed on the main thread in chunks (no worker needed), share string and URL hash, about panel, light and dark, reduced motion. Cut: accounts, leaderboards, animations beyond tile slide, sound, any real game names on the page beyond a credited inspiration line.",
+    "risks": [
+      "Resemblance to a past scoring-engine toy: tags avoid joker and mod vocabulary and the loop is a puzzle with a solver, not a sandbox.",
+      "Community rule claims are partly disputed, so the page uses invented tile names and its own written rules; the commercial game is mentioned at most as an inspiration line in the about panel, with no art, names of cards or branding.",
+      "Tile semantics for echo, mirror and the palindrome bonus must be written unambiguously in the spec and checked by the node self-check before any UI work, since a vague rule breaks the unique-optimum guarantee.",
+      "Unique-optimum racks need generator care: retry until unique, and fall back to showing ties.",
+      "Floating point and overflow: keep scores as integers under 2^53 by capping the exponent tile; never use floats."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The page's maths is self-contained and recomputed (8! = 40320, 7! = 5040); the community left-to-right and copy-position claims were re-found in two or more independent results but are inspiration only. Worker dropped as unnecessary; the spec must pin tile semantics before building."
+  }
+}

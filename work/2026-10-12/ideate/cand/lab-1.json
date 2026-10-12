@@ -1,0 +1,162 @@
+{
+  "id": "lab-1",
+  "title": "Over Your Shoulder",
+  "pitch": "An essay about attention opens with a doorbell; how long and how rhythmically the visitor presses it is the page's first guess at them. As they read, the page quietly measures dwell time per paragraph, scroll reversals, pointer stillness and tab-aways, then shows a hedged margin note ('you slowed down here, about 60 percent sure') and rewrites later paragraphs to mirror the reader: shorter for skimmers, echoing for re-readers, footnoted for lingerers. It ends with a generated reading portrait and a shareable hash, and the fun is performing as a different reader on purpose to collect all the portraits.",
+  "whyNow": "Timeless. Form-breaking early-web spirit: the interface is the content, and the rule (the page adapts to how you read it, nothing leaves the device) is felt within ten seconds.",
+  "origin": {
+    "agent": "lab",
+    "lens": "weird-web"
+  },
+  "fingerprint": {
+    "category": "weird-experimental",
+    "mechanic": "story",
+    "tone": [
+      "playful",
+      "dramatic",
+      "serene"
+    ],
+    "tech": [
+      "dom-ui",
+      "canvas2d",
+      "pointer-events",
+      "webaudio",
+      "web-animations"
+    ],
+    "tags": [
+      "net-art",
+      "reading-behavior",
+      "adaptive-text",
+      "generative-portrait",
+      "interface-as-content",
+      "attention",
+      "doorbell",
+      "local-only"
+    ],
+    "keywords": [
+      "dwell-time",
+      "scroll-reversal",
+      "cursor-as-gaze",
+      "reading-portrait",
+      "hedged-guess",
+      "url-hash",
+      "variant-text",
+      "archetypes"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Net art of the 1990s made the browser's own layers the subject: JODI projects expose code and fake error screens as primary content, and one 1998 piece redirects the browser so its history list becomes a visible pattern. Modern weird-web examples react to the viewer (blink-triggered warping, text that scrambles under the mouse), but I found none that reads reading itself and rewrites the essay accordingly. The honest science: a CHI 2012 eye-tracking study (36 subjects, 32 tasks) found cursor and gaze only sometimes align, with reading, hesitating and scrolling meaning different things. So the page will present its inferences as hedged guesses and admit when it is wrong, which becomes part of its voice.",
+    "sources": [
+      {
+        "title": "Web Work: A History of Internet Art (Artforum)",
+        "url": "https://www.artforum.com/print/200005/web-work-a-history-of-internet-art-465",
+        "date": "2000-05",
+        "snippet": "Artforum's history of internet art, as summarised in a search result, notes that in many JODI projects the exposed programming forms the primary content, making the hidden layer of a page the subject.",
+        "via": "search",
+        "note": "Establishes interface and code as content in early net art.",
+        "verified": true
+      },
+      {
+        "title": "artelectronicmedia.com (Shanken account of JODI)",
+        "url": "https://artelectronicmedia.com/en/?p=184",
+        "date": "",
+        "snippet": "A quoted account describes a 1999 visit to jodi.org returning a mock error message, and a 404 page whose live links lead into other parts of the site.",
+        "via": "search",
+        "note": "Second independent result: errors and browser behaviour as artistic material.",
+        "verified": true
+      },
+      {
+        "title": "Upstream's Daily Net Art Update (#10)",
+        "url": "https://www.upstreamgallery.nl/news/689/upstreams-daily-net-art-update-10",
+        "date": "",
+        "snippet": "Gallery text on ASDFG (1998): the browser is continually redirected from page to page so the visitor's history list becomes a visible pattern.",
+        "via": "search",
+        "note": "Precedent for a page that uses the visitor's browsing trace as material. Single result.",
+        "verified": false
+      },
+      {
+        "title": "User See, User Point: Gaze and Cursor Alignment in Web Search (Microsoft Research, CHI 2012)",
+        "url": "https://www.microsoft.com/en-us/research/?p=163078",
+        "date": "2012",
+        "snippet": "Eye-tracking study with 36 subjects and 32 search tasks questions the assumption that gaze is well approximated by the cursor; cursor behaviours such as reading, hesitating, scrolling and clicking carry different meaning.",
+        "via": "search",
+        "note": "Shapes the design: cursor is a weak, conditional proxy for gaze, so the page hedges. Same-organisation PDF also seen, so counted as one source.",
+        "verified": false
+      },
+      {
+        "title": "this website changes every time you blink (Vice)",
+        "url": "https://www.vice.com/en/article/jg8aap/this-website-changes-every-time-you-blink",
+        "date": "",
+        "snippet": "Coverage of a site that warps when the viewer's eyes close; the result summary lists other reactive weird sites, some that scramble text under the mouse and one that fades text if you do not blink.",
+        "via": "search",
+        "note": "Shows reactive-to-viewer sites exist but rely on webcam or simple triggers; summary was blended across results.",
+        "verified": false
+      },
+      {
+        "title": "My Boyfriend Came Back from the War (ACMI)",
+        "url": "https://www.acmi.net.au/works/61355--my-boyfriend-came-back-from-the-war/",
+        "date": "",
+        "snippet": "A 1996 browser-based work by Olia Lialina in which each click splits the frame into smaller frames until the screen is a mosaic of empty black frames, telling a nonlinear story.",
+        "via": "search",
+        "note": "Precedent for story told by the browser frame itself; several secondary accounts agreed but the summary was blended.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Per Artforum and a quoted account of jodi.org, JODI works treat exposed code and mock error messages as primary content, as of the sources seen on 2026-10-12.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per Upstream Gallery, the 1998 work ASDFG redirects the browser page to page so the visitor's history list becomes a visible pattern.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per Microsoft Research (CHI 2012), a study of 36 subjects on 32 search tasks found gaze and cursor only sometimes aligned, so the cursor is a conditional proxy for gaze.",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per ACMI, Olia Lialina's 1996 'My Boyfriend Came Back from the War' splits browser frames with each click until the screen becomes a mosaic of black frames.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "JODI web works",
+      "My Boyfriend Came Back from the War",
+      "ASDFG",
+      "blink-reactive weird sites",
+      "degenerative net art",
+      "marginalia and reading-diary conventions"
+    ]
+  },
+  "design": {
+    "coreLoop": "Ring the doorbell, read a paragraph, see the margin guess, then read the next paragraph that has been chosen from hand-written variants by the running reader model. Pass 1 teaches the rule; pass 2 is play: the visitor performs a reader (skimmer, rereader, lingerer, restless, deliberate) to steer the text and collects distinct portraits and endings. Each portrait is a deterministic canvas glyph of six numbers, so it can be compared and shared through the URL hash.",
+    "sophisticationHooks": [
+      "Reader model: dwell per word, scroll reversals, pointer stillness and horizontal sweeps, tab-away, touch dwell, each blended into five bounded scores with documented thresholds and decay",
+      "Variant text: each paragraph has 3 hand-written versions selected deterministically from the profile, so behaviour is testable with simulated readers",
+      "Honest hedging: confidence shown as words and bars, with a visible 'I was wrong about you' moment when the profile flips, grounded in the cursor-vs-gaze research",
+      "Reading portrait: seeded canvas glyph plus archetype name and hash export; doorbell ring rhythm synthesised procedurally"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: doorbell opener with procedural chime, 8 short paragraphs with 3 variants each (about 1,400 words of copy), reader-model module with simulated-reader test hook, margin-note engine, portrait canvas renderer, hash codec, keyboard path (j/k, space, dwell by key rhythm), a manual 'tell the page how you read' panel for screen-reader and no-pointer users, about/making-of panel. Cut: any webcam or eye tracking, any storage of behaviour, multi-essay support.",
+    "risks": [
+      "Privacy perception: the page must state plainly that nothing is stored or sent and no camera or microphone is used; keep all measurements in memory only.",
+      "Cursor-as-gaze is unreliable (CHI 2012 result is search-only, unverified here): the page shows it as 'as of 2026-10-12, per Microsoft Research' and treats every inference as a guess.",
+      "Touch and keyboard readers lack pointer signals: fall back to scroll velocity and dwell, and provide the manual panel.",
+      "Copy volume (24 variant paragraphs) is the schedule risk: write 5 paragraphs fully first, then expand.",
+      "Reduced motion: text mutation must fade or swap without animation when requested."
+    ]
+  },
+  "durable": true
+}

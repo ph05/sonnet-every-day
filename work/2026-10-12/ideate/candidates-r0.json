@@ -1,0 +1,3076 @@
+[
+  {
+    "id": "pulse-1",
+    "title": "The Groan Cup",
+    "pitch": "A velvet-curtain comedy club where the visitor referees a knockout cup of invented one-liners, picking the funnier of two over and over. Behind the curtain the page fits a Bradley-Terry ranking after every vote, chooses the next pairing that teaches it the most, and then pits the visitor's leaderboard against a panel of silly rule-based judge bots (the pun counter, the length snob, the vowel enthusiast). The payoff is a shareable verdict card: how stable your taste is, which jokes were glazed in the kiln, and which judge bot thinks most like you.",
+    "whyNow": "A 2026 preprint on tournament-style humor ranking (pairwise judgments aggregated with Bradley-Terry, with adaptive Swiss pairing) is the fresh hook; the mechanic itself is timeless. Humor is owed this week.",
+    "origin": {
+      "agent": "pulse",
+      "lens": "arxiv-fresh"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "game",
+      "tone": [
+        "playful",
+        "satirical",
+        "competitive",
+        "nerdy"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations",
+        "localstorage"
+      ],
+      "tags": [
+        "pairwise-comparison",
+        "bradley-terry",
+        "swiss-tournament",
+        "jokes",
+        "leaderboard",
+        "judge-bots",
+        "kendall-tau",
+        "comedy-club"
+      ],
+      "keywords": [
+        "humor-ranking",
+        "pairwise-voting",
+        "tournament",
+        "adaptive-pairing",
+        "rank-stability",
+        "one-liners",
+        "taste-test"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "A 2026 arXiv preprint (HumorRank) ranks humor generation by running theory-informed pairwise preference judgments in a tournament and aggregating them with Bradley-Terry estimation, using adaptive Swiss pairing and checking rank stability with Kendall tau between independent judges. The page rebuilds only that ranking intuition with human votes on a small bundled set of original, invented one-liners; it reproduces none of the paper's results and shows no model scores. Bradley-Terry itself is standard, well-documented background (strength scores from pairwise wins, closely related to Elo, needs a connected comparison graph), so the in-browser fit (an iterative maximum-likelihood update) is honest and small. Paper-specific details come from one paper seen through arXiv and a mirror and stay marked unverified.",
+      "sources": [
+        {
+          "title": "HumorRank: A Tournament-Based Leaderboard for Evaluating Humor Generation in Large Language Models",
+          "url": "https://arxiv.org/pdf/2604.19786",
+          "date": "",
+          "snippet": "arXiv preprint by Ajayi and Mitra proposing a tournament framework that ranks humor generation from pairwise comparative judgments aggregated by Bradley-Terry.",
+          "via": "search",
+          "note": "Establishes the paper exists and its method family; WebFetch of arxiv.org failed, so only search text was seen.",
+          "verified": false
+        },
+        {
+          "title": "HumorRank (alphaxiv overview, version 2)",
+          "url": "https://www.alphaxiv.org/abs/2604.19786v2",
+          "date": "2026-06-01",
+          "snippet": "Mirror page for the same paper showing a v2 submission dated 1 Jun 2026 and the submitted-to-COLM-2026 note; describes pairwise judgments, Bradley-Terry aggregation and Swiss pairing.",
+          "via": "search",
+          "note": "Same paper as the arXiv copy, so not an independent confirmation.",
+          "verified": false
+        },
+        {
+          "title": "HumorGen DPO 7B (model card)",
+          "url": "https://huggingface.co/Jayi2424/HumorGen_DPO_7B",
+          "date": "",
+          "snippet": "Model card by a paper author that says its preference pairs come from HumorRank Bradley-Terry pairwise evaluations.",
+          "via": "search",
+          "note": "Same author group as the paper, so only weak corroboration that HumorRank uses Bradley-Terry pairwise evaluation.",
+          "verified": false
+        },
+        {
+          "title": "HumorGen: Cognitive Synergy for Humor Generation in Large Language Models via Persona-Based Distillation",
+          "url": "https://arxiv.org/pdf/2604.09629",
+          "date": "",
+          "snippet": "Related arXiv preprint arguing next-word prediction conflicts with the surprise comedy needs and proposing persona-based synthesis of comedic perspectives.",
+          "via": "search",
+          "note": "Context: humor generation and evaluation is an active 2026 research topic.",
+          "verified": false
+        },
+        {
+          "title": "Cards Against LLMs: Benchmarking Humor Alignment in Large Language Models",
+          "url": "https://arxiv.org/pdf/2604.08757",
+          "date": "",
+          "snippet": "Another 2026 arXiv preprint on benchmarking humor alignment; only the title and reference-list text were visible in the search result.",
+          "via": "search",
+          "note": "Context only; no findings from it are used.",
+          "verified": false
+        },
+        {
+          "title": "Bradley-Terry model (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Bradley%E2%80%93Terry_model",
+          "date": "",
+          "snippet": "Describes a probability model for pairwise comparison outcomes in which each item has a latent strength and win odds depend on the strength gap.",
+          "via": "search",
+          "note": "Background for the ranking math (not opened; WebFetch to this host failed earlier today).",
+          "verified": true
+        },
+        {
+          "title": "Recent advances in the Bradley-Terry Model: theory, algorithms, and applications",
+          "url": "https://arxiv.org/html/2601.14727v2",
+          "date": "",
+          "snippet": "Survey of the Bradley-Terry model and its fitting algorithms and applications, including use in model leaderboards.",
+          "via": "search",
+          "note": "Independent second source agreeing on what Bradley-Terry is and how it is fitted.",
+          "verified": true
+        },
+        {
+          "title": "bradley terry model (MetricGate docs)",
+          "url": "https://metricgate.com/docs/bradley-terry-model",
+          "date": "",
+          "snippet": "Documentation page noting the model needs a connected comparison graph and relates to Elo; a vendor page, so used only as a third voice.",
+          "via": "search",
+          "note": "Supports the connected-graph caveat that shapes pairing logic.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The Bradley-Terry model assigns each item a latent strength and predicts pairwise outcomes from the strength gap; equal strengths give a 50 percent chance each (as seen in search results on 2026-10-12).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per the arXiv listing 2604.19786 (HumorRank), humor generation is ranked from pairwise judgments aggregated with Bradley-Terry; this was seen only via arXiv and a mirror, so it is reported, not confirmed.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The alphaxiv mirror shows version 2 of the HumorRank paper submitted on 1 June 2026 and labelled as submitted to COLM 2026 (reported, unconfirmed).",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Bradley-Terry fitting needs a connected comparison graph, so disconnected groups of items cannot be ranked jointly (vendor documentation, one source).",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "pairwise voting arenas for model leaderboards",
+        "chess Elo ladders",
+        "Swiss-system tournaments",
+        "comedy club open-mic nights",
+        "pottery kiln glaze tests"
+      ]
+    },
+    "design": {
+      "coreLoop": "Two invented one-liners appear on a velvet stage; the visitor picks the funnier. Each vote refits Bradley-Terry strengths and the next pairing is chosen where the ranking is least certain (adaptive Swiss-style), so the leaderboard visibly sharpens and sometimes flips. After a round of about 20 votes the visitor sees their ranking, a bootstrap confidence band per joke, a stability score (Kendall tau between the first and second half of their own votes) and agreement with each silly judge bot. The second minute rewards trying to break the bots; the tenth rewards chasing a stable, repeatable taste or sharing a deck of votes by URL.",
+      "sophisticationHooks": [
+        "Live Bradley-Terry fit by iterative maximum likelihood, with bootstrap confidence bands drawn per joke",
+        "Adaptive pairing that picks the most informative matchup while keeping the comparison graph connected",
+        "Five or six deterministic judge bots (pun counter, length snob, vowel enthusiast, alliteration fan) ranked against the visitor with Kendall tau",
+        "Vote history encoded in the URL hash so a verdict card can be shared and replayed"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Build: 24 to 30 original, clean, invented one-liners written by the team (no real people, brands or quotes), stage UI with velvet curtain and kiln-glaze result styling in CSS and SVG, BT solver, adaptive pairing, bootstrap bands, judge bots, hash state, about panel citing the preprint. Cut: any language model, any claim about model rankings, live fetching, accounts, audio.",
+      "risks": [
+        "The paper details (Bradley-Terry, adaptive Swiss pairing, COLM 2026 note) were seen via arXiv text and one mirror only; the page presents them as 'as of 2026-10-12, per arXiv 2604.19786' and reproduces no result from the paper.",
+        "Jokes must be original and inoffensive; a review pass strips anything targeting a person or group, and no jokes are copied from anywhere.",
+        "Humor is subjective, so the page frames bots as silly heuristics and never as measuring funniness or standing in for the paper's model judges.",
+        "The paper is from spring 2026, not this week; the hook is 'recent preprint' rather than breaking news."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "pulse-2",
+    "title": "Dead Rubber Detective",
+    "pitch": "The visitor is handed the last round of a four-team hockey group, two games played at once, and has to work out which of the two matters, to whom, and whether both teams would quietly settle for an overtime. An exact solver enumerates every result of the two games, sorts each match into stakeless, asymmetric, collusive or competitive, and shows the proof; then the visitor tweaks the standings or the points rule (NHL-style loser point versus the 3-2-1-0 scale used in international hockey) to create a scandal-proof final round, or to engineer the juiciest loophole.",
+    "whyNow": "The NHL 2026-27 season is a week and a half old and is the first 84-game schedule since 1993-94, so how points and playoff races work is in the conversation; the underlying 2026 match-classification preprints are fresh and one targets low-scoring sports like hockey.",
+    "origin": {
+      "agent": "pulse",
+      "lens": "arxiv-fresh"
+    },
+    "fingerprint": {
+      "category": "hockey-sports",
+      "mechanic": "puzzle",
+      "tone": [
+        "analytical",
+        "playful",
+        "nerdy",
+        "competitive"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "worker",
+        "localstorage"
+      ],
+      "tags": [
+        "hockey",
+        "group-stage",
+        "round-robin",
+        "match-classification",
+        "collusion",
+        "overtime-point",
+        "standings",
+        "tournament-design"
+      ],
+      "keywords": [
+        "stakeless-match",
+        "collusive-match",
+        "dead-rubber",
+        "last-round",
+        "points-system",
+        "qualification",
+        "scenario-enumeration"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "Recent arXiv work (2026) classifies matches in the last round of a group by incentive: stakeless (neither prize depends on other results), asymmetric (one side's does not), collusive (both depend on other results yet one outcome secures both), competitive otherwise. One 2026 preprint targets low-scoring sports, which fits hockey, and another studies four-team round-robin last rounds, the exact toy format. The page implements the deterministic classification by brute-force enumeration of a hand-made fictional group, which is small enough to run instantly, and adds a clearly labelled hockey twist (overtime-point rules) that is the page's own extension, not a result from the papers. The NHL 84-game 2026-27 schedule is confirmed by multiple outlets and gives the current hook; the page bundles no real standings.",
+      "sources": [
+        {
+          "title": "Match classification in the last round of four-team round-robin tournaments",
+          "url": "https://arxiv.org/pdf/2605.25610",
+          "date": "",
+          "snippet": "arXiv preprint adopting a four-category scheme (stakeless, asymmetric, collusive, competitive) for last-round matches, assuming one prize: qualification.",
+          "via": "search",
+          "note": "Methodology text seen only in search results; results section not seen.",
+          "verified": false
+        },
+        {
+          "title": "A probabilistic match classification model for low-scoring sports",
+          "url": "https://arxiv.org/pdf/2601.09673",
+          "date": "",
+          "snippet": "arXiv preprint (v1 in January 2026) that simulates other matches to get qualification odds under a win, draw or loss and sorts matches into six categories, applied to UEFA's league phase.",
+          "via": "search",
+          "note": "Title shown in one search result; an earlier search blended author names, so authors are not cited.",
+          "verified": false
+        },
+        {
+          "title": "arXiv 2508.08290 (match classification for UEFA's new league format)",
+          "url": "https://arxiv.org/html/2508.08290v2",
+          "date": "",
+          "snippet": "Described in a search summary as the detailed classification of competitive, asymmetric, stakeless and collusive matches that later papers build on; the page text itself was not seen.",
+          "via": "search",
+          "note": "Title is inferred from a search summary, hence unverified.",
+          "verified": false
+        },
+        {
+          "title": "NHL releases expanded 84-game schedule for 2026-27 season",
+          "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+          "date": "",
+          "snippet": "ESPN headline reporting the league's release of an expanded 84-game schedule for the 2026-27 season.",
+          "via": "search",
+          "note": "Headline-level confirmation of the 84-game season.",
+          "verified": true
+        },
+        {
+          "title": "NHL Announces 2026-27 Regular-Season Schedule, Newly Expanded to 84 Games",
+          "url": "https://media.nhl.com/public/news/19975",
+          "date": "",
+          "snippet": "League media-site release headline stating the 2026-27 regular-season schedule is newly expanded to 84 games.",
+          "via": "search",
+          "note": "Primary source for the 84-game schedule, independent of ESPN.",
+          "verified": true
+        },
+        {
+          "title": "National Hockey League 2026-27 season: Key dates and answers to frequently asked questions",
+          "url": "https://olympics.com/en/news/national-hockey-league-2026-27-season-key-dates-and-answers-to-frequently-asked-questions",
+          "date": "",
+          "snippet": "Olympics.com explainer on the 2026-27 season key dates; used only as a third outlet covering the new schedule.",
+          "via": "search",
+          "note": "Dates in the blended search summary (opening 29 Sept, regular season ending 10 April) are not shown as fact.",
+          "verified": false
+        },
+        {
+          "title": "IIHF World Championship tournament info (2024)",
+          "url": "https://www.iihf.com/en/events/2024/wm/tournamentinfo/55238/tournament_info",
+          "date": "",
+          "snippet": "Official tournament info page; per the search summary it describes 3 points for a regulation win with an extra point for the overtime or shootout winner, so 2 and 1 for the OT winner and loser.",
+          "via": "search",
+          "note": "Same organization as the 2019 page, so no independent confirmation of the 3-2-1-0 scale.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The NHL released a regular-season schedule expanded to 84 games for 2026-27 (ESPN and the league's own media site both carry this in their headlines, seen 2026-10-12).",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per arXiv 2605.25610, last-round matches are sorted into stakeless, asymmetric, collusive and competitive classes under a single qualification prize (reported from search text, not confirmed).",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per arXiv 2601.09673, a probabilistic six-category match classification for low-scoring sports was posted in January 2026 and applied to UEFA's league phase (reported, unconfirmed).",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per IIHF tournament info pages, international hockey awards 3 points for a regulation win, 2 for an overtime or shootout win and 1 for an overtime or shootout loss (reported from one organization, unconfirmed).",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "the magic-number tracker in a playoff race",
+        "group-stage permutation calculators",
+        "logic grid puzzles",
+        "classic tales of group games where a draw suited both sides"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick a fictional four-team group and a points rule; the page enumerates all outcomes of the two simultaneous final games (regulation or overtime result either way) and labels each match, highlighting the exact outcomes that make both sides happy. Puzzle mode sets goals such as 'make both matches competitive', 'find the group where only an overtime suits both teams' or 'fix this schedule so no match is stakeless', graded by the solver. Repeat play comes from seeded daily groups, different rule sets and a par score for fewest edits, with the proof table as the satisfying reveal.",
+      "sophisticationHooks": [
+        "Exact scenario enumeration of 16 outcome combinations with qualification checks and tie handling shown explicitly",
+        "Rule-set switch between NHL-style loser point and 3-2-1-0 international scale that changes which matches turn collusive",
+        "Interactive standings editor with drag-to-adjust points and a live classification badge on each match",
+        "Puzzle mode with seeded daily groups, par scores and a shareable URL-hash state"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Build: fictional teams with drawn crests, standings editor, solver in a worker or plain function, match badges, proof table, rule switch, 12 to 15 hand-checked puzzles plus a seeded daily generator, hash state, about panel with dated sources. Cut: real standings, live NHL data, goal-difference tiebreak depth beyond a clearly stated simplification, bigger groups.",
+      "risks": [
+        "Tiebreakers (head-to-head, goal difference) are simplified; ties on points are shown as 'unresolved' and the about panel says so, so results are an illustration, not the papers' exact models.",
+        "The overtime-point twist is the page's own extension and is labelled as such; no claim is made that real teams have colluded or would.",
+        "Paper details are unverified (search text only) and the 3-2-1-0 scale comes from a single organization; the page states them as 'as of 2026-10-12, per <source>'.",
+        "The hook links the 84-game season to the puzzle loosely; the page does not claim NHL playoff races use round-robin groups and uses only fictional teams.",
+        "The 84-game schedule is verified by headlines only; dates from the blended summary (opening night, season end) are left off the page."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "cards-1",
+    "title": "Commute Or Else",
+    "pitch": "Each day deals a rack of seven operator tiles (add chips, add mult, multiply mult, echo the previous two tiles, mirror a neighbour, raise mult to a power) plus one immovable bedrock tile, and you slide them into the order that scores highest. A live score tree shows chips and mult after every tile, then a histogram of all 5,040 possible orderings reveals where your arrangement sits in a wildly long-tailed distribution, and an exact solver tells you the par. The delight is the first time you see one swap turn 400 into 4,000, and the palindrome rule that rewards symmetric racks.",
+    "whyNow": "Timeless: ordering effects in chips-times-mult scoring are a perennial talking point among deckbuilder players, and a daily seeded puzzle with a shareable result grid keeps the page worth revisiting.",
+    "origin": {
+      "agent": "cards",
+      "lens": "balatro-score-math"
+    },
+    "fingerprint": {
+      "category": "cards-odds",
+      "mechanic": "puzzle",
+      "tone": [
+        "analytical",
+        "playful",
+        "nerdy"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "worker",
+        "pointer-events",
+        "localstorage"
+      ],
+      "tags": [
+        "operator-order",
+        "permutations",
+        "non-commutative",
+        "multiplier-algebra",
+        "daily-puzzle",
+        "score-histogram",
+        "retrigger",
+        "exact-enumeration"
+      ],
+      "keywords": [
+        "order-of-operations",
+        "chips-times-mult",
+        "factorial",
+        "par-score",
+        "score-tree",
+        "palindrome-bonus",
+        "bedrock-tile",
+        "share-grid"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "research": {
+      "summary": "Community guides on deckbuilder joker order agree on the shape of the maths: effects resolve left to right, flat mult belongs before multiplicative mult, and copy effects care about position (one copies its right neighbour, another copies the leftmost slot). That is exactly a non-commutative algebra, (c+a)*b differs from c*b+a, which I derived myself and will self-check in node. The number of orderings of eight items is 8! = 40320 per several counting references, so a rack of 7 movable tiles plus one fixed tile (5,040 orderings) is small enough for exact enumeration in a worker in milliseconds and big enough to have a fat-tailed score distribution worth drawing. Several community claims (exact examples, edge cases for scoring-triggered effects) were contradicted by one forum user, so the page uses its own stated rules, invented tile names and does not claim to reproduce any commercial game.",
+      "sources": [
+        {
+          "title": "Best Joker Order in Balatro",
+          "url": "https://progameguides.com/balatro/best-joker-order-in-balatro/",
+          "date": "",
+          "snippet": "Guide reasoning that flat mult sources go left of multiplicative ones, that effects resolve left to right, with a worked example where moving a multiplier to the end raises a hand total (46 to 58.5).",
+          "via": "search",
+          "note": "Order-sensitivity of additive vs multiplicative mult; seen in a search result only, summary was blended with other results so not counted as independently agreed.",
+          "verified": false
+        },
+        {
+          "title": "destructoid.com (joker order result)",
+          "url": "https://destructoid.com/?p=478541",
+          "date": "",
+          "snippet": "Result returned for a query on joker scoring order; the search summary says jokers generally trigger left to right and recommends flat mult before X mult.",
+          "via": "search",
+          "note": "Corroborates the left-to-right convention at the topic level; blended summary, only the title and URL are certain.",
+          "verified": false
+        },
+        {
+          "title": "Steam community discussion on joker order",
+          "url": "https://steamcommunity.com/app/2379780/discussions/0/4334231842063363125",
+          "date": "",
+          "snippet": "Forum thread returned for both order queries; a user reports seeing multipliers apply first regardless of position but admits the test was uncontrolled.",
+          "via": "search",
+          "note": "Shows the community disagreement on edge cases, hence the page defines its own rules explicitly.",
+          "verified": false
+        },
+        {
+          "title": "Balatro Strategy Guide: The Joker Combos That Actually Win Runs",
+          "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+          "date": "",
+          "snippet": "Strategy guide returned for copy-effect queries; summary says one copy joker reads its right neighbour, another reads the leftmost slot, and copies can chain.",
+          "via": "search",
+          "note": "Positional copy rules inspire the mirror and echo tiles; summary blended across results, so unverified.",
+          "verified": false
+        },
+        {
+          "title": "balatro jokers guide (games.gg)",
+          "url": "https://games.gg/balatro/guides/balatro-jokers-guide/",
+          "date": "",
+          "snippet": "Jokers guide returned for the Blueprint/Brainstorm query; indicates position-dependent copy behaviour.",
+          "via": "search",
+          "note": "Second site listed for the positional copy rule, but the per-result text was not visible.",
+          "verified": false
+        },
+        {
+          "title": "8! == 40320 (Wolfram Functions)",
+          "url": "https://functions.wolfram.com/GammaBetaErf/Factorial/03/02/0011",
+          "date": "",
+          "snippet": "Reference page whose title states the factorial identity 8! = 40320.",
+          "via": "search",
+          "note": "Counts orderings of eight items; independent of the gatech handout.",
+          "verified": true
+        },
+        {
+          "title": "Counting handout (Georgia Tech)",
+          "url": "https://www2.isye.gatech.edu/~hsharp/math3070/counting.pdf",
+          "date": "",
+          "snippet": "Course handout that, per the search summary, uses 8! for the number of ways to order eight things (a salesman visiting eight cities).",
+          "via": "search",
+          "note": "Second independent source for 8! = 40320 orderings; I also recompute it in node.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "There are 8! = 40320 ways to order eight distinct items, so 7 movable tiles around one fixed tile give 7! = 5040 orderings (reference, as of 2026-10-12).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Community guides recommend flat mult sources left of multiplicative mult sources because jokers resolve left to right. Page text will say: as of 2026-10-12, per community guides, unconfirmed.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "One forum user reported different behaviour for scoring-triggered effects, so edge cases are disputed in the community (unverified).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Position-based copy effects exist in the inspiration game (one reads its right neighbour, one reads the leftmost slot); reported by guides, unverified.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "joker-order debates in deckbuilder communities",
+        "puzzle-a-day share grids",
+        "histogram of all outcomes as in solver reports",
+        "golf par scoring"
+      ]
+    },
+    "design": {
+      "coreLoop": "Read today's rack and target, drag or keyboard-move tiles into slots, watch the score tree update tile by tile, submit, then see your rank among all 5,040 orderings and the solver's par. The second minute is learning that add-before-multiply is not always best (echo and mirror tiles and the exponent tile bend it); the tenth is hunting palindromic racks and chasing par with fewer moves. A seeded daily rack plus unlimited practice racks by hash keeps it fresh.",
+      "sophisticationHooks": [
+        "Exact enumeration of all orderings in a worker with a histogram showing where the player's order lands (percentile, par, worst)",
+        "Score tree waterfall that shows chips and mult after each tile, with a reverse-the-rack toggle to show non-commutativity",
+        "Tile set with echo (repeat previous two tiles, the riff), mirror (copy right neighbour), exponent, bedrock (fixed slot) and a palindrome symmetry bonus",
+        "Seeded generator guarantees a unique optimum, and a node self-check validates the evaluator against hand-computed racks"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: tile evaluator and enumerator (pure functions), seeded rack generator, drag and keyboard slotting, score tree SVG, histogram, share string and URL hash, about panel, light and dark, reduced motion. Cut: accounts, leaderboards, animations beyond tile slide, sound.",
+      "risks": [
+        "Resemblance to a past scoring-engine toy: tags avoid joker and mod vocabulary and the loop is a puzzle, not a sandbox",
+        "Community rule claims are unverified, so the page uses its own invented tile names and states its rules rather than claiming to reproduce any game",
+        "Unique-optimum racks need generator care; fall back to showing ties",
+        "Floating point: keep scores as integers under 2^53 by capping the exponent tile"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "cards-2",
+    "title": "Synergy Overflow",
+    "pitch": "You are the founder of an invented company pitching buzzword cards to a very gullible board: some add headcount, some add hype, some multiply it by synergy, and a few raise it to a power called disruption. Targets grow like an idle game's cost curve, order matters, and by quarter twenty the numbers have names nobody learned, until the page finally overflows into a deliberate, theatrical NaN-e-Inf board meeting. The joke is the deadpan corporate voice, the payoff is watching the maths run out of numbers.",
+    "whyNow": "Timeless satire of numbers-go-up design and corporate buzzword inflation; it also fills the owed humor slot with a real mechanic rather than a one-liner.",
+    "origin": {
+      "agent": "cards",
+      "lens": "balatro-score-math"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "game",
+      "tone": [
+        "satirical",
+        "absurd",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations",
+        "localstorage"
+      ],
+      "tags": [
+        "corporate-satire",
+        "big-numbers",
+        "exponent-stacking",
+        "overflow-joke",
+        "buzzword-cards",
+        "log-space-math",
+        "numbers-go-up",
+        "roguelike-run"
+      ],
+      "keywords": [
+        "synergy",
+        "quarterly-target",
+        "scientific-notation",
+        "named-numbers",
+        "infinity",
+        "idle-game-math",
+        "board-meeting",
+        "disruption"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Incremental and idle games rest on a simple recipe: costs rise exponentially (a growth factor of 1.15 per purchase is the convention popularised by one famous clicker, per an analysis paper and a developer write-up) while income rises more slowly, so designers tune payback time and reset with prestige. The deckbuilder community has a famous joke ending: scores that exceed double precision display as a garbled overflow word, with an endless-mode wall and mods that push the cap far higher. That pairing, exponential targets plus an overflow punchline, is a real mechanic with a built-in comedic ending. The satire targets generic corporate speak with an invented company; no real firms or people.",
+      "sources": [
+        {
+          "title": "Cookie Clicker (arXiv analysis)",
+          "url": "https://arxiv.org/pdf/1808.07540",
+          "date": "",
+          "snippet": "Paper analysing the clicker game states that its cost growth factor alpha is 1.15 per purchase.",
+          "via": "search",
+          "note": "Source for the 1.15 convention; agrees with the dev.to walkthrough.",
+          "verified": true
+        },
+        {
+          "title": "An idle clicker has no engine and no sprites (DEV Community)",
+          "url": "https://dev.to/dev48v/an-idle-clicker-has-no-engine-and-no-sprites-its-one-raf-loop-paying-you-production-x-k03",
+          "date": "",
+          "snippet": "Walkthrough using price = base cost times 1.15 to the n and payback time as cost divided by extra income per second.",
+          "via": "search",
+          "note": "Independent second source for 1.15 and the payback-time tuning metric.",
+          "verified": true
+        },
+        {
+          "title": "The math of idle games, part I (Game Developer)",
+          "url": "https://www.gamedeveloper.com/design/the-math-of-idle-games-part-i",
+          "date": "",
+          "snippet": "Design article on the maths of idle games, returned for the cost-curve query; cost grows exponentially while production grows linearly or polynomially.",
+          "via": "search",
+          "note": "Background on exponential costs versus slower income; summary was blended.",
+          "verified": false
+        },
+        {
+          "title": "GameAnalytics idle game design article",
+          "url": "https://gameanalytics.com/?p=6634",
+          "date": "",
+          "snippet": "Explains that exponential costs eventually outpace income and prestige resets let players push further along the cost curve.",
+          "via": "search",
+          "note": "Prestige-reset framing, which becomes the 'restructure the company' mechanic.",
+          "verified": false
+        },
+        {
+          "title": "SGDQ 2026: Stressful Balatro naneinf Run On Stage",
+          "url": "https://setsideb.com/?p=12635",
+          "date": "2026",
+          "snippet": "Write-up of a live speedrun event run that reached the naneinf overflow state in a bit over an hour, naming the word as NaN plus e plus Inf.",
+          "via": "search",
+          "note": "The overflow joke is real and celebrated in the community.",
+          "verified": true
+        },
+        {
+          "title": "Steam discussion on naneinf",
+          "url": "https://steamcommunity.com/app/2379780/discussions/0/4338734550482070397",
+          "date": "",
+          "snippet": "Community thread estimating that the overflow happens near the double-precision limit of roughly 10 to the 308.",
+          "via": "search",
+          "note": "Independent site agreeing that a naneinf overflow state exists.",
+          "verified": true
+        },
+        {
+          "title": "Talisman mod description",
+          "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/MathIsFun0@Talisman/description.md",
+          "date": "",
+          "snippet": "Mod description saying it raises the score cap to roughly 10 to the 1000 so runs can go past the overflow point.",
+          "via": "search",
+          "note": "Third site mentioning the cap and that mods extend it.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A cost growth factor of 1.15 per purchase is a common idle-game convention, cited for one famous clicker (as of 2026-10-12).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "In the inspiration game, scores beyond the floating-point limit show as an overflow state nicknamed naneinf, discussed by an event write-up, a forum thread and a mod description (as of 2026-10-12).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5,
+            6
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The double-precision limit is about 1.8 times 10 to the 308; one forum estimate puts the overflow near that figure. The page will compute this itself in the browser and label the forum figure as reported.",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "A 2026 live event write-up reports a player reaching the overflow state in a run of about 1 hour 16 minutes (reported by one source, unverified).",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "incremental and idle games",
+        "prestige resets",
+        "scientific-notation named-number lists",
+        "corporate buzzword bingo",
+        "the overflow joke ending of deckbuilder endless modes"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each quarter the board sets a target; you draw five buzzword cards, play up to four in an order you choose, and the score tree runs in front of you with a deadpan commentary line per card. Beat the target to get a perk card for the deck or restructure (prestige) to reset with a permanent multiplier. It stays interesting because order, exponent cards and a rising deck-thinning decision make each draw a small optimisation, and because the ending is a joke worth reaching.",
+      "sophisticationHooks": [
+        "Log-space big-number type (mantissa plus exponent) with named-number formatting beyond the 15-digit double limit",
+        "Target curve built from a tunable growth factor and payback-time check so a run lasts about 25 quarters",
+        "Optional chief-of-staff hint that brute-forces card orders and shows the best order score without revealing the card choice",
+        "Scripted overflow finale: the display glitches into NaN-e-Inf, the board applauds, and the run ends with a shareable certificate"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: card pool of about 30 invented buzzword cards, run loop with seeded draws, big-number class with tests, commentary lines, overflow finale, share string, about panel, light and dark, reduced motion. Cut: sound, meta-progression beyond one prestige layer, more than one company.",
+      "risks": [
+        "Humor must land: commentary lines need a writing pass and generic invented company names only, no real firms, brands or people",
+        "Looks like an idle toy; mitigate with decisions every turn and a defined ending",
+        "Overlap with the carried-over Breaking Changes humor idea is thematic only (corporate voice), so the mechanic and subject are different",
+        "Floating-point claims: the page states the double limit as computed in-browser and labels forum figures as reported",
+        "Event write-up detail (run time) is from one result and stays unverified"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "lab-1",
+    "title": "Over Your Shoulder",
+    "pitch": "An essay about attention opens with a doorbell; how long and how rhythmically the visitor presses it is the page's first guess at them. As they read, the page quietly measures dwell time per paragraph, scroll reversals, pointer stillness and tab-aways, then shows a hedged margin note ('you slowed down here, about 60 percent sure') and rewrites later paragraphs to mirror the reader: shorter for skimmers, echoing for re-readers, footnoted for lingerers. It ends with a generated reading portrait and a shareable hash, and the fun is performing as a different reader on purpose to collect all the portraits.",
+    "whyNow": "Timeless. Form-breaking early-web spirit: the interface is the content, and the rule (the page adapts to how you read it, nothing leaves the device) is felt within ten seconds.",
+    "origin": {
+      "agent": "lab",
+      "lens": "weird-web"
+    },
+    "fingerprint": {
+      "category": "weird-experimental",
+      "mechanic": "story",
+      "tone": [
+        "playful",
+        "dramatic",
+        "serene"
+      ],
+      "tech": [
+        "dom-ui",
+        "canvas2d",
+        "pointer-events",
+        "webaudio",
+        "web-animations"
+      ],
+      "tags": [
+        "net-art",
+        "reading-behavior",
+        "adaptive-text",
+        "generative-portrait",
+        "interface-as-content",
+        "attention",
+        "doorbell",
+        "local-only"
+      ],
+      "keywords": [
+        "dwell-time",
+        "scroll-reversal",
+        "cursor-as-gaze",
+        "reading-portrait",
+        "hedged-guess",
+        "url-hash",
+        "variant-text",
+        "archetypes"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "Net art of the 1990s made the browser's own layers the subject: JODI projects expose code and fake error screens as primary content, and one 1998 piece redirects the browser so its history list becomes a visible pattern. Modern weird-web examples react to the viewer (blink-triggered warping, text that scrambles under the mouse), but I found none that reads reading itself and rewrites the essay accordingly. The honest science: a CHI 2012 eye-tracking study (36 subjects, 32 tasks) found cursor and gaze only sometimes align, with reading, hesitating and scrolling meaning different things. So the page will present its inferences as hedged guesses and admit when it is wrong, which becomes part of its voice.",
+      "sources": [
+        {
+          "title": "Web Work: A History of Internet Art (Artforum)",
+          "url": "https://www.artforum.com/print/200005/web-work-a-history-of-internet-art-465",
+          "date": "2000-05",
+          "snippet": "Artforum's history of internet art, as summarised in a search result, notes that in many JODI projects the exposed programming forms the primary content, making the hidden layer of a page the subject.",
+          "via": "search",
+          "note": "Establishes interface and code as content in early net art.",
+          "verified": true
+        },
+        {
+          "title": "artelectronicmedia.com (Shanken account of JODI)",
+          "url": "https://artelectronicmedia.com/en/?p=184",
+          "date": "",
+          "snippet": "A quoted account describes a 1999 visit to jodi.org returning a mock error message, and a 404 page whose live links lead into other parts of the site.",
+          "via": "search",
+          "note": "Second independent result: errors and browser behaviour as artistic material.",
+          "verified": true
+        },
+        {
+          "title": "Upstream's Daily Net Art Update (#10)",
+          "url": "https://www.upstreamgallery.nl/news/689/upstreams-daily-net-art-update-10",
+          "date": "",
+          "snippet": "Gallery text on ASDFG (1998): the browser is continually redirected from page to page so the visitor's history list becomes a visible pattern.",
+          "via": "search",
+          "note": "Precedent for a page that uses the visitor's browsing trace as material. Single result.",
+          "verified": false
+        },
+        {
+          "title": "User See, User Point: Gaze and Cursor Alignment in Web Search (Microsoft Research, CHI 2012)",
+          "url": "https://www.microsoft.com/en-us/research/?p=163078",
+          "date": "2012",
+          "snippet": "Eye-tracking study with 36 subjects and 32 search tasks questions the assumption that gaze is well approximated by the cursor; cursor behaviours such as reading, hesitating, scrolling and clicking carry different meaning.",
+          "via": "search",
+          "note": "Shapes the design: cursor is a weak, conditional proxy for gaze, so the page hedges. Same-organisation PDF also seen, so counted as one source.",
+          "verified": false
+        },
+        {
+          "title": "this website changes every time you blink (Vice)",
+          "url": "https://www.vice.com/en/article/jg8aap/this-website-changes-every-time-you-blink",
+          "date": "",
+          "snippet": "Coverage of a site that warps when the viewer's eyes close; the result summary lists other reactive weird sites, some that scramble text under the mouse and one that fades text if you do not blink.",
+          "via": "search",
+          "note": "Shows reactive-to-viewer sites exist but rely on webcam or simple triggers; summary was blended across results.",
+          "verified": false
+        },
+        {
+          "title": "My Boyfriend Came Back from the War (ACMI)",
+          "url": "https://www.acmi.net.au/works/61355--my-boyfriend-came-back-from-the-war/",
+          "date": "",
+          "snippet": "A 1996 browser-based work by Olia Lialina in which each click splits the frame into smaller frames until the screen is a mosaic of empty black frames, telling a nonlinear story.",
+          "via": "search",
+          "note": "Precedent for story told by the browser frame itself; several secondary accounts agreed but the summary was blended.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Per Artforum and a quoted account of jodi.org, JODI works treat exposed code and mock error messages as primary content, as of the sources seen on 2026-10-12.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per Upstream Gallery, the 1998 work ASDFG redirects the browser page to page so the visitor's history list becomes a visible pattern.",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per Microsoft Research (CHI 2012), a study of 36 subjects on 32 search tasks found gaze and cursor only sometimes aligned, so the cursor is a conditional proxy for gaze.",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per ACMI, Olia Lialina's 1996 'My Boyfriend Came Back from the War' splits browser frames with each click until the screen becomes a mosaic of black frames.",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "JODI web works",
+        "My Boyfriend Came Back from the War",
+        "ASDFG",
+        "blink-reactive weird sites",
+        "degenerative net art",
+        "marginalia and reading-diary conventions"
+      ]
+    },
+    "design": {
+      "coreLoop": "Ring the doorbell, read a paragraph, see the margin guess, then read the next paragraph that has been chosen from hand-written variants by the running reader model. Pass 1 teaches the rule; pass 2 is play: the visitor performs a reader (skimmer, rereader, lingerer, restless, deliberate) to steer the text and collects distinct portraits and endings. Each portrait is a deterministic canvas glyph of six numbers, so it can be compared and shared through the URL hash.",
+      "sophisticationHooks": [
+        "Reader model: dwell per word, scroll reversals, pointer stillness and horizontal sweeps, tab-away, touch dwell, each blended into five bounded scores with documented thresholds and decay",
+        "Variant text: each paragraph has 3 hand-written versions selected deterministically from the profile, so behaviour is testable with simulated readers",
+        "Honest hedging: confidence shown as words and bars, with a visible 'I was wrong about you' moment when the profile flips, grounded in the cursor-vs-gaze research",
+        "Reading portrait: seeded canvas glyph plus archetype name and hash export; doorbell ring rhythm synthesised procedurally"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: doorbell opener with procedural chime, 8 short paragraphs with 3 variants each (about 1,400 words of copy), reader-model module with simulated-reader test hook, margin-note engine, portrait canvas renderer, hash codec, keyboard path (j/k, space, dwell by key rhythm), a manual 'tell the page how you read' panel for screen-reader and no-pointer users, about/making-of panel. Cut: any webcam or eye tracking, any storage of behaviour, multi-essay support.",
+      "risks": [
+        "Privacy perception: the page must state plainly that nothing is stored or sent and no camera or microphone is used; keep all measurements in memory only.",
+        "Cursor-as-gaze is unreliable (CHI 2012 result is search-only, unverified here): the page shows it as 'as of 2026-10-12, per Microsoft Research' and treats every inference as a guess.",
+        "Touch and keyboard readers lack pointer signals: fall back to scroll velocity and dwell, and provide the manual panel.",
+        "Copy volume (24 variant paragraphs) is the schedule risk: write 5 paragraphs fully first, then expand.",
+        "Reduced motion: text mutation must fade or swap without animation when requested."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "lab-2",
+    "title": "Tolls In Kind",
+    "pitch": "A short, sincere essay about how web pages learned to charge for attention sits behind a run of toll gates, and none of them take money. Each gate asks for payment in kind (patience, dignity, spare seconds, a held-still cursor) behind a sign that lies in one specific, learnable way: a decline button worded as a guilt trip, a price list that quietly inverts, fine print that is the real exit. Spot the rule and the toll drops; misread it and the price rises. Each cleared gate unlocks the next paragraph and a codex card naming the trick, and the run ends with an itemised receipt and a daily seed to compare.",
+    "whyNow": "Timeless satire of consent banners and paywalls, owed to the humor slot this week. The form-breaking twist is that the interface is the joke and the essay is the prize.",
+    "origin": {
+      "agent": "lab",
+      "lens": "weird-web"
+    },
+    "fingerprint": {
+      "category": "weird-experimental",
+      "mechanic": "puzzle",
+      "tone": [
+        "satirical",
+        "absurd",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "pointer-events",
+        "web-animations",
+        "procedural-audio",
+        "localstorage"
+      ],
+      "tags": [
+        "dark-patterns",
+        "web-satire",
+        "gatekeeping",
+        "interface-as-content",
+        "hidden-rule",
+        "codex",
+        "seeded-run",
+        "attention-economy"
+      ],
+      "keywords": [
+        "consent-banner",
+        "confirmshaming",
+        "nagging",
+        "obstruction",
+        "toll-gate",
+        "receipt",
+        "daily-seed",
+        "play-currency"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Deceptive-design patterns are well catalogued: several taxonomies exist (Brignull's list with confirmshaming and roach motels; the nagging, obstruction and sneaking grouping used in academic work; the European Data Protection Board's six categories), which gives the gates a real, named rule set to parody. Games about hostile cookie banners already exist (a Berlin university arcade game and a hackathon for the most annoying banners), so this idea differs by making every gate a small hidden-rule puzzle with a different toll currency, gating an actual essay, and by naming the real trick afterwards in a codex.",
+      "sources": [
+        {
+          "title": "Beat the Cookie Monster (arcade game, Freie Universitaet Berlin)",
+          "url": "https://www.mi.fu-berlin.de/en/inf/groups/hcc/activities/events_public-talks2/LNDW2024_EventReport/Arcade-Game_Beat-the-Cookie-Monster.html",
+          "date": "2024",
+          "snippet": "Event report on an arcade game where players must reject deceptive cookie banners; a wrong agreement costs one of three lives.",
+          "via": "search",
+          "note": "Prior art for banner-rejection as a game; defines what to differentiate from.",
+          "verified": true
+        },
+        {
+          "title": "Wasp most-annoying cookie banner hackathon (OpenSaaS blog)",
+          "url": "https://docs.opensaas.sh/blog/4/",
+          "date": "",
+          "snippet": "A blog post about asking users to build the most irritating cookie banners, with community voting; entries include a find-all-the-cookies hidden-element gag.",
+          "via": "search",
+          "note": "Second independent result that parodies of hostile banners are a known playful genre.",
+          "verified": true
+        },
+        {
+          "title": "10 dark patterns in ux design (Bejamas)",
+          "url": "https://bejamas.com/insights/field-notes/10-dark-patterns-in-ux-design",
+          "date": "",
+          "snippet": "Practitioner overview of common dark patterns; the search summary credits Brignull with coining the term and listing 12 categories including confirmshaming and roach motels.",
+          "via": "search",
+          "note": "Source for the pattern vocabulary; the count of 12 came from a blended summary.",
+          "verified": false
+        },
+        {
+          "title": "Dark Patterns Deceptive Design (University of Washington course slides)",
+          "url": "https://courses.cs.washington.edu/courses/cse340/22sp/slides/wk09/Dark-Patterns-Deceptive-Design.pdf",
+          "date": "2022",
+          "snippet": "Course slides grouping patterns into nagging, obstruction and sneaking, with nagging defined as repeated interruption during normal interactions.",
+          "via": "search",
+          "note": "Gives gate families a taxonomy; single result for this grouping.",
+          "verified": false
+        },
+        {
+          "title": "The Most Annoying UX Patterns of the Modern Web. Part 1 (UX Planet)",
+          "url": "https://uxplanet.org/the-most-annoying-ux-patterns-of-the-modern-web-6605ae2fb6e5",
+          "date": "",
+          "snippet": "Article listing familiar irritating web patterns, relevant as a source of recognisable gate behaviours for parody.",
+          "via": "search",
+          "note": "Supports the idea that the targets are widely recognised; I did not see its body text.",
+          "verified": false
+        },
+        {
+          "title": "A Comprehensive Study on Dark Patterns (arXiv)",
+          "url": "https://arxiv.org/pdf/2412.09147",
+          "date": "2024-12",
+          "snippet": "A 2024 arXiv study that tabulates dark pattern types under categories such as nagging, obstruction and sneaking, with severity ratings.",
+          "via": "search",
+          "note": "Academic backing for the category grouping; exact labels not seen.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-12, a Freie Universitaet Berlin event report and an OpenSaaS blog post each describe games or contests built around deliberately hostile cookie banners, so the genre exists and this idea must differ from it.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per a University of Washington slide deck, dark patterns are grouped into nagging, obstruction and sneaking.",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per Bejamas, the term dark patterns was coined by a UX designer who listed categories such as confirmshaming and roach motel (the count of 12 is unconfirmed).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "Beat the Cookie Monster",
+        "most-annoying-cookie-banner hackathons",
+        "paywall and upsell modals",
+        "nag screens",
+        "text adventures with locked doors",
+        "tollhouse and customs-checkpoint comedy"
+      ]
+    },
+    "design": {
+      "coreLoop": "A gate appears with a sign and a price in a play currency. The visitor reads the sign for the lie (which button is real, which number inverts, where the exit hides), pays, negotiates or finds the loophole, and the paragraph behind the gate is revealed. Gates come from 8 rule families, seeded by the URL hash, so each run reshuffles the tricks and prices. The loop rewards the second minute (recognising a family) and the tenth (reading faster for a lower receipt and filling the codex).",
+      "sophisticationHooks": [
+        "Seeded gate generator: 8 rule families by 3 skins each, with price curves that rise on a misread and fall on a correct read, deterministic from the hash",
+        "Three play currencies (patience, dignity, spare seconds) with different spend mechanics; explicitly no real money or payment fields",
+        "Codex that names the real trick after each gate, tying the joke to the documented taxonomy with 'as of' dating",
+        "Itemised receipt and daily-seed compare, with an always-visible 'skip with shame' escape hatch that logs a costume-drama penalty"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: 8 gate families with 3 skins each (24 short interactions, each solvable in under 15 seconds), seeded generator, wallet and receipt, 8-paragraph essay, codex with localStorage (try/catch, optional), keyboard and touch alternatives for every gate, about/making-of panel. Cut: sound beyond a few procedural blips, multiplayer, any real payment look-alike, any real brand or banner imitation.",
+      "risks": [
+        "Prior art: banner-rejection games exist (FU Berlin, Wasp hackathon); differentiate through hidden-rule puzzles, the essay prize and the codex.",
+        "Frustration by design can tip into just being annoying: cap each gate's time, add the skip-with-shame hatch, keep the tone warm.",
+        "Accessibility: hold-still and timing gates need non-motor alternatives and reduced-motion variants.",
+        "Humor-satire/game neighbours in today's pool (the carried-over Breaking Changes idea) share the satire tone; this one is a puzzle in the weird-experimental category with different form.",
+        "Pattern-taxonomy claims are search-only; the codex shows them as 'as of 2026-10-12, per <source>' and avoids the unconfirmed count of 12.",
+        "No real company banners or logos: all brands invented, all marks drawn."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "jester-1",
+    "title": "Tongue Slip Parlour",
+    "pitch": "A parlour where sounds trade places. Type any phrase and a rule engine splits every word into onset and rime, tries every swap between word pairs, and ranks the ones where both halves land as real words, drawing the sounds as tiles that physically change seats. Then play the second side: an Untwist puzzle shows a scrambled phrase and the visitor works out the original, with a seeded daily deck and a link that shares the exact puzzle.",
+    "whyNow": "Timeless: a self-contained language toy with a daily puzzle, no news hook needed. It also fills the owed humor slot with a joke that is a rule the visitor discovers.",
+    "origin": {
+      "agent": "jester",
+      "lens": "word-play"
+    },
+    "fingerprint": {
+      "category": "language-text",
+      "mechanic": "puzzle",
+      "tone": [
+        "playful",
+        "nerdy",
+        "absurd"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations",
+        "speech",
+        "localstorage"
+      ],
+      "tags": [
+        "spoonerism",
+        "onset-rime",
+        "wordplay",
+        "word-puzzle",
+        "phonology",
+        "daily-puzzle",
+        "tongue-slip",
+        "constraint-writing"
+      ],
+      "keywords": [
+        "onset-swap",
+        "rime",
+        "digraph-table",
+        "bundled-lexicon",
+        "untwist",
+        "seeded-daily",
+        "swap-scoring",
+        "read-aloud"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "A spoonerism swaps the opening sounds of two words, as a slip or on purpose, and is named for an Oxford clergyman of the late 19th and early 20th centuries; two separate explainers agree on that, and one adds that many famous quotes credited to him are doubtful, so the page will call its examples traditional or invented, never documented. Search results show the idea has prior art but no polished browser toy that ranks swaps and turns them into a puzzle: a phoneme-based Python package, a spelling-based Rust crate, a browser extension that rewrites page text, and a Finnish JavaScript solver for sananmuunnos, the local cousin of the form. A Finnish academic article frames spoonerisms as a constraint procedure akin to Oulipo, which supports the design of explicit, inspectable rules. The big pronouncing dictionary's licence was reported inconsistently across results, so nothing from it is bundled: the lexicon is hand-written (about 2500 common words with onset and rime splits and part-of-speech tags) and the engine's rules are original.",
+      "sources": [
+        {
+          "title": "Spoonerism - Grammar Monster",
+          "url": "https://www.grammar-monster.com/interesting-words/spoonerism.htm",
+          "date": "",
+          "snippet": "Explains the term as coming from the Oxford clergyman William Archibald Spooner (1844 to 1930) and defines it as a swap of the initial sounds of two words, by slip or on purpose.",
+          "via": "search",
+          "note": "Definition and namesake dates; found with a single-domain search so the attribution is unambiguous.",
+          "verified": true
+        },
+        {
+          "title": "Spoonerism Definition: 3 Examples of Spoonerisms - 2026 - MasterClass",
+          "url": "https://www.masterclass.com/articles/spoonerism-explained",
+          "date": "2026",
+          "snippet": "Describes the same namesake (1844 to 1930, Warden of New College), the swap of opening sounds, and notes that many anecdotes credited to him are disputed.",
+          "via": "search",
+          "note": "Independent second source for the definition and namesake; also source of the doubtful-attribution caution.",
+          "verified": true
+        },
+        {
+          "title": "Sananmuunnos - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Sananmuunnos",
+          "date": "",
+          "snippet": "Finnish counterpart of the spoonerism. Reported to swap morae rather than syllables, and Finnish suffixes make many swaps yield valid words.",
+          "via": "search",
+          "note": "Cultural cousin for the about panel; seen only in a search summary.",
+          "verified": false
+        },
+        {
+          "title": "sananmuunnos.js - GitHub",
+          "url": "https://github.com/tuukkao/sananmuunnos.js",
+          "date": "",
+          "snippet": "A JavaScript solver for Finnish word transformations, showing that a rule-based swap engine runs fine in plain browser code.",
+          "via": "search",
+          "note": "Prior art that confirms feasibility; code is not reused.",
+          "verified": false
+        },
+        {
+          "title": "spooner 0.5.11 - PyPI",
+          "url": "https://pypi.org/project/spooner/0.5.11/",
+          "date": "",
+          "snippet": "A Python package that builds spoonerisms from sounds rather than spelling; its sample turns a two-word phrase about trails and snacks into one about snails and tracks.",
+          "via": "search",
+          "note": "Shows the sound-based approach; our version uses a hand-made onset table instead.",
+          "verified": false
+        },
+        {
+          "title": "Vakavan sanaleikin mahdollisuudet kotimaisen nykyrunouden anagrammeissa ja spoonerismeissa - JYX",
+          "url": "https://jyx.jyu.fi/handle/123456789/82122",
+          "date": "",
+          "snippet": "A Finnish academic work on serious wordplay that treats anagrams and spoonerisms as constraints, tying them to the Oulipo tradition.",
+          "via": "search",
+          "note": "Supports presenting the swap rules as visible constraints.",
+          "verified": false
+        },
+        {
+          "title": "zummi - Rust crate",
+          "url": "https://rust-digger.code-maven.com/crates/zummi",
+          "date": "",
+          "snippet": "A simple spelling-based spoonerism tool that replaces the beginnings of words.",
+          "via": "search",
+          "note": "Shows the naive approach, whose spelling pitfalls (silent letters, digraphs) the engine must handle.",
+          "verified": false
+        },
+        {
+          "title": "CMU Pronouncing Dictionary - Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary",
+          "date": "",
+          "snippet": "Describes a large machine-readable pronunciation list using a phoneme set; licence statements in other results conflict, so its terms are unclear.",
+          "via": "search",
+          "note": "Reason to hand-write a small lexicon instead of bundling it.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The term spoonerism comes from William Archibald Spooner (1844 to 1930), an Oxford clergyman, and names a swap of the initial sounds of two words.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Many famous lines credited to Spooner are doubtful, so a page that quotes them labels them as traditional rather than documented.",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per a Wikipedia entry seen only in a search summary: the Finnish sananmuunnos swaps morae, and Finnish suffixes multiply the valid swaps.",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per a PyPI listing seen in search: at least one sound-based spoonerism generator exists, turning a two-word phrase into another with swapped onsets; no polished browser puzzle built on ranked swaps turned up in the searches.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Search results disagreed about the licence of the large pronouncing dictionary (public domain in some, BSD-style in one), so the project bundles none of it.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "spoonerisms",
+        "sananmuunnos",
+        "contrepeterie",
+        "Oulipo constraint writing",
+        "Wordle-style daily puzzles",
+        "anagram solvers"
+      ]
+    },
+    "design": {
+      "coreLoop": "Type or pick a phrase, watch the engine split it into onset and rime tiles and propose ranked swaps. Pick one and the tiles trade seats with a short animation and a read-aloud button. In Untwist mode a scrambled phrase appears and the visitor drags sound tiles back to restore the original; hints reveal which word pair was swapped. Mastery comes from learning the engine's rules (digraphs, silent letters, how vowels start a word) and a codex fills with rare finds. Daily deck and shareable hash keep it fresh.",
+      "sophisticationHooks": [
+        "Rule engine: orthographic onset/rime splitter with a digraph and exception table (ph, kn, wr, qu, sh, ch, th, silent h, vowel starts), then a swap search over all word pairs and positions in the phrase",
+        "Swap scoring: both outputs real words in the bundled lexicon, tile weight, part-of-speech plausibility and a clean-humour filter; ranked results with a visible 'why this scored' breakdown",
+        "Untwist puzzle: seeded daily deck of invented phrases, three difficulty tiers, hint ladder, streak kept in localStorage with try/catch, sharable result and puzzle via URL hash",
+        "Sound-tile animation in SVG with reduced-motion fallback, optional read-aloud through the browser's built-in speech voices"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: lexicon of roughly 2500 hand-written words with onset/rime splits and tags, the splitter and swap engine as a pure module, parlour view, Untwist puzzle with 120 hand-written phrases, codex, about panel with sources. Cut: multi-language modes, user word lists, sound effects, any server.",
+      "risks": [
+        "Spelling-based onset detection will misjudge some words; mitigated by an exception table and by only offering swaps whose results are in the lexicon.",
+        "Famous Spooner quotes are doubtful; the page labels all examples as traditional or invented and quotes nothing as documented.",
+        "Humour must stay mild: lexicon and phrase bank are original, clean-checked and carry no slurs or crude pairs.",
+        "Speech voices vary by device; read-aloud is optional and the page works fully without it.",
+        "As of 2026-10-12 the Finnish and phoneme-tool details are from search summaries only; the about panel shows them as reported, per source, or omits them."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "jester-2",
+    "title": "Frankenword Costume Shop",
+    "pitch": "Halloween is on the way, so the visitor shops for costumes by fusing two words. Choose two cards from a stock of monsters, foods, appliances and falling rocks, and a blend engine hunts for letter and syllable overlaps, ranks the fusions by how recognisable both parents stay, and stitches a drawn costume with a name tag. Collect a rack of the best fusions, send a friend a link to your look, and chase the three judges' scores.",
+    "whyNow": "Halloween falls on 31 October 2026, three weeks away, and costume talk is peaking now. After the season the page still works as a portmanteau lab, but the framing is seasonal.",
+    "origin": {
+      "agent": "jester",
+      "lens": "word-play"
+    },
+    "fingerprint": {
+      "category": "pop-culture",
+      "mechanic": "generator",
+      "tone": [
+        "playful",
+        "absurd",
+        "chaotic"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "web-animations",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "portmanteau",
+        "word-blend",
+        "halloween",
+        "costumes",
+        "wordplay",
+        "mashup",
+        "collection",
+        "name-tag"
+      ],
+      "keywords": [
+        "letter-overlap",
+        "syllable-splice",
+        "recognisability-score",
+        "pronounceability",
+        "costume-card",
+        "three-judges",
+        "svg-costume",
+        "share-link"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "The word portmanteau for a blend comes from Lewis Carroll's 1871 Through the Looking-Glass, where a character explains invented words as two meanings packed into one; two separate results agree. Linguistics results describe blends in terms of phonological and orthographic overlap and how much of each source word survives, and computational work frames blend generation as choosing a pair then merging them, which gives the engine a real rule set: find overlaps, score how much of each parent survives, penalise unpronounceable clusters. Costume-season context is reported by one retailer trend release, syndicated across several outlets (counted as a single source): pop-culture looks lead, with giant mascot heads and novelty costumes expected to bring a meme-friendly, playful note. That context is shown as reported, not confirmed. Halloween's weekday is computed by the page itself from the date. The word stock and the drawn costumes are original; no real brands or characters appear.",
+      "sources": [
+        {
+          "title": "What is a Portmanteau Word? - Interesting Literature",
+          "url": "https://interestingliterature.com/2020/04/what-is-a-portmanteau-word-definition-introduction-examples/",
+          "date": "",
+          "snippet": "Says the term portmanteau word comes from Carroll's 1871 Through the Looking-Glass, where Humpty Dumpty explains the Jabberwocky coinages; gives brunch and smog as typical modern blends.",
+          "via": "search",
+          "note": "Origin of the term and examples of the simple front-plus-back blend.",
+          "verified": true
+        },
+        {
+          "title": "Portmanteau word - Britannica",
+          "url": "https://www.britannica.com/print/article/471231",
+          "date": "",
+          "snippet": "Reported to credit Carroll as the first to use portmanteau for this kind of word, per the OED.",
+          "via": "search",
+          "note": "Independent second source for the Carroll origin.",
+          "verified": true
+        },
+        {
+          "title": "Celebrating Alice in Wonderland with neologisms and whimsy - Planet Word",
+          "url": "https://planetwordmuseum.org/celebrating-alice-in-wonderland-with-neologisms-and-whimsy/",
+          "date": "",
+          "snippet": "A museum page on Carroll's invented words and whimsy, listed among results about the origin of blends.",
+          "via": "search",
+          "note": "Tone inspiration for the shop's copy; only its title was seen in the results.",
+          "verified": false
+        },
+        {
+          "title": "2004 STG Blends ChicLingSoc - Gries",
+          "url": "https://www.stgries.info/research/2004_STG_Blends_ChicLingSoc.pdf",
+          "date": "2004",
+          "snippet": "A linguistics paper that measures how much of each source word survives in blends such as chunnel, looking at both spelling and sound contributions.",
+          "via": "search",
+          "note": "Basis for the recognisability score: share of each parent that survives.",
+          "verified": true
+        },
+        {
+          "title": "DiGirolamo (2012), blend constraints - American Name Society",
+          "url": "https://ans-names.pitt.edu/ans/article/download/1967/1966/3945",
+          "date": "2012",
+          "snippet": "Identifies phonological and orthographic constraints on blends, including preference for overlap and stress placement, and proposes a generation and evaluation model.",
+          "via": "search",
+          "note": "Second independent source that overlap and sound shape drive good blends; supports the scoring rules.",
+          "verified": true
+        },
+        {
+          "title": "Blend formation as sequence labeling - arXiv 1804.02596",
+          "url": "https://arxiv.org/pdf/1804.02596v1.pdf",
+          "date": "2018",
+          "snippet": "Frames blend formation as a sequence labeling task and argues that using structural constraints gives simpler models.",
+          "via": "search",
+          "note": "Supports a small rule-based splice engine rather than anything heavy.",
+          "verified": false
+        },
+        {
+          "title": "Portmanteau generation (Deri and Knight 2015) - ACL Anthology",
+          "url": "https://preview.aclanthology.org/moar-dois/N15-1021.pdf",
+          "date": "2015",
+          "snippet": "Describes blend generation as picking compatible component words and then merging them, using a finite-state transducer; reported to reach 45 percent exact matches.",
+          "via": "search",
+          "note": "Two-stage framing (pick pair, then merge) used for the engine; the percentage is shown only as reported.",
+          "verified": false
+        },
+        {
+          "title": "Spirit Halloween reveals top costume trends for 2026 - NJBIZ",
+          "url": "https://njbiz.com/spirit-halloween-2026-costume-trends/",
+          "date": "2026-10",
+          "snippet": "A retailer trend report says pop-culture looks lead this season and that oversized inflatables, giant mascot heads and novelty costumes should add a playful, meme-friendly mood.",
+          "via": "search",
+          "note": "Seasonal context only; the same release was syndicated by other outlets, so it counts as one source.",
+          "verified": false
+        },
+        {
+          "title": "These are the most popular Halloween costumes this year - WBTV",
+          "url": "https://www.wbtv.com/2026/10/06/these-are-most-popular-halloween-costumes-this-year/",
+          "date": "2026-10-06",
+          "snippet": "A local-news version of the same trend report, dated in the URL to 6 October 2026.",
+          "via": "search",
+          "note": "Copy of the same release as the NJBIZ item, not an independent confirmation.",
+          "verified": false
+        },
+        {
+          "title": "Mark Your Calendar! What Day is Halloween 2026? - Intrafocus",
+          "url": "https://static.intrafocus.com/?p=45300",
+          "date": "",
+          "snippet": "A calendar page about the weekday of Halloween 2026; the search summary gave Saturday 31 October but the weekday was not shown per entry.",
+          "via": "search",
+          "note": "Weekday is therefore unverified here; the page computes it from the date instead.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The word portmanteau for a blend of two words traces to Lewis Carroll's Through the Looking-Glass (1871).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Linguistic studies of blends describe them through phonological and orthographic overlap and through how much of each source word survives, which is the basis for the engine's scoring.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Computational work frames blend generation as two steps, choosing compatible words and merging them. Per ACL Anthology result, as reported in a search summary, one 2015 system reached 45 percent exact matches.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-06, per a retailer trend release syndicated by several outlets (one source), pop-culture looks lead costume trends and novelty costumes add a playful, meme-friendly note.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "Jabberwocky coinages",
+        "brunch and smog style blends",
+        "costume-shop dress-up toys",
+        "mix-and-match picture books",
+        "Mad Libs"
+      ]
+    },
+    "design": {
+      "coreLoop": "Pick two cards, the engine proposes five fusions with a recognisability meter showing which letters belong to which parent, the visitor picks one and the shop builds a costume from a head, body and prop assembled from the parents' drawn parts. Three invented judges score it on scare, cute and sayability; the costume joins a rack. Sets and a daily 'customer order' (for example a theme of kitchen plus sky) keep the second and tenth minute different, and recipes are shareable in the URL hash.",
+      "sophisticationHooks": [
+        "Blend engine: finds end-of-A to start-of-B letter overlaps, vowel-aligned splices and syllable-boundary splices, then scores recognisability (share of each parent kept), pronounceability (cluster rules) and length",
+        "Procedural SVG costume builder: each card has 3 drawn layers (head, body, prop) that recombine by rule with a palette per judge scoring",
+        "Three judges with distinct rubric weights and written quips picked from tables by score band, so results read as voiced rather than numeric",
+        "Collection rack with rarity tiers, daily customer order seeded by date, share link via URL hash"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: about 60 hand-written cards with SVG layers, blend engine as a pure module, shop view, judge panel, rack, share hash, about panel. Cut: user-drawn parts, sound, saving more than the local rack, any live trend data.",
+      "risks": [
+        "Seasonal: the framing ages after 31 October 2026, so durable is false; the lab still works afterwards.",
+        "The retailer trend context is one syndicated release, shown only as 'as of 2026-10-06, per a retailer trend report' or dropped; the page names no brand, character or film and uses invented stock.",
+        "Letter-overlap blends can be ugly; the pronounceability filter and a curated pair pool keep the top results funny.",
+        "Drawing 60 cards in SVG is the heavy part; the fallback is 36 cards with 2 layers each.",
+        "Halloween weekday is computed by the page from the current date, not stated from an unverified source."
+      ]
+    },
+    "durable": false
+  },
+  {
+    "id": "architect-1",
+    "title": "Drift Harp",
+    "pitch": "A harp of plucked strings that you strum by dragging a finger or cursor across them, each string a physically modelled Karplus-Strong string tuned in pure just intonation on a live 3-by-5 lattice. Play a looping chord progression and hear and see the pitch creep up by a syntonic comma (about a fifth of a semitone) every lap, a trick called a comma pump. A tempering dial lets you squeeze the drift shut and hear exactly what equal temperament trades away.",
+    "whyNow": "Timeless: a tuning-system explorer where the surprise is audible. The visitor discovers on their own that pure intervals do not close a loop, which most explainers only state in words.",
+    "origin": {
+      "agent": "architect",
+      "lens": "music-instrument"
+    },
+    "fingerprint": {
+      "category": "music-audio",
+      "mechanic": "instrument",
+      "tone": [
+        "serene",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "webaudio",
+        "procedural-audio",
+        "canvas2d",
+        "pointer-events",
+        "worker"
+      ],
+      "tags": [
+        "just-intonation",
+        "karplus-strong",
+        "comma-pump",
+        "pitch-lattice",
+        "tuning-systems",
+        "plucked-string",
+        "microtonal",
+        "waveguide"
+      ],
+      "keywords": [
+        "syntonic-comma",
+        "pitch-drift",
+        "strum",
+        "lattice",
+        "cents",
+        "tempering",
+        "physical-model"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "A comma pump is a repeating progression whose pure intervals almost, but not exactly, return to the start, so the pitch shifts by a tiny interval each lap. The standard case is the syntonic comma (81:80, roughly 21.5 cents) in the progression C G D A E C. A 5-limit just intonation lattice puts fifths (3/2) on one axis and major thirds (5/4) on the other, and a loop around the lattice that does not close is the drift made visible. Karplus-Strong gives a cheap plucked string: a short noise burst circulating in a filtered delay line, where loop length sets pitch and the in-loop averaging filter sets decay and brightness. That fits an AudioWorklet or a ScriptProcessor-free delay-buffer implementation with several voices. Browser Karplus-Strong instruments exist, which de-risks the sound engine, but none found combines it with a drifting lattice.",
+      "sources": [
+        {
+          "title": "Comma pump",
+          "url": "https://en.wikipedia.org/wiki/Comma_pump",
+          "date": "",
+          "snippet": "Describes a comma pump as a sequence, often chords, that shifts pitch by a small interval each repetition; the usual example is C G D A E C raising pitch by 81:80 in just intonation.",
+          "via": "search",
+          "note": "Defines the drift mechanic and the 81:80 example",
+          "verified": true
+        },
+        {
+          "title": "Comma pump (Xenharmonic Wiki)",
+          "url": "https://en.xen.wiki/w/Pump",
+          "date": "",
+          "snippet": "Independent wiki entry covering comma pumps: loops of just intervals that nearly close, tempered out in systems that equate the comma to unison.",
+          "via": "search",
+          "note": "Second independent description of comma pumps",
+          "verified": true
+        },
+        {
+          "title": "Just Intonation: pitch drift explanation (FIU)",
+          "url": "https://justintonation.fiu.edu/ExplanationDrift.html",
+          "date": "",
+          "snippet": "University page explaining that in just intonation one note name can have several pitches a syntonic comma (about 21.5 cents) apart, and that choirs meet this as drift.",
+          "via": "search",
+          "note": "Source for the roughly 21.5 cent size and real-world drift",
+          "verified": false
+        },
+        {
+          "title": "Karplus-Strong string synthesis",
+          "url": "https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis",
+          "date": "",
+          "snippet": "Physical-modelling method: a burst of noise recirculates through a filtered delay line; loop length sets pitch, filter sets decay. Invented by Alexander Strong and analysed by Kevin Karplus.",
+          "via": "search",
+          "note": "Algorithm definition and history",
+          "verified": true
+        },
+        {
+          "title": "Karplus Strong Algorithm (CCRMA, Stanford)",
+          "url": "https://ccrma.stanford.edu/~jos//pasp//Karplus_Strong_Algorithm.html",
+          "date": "",
+          "snippet": "Stanford physical audio signal processing text on the Karplus-Strong algorithm, a delay line with a lowpass in the feedback loop.",
+          "via": "search",
+          "note": "Independent algorithm reference",
+          "verified": true
+        },
+        {
+          "title": "Lattice (music)",
+          "url": "https://en.wikipedia.org/wiki/Lattice_(music)",
+          "date": "",
+          "snippet": "Pitch lattices place just ratios on axes by prime; the 5-limit lattice uses 3/2 and 5/4, drawn as square or hexagonal grids; the gap between a 5/4 third and the Pythagorean third is the syntonic comma.",
+          "via": "search",
+          "note": "Basis for the lattice display",
+          "verified": false
+        },
+        {
+          "title": "karplus stress tester (GitHub)",
+          "url": "https://github.com/jackschaedler/karplus-stress-tester",
+          "date": "",
+          "snippet": "A browser project that plucks virtual Karplus-Strong strings as a custom audio processing exercise; notes glitches when the browser cannot keep up.",
+          "via": "search",
+          "note": "Shows the string engine runs in browsers; also a performance warning",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A comma pump is a progression that returns almost, but not exactly, to its starting pitch, shifting by a small interval each repetition; the classic syntonic example is C G D A E C, rising by 81:80 per lap in just intonation (as described on Wikipedia and the Xenharmonic Wiki).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "In just intonation one note name can sound at pitches separated by a syntonic comma, about 21.5 cents, as reported on a university just-intonation page (one result).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Karplus-Strong synthesis recirculates a noise burst through a filtered delay line; delay length sets pitch and the loop filter shapes decay and tone.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per a search result for the Lattice (music) article, 5-limit lattices put 3/2 and 5/4 on the two axes; this was seen in one result only and is unconfirmed here.",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "comma pump progressions",
+        "Karplus-Strong plucked string synthesis",
+        "pitch lattice diagrams from xenharmonic tuning software",
+        "browser Karplus-Strong string demos",
+        "a cappella choir pitch drift"
+      ]
+    },
+    "design": {
+      "coreLoop": "Drag across strings to strum, assemble a short loop of chords on the lattice, and let it cycle. Each lap the drift meter shows the pure tuning rising by one syntonic comma while a ghost of the starting pitch stays put. Turn the tempering dial to close the loop and hear what is lost, or chase a lap that lands back home using adaptive retuning. Every chord choice changes how fast and which way the pitch wanders, so there is always another loop to try.",
+      "sophisticationHooks": [
+        "Karplus-Strong voices with per-string damping, pick position and a stroke-speed-dependent excitation, polyphonic across a harp of 12 to 24 strings",
+        "Live 5-limit pitch lattice with ratio and cents readouts; the drift is the distance between where a loop starts and where it ends on the lattice",
+        "Tempering dial that continuously morphs pure ratios toward 12-tone equal temperament, with a seeded generative drone that makes beating audible",
+        "Shareable URL hash holding the chord loop, tempering amount and seed"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: one AudioWorklet or delay-buffer string engine with voice pool, canvas harp and lattice views, pointer/touch strum and keyboard play, loop editor with 8 slots, drift meter, tempering dial, about panel. Cut: MIDI export, 7-limit and higher primes, recording, presets beyond four.",
+      "risks": [
+        "AudioWorklet from a blob or inline module may be blocked by the page CSP, so a delay-buffer fallback in the main audio graph is needed",
+        "Audio only starts after a user gesture and cannot be verified by a headless screenshot, so visuals must carry the story when muted",
+        "Lattice view as seen in one search result only; the page cites it as a general method, not a dated fact"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "architect-2",
+    "title": "Memo Teleprinter",
+    "pitch": "Type or paste any office memo and a clattering fictional teleprinter turns it into a five-voice rhythm: each letter's 5-bit teleprinter code lights five tracks, and buzzwords from a bundled jargon bank trigger absurd stabs and fanfares. A Euclid dial re-spaces the notes as evenly as possible and the 'cc' list cascades the memo down through ever more bureaucratic echoes. Every memo has its own groove; export the link and send your boss a tune.",
+    "whyNow": "Timeless office-satire with a mechanic that is genuinely musical: five-bit character codes naturally map to five parallel gates, and Euclidean spacing turns gibberish into something that grooves.",
+    "origin": {
+      "agent": "architect",
+      "lens": "music-instrument"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "generator",
+      "tone": [
+        "satirical",
+        "absurd",
+        "playful"
+      ],
+      "tech": [
+        "webaudio",
+        "procedural-audio",
+        "dom-ui",
+        "canvas2d",
+        "localstorage"
+      ],
+      "tags": [
+        "teleprinter",
+        "baudot-code",
+        "euclidean-rhythm",
+        "office-satire",
+        "jargon",
+        "text-to-music",
+        "polyrhythm",
+        "step-sequencer"
+      ],
+      "keywords": [
+        "five-bit-code",
+        "memo",
+        "buzzwords",
+        "euclid",
+        "tresillo",
+        "sequencer",
+        "typewriter-sound"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Teleprinter codes of the telegraph era used five bits per character, with two shift codes switching between letters and figures; that gives 32 patterns, a ready-made mapping from text to five parallel on/off tracks. Euclidean rhythms, described by Toussaint in 2005, distribute k onsets over n pulses as evenly as possible and reproduce dozens of traditional timelines, for example E(3,8) the tresillo; they come from an algorithm devised for timing neutron beams that mirrors Euclid's greatest-common-divisor method. Combining the two lets typed text drive rhythm and then be re-spaced by an Euclid control. The humour comes from invented, harmless office jargon and a mock-solemn teleprinter persona; no real company, person or brand is used.",
+      "sources": [
+        {
+          "title": "Baudot code",
+          "url": "https://en.wikipedia.org/wiki/Baudot_code",
+          "date": "",
+          "snippet": "Baudot's telegraph code uses five bits per character, with shift codes between letters and figures; its descendant ITA2 was the standard teleprinter code until 7-bit ASCII.",
+          "via": "search",
+          "note": "Establishes 5-bit codes and the letter/figure shift",
+          "verified": true
+        },
+        {
+          "title": "Baudot ITA2 Guide",
+          "url": "https://prc68.com/I/pdf/Baudot_ITA2_Guide.pdf",
+          "date": "",
+          "snippet": "A technical guide to the ITA2 teleprinter code and its 5-bit character table.",
+          "via": "search",
+          "note": "Independent technical reference for the 5-bit table",
+          "verified": true
+        },
+        {
+          "title": "Baudot code (University of New Brunswick course page)",
+          "url": "https://www.ece.unb.ca/tervo/ee4253/baudot.shtml",
+          "date": "",
+          "snippet": "Engineering course page describing the Baudot teleprinter code and its use in telegraph communication.",
+          "via": "search",
+          "note": "Third independent description of the code",
+          "verified": false
+        },
+        {
+          "title": "The Distance Geometry of Music (arXiv)",
+          "url": "https://arxiv.org/pdf/0705.4085",
+          "date": "",
+          "snippet": "Toussaint paper that connects Euclid's algorithm to rhythm timelines and shows evenly spaced onset patterns match many traditional rhythms.",
+          "via": "search",
+          "note": "Primary source for Euclidean rhythms",
+          "verified": true
+        },
+        {
+          "title": "Toussaint publication PDF hosted at McGill (cgm.cs.mcgill.ca)",
+          "url": "https://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf",
+          "date": "",
+          "snippet": "McGill-hosted publication by Toussaint, as named in the search summary, on Euclidean rhythms E(k,n) and their appearance in world music.",
+          "via": "search",
+          "note": "Second host for the primary paper line of work",
+          "verified": true
+        },
+        {
+          "title": "Crate euclidean_rhythm (docs.rs)",
+          "url": "https://docs.rs/euclidean-rhythm",
+          "date": "",
+          "snippet": "Software documentation giving example patterns such as E(5,8) and E(7,16) and noting the link between Bjorklund's algorithm and Euclid's.",
+          "via": "search",
+          "note": "Independent implementation reference; secondary for pattern examples",
+          "verified": false
+        },
+        {
+          "title": "Euclidean Rhythms Part 1: Maximum Evenness, Maximum Groove",
+          "url": "https://www.lawtonhall.com/blog/euclidean-rhythms-pt1",
+          "date": "",
+          "snippet": "Blog explainer on Euclidean rhythms as maximally even onset patterns, with the tresillo E(3,8) as an example.",
+          "via": "search",
+          "note": "Accessible explainer, for making-of copy",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Baudot-family teleprinter codes use five bits per character, with shift codes switching between letters and figures, so 32 patterns per shift; ITA2 descended from it and preceded 7-bit ASCII (1963).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Euclidean rhythms E(k,n) spread k onsets over n pulses as evenly as possible and are linked by Toussaint (2005) to Euclid's algorithm and to Bjorklund's accelerator-timing algorithm; E(3,8) is the tresillo.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Bjorklund's algorithm was devised for timing neutron beam pulses at a particle accelerator, per one search summary that blended several results; treated as unconfirmed here.",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "step sequencers with Euclidean generators",
+        "mechanical teleprinter clatter",
+        "ticker-tape and punched tape aesthetics",
+        "corporate memo parody",
+        "text-to-music sonification toys"
+      ]
+    },
+    "design": {
+      "coreLoop": "Write or paste a memo, press send, and watch the teleprinter print it character by character while five tracks fire from each letter's 5-bit code. Jargon words from a bundled bank trigger special stabs, and the Euclid dial and cc cascade reshape the same memo into new grooves. Trying different memos, subject lines and dial settings keeps revealing new rhythms and new jokes, and each result has a shareable link.",
+      "sophisticationHooks": [
+        "Exact 5-bit letter and figure table with shift codes, so the figures-shift in a memo audibly changes the pattern",
+        "Euclidean re-spacing of each track from the memo's own letter counts, with seeded variation so the same memo always plays the same tune",
+        "Procedural WebAudio voices (clattering type bars, bell, carriage return, stabs) with no samples, plus a printed-paper canvas view that scrolls in sync",
+        "Bundled fictional jargon bank with invented company names, mapped to fanfares; URL hash stores memo text, dial and seed"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: 5-bit code table, text-to-pattern engine, five procedural voices, scheduler with swing, canvas paper and key-bed view, textarea with sample memos, Euclid dial, cc cascade echoes, share-hash, about panel. Cut: recording and export, multiple languages, user-supplied jargon banks.",
+      "risks": [
+        "Humour needs good invented copy; mitigate with a writer-owned jargon bank and sample memos that are fictional only",
+        "Must avoid any real company, person or brand names; all sender names and firms are invented and labelled as parody",
+        "Bjorklund origin story is only from a blended search summary, so the about panel leaves it out or says reported, unconfirmed"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "artisan-1",
+    "title": "Between Periods",
+    "pitch": "It is intermission and the rink is a wreck: skate grooves, divots, and one seeded mishap such as a shower of hats or a split water tank. The visitor steers a small ice-resurfacing machine on a 2D rink, laying shave, wash and squeegee passes so that every scar is covered before the buzzer while a limited water tank empties. The finished sheet gleams, and the result becomes a polished postcard of your own lap pattern that friends can race as a ghost via the link.",
+    "whyNow": "The 2026-27 hockey season is underway (opened Sept. 29, 2026), so rink lore is in the air, but the mechanic (coverage routing under a turning-radius limit, with a daily rink) works all season and beyond.",
+    "origin": {
+      "agent": "artisan",
+      "lens": "craft-shareable"
+    },
+    "fingerprint": {
+      "category": "hockey-sports",
+      "mechanic": "game",
+      "tone": [
+        "cozy",
+        "playful",
+        "competitive"
+      ],
+      "tech": [
+        "canvas2d",
+        "pointer-events",
+        "web-animations",
+        "procedural-audio",
+        "localstorage"
+      ],
+      "tags": [
+        "hockey",
+        "ice-resurfacing",
+        "intermission",
+        "daily-rink",
+        "coverage-path",
+        "share-postcard",
+        "url-hash-seed",
+        "ghost-replay",
+        "turning-radius",
+        "fandom"
+      ],
+      "keywords": [
+        "ice-machine",
+        "rink",
+        "intermission",
+        "daily-challenge",
+        "seeded-world",
+        "ghost-run",
+        "wet-ice-sheen",
+        "water-budget",
+        "path-planning"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "Two threads shape the design. First, the real machine does a fixed sequence on each pass (shave a thin layer, collect shavings, spray, vacuum dirty water, lay clean water, squeegee smooth), which gives three layered passes and a water budget as natural mechanics, and its all-wheel steering was cut to front-wheel steering because it kept wedging against the boards, which justifies a turning-radius limit that makes routing a real puzzle. The history and mechanism sources are single search entries with blended summaries, so they stay unverified and the page cites them as reported. Second, the shareable-seed craft: a seed is one value that reproduces the same generated world, daily puzzles commonly derive the day's puzzle from the UTC date and share results as a spoiler-light grid, and state can be packed compactly into a URL fragment. The season-start date is confirmed by two separate headlines. Sources are about the concept only; no player or team data is used.",
+      "sources": [
+        {
+          "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+          "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+          "date": "",
+          "snippet": "League news item whose headline gives Sept. 29 as the start of the 2026-27 season, with Carolina hosting Florida and Toronto hosting Montreal on opening night.",
+          "via": "search",
+          "note": "Season start date, headline carries it",
+          "verified": true
+        },
+        {
+          "title": "Hurricanes to open the NHL season against the Panthers, raise their Stanley Cup banner on Sept. 29",
+          "url": "https://ground.news/article/hurricanes-to-open-the-nhl-season-against-the-panthers-raise-their-stanley-cup-banner-on-sept-29",
+          "date": "",
+          "snippet": "Aggregated news story whose headline also gives Sept. 29 for the Carolina-Florida opener of the new season.",
+          "via": "search",
+          "note": "Second independent headline for the Sept. 29 season start",
+          "verified": true
+        },
+        {
+          "title": "hurricanes to open 2026 27 nhl season",
+          "url": "https://thehockeynews.com/nhl/carolina-hurricanes/latest-news/hurricanes-to-open-2026-27-nhl-season",
+          "date": "",
+          "snippet": "Preview coverage of the Hurricanes opening the 2026-27 season; supports that the season has begun, not the machine details.",
+          "via": "search",
+          "note": "Background on season opener",
+          "verified": false
+        },
+        {
+          "title": "making ice nice 1949 brief history zamboni",
+          "url": "https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-zamboni",
+          "date": "",
+          "snippet": "A short history of the ice resurfacing machine, dating the first model to 1949 and describing the older hand-scraping process it replaced.",
+          "via": "search",
+          "note": "History of the machine; summary was blended across several entries",
+          "verified": false
+        },
+        {
+          "title": "How Zambonis Work",
+          "url": "https://science.howstuffworks.com/zamboni.htm",
+          "date": "",
+          "snippet": "Explainer of the sequence a resurfacing machine performs: blade shaves, auger collects snow, water is laid down and a rear squeegee smooths the surface.",
+          "via": "search",
+          "note": "Mechanism: shave, wash, squeegee; summary was blended",
+          "verified": false
+        },
+        {
+          "title": "Ice resurfacer",
+          "url": "https://en.wikipedia.org/wiki/Ice_resurfacer",
+          "date": "",
+          "snippet": "Encyclopedia article on ice resurfacers: purpose, mechanism and history of the machine.",
+          "via": "search",
+          "note": "Reference article for the mechanism; not opened",
+          "verified": false
+        },
+        {
+          "title": "DAILY GAMES - FREE - NO SIGNUP",
+          "url": "https://www.cipherssecurity.com/games/",
+          "date": "",
+          "snippet": "A small site of daily games stating that each puzzle derives from the UTC date, results copy as a grid, and stats stay in the browser's local storage.",
+          "via": "search",
+          "note": "Pattern: date-derived seed, grid share, local-only stats",
+          "verified": false
+        },
+        {
+          "title": "Encoding state in URL-safe 64 bit string",
+          "url": "https://discourse.elm-lang.org/t/encoding-state-in-url-safe-64-bit-string/10138",
+          "date": "",
+          "snippet": "Forum thread on packing a tool's state into a short URL-safe string; simple states fit in under 100 characters when bit-packed.",
+          "via": "search",
+          "note": "Compact URL-hash encoding is practical",
+          "verified": false
+        },
+        {
+          "title": "Seeds and determinism (procedural generation course)",
+          "url": "https://abratabia.com/procedural-generation/seeds-and-determinism.php",
+          "date": "",
+          "snippet": "Course page explaining that a seed fixes a generator's starting state so the same world reproduces, enabling sharing, daily challenges and reproducible bugs.",
+          "via": "search",
+          "note": "Seed concept; pairs with the Map seed article",
+          "verified": true
+        },
+        {
+          "title": "Map seed",
+          "url": "https://www.wikipedia.com/wiki/Map_seed",
+          "date": "",
+          "snippet": "Article describing map seeds in games: one value, number or text, regenerates the same world on the same game version.",
+          "via": "search",
+          "note": "Second independent source for the seed concept and its version caveat",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The 2026-27 NHL regular season opened on Sept. 29, 2026 with Florida at Carolina and Montreal at Toronto among the opening-night games (as seen in headlines on 2026-10-12).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "A seed is a single starting value that makes a procedurally generated world reproducible, so the same seed on the same code version gives the same world.",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As reported by a mechanism explainer, an ice resurfacing pass shaves the surface, collects the shavings, rinses, then lays clean water and squeegees it smooth.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As reported by a history article, the first resurfacing machine dates to 1949 and replaced a multi-person hand process.",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "A small daily-games site states that its puzzle is derived from the UTC date and its stats live only in local storage.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "Wordle-style result grids",
+        "Minecraft world seeds",
+        "Mini Metro line routing",
+        "Mario Paint-like tidy satisfaction",
+        "daily golf and daily crossword share cards"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each day's rink (seeded from the date, or from a seed in the URL hash) has a wear map of grooves and divots plus one mishap hazard. The player drives a machine with a real turning radius and a finite water tank, laying a wide three-stage swath; they plan lanes to cover every scar with minimal overlap and refill at the tank door. The score rewards clean coverage, little overlap, and speed against the intermission clock, and retries expose a better lane plan each time, from lawn-mower stripes to spirals that save turns.",
+      "sophisticationHooks": [
+        "Hash-reconstructed world: #seed plus an optional quantized, delta-coded path of a few hundred bytes lets a friend load the identical rink and race your ghost.",
+        "Hero moment: a wet-ice sheen stripe follows the machine across the rink and dries to a high-gloss finish, with a soft three-note intermission chime from WebAudio that starts muted.",
+        "Spoiler-safe share postcard drawn on canvas: your lap pattern rendered as a gleaming print with grade, no rink layout needed to read it, plus a copy-text emoji strip.",
+        "Daily mishap table plus an optional dim-hall mode where only a headlamp pool reveals scars (the blind variant), marked on the card with a moon."
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: seeded rink generator, steering model with turning radius, coverage mask on an offscreen canvas, water tank and refill, scoring, ghost recording and playback, URL hash read/write, canvas share card, keyboard and touch steering, light and dark, reduced motion, making-of panel. Cut: multiple machine models, online leaderboards, music, any real team or player data.",
+      "risks": [
+        "The maker's trademarked name must not appear on the page; use the generic term ice resurfacer.",
+        "Mechanism and history facts are unverified search snippets; the page shows them as 'as of 2026-10-12, per the cited article' or omits them.",
+        "Touch steering at 360px needs a drag-to-aim scheme with 44px targets; mitigate with a tilt-free pointer-follow mode.",
+        "Ghost path in the URL must stay short: quantize to a coarse grid and cap at a few seconds of samples per segment.",
+        "Daily seed uses UTC date so everyone shares one rink; the page states this."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "artisan-2",
+    "title": "Smudged Memos",
+    "pitch": "A clerk at an invented Bureau of Misplaced Things receives sealed memos in cipher, each one an absurd grievance built from a hand-written grammar, with a spilled-tea mishap blotting some letters. The visitor works a bench of frequency charts, repeat finders, shift wheels and crib-dragging to crack it, without being told which cipher family it is. Then they can forge a memo of their own from the grammar, pick a cipher and a blot level, and send the link, which carries a sealed envelope that only the recipient can open.",
+    "whyNow": "Timeless: a daily memo gives a reason to return and the forge-and-send path makes the page spread person to person; autumn paperwork humor needs no news hook.",
+    "origin": {
+      "agent": "artisan",
+      "lens": "craft-shareable"
+    },
+    "fingerprint": {
+      "category": "language-text",
+      "mechanic": "puzzle",
+      "tone": [
+        "absurd",
+        "playful",
+        "nerdy"
+      ],
+      "tech": [
+        "dom-ui",
+        "canvas2d",
+        "svg",
+        "localstorage",
+        "web-animations"
+      ],
+      "tags": [
+        "cipher",
+        "cryptogram",
+        "frequency-analysis",
+        "vigenere",
+        "bureaucracy",
+        "sealed-envelope",
+        "send-a-puzzle",
+        "url-hash-state",
+        "daily-memo",
+        "crib-dragging"
+      ],
+      "keywords": [
+        "memo",
+        "cipher-bench",
+        "blot",
+        "wax-seal",
+        "postmark",
+        "grammar-generated",
+        "unknown-cipher",
+        "ink-budget"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Real cryptanalysis supplies the depth: repeated ciphertext fragments of three or more letters hint at the key length of a polyalphabetic cipher (Kasiski), the index of coincidence compares letter-pairing odds against English-like text to test key lengths, and once the length is known each column falls to frequency analysis. That gives a legitimate toolkit the player can use, and it scales from a shift cipher to a short keyword cipher. On the sharing side, daily puzzles commonly use a result grid or card that hides the answer, a pattern the sources describe for Wordle-style games. Putting state in the URL fragment is practical, and a source notes that anyone holding the link can read it, so the sealed memo is deliberately a puzzle, not a secret. All memo text is generated from a bundled grammar of invented, harmless office grievances; nothing is user-typed free text.",
+      "sources": [
+        {
+          "title": "Kasiski examination",
+          "url": "https://en.wikipedia.org/wiki/Kasiski_examination",
+          "date": "",
+          "snippet": "Article on the Kasiski method for estimating a polyalphabetic key length by looking at distances between repeated ciphertext sequences.",
+          "via": "search",
+          "note": "Repeat-finder tool is real cryptanalysis",
+          "verified": true
+        },
+        {
+          "title": "Vigenere Break (lecture notes)",
+          "url": "https://www.cs.ucf.edu/~dmarino/ucf/cis3362/lectures/newlecs/Vigenere-Break.pdf",
+          "date": "",
+          "snippet": "University lecture notes describing breaking a Vigenere cipher by first finding the key length and then solving each column by frequency analysis.",
+          "via": "search",
+          "note": "Independent academic source for the key-length-then-columns method",
+          "verified": true
+        },
+        {
+          "title": "Kasiski test (calculator page)",
+          "url": "https://ciphers.planetcalc.com/8550",
+          "date": "",
+          "snippet": "Online tool that finds repeated strings in ciphertext and the likely key lengths from their spacing.",
+          "via": "search",
+          "note": "Third independent confirmation, and a model for the bench tool UI",
+          "verified": true
+        },
+        {
+          "title": "Lecture 5 - Vigenere cipher, Index of Coincidence, and Friedman attack",
+          "url": "https://sites.math.rutgers.edu/%7Esdmiller/348-Spring-2011/Lecture%205%20-%20Vigenere%20cipher,%20Index%20of%20Coincidence,%20and%20Friedman%20attack.pdf",
+          "date": "2011",
+          "snippet": "Course lecture on using the index of coincidence to estimate Vigenere key length.",
+          "via": "search",
+          "note": "IoC method exists; exact numeric values were from a blended summary so not relied on",
+          "verified": false
+        },
+        {
+          "title": "Anyone else hopped on the Wordle bandwagon yet?",
+          "url": "https://community.thunkable.com/t/wordle-no-spoilers/1694507",
+          "date": "",
+          "snippet": "Community thread about sharing Wordle results without spoiling the answer for others.",
+          "via": "search",
+          "note": "Spoiler concern around shared results",
+          "verified": true
+        },
+        {
+          "title": "how to share wordle results",
+          "url": "https://ataglance.randstad.com/en/how-to-share-wordle-results.html",
+          "date": "",
+          "snippet": "Explainer on copying the colored-square result summary to share a Wordle game without revealing the word.",
+          "via": "search",
+          "note": "Independent source: grid share hides the answer",
+          "verified": true
+        },
+        {
+          "title": "DAILY GAMES - FREE - NO SIGNUP",
+          "url": "https://www.cipherssecurity.com/games/",
+          "date": "",
+          "snippet": "Small site of daily games that copy a grid result for pasting into chat, derive puzzles from the UTC date, and keep stats in local storage.",
+          "via": "search",
+          "note": "Date-seeded daily puzzle, grid sharing, local-only stats",
+          "verified": false
+        },
+        {
+          "title": "your entire app database can live inside a url",
+          "url": "https://hackernoon.com/your-entire-app-database-can-live-inside-a-url",
+          "date": "",
+          "snippet": "Article on keeping app data in the URL fragment, noting that anyone with the link can read it unless it is encrypted.",
+          "via": "search",
+          "note": "Link-as-state pattern and its readability caveat",
+          "verified": false
+        },
+        {
+          "title": "Creating Shareable URLs",
+          "url": "https://livecodes.io/docs/tutorials/creating-shareable-urls",
+          "date": "",
+          "snippet": "Documentation describing compressed, URI-safe base64 helpers for putting state into a shareable link.",
+          "via": "search",
+          "note": "Compressing state into the hash is a standard technique",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Repeated ciphertext fragments of length three or more, and the distances between them, are used (Kasiski examination) to estimate the key length of a Vigenere-style cipher.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Once the key length is known, each column of a Vigenere ciphertext is a shifted-alphabet sample solvable by frequency analysis.",
+          "sourceIndex": 1,
+          "alsoIn": [
+            0
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Wordle-style daily puzzles share results as a colored-square summary so the answer is not revealed to other players.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As reported by a small daily-games site, puzzles can be derived from the UTC date and stats kept only in the browser's local storage.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As reported by a developer article, data stored in a URL fragment is readable by anyone who has the link unless encrypted.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "newspaper cryptograms",
+        "Wordle result grids",
+        "Caesar and Vigenere cipher wheels",
+        "Papers, Please-style bureaucratic comedy",
+        "Cryptii-style cipher workbenches"
+      ]
+    },
+    "design": {
+      "coreLoop": "Open the day's sealed memo, a screen of ciphered text with a few tea-blotted letters. Use the bench to gather evidence (letter frequencies, repeat spacing, a shift wheel, trial crib words slid along the text) and pencil letters in; each hint spends from a small ink budget. Cracking it reveals a short absurd memo and a postmark card; then the forge lets the player compose a new memo from the grammar and send it. Variety comes from the cipher family (shift, keyword substitution, short Vigenere, rail fence) staying hidden until identified.",
+      "sophisticationHooks": [
+        "A real cipher bench: frequency histogram against expected English, Kasiski-style repeat finder, draggable shift wheel, crib drag, all computed client-side on a bundled word list.",
+        "Blind identification: the cipher family is undisclosed, and the bench's evidence panels (flat histogram, repeat spacing) are how the player deduces it.",
+        "Forge and send: grammar-slot composer, cipher and blot choice, and a hash that reconstructs the exact sealed memo, shown to the recipient as a postmarked envelope with an opening animation.",
+        "Spoiler-safe wax-seal share card: stamp, ink used, and blot count only, never the plaintext or the cipher family, drawn on canvas and copyable as text."
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: grammar and ~300-word vocabulary of invented office grievances, four cipher implementations with solvers for verification, the bench tools, seeded daily memo, forge composer, hash encode/decode, envelope and seal rendering, keyboard and touch input, light and dark, reduced motion, making-of panel. Cut: sound, user-typed free text, accounts, streak leaderboards.",
+      "risks": [
+        "Overlaps in category and mechanic with other word-puzzle candidates today; the forge-and-send path and the instrument-like bench are the differentiators.",
+        "Index-of-coincidence numbers were not verified; the page computes them from its own corpus and does not quote external values.",
+        "Short messages may be ambiguous to crack; mitigate by checking at generation time that each memo is uniquely solvable with the bench tools and has a minimum length.",
+        "Because the link carries the memo, all text must come from the bundled grammar to avoid user-authored abuse; no free text input.",
+        "Grievance humor must stay about invented objects and offices, never real organizations or people."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "engineer-1",
+    "title": "Parallel Octobers",
+    "pitch": "The visitor chooses a team with a dated early-season record, such as a winless start, and the page replays its season thousands of times in parallel from the same talent, drawing every path as a branching, root-like fan across the 84-game calendar. Before each reveal the visitor sets a compass needle to forecast the final points; the engine then shows how much of the start was luck on a gauge, and discarding the first games from the sample shows the estimate move.",
+    "whyNow": "Two ugly starts are the talk of the league on 2026-10-12 (a team still without a point and a franchise-record losing run), and 2026-27 is the first 84-game season since 1993-94, so the old 82-game rules of thumb for how deep a hole is no longer apply.",
+    "origin": {
+      "agent": "engineer",
+      "lens": "hockey-now"
+    },
+    "fingerprint": {
+      "category": "hockey-sports",
+      "mechanic": "game",
+      "tone": [
+        "analytical",
+        "competitive",
+        "nerdy"
+      ],
+      "tech": [
+        "canvas2d",
+        "worker",
+        "localstorage",
+        "pointer-events"
+      ],
+      "tags": [
+        "nhl",
+        "early-season",
+        "small-sample",
+        "regression-to-mean",
+        "monte-carlo",
+        "84-game-season",
+        "playoff-odds",
+        "pdo",
+        "forecasting",
+        "luck"
+      ],
+      "keywords": [
+        "winless-start",
+        "fan-chart",
+        "bayesian",
+        "points-pace",
+        "loser-point",
+        "season-paths",
+        "calibration"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "As of 2026-10-12 the NHL season is under two weeks old and the storylines are extreme starts: reported results have the Calgary club still pointless after a 4-2 loss on 2026-10-11 and the Philadelphia club at a franchise-record seven straight losses to open the year, while others (Winnipeg, Edmonton, New York Rangers) started hot in snapshots around 2026-10-09. The league moved to an 84-game schedule this season (1,344 games, 42 home and 42 road per team), which changes the arithmetic of how recoverable a bad start is. PDO (on-ice shooting % plus save %) is the standard luck proxy and regresses toward 100 over large samples. Standings snapshots from different sites disagree by game count, so the page must carry its own snapshot date and label each record with its source and date; unconfirmed records are shown as reported.",
+      "sources": [
+        {
+          "title": "Top NHL Storylines From Week 1 of 2026-27",
+          "url": "https://thehockeywriters.com/top-nhl-storylines-from-week-1-of-2026-27-marchenko-barkov-more/",
+          "date": "",
+          "snippet": "A week-one roundup of early storylines: a few clubs off to winless or near-winless starts, others unbeaten in regulation. Used only as context, the search summary blended several results.",
+          "via": "search",
+          "note": "Context for early-season extremes; blended summary so not used for numbers",
+          "verified": false
+        },
+        {
+          "title": "Flames remain winless in NHL after third-period fizzle, fall 4-2 to Ducks",
+          "url": "https://panow.com/2026/10/11/flames-remain-winless-in-nhl-after-third-period-fizzle-fall-4-2-to-ducks/",
+          "date": "2026-10-11",
+          "snippet": "Reports Calgary still without a point after a 4-2 loss to Anaheim on 2026-10-11, described as the only team with no point so far.",
+          "via": "search",
+          "note": "Flames winless as of 2026-10-11; one result only",
+          "verified": false
+        },
+        {
+          "title": "Flyers struggle again, Tocchet has no answers in franchise-record 7th straight loss to open season",
+          "url": "https://www.wsls.com/sports/2026/10/12/flyers-struggle-again-tocchet-has-no-answers-in-franchise-record-7th-straight-loss-to-open-season/",
+          "date": "2026-10-12",
+          "snippet": "Wire report of Philadelphia losing 4-1 at Carolina on 2026-10-11 for a franchise-record seventh straight loss to open the season, after a 7-0 opener; outscored 28-8.",
+          "via": "search",
+          "note": "Flyers 0-7 start; same wire story as the ABC News entry, so one source",
+          "verified": false
+        },
+        {
+          "title": "Flyers struggle again, Tocchet has no answers in franchise-record 7th straight loss to open season - ABC News",
+          "url": "https://abcnews.com/Sports/wireStory/flyers-struggle-tocchet-answers-franchise-record-7th-straight-137185044",
+          "date": "2026-10-12",
+          "snippet": "Syndicated copy of the same wire report on the Philadelphia seven-game losing start.",
+          "via": "search",
+          "note": "Copy of the previous entry, not independent",
+          "verified": false
+        },
+        {
+          "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+          "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+          "date": "",
+          "snippet": "The 2026-27 schedule has 84 games per team under the new CBA, with 28 division, 24 other in-conference and 32 inter-conference games.",
+          "via": "search",
+          "note": "84-game format and breakdown",
+          "verified": true
+        },
+        {
+          "title": "10 things to know about 2026-27 NHL regular season",
+          "url": "https://www.nhl.com/news/nhl-stats-pack-2026-27-regular-season-schedule",
+          "date": "",
+          "snippet": "League stats pack on the new schedule: 84 games each, 1,344 in total, 42 home and 42 road per team, a third 84-game season in NHL history.",
+          "via": "search",
+          "note": "Independent confirmation of the 84-game format and totals",
+          "verified": true
+        },
+        {
+          "title": "Percentage Luck in Hockey, Explained",
+          "url": "https://jfresh.substack.com/p/percentage-luck-in-hockey-explained",
+          "date": "",
+          "snippet": "Explains that shooting plus save percentage across a team's on-ice shots sums near a fixed league level, so extreme values in short stretches are mostly luck and regress.",
+          "via": "search",
+          "note": "PDO definition and regression to the mean",
+          "verified": true
+        },
+        {
+          "title": "PDO (shooting plus save percentage) - MetricGate docs",
+          "url": "https://metricgate.com/docs/pdo-shooting-save-percentage-sum/",
+          "date": "2026-06-09",
+          "snippet": "Documentation defining PDO as shooting percentage plus save percentage, centred on 100 or 1000 depending on scale, and treating it as a luck indicator.",
+          "via": "search",
+          "note": "Second independent definition of PDO; notes scale convention differs",
+          "verified": true
+        },
+        {
+          "title": "2026-27 NHL Summary - Hockey-Reference",
+          "url": "https://www.hockey-reference.com/leagues/NHL_2027.html",
+          "date": "",
+          "snippet": "Season summary page snapshot appearing in search; the search digest placed Calgary at 0-4-0 with a goal differential of -17 around 2026-10-09.",
+          "via": "search",
+          "note": "Early standings snapshot; only seen through a search digest",
+          "verified": false
+        },
+        {
+          "title": "NHL Power Rankings After the 1st Week of the 2026-27 Season - Bleacher Report",
+          "url": "https://bleacherreport.com/articles/25507146-nhl-power-rankings-after-1st-week-2026-27-season",
+          "date": "",
+          "snippet": "Power rankings after the first week of the season, useful for a soft prior on team strength.",
+          "via": "search",
+          "note": "Possible soft-prior reference; not used for facts",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The 2026-27 NHL regular season is 84 games per team (1,344 games in all, 42 home and 42 road for each club), the first 84-game season since 1993-94.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "PDO is on-ice shooting percentage plus on-ice save percentage; it is treated as a luck proxy that regresses toward the league level over large samples.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-11, per Canadian Press via PA Now, the Calgary Flames were still without a point after a 4-2 loss to Anaheim; reported, not confirmed by a second outlet.",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "As of 2026-10-12, per an AP wire report, Philadelphia had lost its first seven games of 2026-27, a franchise record, outscored 28-8; a single wire story, unconfirmed by an independent outlet.",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Standings pages disagree on game counts for the same days (a snapshot around 2026-10-09 put Calgary at 0-4-0 with a -17 goal differential), so records must be shown with their own as-of date.",
+          "sourceIndex": 8,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "fan charts in election and weather forecasting",
+        "expected points models",
+        "forecasting calibration games",
+        "spaghetti plots",
+        "mycelium network drawings"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each round presents a team and its dated start. The visitor drags a compass needle (direction = expect a recovery or a slump, length = confidence) to forecast final points, optionally discards early games to test how fragile the read is, then commits. A web worker runs 2,000 seeded season paths from a posterior over team talent; paths are drawn as a branching fan, the forecast is scored with a proper scoring rule, and a luck gauge says how much of the start was PDO noise. Streaks and a calibration chart reward the tenth round because the visitor learns to trust fewer games less.",
+      "sophisticationHooks": [
+        "Grid posterior over team talent: a prior from a hand-set tier rating times a likelihood from the dated early record, so a 0-7 start moves the estimate far less than intuition says",
+        "Seeded Poisson goal model with overtime and shootout logic and the loser point, run in a worker for 2,000 paths of 84 games, with a simulated field for the playoff line",
+        "Proper scoring (log or CRPS-style) with a calibration curve over the visitor's rounds, plus the discard-games slider showing how the estimate shifts",
+        "Branching fan chart on canvas where path density forms a mycelium-like network and a compass dial doubles as the input"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Build the talent posterior, season-path engine, worker, fan chart, compass input, scoring and share hash. Bundle a small dated snapshot (8 to 12 teams with record, as-of date and source; unconfirmed records labelled reported) plus a seeded generator for fictional teams so play continues beyond the real snapshot. Cut live data, full 32-team playoff simulation and player-level stats; the other 31 clubs are a simulated field and labelled as simulation.",
+      "risks": [
+        "Early records come from search digests that disagree: the page shows each as of its date and source, and marks the Calgary and Philadelphia records as reported, per the cited outlet, until a verifier confirms them",
+        "Talent priors are hand-set estimates, not data: label them as estimates and keep fictional teams available so no real-team claim depends on them",
+        "Could read as a simulator: keep the forecasting game and scoring central, not a free-form sandbox",
+        "News-bound start records go stale after a few days: the snapshot is dated and fictional-team mode keeps the page useful"
+      ]
+    },
+    "durable": false
+  },
+  {
+    "id": "engineer-2",
+    "title": "Sin Bin Concierge",
+    "pitch": "You run the penalty box as a tiny, deadpan hotel: guests arrive with minors, double minors, majors and misconducts, goals go in, whistles blow, and you must announce who checks out and what the strength on the ice is, before the clock runs out. A real rules engine decides the right answer, including the awkward cases like coincidental minors, a goal on a stacked kill, and a major that refuses to leave early.",
+    "whyNow": "Timeless, but the 2026-27 season is only two weeks old, penalty-heavy early games are in the news, and a faithful penalty-clock puzzle is the kind of rule detail fans argue about; it is a humor entry that rewards learning real rules.",
+    "origin": {
+      "agent": "engineer",
+      "lens": "hockey-now"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "game",
+      "tone": [
+        "absurd",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "localstorage",
+        "web-animations"
+      ],
+      "tags": [
+        "hockey",
+        "penalty-box",
+        "rules-engine",
+        "power-play",
+        "deadpan",
+        "bureaucracy",
+        "queue",
+        "sin-bin"
+      ],
+      "keywords": [
+        "penalty-expiry",
+        "coincidental-minors",
+        "double-minor",
+        "major-penalty",
+        "strength-state",
+        "state-machine",
+        "daily-shift"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Hockey penalty expiry is a small state machine with surprising edge cases. A minor ends early when the power-play team scores; a major runs its full five minutes regardless; a double minor is two consecutive two-minute blocks, and a goal cancels only the block currently running; coincidental minors in the NHL produce four-on-four play and a goal does not release them. Sources found are general explainers and an older rulebook excerpt, so the spec phase must confirm wording against the current official NHL rulebook, and unconfirmed rules are shown as a simplified house version. The 2026-27 season has few penalty-rule changes (a new neck-protection requirement and an 84-game schedule were reported), so the engine does not depend on news.",
+      "sources": [
+        {
+          "title": "Penalty (ice hockey)",
+          "url": "https://en.wikipedia.org/wiki/Penalty_(ice_hockey)",
+          "date": "",
+          "snippet": "General reference on hockey penalties: double minors run as two-minute blocks with a power-play goal cancelling only the current block, and coincidental minors give four-on-four in the NHL.",
+          "via": "search",
+          "note": "Rule background; could not be opened from here",
+          "verified": false
+        },
+        {
+          "title": "Hockey 101: Defining the Different Types of Penalties",
+          "url": "https://thehockeywriters.com/?p=110762",
+          "date": "",
+          "snippet": "Fan-facing explainer of minor, major, misconduct and other penalties and how each is served.",
+          "via": "search",
+          "note": "Second explainer for penalty types",
+          "verified": false
+        },
+        {
+          "title": "Getting to Know the NHL Rulebook: Minor Penalties",
+          "url": "https://www.wingingitinmotown.com/getting-to-know-the-nhl-rulebook-types-of-penalties/",
+          "date": "",
+          "snippet": "Walks through NHL rulebook wording for minor penalties, including release on a power-play goal and coincidental penalties staying until a stoppage; the excerpt appears to be from an older rulebook edition.",
+          "via": "search",
+          "note": "Rulebook-style wording; edition age uncertain",
+          "verified": false
+        },
+        {
+          "title": "explanation of hockey penalties - Deseret News",
+          "url": "https://www.deseret.com/sports/2024/10/19/explanation-of-hockey-penalties/",
+          "date": "2024-10-19",
+          "snippet": "Newspaper explainer of common hockey penalties and what short-handed play means.",
+          "via": "search",
+          "note": "Independent mainstream explainer",
+          "verified": false
+        },
+        {
+          "title": "NHL Rule Changes for 2026-27 - Scouting The Refs",
+          "url": "https://scoutingtherefs.com/2026/09/52608/nhl-rule-changes-2026-27/",
+          "date": "2026-09",
+          "snippet": "Lists the rule changes for 2026-27; the search digest mentioned a neck-protection requirement for players with no prior NHL games, among non-penalty changes.",
+          "via": "search",
+          "note": "Confirms the rules baseline is stable this season; could not be opened (host unreachable)",
+          "verified": false
+        },
+        {
+          "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+          "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+          "date": "",
+          "snippet": "The 2026-27 schedule has 84 games per team under the new CBA.",
+          "via": "search",
+          "note": "Season context for the frame story",
+          "verified": true
+        },
+        {
+          "title": "10 things to know about 2026-27 NHL regular season",
+          "url": "https://www.nhl.com/news/nhl-stats-pack-2026-27-regular-season-schedule",
+          "date": "",
+          "snippet": "League stats pack on the 84-game schedule for 2026-27.",
+          "via": "search",
+          "note": "Independent confirmation of season context",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The 2026-27 NHL regular season is 84 games per team, first 84-game season since 1993-94.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Reported rule: a major penalty runs its full five minutes even if the opponent scores, while a minor ends on a power-play goal; one search digest blended several explainers, so this is shown as a simplified house rule until checked against the official rulebook.",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Reported rule: in the NHL, coincidental minors at even strength produce four-on-four play, unlike USA Hockey and IIHF rules, per a Wikipedia article summary; unconfirmed until read against the current NHL rulebook.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Reported rule: a power-play goal during a double minor cancels only the two-minute block being served, per a Wikipedia article summary; unconfirmed against the NHL rulebook.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "Papers, Please style rule-bureaucracy games",
+        "rules-lawyer quizzes",
+        "Keep Talking and Nobody Explodes",
+        "hotel front desk comedies"
+      ]
+    },
+    "design": {
+      "coreLoop": "A seeded game script produces a timeline of whistles, goals and expiries. At each decision point the concierge sees the box ledger (guest, penalty, clock) and must tap who is released and set the on-ice strength, before a patience meter runs out. The rules engine scores each answer, explains the ruling in one deadpan line, and ramps difficulty by stacking penalties, adding coincidentals, majors, misconducts and goals mid-kill. Shifts are daily-seeded and shareable via URL hash so friends compare rulings.",
+      "sophisticationHooks": [
+        "Pure, tested penalty-clock state machine: queue ordering of simultaneous penalties, double minor block logic, major versus minor release on goals, coincidental handling, minimum skater counts",
+        "Scenario generator with seeded randomness that guarantees each shift contains specific edge cases at rising difficulty and never an ambiguous ruling",
+        "Explanations built from the same rule trace the engine used, so every correct and wrong answer is teachable",
+        "Absurd framing: invented guests and teams, a hotel-ledger look drawn in SVG and CSS, keyboard-only play and a replay of the ruling"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Build the rules engine with tests, scenario generator, ledger and rink-strength UI, scoring, daily seed and share hash, about panel listing the simplified rules. Cut referee signals, audio, per-league rule variants and delayed penalties, which are listed as house rules.",
+      "risks": [
+        "Rule wording comes from search digests and an older rulebook excerpt: the spec must state the exact rules implemented, label them a simplified house version and avoid calling them official until verified",
+        "Ambiguity in edge cases such as stacked coincidentals could produce a wrong answer: restrict the generator to cases the engine and a verifier agree on",
+        "Humor could feel thin once the rules click: vary the guest personas and add a late-night mode with chained events",
+        "Must use invented players and teams only; no real names, logos or marks"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "critic-1",
+    "title": "Certain About Clouds",
+    "pitch": "A bureaucratic inspection machine looks at cloud-like blots (procedural, or painted by the visitor) and announces what they are with 99-percent-plus certainty: a lighthouse, a nomad, a parade float. Its reasoning transcript is delightfully wrong but fully deterministic, so the visitor can learn its rulebook by predicting its verdicts before it speaks, then try to build a blot that forces it to say a chosen word. The fun is the moment you can finish its sentence.",
+    "whyNow": "Timeless. Confident machine verdicts are a permanent cultural joke, and this one swaps randomness for a rulebook that rewards understanding.",
+    "origin": {
+      "agent": "critic",
+      "lens": "confident-machine"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "puzzle",
+      "tone": [
+        "absurd",
+        "satirical",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "pointer-events",
+        "dom-ui",
+        "localstorage"
+      ],
+      "tags": [
+        "expert-system",
+        "pareidolia",
+        "forward-chaining",
+        "inspection-bureau",
+        "deduction",
+        "overconfidence",
+        "rulebook",
+        "blots",
+        "stamps"
+      ],
+      "keywords": [
+        "confidently-wrong",
+        "rule-discovery",
+        "explanation-trace",
+        "certainty",
+        "cloud-shapes",
+        "bureaucracy",
+        "predict-the-machine",
+        "feature-extraction"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Pareidolia (seeing faces or objects in random patterns) and its umbrella term apophenia give the machine's one big delusion. Classic expert systems (rule base, inference engine, explanation facility that replays which rules fired) give the structure: a forward-chaining rulebook with a printed reasoning trace is both historically real and ideal for a learnable joke. Research on model calibration (stated confidence versus real accuracy) gives the comic law: this machine's certainty is a fixed function that ignores contradicting evidence. Existing confidently-wrong chatbot parodies appear to rely on a language model and randomness; a deterministic, learnable machine is a different experience.",
+      "sources": [
+        {
+          "title": "An Explanation of Pareidolia, The Phenomenon of Consistently Seeing Faces Within Random Patterns",
+          "url": "https://laughingsquid.com/an-explanation-of-pareidolia-the-phenomenon-of-consistently-seeing-faces-within-random-patterns/",
+          "date": "",
+          "snippet": "Search result describing pareidolia as the consistent perception of faces within random patterns; the result summary also mentions top-heavy triangle detection as one proposed mechanism.",
+          "via": "search",
+          "note": "Establishes pareidolia as a normal, well-known perception effect.",
+          "verified": true
+        },
+        {
+          "title": "pareidolia the phenomenon of seeing human faces in random textures patterns or noise",
+          "url": "https://icatchshadows.com/pareidolia-the-phenomenon-of-seeing-human-faces-in-random-textures-patterns-or-noise/",
+          "date": "",
+          "snippet": "Search result whose title defines pareidolia as seeing human faces in random textures, patterns or noise.",
+          "via": "search",
+          "note": "Second independent site agreeing on the definition.",
+          "verified": true
+        },
+        {
+          "title": "apophenia overview",
+          "url": "https://psychcentral.com/health/apophenia-overview",
+          "date": "",
+          "snippet": "Search result on apophenia, the tendency to find meaning in unrelated data; pareidolia is described there as a specific form of it.",
+          "via": "search",
+          "note": "Background on apophenia; the search summary blended several results so this stays unconfirmed.",
+          "verified": false
+        },
+        {
+          "title": "What Is… Apophenia (Finding Patterns Where None Exist)",
+          "url": "https://mentalhealthathome.org/2021/12/10/what-is-apophenia/",
+          "date": "2021-12-10",
+          "snippet": "Search result explaining apophenia as finding patterns where none exist, with everyday examples such as faces in clouds.",
+          "via": "search",
+          "note": "Second look at apophenia; unconfirmed because the summary was blended.",
+          "verified": false
+        },
+        {
+          "title": "2.1 Expert systems",
+          "url": "https://elearning-2324.univ-saida.dz/mod/page/view.php?id=152262",
+          "date": "",
+          "snippet": "University course page on expert systems: knowledge base of rules, an inference engine that matches and fires rules, and an explanation facility.",
+          "via": "search",
+          "note": "Architecture of an expert system; blended summary so unconfirmed.",
+          "verified": false
+        },
+        {
+          "title": "US5408587A - Expert system with a frame explanation system - Google Patents",
+          "url": "https://patents.google.com/patent/US5408587",
+          "date": "",
+          "snippet": "Patent record describing an expert system with an explanation component that justifies conclusions to the user.",
+          "via": "search",
+          "note": "Shows explanation facilities are a standard expert-system part; unconfirmed due to blended summary.",
+          "verified": false
+        },
+        {
+          "title": "On Calibration of Modern Neural Networks",
+          "url": "https://arxiv.org/pdf/1706.04599",
+          "date": "",
+          "snippet": "Paper (Guo et al., 2017) studying how the confidence of modern neural networks can diverge from their real accuracy.",
+          "via": "search",
+          "note": "Real research on the confidence-versus-accuracy gap.",
+          "verified": true
+        },
+        {
+          "title": "Two Sides of Miscalibration: Identifying Over and Under-Confidence Prediction for Network Calibration",
+          "url": "https://arxiv.org/pdf/2308.03172",
+          "date": "",
+          "snippet": "Paper treating network miscalibration as running in both directions, overconfidence and underconfidence.",
+          "via": "search",
+          "note": "Independent paper on the same theme.",
+          "verified": true
+        },
+        {
+          "title": "Fikry (satirical confidently-incorrect chatbot listing)",
+          "url": "https://www.productcool.com/product/fikry",
+          "date": "",
+          "snippet": "Directory listing of a satirical chatbot built to give confidently incorrect answers.",
+          "via": "search",
+          "note": "Shows the genre exists and is LLM-driven; blended summary so unconfirmed.",
+          "verified": false
+        },
+        {
+          "title": "amtaitfy \"Allow Me To AI That For You\"",
+          "url": "https://www.producthunt.com/products/amtaitfy-allow-me-to-ai-that-for-you",
+          "date": "",
+          "snippet": "Product listing of a joke site that returns elaborately wrong answers to any question.",
+          "via": "search",
+          "note": "Second example of the genre; unconfirmed.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Pareidolia is the tendency to perceive faces or familiar shapes in random or ambiguous patterns (seen in search results 2026-10-12).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Published machine-learning research (for example a 2017 paper on modern neural networks) studies the gap between a classifier's stated confidence and its real accuracy.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Apophenia is the tendency to find patterns in unrelated data, and pareidolia counts as one kind; as of 2026-10-12, per a mental-health education site and a psychology site (blended search summary, unconfirmed).",
+          "sourceIndex": 3,
+          "alsoIn": [
+            2
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "A textbook expert system has a rule base, an inference engine that matches and fires rules, and an explanation facility that lists the rules fired; as of 2026-10-12, per a university course page (unconfirmed).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Small satirical sites that give confidently wrong answers already exist, as of 2026-10-12, per two product directory listings (unconfirmed).",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9
+          ],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "inkblot tests",
+        "classic rule-based expert systems and their why/how traces",
+        "forecasting punditry",
+        "Mastermind-style deduction",
+        "satirical confidently-wrong chatbots (as a contrast, not a copy)",
+        "airport customs forms"
+      ]
+    },
+    "design": {
+      "coreLoop": "Each case is a 48x48 blot with six measured features (tallness, symmetry, holes, jaggedness, blob count, density). The visitor predicts the verdict word and a confidence band, then the machine stamps its verdict and prints a numbered reasoning trace of the rules that fired. A rule notebook lets the visitor state a hypothesis (feature, threshold, label) and see it scored against every past case. Depth comes from rule priority quirks (first high-salience rule wins, contradicting evidence is ignored, confidence rises with the number of agreeing weak rules). Later audits unlock a build-a-blot mode where the goal is to force a target word, for example the machine's word for a wandering traveller.",
+      "sophisticationHooks": [
+        "Real forward-chaining engine in about 30 rules with salience and conflict resolution, plus an explanation trace that replays the firing order",
+        "Hypothesis notebook that auto-tests the visitor's own rule against all seen cases and highlights the counterexamples",
+        "Deterministic seeded blot generator plus freehand painting with pointer events, features computed live",
+        "Shareable URL hash that stores a case seed and the visitor's rule list, plus a printable certificate of certainty as a screenshot moment"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: blot generator and painter, feature extractor, rule engine with about 30 rules and 40 verdict words (lighthouse, nomad, jubilee float and similar), predict-then-reveal loop, rule notebook, build-a-blot target mode with 6 audits, light and dark, keyboard and touch, about panel. Cut: sound, accounts, any online data, user-written rule languages beyond the single-condition notebook.",
+      "risks": [
+        "Rule base must be learnable: ship a script-checked simple decision tree that reproduces at least 90 percent of verdicts, and test with fresh eyes.",
+        "Could drift into random-feeling output if salience ties are not resolved deterministically; fix with a stable tie-break order shown in the trace.",
+        "Expert-system and calibration claims are partly unconfirmed; the about panel should list only verified sources and show the rest as 'as of 2026-10-12, per <source>'.",
+        "Must parody a generic automated certainty, never a real product's voice or branding; use an invented bureau name and hand-drawn stamps."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "critic-2",
+    "title": "The Nickname Oracle",
+    "pitch": "A pompous hockey prediction machine picks a winner for any two of the 32 league nicknames using one absurd theory: the nicknames form a hidden ecology (predators beat prey, weather beats machinery, myths beat everything but have a weakness). The visitor tries to call its pick before it announces it, learns the hidden type chart through its smug explanations, then runs a full machine-made 32-team season table and screenshots the result.",
+    "whyNow": "The new league season is under way (as of 2026-10-12, per NHL.com, unconfirmed), which is when fans want to argue forecasts; the page stays playable for the whole season and beyond.",
+    "origin": {
+      "agent": "critic",
+      "lens": "confident-machine"
+    },
+    "fingerprint": {
+      "category": "hockey-sports",
+      "mechanic": "game",
+      "tone": [
+        "absurd",
+        "competitive",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "localstorage"
+      ],
+      "tags": [
+        "hockey",
+        "nicknames",
+        "type-chart",
+        "predictions",
+        "overconfidence",
+        "fandom",
+        "ecology",
+        "season-table"
+      ],
+      "keywords": [
+        "confidently-wrong",
+        "predict-the-machine",
+        "hidden-rules",
+        "team-nicknames",
+        "pundit-parody",
+        "food-chain",
+        "standings",
+        "streak"
+      ],
+      "slot": "currentEvents",
+      "political": false
+    },
+    "research": {
+      "summary": "Team nicknames in the league come from very mixed origins (animals, mythology, weather and terrain, trades, local history), and several outlets publish origin-story roundups, which is the raw material for a nickname-only theory with no real results, players or odds involved. The league season runs on a long schedule that started in late September 2026 (reported, unconfirmed), so a fan toy about forecasting is topical. The machine's tone parodies automated, overconfident punditry in general; its internal logic (a nickname type chart, tie-breakers on word shape, a fixed overconfidence law) is what makes it learnable. Shared idea with the confident-machine genre: certainty that is consistent, not random.",
+      "sources": [
+        {
+          "title": "nhl team nickname origins explained",
+          "url": "https://www.nhl.com/news/nhl-team-nickname-origins-explained-283976168",
+          "date": "",
+          "snippet": "League news page in search results covering how team nicknames originated.",
+          "via": "search",
+          "note": "Nicknames have documented, varied origins.",
+          "verified": true
+        },
+        {
+          "title": "How NHL Teams Got Their Names (Western Edition)",
+          "url": "https://blog.distributel.ca/general-category/how-nhl-teams-got-their-names-western-edition/",
+          "date": "",
+          "snippet": "Blog post surveying how western-conference teams were named.",
+          "via": "search",
+          "note": "Independent site covering nickname origins.",
+          "verified": true
+        },
+        {
+          "title": "Sports. Honestly. Since 2011 (origins of NHL nicknames, Western Conference)",
+          "url": "https://lastwordonsports.com/2013/04/15/peculiar-side-of-spots-origins-of-nhl-nicknames-western-conference/",
+          "date": "2013-04-15",
+          "snippet": "Sports blog article on the peculiar origins of Western Conference nicknames.",
+          "via": "search",
+          "note": "Third independent site on nickname origins; old article, background only.",
+          "verified": true
+        },
+        {
+          "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+          "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+          "date": "",
+          "snippet": "League article headline saying the 2026-27 season starts on September 29 with two named opening games.",
+          "via": "search",
+          "note": "Season-start claim from one official source only.",
+          "verified": false
+        },
+        {
+          "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94",
+          "url": "https://wtop.com/sports/2026/07/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/",
+          "date": "",
+          "snippet": "Wire-service headline stating the 2026-27 schedule has 84 games per team, the first such schedule since 1993-94.",
+          "via": "search",
+          "note": "84-game claim; wire copies on several sites count as one source.",
+          "verified": false
+        },
+        {
+          "title": "NHL announces 2026-27 regular-season schedule",
+          "url": "https://www.nhl.com/news/nhl-announces-2026-27-regular-season-schedule",
+          "date": "",
+          "snippet": "League release on the 2026-27 schedule; the search summary credited it with 1,344 games and an April 10 finish.",
+          "via": "search",
+          "note": "Official source for the schedule claim; summary was blended so unconfirmed.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "League team nicknames come from varied, documented origin stories (animals, mythology, local history), per three separate sites seen in search on 2026-10-12.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The 2026-27 regular season was reported to start on Sept. 29, 2026; as of 2026-10-12, per NHL.com (single source, unconfirmed).",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The 2026-27 schedule was reported as 84 games per team; as of 2026-10-12, per a wire-service story and NHL.com (blended summary, unconfirmed).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "elemental type charts in monster-collecting games",
+        "pundit panels with confident hot takes",
+        "mascot-versus-mascot playground arguments",
+        "bracket-prediction rituals",
+        "rock-paper-scissors extended"
+      ]
+    },
+    "design": {
+      "coreLoop": "The page shows two nicknames. The visitor picks who the Oracle will back and how sure it will sound, then the Oracle announces its pick with a grandly wrong explanation citing its theory (type advantage, word-shape tie-breakers, and a fixed overconfidence law). A streak counter and a discovery log fill in the hidden type chart as the visitor makes correct calls. Mastery unlocks the season mode, where the visitor predicts the Oracle's whole 32-team table, scored by distance, and a share link encodes the visitor's chart guesses.",
+      "sophisticationHooks": [
+        "Hidden type chart over about 8 nickname classes plus three deterministic tie-breakers (vowel count, word length, alphabetical order) that the visitor can discover",
+        "Explanation generator that assembles bureaucratic pundit sentences from the rules that fired, so each verdict teaches something",
+        "Season mode: round-robin table computed by the same rules, with predict-the-table scoring and a shareable URL hash",
+        "Discovery log and a 'break the Oracle' challenge that asks for a matchup where its confidence drops below its usual level (only one rule does this)"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: 32-nickname table with class assignments hand-made by us, rule engine, explanation generator, predict-the-pick game with streaks, discovery log, season table mode, share hash, light and dark, keyboard and touch, about panel with a clear 'nonsense, not a forecast, not betting advice' label. Cut: real schedules or results, standings feeds, player names, logos, any odds display, audio.",
+      "risks": [
+        "Season-start and 84-game claims are unconfirmed; the page should avoid depending on them or show them as 'as of 2026-10-12, per NHL.com'.",
+        "The roster of 32 nicknames must be checked against the current league before build (a recent franchise rename is possible and not verified here); keep the list in one data file.",
+        "Must be unmistakably a joke with no betting or odds framing: no real results, no player names, no logos, plain-text nicknames only, an unofficial-fan-parody label.",
+        "Competes with other hockey puzzles in the pool; the differentiator is a learnable fictional theory, not stats."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "carry-1",
+    "title": "Breaking Changes",
+    "pitch": "A plain grey brick-breaker ships as v0.1. Between waves the studio offers two release candidates written in marketing-speak, such as 'Improved ball responsiveness' or 'Ceiling deprecated to improve performance'. You decode the euphemism, pick one, and play the next wave under its real rules while a board of system lamps shows what just went offline. A codex records what each phrase actually meant, and by v1.0 your build is a loud, glorious, thoroughly broken thing you assembled yourself.",
+    "whyNow": "Timeless premise, since everyone has met a vague update note, with a jam-weekend nod: one jam page reportedly lists 'Systems Offline' as its theme (as of 2026-10-11, per itch.io, unconfirmed), and each patch here switches a game system off or on.",
+    "origin": {
+      "agent": "carryover",
+      "lens": "itch-jam-watch",
+      "scoutId": "artisan-2",
+      "originalAgent": "artisan",
+      "carriedFrom": "2026-10-12"
+    },
+    "fingerprint": {
+      "category": "humor-satire",
+      "mechanic": "game",
+      "tone": [
+        "satirical",
+        "playful",
+        "chaotic"
+      ],
+      "tech": [
+        "canvas2d",
+        "webaudio",
+        "pointer-events",
+        "localstorage",
+        "web-animations"
+      ],
+      "tags": [
+        "game-jam",
+        "patch-notes",
+        "brick-breaker",
+        "rule-mutation",
+        "roguelite",
+        "game-feel",
+        "juice",
+        "codex",
+        "release-notes",
+        "satire",
+        "systems-offline"
+      ],
+      "keywords": [
+        "changelog",
+        "release-candidate",
+        "verb-noun-grammar",
+        "hidden-effects",
+        "system-lamps",
+        "greybox",
+        "hit-stop",
+        "screenshake",
+        "rollback",
+        "version-number"
+      ],
+      "slot": "humor",
+      "political": false
+    },
+    "research": {
+      "summary": "Hook, honestly rated: the Patch Notes jam page on itch.io lists 'Systems Offline' for a 72-hour jam on 9-12 October 2026, but the page also says theme TBA and the host's own announcements found by search only show earlier editions, so the theme is shown as reported, not confirmed, and the game stands without it. What is verified shapes the design: the 2012 juice talk by Martin Jonasson and Petri Purho showed how layers of feedback transform the feel of a plain game (its demo is reported, without a clear attribution in the results, to be a simple Breakout clone), which gives the greybox-to-gold arc and the juice ladder; two separate support forums carry user complaints about stock release-note wording, which anchors the euphemism grammar in something people recognise; a Mini Jam page reportedly rates a mandatory limitation rather than the theme, which this idea turns into a per-wave limitation delivered as a patch note. All studio names, patches and quotes in the game are invented.",
+      "sources": [
+        {
+          "title": "Patch Notes v2.0 - itch.io",
+          "url": "https://itch.io/jam/patch-notes",
+          "date": "",
+          "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics. Two search summaries said it lists 'Systems Offline' as the theme for a 72-hour jam on 9-12 October 2026, while another line on the page reportedly says theme TBA.",
+          "via": "search",
+          "note": "The jam-weekend nod. One site only and internally inconsistent; no independent mention of v2.0 was found. Show as reported, as of 2026-10-11, never as confirmed.",
+          "verified": false
+        },
+        {
+          "title": "indieformer.beehiiv.com",
+          "url": "https://indieformer.beehiiv.com/p/showcase0725",
+          "date": "",
+          "snippet": "Newsletter edition from the Patch Notes host, as summarized by search: it announced the host's first game jam, Patch Notes, in July 2025.",
+          "via": "search",
+          "note": "Shows the series is real and recurring. Same organization as the jam page, so not independent confirmation of v2.0.",
+          "verified": false
+        },
+        {
+          "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
+          "url": "https://itch.io/jam/patch-notes-v-1-1",
+          "date": "",
+          "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; search summaries gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
+          "via": "search",
+          "note": "Series context only; same organization as the other two entries.",
+          "verified": false
+        },
+        {
+          "title": "August 23, 2013",
+          "url": "https://www.gamedeveloper.com/design/video-is-your-game-juicy-enough-",
+          "date": "August 23, 2013",
+          "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
+          "via": "search",
+          "note": "The result title shown was a date, so the slug identifies the article. Establishes the talk, its speakers and the tween-stretch-squeeze idea; the venue differs from the next entry, so the page says 2012 only. The Breakout-clone demo detail is reported, not confirmed.",
+          "verified": true
+        },
+        {
+          "title": "Juicy Break",
+          "url": "https://crcdng.itch.io/juicy-break",
+          "date": "",
+          "snippet": "Independent creator page titled Juicy Break that, per the search summary, refers to the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+          "via": "search",
+          "note": "Second, independent source for the talk's existence and year. Search only; whether the page is itself a remake of the demo was not visible.",
+          "verified": true
+        },
+        {
+          "title": "first unread message",
+          "url": "https://community.ebay.com/t5/Mobile-Apps/Meaningful-release-notes-for-app-updates/td-p/28639214/jump-to/first-unread-message",
+          "date": "",
+          "snippet": "Support-forum thread (slug: Meaningful-release-notes-for-app-updates) where a user asks for release notes that say what changed, arguing the stock phrase bug fixes and performance improvements tells them nothing.",
+          "via": "search",
+          "note": "Shows stock release-note wording draws complaints. Cite only as a source; the game never names any real company.",
+          "verified": true
+        },
+        {
+          "title": "meaningless release notes 6931757",
+          "url": "https://en.community.sonos.com/speakers-229128/meaningless-release-notes-6931757",
+          "date": "",
+          "snippet": "A second company's community-forum thread where a user calls update notes meaningless after two updates were described only as bug fixes and improved performance.",
+          "via": "search",
+          "note": "Independent second forum, different organization, same complaint. Cite only as a source; the game never names any real company.",
+          "verified": true
+        },
+        {
+          "title": "Mini Jam 219: Nocturne - itch.io",
+          "url": "https://itch.io/jam/mini-jam-219-nocturne",
+          "date": "",
+          "snippet": "Page for a biweekly jam series; per the search summary each jam announces a theme early and reveals a mandatory limitation at the start, and the theme is only inspiration while the limitation is what gets rated.",
+          "via": "search",
+          "note": "Inspires per-wave limitations delivered as patch notes. One site and summary-level only, so unverified.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' showed how tweening, stretching and extra feedback make a plain game feel alive.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-11"
+        },
+        {
+          "claim": "As of 2026-10-11, public support forums carry user complaints that stock release-note wording such as 'bug fixes and performance improvements' says nothing about what changed (two separate organizations' forums).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-11"
+        },
+        {
+          "claim": "As of 2026-10-11, one jam page (Patch Notes v2.0 on itch.io) is reported to list 'Systems Offline' as its theme for 9-12 October 2026; the page also carries a theme-TBA line, so this is unconfirmed.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-11"
+        },
+        {
+          "claim": "The Patch Notes jam series ran its v1.1 edition on itch.io from 16 to 26 January 2026 (per the page title; same organization as the v2.0 listing).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-11"
+        },
+        {
+          "claim": "A Mini Jam page is reported to say the theme is only inspiration while a mandatory limitation, revealed at the start, is what gets rated (single site, unconfirmed).",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-11"
+        }
+      ],
+      "inspirations": [
+        "The 2012 juice talk and its greybox-to-gold demo",
+        "Brick-breakers and their roguelite descendants",
+        "Rule-rewriting puzzle games",
+        "Stock app-store release-note phrases",
+        "Live-service balance patches and their notes"
+      ]
+    },
+    "design": {
+      "coreLoop": "Wave loop: you read two patch notes, pick one with 1 or 2 (or a tap), watch the system-lamp board change as its true effect applies, then play a 30 to 40 second brick-breaker wave under every rule accumulated so far. Clearing the wave or losing a ball ends the loop with a 'known issues' reveal that tells you what the euphemism really meant and files it in the codex. Notes follow a learnable grammar (improved means faster with a catch, rebalanced means nerfed, deprecated means removed with compensation, reimagined means shuffled), so minute two is decoding and minute ten is routing synergies, such as a sticky paddle with gravity, around your build's weak spots. Ten waves end in a v1.0 launch card; three rollbacks end the run early. The daily seed makes the offers identical for everyone.",
+      "sophisticationHooks": [
+        "A decodable grammar: eight verbs (improved, rebalanced, streamlined, reimagined, modernized, deprecated, added in beta, fixed) act on eight game systems (ball, paddle, ceiling, bricks, gravity, input, audio, juice), so a euphemism means the same kind of change everywhere. A codex fills in as you learn, which is what separates minute two from minute ten.",
+        "Generic modifier engine with synergy and clamps: about 40 valid verb-noun pairs stack, such as a sticky paddle with gravity or multiball with the ceiling deprecated, while a stall watchdog ships an in-fiction hotfix if no brick falls for 25 seconds.",
+        "The juice ladder: feedback layers (hit-stop, squash and stretch, trails, particles, shake, synthesized sound) arrive as patches, so the page shows game feel being built from silent grey boxes at v0.1 to a bright, noisy v1.0. Each layer has a reduced-motion twin and a shake toggle.",
+        "Hero moment: a board of system lamps clicks off or on when a patch lands, an installing-update wipe sweeps the playfield, and the same bricks that were flat grey rectangles burst into confetti by v1.0 while the changelog scrolls alongside."
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Build: fixed-step brick-breaker with sub-stepped collisions, a verb-by-noun patch engine (8 verbs, 8 systems, about 40 valid pairs) with flavor text, two-card picker, system-lamp board, codex, juice ladder with reduced-motion twins, muted-by-default WebAudio blips, ten waves with rollbacks and a v1.0 launch card, URL-hash seed and share string, keyboard and touch controls, about panel with sources. Cut first: unlockable skins, boss wave, extra brick types. Not built: leaderboards, any backend.",
+      "risks": [
+        "Hook is single-sourced and inconsistent: the page shows 'Systems Offline' as reported on a jam page, as of 2026-10-11, per itch.io (unconfirmed); the game does not depend on it.",
+        "Brick-breakers are crowded: distinctness rides on the decodable verb grammar, the codex and the writing, so the spec should protect those before extra polish.",
+        "Soft-locks and balance: clamp every parameter, ship an in-fiction hotfix that reverts the last patch if no brick falls for 25 seconds, and let the QA monkey test random builds.",
+        "Humor stays generic: invented studio, patches and quotes; aim at the genre of vague release notes, never at a real company or product, and list the forum threads only as sources.",
+        "Motion and flashing: cap flashes below 3 per second, give every shake or flash a reduced-motion twin and a shake toggle, start audio muted.",
+        "Scope: a generic verb-by-noun engine avoids hand-coding dozens of patches; skins, boss waves and extra brick types are cut first."
+      ]
+    },
+    "durable": true,
+    "verification": {
+      "by": "none",
+      "at": "2026-10-11",
+      "status": "unverified",
+      "notes": "not verified: the verifier did not run or its output was unusable"
+    }
+  }
+]

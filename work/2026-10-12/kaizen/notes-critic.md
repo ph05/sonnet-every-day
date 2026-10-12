@@ -1,0 +1,5 @@
+Search summaries blend several results, so most claims end up unverified; a one-line hint in research.md about which result titles alone count as separate entries would save scouts deliberation time.
+Verifier dossiers list more than 12 sources easily once re-found links are added; a one-line reminder in research.md that facts index into the first 12 would stop index shifts when trimming.
+Dossiers marked sources verified:true that no search could re-find (seed, map-seed pages); a one-line 'found again by search' column in the dossier schema would have saved re-deriving which were real.
+Scout dossiers dated a game by the news-story publish date and mixed a streak with the standings record (Flyers 0-7 versus 0-5-2); a one-line reminder in research.md to quote the record format (W-L-OTL) and the game date from the recap itself would have saved a correction.
+Verifier: a pre-filled list of failed WebFetch hosts that includes arxiv.org would let us skip fetch attempts on academic sources and go straight to searching for the claim.

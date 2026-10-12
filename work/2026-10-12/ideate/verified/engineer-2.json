@@ -1,0 +1,253 @@
+{
+  "id": "engineer-2",
+  "title": "Sin Bin Concierge",
+  "pitch": "You run the penalty box as a tiny, deadpan hotel: guests arrive with minors, double minors, majors and misconducts, goals go in, whistles blow, and you must announce who checks out and what the strength on the ice is, before the clock runs out. A real rules engine decides the right answer, including the awkward cases like coincidental minors, a goal on a stacked kill, and a major that refuses to leave early.",
+  "whyNow": "Timeless. The 2026-27 NHL season (84 games per team) is under way, and a faithful penalty-clock puzzle is the kind of rule detail fans argue about; it is a humor entry that rewards learning real rules.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "hockey-now"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "hockey",
+      "penalty-box",
+      "rules-engine",
+      "power-play",
+      "deadpan",
+      "bureaucracy",
+      "queue",
+      "sin-bin"
+    ],
+    "keywords": [
+      "penalty-expiry",
+      "coincidental-minors",
+      "double-minor",
+      "major-penalty",
+      "strength-state",
+      "state-machine",
+      "daily-shift"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Hockey penalty expiry is a small state machine. Searches agree that a power-play goal releases the minor with the least time left (NHL.com history piece, IIHF and USA Hockey rule text), that a five-minute major is not cut short by goals (NHL.com glossary), that a double minor is two back-to-back two-minute blocks with a goal ending only the block being served, and that NHL coincidental minors at even strength give four-on-four while IIHF play stays five-on-five (Wikipedia and an IIHF comparison document). The NHL's own current rulebook text was not opened and the IIHF, USA Hockey and walkthrough texts are other bodies' or older, so the page labels the engine a simplified house version of NHL rules. Searches found no reported NHL penalty-rule change for 2026-27; the season is 84 games per team.",
+    "sources": [
+      {
+        "title": "Penalty (ice hockey)",
+        "url": "https://en.wikipedia.org/wiki/Penalty_(ice_hockey)",
+        "date": "",
+        "snippet": "General reference on hockey penalties: double minors run as two-minute blocks with a power-play goal cancelling only the current block, and coincidental minors give four-on-four in the NHL.",
+        "via": "search",
+        "note": "Re-found by the verifier's own searches; its summary says NHL coincidental minors give four-on-four and a double minor goal cancels one block. Page could not be opened (host unreachable), so agreement with other results is the evidence.",
+        "verified": true
+      },
+      {
+        "title": "Hockey 101: Defining the Different Types of Penalties",
+        "url": "https://thehockeywriters.com/?p=110762",
+        "date": "",
+        "snippet": "Fan-facing explainer of minor, major, misconduct and other penalties and how each is served.",
+        "via": "search",
+        "note": "Not found again in the verifier's searches (a different article from this site appeared instead); not relied on.",
+        "verified": false
+      },
+      {
+        "title": "Getting to Know the NHL Rulebook: Minor Penalties",
+        "url": "https://www.wingingitinmotown.com/getting-to-know-the-nhl-rulebook-types-of-penalties/",
+        "date": "",
+        "snippet": "Walks through NHL rulebook wording for minor penalties, including release on a power-play goal and coincidental penalties staying until a stoppage; the excerpt appears to be from an older rulebook edition.",
+        "via": "search",
+        "note": "Found again in two verifier searches; wording says a goal by the opposing team terminates the first minor. It is an older NHL rulebook walkthrough, so the page calls the engine a simplified house version.",
+        "verified": true
+      },
+      {
+        "title": "explanation of hockey penalties - Deseret News",
+        "url": "https://www.deseret.com/sports/2024/10/19/explanation-of-hockey-penalties/",
+        "date": "2024-10-19",
+        "snippet": "Newspaper explainer of common hockey penalties and what short-handed play means.",
+        "via": "search",
+        "note": "Not found again in the verifier's searches; not relied on.",
+        "verified": false
+      },
+      {
+        "title": "NHL Rule Changes for 2026-27 - Scouting The Refs",
+        "url": "https://scoutingtherefs.com/2026/09/52608/nhl-rule-changes-2026-27/",
+        "date": "2026-09",
+        "snippet": "Lists the rule changes for 2026-27; the search digest mentioned a neck-protection requirement for players with no prior NHL games, among non-penalty changes.",
+        "via": "search",
+        "note": "Not found again; a verifier search on 2026-27 NHL rule changes surfaced other outlets reporting no penalty-rule change, only a neck-protection equipment rule. Not relied on.",
+        "verified": false
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "The 2026-27 schedule has 84 games per team under the new CBA.",
+        "via": "search",
+        "note": "Re-found by the verifier's search (ESPN and NHL.com, theScore and The Hockey News results all agree on 84 games per team).",
+        "verified": true
+      },
+      {
+        "title": "NHL announces 2026-27 regular-season schedule",
+        "url": "https://www.nhl.com/news/nhl-announces-2026-27-regular-season-schedule",
+        "date": "",
+        "snippet": "League announcement of the 2026-27 regular-season schedule, 84 games per team.",
+        "via": "search",
+        "note": "Replaced the unfindable stats-pack URL with this NHL.com result seen in the verifier's search; independent of the ESPN story.",
+        "verified": true
+      },
+      {
+        "title": "Canadiens felt 1956 rule change doused their potent power play (NHL.com)",
+        "url": "https://www.nhl.com/news/montreal-felt-1956-rule-change-hurt-power-play-317110878",
+        "date": "",
+        "snippet": "Describes the 1956 rule change releasing a minor-penalized player from the box when the team with the extra man scores.",
+        "via": "search",
+        "note": "NHL.com text: since 1956 a player serving a minor is released when the opposing team scores.",
+        "verified": true
+      },
+      {
+        "title": "IIHF rule book 2026-27, Minor Penalties",
+        "url": "https://test.rulebook.iihf.com/documents/rule-book-2026-27/16",
+        "date": "",
+        "snippet": "Rule 16.2 wording: if the short-handed team is scored on, the first minor penalty automatically terminates, except on a penalty shot.",
+        "via": "search",
+        "note": "Rule text: a goal against a short-handed team terminates the first minor; not for penalty shots. International rule, not NHL.",
+        "verified": true
+      },
+      {
+        "title": "USA Hockey Rule 402, Minor Penalties",
+        "url": "https://www.usahockeyrulebook.com/page/show/1084478-rule-402-minor-penalties",
+        "date": "",
+        "snippet": "Rule 402(c): a goal against a short-handed team terminates one of the penalties; not on a penalty shot.",
+        "via": "search",
+        "note": "Same early-termination principle in a North American rulebook (not the NHL's own).",
+        "verified": true
+      },
+      {
+        "title": "Go Figure: Key Hockey Terms (NHL.com)",
+        "url": "https://www.nhl.com/info/go-figure",
+        "date": "",
+        "snippet": "A team on a major is credited with one more advantage than power-play goals scored, because the penalty does not expire on a goal.",
+        "via": "search",
+        "note": "NHL glossary: a five-minute major is not cut short by goals, so each power-play goal gives a new advantage.",
+        "verified": true
+      },
+      {
+        "title": "NHL vs IIHF rule differences (IIHF, Feb 2026)",
+        "url": "https://blob.iihf.com/iihf-media/iihfmvc/media/2026_olympics/news/2026/02/nhl_iihf_rule_differences_-_final.pdf",
+        "date": "",
+        "snippet": "Comparison document: NHL plays four-on-four on coincidental minors, IIHF five-on-five.",
+        "via": "search",
+        "note": "Independent of Wikipedia: NHL coincidental minors give four-on-four, IIHF five-on-five.",
+        "verified": true
+      },
+      {
+        "title": "double minor hockey (icehockeyman.com)",
+        "url": "https://icehockeyman.com/tag/double-minor-hockey/",
+        "date": "",
+        "snippet": "Goal in first two minutes ends only the first minor; a goal in the final two minutes ends the power play.",
+        "via": "search",
+        "note": "Explainer: a goal in the first two minutes ends only the first block; a goal in the last two ends the power play.",
+        "verified": true
+      },
+      {
+        "title": "Getting to Know the NHL Rulebook: Major Penalties",
+        "url": "https://www.wingingitinmotown.com/getting-to-know-the-nhl-rulebook-major-penalties/",
+        "date": "",
+        "snippet": "Walkthrough of NHL rulebook major-penalty wording: a major is not terminated by a power-play goal.",
+        "via": "search",
+        "note": "Second independent result agreeing that a major runs its full length; older NHL rulebook edition possible.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026-27 NHL regular season is 84 games per team, the first 84-game season since 1993-94.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A goal by the team on the power play releases a penalized player serving a minor (NHL rule since 1956); the minor with the least time remaining ends first, and a penalty-shot goal does not count.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8,
+          9
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A five-minute major is not shortened by power-play goals; it runs its full length.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          13
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In the NHL, coincidental minors at even strength produce four-on-four play, whereas IIHF rules keep five-on-five.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In a double minor, a power-play goal in the first two minutes ends only the first block, and a goal in the final two minutes ends the power play.",
+        "sourceIndex": 12,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "Papers, Please style rule-bureaucracy games",
+      "rules-lawyer quizzes",
+      "Keep Talking and Nobody Explodes",
+      "hotel front desk comedies"
+    ]
+  },
+  "design": {
+    "coreLoop": "A seeded game script produces a timeline of whistles, goals and expiries. At each decision point the concierge sees the box ledger (guest, penalty, clock) and must tap who is released and set the on-ice strength, before a patience meter runs out. The rules engine scores each answer, explains the ruling in one deadpan line, and ramps difficulty by stacking penalties, adding coincidentals, majors, misconducts and goals mid-kill. Shifts are daily-seeded and shareable via URL hash so friends compare rulings.",
+    "sophisticationHooks": [
+      "Pure, tested penalty-clock state machine: queue ordering of simultaneous penalties, double minor block logic, major versus minor release on goals, coincidental handling, minimum skater counts",
+      "Scenario generator with seeded randomness that guarantees each shift contains specific edge cases at rising difficulty and never an ambiguous ruling",
+      "Explanations built from the same rule trace the engine used, so every correct and wrong answer is teachable",
+      "Absurd framing: invented guests and teams, a hotel-ledger look drawn in SVG and CSS, keyboard-only play and a replay of the ruling"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build the pure penalty-clock engine with a node test file, a seeded scenario generator limited to hand-checked patterns (single and stacked minors, double minor, major, even-strength coincidental minors, power-play goals mid-kill, misconducts as no-strength decoys), the ledger and rink-strength UI, scoring with a patience meter, daily seed and share hash, and an about panel that lists the exact simplified rules. Cut: delayed penalties, coincidental penalties while other penalties are running, penalty shots, overtime, referee signals, audio and per-league variants.",
+    "risks": [
+      "The engine follows rules corroborated by NHL.com pages, IIHF and USA Hockey texts and explainers, but the current NHL rulebook text was not opened: the about panel says simplified house version, as of 2026-10-12, and never claims official rulings.",
+      "Coincidental minors with other penalties already on the clock are served differently and were not verified; the generator never produces that case.",
+      "Stacked or simultaneous edge cases could yield a disputed answer: the generator is limited to patterns a second pass (test vectors written by hand) agrees on.",
+      "Humor can thin once the rules click: vary guest personas and add chained late-night shifts.",
+      "Invented guests and teams only; no real names, logos or marks. The claim that penalty-heavy games are in the news was unverified and is removed from the pitch."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Rule claims and the 84-game fact were each seen in two or more independent search results (NHL.com, IIHF, USA Hockey, ESPN) but no page opened (DNS failures); unverified news hook removed and scope trimmed to hand-checkable penalty patterns."
+  }
+}

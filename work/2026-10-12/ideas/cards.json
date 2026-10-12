@@ -1,0 +1,274 @@
+{
+  "schema": 1,
+  "agent": "cards",
+  "lens": "balatro-score-math",
+  "candidates": [
+    {
+      "id": "cards-1",
+      "title": "Commute Or Else",
+      "pitch": "Each day deals a rack of seven operator tiles (add chips, add mult, multiply mult, echo the previous two tiles, mirror a neighbour, raise mult to a power) plus one immovable bedrock tile, and you slide them into the order that scores highest. A live score tree shows chips and mult after every tile, then a histogram of all 5,040 possible orderings reveals where your arrangement sits in a wildly long-tailed distribution, and an exact solver tells you the par. The delight is the first time you see one swap turn 400 into 4,000, and the palindrome rule that rewards symmetric racks.",
+      "whyNow": "Timeless: ordering effects in chips-times-mult scoring are a perennial talking point among deckbuilder players, and a daily seeded puzzle with a shareable result grid keeps the page worth revisiting.",
+      "origin": {
+        "agent": "cards",
+        "lens": "balatro-score-math"
+      },
+      "fingerprint": {
+        "category": "cards-odds",
+        "mechanic": "puzzle",
+        "tone": ["analytical", "playful", "nerdy"],
+        "tech": ["dom-ui", "svg", "worker", "pointer-events", "localstorage"],
+        "tags": ["operator-order", "permutations", "non-commutative", "multiplier-algebra", "daily-puzzle", "score-histogram", "retrigger", "exact-enumeration"],
+        "keywords": ["order-of-operations", "chips-times-mult", "factorial", "par-score", "score-tree", "palindrome-bonus", "bedrock-tile", "share-grid"],
+        "slot": "interest",
+        "political": false
+      },
+      "research": {
+        "summary": "Community guides on deckbuilder joker order agree on the shape of the maths: effects resolve left to right, flat mult belongs before multiplicative mult, and copy effects care about position (one copies its right neighbour, another copies the leftmost slot). That is exactly a non-commutative algebra, (c+a)*b differs from c*b+a, which I derived myself and will self-check in node. The number of orderings of eight items is 8! = 40320 per several counting references, so a rack of 7 movable tiles plus one fixed tile (5,040 orderings) is small enough for exact enumeration in a worker in milliseconds and big enough to have a fat-tailed score distribution worth drawing. Several community claims (exact examples, edge cases for scoring-triggered effects) were contradicted by one forum user, so the page uses its own stated rules, invented tile names and does not claim to reproduce any commercial game.",
+        "sources": [
+          {
+            "title": "Best Joker Order in Balatro",
+            "url": "https://progameguides.com/balatro/best-joker-order-in-balatro/",
+            "date": "",
+            "snippet": "Guide reasoning that flat mult sources go left of multiplicative ones, that effects resolve left to right, with a worked example where moving a multiplier to the end raises a hand total (46 to 58.5).",
+            "via": "search",
+            "note": "Order-sensitivity of additive vs multiplicative mult; seen in a search result only, summary was blended with other results so not counted as independently agreed.",
+            "verified": false
+          },
+          {
+            "title": "destructoid.com (joker order result)",
+            "url": "https://destructoid.com/?p=478541",
+            "date": "",
+            "snippet": "Result returned for a query on joker scoring order; the search summary says jokers generally trigger left to right and recommends flat mult before X mult.",
+            "via": "search",
+            "note": "Corroborates the left-to-right convention at the topic level; blended summary, only the title and URL are certain.",
+            "verified": false
+          },
+          {
+            "title": "Steam community discussion on joker order",
+            "url": "https://steamcommunity.com/app/2379780/discussions/0/4334231842063363125",
+            "date": "",
+            "snippet": "Forum thread returned for both order queries; a user reports seeing multipliers apply first regardless of position but admits the test was uncontrolled.",
+            "via": "search",
+            "note": "Shows the community disagreement on edge cases, hence the page defines its own rules explicitly.",
+            "verified": false
+          },
+          {
+            "title": "Balatro Strategy Guide: The Joker Combos That Actually Win Runs",
+            "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+            "date": "",
+            "snippet": "Strategy guide returned for copy-effect queries; summary says one copy joker reads its right neighbour, another reads the leftmost slot, and copies can chain.",
+            "via": "search",
+            "note": "Positional copy rules inspire the mirror and echo tiles; summary blended across results, so unverified.",
+            "verified": false
+          },
+          {
+            "title": "balatro jokers guide (games.gg)",
+            "url": "https://games.gg/balatro/guides/balatro-jokers-guide/",
+            "date": "",
+            "snippet": "Jokers guide returned for the Blueprint/Brainstorm query; indicates position-dependent copy behaviour.",
+            "via": "search",
+            "note": "Second site listed for the positional copy rule, but the per-result text was not visible.",
+            "verified": false
+          },
+          {
+            "title": "8! == 40320 (Wolfram Functions)",
+            "url": "https://functions.wolfram.com/GammaBetaErf/Factorial/03/02/0011",
+            "date": "",
+            "snippet": "Reference page whose title states the factorial identity 8! = 40320.",
+            "via": "search",
+            "note": "Counts orderings of eight items; independent of the gatech handout.",
+            "verified": true
+          },
+          {
+            "title": "Counting handout (Georgia Tech)",
+            "url": "https://www2.isye.gatech.edu/~hsharp/math3070/counting.pdf",
+            "date": "",
+            "snippet": "Course handout that, per the search summary, uses 8! for the number of ways to order eight things (a salesman visiting eight cities).",
+            "via": "search",
+            "note": "Second independent source for 8! = 40320 orderings; I also recompute it in node.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "There are 8! = 40320 ways to order eight distinct items, so 7 movable tiles around one fixed tile give 7! = 5040 orderings (reference, as of 2026-10-12).",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Community guides recommend flat mult sources left of multiplicative mult sources because jokers resolve left to right. Page text will say: as of 2026-10-12, per community guides, unconfirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "One forum user reported different behaviour for scoring-triggered effects, so edge cases are disputed in the community (unverified).",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Position-based copy effects exist in the inspiration game (one reads its right neighbour, one reads the leftmost slot); reported by guides, unverified.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["joker-order debates in deckbuilder communities", "puzzle-a-day share grids", "histogram of all outcomes as in solver reports", "golf par scoring"]
+      },
+      "design": {
+        "coreLoop": "Read today's rack and target, drag or keyboard-move tiles into slots, watch the score tree update tile by tile, submit, then see your rank among all 5,040 orderings and the solver's par. The second minute is learning that add-before-multiply is not always best (echo and mirror tiles and the exponent tile bend it); the tenth is hunting palindromic racks and chasing par with fewer moves. A seeded daily rack plus unlimited practice racks by hash keeps it fresh.",
+        "sophisticationHooks": [
+          "Exact enumeration of all orderings in a worker with a histogram showing where the player's order lands (percentile, par, worst)",
+          "Score tree waterfall that shows chips and mult after each tile, with a reverse-the-rack toggle to show non-commutativity",
+          "Tile set with echo (repeat previous two tiles, the riff), mirror (copy right neighbour), exponent, bedrock (fixed slot) and a palindrome symmetry bonus",
+          "Seeded generator guarantees a unique optimum, and a node self-check validates the evaluator against hand-computed racks"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: tile evaluator and enumerator (pure functions), seeded rack generator, drag and keyboard slotting, score tree SVG, histogram, share string and URL hash, about panel, light and dark, reduced motion. Cut: accounts, leaderboards, animations beyond tile slide, sound.",
+        "risks": [
+          "Resemblance to a past scoring-engine toy: tags avoid joker and mod vocabulary and the loop is a puzzle, not a sandbox",
+          "Community rule claims are unverified, so the page uses its own invented tile names and states its rules rather than claiming to reproduce any game",
+          "Unique-optimum racks need generator care; fall back to showing ties",
+          "Floating point: keep scores as integers under 2^53 by capping the exponent tile"
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "cards-2",
+      "title": "Synergy Overflow",
+      "pitch": "You are the founder of an invented company pitching buzzword cards to a very gullible board: some add headcount, some add hype, some multiply it by synergy, and a few raise it to a power called disruption. Targets grow like an idle game's cost curve, order matters, and by quarter twenty the numbers have names nobody learned, until the page finally overflows into a deliberate, theatrical NaN-e-Inf board meeting. The joke is the deadpan corporate voice, the payoff is watching the maths run out of numbers.",
+      "whyNow": "Timeless satire of numbers-go-up design and corporate buzzword inflation; it also fills the owed humor slot with a real mechanic rather than a one-liner.",
+      "origin": {
+        "agent": "cards",
+        "lens": "balatro-score-math"
+      },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": ["satirical", "absurd", "playful"],
+        "tech": ["dom-ui", "svg", "web-animations", "localstorage"],
+        "tags": ["corporate-satire", "big-numbers", "exponent-stacking", "overflow-joke", "buzzword-cards", "log-space-math", "numbers-go-up", "roguelike-run"],
+        "keywords": ["synergy", "quarterly-target", "scientific-notation", "named-numbers", "infinity", "idle-game-math", "board-meeting", "disruption"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Incremental and idle games rest on a simple recipe: costs rise exponentially (a growth factor of 1.15 per purchase is the convention popularised by one famous clicker, per an analysis paper and a developer write-up) while income rises more slowly, so designers tune payback time and reset with prestige. The deckbuilder community has a famous joke ending: scores that exceed double precision display as a garbled overflow word, with an endless-mode wall and mods that push the cap far higher. That pairing, exponential targets plus an overflow punchline, is a real mechanic with a built-in comedic ending. The satire targets generic corporate speak with an invented company; no real firms or people.",
+        "sources": [
+          {
+            "title": "Cookie Clicker (arXiv analysis)",
+            "url": "https://arxiv.org/pdf/1808.07540",
+            "date": "",
+            "snippet": "Paper analysing the clicker game states that its cost growth factor alpha is 1.15 per purchase.",
+            "via": "search",
+            "note": "Source for the 1.15 convention; agrees with the dev.to walkthrough.",
+            "verified": true
+          },
+          {
+            "title": "An idle clicker has no engine and no sprites (DEV Community)",
+            "url": "https://dev.to/dev48v/an-idle-clicker-has-no-engine-and-no-sprites-its-one-raf-loop-paying-you-production-x-k03",
+            "date": "",
+            "snippet": "Walkthrough using price = base cost times 1.15 to the n and payback time as cost divided by extra income per second.",
+            "via": "search",
+            "note": "Independent second source for 1.15 and the payback-time tuning metric.",
+            "verified": true
+          },
+          {
+            "title": "The math of idle games, part I (Game Developer)",
+            "url": "https://www.gamedeveloper.com/design/the-math-of-idle-games-part-i",
+            "date": "",
+            "snippet": "Design article on the maths of idle games, returned for the cost-curve query; cost grows exponentially while production grows linearly or polynomially.",
+            "via": "search",
+            "note": "Background on exponential costs versus slower income; summary was blended.",
+            "verified": false
+          },
+          {
+            "title": "GameAnalytics idle game design article",
+            "url": "https://gameanalytics.com/?p=6634",
+            "date": "",
+            "snippet": "Explains that exponential costs eventually outpace income and prestige resets let players push further along the cost curve.",
+            "via": "search",
+            "note": "Prestige-reset framing, which becomes the 'restructure the company' mechanic.",
+            "verified": false
+          },
+          {
+            "title": "SGDQ 2026: Stressful Balatro naneinf Run On Stage",
+            "url": "https://setsideb.com/?p=12635",
+            "date": "2026",
+            "snippet": "Write-up of a live speedrun event run that reached the naneinf overflow state in a bit over an hour, naming the word as NaN plus e plus Inf.",
+            "via": "search",
+            "note": "The overflow joke is real and celebrated in the community.",
+            "verified": true
+          },
+          {
+            "title": "Steam discussion on naneinf",
+            "url": "https://steamcommunity.com/app/2379780/discussions/0/4338734550482070397",
+            "date": "",
+            "snippet": "Community thread estimating that the overflow happens near the double-precision limit of roughly 10 to the 308.",
+            "via": "search",
+            "note": "Independent site agreeing that a naneinf overflow state exists.",
+            "verified": true
+          },
+          {
+            "title": "Talisman mod description",
+            "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/MathIsFun0@Talisman/description.md",
+            "date": "",
+            "snippet": "Mod description saying it raises the score cap to roughly 10 to the 1000 so runs can go past the overflow point.",
+            "via": "search",
+            "note": "Third site mentioning the cap and that mods extend it.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A cost growth factor of 1.15 per purchase is a common idle-game convention, cited for one famous clicker (as of 2026-10-12).",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "In the inspiration game, scores beyond the floating-point limit show as an overflow state nicknamed naneinf, discussed by an event write-up, a forum thread and a mod description (as of 2026-10-12).",
+            "sourceIndex": 4,
+            "alsoIn": [5, 6],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "The double-precision limit is about 1.8 times 10 to the 308; one forum estimate puts the overflow near that figure. The page will compute this itself in the browser and label the forum figure as reported.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "A 2026 live event write-up reports a player reaching the overflow state in a run of about 1 hour 16 minutes (reported by one source, unverified).",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["incremental and idle games", "prestige resets", "scientific-notation named-number lists", "corporate buzzword bingo", "the overflow joke ending of deckbuilder endless modes"]
+      },
+      "design": {
+        "coreLoop": "Each quarter the board sets a target; you draw five buzzword cards, play up to four in an order you choose, and the score tree runs in front of you with a deadpan commentary line per card. Beat the target to get a perk card for the deck or restructure (prestige) to reset with a permanent multiplier. It stays interesting because order, exponent cards and a rising deck-thinning decision make each draw a small optimisation, and because the ending is a joke worth reaching.",
+        "sophisticationHooks": [
+          "Log-space big-number type (mantissa plus exponent) with named-number formatting beyond the 15-digit double limit",
+          "Target curve built from a tunable growth factor and payback-time check so a run lasts about 25 quarters",
+          "Optional chief-of-staff hint that brute-forces card orders and shows the best order score without revealing the card choice",
+          "Scripted overflow finale: the display glitches into NaN-e-Inf, the board applauds, and the run ends with a shareable certificate"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: card pool of about 30 invented buzzword cards, run loop with seeded draws, big-number class with tests, commentary lines, overflow finale, share string, about panel, light and dark, reduced motion. Cut: sound, meta-progression beyond one prestige layer, more than one company.",
+        "risks": [
+          "Humor must land: commentary lines need a writing pass and generic invented company names only, no real firms, brands or people",
+          "Looks like an idle toy; mitigate with decisions every turn and a defined ending",
+          "Overlap with the carried-over Breaking Changes humor idea is thematic only (corporate voice), so the mechanic and subject are different",
+          "Floating-point claims: the page states the double limit as computed in-browser and labels forum figures as reported",
+          "Event write-up detail (run time) is from one result and stays unverified"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

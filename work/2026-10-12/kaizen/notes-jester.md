@@ -1,0 +1,1 @@
+- Scout prompt: single-domain WebSearch (allowed_domains) gives one-source attribution that blended multi-site summaries do not, which makes verified:true honestly reachable; worth a line in the research rubric.

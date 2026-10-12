@@ -1,0 +1,166 @@
+{
+  "id": "engineer-2",
+  "title": "Sin Bin Concierge",
+  "pitch": "You run the penalty box as a tiny, deadpan hotel: guests arrive with minors, double minors, majors and misconducts, goals go in, whistles blow, and you must announce who checks out and what the strength on the ice is, before the clock runs out. A real rules engine decides the right answer, including the awkward cases like coincidental minors, a goal on a stacked kill, and a major that refuses to leave early.",
+  "whyNow": "Timeless, but the 2026-27 season is only two weeks old, penalty-heavy early games are in the news, and a faithful penalty-clock puzzle is the kind of rule detail fans argue about; it is a humor entry that rewards learning real rules.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "hockey-now"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "hockey",
+      "penalty-box",
+      "rules-engine",
+      "power-play",
+      "deadpan",
+      "bureaucracy",
+      "queue",
+      "sin-bin"
+    ],
+    "keywords": [
+      "penalty-expiry",
+      "coincidental-minors",
+      "double-minor",
+      "major-penalty",
+      "strength-state",
+      "state-machine",
+      "daily-shift"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Hockey penalty expiry is a small state machine with surprising edge cases. A minor ends early when the power-play team scores; a major runs its full five minutes regardless; a double minor is two consecutive two-minute blocks, and a goal cancels only the block currently running; coincidental minors in the NHL produce four-on-four play and a goal does not release them. Sources found are general explainers and an older rulebook excerpt, so the spec phase must confirm wording against the current official NHL rulebook, and unconfirmed rules are shown as a simplified house version. The 2026-27 season has few penalty-rule changes (a new neck-protection requirement and an 84-game schedule were reported), so the engine does not depend on news.",
+    "sources": [
+      {
+        "title": "Penalty (ice hockey)",
+        "url": "https://en.wikipedia.org/wiki/Penalty_(ice_hockey)",
+        "date": "",
+        "snippet": "General reference on hockey penalties: double minors run as two-minute blocks with a power-play goal cancelling only the current block, and coincidental minors give four-on-four in the NHL.",
+        "via": "search",
+        "note": "Rule background; could not be opened from here",
+        "verified": false
+      },
+      {
+        "title": "Hockey 101: Defining the Different Types of Penalties",
+        "url": "https://thehockeywriters.com/?p=110762",
+        "date": "",
+        "snippet": "Fan-facing explainer of minor, major, misconduct and other penalties and how each is served.",
+        "via": "search",
+        "note": "Second explainer for penalty types",
+        "verified": false
+      },
+      {
+        "title": "Getting to Know the NHL Rulebook: Minor Penalties",
+        "url": "https://www.wingingitinmotown.com/getting-to-know-the-nhl-rulebook-types-of-penalties/",
+        "date": "",
+        "snippet": "Walks through NHL rulebook wording for minor penalties, including release on a power-play goal and coincidental penalties staying until a stoppage; the excerpt appears to be from an older rulebook edition.",
+        "via": "search",
+        "note": "Rulebook-style wording; edition age uncertain",
+        "verified": false
+      },
+      {
+        "title": "explanation of hockey penalties - Deseret News",
+        "url": "https://www.deseret.com/sports/2024/10/19/explanation-of-hockey-penalties/",
+        "date": "2024-10-19",
+        "snippet": "Newspaper explainer of common hockey penalties and what short-handed play means.",
+        "via": "search",
+        "note": "Independent mainstream explainer",
+        "verified": false
+      },
+      {
+        "title": "NHL Rule Changes for 2026-27 - Scouting The Refs",
+        "url": "https://scoutingtherefs.com/2026/09/52608/nhl-rule-changes-2026-27/",
+        "date": "2026-09",
+        "snippet": "Lists the rule changes for 2026-27; the search digest mentioned a neck-protection requirement for players with no prior NHL games, among non-penalty changes.",
+        "via": "search",
+        "note": "Confirms the rules baseline is stable this season; could not be opened (host unreachable)",
+        "verified": false
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "The 2026-27 schedule has 84 games per team under the new CBA.",
+        "via": "search",
+        "note": "Season context for the frame story",
+        "verified": true
+      },
+      {
+        "title": "10 things to know about 2026-27 NHL regular season",
+        "url": "https://www.nhl.com/news/nhl-stats-pack-2026-27-regular-season-schedule",
+        "date": "",
+        "snippet": "League stats pack on the 84-game schedule for 2026-27.",
+        "via": "search",
+        "note": "Independent confirmation of season context",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026-27 NHL regular season is 84 games per team, first 84-game season since 1993-94.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Reported rule: a major penalty runs its full five minutes even if the opponent scores, while a minor ends on a power-play goal; one search digest blended several explainers, so this is shown as a simplified house rule until checked against the official rulebook.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Reported rule: in the NHL, coincidental minors at even strength produce four-on-four play, unlike USA Hockey and IIHF rules, per a Wikipedia article summary; unconfirmed until read against the current NHL rulebook.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Reported rule: a power-play goal during a double minor cancels only the two-minute block being served, per a Wikipedia article summary; unconfirmed against the NHL rulebook.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "Papers, Please style rule-bureaucracy games",
+      "rules-lawyer quizzes",
+      "Keep Talking and Nobody Explodes",
+      "hotel front desk comedies"
+    ]
+  },
+  "design": {
+    "coreLoop": "A seeded game script produces a timeline of whistles, goals and expiries. At each decision point the concierge sees the box ledger (guest, penalty, clock) and must tap who is released and set the on-ice strength, before a patience meter runs out. The rules engine scores each answer, explains the ruling in one deadpan line, and ramps difficulty by stacking penalties, adding coincidentals, majors, misconducts and goals mid-kill. Shifts are daily-seeded and shareable via URL hash so friends compare rulings.",
+    "sophisticationHooks": [
+      "Pure, tested penalty-clock state machine: queue ordering of simultaneous penalties, double minor block logic, major versus minor release on goals, coincidental handling, minimum skater counts",
+      "Scenario generator with seeded randomness that guarantees each shift contains specific edge cases at rising difficulty and never an ambiguous ruling",
+      "Explanations built from the same rule trace the engine used, so every correct and wrong answer is teachable",
+      "Absurd framing: invented guests and teams, a hotel-ledger look drawn in SVG and CSS, keyboard-only play and a replay of the ruling"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build the rules engine with tests, scenario generator, ledger and rink-strength UI, scoring, daily seed and share hash, about panel listing the simplified rules. Cut referee signals, audio, per-league rule variants and delayed penalties, which are listed as house rules.",
+    "risks": [
+      "Rule wording comes from search digests and an older rulebook excerpt: the spec must state the exact rules implemented, label them a simplified house version and avoid calling them official until verified",
+      "Ambiguity in edge cases such as stacked coincidentals could produce a wrong answer: restrict the generator to cases the engine and a verifier agree on",
+      "Humor could feel thin once the rules click: vary the guest personas and add a late-night mode with chained events",
+      "Must use invented players and teams only; no real names, logos or marks"
+    ]
+  },
+  "durable": true
+}

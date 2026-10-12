@@ -1,0 +1,243 @@
+{
+  "id": "critic-1",
+  "title": "Certain About Clouds",
+  "pitch": "A bureaucratic inspection machine looks at cloud-like blots (procedural, or painted by the visitor) and announces what they are with 99-percent-plus certainty: a lighthouse, a nomad, a parade float. Its reasoning transcript is delightfully wrong but fully deterministic, so the visitor can learn its rulebook by predicting its verdicts before it speaks, then try to build a blot that forces it to say a chosen word. The fun is the moment you can finish its sentence.",
+  "whyNow": "Timeless. Confident machine verdicts are a permanent cultural joke, and this one swaps randomness for a rulebook that rewards understanding.",
+  "origin": {
+    "agent": "critic",
+    "lens": "confident-machine"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "puzzle",
+    "tone": [
+      "absurd",
+      "satirical",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "pointer-events",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "expert-system",
+      "pareidolia",
+      "forward-chaining",
+      "inspection-bureau",
+      "deduction",
+      "overconfidence",
+      "rulebook",
+      "blots",
+      "stamps"
+    ],
+    "keywords": [
+      "confidently-wrong",
+      "rule-discovery",
+      "explanation-trace",
+      "certainty",
+      "cloud-shapes",
+      "bureaucracy",
+      "predict-the-machine",
+      "feature-extraction"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Pareidolia (seeing faces or familiar shapes in random patterns, with clouds a classic trigger) is a normal perception effect and a subtype of the broader apophenia. Classic expert systems (knowledge base of rules, inference engine, explanation facility answering how and why) give the structure: a forward-chaining rulebook with a printed reasoning trace is both historically real and ideal for a learnable joke. Research on model calibration (stated confidence versus real accuracy, for example Guo et al., ICML 2017) gives the comic law: this machine's certainty is a fixed function that ignores contradicting evidence. Confidently wrong satirical chatbots exist (at least one is a custom GPT); a deterministic, learnable machine is a different experience. No claim on the page is a scientific finding beyond these background definitions.",
+    "sources": [
+      {
+        "title": "What is pareidolia? - Live Science",
+        "url": "https://www.livescience.com/25448-pareidolia.html",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found by claim search: tendency to see familiar patterns, especially faces, in random or ambiguous stimuli.",
+        "verified": true
+      },
+      {
+        "title": "Pareidolia: Definition, Examples, and Effects - Clearer Thinking",
+        "url": "https://www.clearerthinking.org/amp/pareidolia-definition-examples-and-effects",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result agreeing on the definition and cloud examples.",
+        "verified": true
+      },
+      {
+        "title": "Seeing faces in anything - Kristiania",
+        "url": "https://kristiania.no/kunnskap-kristiania/2020/11/seeing-faces-in-anything",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Third result: faces get special processing, which biases perception toward faces in noise.",
+        "verified": true
+      },
+      {
+        "title": "Apophenia (concept note)",
+        "url": "https://concepts.dsebastien.net/concept/apophenia/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Result describing apophenia as seeing meaningful patterns in random data, with pareidolia as the visual subtype.",
+        "verified": true
+      },
+      {
+        "title": "How to avoid apophenia bias - MasterClass",
+        "url": "https://www.masterclass.com/articles/how-to-avoid-apophenia-bias",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result agreeing apophenia is the broader category.",
+        "verified": true
+      },
+      {
+        "title": "Expert systems basics - Baeldung",
+        "url": "https://www.baeldung.com/cs/expert-systems",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found by claim search: components of an expert system and forward versus backward chaining.",
+        "verified": true
+      },
+      {
+        "title": "Components of an expert system - Educative",
+        "url": "https://www.educative.io/answers/what-are-the-components-of-an-expert-system",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result: knowledge base, inference engine, explanation facility.",
+        "verified": true
+      },
+      {
+        "title": "On Calibration of Modern Neural Networks (PMLR)",
+        "url": "https://proceedings.mlr.press/v70/guo17a",
+        "date": "2017",
+        "snippet": "",
+        "via": "search",
+        "note": "Guo, Pleiss, Sun, Weinberger, ICML 2017: modern networks are miscalibrated; temperature scaling as a remedy. Also returned from arXiv and ICML pages.",
+        "verified": true
+      },
+      {
+        "title": "On Calibration of Modern Neural Networks (arXiv HTML copy)",
+        "url": "https://ar5iv.arxiv.org/html/1706.04599",
+        "date": "2017",
+        "snippet": "",
+        "via": "search",
+        "note": "Second host for the same paper.",
+        "verified": true
+      },
+      {
+        "title": "Fikry (satirical confidently-incorrect chatbot listing)",
+        "url": "https://www.productcool.com/product/fikry",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: directory listing of a satirical chatbot with a faux 114 percent confidence dashboard.",
+        "verified": true
+      },
+      {
+        "title": "Wrong Answers Only (custom GPT listing)",
+        "url": "https://theresanaiforthat.com/gpt/wrong-answers-only/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result: a custom GPT built to give humorously wrong answers.",
+        "verified": true
+      },
+      {
+        "title": "IdiotGPT parody (Shapes)",
+        "url": "https://www.shapes.inc/idiotgpt",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Third example of the genre.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Pareidolia is the tendency to perceive familiar patterns, especially faces, in random or ambiguous stimuli; clouds and textured surfaces are typical triggers, and it is described as a normal function of perception rather than a disorder.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Apophenia is the broader tendency to perceive meaningful patterns in random data; pareidolia is its visual subtype (some sources use the terms interchangeably).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          0
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A textbook expert system has a knowledge base of rules, an inference engine (forward chaining starts from known facts and applies rules) and an explanation facility that answers how and why questions.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Guo et al. (ICML 2017) report that modern neural networks are miscalibrated, so predicted confidence no longer matches how often they are correct; temperature scaling is their simple remedy.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Satirical chatbots built to give confidently wrong answers already exist, for example Fikry and the custom GPT Wrong Answers Only, so the page contrasts itself by being deterministic and learnable.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10,
+          11
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "inkblot tests",
+      "classic rule-based expert systems and their why/how traces",
+      "forecasting punditry",
+      "Mastermind-style deduction",
+      "satirical confidently-wrong chatbots (as a contrast, not a copy)",
+      "airport customs forms"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each case is a 48x48 blot with six measured features (tallness, symmetry, holes, jaggedness, blob count, density). The visitor predicts the verdict by picking from a shortlist of six candidate words and a confidence band, then the machine stamps its verdict and prints a numbered reasoning trace of the rules that fired. A rule notebook lets the visitor state a hypothesis (feature, threshold, label) and see it scored against every past case. Depth comes from rule priority quirks (first high-salience rule wins, contradicting evidence is ignored, confidence rises with the number of agreeing weak rules). Later audits unlock a build-a-blot mode where the goal is to force a target word, for example the machine's word for a wandering traveller.",
+    "sophisticationHooks": [
+      "Real forward-chaining engine in about 30 rules with salience and conflict resolution, plus an explanation trace that replays the firing order",
+      "Hypothesis notebook that auto-tests the visitor's own rule against all seen cases and highlights the counterexamples",
+      "Deterministic seeded blot generator plus freehand painting with pointer events, features computed live",
+      "Shareable URL hash that stores a case seed and the visitor's rule list, plus a printable certificate of certainty as a screenshot moment"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: seeded blot generator and freehand painter, feature extractor (6 features), forward-chaining engine with about 20 rules and 24 verdict words (lighthouse, nomad, jubilee float and similar), predict-then-reveal loop with a six-word shortlist, printed reasoning trace, single-condition rule notebook scored against past cases, build-a-blot target mode with 4 to 5 audits, certificate drawn on canvas, share hash for seed and rule list, light and dark, keyboard and touch, about panel. Cut: sound, accounts, online data, 30-rule base, user-written rule languages beyond the single-condition notebook, printable PDF.",
+    "risks": [
+      "Rule base has to be learnable: a script-checked simple decision tree reproduces at least 90 percent of verdicts, and the build tests with fresh eyes.",
+      "Output could feel random if salience ties are unresolved; a stable tie-break order is shown in the trace.",
+      "Expert-system and calibration statements are background definitions with dated sources; the about panel lists only verified sources.",
+      "Freehand painting at 390px wide needs a large canvas and touch handling; features are computed on a 48x48 downsample so the engine stays deterministic.",
+      "The machine parodies a generic automated certainty under an invented bureau name with drawn stamps, never a real product's voice or branding.",
+      "The sentence about existing confidently wrong chatbots stays out of the page body or is shown as 'as of 2026-10-12, per directory listings'."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Pareidolia, expert-system and calibration background was returned by several independent results, and the chatbot-parody genre by three; none of these claims is load-bearing for play. Scope is trimmed to about 20 rules and 24 words; the open risk is whether the rulebook is learnable, which the build proves with a script."
+  }
+}

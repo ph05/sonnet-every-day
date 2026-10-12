@@ -1,0 +1,247 @@
+{
+  "id": "lab-2",
+  "title": "Tolls In Kind",
+  "pitch": "A short, sincere essay about how web pages learned to charge for attention sits behind a run of toll gates, and none of them take money. Each gate asks for payment in kind (patience, dignity, spare seconds, a held-still cursor) behind a sign that lies in one specific, learnable way: a decline button worded as a guilt trip, a price list that quietly inverts, fine print that is the real exit. A spotted rule drops the toll and a misread raises the price. Each cleared gate unlocks the next paragraph and a codex card naming the trick, and the run ends with an itemised receipt and a daily seed to compare.",
+  "whyNow": "Timeless satire of consent banners and paywalls, owed to the humor slot this week. The form-breaking twist is that the interface is the joke and the essay is the prize.",
+  "origin": {
+    "agent": "lab",
+    "lens": "weird-web"
+  },
+  "fingerprint": {
+    "category": "weird-experimental",
+    "mechanic": "puzzle",
+    "tone": [
+      "satirical",
+      "absurd",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "pointer-events",
+      "web-animations",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "dark-patterns",
+      "web-satire",
+      "gatekeeping",
+      "interface-as-content",
+      "hidden-rule",
+      "codex",
+      "seeded-run",
+      "attention-economy"
+    ],
+    "keywords": [
+      "consent-banner",
+      "confirmshaming",
+      "nagging",
+      "obstruction",
+      "toll-gate",
+      "receipt",
+      "daily-seed",
+      "play-currency"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Deceptive-design patterns are well catalogued: Brignull's list (confirmshaming, roach motel and others), the five-category academic grouping of nagging, obstruction, sneaking, interface interference and forced action, and the European Data Protection Board's six categories. That gives the gates a real, named rule set to parody. Games about hostile cookie banners already exist (a Berlin university arcade game and a hackathon for the most annoying banners), so this idea differs by making every gate a small hidden-rule puzzle with a different toll currency, gating an actual essay, and by naming the real trick afterwards in a codex.",
+    "sources": [
+      {
+        "title": "Beat the Cookie Monster (arcade game, Freie Universitaet Berlin)",
+        "url": "https://www.mi.fu-berlin.de/en/inf/groups/hcc/activities/events_public-talks2/LNDW2024_EventReport/Arcade-Game_Beat-the-Cookie-Monster.html",
+        "date": "2024",
+        "snippet": "Event report on an arcade game where players must reject deceptive cookie banners; a wrong agreement costs one of three lives.",
+        "via": "search",
+        "note": "Re-found by my own search; several FU Berlin event reports (2024 and 2025 editions) describe the three-lives game. Corroboration is from the same organisation, so it is evidence the game exists, not independent confirmation.",
+        "verified": true
+      },
+      {
+        "title": "Wasp most-annoying cookie banner hackathon (OpenSaaS blog)",
+        "url": "https://docs.opensaas.sh/blog/4/",
+        "date": "",
+        "snippet": "A blog post about asking users to build the most irritating cookie banners, with community voting; entries include a find-all-the-cookies hidden-element gag.",
+        "via": "search",
+        "note": "Re-found by my own search; same blog as source 7, so not independent of it.",
+        "verified": true
+      },
+      {
+        "title": "10 dark patterns in ux design (Bejamas)",
+        "url": "https://bejamas.com/insights/field-notes/10-dark-patterns-in-ux-design",
+        "date": "",
+        "snippet": "Practitioner overview of common dark patterns; the search summary credits Brignull with coining the term and listing 12 categories including confirmshaming and roach motels.",
+        "via": "search",
+        "note": "Not found again by my search; Brignull claims are carried by sources 6 and 12 instead. The count of 12 is not used.",
+        "verified": false
+      },
+      {
+        "title": "Dark Patterns Deceptive Design (University of Washington course slides)",
+        "url": "https://courses.cs.washington.edu/courses/cse340/22sp/slides/wk09/Dark-Patterns-Deceptive-Design.pdf",
+        "date": "2022",
+        "snippet": "Course slides grouping patterns into nagging, obstruction and sneaking, with nagging defined as repeated interruption during normal interactions.",
+        "via": "search",
+        "note": "Not found again by my search; the UW grouping is replaced by the five-category Gray et al. fact from sources 8 and 9.",
+        "verified": false
+      },
+      {
+        "title": "The Most Annoying UX Patterns of the Modern Web. Part 1 (UX Planet)",
+        "url": "https://uxplanet.org/the-most-annoying-ux-patterns-of-the-modern-web-6605ae2fb6e5",
+        "date": "",
+        "snippet": "Article listing familiar irritating web patterns, relevant as a source of recognisable gate behaviours for parody.",
+        "via": "search",
+        "note": "Not found again and body text never seen; not used for any fact.",
+        "verified": false
+      },
+      {
+        "title": "A Comprehensive Study on Dark Patterns (arXiv)",
+        "url": "https://arxiv.org/pdf/2412.09147",
+        "date": "2024-12",
+        "snippet": "A 2024 arXiv study that tabulates dark pattern types under categories such as nagging, obstruction and sneaking, with severity ratings.",
+        "via": "search",
+        "note": "Not found again and its labels were never seen; not used for any fact.",
+        "verified": false
+      },
+      {
+        "title": "The dark patterns side of UX design (deceptive.design)",
+        "url": "https://www.deceptive.design/articles/the-dark-patterns-side-of-ux-design",
+        "date": "",
+        "snippet": "Article on the site Brignull founded, discussing dark patterns and the shift to the term deceptive design.",
+        "via": "search",
+        "note": "Seen in search results; not opened.",
+        "verified": true
+      },
+      {
+        "title": "We Made the Most Annoying Cookie Banners Ever (OpenSaaS blog)",
+        "url": "https://docs.opensaas.sh/blog/2024-11-22-best-annoying-cookie-consent-banners/",
+        "date": "2024-11-22",
+        "snippet": "Wasp asked users to build the most irritating cookie consent banner; community vote picked the winner; entries included a GDPR quiz, an old-OS windows banner and a find-all-the-cookies banner.",
+        "via": "search",
+        "note": "Seen in search results; not opened. Dated by the URL.",
+        "verified": true
+      },
+      {
+        "title": "AidUI: Toward Automated Recognition of Dark Patterns in User Interfaces (arXiv)",
+        "url": "https://arxiv.org/pdf/2303.06782",
+        "date": "2023",
+        "snippet": "Paper result whose summary describes the Gray et al. grouping: nagging, obstruction, sneaking, interface interference, forced action.",
+        "via": "search",
+        "note": "Seen in search results; not opened (arxiv.org is on today's failed list).",
+        "verified": true
+      },
+      {
+        "title": "Ethics in Usability Research: Exposing Dark Patterns (Pratt SI)",
+        "url": "https://ixd.prattsi.org/2019/03/ethics-in-usability-research-exposing-dark-patterns/",
+        "date": "2019-03",
+        "snippet": "Article result that covers the same five-category dark-pattern grouping.",
+        "via": "search",
+        "note": "Seen in search results; not opened.",
+        "verified": true
+      },
+      {
+        "title": "EDPB guidelines on dark patterns in social media (Securiti)",
+        "url": "https://securiti.ai/blog/edpb-guidelines-on-dark-patterns-in-social-media/",
+        "date": "",
+        "snippet": "Explainer of the EDPB guidelines on deceptive design patterns in social media interfaces and their six categories.",
+        "via": "search",
+        "note": "Seen in search results; not opened.",
+        "verified": true
+      },
+      {
+        "title": "Dark patterns (activemind.legal guide)",
+        "url": "https://activemind.legal/guides/dark-patterns",
+        "date": "",
+        "snippet": "Legal guide that also describes the six EDPB categories: overloading, skipping, stirring, hindering, fickle, left in the dark.",
+        "via": "search",
+        "note": "Seen in search results; not opened.",
+        "verified": true
+      },
+      {
+        "title": "Dark patterns (Raconteur)",
+        "url": "https://www.raconteur.net/business-innovation/dark-patterns",
+        "date": "",
+        "snippet": "Business article result crediting Brignull with the term dark patterns.",
+        "via": "search",
+        "note": "Seen in search results; not opened.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-12, per Freie Universitaet Berlin event reports, the group built an arcade game, Beat the Cookie Monster, shown at the Long Night of the Sciences (22 July 2024 edition and a later one), where each wrong agreement to a deceptive cookie banner costs one of three lives.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per the OpenSaaS blog, Wasp ran a contest to build the most irritating cookie consent banner, with the winner picked by community vote; entries included a GDPR quiz, an old-operating-system banner and a find-all-the-cookies banner. Hostile-banner games are a known genre this idea must differ from.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per search results, Harry Brignull is credited with coining the term dark patterns in 2010 and now uses the term deceptive design; his list includes confirmshaming and roach motel.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          12
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per secondary sources, the Gray et al. (2018) grouping of dark patterns has five categories: nagging, obstruction, sneaking, interface interference and forced action. (The earlier dossier named only the first three.)",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per two explainers, the European Data Protection Board's deceptive design guidelines for social media interfaces (version 2.0 adopted 14 February 2023) name six categories: overloading, skipping, stirring, hindering, fickle and left in the dark.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "Beat the Cookie Monster",
+      "most-annoying-cookie-banner hackathons",
+      "paywall and upsell modals",
+      "nag screens",
+      "text adventures with locked doors",
+      "tollhouse and customs-checkpoint comedy"
+    ]
+  },
+  "design": {
+    "coreLoop": "A gate appears with a sign and a price in a play currency. The visitor reads the sign for the lie (which button is real, which number inverts, where the exit hides), pays, negotiates or finds the loophole, and the paragraph behind the gate is revealed. Gates come from 8 rule families, seeded by the URL hash, so each run reshuffles the tricks and prices. The loop rewards the second minute (recognising a family) and the tenth (reading faster for a lower receipt and filling the codex).",
+    "sophisticationHooks": [
+      "Seeded gate generator: 8 rule families by 2 skins each (a third if time remains), with price curves that rise on a misread and fall on a correct read, deterministic from the hash",
+      "Three play currencies (patience, dignity, spare seconds) with different spend mechanics; explicitly no real money or payment fields",
+      "Codex that names the real trick after each gate, tying the joke to the documented taxonomy with 'as of' dating",
+      "Itemised receipt and daily-seed compare, with an always-visible 'skip with shame' escape hatch that logs a costume-drama penalty"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: 8 gate families with 2 skins each (16 short interactions, each solvable in under 15 seconds; a third skin only if time remains), seeded generator, wallet and receipt, 8-paragraph essay, codex with localStorage (try/catch, optional), keyboard and touch alternatives for every gate, about/making-of panel listing the sources. Cut: sound beyond a few procedural blips, multiplayer, any real payment look-alike, any real brand or banner imitation, third skins.",
+    "risks": [
+      "Prior art: banner-rejection games exist (FU Berlin, Wasp hackathon); differentiate through hidden-rule puzzles, the essay prize and the codex.",
+      "Frustration by design can tip into just being annoying: cap each gate's time, add the skip-with-shame hatch, keep the tone warm.",
+      "Accessibility: hold-still and timing gates need non-motor alternatives and reduced-motion variants.",
+      "Humor-satire/game neighbours in today's pool (the carried-over Breaking Changes idea) share the satire tone; this one is a puzzle in the weird-experimental category with different form.",
+      "No real company banners or logos: all brands invented, all marks drawn.",
+      "Unverified sources: the University of Washington slides, the arXiv study 2412.09147, the UX Planet article and the Bejamas count of 12 could not be found again; the codex and about panel cite only sources 6 to 12, and any other taxonomy line is shown as 'as of 2026-10-12, per <source>' or omitted.",
+      "Scope: 16 gates is the ceiling for one morning; builders ship families in priority order so a half-finished family is cut rather than shipped rough."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Prior art and the dark-pattern taxonomies were re-found by independent searches, but no page was opened and three original sources (UW slides, arXiv 2412.09147, UX Planet) could not be found again. Shrunk to 16 gates; the concept has real depth and no guardrail issue (invented brands, no money, no personal data)."
+  }
+}

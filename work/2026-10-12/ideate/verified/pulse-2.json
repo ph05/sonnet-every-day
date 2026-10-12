@@ -1,0 +1,207 @@
+{
+  "id": "pulse-2",
+  "title": "Dead Rubber Detective",
+  "pitch": "The visitor is handed the last round of a four-team hockey group, two games played at once, and has to work out which of the two matters, to whom, and whether both teams would quietly settle for an overtime. An exact solver enumerates every result of the two games, sorts each match into stakeless, asymmetric, collusive or competitive, and shows the proof; then the visitor tweaks the standings or the points rule (NHL-style loser point versus the 3-2-1-0 scale used in international hockey) to create a scandal-proof final round, or to engineer the juiciest loophole.",
+  "whyNow": "The NHL 2026-27 season is under way and is the first 84-game schedule since 1993-94, as of 2026-10-12 per ESPN and AP, so points and playoff arithmetic are in the conversation; the puzzle itself is timeless and uses fictional teams.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "arxiv-fresh"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "puzzle",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy",
+      "competitive"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "worker",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "group-stage",
+      "round-robin",
+      "match-classification",
+      "collusion",
+      "overtime-point",
+      "standings",
+      "tournament-design"
+    ],
+    "keywords": [
+      "stakeless-match",
+      "collusive-match",
+      "dead-rubber",
+      "last-round",
+      "points-system",
+      "qualification",
+      "scenario-enumeration"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Recent arXiv work classifies last-round group matches by incentive: stakeless (a team's prize does not depend on the other results), asymmetric (only one side is indifferent), collusive (both sides have something at stake and one outcome secures both) and competitive otherwise; the scheme appears in several papers, including a UEFA-format study and a 2026 four-team round-robin paper whose own text was not seen. A January 2026 arXiv paper uses simulation to get qualification odds after a win, draw or loss and sorts matches into six categories; it is framed around sports tournaments in general and football data, not hockey. The page implements the classification by brute-force enumeration of a hand-made fictional group, small enough to run instantly, and adds a clearly labelled hockey twist (overtime points) that is the page's own extension, not a result from the papers. The NHL 84-game 2026-27 schedule is confirmed by ESPN and AP; the page bundles no real standings.",
+    "sources": [
+      {
+        "title": "Match classification in the last round of four-team round-robin tournaments",
+        "url": "https://arxiv.org/pdf/2605.25610",
+        "date": "",
+        "snippet": "arXiv preprint adopting a four-category scheme (stakeless, asymmetric, collusive, competitive) for last-round matches, assuming one prize: qualification.",
+        "via": "search",
+        "note": "Title found again at the top of a search for the claim; its own text was not shown, so unverified; the four-class scheme is confirmed through other papers",
+        "verified": false
+      },
+      {
+        "title": "A probabilistic match classification model for sports tournaments",
+        "url": "https://arxiv.org/pdf/2601.09673",
+        "date": "",
+        "snippet": "arXiv preprint (v1 January 2026, Csato and Gyimesi per the result) that simulates the other matches to get qualification odds after a win, draw or loss and sorts each match into six categories, applied to the old UEFA group stage and the new league phase.",
+        "via": "search",
+        "note": "Re-found in several distinct listings (arXiv, EconPapers, NEP-SPO, alphaxiv); the result titles it for sports tournaments in general, so the dossier wording about low-scoring sports and hockey is not supported and is dropped",
+        "verified": true
+      },
+      {
+        "title": "Evaluating Competitiveness in UEFA's New Champions League Format",
+        "url": "https://arxiv.org/html/2508.08290v2",
+        "date": "",
+        "snippet": "arXiv preprint on how competitive and potentially collusive matches are in the new UEFA league format, using the stakeless, asymmetric, collusive and competitive classes.",
+        "via": "search",
+        "note": "Title fixed from the result; the four-class scheme also appears in other arXiv papers in the same search",
+        "verified": true
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "ESPN headline reporting the league's release of an expanded 84-game schedule for the 2026-27 season.",
+        "via": "search",
+        "note": "84-game 2026-27 schedule; re-found, with 42 home and 42 road games and 1,344 total in the same result",
+        "verified": true
+      },
+      {
+        "title": "NHL Announces 2026-27 Regular-Season Schedule, Newly Expanded to 84 Games",
+        "url": "https://media.nhl.com/public/news/19975",
+        "date": "",
+        "snippet": "League media-site release headline stating the 2026-27 regular-season schedule is newly expanded to 84 games.",
+        "via": "search",
+        "note": "Not found again in my searches; unverified, the schedule claim rests on ESPN and the AP copies",
+        "verified": false
+      },
+      {
+        "title": "National Hockey League 2026-27 season: Key dates and answers to frequently asked questions",
+        "url": "https://olympics.com/en/news/national-hockey-league-2026-27-season-key-dates-and-answers-to-frequently-asked-questions",
+        "date": "",
+        "snippet": "Olympics.com explainer on the 2026-27 season key dates; used only as a third outlet covering the new schedule.",
+        "via": "search",
+        "note": "Not found again in my searches; unverified and unused",
+        "verified": false
+      },
+      {
+        "title": "IIHF World Championship 2024 tournament info",
+        "url": "https://www.iihf.com/en/events/2024/wm/tournamentinfo/55238/tournament_info",
+        "date": "",
+        "snippet": "Official IIHF page: 0 points for a regulation loss; a tie after regulation gives 1 point each, with an extra point to the winner of the overtime or shootout, so 3, 2, 1, 0.",
+        "via": "search",
+        "note": "Re-found and agreeing with the IIHF rulebook Article 163 and the IIHF history page; same organization but distinct documents (primary rule text)",
+        "verified": true
+      },
+      {
+        "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94 (AP)",
+        "url": "https://wtop.com/sports/2026/07/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/",
+        "date": "2026-07-16",
+        "snippet": "AP wire story: 84 games per team, the first such schedule since 1993-94.",
+        "via": "search",
+        "note": "Independent of ESPN's own write-up; many sites carry it (counts as one); seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "IIHF rulebook, Article 163",
+        "url": "https://test.rulebook.iihf.com/documents/event-code-divisions/163",
+        "date": "",
+        "snippet": "IIHF rulebook article using the same points wording: regulation win 3, overtime or shootout win 2, overtime or shootout loss 1, regulation loss 0.",
+        "via": "search",
+        "note": "Primary rule text; seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "How to avoid uncompetitive games? The importance of tie-breaking rules",
+        "url": "https://arxiv.org/pdf/2201.12241",
+        "date": "",
+        "snippet": "arXiv paper on how tie-breaking rules (goal difference versus head-to-head) change competitiveness in group tournaments.",
+        "via": "search",
+        "note": "Supports keeping tie-breaks explicit and simple in the page; seen in a result",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The NHL 2026-27 regular season is 84 games per team (1,344 in total, 42 home and 42 road each), the first 84-game schedule since 1993-94, per ESPN and the AP wire story.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Under the IIHF points system, a regulation win earns 3 points, an overtime or shootout win 2, an overtime or shootout loss 1 and a regulation loss 0 (per the IIHF tournament info page and rulebook Article 163), as against the NHL's 2 points for any win and 1 for an overtime or shootout loss.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, arXiv papers classify last-round matches as stakeless, asymmetric, collusive or competitive (seen in the UEFA-format study arXiv 2508.08290 and in other papers returned for the same query); the four-team paper arXiv 2605.25610 appears under that title but its own text was not seen.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per arXiv 2601.09673 (v1, January 2026), a probabilistic model simulates the other matches to estimate qualification odds after a win, draw or loss and sorts matches into six categories, applied to UEFA's old group stage and new league phase.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "the magic-number tracker in a playoff race",
+      "group-stage permutation calculators",
+      "logic grid puzzles",
+      "classic tales of group games where a draw suited both sides"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick a fictional four-team group and a points rule; the page enumerates all outcomes of the two simultaneous final games (regulation or overtime result either way) and labels each match, highlighting the exact outcomes that make both sides happy. Puzzle mode sets goals such as 'make both matches competitive', 'find the group where only an overtime suits both teams' or 'fix this schedule so no match is stakeless', graded by the solver. Repeat play comes from seeded daily groups, different rule sets and a par score for fewest edits, with the proof table as the satisfying reveal.",
+    "sophisticationHooks": [
+      "Exact scenario enumeration of 16 outcome combinations with qualification checks and tie handling shown explicitly",
+      "Rule-set switch between NHL-style loser point and 3-2-1-0 international scale that changes which matches turn collusive",
+      "Interactive standings editor with drag-to-adjust points and a live classification badge on each match",
+      "Puzzle mode with seeded daily groups, par scores and a shareable URL-hash state"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Build: fictional teams with drawn crests, standings editor, an enumeration solver (plain function) over the 16 outcome combinations of the two final games, match badges, proof table, rule switch (NHL-style versus 3-2-1-0), 8 to 10 curated puzzles checked by the solver plus a seeded daily generator that only keeps groups whose classification is clear, hash state, about panel with dated sources. Ties on points resolve by a stated fixed rule (seed order) rather than modelling goal difference, and the page says so. Cut: real standings, live NHL data, goal-difference tiebreak depth, bigger groups, the worker.",
+    "risks": [
+      "Tiebreakers (head-to-head, goal difference) are replaced by a stated fixed rule; the about panel says the results illustrate the idea and are not the papers' exact models, and the cited tie-breaking paper is the reason it is called out",
+      "The overtime-point twist is the page's own extension and is labelled as such; no claim is made that real teams have colluded or would, and teams are fictional",
+      "Paper details are partly unverified (the four-team paper's text was not seen); the page words them as 'as of 2026-10-12, per <source>'",
+      "The link between the 84-game NHL season and a four-team group puzzle is loose; the page does not claim NHL playoff races use round-robin groups",
+      "Correct classification needs the solver to be right on edge cases (shared points, overtime splits); unit-style hand checks on a few groups come before any puzzle is shipped"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "The 84-game schedule and the IIHF 3-2-1-0 scale were each found in independent or distinct primary pages, and the match-classification scheme is confirmed across several arXiv papers; the dossier's claim that a preprint targets low-scoring sports like hockey was not supported and is removed. A 16-outcome enumeration is easy to build; the risks are edge-case correctness and keeping the puzzle fun, so the scope is cut to curated puzzles plus a filtered generator."
+  }
+}

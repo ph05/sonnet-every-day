@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "agent": "critic",
+  "lens": "confident-machine",
+  "candidates": [
+    {
+      "id": "critic-1",
+      "title": "Certain About Clouds",
+      "pitch": "A bureaucratic inspection machine looks at cloud-like blots (procedural, or painted by the visitor) and announces what they are with 99-percent-plus certainty: a lighthouse, a nomad, a parade float. Its reasoning transcript is delightfully wrong but fully deterministic, so the visitor can learn its rulebook by predicting its verdicts before it speaks, then try to build a blot that forces it to say a chosen word. The fun is the moment you can finish its sentence.",
+      "whyNow": "Timeless. Confident machine verdicts are a permanent cultural joke, and this one swaps randomness for a rulebook that rewards understanding.",
+      "origin": { "agent": "critic", "lens": "confident-machine" },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "puzzle",
+        "tone": ["absurd", "satirical", "nerdy", "playful"],
+        "tech": ["canvas2d", "pointer-events", "dom-ui", "localstorage"],
+        "tags": ["expert-system", "pareidolia", "forward-chaining", "inspection-bureau", "deduction", "overconfidence", "rulebook", "blots", "stamps"],
+        "keywords": ["confidently-wrong", "rule-discovery", "explanation-trace", "certainty", "cloud-shapes", "bureaucracy", "predict-the-machine", "feature-extraction"]
+      ,
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "Pareidolia (seeing faces or objects in random patterns) and its umbrella term apophenia give the machine's one big delusion. Classic expert systems (rule base, inference engine, explanation facility that replays which rules fired) give the structure: a forward-chaining rulebook with a printed reasoning trace is both historically real and ideal for a learnable joke. Research on model calibration (stated confidence versus real accuracy) gives the comic law: this machine's certainty is a fixed function that ignores contradicting evidence. Existing confidently-wrong chatbot parodies appear to rely on a language model and randomness; a deterministic, learnable machine is a different experience.",
+        "sources": [
+          { "title": "An Explanation of Pareidolia, The Phenomenon of Consistently Seeing Faces Within Random Patterns", "url": "https://laughingsquid.com/an-explanation-of-pareidolia-the-phenomenon-of-consistently-seeing-faces-within-random-patterns/", "date": "", "snippet": "Search result describing pareidolia as the consistent perception of faces within random patterns; the result summary also mentions top-heavy triangle detection as one proposed mechanism.", "via": "search", "note": "Establishes pareidolia as a normal, well-known perception effect.", "verified": true },
+          { "title": "pareidolia the phenomenon of seeing human faces in random textures patterns or noise", "url": "https://icatchshadows.com/pareidolia-the-phenomenon-of-seeing-human-faces-in-random-textures-patterns-or-noise/", "date": "", "snippet": "Search result whose title defines pareidolia as seeing human faces in random textures, patterns or noise.", "via": "search", "note": "Second independent site agreeing on the definition.", "verified": true },
+          { "title": "apophenia overview", "url": "https://psychcentral.com/health/apophenia-overview", "date": "", "snippet": "Search result on apophenia, the tendency to find meaning in unrelated data; pareidolia is described there as a specific form of it.", "via": "search", "note": "Background on apophenia; the search summary blended several results so this stays unconfirmed.", "verified": false },
+          { "title": "What Is… Apophenia (Finding Patterns Where None Exist)", "url": "https://mentalhealthathome.org/2021/12/10/what-is-apophenia/", "date": "2021-12-10", "snippet": "Search result explaining apophenia as finding patterns where none exist, with everyday examples such as faces in clouds.", "via": "search", "note": "Second look at apophenia; unconfirmed because the summary was blended.", "verified": false },
+          { "title": "2.1 Expert systems", "url": "https://elearning-2324.univ-saida.dz/mod/page/view.php?id=152262", "date": "", "snippet": "University course page on expert systems: knowledge base of rules, an inference engine that matches and fires rules, and an explanation facility.", "via": "search", "note": "Architecture of an expert system; blended summary so unconfirmed.", "verified": false },
+          { "title": "US5408587A - Expert system with a frame explanation system - Google Patents", "url": "https://patents.google.com/patent/US5408587", "date": "", "snippet": "Patent record describing an expert system with an explanation component that justifies conclusions to the user.", "via": "search", "note": "Shows explanation facilities are a standard expert-system part; unconfirmed due to blended summary.", "verified": false },
+          { "title": "On Calibration of Modern Neural Networks", "url": "https://arxiv.org/pdf/1706.04599", "date": "", "snippet": "Paper (Guo et al., 2017) studying how the confidence of modern neural networks can diverge from their real accuracy.", "via": "search", "note": "Real research on the confidence-versus-accuracy gap.", "verified": true },
+          { "title": "Two Sides of Miscalibration: Identifying Over and Under-Confidence Prediction for Network Calibration", "url": "https://arxiv.org/pdf/2308.03172", "date": "", "snippet": "Paper treating network miscalibration as running in both directions, overconfidence and underconfidence.", "via": "search", "note": "Independent paper on the same theme.", "verified": true },
+          { "title": "Fikry (satirical confidently-incorrect chatbot listing)", "url": "https://www.productcool.com/product/fikry", "date": "", "snippet": "Directory listing of a satirical chatbot built to give confidently incorrect answers.", "via": "search", "note": "Shows the genre exists and is LLM-driven; blended summary so unconfirmed.", "verified": false },
+          { "title": "amtaitfy \"Allow Me To AI That For You\"", "url": "https://www.producthunt.com/products/amtaitfy-allow-me-to-ai-that-for-you", "date": "", "snippet": "Product listing of a joke site that returns elaborately wrong answers to any question.", "via": "search", "note": "Second example of the genre; unconfirmed.", "verified": false }
+        ],
+        "facts": [
+          { "claim": "Pareidolia is the tendency to perceive faces or familiar shapes in random or ambiguous patterns (seen in search results 2026-10-12).", "sourceIndex": 0, "alsoIn": [1], "asOf": "2026-10-12" },
+          { "claim": "Published machine-learning research (for example a 2017 paper on modern neural networks) studies the gap between a classifier's stated confidence and its real accuracy.", "sourceIndex": 6, "alsoIn": [7], "asOf": "2026-10-12" },
+          { "claim": "Apophenia is the tendency to find patterns in unrelated data, and pareidolia counts as one kind; as of 2026-10-12, per a mental-health education site and a psychology site (blended search summary, unconfirmed).", "sourceIndex": 3, "alsoIn": [2], "asOf": "2026-10-12" },
+          { "claim": "A textbook expert system has a rule base, an inference engine that matches and fires rules, and an explanation facility that lists the rules fired; as of 2026-10-12, per a university course page (unconfirmed).", "sourceIndex": 4, "alsoIn": [5], "asOf": "2026-10-12" },
+          { "claim": "Small satirical sites that give confidently wrong answers already exist, as of 2026-10-12, per two product directory listings (unconfirmed).", "sourceIndex": 8, "alsoIn": [9], "asOf": "2026-10-12" }
+        ],
+        "inspirations": ["inkblot tests", "classic rule-based expert systems and their why/how traces", "forecasting punditry", "Mastermind-style deduction", "satirical confidently-wrong chatbots (as a contrast, not a copy)", "airport customs forms"]
+      },
+      "design": {
+        "coreLoop": "Each case is a 48x48 blot with six measured features (tallness, symmetry, holes, jaggedness, blob count, density). The visitor predicts the verdict word and a confidence band, then the machine stamps its verdict and prints a numbered reasoning trace of the rules that fired. A rule notebook lets the visitor state a hypothesis (feature, threshold, label) and see it scored against every past case. Depth comes from rule priority quirks (first high-salience rule wins, contradicting evidence is ignored, confidence rises with the number of agreeing weak rules). Later audits unlock a build-a-blot mode where the goal is to force a target word, for example the machine's word for a wandering traveller.",
+        "sophisticationHooks": [
+          "Real forward-chaining engine in about 30 rules with salience and conflict resolution, plus an explanation trace that replays the firing order",
+          "Hypothesis notebook that auto-tests the visitor's own rule against all seen cases and highlights the counterexamples",
+          "Deterministic seeded blot generator plus freehand painting with pointer events, features computed live",
+          "Shareable URL hash that stores a case seed and the visitor's rule list, plus a printable certificate of certainty as a screenshot moment"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: blot generator and painter, feature extractor, rule engine with about 30 rules and 40 verdict words (lighthouse, nomad, jubilee float and similar), predict-then-reveal loop, rule notebook, build-a-blot target mode with 6 audits, light and dark, keyboard and touch, about panel. Cut: sound, accounts, any online data, user-written rule languages beyond the single-condition notebook.",
+        "risks": [
+          "Rule base must be learnable: ship a script-checked simple decision tree that reproduces at least 90 percent of verdicts, and test with fresh eyes.",
+          "Could drift into random-feeling output if salience ties are not resolved deterministically; fix with a stable tie-break order shown in the trace.",
+          "Expert-system and calibration claims are partly unconfirmed; the about panel should list only verified sources and show the rest as 'as of 2026-10-12, per <source>'.",
+          "Must parody a generic automated certainty, never a real product's voice or branding; use an invented bureau name and hand-drawn stamps."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "critic-2",
+      "title": "The Nickname Oracle",
+      "pitch": "A pompous hockey prediction machine picks a winner for any two of the 32 league nicknames using one absurd theory: the nicknames form a hidden ecology (predators beat prey, weather beats machinery, myths beat everything but have a weakness). The visitor tries to call its pick before it announces it, learns the hidden type chart through its smug explanations, then runs a full machine-made 32-team season table and screenshots the result.",
+      "whyNow": "The new league season is under way (as of 2026-10-12, per NHL.com, unconfirmed), which is when fans want to argue forecasts; the page stays playable for the whole season and beyond.",
+      "origin": { "agent": "critic", "lens": "confident-machine" },
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "game",
+        "tone": ["absurd", "competitive", "nerdy", "playful"],
+        "tech": ["dom-ui", "svg", "localstorage"],
+        "tags": ["hockey", "nicknames", "type-chart", "predictions", "overconfidence", "fandom", "ecology", "season-table"],
+        "keywords": ["confidently-wrong", "predict-the-machine", "hidden-rules", "team-nicknames", "pundit-parody", "food-chain", "standings", "streak"]
+      ,
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "Team nicknames in the league come from very mixed origins (animals, mythology, weather and terrain, trades, local history), and several outlets publish origin-story roundups, which is the raw material for a nickname-only theory with no real results, players or odds involved. The league season runs on a long schedule that started in late September 2026 (reported, unconfirmed), so a fan toy about forecasting is topical. The machine's tone parodies automated, overconfident punditry in general; its internal logic (a nickname type chart, tie-breakers on word shape, a fixed overconfidence law) is what makes it learnable. Shared idea with the confident-machine genre: certainty that is consistent, not random.",
+        "sources": [
+          { "title": "nhl team nickname origins explained", "url": "https://www.nhl.com/news/nhl-team-nickname-origins-explained-283976168", "date": "", "snippet": "League news page in search results covering how team nicknames originated.", "via": "search", "note": "Nicknames have documented, varied origins.", "verified": true },
+          { "title": "How NHL Teams Got Their Names (Western Edition)", "url": "https://blog.distributel.ca/general-category/how-nhl-teams-got-their-names-western-edition/", "date": "", "snippet": "Blog post surveying how western-conference teams were named.", "via": "search", "note": "Independent site covering nickname origins.", "verified": true },
+          { "title": "Sports. Honestly. Since 2011 (origins of NHL nicknames, Western Conference)", "url": "https://lastwordonsports.com/2013/04/15/peculiar-side-of-spots-origins-of-nhl-nicknames-western-conference/", "date": "2013-04-15", "snippet": "Sports blog article on the peculiar origins of Western Conference nicknames.", "via": "search", "note": "Third independent site on nickname origins; old article, background only.", "verified": true },
+          { "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal", "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season", "date": "", "snippet": "League article headline saying the 2026-27 season starts on September 29 with two named opening games.", "via": "search", "note": "Season-start claim from one official source only.", "verified": false },
+          { "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94", "url": "https://wtop.com/sports/2026/07/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/", "date": "", "snippet": "Wire-service headline stating the 2026-27 schedule has 84 games per team, the first such schedule since 1993-94.", "via": "search", "note": "84-game claim; wire copies on several sites count as one source.", "verified": false },
+          { "title": "NHL announces 2026-27 regular-season schedule", "url": "https://www.nhl.com/news/nhl-announces-2026-27-regular-season-schedule", "date": "", "snippet": "League release on the 2026-27 schedule; the search summary credited it with 1,344 games and an April 10 finish.", "via": "search", "note": "Official source for the schedule claim; summary was blended so unconfirmed.", "verified": false }
+        ],
+        "facts": [
+          { "claim": "League team nicknames come from varied, documented origin stories (animals, mythology, local history), per three separate sites seen in search on 2026-10-12.", "sourceIndex": 0, "alsoIn": [1, 2], "asOf": "2026-10-12" },
+          { "claim": "The 2026-27 regular season was reported to start on Sept. 29, 2026; as of 2026-10-12, per NHL.com (single source, unconfirmed).", "sourceIndex": 3, "alsoIn": [], "asOf": "2026-10-12" },
+          { "claim": "The 2026-27 schedule was reported as 84 games per team; as of 2026-10-12, per a wire-service story and NHL.com (blended summary, unconfirmed).", "sourceIndex": 4, "alsoIn": [5], "asOf": "2026-10-12" }
+        ],
+        "inspirations": ["elemental type charts in monster-collecting games", "pundit panels with confident hot takes", "mascot-versus-mascot playground arguments", "bracket-prediction rituals", "rock-paper-scissors extended"]
+      },
+      "design": {
+        "coreLoop": "The page shows two nicknames. The visitor picks who the Oracle will back and how sure it will sound, then the Oracle announces its pick with a grandly wrong explanation citing its theory (type advantage, word-shape tie-breakers, and a fixed overconfidence law). A streak counter and a discovery log fill in the hidden type chart as the visitor makes correct calls. Mastery unlocks the season mode, where the visitor predicts the Oracle's whole 32-team table, scored by distance, and a share link encodes the visitor's chart guesses.",
+        "sophisticationHooks": [
+          "Hidden type chart over about 8 nickname classes plus three deterministic tie-breakers (vowel count, word length, alphabetical order) that the visitor can discover",
+          "Explanation generator that assembles bureaucratic pundit sentences from the rules that fired, so each verdict teaches something",
+          "Season mode: round-robin table computed by the same rules, with predict-the-table scoring and a shareable URL hash",
+          "Discovery log and a 'break the Oracle' challenge that asks for a matchup where its confidence drops below its usual level (only one rule does this)"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: 32-nickname table with class assignments hand-made by us, rule engine, explanation generator, predict-the-pick game with streaks, discovery log, season table mode, share hash, light and dark, keyboard and touch, about panel with a clear 'nonsense, not a forecast, not betting advice' label. Cut: real schedules or results, standings feeds, player names, logos, any odds display, audio.",
+        "risks": [
+          "Season-start and 84-game claims are unconfirmed; the page should avoid depending on them or show them as 'as of 2026-10-12, per NHL.com'.",
+          "The roster of 32 nicknames must be checked against the current league before build (a recent franchise rename is possible and not verified here); keep the list in one data file.",
+          "Must be unmistakably a joke with no betting or odds framing: no real results, no player names, no logos, plain-text nicknames only, an unofficial-fan-parody label.",
+          "Competes with other hockey puzzles in the pool; the differentiator is a learnable fictional theory, not stats."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

@@ -1,0 +1,219 @@
+{
+  "id": "jester-2",
+  "title": "Frankenword Costume Shop",
+  "pitch": "Halloween is on the way, so the visitor shops for costumes by fusing two words. Choose two cards from a stock of monsters, foods, appliances and falling rocks, and a blend engine hunts for letter and syllable overlaps, ranks the fusions by how recognisable both parents stay, and stitches a drawn costume with a name tag. Collect a rack of the best fusions, send a friend a link to your look, and chase the three judges' scores.",
+  "whyNow": "Halloween falls on Saturday 31 October 2026 (calendar arithmetic), under three weeks away, and costume talk is peaking now. After the season the page still works as a portmanteau lab, but the framing is seasonal.",
+  "origin": {
+    "agent": "jester",
+    "lens": "word-play"
+  },
+  "fingerprint": {
+    "category": "pop-culture",
+    "mechanic": "generator",
+    "tone": [
+      "playful",
+      "absurd",
+      "chaotic"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "web-animations",
+      "localstorage",
+      "pointer-events"
+    ],
+    "tags": [
+      "portmanteau",
+      "word-blend",
+      "halloween",
+      "costumes",
+      "wordplay",
+      "mashup",
+      "collection",
+      "name-tag"
+    ],
+    "keywords": [
+      "letter-overlap",
+      "syllable-splice",
+      "recognisability-score",
+      "pronounceability",
+      "costume-card",
+      "three-judges",
+      "svg-costume",
+      "share-link"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "The word portmanteau for a blend comes from Lewis Carroll's 1871 Through the Looking-Glass, where Humpty Dumpty explains that two meanings are packed up into one word; Britannica (citing the OED), Grammarphobia and Yale Alumni Magazine agree. Linguistic work by Gries (2004) measures blends by how much of each source word survives and how recognisable the sources stay, and DiGirolamo (2012) describes phonological and orthographic constraints, which give the engine a real rule set: find overlaps, score how much of each parent survives, penalise unpronounceable clusters. Deri and Knight (2015) built a finite-state system that blends two given words and report 45 percent exact matches against known blends; they note blend generation also involves choosing compatible words. Costume-season context from a retailer trend release (syndicated across outlets, one source) is left off the page, or shown as reported, unconfirmed. The word stock and the drawn costumes are original; no real brands or characters appear.",
+    "sources": [
+      {
+        "title": "What is a Portmanteau Word? - Interesting Literature",
+        "url": "https://interestingliterature.com/2020/04/what-is-a-portmanteau-word-definition-introduction-examples/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Not found again by the claim search, so unverified; replaced as support by Britannica, Grammarphobia and Yale Alumni Magazine.",
+        "verified": false
+      },
+      {
+        "title": "Portmanteau word - Britannica",
+        "url": "https://www.britannica.com/print/article/471231",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: reports the OED credits Carroll as first to use portmanteau for such words (Through the Looking-Glass, 1871). WebFetch on this host failed earlier today.",
+        "verified": true
+      },
+      {
+        "title": "Two-sided words - Grammarphobia",
+        "url": "https://www.grammarphobia.com/blog/2008/08/two-sided-words.html",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result: OED's first reference is Humpty Dumpty explaining two meanings packed up into one word.",
+        "verified": true
+      },
+      {
+        "title": "Portmanteau (Yale Alumni Magazine)",
+        "url": "https://yalealumnimagazine.org/articles/4144-portmanteau",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result on Carroll's Jabberwocky coinages and the portmanteau term.",
+        "verified": true
+      },
+      {
+        "title": "2004 STG Blends ChicLingSoc - Gries",
+        "url": "https://www.stgries.info/research/2004_STG_Blends_ChicLingSoc.pdf",
+        "date": "2004",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again; companion Gries 2004 Linguistics paper also listed. Quantitative study of blends: source-word contribution, recognisability and similarity.",
+        "verified": true
+      },
+      {
+        "title": "DiGirolamo (2012), blend constraints - American Name Society",
+        "url": "https://ans-names.pitt.edu/ans/article/view/1967",
+        "date": "2012",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again via the article page: phonological and orthographic constraints on blends.",
+        "verified": true
+      },
+      {
+        "title": "Portmanteau generation (Deri and Knight 2015) - ACL Anthology",
+        "url": "https://aclanthology.org/N15-1021/",
+        "date": "2015",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again, with a bibsonomy record: 'How to Make a Frenemy' multitape FSTs, 45 percent exact matches in cross-validation.",
+        "verified": true
+      },
+      {
+        "title": "Deri and Knight record (BibSonomy)",
+        "url": "https://www.bibsonomy.org/bibtex/150baabdcc539a34aed79901b8783f883",
+        "date": "2015",
+        "snippet": "",
+        "via": "search",
+        "note": "Second index record of the same paper.",
+        "verified": true
+      },
+      {
+        "title": "Spirit-brand trend report coverage (NJBIZ)",
+        "url": "https://njbiz.com/spirit-halloween-2026-costume-trends/",
+        "date": "2026-10",
+        "snippet": "",
+        "via": "search",
+        "note": "One retailer release syndicated across several outlets (Quartz, Yahoo, others); counts as a single source and stays unverified. Page does not name the retailer.",
+        "verified": false
+      },
+      {
+        "title": "Celebrating Alice in Wonderland with neologisms and whimsy - Planet Word",
+        "url": "https://planetwordmuseum.org/celebrating-alice-in-wonderland-with-neologisms-and-whimsy/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Tone inspiration only; not found again.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The word portmanteau for a blend of two words is credited by the OED to Lewis Carroll's Through the Looking-Glass (1871).",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2,
+          3
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In Humpty Dumpty's explanation, a coined word packs two meanings up into one, like a suitcase with two compartments; before Carroll a portmanteau was a suitcase.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Gries (2004) analysed 585 blends: how much each source word contributes depends on how recognisable it is, and similarity of the sources to the blend plays a vital role; the second source word is on average longer and contributes more.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Gries counts blend contribution both by letters and by sounds; for chunnel, channel supplies about 86 percent and tunnel about 83 percent of letters in one of his two analyses.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Deri and Knight (NAACL 2015) built a multitape finite-state transducer that takes two words and outputs candidate blends; trained on known blends it reached 45 percent exact matches in cross-validation.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "Jabberwocky coinages",
+      "brunch and smog style blends",
+      "costume-shop dress-up toys",
+      "mix-and-match picture books",
+      "Mad Libs"
+    ]
+  },
+  "design": {
+    "coreLoop": "Pick two cards, the engine proposes five fusions with a recognisability meter showing which letters belong to which parent, the visitor picks one and the shop builds a costume from a head, body and prop assembled from the parents' drawn parts. Three invented judges score it on scare, cute and sayability; the costume joins a rack. Sets and a daily 'customer order' (for example a theme of kitchen plus sky) keep the second and tenth minute different, and recipes are shareable in the URL hash.",
+    "sophisticationHooks": [
+      "Blend engine: finds end-of-A to start-of-B letter overlaps, vowel-aligned splices and syllable-boundary splices, then scores recognisability (share of each parent kept), pronounceability (cluster rules) and length",
+      "Procedural SVG costume builder: each card has 3 drawn layers (head, body, prop) that recombine by rule with a palette per judge scoring",
+      "Three judges with distinct rubric weights and written quips picked from tables by score band, so results read as voiced rather than numeric",
+      "Collection rack with rarity tiers, daily customer order seeded by date, share link via URL hash"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: about 36 hand-written cards (monsters, foods, appliances, falling rocks) each with 2 SVG layers (head, prop) and a palette, body shapes generated by rule, blend engine as a pure module with a checked test list of curated pairs, shop view, three-judge panel with quip tables, rack with rarity tiers, daily customer order seeded by date, share hash, about panel. Cut: 60-card stock, user-drawn parts, sound, saving beyond the local rack, any trend data.",
+    "risks": [
+      "Seasonal: the framing ages after 31 October 2026, so durable is false; the lab still works afterwards.",
+      "The retailer trend context is one syndicated release, so the page omits it or shows 'as of 2026-10-12, per a retailer trend report, unconfirmed'; no retailer, brand, character or film is named and the stock is invented.",
+      "Letter-overlap blends can be ugly; a pronounceability filter and a curated pair pool of at least 40 checked pairs keep top results funny.",
+      "Drawing cards in SVG is the heavy part; 36 cards with 2 layers is the base scope, and 24 cards is the floor.",
+      "Halloween weekday is computed by the page from the date (Saturday 31 October 2026), not quoted from a web source.",
+      "The 45 percent figure from the 2015 paper is shown only with its attribution if used at all."
+    ]
+  },
+  "durable": false,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Portmanteau origin and the blend-linguistics and generation papers were found again by claim searches, but the retailer trend context is a single syndicated release and stays unverified. Scope is cut to 36 two-layer cards; the shallow-risk is the blend quality, which a curated pair list mitigates."
+  }
+}

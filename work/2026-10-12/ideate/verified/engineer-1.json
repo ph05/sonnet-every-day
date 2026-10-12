@@ -1,0 +1,230 @@
+{
+  "id": "engineer-1",
+  "title": "Parallel Octobers",
+  "pitch": "The visitor chooses a team with a dated early-season record, such as a winless or pointless start, and the page replays its season thousands of times in parallel from the same talent, drawing every path as a branching, root-like fan across the 84-game calendar. Before each reveal the visitor sets a compass needle to forecast the final points; the engine then shows how much of the start was luck on a gauge, and discarding the first games from the sample shows the estimate move.",
+  "whyNow": "As of 2026-10-12, per several outlets, Calgary is 0-5-0 and the only team without a point, and Philadelphia opened 0-5-2 with a franchise-record seven straight losses; 2026-27 is also the first 84-game season since 1993-94, so old 82-game rules of thumb for how deep a hole is no longer apply.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "hockey-now"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "analytical",
+      "competitive",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "worker",
+      "localstorage",
+      "pointer-events"
+    ],
+    "tags": [
+      "nhl",
+      "early-season",
+      "small-sample",
+      "regression-to-mean",
+      "monte-carlo",
+      "84-game-season",
+      "playoff-odds",
+      "pdo",
+      "forecasting",
+      "luck"
+    ],
+    "keywords": [
+      "winless-start",
+      "fan-chart",
+      "bayesian",
+      "points-pace",
+      "loser-point",
+      "season-paths",
+      "calibration"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "As of 2026-10-12 the NHL season is about two weeks old. Per several outlets, Calgary is 0-5-0 after a 4-2 loss to Anaheim on 2026-10-10 and is the only team without a point, and Philadelphia is 0-5-2 after a 4-1 loss at Carolina on 2026-10-11, a franchise-record seventh straight loss to open a season (the earlier record was set in 1999-00 and matched in 2008-09). The league plays an 84-game schedule this season (1,344 games, 42 home and 42 road per team). PDO (on-ice shooting percentage plus save percentage) is a common luck proxy that drifts toward 100 over large samples. Only the Calgary and Philadelphia records were re-checked; no other real team record is verified, so other clubs in the page are simulated or fictional and each real record carries its as-of date and source.",
+    "sources": [
+      {
+        "title": "Top NHL Storylines From Week 1 of 2026-27",
+        "url": "https://thehockeywriters.com/top-nhl-storylines-from-week-1-of-2026-27-marchenko-barkov-more/",
+        "date": "",
+        "snippet": "A week-one roundup of early storylines: a few clubs off to winless or near-winless starts, others unbeaten in regulation. Used only as context, the search summary blended several results.",
+        "via": "search",
+        "note": "Context only; not found again for any specific claim, so unverified and unused for numbers",
+        "verified": false
+      },
+      {
+        "title": "Flames remain winless in NHL after third-period fizzle, fall 4-2 to Ducks",
+        "url": "https://panow.com/2026/10/11/flames-remain-winless-in-nhl-after-third-period-fizzle-fall-4-2-to-ducks/",
+        "date": "2026-10-11",
+        "snippet": "Canadian Press story: Calgary 0-5-0 after a 4-2 loss to Anaheim, the only NHL team without a point.",
+        "via": "search",
+        "note": "Same Canadian Press story was re-found on ctvnews.ca; this exact URL did not appear in the re-check, so unverified; game date corrected to 2026-10-10 (the 10-11 date is publication)",
+        "verified": false
+      },
+      {
+        "title": "Flyers struggle again, Tocchet has no answers in franchise-record 7th straight loss to open season",
+        "url": "https://www.wsls.com/sports/2026/10/12/flyers-struggle-again-tocchet-has-no-answers-in-franchise-record-7th-straight-loss-to-open-season/",
+        "date": "2026-10-12",
+        "snippet": "AP wire report: Philadelphia lost 4-1 at Carolina on 2026-10-11, a franchise-record seventh straight loss to open the season (0-5-2), after a 7-0 opener; outscored 28-8.",
+        "via": "search",
+        "note": "Re-found in my search; agrees with the Philadelphia Inquirer and Broad Street Hockey results",
+        "verified": true
+      },
+      {
+        "title": "Flyers struggle again, Tocchet has no answers in franchise-record 7th straight loss to open season - ABC News",
+        "url": "https://abcnews.com/Sports/wireStory/flyers-struggle-tocchet-answers-franchise-record-7th-straight-137185044",
+        "date": "2026-10-12",
+        "snippet": "Syndicated copy of the same wire report on the Philadelphia seven-game losing start.",
+        "via": "search",
+        "note": "Syndicated copy of the AP story; re-found, not independent of the previous entry",
+        "verified": true
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season - ESPN",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "The 2026-27 schedule has 84 games per team under the new CBA, with 28 division, 24 other in-conference and 32 inter-conference games.",
+        "via": "search",
+        "note": "84-game format, 1,344 games, 42 home and 42 road per team, opening Sept 29 and finish April 10; re-found today and agrees with AP copies",
+        "verified": true
+      },
+      {
+        "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94 (AP)",
+        "url": "https://www.news4jax.com/sports/2026/07/16/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/",
+        "date": "2026-07-16",
+        "snippet": "AP wire copy: league unveils the 84-game 2026-27 schedule, the first since 1993-94.",
+        "via": "search",
+        "note": "Independent of ESPN's own write-up; many sites carry the same AP story (counts as one)",
+        "verified": true
+      },
+      {
+        "title": "Percentage Luck in Hockey, Explained",
+        "url": "https://jfresh.substack.com/p/percentage-luck-in-hockey-explained",
+        "date": "",
+        "snippet": "Explains that shooting plus save percentage across a team's on-ice shots sums near a fixed league level, so extreme values in short stretches are mostly luck and regress.",
+        "via": "search",
+        "note": "PDO definition and regression toward 100; re-found in a search for the claim, agrees with MetricGate and others",
+        "verified": true
+      },
+      {
+        "title": "PDO (shooting plus save percentage) - MetricGate docs",
+        "url": "https://metricgate.com/docs/pdo-shooting-save-percentage-sum/",
+        "date": "2026-06-09",
+        "snippet": "Documentation defining PDO as shooting percentage plus save percentage, centred on 100 or 1000 depending on scale, and treating it as a luck indicator.",
+        "via": "search",
+        "note": "Second PDO definition; re-found in the same search",
+        "verified": true
+      },
+      {
+        "title": "Flames remain winless in NHL after third-period fizzle, fall 4-2 to Ducks (CTV News)",
+        "url": "https://www.ctvnews.ca/calgary/article/flames-remain-winless-in-nhl-after-third-period-fizzle-fall-4-2-to-ducks/",
+        "date": "2026-10-10",
+        "snippet": "Calgary falls to 0-5-0 after a 4-2 loss to Anaheim on 2026-10-10; the only NHL team without a point.",
+        "via": "search",
+        "note": "Canadian Press story, re-found",
+        "verified": true
+      },
+      {
+        "title": "Poehling has two points, Ducks hang on to keep Flames winless (NHL.com Ducks recap)",
+        "url": "https://www.nhl.com/ducks/news/anaheim-ducks-calgary-flames-game-recap-october-10-2026-x7213",
+        "date": "2026-10-10",
+        "snippet": "League recap of Anaheim 4, Calgary 2 on 2026-10-10 that keeps the Flames winless.",
+        "via": "search",
+        "note": "Independent of the wire story; seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "Flyers set franchise history with seventh winless game to start the season in 4-1 loss to Hurricanes (Philadelphia Inquirer)",
+        "url": "https://www.inquirer.com/flyers/flyers-hurricanes-score-highlights-franchise-record-winless-start-rick-tocchet-20261011.html",
+        "date": "2026-10-11",
+        "snippet": "Local report of the 4-1 Carolina win over Philadelphia on 2026-10-11, a franchise-record winless start.",
+        "via": "search",
+        "note": "Independent of the AP wire story; seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "Takeaways: Flyers make franchise history, lose their seventh in a row to Carolina 4-1 (Broad Street Hockey)",
+        "url": "https://www.broadstreethockey.com/post/takeaways-flyers-make-franchise-history-lose-their-seventh-in-a-row-to-carolina-4-1/",
+        "date": "2026-10-11",
+        "snippet": "Fan-site takeaways on the same game: seventh straight loss to open the season.",
+        "via": "search",
+        "note": "Independent third outlet; seen in a result, page not opened",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026-27 NHL regular season is 84 games per team (1,344 games in all, 42 home and 42 road for each club), the first 84-game schedule since 1993-94; it opened Sept. 29, 2026 and runs to April 10, 2027.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "PDO is on-ice shooting percentage plus on-ice save percentage; league-wide it balances to 100, so team values far from 100 in short samples are read as luck and tend to drift back toward 100.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-11, per Canadian Press (CTV News) and the NHL.com Ducks recap, Calgary is 0-5-0 after a 4-2 loss to Anaheim on 2026-10-10, its first season opening with five straight losses, and is the only NHL team without a point.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-11, per AP, the Philadelphia Inquirer and Broad Street Hockey, Philadelphia lost 4-1 at Carolina for a franchise-record seventh straight loss to open the season (record 0-5-2, so two of the losses came in overtime or a shootout), after a 7-0 opener, outscored 28-8.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11,
+          2
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "fan charts in election and weather forecasting",
+      "expected points models",
+      "forecasting calibration games",
+      "spaghetti plots",
+      "mycelium network drawings"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each round presents a team and its dated start. The visitor drags a compass needle (direction = expect a recovery or a slump, length = confidence) to forecast final points, optionally discards early games to test how fragile the read is, then commits. A web worker runs 1,000 seeded season paths from a posterior over team talent; paths are drawn as a branching fan, the forecast is scored with a proper scoring rule, and a luck gauge says how much of the start was PDO noise. Streaks and a calibration chart reward the tenth round because the visitor learns to trust fewer games less.",
+    "sophisticationHooks": [
+      "Grid posterior over team talent: a prior from a hand-set tier rating times a likelihood from the dated early record, so a 0-5-2 start moves the estimate far less than intuition says",
+      "Seeded Poisson goal model with overtime and shootout logic and the loser point, run in a worker for 1,000 paths of 84 games, with a simulated field for the playoff line",
+      "Proper scoring (log or CRPS-style) with a calibration curve over the visitor's rounds, plus the discard-games slider showing how the estimate shifts",
+      "Branching fan chart on canvas where path density forms a mycelium-like network and a compass dial doubles as the input"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Build the talent posterior (grid), a seeded season-path engine in a worker (1,000 paths, simple Poisson goals plus overtime point), canvas fan chart, compass input, proper scoring and URL-hash share. Real-team content is limited to the two re-checked records (Calgary 0-5-0 and Philadelphia 0-5-2, each shown with its as-of date and source); everything else is fictional teams from a seeded generator, labelled as simulation. Cut: live data, a full 32-team playoff simulation, player-level stats, a calibration curve beyond a simple running score if time is short.",
+    "risks": [
+      "Only the Calgary and Philadelphia records were re-checked (2026-10-12); the page shows them as 'as of 2026-10-11, per <outlet>' and carries no other real record, so unverified standings never appear as fact",
+      "Talent priors are hand-set estimates, not data; the page labels them as estimates and keeps fictional teams available so no real-team claim depends on them",
+      "Could read as a simulator: the forecasting game and scoring stay central rather than a free-form sandbox",
+      "News-bound start records go stale within days; the snapshot is dated and fictional-team mode keeps the page useful, hence durable false",
+      "Probability output is labelled 'simulated, not a prediction service, not betting advice'; real team names appear as plain text with no logos"
+    ]
+  },
+  "durable": false,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Calgary and Philadelphia records, the 84-game schedule and PDO were each re-found in independent search results; the Calgary game date was corrected to 2026-10-10 and Philadelphia's record is 0-5-2 (not 0-7); the hockey-reference goal-difference snapshot and other hot starts could not be re-found and were removed. Posterior plus worker simulation is ambitious but cut to 1,000 paths and two real teams."
+  }
+}

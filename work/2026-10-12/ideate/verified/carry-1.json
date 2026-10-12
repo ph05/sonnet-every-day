@@ -1,0 +1,226 @@
+{
+  "id": "carry-1",
+  "title": "Breaking Changes",
+  "pitch": "A plain grey brick-breaker ships as v0.1. Between waves the studio offers two release candidates written in marketing-speak, such as 'Improved ball responsiveness' or 'Ceiling deprecated to improve performance'. You decode the euphemism, pick one, and play the next wave under its real rules while a board of system lamps shows what just went offline. A codex records what each phrase actually meant, and by v1.0 your build is a loud, glorious, thoroughly broken thing you assembled yourself.",
+  "whyNow": "Timeless premise, since everyone has met a vague update note, with a small jam-weekend nod: as of 2026-10-12, per itch.io only, the Patch Notes v2.0 jam is reported to use 'Systems Offline' as its theme (unconfirmed), and each patch here switches a game system off or on.",
+  "origin": {
+    "agent": "carryover",
+    "lens": "itch-jam-watch",
+    "scoutId": "artisan-2",
+    "originalAgent": "artisan",
+    "carriedFrom": "2026-10-12"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "satirical",
+      "playful",
+      "chaotic"
+    ],
+    "tech": [
+      "canvas2d",
+      "webaudio",
+      "pointer-events",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "game-jam",
+      "patch-notes",
+      "brick-breaker",
+      "rule-mutation",
+      "roguelite",
+      "game-feel",
+      "juice",
+      "codex",
+      "release-notes",
+      "satire",
+      "systems-offline"
+    ],
+    "keywords": [
+      "changelog",
+      "release-candidate",
+      "verb-noun-grammar",
+      "hidden-effects",
+      "system-lamps",
+      "greybox",
+      "hit-stop",
+      "screenshake",
+      "rollback",
+      "version-number"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Hook, honestly rated: the Patch Notes v2.0 jam page on itch.io is reported to list 'Systems Offline' for 9-12 October 2026, but only itch.io pages say so and they disagree on the window, so the theme is shown as reported, not confirmed, and the game stands without it. Verified and shaping the design: the 2012 juice talk by Martin Jonasson and Petri Purho used a plain Breakout-style demo made progressively juicier (two independent results), which gives the greybox-to-gold arc and the juice ladder; complaints about stock release-note wording appear in an editorial and a separate support forum, which anchors the euphemism grammar. A Mini Jam page rates a mandatory limitation over the theme (single site), which inspires per-wave limitations delivered as patch notes. All studio names, patches and quotes in the game are invented.",
+    "sources": [
+      {
+        "title": "Patch Notes v2.0 - itch.io",
+        "url": "https://itch.io/jam/patch-notes",
+        "date": "",
+        "snippet": "Jam page for the Patch Notes series by Indieformer with Jamlytics; search summaries give the theme as 'Systems Offline' for a 72-hour jam on 9-12 October 2026, with a conflicting 10-day window mention and a theme-TBA line.",
+        "via": "search",
+        "note": "Jam-weekend nod. Re-found by search on 2026-10-12: results again give 'Systems Offline' for the 9-12 October 2026 window, but only itch.io pages (jam page and listings) carry it and they disagree on the window (72 hours versus a 10-day window), so it stays a single-site report.",
+        "verified": false
+      },
+      {
+        "title": "Patch Notes announcement (Indieformer newsletter)",
+        "url": "https://www.indieformer.com/p/patch-notes-01-announcement",
+        "date": "",
+        "snippet": "Newsletter post from the Patch Notes host that search returned for the series; the earlier beehiiv address was not found again.",
+        "via": "search",
+        "note": "Same organization as the jam page, so not independent. Replaces the beehiiv address that could not be found again.",
+        "verified": false
+      },
+      {
+        "title": "This jam is now over. It ran from 2026-01-16 19:00:00 to 2026-01-26 19:00:00. View results",
+        "url": "https://itch.io/jam/patch-notes-v-1-1",
+        "date": "",
+        "snippet": "Page for Patch Notes v1.1, shown by search as ended after running 16-26 January 2026; search summaries gave its theme as 'Out Of Time' and its format as 10 days with two entry paths.",
+        "via": "search",
+        "note": "Series context only; the page title was found again in the 2026-10-12 results, same organization as the other entries, dates not independently confirmed.",
+        "verified": false
+      },
+      {
+        "title": "August 23, 2013",
+        "url": "https://www.gamedeveloper.com/design/video-is-your-game-juicy-enough-",
+        "date": "August 23, 2013",
+        "snippet": "Game Developer coverage (URL slug: video-is-your-game-juicy-enough-) of the juice talk by Martin Jonasson and Petri Purho: tweening, stretching and squeezing objects makes a plain game feel alive, a lot of feedback for little input.",
+        "via": "search",
+        "note": "The result was not found again under this slug (a different Game Developer slug surfaced). Not relied on; the talk is supported by the Juicy Break page and the rpgplayground article.",
+        "verified": false
+      },
+      {
+        "title": "Juicy Break",
+        "url": "https://crcdng.itch.io/juicy-break",
+        "date": "",
+        "snippet": "Independent creator page titled Juicy Break that, per the search summary, refers to the Jonasson and Purho talk and says it was delivered in May 2012 at a Nordic game event.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12. It refers to the Jonasson and Purho talk and a Breakout-style demo; the venue is reported variously (a Nordic game event in May 2012, GDC Europe 2012), so the page says 2012 only.",
+        "verified": true
+      },
+      {
+        "title": "first unread message",
+        "url": "https://community.ebay.com/t5/Mobile-Apps/Meaningful-release-notes-for-app-updates/td-p/28639214/jump-to/first-unread-message",
+        "date": "",
+        "snippet": "Support-forum thread (slug: Meaningful-release-notes-for-app-updates) where a user asks for release notes that say what changed, arguing the stock phrase bug fixes and performance improvements tells them nothing.",
+        "via": "search",
+        "note": "Only a profile page on this forum surfaced in the re-check, not the thread itself, so this source is not counted. Cited as a source only; the game never names any real company.",
+        "verified": false
+      },
+      {
+        "title": "meaningless release notes 6931757",
+        "url": "https://en.community.sonos.com/speakers-229128/meaningless-release-notes-6931757",
+        "date": "",
+        "snippet": "A second company's community-forum thread where a user calls update notes meaningless after two updates were described only as bug fixes and improved performance.",
+        "via": "search",
+        "note": "Not found again by search on 2026-10-12. Not relied on.",
+        "verified": false
+      },
+      {
+        "title": "Mini Jam 217: Whimsy - itch.io",
+        "url": "https://itch.io/jam/mini-jam-217-whimsy",
+        "date": "",
+        "snippet": "A Mini Jam page says the theme is optional inspiration and a mandatory limitation, revealed at the start, is what entries are judged on; same boilerplate across the series.",
+        "via": "search",
+        "note": "Replaces the Mini Jam 219 address, which was not found again. Same site and series boilerplate, so one source only and unverified.",
+        "verified": false
+      },
+      {
+        "title": "Research: Making a 'juicy' game",
+        "url": "https://rpgplayground.com/research-making-a-juicy-game/",
+        "date": "",
+        "snippet": "Article on the juicy-game talk by Jonasson and Purho: a basic Breakout prototype is made progressively juicier with squash and stretch, shake, particles and trails.",
+        "via": "search",
+        "note": "Independent of the Juicy Break page; confirms the talk and the Breakout-style demo. Search summary blended several results, so the venue is left open.",
+        "verified": true
+      },
+      {
+        "title": "Apple needs to ban app release notes that only mention bug fixes and 'improvements'",
+        "url": "https://www.imore.com/apple-needs-ban-app-release-notes-only-mention-bug-fixes-and-improvements",
+        "date": "",
+        "snippet": "Editorial arguing that release notes consisting only of bug fixes and improvements tell users nothing.",
+        "via": "search",
+        "note": "Independent outlet; establishes the complaint about stock release-note wording.",
+        "verified": true
+      },
+      {
+        "title": "Are there release notes?",
+        "url": "https://community.smartthings.com/t/android-app-2-1-1/44633",
+        "date": "",
+        "snippet": "Forum thread where a tester notes the notes said bug fixes and improvements when only one fix had landed.",
+        "via": "search",
+        "note": "Different organization from the editorial; same complaint about vague notes.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A 2012 talk by Martin Jonasson and Petri Purho on game 'juice' used a simple Breakout-style demo, made progressively juicier with squash and stretch, shake, particles and trails, to show how added feedback makes a plain game feel alive. Reports differ on the venue, so the page says 2012 only.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, public forums and an editorial carry complaints that stock release-note wording such as 'bug fixes and performance improvements' says nothing about what changed (iMore editorial and a SmartThings community thread).",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per itch.io only, the Patch Notes v2.0 jam page is reported to list 'Systems Offline' as its theme for 9-12 October 2026; itch.io pages disagree on the window (72 hours versus a 10-day window), so this is unconfirmed.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per itch.io only, a Mini Jam page says the theme is optional inspiration while a mandatory limitation revealed at the start is what gets judged (single site, unconfirmed).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "The 2012 juice talk and its greybox-to-gold demo",
+      "Brick-breakers and their roguelite descendants",
+      "Rule-rewriting puzzle games",
+      "Stock app-store release-note phrases",
+      "Live-service balance patches and their notes"
+    ]
+  },
+  "design": {
+    "coreLoop": "Wave loop: you read two patch notes, pick one with 1 or 2 (or a tap), watch the system-lamp board change as its true effect applies, then play a 30 to 40 second brick-breaker wave under every rule accumulated so far. Clearing the wave or losing a ball ends the loop with a 'known issues' reveal that tells you what the euphemism really meant and files it in the codex. Notes follow a learnable grammar (improved means faster with a catch, rebalanced means nerfed, deprecated means removed with compensation, reimagined means shuffled), so minute two is decoding and minute ten is routing synergies, such as a sticky paddle with gravity, around your build's weak spots. Eight waves end in a v1.0 launch card; three rollbacks end the run early. The daily seed makes the offers identical for everyone.",
+    "sophisticationHooks": [
+      "A decodable grammar: six verbs (improved, rebalanced, deprecated, reimagined, added in beta, fixed) act on six game systems (ball, paddle, ceiling, bricks, gravity, juice), so a euphemism means the same kind of change everywhere. A codex fills in as you learn, which is what separates minute two from minute ten.",
+      "Generic modifier engine with synergy and clamps: about 24 valid verb-noun pairs stack, such as a sticky paddle with gravity or multiball with the ceiling deprecated, while a stall watchdog ships an in-fiction hotfix if no brick falls for 25 seconds.",
+      "The juice ladder: feedback layers (hit-stop, squash and stretch, trails, particles, shake, synthesized sound) arrive as patches, so the page shows game feel being built from silent grey boxes at v0.1 to a bright, noisy v1.0. Each layer has a reduced-motion twin and a shake toggle.",
+      "Hero moment: a board of system lamps clicks off or on when a patch lands, an installing-update wipe sweeps the playfield, and the same bricks that were flat grey rectangles burst into confetti by v1.0 while the changelog scrolls alongside."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Shrunk for one morning. Build: fixed-step brick-breaker with sub-stepped collisions, a verb-by-noun patch engine (6 verbs, 6 systems, about 24 valid pairs) with flavor text, two-card picker, system-lamp board, codex, a 5-layer juice ladder with reduced-motion twins, optional muted-by-default synthesized blips, eight waves with rollbacks and a v1.0 launch card, URL-hash seed and share string, keyboard and touch controls, about panel with sources. Cut first: audio, unlockable skins, boss wave, extra brick types. Not built: leaderboards, any backend.",
+    "risks": [
+      "Hook is single-site and inconsistent: the page shows 'Systems Offline' as 'as of 2026-10-12, per itch.io' (unconfirmed) or omits it; the game does not depend on it, and the jam closes on 12 October so the nod is short-lived.",
+      "Unverified sources: the eBay and Sonos forum threads, the Game Developer juice article slug and the Mini Jam 219 page could not be found again; the about panel cites only the iMore editorial, the SmartThings thread, the Juicy Break page and the rpgplayground article for these points.",
+      "Brick-breakers are crowded: distinctness rides on the decodable verb grammar, the codex and the writing, so the spec protects those before extra polish.",
+      "Overlap with the cards-2 candidate: same category, mechanic and slot (humor-satire, game, humor) and a corporate-voice joke; only one of the two can win the novelty gate.",
+      "Soft-locks and balance: every parameter is clamped, an in-fiction hotfix reverts the last patch if no brick falls for 25 seconds, and the QA monkey tests random builds.",
+      "Humor stays generic: invented studio, patches and quotes aimed at the genre of vague release notes, never a real company or product.",
+      "Motion and flashing: flashes capped below 3 per second, every shake or flash has a reduced-motion twin and a shake toggle, audio starts muted."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Juice talk, release-note complaints and the Breakout demo were re-found in independent results; the Systems Offline hook is itch.io-only and stays unconfirmed (caps confidence), and WebFetch to itch.io failed at DNS. Scope shrunk to 6 verbs by 6 systems and 8 waves; the game does not depend on the hook."
+  }
+}

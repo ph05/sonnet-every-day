@@ -1,0 +1,215 @@
+{
+  "id": "cards-2",
+  "title": "Synergy Overflow",
+  "pitch": "You are the founder of an invented company pitching buzzword cards to a very gullible board: some add headcount, some add hype, some multiply it by synergy, and a few raise it to a power called disruption. Targets grow like an idle game's cost curve, order matters, and by quarter twenty the numbers have names nobody learned, until the page finally overflows into a deliberate, theatrical NaN-e-Inf board meeting. The joke is the deadpan corporate voice, the payoff is watching the maths run out of numbers.",
+  "whyNow": "Timeless satire of numbers-go-up design and corporate buzzword inflation; it also fills the owed humor slot with a real mechanic rather than a one-liner.",
+  "origin": {
+    "agent": "cards",
+    "lens": "balatro-score-math"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "satirical",
+      "absurd",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage"
+    ],
+    "tags": [
+      "corporate-satire",
+      "big-numbers",
+      "exponent-stacking",
+      "overflow-joke",
+      "buzzword-cards",
+      "log-space-math",
+      "numbers-go-up",
+      "roguelike-run"
+    ],
+    "keywords": [
+      "synergy",
+      "quarterly-target",
+      "scientific-notation",
+      "named-numbers",
+      "infinity",
+      "idle-game-math",
+      "board-meeting",
+      "disruption"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Incremental and idle games rest on a simple recipe: costs rise exponentially (a growth factor of 1.15 per purchase in the modern Cookie Clicker, confirmed by the game wiki and a paper; the Classic version uses 1.1) while income rises more slowly, so designers tune payback time and prestige resets. A deckbuilder's famous joke ending is a score past the double-precision limit (about 1.8 times 10 to the 308, confirmed by a USGS reference and matching forum and mod descriptions) displaying as the overflow word naneinf, with mods that push the cap far higher. That pairing, exponential targets plus an overflow punchline, is a real mechanic with a built-in comedic ending. The satire targets generic corporate speak with an invented company; no real firms, people or the inspiration game's names, art or card names appear in the page body.",
+    "sources": [
+      {
+        "title": "Cookie Clicker (arXiv analysis, ar5iv copy)",
+        "url": "https://ar5iv.labs.arxiv.org/html/1808.07540",
+        "date": "",
+        "snippet": "Paper analysing the clicker game states that its cost growth factor alpha is 1.15 per purchase.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 at the ar5iv copy of the paper (arxiv.org itself cannot be fetched). Supports the cost-growth convention.",
+        "verified": true
+      },
+      {
+        "title": "An idle clicker has no engine and no sprites (DEV Community)",
+        "url": "https://dev.to/dev48v/an-idle-clicker-has-no-engine-and-no-sprites-its-one-raf-loop-paying-you-production-x-k03",
+        "date": "",
+        "snippet": "Walkthrough using price = base cost times 1.15 to the n and payback time as cost divided by extra income per second.",
+        "via": "search",
+        "note": "Not found again in the 2026-10-12 results; the 1.15 factor is carried by the Cookie Clicker wiki pages and the ar5iv paper instead. Not relied on alone.",
+        "verified": false
+      },
+      {
+        "title": "The math of idle games, part I (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/the-math-of-idle-games-part-i",
+        "date": "",
+        "snippet": "Design article on the maths of idle games, returned for the cost-curve query; cost grows exponentially while production grows linearly or polynomially.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 (part I and the idle-math series). Costs grow exponentially while production grows linearly or polynomially, with a worked example using a 1.07 growth rate.",
+        "verified": true
+      },
+      {
+        "title": "GameAnalytics idle game design article",
+        "url": "https://gameanalytics.com/?p=6634",
+        "date": "",
+        "snippet": "Explains that exponential costs eventually outpace income and prestige resets let players push further along the cost curve.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12. Exponential costs outpacing income; prestige framing was not quoted by the summary so it is not relied on.",
+        "verified": true
+      },
+      {
+        "title": "SGDQ 2026: Stressful Balatro naneinf Run On Stage",
+        "url": "https://setsideb.com/?p=12635",
+        "date": "2026",
+        "snippet": "Write-up of a live speedrun event run that reached the naneinf overflow state in a bit over an hour, naming the word as NaN plus e plus Inf.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 (the SGDQ 2026 write-up and a Balatro University explainer on the same site). The 1 hour 16 minute run time was not seen again and is dropped.",
+        "verified": true
+      },
+      {
+        "title": "Steam discussion on naneinf",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4338734550482070397",
+        "date": "",
+        "snippet": "Community thread estimating that the overflow happens near the double-precision limit of roughly 10 to the 308.",
+        "via": "search",
+        "note": "Found again by search; threads agree the overflow sits near 10 to the 308 (about 2 to the 1024).",
+        "verified": true
+      },
+      {
+        "title": "Talisman mod description",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/MathIsFun0@Talisman/description.md",
+        "date": "",
+        "snippet": "Mod description saying it raises the score cap to roughly 10 to the 1000 so runs can go past the overflow point.",
+        "via": "search",
+        "note": "Found again by search; mod description says it raises the score cap from about 10 to the 308 so runs can go past naneinf.",
+        "verified": true
+      },
+      {
+        "title": "Cookie Clicker Wiki: Building",
+        "url": "https://cookieclicker.fandom.com/wiki/Building",
+        "date": "",
+        "snippet": "Wiki page: the price of each building is its base cost times 1.15 per building owned, rounded up; the older Classic version uses 1.1.",
+        "via": "search",
+        "note": "Independent of the paper and the blog posts; corrects the dossier by noting the Classic version uses 1.1.",
+        "verified": true
+      },
+      {
+        "title": "What is a floating point overflow? (USGS ModelMuse help)",
+        "url": "https://water.usgs.gov/nrp/gwsoftware/ModelMuse/Help/what_is_a_floating_point_overf.htm",
+        "date": "",
+        "snippet": "Reference text: the maximum double-precision value is about 1.8 times 10 to the 308 and values beyond it overflow to infinity.",
+        "via": "search",
+        "note": "Independent confirmation of the double limit, apart from the game communities.",
+        "verified": true
+      },
+      {
+        "title": "Balatro University Explains naneinf And How To Reach It",
+        "url": "https://setsideb.com/tag/lua/",
+        "date": "",
+        "snippet": "Write-up explaining naneinf as a score overflowing floating-point limits and shown as text by the game's string output.",
+        "via": "search",
+        "note": "Same site as the SGDQ write-up, so not independent of source 4.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A cost growth factor of 1.15 per purchase is the current convention in Cookie Clicker (the older Classic version uses 1.1), per the game wiki and an arXiv analysis as of 2026-10-12.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In idle games costs typically grow exponentially while production grows linearly or polynomially, so payback time (cost divided by added income per second) is the standard tuning check (Game Developer series, DEV Community walkthrough, as of 2026-10-12).",
+        "sourceIndex": 2,
+        "alsoIn": [
+          1,
+          3
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In the inspiration game, scores beyond the floating-point limit display as an overflow state nicknamed naneinf (NaN rendered as text), reported by a speedrun-event write-up, Steam discussion threads and a mod description (as of 2026-10-12).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          4,
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The largest double-precision value is about 1.8 times 10 to the 308 (USGS reference), matching the roughly 10 to the 308 point forum users give for the overflow and the cap the Talisman mod description says it raises.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          5,
+          6
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "incremental and idle games",
+      "prestige resets",
+      "scientific-notation named-number lists",
+      "corporate buzzword bingo",
+      "the overflow joke ending of deckbuilder endless modes"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each quarter the board sets a target; you draw five buzzword cards, play up to four in an order you choose, and the score tree runs in front of you with a deadpan commentary line per card. Beat the target to get a perk card for the deck or restructure (prestige) to reset with a permanent multiplier. It stays interesting because order, exponent cards and a rising deck-thinning decision make each draw a small optimisation, and because the ending is a joke worth reaching.",
+    "sophisticationHooks": [
+      "Log-space big-number type (mantissa plus exponent) with named-number formatting beyond the 15-digit double limit",
+      "Target curve built from a tunable growth factor and payback-time check so a run lasts about 25 quarters",
+      "Optional chief-of-staff hint that brute-forces card orders and shows the best order score without revealing the card choice",
+      "Scripted overflow finale: the display glitches into NaN-e-Inf, the board applauds, and the run ends with a shareable certificate"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Build: about 24 to 30 invented buzzword cards, run loop with seeded draws of five and play up to four, a mantissa-plus-exponent big-number class with unit tests, named-number formatting, commentary lines, a target curve from a tunable growth factor, one restructure (prestige) layer, scripted overflow finale with share string, about panel, light and dark, reduced motion. Cut: sound, further prestige layers, more than one company, the best-order hint if time is short.",
+    "risks": [
+      "Humor must land: commentary lines need a writing pass and generic invented company names only, no real firms, brands or people.",
+      "Looks like an idle toy; mitigated by a decision every turn (order, exponent cards, deck thinning) and a defined ending.",
+      "Overlap with the carry-1 candidate: same category, mechanic and slot (humor-satire, game, humor) and a corporate-voice joke; only one of the two can win the novelty gate.",
+      "Inspiration game branding: the page body uses no names, art or card names from the real game; it appears only in the about-panel sources.",
+      "Floating-point claims: the page computes the double limit in-browser; forum figures are shown as 'as of 2026-10-12, per Steam discussion'.",
+      "The reported 1 hour 16 minute run time from the SGDQ write-up was seen in one source only and is omitted from the page.",
+      "Unverified sources: the DEV Community post was not found again; the 1.15 convention is carried by the wiki and the ar5iv paper."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The 1.15 factor, the idle-game cost model, naneinf and the 1.8e308 double limit each appear in independent results; the one-source 1 hour 16 minute run time was dropped. Buildable in a morning; the risk is comedic writing quality and overlap with carry-1 on category, mechanic and slot."
+  }
+}

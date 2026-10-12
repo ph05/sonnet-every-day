@@ -1,0 +1,186 @@
+{
+  "id": "jester-1",
+  "title": "Tongue Slip Parlour",
+  "pitch": "A parlour where sounds trade places. Type any phrase and a rule engine splits every word into onset and rime, tries every swap between word pairs, and ranks the ones where both halves land as real words, drawing the sounds as tiles that physically change seats. Then play the second side: an Untwist puzzle shows a scrambled phrase and the visitor works out the original, with a seeded daily deck and a link that shares the exact puzzle.",
+  "whyNow": "Timeless: a self-contained language toy with a daily puzzle, no news hook needed. It also fills the owed humor slot with a joke that is a rule the visitor discovers.",
+  "origin": {
+    "agent": "jester",
+    "lens": "word-play"
+  },
+  "fingerprint": {
+    "category": "language-text",
+    "mechanic": "puzzle",
+    "tone": [
+      "playful",
+      "nerdy",
+      "absurd"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "speech",
+      "localstorage"
+    ],
+    "tags": [
+      "spoonerism",
+      "onset-rime",
+      "wordplay",
+      "word-puzzle",
+      "phonology",
+      "daily-puzzle",
+      "tongue-slip",
+      "constraint-writing"
+    ],
+    "keywords": [
+      "onset-swap",
+      "rime",
+      "digraph-table",
+      "bundled-lexicon",
+      "untwist",
+      "seeded-daily",
+      "swap-scoring",
+      "read-aloud"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "A spoonerism swaps the opening sounds of two words, as a slip or on purpose, and is named for an Oxford clergyman of the late 19th and early 20th centuries; two separate explainers agree on that, and one adds that many famous quotes credited to him are doubtful, so the page will call its examples traditional or invented, never documented. Search results show the idea has prior art but no polished browser toy that ranks swaps and turns them into a puzzle: a phoneme-based Python package, a spelling-based Rust crate, a browser extension that rewrites page text, and a Finnish JavaScript solver for sananmuunnos, the local cousin of the form. A Finnish academic article frames spoonerisms as a constraint procedure akin to Oulipo, which supports the design of explicit, inspectable rules. The big pronouncing dictionary's licence was reported inconsistently across results, so nothing from it is bundled: the lexicon is hand-written (about 2500 common words with onset and rime splits and part-of-speech tags) and the engine's rules are original.",
+    "sources": [
+      {
+        "title": "Spoonerism - Grammar Monster",
+        "url": "https://www.grammar-monster.com/interesting-words/spoonerism.htm",
+        "date": "",
+        "snippet": "Explains the term as coming from the Oxford clergyman William Archibald Spooner (1844 to 1930) and defines it as a swap of the initial sounds of two words, by slip or on purpose.",
+        "via": "search",
+        "note": "Definition and namesake dates; found with a single-domain search so the attribution is unambiguous.",
+        "verified": true
+      },
+      {
+        "title": "Spoonerism Definition: 3 Examples of Spoonerisms - 2026 - MasterClass",
+        "url": "https://www.masterclass.com/articles/spoonerism-explained",
+        "date": "2026",
+        "snippet": "Describes the same namesake (1844 to 1930, Warden of New College), the swap of opening sounds, and notes that many anecdotes credited to him are disputed.",
+        "via": "search",
+        "note": "Independent second source for the definition and namesake; also source of the doubtful-attribution caution.",
+        "verified": true
+      },
+      {
+        "title": "Sananmuunnos - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Sananmuunnos",
+        "date": "",
+        "snippet": "Finnish counterpart of the spoonerism. Reported to swap morae rather than syllables, and Finnish suffixes make many swaps yield valid words.",
+        "via": "search",
+        "note": "Cultural cousin for the about panel; seen only in a search summary.",
+        "verified": false
+      },
+      {
+        "title": "sananmuunnos.js - GitHub",
+        "url": "https://github.com/tuukkao/sananmuunnos.js",
+        "date": "",
+        "snippet": "A JavaScript solver for Finnish word transformations, showing that a rule-based swap engine runs fine in plain browser code.",
+        "via": "search",
+        "note": "Prior art that confirms feasibility; code is not reused.",
+        "verified": false
+      },
+      {
+        "title": "spooner 0.5.11 - PyPI",
+        "url": "https://pypi.org/project/spooner/0.5.11/",
+        "date": "",
+        "snippet": "A Python package that builds spoonerisms from sounds rather than spelling; its sample turns a two-word phrase about trails and snacks into one about snails and tracks.",
+        "via": "search",
+        "note": "Shows the sound-based approach; our version uses a hand-made onset table instead.",
+        "verified": false
+      },
+      {
+        "title": "Vakavan sanaleikin mahdollisuudet kotimaisen nykyrunouden anagrammeissa ja spoonerismeissa - JYX",
+        "url": "https://jyx.jyu.fi/handle/123456789/82122",
+        "date": "",
+        "snippet": "A Finnish academic work on serious wordplay that treats anagrams and spoonerisms as constraints, tying them to the Oulipo tradition.",
+        "via": "search",
+        "note": "Supports presenting the swap rules as visible constraints.",
+        "verified": false
+      },
+      {
+        "title": "zummi - Rust crate",
+        "url": "https://rust-digger.code-maven.com/crates/zummi",
+        "date": "",
+        "snippet": "A simple spelling-based spoonerism tool that replaces the beginnings of words.",
+        "via": "search",
+        "note": "Shows the naive approach, whose spelling pitfalls (silent letters, digraphs) the engine must handle.",
+        "verified": false
+      },
+      {
+        "title": "CMU Pronouncing Dictionary - Wikipedia",
+        "url": "https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary",
+        "date": "",
+        "snippet": "Describes a large machine-readable pronunciation list using a phoneme set; licence statements in other results conflict, so its terms are unclear.",
+        "via": "search",
+        "note": "Reason to hand-write a small lexicon instead of bundling it.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The term spoonerism comes from William Archibald Spooner (1844 to 1930), an Oxford clergyman, and names a swap of the initial sounds of two words.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Many famous lines credited to Spooner are doubtful, so a page that quotes them labels them as traditional rather than documented.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per a Wikipedia entry seen only in a search summary: the Finnish sananmuunnos swaps morae, and Finnish suffixes multiply the valid swaps.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per a PyPI listing seen in search: at least one sound-based spoonerism generator exists, turning a two-word phrase into another with swapped onsets; no polished browser puzzle built on ranked swaps turned up in the searches.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Search results disagreed about the licence of the large pronouncing dictionary (public domain in some, BSD-style in one), so the project bundles none of it.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "spoonerisms",
+      "sananmuunnos",
+      "contrepeterie",
+      "Oulipo constraint writing",
+      "Wordle-style daily puzzles",
+      "anagram solvers"
+    ]
+  },
+  "design": {
+    "coreLoop": "Type or pick a phrase, watch the engine split it into onset and rime tiles and propose ranked swaps. Pick one and the tiles trade seats with a short animation and a read-aloud button. In Untwist mode a scrambled phrase appears and the visitor drags sound tiles back to restore the original; hints reveal which word pair was swapped. Mastery comes from learning the engine's rules (digraphs, silent letters, how vowels start a word) and a codex fills with rare finds. Daily deck and shareable hash keep it fresh.",
+    "sophisticationHooks": [
+      "Rule engine: orthographic onset/rime splitter with a digraph and exception table (ph, kn, wr, qu, sh, ch, th, silent h, vowel starts), then a swap search over all word pairs and positions in the phrase",
+      "Swap scoring: both outputs real words in the bundled lexicon, tile weight, part-of-speech plausibility and a clean-humour filter; ranked results with a visible 'why this scored' breakdown",
+      "Untwist puzzle: seeded daily deck of invented phrases, three difficulty tiers, hint ladder, streak kept in localStorage with try/catch, sharable result and puzzle via URL hash",
+      "Sound-tile animation in SVG with reduced-motion fallback, optional read-aloud through the browser's built-in speech voices"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: lexicon of roughly 2500 hand-written words with onset/rime splits and tags, the splitter and swap engine as a pure module, parlour view, Untwist puzzle with 120 hand-written phrases, codex, about panel with sources. Cut: multi-language modes, user word lists, sound effects, any server.",
+    "risks": [
+      "Spelling-based onset detection will misjudge some words; mitigated by an exception table and by only offering swaps whose results are in the lexicon.",
+      "Famous Spooner quotes are doubtful; the page labels all examples as traditional or invented and quotes nothing as documented.",
+      "Humour must stay mild: lexicon and phrase bank are original, clean-checked and carry no slurs or crude pairs.",
+      "Speech voices vary by device; read-aloud is optional and the page works fully without it.",
+      "As of 2026-10-12 the Finnish and phoneme-tool details are from search summaries only; the about panel shows them as reported, per source, or omits them."
+    ]
+  },
+  "durable": true
+}

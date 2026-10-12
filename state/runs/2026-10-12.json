@@ -4,28 +4,36 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "ideate",
+  "phase": "select",
   "phasesDone": [
     {
       "phase": "preflight",
       "at": "2026-10-12T07:57:43.281Z",
       "by": "primary",
       "note": "preflight ok"
+    },
+    {
+      "phase": "ideate",
+      "at": "2026-10-12T08:30:48.088Z",
+      "by": "primary",
+      "note": "10 ideas, carryover included (watch retry, attempt 2: first attempt hit a cap arithmetic bug)"
     }
   ],
   "attempts": {
     "preflight": 1,
-    "ideate": 2
+    "ideate": 2,
+    "select": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
-    "ideate": "2026-10-12T07:59:32.633Z"
+    "ideate": "2026-10-12T07:59:32.633Z",
+    "select": "2026-10-12T08:30:54.796Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T08:00:48.791Z"
+    "heartbeatAt": "2026-10-12T08:31:06.773Z"
   },
   "directives": [
     {
@@ -39,9 +47,14 @@
   "chosen": null,
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 0,
-    "agentCalls": 0,
-    "byPhase": {}
+    "outputTokens": 454562,
+    "agentCalls": 27,
+    "byPhase": {
+      "ideate": {
+        "outputTokens": 454562,
+        "agentCalls": 27
+      }
+    }
   },
   "publishedAt": null,
   "publishedUrl": null,
@@ -103,24 +116,32 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: ideate attempt 2, due 2026-10-12T09:59:33.215Z (120 min: budget 110 + 10 margin)"
+    },
+    {
+      "at": "2026-10-12T08:30:55.482Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: select attempt 1, due 2026-10-12T09:20:55.482Z (50 min: budget 40 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "ideate",
-    "attempt": 2,
-    "armedAt": "2026-10-12T07:59:33.215Z",
-    "dueAt": "2026-10-12T09:59:33.215Z",
+    "phase": "select",
+    "attempt": 1,
+    "armedAt": "2026-10-12T08:30:55.482Z",
+    "dueAt": "2026-10-12T09:20:55.482Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01PBu1sG3QXDdBaWQPt4BsVx",
-    "workflowTask": "w5shwbfjl",
+    "triggerId": "trig_01BvTfEjTxg1TQxUo6kSP93h",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 110,
-    "delayMinutes": 120,
+    "budgetMinutes": 40,
+    "delayMinutes": 50,
     "clamped": null,
     "arms": {
-      "ideate": 2
+      "ideate": 2,
+      "select": 1
     },
-    "attemptsAtArm": 2,
-    "boundAt": "2026-10-12T08:00:48.791Z"
+    "attemptsAtArm": 1,
+    "boundAt": "2026-10-12T08:31:06.773Z"
   }
 }

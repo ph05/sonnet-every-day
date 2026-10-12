@@ -1,0 +1,235 @@
+{
+  "id": "artisan-2",
+  "title": "Smudged Memos",
+  "pitch": "A clerk at an invented Bureau of Misplaced Things receives sealed memos in cipher, each one an absurd grievance built from a hand-written grammar, with a spilled-tea mishap blotting some letters. The visitor works a bench of frequency charts, repeat finders, shift wheels and crib-dragging to crack it, without being told which cipher family it is. Then they can forge a memo of their own from the grammar, pick a cipher and a blot level, and send a link that opens as a postmarked envelope for whoever holds it.",
+  "whyNow": "Timeless: a daily memo gives a reason to return and the forge-and-send path makes the page spread person to person; autumn paperwork humor needs no news hook.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "craft-shareable"
+  },
+  "fingerprint": {
+    "category": "language-text",
+    "mechanic": "puzzle",
+    "tone": [
+      "absurd",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "canvas2d",
+      "svg",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "cipher",
+      "cryptogram",
+      "frequency-analysis",
+      "vigenere",
+      "bureaucracy",
+      "sealed-envelope",
+      "send-a-puzzle",
+      "url-hash-state",
+      "daily-memo",
+      "crib-dragging"
+    ],
+    "keywords": [
+      "memo",
+      "cipher-bench",
+      "blot",
+      "wax-seal",
+      "postmark",
+      "grammar-generated",
+      "unknown-cipher",
+      "ink-budget"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Real cryptanalysis supplies the depth: repeated ciphertext fragments of three or more letters hint at the key length of a polyalphabetic cipher (Kasiski; confirmed by Wikipedia, a programming book chapter, a textbook chapter and an online tool), and once the length is known each column falls to frequency analysis. That gives a legitimate toolkit that scales from a shift cipher to a short keyword cipher. Daily puzzles commonly share a result grid that hides the answer, a pattern seen in Wordle coverage. State in the URL fragment stays in the browser but is readable by anyone with the link, so the memo is a puzzle, not a secret. Index-of-coincidence values were not verified, so the page computes them itself. All memo text comes from a bundled grammar of invented, harmless office grievances; nothing is user-typed free text.",
+    "sources": [
+      {
+        "title": "Kasiski examination",
+        "url": "https://en.wikipedia.org/wiki/Kasiski_examination",
+        "date": "",
+        "snippet": "Article on the Kasiski method for estimating a polyalphabetic key length by looking at distances between repeated ciphertext sequences.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 (Wikipedia result: repeats of at least three characters, distances share the key length as a divisor). Repeat-finder tool is real cryptanalysis.",
+        "verified": true
+      },
+      {
+        "title": "Vigenere Break (lecture notes)",
+        "url": "https://www.cs.ucf.edu/~dmarino/ucf/cis3362/lectures/newlecs/Vigenere-Break.pdf",
+        "date": "",
+        "snippet": "University lecture notes describing breaking a Vigenere cipher by first finding the key length and then solving each column by frequency analysis.",
+        "via": "search",
+        "note": "Not found again in the 2026-10-12 results, but the method is carried by four other independent results (see sources 9 to 11); not relied on alone.",
+        "verified": false
+      },
+      {
+        "title": "Kasiski test (calculator page)",
+        "url": "https://ciphers.planetcalc.com/8550",
+        "date": "",
+        "snippet": "Online tool that finds repeated strings in ciphertext and the likely key lengths from their spacing.",
+        "via": "search",
+        "note": "Not found again; replaced as the tool-UI model by the dcode.fr Kasiski page and Omni Calculator seen in results.",
+        "verified": false
+      },
+      {
+        "title": "Lecture 5 - Vigenere cipher, Index of Coincidence, and Friedman attack",
+        "url": "https://sites.math.rutgers.edu/%7Esdmiller/348-Spring-2011/Lecture%205%20-%20Vigenere%20cipher,%20Index%20of%20Coincidence,%20and%20Friedman%20attack.pdf",
+        "date": "2011",
+        "snippet": "Course lecture on using the index of coincidence to estimate Vigenere key length.",
+        "via": "search",
+        "note": "Index-of-coincidence lecture not found again; the page computes IoC from its own corpus and quotes no external values.",
+        "verified": false
+      },
+      {
+        "title": "Anyone else hopped on the Wordle bandwagon yet?",
+        "url": "https://community.thunkable.com/t/wordle-no-spoilers/1694507",
+        "date": "",
+        "snippet": "Community thread about sharing Wordle results without spoiling the answer for others.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 (thread title about Wordle with no spoilers). Spoiler concern around shared results.",
+        "verified": true
+      },
+      {
+        "title": "how to share wordle results",
+        "url": "https://ataglance.randstad.com/en/how-to-share-wordle-results.html",
+        "date": "",
+        "snippet": "Explainer on copying the colored-square result summary to share a Wordle game without revealing the word.",
+        "via": "search",
+        "note": "Not found again under this address; the claim is covered by The Spinoff and Thumbsticks results.",
+        "verified": false
+      },
+      {
+        "title": "Invent With Python: Vigenere cipher and Kasiski examination chapter",
+        "url": "https://inventwithpython.com/cracking/chapter20.html",
+        "date": "",
+        "snippet": "Book chapter on cracking Vigenere with Kasiski: repeated sequences, spacings and their factors give candidate key lengths, then each column is solved as a Caesar shift.",
+        "via": "search",
+        "note": "Independent educational source for the key-length step and the column step.",
+        "verified": true
+      },
+      {
+        "title": "kasiski test (dcode.fr)",
+        "url": "https://www.dcode.fr/kasiski-test",
+        "date": "",
+        "snippet": "Online tool that finds repeated n-grams in ciphertext and the likely key lengths from their spacing.",
+        "via": "search",
+        "note": "Second independent tool page; model for the bench's repeat finder.",
+        "verified": true
+      },
+      {
+        "title": "Chapter 5: The Vigenere Cipher and Kasiski Examination",
+        "url": "https://bnaskrecki.faculty.wmi.amu.edu.pl/crypto/book/part2_classical_polyalphabetic/ch05_vigenere_kasiski.html",
+        "date": "",
+        "snippet": "University-hosted textbook chapter describing the GCD of repeat distances as a multiple of the key length.",
+        "via": "search",
+        "note": "Third independent source for Kasiski.",
+        "verified": true
+      },
+      {
+        "title": "those coloured boxes on twitter are new zealands fault",
+        "url": "https://thespinoff.co.nz/media/13-01-2022/those-coloured-boxes-on-twitter-are-new-zealands-fault",
+        "date": "",
+        "snippet": "News piece about the coloured-box Wordle result grids shared on social media.",
+        "via": "search",
+        "note": "Independent outlet; the grid carries guess count and colours, not the word.",
+        "verified": true
+      },
+      {
+        "title": "6 Things You Should Know About Fragment URLs",
+        "url": "https://blog.httpwatch.com/2011/03/01/6-things-you-should-know-about-fragment-urls/",
+        "date": "",
+        "snippet": "Blog post: the fragment stays in the browser and is not sent to the server, but is visible to anyone holding the link and appears in history.",
+        "via": "search",
+        "note": "Independent source for the readable-by-anyone caveat.",
+        "verified": true
+      },
+      {
+        "title": "Fragment Identifiers (#section) in URLs",
+        "url": "https://www.elliptic.co/corpus/gen-3783/uniform-resource-identifier/fragment-identifiers.html",
+        "date": "",
+        "snippet": "Reference page on fragment identifiers: client-side only, not sent in requests.",
+        "via": "search",
+        "note": "Second independent source on fragments staying client-side.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Repeated ciphertext fragments of length three or more, and the distances between them, are used (Kasiski examination) to estimate the key length of a Vigenere-style cipher.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Once the key length is known, the ciphertext splits into columns that are each a shifted-alphabet sample, solvable by frequency analysis.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          0,
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Wordle-style daily puzzles share results as a coloured-square summary showing guess count and pattern, so the answer is not revealed to other players (as of 2026-10-12, from a community thread and a news piece).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Data stored in a URL fragment is not sent to the server but is readable by anyone who holds the link, so the sealed memo is a puzzle, not a secret (HTTP Watch and Elliptic).",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "newspaper cryptograms",
+      "Wordle result grids",
+      "Caesar and Vigenere cipher wheels",
+      "Papers, Please-style bureaucratic comedy",
+      "Cryptii-style cipher workbenches"
+    ]
+  },
+  "design": {
+    "coreLoop": "Open the day's sealed memo, a screen of ciphered text with a few tea-blotted letters. Use the bench to gather evidence (letter frequencies, repeat spacing, a shift wheel, trial crib words slid along the text) and pencil letters in; each hint spends from a small ink budget. Cracking it reveals a short absurd memo and a postmark card; then the forge lets the player compose a new memo from the grammar and send it. Variety comes from the cipher family (shift, keyword substitution, short Vigenere) staying hidden until identified.",
+    "sophisticationHooks": [
+      "A real cipher bench: frequency histogram against expected English, Kasiski-style repeat finder, draggable shift wheel, crib drag, all computed client-side on a bundled word list.",
+      "Blind identification: the cipher family is undisclosed, and the bench's evidence panels (flat histogram, repeat spacing) are how the player deduces it.",
+      "Forge and send: grammar-slot composer, cipher and blot choice, and a hash of grammar indices that reconstructs the exact sealed memo, shown to the recipient as a postmarked envelope with an opening animation.",
+      "Spoiler-safe wax-seal share card: stamp, ink used, and blot count only, never the plaintext or the cipher family, drawn on canvas and copyable as text."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Shrunk for one morning. Build: grammar and a vocabulary of about 200 invented office-grievance words, three cipher implementations (shift, keyword substitution, short Vigenere with key length 2 to 4) with solvers used to prove each generated memo is solvable, bench tools (frequency histogram, repeat finder, shift wheel, crib drag), a seeded daily memo plus a short difficulty ramp of easy memos, forge composer, hash encode and decode of grammar indices, envelope and seal rendering, keyboard and touch input, light and dark, reduced motion, making-of panel. Cut: rail fence, sound, user-typed free text, accounts, streak leaderboards.",
+    "risks": [
+      "Difficulty: cracking a Vigenere with a bench is hard for casual visitors; mitigated by a first memo that is a plain shift cipher, a visible ink budget of hints and a reveal button.",
+      "Overlaps in category and mechanic with other word-puzzle candidates today; the forge-and-send path and the instrument-like bench are the differentiators.",
+      "Index-of-coincidence figures from the Rutgers lecture were not verified; the page computes them from its own corpus and quotes no external values.",
+      "Short messages may be ambiguous to crack; each memo is checked at generation time for a unique solution reachable with the bench tools and a minimum length.",
+      "The link carries the memo as grammar indices only, so all text comes from the bundled grammar and no user-authored text can be injected; the page states that the envelope is readable by anyone with the link.",
+      "Grievance humor stays about invented objects and offices, never real organizations or people.",
+      "Unverified sources: the UCF lecture notes, planetcalc page, Randstad explainer, daily-games site, HackerNoon article and LiveCodes docs were not found again; the page cites only sources seen on 2026-10-12."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Kasiski, column frequency analysis, Wordle-style spoiler-free grids and fragment-URL readability were each found in several independent results; WebFetch was not used on these hosts. Scope trimmed to three cipher families and an easy-first ramp; the main risk is puzzle difficulty, not data."
+  }
+}

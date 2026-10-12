@@ -1,0 +1,277 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "arxiv-fresh",
+  "candidates": [
+    {
+      "id": "pulse-1",
+      "title": "The Groan Cup",
+      "pitch": "A velvet-curtain comedy club where the visitor referees a knockout cup of invented one-liners, picking the funnier of two over and over. Behind the curtain the page fits a Bradley-Terry ranking after every vote, chooses the next pairing that teaches it the most, and then pits the visitor's leaderboard against a panel of silly rule-based judge bots (the pun counter, the length snob, the vowel enthusiast). The payoff is a shareable verdict card: how stable your taste is, which jokes were glazed in the kiln, and which judge bot thinks most like you.",
+      "whyNow": "A 2026 preprint on tournament-style humor ranking (pairwise judgments aggregated with Bradley-Terry, with adaptive Swiss pairing) is the fresh hook; the mechanic itself is timeless. Humor is owed this week.",
+      "origin": { "agent": "pulse", "lens": "arxiv-fresh" },
+      "fingerprint": {
+        "category": "humor-satire",
+        "mechanic": "game",
+        "tone": ["playful", "satirical", "competitive", "nerdy"],
+        "tech": ["dom-ui", "svg", "web-animations", "localstorage"],
+        "tags": ["pairwise-comparison", "bradley-terry", "swiss-tournament", "jokes", "leaderboard", "judge-bots", "kendall-tau", "comedy-club"],
+        "keywords": ["humor-ranking", "pairwise-voting", "tournament", "adaptive-pairing", "rank-stability", "one-liners", "taste-test"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "A 2026 arXiv preprint (HumorRank) ranks humor generation by running theory-informed pairwise preference judgments in a tournament and aggregating them with Bradley-Terry estimation, using adaptive Swiss pairing and checking rank stability with Kendall tau between independent judges. The page rebuilds only that ranking intuition with human votes on a small bundled set of original, invented one-liners; it reproduces none of the paper's results and shows no model scores. Bradley-Terry itself is standard, well-documented background (strength scores from pairwise wins, closely related to Elo, needs a connected comparison graph), so the in-browser fit (an iterative maximum-likelihood update) is honest and small. Paper-specific details come from one paper seen through arXiv and a mirror and stay marked unverified.",
+        "sources": [
+          {
+            "title": "HumorRank: A Tournament-Based Leaderboard for Evaluating Humor Generation in Large Language Models",
+            "url": "https://arxiv.org/pdf/2604.19786",
+            "date": "",
+            "snippet": "arXiv preprint by Ajayi and Mitra proposing a tournament framework that ranks humor generation from pairwise comparative judgments aggregated by Bradley-Terry.",
+            "via": "search",
+            "note": "Establishes the paper exists and its method family; WebFetch of arxiv.org failed, so only search text was seen.",
+            "verified": false
+          },
+          {
+            "title": "HumorRank (alphaxiv overview, version 2)",
+            "url": "https://www.alphaxiv.org/abs/2604.19786v2",
+            "date": "2026-06-01",
+            "snippet": "Mirror page for the same paper showing a v2 submission dated 1 Jun 2026 and the submitted-to-COLM-2026 note; describes pairwise judgments, Bradley-Terry aggregation and Swiss pairing.",
+            "via": "search",
+            "note": "Same paper as the arXiv copy, so not an independent confirmation.",
+            "verified": false
+          },
+          {
+            "title": "HumorGen DPO 7B (model card)",
+            "url": "https://huggingface.co/Jayi2424/HumorGen_DPO_7B",
+            "date": "",
+            "snippet": "Model card by a paper author that says its preference pairs come from HumorRank Bradley-Terry pairwise evaluations.",
+            "via": "search",
+            "note": "Same author group as the paper, so only weak corroboration that HumorRank uses Bradley-Terry pairwise evaluation.",
+            "verified": false
+          },
+          {
+            "title": "HumorGen: Cognitive Synergy for Humor Generation in Large Language Models via Persona-Based Distillation",
+            "url": "https://arxiv.org/pdf/2604.09629",
+            "date": "",
+            "snippet": "Related arXiv preprint arguing next-word prediction conflicts with the surprise comedy needs and proposing persona-based synthesis of comedic perspectives.",
+            "via": "search",
+            "note": "Context: humor generation and evaluation is an active 2026 research topic.",
+            "verified": false
+          },
+          {
+            "title": "Cards Against LLMs: Benchmarking Humor Alignment in Large Language Models",
+            "url": "https://arxiv.org/pdf/2604.08757",
+            "date": "",
+            "snippet": "Another 2026 arXiv preprint on benchmarking humor alignment; only the title and reference-list text were visible in the search result.",
+            "via": "search",
+            "note": "Context only; no findings from it are used.",
+            "verified": false
+          },
+          {
+            "title": "Bradley-Terry model (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Bradley%E2%80%93Terry_model",
+            "date": "",
+            "snippet": "Describes a probability model for pairwise comparison outcomes in which each item has a latent strength and win odds depend on the strength gap.",
+            "via": "search",
+            "note": "Background for the ranking math (not opened; WebFetch to this host failed earlier today).",
+            "verified": true
+          },
+          {
+            "title": "Recent advances in the Bradley-Terry Model: theory, algorithms, and applications",
+            "url": "https://arxiv.org/html/2601.14727v2",
+            "date": "",
+            "snippet": "Survey of the Bradley-Terry model and its fitting algorithms and applications, including use in model leaderboards.",
+            "via": "search",
+            "note": "Independent second source agreeing on what Bradley-Terry is and how it is fitted.",
+            "verified": true
+          },
+          {
+            "title": "bradley terry model (MetricGate docs)",
+            "url": "https://metricgate.com/docs/bradley-terry-model",
+            "date": "",
+            "snippet": "Documentation page noting the model needs a connected comparison graph and relates to Elo; a vendor page, so used only as a third voice.",
+            "via": "search",
+            "note": "Supports the connected-graph caveat that shapes pairing logic.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The Bradley-Terry model assigns each item a latent strength and predicts pairwise outcomes from the strength gap; equal strengths give a 50 percent chance each (as seen in search results on 2026-10-12).",
+            "sourceIndex": 5,
+            "alsoIn": [6],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per the arXiv listing 2604.19786 (HumorRank), humor generation is ranked from pairwise judgments aggregated with Bradley-Terry; this was seen only via arXiv and a mirror, so it is reported, not confirmed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "The alphaxiv mirror shows version 2 of the HumorRank paper submitted on 1 June 2026 and labelled as submitted to COLM 2026 (reported, unconfirmed).",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Bradley-Terry fitting needs a connected comparison graph, so disconnected groups of items cannot be ranked jointly (vendor documentation, one source).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["pairwise voting arenas for model leaderboards", "chess Elo ladders", "Swiss-system tournaments", "comedy club open-mic nights", "pottery kiln glaze tests"]
+      },
+      "design": {
+        "coreLoop": "Two invented one-liners appear on a velvet stage; the visitor picks the funnier. Each vote refits Bradley-Terry strengths and the next pairing is chosen where the ranking is least certain (adaptive Swiss-style), so the leaderboard visibly sharpens and sometimes flips. After a round of about 20 votes the visitor sees their ranking, a bootstrap confidence band per joke, a stability score (Kendall tau between the first and second half of their own votes) and agreement with each silly judge bot. The second minute rewards trying to break the bots; the tenth rewards chasing a stable, repeatable taste or sharing a deck of votes by URL.",
+        "sophisticationHooks": [
+          "Live Bradley-Terry fit by iterative maximum likelihood, with bootstrap confidence bands drawn per joke",
+          "Adaptive pairing that picks the most informative matchup while keeping the comparison graph connected",
+          "Five or six deterministic judge bots (pun counter, length snob, vowel enthusiast, alliteration fan) ranked against the visitor with Kendall tau",
+          "Vote history encoded in the URL hash so a verdict card can be shared and replayed"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: 24 to 30 original, clean, invented one-liners written by the team (no real people, brands or quotes), stage UI with velvet curtain and kiln-glaze result styling in CSS and SVG, BT solver, adaptive pairing, bootstrap bands, judge bots, hash state, about panel citing the preprint. Cut: any language model, any claim about model rankings, live fetching, accounts, audio.",
+        "risks": [
+          "The paper details (Bradley-Terry, adaptive Swiss pairing, COLM 2026 note) were seen via arXiv text and one mirror only; the page presents them as 'as of 2026-10-12, per arXiv 2604.19786' and reproduces no result from the paper.",
+          "Jokes must be original and inoffensive; a review pass strips anything targeting a person or group, and no jokes are copied from anywhere.",
+          "Humor is subjective, so the page frames bots as silly heuristics and never as measuring funniness or standing in for the paper's model judges.",
+          "The paper is from spring 2026, not this week; the hook is 'recent preprint' rather than breaking news."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "pulse-2",
+      "title": "Dead Rubber Detective",
+      "pitch": "The visitor is handed the last round of a four-team hockey group, two games played at once, and has to work out which of the two matters, to whom, and whether both teams would quietly settle for an overtime. An exact solver enumerates every result of the two games, sorts each match into stakeless, asymmetric, collusive or competitive, and shows the proof; then the visitor tweaks the standings or the points rule (NHL-style loser point versus the 3-2-1-0 scale used in international hockey) to create a scandal-proof final round, or to engineer the juiciest loophole.",
+      "whyNow": "The NHL 2026-27 season is a week and a half old and is the first 84-game schedule since 1993-94, so how points and playoff races work is in the conversation; the underlying 2026 match-classification preprints are fresh and one targets low-scoring sports like hockey.",
+      "origin": { "agent": "pulse", "lens": "arxiv-fresh" },
+      "fingerprint": {
+        "category": "hockey-sports",
+        "mechanic": "puzzle",
+        "tone": ["analytical", "playful", "nerdy", "competitive"],
+        "tech": ["dom-ui", "svg", "worker", "localstorage"],
+        "tags": ["hockey", "group-stage", "round-robin", "match-classification", "collusion", "overtime-point", "standings", "tournament-design"],
+        "keywords": ["stakeless-match", "collusive-match", "dead-rubber", "last-round", "points-system", "qualification", "scenario-enumeration"],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "Recent arXiv work (2026) classifies matches in the last round of a group by incentive: stakeless (neither prize depends on other results), asymmetric (one side's does not), collusive (both depend on other results yet one outcome secures both), competitive otherwise. One 2026 preprint targets low-scoring sports, which fits hockey, and another studies four-team round-robin last rounds, the exact toy format. The page implements the deterministic classification by brute-force enumeration of a hand-made fictional group, which is small enough to run instantly, and adds a clearly labelled hockey twist (overtime-point rules) that is the page's own extension, not a result from the papers. The NHL 84-game 2026-27 schedule is confirmed by multiple outlets and gives the current hook; the page bundles no real standings.",
+        "sources": [
+          {
+            "title": "Match classification in the last round of four-team round-robin tournaments",
+            "url": "https://arxiv.org/pdf/2605.25610",
+            "date": "",
+            "snippet": "arXiv preprint adopting a four-category scheme (stakeless, asymmetric, collusive, competitive) for last-round matches, assuming one prize: qualification.",
+            "via": "search",
+            "note": "Methodology text seen only in search results; results section not seen.",
+            "verified": false
+          },
+          {
+            "title": "A probabilistic match classification model for low-scoring sports",
+            "url": "https://arxiv.org/pdf/2601.09673",
+            "date": "",
+            "snippet": "arXiv preprint (v1 in January 2026) that simulates other matches to get qualification odds under a win, draw or loss and sorts matches into six categories, applied to UEFA's league phase.",
+            "via": "search",
+            "note": "Title shown in one search result; an earlier search blended author names, so authors are not cited.",
+            "verified": false
+          },
+          {
+            "title": "arXiv 2508.08290 (match classification for UEFA's new league format)",
+            "url": "https://arxiv.org/html/2508.08290v2",
+            "date": "",
+            "snippet": "Described in a search summary as the detailed classification of competitive, asymmetric, stakeless and collusive matches that later papers build on; the page text itself was not seen.",
+            "via": "search",
+            "note": "Title is inferred from a search summary, hence unverified.",
+            "verified": false
+          },
+          {
+            "title": "NHL releases expanded 84-game schedule for 2026-27 season",
+            "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+            "date": "",
+            "snippet": "ESPN headline reporting the league's release of an expanded 84-game schedule for the 2026-27 season.",
+            "via": "search",
+            "note": "Headline-level confirmation of the 84-game season.",
+            "verified": true
+          },
+          {
+            "title": "NHL Announces 2026-27 Regular-Season Schedule, Newly Expanded to 84 Games",
+            "url": "https://media.nhl.com/public/news/19975",
+            "date": "",
+            "snippet": "League media-site release headline stating the 2026-27 regular-season schedule is newly expanded to 84 games.",
+            "via": "search",
+            "note": "Primary source for the 84-game schedule, independent of ESPN.",
+            "verified": true
+          },
+          {
+            "title": "National Hockey League 2026-27 season: Key dates and answers to frequently asked questions",
+            "url": "https://olympics.com/en/news/national-hockey-league-2026-27-season-key-dates-and-answers-to-frequently-asked-questions",
+            "date": "",
+            "snippet": "Olympics.com explainer on the 2026-27 season key dates; used only as a third outlet covering the new schedule.",
+            "via": "search",
+            "note": "Dates in the blended search summary (opening 29 Sept, regular season ending 10 April) are not shown as fact.",
+            "verified": false
+          },
+          {
+            "title": "IIHF World Championship tournament info (2024)",
+            "url": "https://www.iihf.com/en/events/2024/wm/tournamentinfo/55238/tournament_info",
+            "date": "",
+            "snippet": "Official tournament info page; per the search summary it describes 3 points for a regulation win with an extra point for the overtime or shootout winner, so 2 and 1 for the OT winner and loser.",
+            "via": "search",
+            "note": "Same organization as the 2019 page, so no independent confirmation of the 3-2-1-0 scale.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The NHL released a regular-season schedule expanded to 84 games for 2026-27 (ESPN and the league's own media site both carry this in their headlines, seen 2026-10-12).",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per arXiv 2605.25610, last-round matches are sorted into stakeless, asymmetric, collusive and competitive classes under a single qualification prize (reported from search text, not confirmed).",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per arXiv 2601.09673, a probabilistic six-category match classification for low-scoring sports was posted in January 2026 and applied to UEFA's league phase (reported, unconfirmed).",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per IIHF tournament info pages, international hockey awards 3 points for a regulation win, 2 for an overtime or shootout win and 1 for an overtime or shootout loss (reported from one organization, unconfirmed).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["the magic-number tracker in a playoff race", "group-stage permutation calculators", "logic grid puzzles", "classic tales of group games where a draw suited both sides"]
+      },
+      "design": {
+        "coreLoop": "Pick a fictional four-team group and a points rule; the page enumerates all outcomes of the two simultaneous final games (regulation or overtime result either way) and labels each match, highlighting the exact outcomes that make both sides happy. Puzzle mode sets goals such as 'make both matches competitive', 'find the group where only an overtime suits both teams' or 'fix this schedule so no match is stakeless', graded by the solver. Repeat play comes from seeded daily groups, different rule sets and a par score for fewest edits, with the proof table as the satisfying reveal.",
+        "sophisticationHooks": [
+          "Exact scenario enumeration of 16 outcome combinations with qualification checks and tie handling shown explicitly",
+          "Rule-set switch between NHL-style loser point and 3-2-1-0 international scale that changes which matches turn collusive",
+          "Interactive standings editor with drag-to-adjust points and a live classification badge on each match",
+          "Puzzle mode with seeded daily groups, par scores and a shareable URL-hash state"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Build: fictional teams with drawn crests, standings editor, solver in a worker or plain function, match badges, proof table, rule switch, 12 to 15 hand-checked puzzles plus a seeded daily generator, hash state, about panel with dated sources. Cut: real standings, live NHL data, goal-difference tiebreak depth beyond a clearly stated simplification, bigger groups.",
+        "risks": [
+          "Tiebreakers (head-to-head, goal difference) are simplified; ties on points are shown as 'unresolved' and the about panel says so, so results are an illustration, not the papers' exact models.",
+          "The overtime-point twist is the page's own extension and is labelled as such; no claim is made that real teams have colluded or would.",
+          "Paper details are unverified (search text only) and the 3-2-1-0 scale comes from a single organization; the page states them as 'as of 2026-10-12, per <source>'.",
+          "The hook links the 84-game season to the puzzle loosely; the page does not claim NHL playoff races use round-robin groups and uses only fictional teams.",
+          "The 84-game schedule is verified by headlines only; dates from the blended summary (opening night, season end) are left off the page."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

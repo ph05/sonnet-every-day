@@ -1,3 +1,7 @@
+# Premortem 2026-10-12
+
+The critic's three ways today could go wrong, each with one cheap thing to do about it.
+
 - Ideate overran to about 110 minutes against a 75 minute budget on 2 agent slots yesterday, and today's untested batched-verify plan (ideate about 80, finish 09:05, grace 09:30) could repeat it. Scouts: write one candidate per dossier first, the second only if time remains.
 - Four kaizens (80ebbdb, 493f5f1, 77d6aed, 8fd8a73) edited ideate.js, quality.md and _selfcheck.mjs yesterday and have never met a full ideate run; a byte-level slip cost 540k tokens on 10-10. Engineer: run the selfcheck and playbook tests before ideate starts and log exit codes.
 - Layout S2 defects (output out of view of its controls at 390x844) shipped two days running because revise was skipped and browser-check asserts nothing about it. Builder: check the output and first control share a 390x844 viewport before qa; critic: attach a repro.

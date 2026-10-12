@@ -1,0 +1,177 @@
+{
+  "id": "pulse-1",
+  "title": "The Groan Cup",
+  "pitch": "A velvet-curtain comedy club where the visitor referees a knockout cup of invented one-liners, picking the funnier of two over and over. Behind the curtain the page fits a Bradley-Terry ranking after every vote, chooses the next pairing that teaches it the most, and then pits the visitor's leaderboard against a panel of silly rule-based judge bots (the pun counter, the length snob, the vowel enthusiast). The payoff is a shareable verdict card: how stable your taste is, which jokes were glazed in the kiln, and which judge bot thinks most like you.",
+  "whyNow": "A 2026 preprint on tournament-style humor ranking (pairwise judgments aggregated with Bradley-Terry, with adaptive Swiss pairing) is the fresh hook; the mechanic itself is timeless. Humor is owed this week.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "arxiv-fresh"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "playful",
+      "satirical",
+      "competitive",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage"
+    ],
+    "tags": [
+      "pairwise-comparison",
+      "bradley-terry",
+      "swiss-tournament",
+      "jokes",
+      "leaderboard",
+      "judge-bots",
+      "kendall-tau",
+      "comedy-club"
+    ],
+    "keywords": [
+      "humor-ranking",
+      "pairwise-voting",
+      "tournament",
+      "adaptive-pairing",
+      "rank-stability",
+      "one-liners",
+      "taste-test"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "A 2026 arXiv preprint (HumorRank) ranks humor generation by running theory-informed pairwise preference judgments in a tournament and aggregating them with Bradley-Terry estimation, using adaptive Swiss pairing and checking rank stability with Kendall tau between independent judges. The page rebuilds only that ranking intuition with human votes on a small bundled set of original, invented one-liners; it reproduces none of the paper's results and shows no model scores. Bradley-Terry itself is standard, well-documented background (strength scores from pairwise wins, closely related to Elo, needs a connected comparison graph), so the in-browser fit (an iterative maximum-likelihood update) is honest and small. Paper-specific details come from one paper seen through arXiv and a mirror and stay marked unverified.",
+    "sources": [
+      {
+        "title": "HumorRank: A Tournament-Based Leaderboard for Evaluating Humor Generation in Large Language Models",
+        "url": "https://arxiv.org/pdf/2604.19786",
+        "date": "",
+        "snippet": "arXiv preprint by Ajayi and Mitra proposing a tournament framework that ranks humor generation from pairwise comparative judgments aggregated by Bradley-Terry.",
+        "via": "search",
+        "note": "Establishes the paper exists and its method family; WebFetch of arxiv.org failed, so only search text was seen.",
+        "verified": false
+      },
+      {
+        "title": "HumorRank (alphaxiv overview, version 2)",
+        "url": "https://www.alphaxiv.org/abs/2604.19786v2",
+        "date": "2026-06-01",
+        "snippet": "Mirror page for the same paper showing a v2 submission dated 1 Jun 2026 and the submitted-to-COLM-2026 note; describes pairwise judgments, Bradley-Terry aggregation and Swiss pairing.",
+        "via": "search",
+        "note": "Same paper as the arXiv copy, so not an independent confirmation.",
+        "verified": false
+      },
+      {
+        "title": "HumorGen DPO 7B (model card)",
+        "url": "https://huggingface.co/Jayi2424/HumorGen_DPO_7B",
+        "date": "",
+        "snippet": "Model card by a paper author that says its preference pairs come from HumorRank Bradley-Terry pairwise evaluations.",
+        "via": "search",
+        "note": "Same author group as the paper, so only weak corroboration that HumorRank uses Bradley-Terry pairwise evaluation.",
+        "verified": false
+      },
+      {
+        "title": "HumorGen: Cognitive Synergy for Humor Generation in Large Language Models via Persona-Based Distillation",
+        "url": "https://arxiv.org/pdf/2604.09629",
+        "date": "",
+        "snippet": "Related arXiv preprint arguing next-word prediction conflicts with the surprise comedy needs and proposing persona-based synthesis of comedic perspectives.",
+        "via": "search",
+        "note": "Context: humor generation and evaluation is an active 2026 research topic.",
+        "verified": false
+      },
+      {
+        "title": "Cards Against LLMs: Benchmarking Humor Alignment in Large Language Models",
+        "url": "https://arxiv.org/pdf/2604.08757",
+        "date": "",
+        "snippet": "Another 2026 arXiv preprint on benchmarking humor alignment; only the title and reference-list text were visible in the search result.",
+        "via": "search",
+        "note": "Context only; no findings from it are used.",
+        "verified": false
+      },
+      {
+        "title": "Bradley-Terry model (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Bradley%E2%80%93Terry_model",
+        "date": "",
+        "snippet": "Describes a probability model for pairwise comparison outcomes in which each item has a latent strength and win odds depend on the strength gap.",
+        "via": "search",
+        "note": "Background for the ranking math (not opened; WebFetch to this host failed earlier today).",
+        "verified": true
+      },
+      {
+        "title": "Recent advances in the Bradley-Terry Model: theory, algorithms, and applications",
+        "url": "https://arxiv.org/html/2601.14727v2",
+        "date": "",
+        "snippet": "Survey of the Bradley-Terry model and its fitting algorithms and applications, including use in model leaderboards.",
+        "via": "search",
+        "note": "Independent second source agreeing on what Bradley-Terry is and how it is fitted.",
+        "verified": true
+      },
+      {
+        "title": "bradley terry model (MetricGate docs)",
+        "url": "https://metricgate.com/docs/bradley-terry-model",
+        "date": "",
+        "snippet": "Documentation page noting the model needs a connected comparison graph and relates to Elo; a vendor page, so used only as a third voice.",
+        "via": "search",
+        "note": "Supports the connected-graph caveat that shapes pairing logic.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The Bradley-Terry model assigns each item a latent strength and predicts pairwise outcomes from the strength gap; equal strengths give a 50 percent chance each (as seen in search results on 2026-10-12).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per the arXiv listing 2604.19786 (HumorRank), humor generation is ranked from pairwise judgments aggregated with Bradley-Terry; this was seen only via arXiv and a mirror, so it is reported, not confirmed.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The alphaxiv mirror shows version 2 of the HumorRank paper submitted on 1 June 2026 and labelled as submitted to COLM 2026 (reported, unconfirmed).",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Bradley-Terry fitting needs a connected comparison graph, so disconnected groups of items cannot be ranked jointly (vendor documentation, one source).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "pairwise voting arenas for model leaderboards",
+      "chess Elo ladders",
+      "Swiss-system tournaments",
+      "comedy club open-mic nights",
+      "pottery kiln glaze tests"
+    ]
+  },
+  "design": {
+    "coreLoop": "Two invented one-liners appear on a velvet stage; the visitor picks the funnier. Each vote refits Bradley-Terry strengths and the next pairing is chosen where the ranking is least certain (adaptive Swiss-style), so the leaderboard visibly sharpens and sometimes flips. After a round of about 20 votes the visitor sees their ranking, a bootstrap confidence band per joke, a stability score (Kendall tau between the first and second half of their own votes) and agreement with each silly judge bot. The second minute rewards trying to break the bots; the tenth rewards chasing a stable, repeatable taste or sharing a deck of votes by URL.",
+    "sophisticationHooks": [
+      "Live Bradley-Terry fit by iterative maximum likelihood, with bootstrap confidence bands drawn per joke",
+      "Adaptive pairing that picks the most informative matchup while keeping the comparison graph connected",
+      "Five or six deterministic judge bots (pun counter, length snob, vowel enthusiast, alliteration fan) ranked against the visitor with Kendall tau",
+      "Vote history encoded in the URL hash so a verdict card can be shared and replayed"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Build: 24 to 30 original, clean, invented one-liners written by the team (no real people, brands or quotes), stage UI with velvet curtain and kiln-glaze result styling in CSS and SVG, BT solver, adaptive pairing, bootstrap bands, judge bots, hash state, about panel citing the preprint. Cut: any language model, any claim about model rankings, live fetching, accounts, audio.",
+    "risks": [
+      "The paper details (Bradley-Terry, adaptive Swiss pairing, COLM 2026 note) were seen via arXiv text and one mirror only; the page presents them as 'as of 2026-10-12, per arXiv 2604.19786' and reproduces no result from the paper.",
+      "Jokes must be original and inoffensive; a review pass strips anything targeting a person or group, and no jokes are copied from anywhere.",
+      "Humor is subjective, so the page frames bots as silly heuristics and never as measuring funniness or standing in for the paper's model judges.",
+      "The paper is from spring 2026, not this week; the hook is 'recent preprint' rather than breaking news."
+    ]
+  },
+  "durable": true
+}

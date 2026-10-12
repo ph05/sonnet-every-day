@@ -1,0 +1,246 @@
+{
+  "id": "architect-2",
+  "title": "Memo Teleprinter",
+  "pitch": "Type or paste any office memo and a clattering fictional teleprinter turns it into a five-voice rhythm: each letter's 5-bit teleprinter code lights five tracks, and buzzwords from a bundled jargon bank trigger absurd stabs and fanfares. A Euclid dial re-spaces the notes as evenly as possible and the 'cc' list cascades the memo down through ever more bureaucratic echoes. Every memo has its own groove; export the link and send your boss a tune.",
+  "whyNow": "Timeless office-satire with a mechanic that is genuinely musical: five-bit character codes naturally map to five parallel gates, and Euclidean spacing turns gibberish into something that grooves.",
+  "origin": {
+    "agent": "architect",
+    "lens": "music-instrument"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "generator",
+    "tone": [
+      "satirical",
+      "absurd",
+      "playful"
+    ],
+    "tech": [
+      "webaudio",
+      "procedural-audio",
+      "dom-ui",
+      "canvas2d",
+      "localstorage"
+    ],
+    "tags": [
+      "teleprinter",
+      "baudot-code",
+      "euclidean-rhythm",
+      "office-satire",
+      "jargon",
+      "text-to-music",
+      "polyrhythm",
+      "step-sequencer"
+    ],
+    "keywords": [
+      "five-bit-code",
+      "memo",
+      "buzzwords",
+      "euclid",
+      "tresillo",
+      "sequencer",
+      "typewriter-sound"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Teleprinter codes of the telegraph era use five bits per character (32 codes), with two shift codes switching between letters and figures; ITA2 is the standardised form, often called Baudot or Baudot-Murray. That gives a ready-made mapping from text to five parallel on/off tracks. Euclidean rhythms E(k,n), described by Toussaint in 2005, spread k onsets over n pulses as evenly as possible and reproduce dozens of traditional timelines, for example E(3,8), known as the tresillo; the construction mirrors Euclid's greatest-common-divisor method and Bjorklund's algorithm. Combining the two lets typed text drive rhythm and then be re-spaced by a Euclid control. The origin story of Bjorklund's algorithm (neutron-accelerator timing) rests on one secondary result and is left out of the page or shown as reported, unconfirmed. The humour comes from invented, harmless office jargon and a mock-solemn teleprinter persona; no real company, person or brand is used.",
+    "sources": [
+      {
+        "title": "Baudot code (encyclopedia)",
+        "url": "https://en.wikipedia.org/wiki/Baudot_code",
+        "date": "",
+        "snippet": "Search result lists it first for ITA2 five-bit shift code query.",
+        "via": "search",
+        "note": "Five-bit code with letters/figures shift; found again by claim search alongside two other independent pages. Host could not be opened by WebFetch (failed earlier today).",
+        "verified": true
+      },
+      {
+        "title": "Baudot ITA2 Guide",
+        "url": "https://prc68.com/I/pdf/Baudot_ITA2_Guide.pdf",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Technical reference for the ITA2 5-bit table; found again in a claim search.",
+        "verified": true
+      },
+      {
+        "title": "ITA2 (Crypto Museum)",
+        "url": "https://cryptomuseum.com/ref/ita2",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent museum reference for ITA2; appeared in the claim search and agrees on five bits and shift codes.",
+        "verified": true
+      },
+      {
+        "title": "Teletype (TTY-) Code",
+        "url": "https://gheinz.de/techdocs/telexcode_5bit.htm",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent table of the 5-bit teletype code with 11111 letters-shift and 11011 figures-shift as summarised in results; bit-order caveat: tables disagree on MSB/LSB first.",
+        "verified": true
+      },
+      {
+        "title": "The Distance Geometry of Music (arXiv)",
+        "url": "https://arxiv.org/pdf/0705.4085",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Toussaint paper on Euclidean rhythms; found again in the claim search. Host arxiv.org not fetched (failed earlier today).",
+        "verified": true
+      },
+      {
+        "title": "Toussaint publication PDF (cgm.cs.mcgill.ca)",
+        "url": "https://cgm.cs.mcgill.ca/~godfried/publications/banff.pdf",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Primary paper on the Euclidean algorithm generating traditional rhythms; returned by two searches with the tresillo and E(5,13) text. WebFetch on this host failed at DNS level.",
+        "verified": true
+      },
+      {
+        "title": "Euclidean rhythm (encyclopedia)",
+        "url": "https://en.wikipedia.org/wiki/Euclidean_rhythm",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Reference article returned for the E(3,8) tresillo query; not opened.",
+        "verified": true
+      },
+      {
+        "title": "Crate euclidean_rhythm (docs.rs)",
+        "url": "https://docs.rs/euclidean-rhythm",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Implementation reference; found again. It labels E(5,8) as a West African bell pattern whereas most sources call it the cinquillo, so the page shows only E(5,8).",
+        "verified": true
+      },
+      {
+        "title": "Demaine et al., Euclidean rhythm family (Monash copy)",
+        "url": "https://users.monash.edu/~davidwo/papers/Demaine-etal-Rhythm-CGTA.pdf",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Reports that Euclidean rhythms cover over forty traditional world-music timelines; same paper also listed on MIT DSpace.",
+        "verified": true
+      },
+      {
+        "title": "Demaine et al. record (MIT DSpace)",
+        "url": "https://dspace.mit.edu/handle/1721.1/96166",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Second host for the same research line on evenly spaced onsets.",
+        "verified": true
+      },
+      {
+        "title": "University of Alberta thesis citing Toussaint 2005",
+        "url": "https://era.library.ualberta.ca/items/649b28ae-9192-4751-9a18-997909a0d3f4/download/948401e9-7437-4ab0-b995-d029c6173007",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Single result stating Bjorklund produced neutron-accelerator timing sequences; no second result agreed, so unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Teleprinter codes of the Baudot family use five bits per character, giving 32 codes, with two shift codes switching between letters and figures so the same pattern means different characters in each shift.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2,
+          3
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "ITA2 is also called Baudot-Murray; one source calls plain 'Baudot code' a misnomer for it. It was standardised in the 1930s and later superseded by 7-bit ASCII (first published 1963); published bit tables disagree on whether the first bit is most or least significant.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          0,
+          3
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Euclidean rhythms E(k,n) place k onsets over n pulses as evenly as possible; Toussaint (2005) showed the construction matches Euclid's algorithm.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          4,
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "E(3,8), written x..x..x., is known as the tresillo in Cuba and the habanera rhythm in the USA.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The Euclidean construction yields a family covering over forty traditional world-music timelines (Demaine et al.).",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Sources label E(5,8) differently (cinquillo in most, a West African bell pattern in one Rust library), so the page shows the notation only.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Reported by one secondary source only: Bjorklund devised his algorithm for neutron-accelerator timing; shown as 'as of 2026-10-12, per a University of Alberta thesis, unconfirmed' or omitted.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "step sequencers with Euclidean generators",
+      "mechanical teleprinter clatter",
+      "ticker-tape and punched tape aesthetics",
+      "corporate memo parody",
+      "text-to-music sonification toys"
+    ]
+  },
+  "design": {
+    "coreLoop": "Write or paste a memo, press send, and watch the teleprinter print it character by character while five tracks fire from each letter's 5-bit code. Jargon words from a bundled bank trigger special stabs, and the Euclid dial and cc cascade reshape the same memo into new grooves. Trying different memos, subject lines and dial settings keeps revealing new rhythms and new jokes, and each result has a shareable link.",
+    "sophisticationHooks": [
+      "Exact 5-bit letter and figure table with shift codes, so the figures-shift in a memo audibly changes the pattern",
+      "Euclidean re-spacing of each track from the memo's own letter counts, with seeded variation so the same memo always plays the same tune",
+      "Procedural WebAudio voices (clattering type bars, bell, carriage return, stabs) with no samples, plus a printed-paper canvas view that scrolls in sync",
+      "Bundled fictional jargon bank with invented company names, mapped to fanfares; URL hash stores memo text, dial and seed"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: 5-bit ITA2 table with letter/figure shifts (MSB-first order stated on the page), text-to-pattern engine, five procedural voices (type bar, bell, carriage return, two stabs), look-ahead scheduler with swing, simple canvas paper strip, textarea with 3 fictional sample memos, Euclid dial, cc cascade as delayed echoes of the same pattern, share-hash for text/dial/seed, about panel, audio starts only after a tap. Cut: recording/export, multiple languages, user jargon banks, scrolling paper physics.",
+    "risks": [
+      "Humour needs good invented copy; a writer-owned jargon bank and fictional-only sample memos carry it.",
+      "All sender names and firms are invented and labelled as parody; no real company, person or brand appears.",
+      "The Bjorklund neutron-accelerator origin has one source only; the about panel omits it or shows it as 'as of 2026-10-12, per a University of Alberta thesis, unconfirmed'.",
+      "Published ITA2 tables disagree on bit order; the build picks one order, states it, and tests a few letters against two references.",
+      "Audio needs a user gesture and a mute control; first view shows a visible Print button, not sound-on.",
+      "The 'Baudot' name is technically a misnomer for ITA2; page copy says 'ITA2 (often called Baudot)'."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Baudot/ITA2 facts agree across encyclopedia, museum and table pages, and the Euclidean-rhythm facts agree across the Toussaint paper and independent explainers; WebFetch on the paper host failed. The neutron-accelerator origin has one source and is flagged unverified; the build is code-only and fits one morning."
+  }
+}

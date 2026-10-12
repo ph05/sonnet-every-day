@@ -1,0 +1,172 @@
+{
+  "id": "cards-2",
+  "title": "Synergy Overflow",
+  "pitch": "You are the founder of an invented company pitching buzzword cards to a very gullible board: some add headcount, some add hype, some multiply it by synergy, and a few raise it to a power called disruption. Targets grow like an idle game's cost curve, order matters, and by quarter twenty the numbers have names nobody learned, until the page finally overflows into a deliberate, theatrical NaN-e-Inf board meeting. The joke is the deadpan corporate voice, the payoff is watching the maths run out of numbers.",
+  "whyNow": "Timeless satire of numbers-go-up design and corporate buzzword inflation; it also fills the owed humor slot with a real mechanic rather than a one-liner.",
+  "origin": {
+    "agent": "cards",
+    "lens": "balatro-score-math"
+  },
+  "fingerprint": {
+    "category": "humor-satire",
+    "mechanic": "game",
+    "tone": [
+      "satirical",
+      "absurd",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "web-animations",
+      "localstorage"
+    ],
+    "tags": [
+      "corporate-satire",
+      "big-numbers",
+      "exponent-stacking",
+      "overflow-joke",
+      "buzzword-cards",
+      "log-space-math",
+      "numbers-go-up",
+      "roguelike-run"
+    ],
+    "keywords": [
+      "synergy",
+      "quarterly-target",
+      "scientific-notation",
+      "named-numbers",
+      "infinity",
+      "idle-game-math",
+      "board-meeting",
+      "disruption"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "research": {
+    "summary": "Incremental and idle games rest on a simple recipe: costs rise exponentially (a growth factor of 1.15 per purchase is the convention popularised by one famous clicker, per an analysis paper and a developer write-up) while income rises more slowly, so designers tune payback time and reset with prestige. The deckbuilder community has a famous joke ending: scores that exceed double precision display as a garbled overflow word, with an endless-mode wall and mods that push the cap far higher. That pairing, exponential targets plus an overflow punchline, is a real mechanic with a built-in comedic ending. The satire targets generic corporate speak with an invented company; no real firms or people.",
+    "sources": [
+      {
+        "title": "Cookie Clicker (arXiv analysis)",
+        "url": "https://arxiv.org/pdf/1808.07540",
+        "date": "",
+        "snippet": "Paper analysing the clicker game states that its cost growth factor alpha is 1.15 per purchase.",
+        "via": "search",
+        "note": "Source for the 1.15 convention; agrees with the dev.to walkthrough.",
+        "verified": true
+      },
+      {
+        "title": "An idle clicker has no engine and no sprites (DEV Community)",
+        "url": "https://dev.to/dev48v/an-idle-clicker-has-no-engine-and-no-sprites-its-one-raf-loop-paying-you-production-x-k03",
+        "date": "",
+        "snippet": "Walkthrough using price = base cost times 1.15 to the n and payback time as cost divided by extra income per second.",
+        "via": "search",
+        "note": "Independent second source for 1.15 and the payback-time tuning metric.",
+        "verified": true
+      },
+      {
+        "title": "The math of idle games, part I (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/the-math-of-idle-games-part-i",
+        "date": "",
+        "snippet": "Design article on the maths of idle games, returned for the cost-curve query; cost grows exponentially while production grows linearly or polynomially.",
+        "via": "search",
+        "note": "Background on exponential costs versus slower income; summary was blended.",
+        "verified": false
+      },
+      {
+        "title": "GameAnalytics idle game design article",
+        "url": "https://gameanalytics.com/?p=6634",
+        "date": "",
+        "snippet": "Explains that exponential costs eventually outpace income and prestige resets let players push further along the cost curve.",
+        "via": "search",
+        "note": "Prestige-reset framing, which becomes the 'restructure the company' mechanic.",
+        "verified": false
+      },
+      {
+        "title": "SGDQ 2026: Stressful Balatro naneinf Run On Stage",
+        "url": "https://setsideb.com/?p=12635",
+        "date": "2026",
+        "snippet": "Write-up of a live speedrun event run that reached the naneinf overflow state in a bit over an hour, naming the word as NaN plus e plus Inf.",
+        "via": "search",
+        "note": "The overflow joke is real and celebrated in the community.",
+        "verified": true
+      },
+      {
+        "title": "Steam discussion on naneinf",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4338734550482070397",
+        "date": "",
+        "snippet": "Community thread estimating that the overflow happens near the double-precision limit of roughly 10 to the 308.",
+        "via": "search",
+        "note": "Independent site agreeing that a naneinf overflow state exists.",
+        "verified": true
+      },
+      {
+        "title": "Talisman mod description",
+        "url": "https://smallgit.dasguney.com/skyline/balatro-mod-index/src/branch/main/mods/MathIsFun0@Talisman/description.md",
+        "date": "",
+        "snippet": "Mod description saying it raises the score cap to roughly 10 to the 1000 so runs can go past the overflow point.",
+        "via": "search",
+        "note": "Third site mentioning the cap and that mods extend it.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A cost growth factor of 1.15 per purchase is a common idle-game convention, cited for one famous clicker (as of 2026-10-12).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In the inspiration game, scores beyond the floating-point limit show as an overflow state nicknamed naneinf, discussed by an event write-up, a forum thread and a mod description (as of 2026-10-12).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5,
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The double-precision limit is about 1.8 times 10 to the 308; one forum estimate puts the overflow near that figure. The page will compute this itself in the browser and label the forum figure as reported.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A 2026 live event write-up reports a player reaching the overflow state in a run of about 1 hour 16 minutes (reported by one source, unverified).",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "incremental and idle games",
+      "prestige resets",
+      "scientific-notation named-number lists",
+      "corporate buzzword bingo",
+      "the overflow joke ending of deckbuilder endless modes"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each quarter the board sets a target; you draw five buzzword cards, play up to four in an order you choose, and the score tree runs in front of you with a deadpan commentary line per card. Beat the target to get a perk card for the deck or restructure (prestige) to reset with a permanent multiplier. It stays interesting because order, exponent cards and a rising deck-thinning decision make each draw a small optimisation, and because the ending is a joke worth reaching.",
+    "sophisticationHooks": [
+      "Log-space big-number type (mantissa plus exponent) with named-number formatting beyond the 15-digit double limit",
+      "Target curve built from a tunable growth factor and payback-time check so a run lasts about 25 quarters",
+      "Optional chief-of-staff hint that brute-forces card orders and shows the best order score without revealing the card choice",
+      "Scripted overflow finale: the display glitches into NaN-e-Inf, the board applauds, and the run ends with a shareable certificate"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: card pool of about 30 invented buzzword cards, run loop with seeded draws, big-number class with tests, commentary lines, overflow finale, share string, about panel, light and dark, reduced motion. Cut: sound, meta-progression beyond one prestige layer, more than one company.",
+    "risks": [
+      "Humor must land: commentary lines need a writing pass and generic invented company names only, no real firms, brands or people",
+      "Looks like an idle toy; mitigate with decisions every turn and a defined ending",
+      "Overlap with the carried-over Breaking Changes humor idea is thematic only (corporate voice), so the mechanic and subject are different",
+      "Floating-point claims: the page states the double limit as computed in-browser and labels forum figures as reported",
+      "Event write-up detail (run time) is from one result and stays unverified"
+    ]
+  },
+  "durable": true
+}

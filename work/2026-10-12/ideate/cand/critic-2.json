@@ -1,0 +1,156 @@
+{
+  "id": "critic-2",
+  "title": "The Nickname Oracle",
+  "pitch": "A pompous hockey prediction machine picks a winner for any two of the 32 league nicknames using one absurd theory: the nicknames form a hidden ecology (predators beat prey, weather beats machinery, myths beat everything but have a weakness). The visitor tries to call its pick before it announces it, learns the hidden type chart through its smug explanations, then runs a full machine-made 32-team season table and screenshots the result.",
+  "whyNow": "The new league season is under way (as of 2026-10-12, per NHL.com, unconfirmed), which is when fans want to argue forecasts; the page stays playable for the whole season and beyond.",
+  "origin": {
+    "agent": "critic",
+    "lens": "confident-machine"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "competitive",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "nicknames",
+      "type-chart",
+      "predictions",
+      "overconfidence",
+      "fandom",
+      "ecology",
+      "season-table"
+    ],
+    "keywords": [
+      "confidently-wrong",
+      "predict-the-machine",
+      "hidden-rules",
+      "team-nicknames",
+      "pundit-parody",
+      "food-chain",
+      "standings",
+      "streak"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Team nicknames in the league come from very mixed origins (animals, mythology, weather and terrain, trades, local history), and several outlets publish origin-story roundups, which is the raw material for a nickname-only theory with no real results, players or odds involved. The league season runs on a long schedule that started in late September 2026 (reported, unconfirmed), so a fan toy about forecasting is topical. The machine's tone parodies automated, overconfident punditry in general; its internal logic (a nickname type chart, tie-breakers on word shape, a fixed overconfidence law) is what makes it learnable. Shared idea with the confident-machine genre: certainty that is consistent, not random.",
+    "sources": [
+      {
+        "title": "nhl team nickname origins explained",
+        "url": "https://www.nhl.com/news/nhl-team-nickname-origins-explained-283976168",
+        "date": "",
+        "snippet": "League news page in search results covering how team nicknames originated.",
+        "via": "search",
+        "note": "Nicknames have documented, varied origins.",
+        "verified": true
+      },
+      {
+        "title": "How NHL Teams Got Their Names (Western Edition)",
+        "url": "https://blog.distributel.ca/general-category/how-nhl-teams-got-their-names-western-edition/",
+        "date": "",
+        "snippet": "Blog post surveying how western-conference teams were named.",
+        "via": "search",
+        "note": "Independent site covering nickname origins.",
+        "verified": true
+      },
+      {
+        "title": "Sports. Honestly. Since 2011 (origins of NHL nicknames, Western Conference)",
+        "url": "https://lastwordonsports.com/2013/04/15/peculiar-side-of-spots-origins-of-nhl-nicknames-western-conference/",
+        "date": "2013-04-15",
+        "snippet": "Sports blog article on the peculiar origins of Western Conference nicknames.",
+        "via": "search",
+        "note": "Third independent site on nickname origins; old article, background only.",
+        "verified": true
+      },
+      {
+        "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+        "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+        "date": "",
+        "snippet": "League article headline saying the 2026-27 season starts on September 29 with two named opening games.",
+        "via": "search",
+        "note": "Season-start claim from one official source only.",
+        "verified": false
+      },
+      {
+        "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94",
+        "url": "https://wtop.com/sports/2026/07/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/",
+        "date": "",
+        "snippet": "Wire-service headline stating the 2026-27 schedule has 84 games per team, the first such schedule since 1993-94.",
+        "via": "search",
+        "note": "84-game claim; wire copies on several sites count as one source.",
+        "verified": false
+      },
+      {
+        "title": "NHL announces 2026-27 regular-season schedule",
+        "url": "https://www.nhl.com/news/nhl-announces-2026-27-regular-season-schedule",
+        "date": "",
+        "snippet": "League release on the 2026-27 schedule; the search summary credited it with 1,344 games and an April 10 finish.",
+        "via": "search",
+        "note": "Official source for the schedule claim; summary was blended so unconfirmed.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "League team nicknames come from varied, documented origin stories (animals, mythology, local history), per three separate sites seen in search on 2026-10-12.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The 2026-27 regular season was reported to start on Sept. 29, 2026; as of 2026-10-12, per NHL.com (single source, unconfirmed).",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The 2026-27 schedule was reported as 84 games per team; as of 2026-10-12, per a wire-service story and NHL.com (blended summary, unconfirmed).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "elemental type charts in monster-collecting games",
+      "pundit panels with confident hot takes",
+      "mascot-versus-mascot playground arguments",
+      "bracket-prediction rituals",
+      "rock-paper-scissors extended"
+    ]
+  },
+  "design": {
+    "coreLoop": "The page shows two nicknames. The visitor picks who the Oracle will back and how sure it will sound, then the Oracle announces its pick with a grandly wrong explanation citing its theory (type advantage, word-shape tie-breakers, and a fixed overconfidence law). A streak counter and a discovery log fill in the hidden type chart as the visitor makes correct calls. Mastery unlocks the season mode, where the visitor predicts the Oracle's whole 32-team table, scored by distance, and a share link encodes the visitor's chart guesses.",
+    "sophisticationHooks": [
+      "Hidden type chart over about 8 nickname classes plus three deterministic tie-breakers (vowel count, word length, alphabetical order) that the visitor can discover",
+      "Explanation generator that assembles bureaucratic pundit sentences from the rules that fired, so each verdict teaches something",
+      "Season mode: round-robin table computed by the same rules, with predict-the-table scoring and a shareable URL hash",
+      "Discovery log and a 'break the Oracle' challenge that asks for a matchup where its confidence drops below its usual level (only one rule does this)"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: 32-nickname table with class assignments hand-made by us, rule engine, explanation generator, predict-the-pick game with streaks, discovery log, season table mode, share hash, light and dark, keyboard and touch, about panel with a clear 'nonsense, not a forecast, not betting advice' label. Cut: real schedules or results, standings feeds, player names, logos, any odds display, audio.",
+    "risks": [
+      "Season-start and 84-game claims are unconfirmed; the page should avoid depending on them or show them as 'as of 2026-10-12, per NHL.com'.",
+      "The roster of 32 nicknames must be checked against the current league before build (a recent franchise rename is possible and not verified here); keep the list in one data file.",
+      "Must be unmistakably a joke with no betting or odds framing: no real results, no player names, no logos, plain-text nicknames only, an unofficial-fan-parody label.",
+      "Competes with other hockey puzzles in the pool; the differentiator is a learnable fictional theory, not stats."
+    ]
+  },
+  "durable": true
+}

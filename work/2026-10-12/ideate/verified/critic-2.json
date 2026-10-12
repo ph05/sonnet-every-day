@@ -1,0 +1,209 @@
+{
+  "id": "critic-2",
+  "title": "The Nickname Oracle",
+  "pitch": "A pompous hockey prediction machine picks a winner for any two of the 32 league nicknames using one absurd theory: the nicknames form a hidden ecology (predators beat prey, weather beats machinery, myths beat everything but have a weakness). The visitor tries to call its pick before it announces it, learns the hidden type chart through its smug explanations, then runs a full machine-made 32-team season table and screenshots the result.",
+  "whyNow": "The new league season is under way (84 games per team, opened Sept. 29, 2026, as of 2026-10-12 per ESPN and AP), which is when fans argue about forecasts; the page stays playable for the whole season and beyond.",
+  "origin": {
+    "agent": "critic",
+    "lens": "confident-machine"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "absurd",
+      "competitive",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "nicknames",
+      "type-chart",
+      "predictions",
+      "overconfidence",
+      "fandom",
+      "ecology",
+      "season-table"
+    ],
+    "keywords": [
+      "confidently-wrong",
+      "predict-the-machine",
+      "hidden-rules",
+      "team-nicknames",
+      "pundit-parody",
+      "food-chain",
+      "standings",
+      "streak"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Team nicknames in the league come from mixed origins (animals, mythology, weather and terrain, local history, slang, naming contests), and several outlets publish origin roundups, which is the raw material for a nickname-only theory with no real results, players or odds involved. The league has 32 clubs in 2026-27, including the Utah club now called the Mammoth (reported, unconfirmed), plays an 84-game schedule that opened Sept. 29, 2026 (per ESPN and AP), so a fan toy about forecasting is topical, but the page does not depend on any of that. The machine's tone parodies overconfident automated punditry; its internal logic (a nickname type chart, tie-breakers on word shape, a fixed overconfidence law) is what makes it learnable.",
+    "sources": [
+      {
+        "title": "nhl team nickname origins explained",
+        "url": "https://www.nhl.com/news/nhl-team-nickname-origins-explained-283976168",
+        "date": "",
+        "snippet": "League news page in search results covering how team nicknames originated.",
+        "via": "search",
+        "note": "Nicknames have documented, varied origins; page re-found in two of my searches",
+        "verified": true
+      },
+      {
+        "title": "How NHL Teams Got Their Names (Western Edition)",
+        "url": "https://blog.distributel.ca/general-category/how-nhl-teams-got-their-names-western-edition/",
+        "date": "",
+        "snippet": "Blog post surveying how western-conference teams were named.",
+        "via": "search",
+        "note": "Independent site on nickname origins; re-found (it also notes Canuck is a slang term of uncertain origin)",
+        "verified": true
+      },
+      {
+        "title": "Sports. Honestly. Since 2011 (origins of NHL nicknames, Western Conference)",
+        "url": "https://lastwordonsports.com/2013/04/15/peculiar-side-of-spots-origins-of-nhl-nicknames-western-conference/",
+        "date": "2013-04-15",
+        "snippet": "Sports blog article on the peculiar origins of Western Conference nicknames.",
+        "via": "search",
+        "note": "Not found again in my searches; background only and replaced by the Mental Floss entry for the origins fact",
+        "verified": false
+      },
+      {
+        "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+        "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+        "date": "",
+        "snippet": "League article headline saying the 2026-27 season starts on September 29 with two named opening games.",
+        "via": "search",
+        "note": "Single league page; not found again, so the Sept. 29 start is supported instead by the ESPN and AP entries below",
+        "verified": false
+      },
+      {
+        "title": "NHL unveils its 2026-27 schedule, the first with 84 games apiece since '93-94",
+        "url": "https://wtop.com/sports/2026/07/nhl-unveils-its-2026-27-schedule-the-first-with-84-games-apiece-since-93-94/",
+        "date": "",
+        "snippet": "Wire-service headline stating the 2026-27 schedule has 84 games per team, the first such schedule since 1993-94.",
+        "via": "search",
+        "note": "AP wire story (many sites carry it, counted once): 84 games per team, first since 1993-94; re-found",
+        "verified": true
+      },
+      {
+        "title": "NHL announces 2026-27 regular-season schedule",
+        "url": "https://www.nhl.com/news/nhl-announces-2026-27-regular-season-schedule",
+        "date": "",
+        "snippet": "League release on the 2026-27 schedule; the search summary credited it with 1,344 games and an April 10 finish.",
+        "via": "search",
+        "note": "League release; not found again in my searches, unverified; the schedule claim rests on ESPN and AP",
+        "verified": false
+      },
+      {
+        "title": "The Origins of All 30 NHL Team Names (Mental Floss)",
+        "url": "https://mentalfloss.com/article/63479/origins-all-30-nhl-team-names",
+        "date": "",
+        "snippet": "Magazine roundup of how NHL clubs got their nicknames (it predates the newest clubs).",
+        "via": "search",
+        "note": "Third independent site on nickname origins; seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "NHL releases expanded 84-game schedule for 2026-27 season (ESPN)",
+        "url": "https://www.espn.com/nhl/story/_/id/49376073/nhl-releases-expanded-84-game-schedule-2026-27-season",
+        "date": "",
+        "snippet": "ESPN report: 84 games per team, 1,344 in total, opening Sept. 29 and finishing April 10.",
+        "via": "search",
+        "note": "Independent of the AP copies; seen in a result, page not opened",
+        "verified": true
+      },
+      {
+        "title": "Utah Mammoth release expanded 2026-27 schedule, open season at home against Chicago (Townlift)",
+        "url": "https://townlift.com/2026/07/utah-mammoth-release-expanded-2026-27-schedule-open-season-at-home-against-chicago/",
+        "date": "2026-07",
+        "snippet": "Local report that the Utah Mammoth play the expanded 84-game 2026-27 schedule.",
+        "via": "search",
+        "note": "Shows the Utah club carries the Mammoth nickname for 2026-27; seen in a result, page not opened; single result so unverified",
+        "verified": false
+      },
+      {
+        "title": "NHL Teams In Alphabetical Order By City (Rotoballer)",
+        "url": "https://www.rotoballer.com/?p=1896382",
+        "date": "",
+        "snippet": "List of all 32 clubs by city, including Utah, as of the 2026-27 season.",
+        "via": "search",
+        "note": "Second result agreeing on a 32-club league with Utah; the page title was garbled in the result",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "League team nicknames come from varied, documented origin stories (animals, slang, naming contests, arena nicknames), per several independent sites seen in search on 2026-10-12.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The 2026-27 NHL schedule is 84 games per team (1,344 in total), the first since 1993-94, per ESPN and the AP wire story.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The 2026-27 regular season opened Sept. 29, 2026 (Carolina hosting Florida) and runs to April 10, 2027; as of 2026-10-12, per ESPN and AP.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The league has 32 clubs in 2026-27 and the Utah club plays as the Mammoth; as of 2026-10-12, reported by Townlift and by a city-by-city club list seen in search (the list's page title was garbled), so treated as reported, not confirmed.",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "elemental type charts in monster-collecting games",
+      "pundit panels with confident hot takes",
+      "mascot-versus-mascot playground arguments",
+      "bracket-prediction rituals",
+      "rock-paper-scissors extended"
+    ]
+  },
+  "design": {
+    "coreLoop": "The page shows two nicknames. The visitor picks who the Oracle will back and how sure it will sound, then the Oracle announces its pick with a grandly wrong explanation citing its theory (type advantage, word-shape tie-breakers, and a fixed overconfidence law). A streak counter and a discovery log fill in the hidden type chart as the visitor makes correct calls. Mastery unlocks the season mode, where the visitor predicts the Oracle's whole 32-team table, scored by distance, and a share link encodes the visitor's chart guesses.",
+    "sophisticationHooks": [
+      "Hidden type chart over about 8 nickname classes plus three deterministic tie-breakers (vowel count, word length, alphabetical order) that the visitor can discover",
+      "Explanation generator that assembles bureaucratic pundit sentences from the rules that fired, so each verdict teaches something",
+      "Season mode: round-robin table computed by the same rules, with predict-the-table scoring and a shareable URL hash",
+      "Discovery log and a 'break the Oracle' challenge that asks for a matchup where its confidence drops below its usual level (only one rule does this)"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: 32-nickname table (one data file) with class assignments hand-made by us, rule engine, explanation generator, predict-the-pick game with streaks, discovery log, season table mode with a shareable URL hash, light and dark, keyboard and touch, an about panel labelled 'nonsense, not a forecast, not betting advice'. Shrink if time runs short: 6 nickname classes and 2 tie-breakers at launch, with season mode as the stretch. Cut: real schedules or results, standings feeds, player names, logos, any odds display, audio.",
+    "risks": [
+      "The 32 nicknames are the current list including Utah Mammoth (reported by a local outlet and a club list, one source each); keep them in one data file so a rename is a one-line change",
+      "Must be unmistakably a joke with no betting or odds framing: no real results, no player names, no logos, plain-text nicknames only, an unofficial-fan-parody label",
+      "Core loop depth: a hidden rule set must be learnable within a few rounds or the guessing feels random; the discovery log and a rule-fired explanation on every verdict carry that",
+      "Season-start and 84-game facts are context only; if shown, the page words them as 'as of 2026-10-12, per ESPN and AP'",
+      "Competes with other hockey puzzles in the pool; the differentiator is a learnable fictional theory, not stats"
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Nickname-origin variety, the 84-game schedule, Sept. 29 opening were each found again in independent results, while the 32-club list with the Utah Mammoth stays reported; the nhl.com and 2013-blog sources were not found again and are marked unverified. Pure fiction with bundled data is easily buildable; the risk is a hidden rule set that feels learnable rather than arbitrary."
+  }
+}

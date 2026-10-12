@@ -1,0 +1,118 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "note": "WebFetch is attempted at most once per host per day; hosts under failedHosts are skipped by every later agent. Use WebSearch results for them.",
+  "failedHosts": [
+    {
+      "host": "en.wikipedia.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND en.wikipedia.org"
+    },
+    {
+      "host": "www.reddit.com",
+      "by": "probe",
+      "error": "Claude Code is unable to fetch from www.reddit.com"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND news.ycombinator.com"
+    },
+    {
+      "host": "math.co",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND math.co"
+    },
+    {
+      "host": "nhl.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND nhl.com"
+    },
+    {
+      "host": "hockey-reference.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND hockey-reference.com"
+    },
+    {
+      "host": "arxiv.org",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND arxiv.org"
+    },
+    {
+      "host": "progameguides.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND progameguides.com"
+    },
+    {
+      "host": "setsideb.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND setsideb.com"
+    },
+    {
+      "host": "code.tutsplus.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND code.tutsplus.com"
+    },
+    {
+      "host": "phrases.org.uk",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND phrases.org.uk"
+    },
+    {
+      "host": "www.britannica.com",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND www.britannica.com"
+    },
+    {
+      "host": "scoutingtherefs.com",
+      "by": "engineer",
+      "error": "getaddrinfo ENOTFOUND scoutingtherefs.com"
+    },
+    {
+      "host": "thehockeywriters.com",
+      "by": "engineer",
+      "error": "getaddrinfo ENOTFOUND thehockeywriters.com"
+    },
+    {
+      "host": "itch.io",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND itch.io"
+    },
+    {
+      "host": "ccrma.stanford.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND ccrma.stanford.edu"
+    },
+    {
+      "host": "en.xen.wiki",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND en.xen.wiki"
+    },
+    {
+      "host": "justintonation.fiu.edu",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND justintonation.fiu.edu"
+    },
+    {
+      "host": "cgm.cs.mcgill.ca",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND cgm.cs.mcgill.ca"
+    },
+    {
+      "host": "www.espn.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.espn.com"
+    },
+    {
+      "host": "www.wingingitinmotown.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.wingingitinmotown.com"
+    },
+    {
+      "host": "www.grammar-monster.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.grammar-monster.com"
+    }
+  ],
+  "okHosts": []
+}

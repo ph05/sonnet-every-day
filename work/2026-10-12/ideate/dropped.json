@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "dropped": [
+    {
+      "stage": "shortlist",
+      "id": "pulse-1",
+      "title": "The Groan Cup",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "pulse-2",
+      "title": "Dead Rubber Detective",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "cards-2",
+      "title": "Synergy Overflow",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "jester-1",
+      "title": "Tongue Slip Parlour",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "engineer-2",
+      "title": "Sin Bin Concierge",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "critic-1",
+      "title": "Certain About Clouds",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "critic-2",
+      "title": "The Nickname Oracle",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "id": "lab-1",
+  "title": "Over Your Shoulder",
+  "pitch": "An essay about attention opens with a doorbell; how long and how rhythmically the visitor presses it is the page's first guess at them. As they read, the page quietly measures dwell time per paragraph, scroll reversals, pointer stillness and tab-aways, then shows a hedged margin note ('you slowed down here, about 60 percent sure') and rewrites later paragraphs to mirror the reader: shorter for skimmers, echoing for re-readers, footnoted for lingerers. It ends with a generated reading portrait and a shareable hash, and the fun is performing as a different reader on purpose to collect all the portraits.",
+  "whyNow": "Timeless. Form-breaking early-web spirit: the interface is the content, and the rule (the page adapts to how you read it, nothing leaves the device) is felt within ten seconds.",
+  "origin": {
+    "agent": "lab",
+    "lens": "weird-web"
+  },
+  "fingerprint": {
+    "category": "weird-experimental",
+    "mechanic": "story",
+    "tone": [
+      "playful",
+      "dramatic",
+      "serene"
+    ],
+    "tech": [
+      "dom-ui",
+      "canvas2d",
+      "pointer-events",
+      "webaudio",
+      "web-animations"
+    ],
+    "tags": [
+      "net-art",
+      "reading-behavior",
+      "adaptive-text",
+      "generative-portrait",
+      "interface-as-content",
+      "attention",
+      "doorbell",
+      "local-only"
+    ],
+    "keywords": [
+      "dwell-time",
+      "scroll-reversal",
+      "cursor-as-gaze",
+      "reading-portrait",
+      "hedged-guess",
+      "url-hash",
+      "variant-text",
+      "archetypes"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "Net art of the 1990s made the browser's own layers the subject: several independent results agree that JODI projects expose code and fake error messages as primary content. One gallery text (single source) says the 1998 JODI work ASDFG redirects the browser so the history list shows a pattern, and Olia Lialina's interactive web narrative 'My Boyfriend Came Back from the War' is confirmed as an influential net-art work although its frame-splitting mechanic was not re-confirmed. A CHI 2012 eye-tracking study (36 subjects, 32 search tasks, Huang, White and Buscher) questions that the cursor approximates gaze, so the page presents every inference as a hedged guess. Blink-reactive weird sites exist per one scout search, not re-found; the claim that no site reads reading itself rests on a few searches only and the page does not state it.",
+    "sources": [
+      {
+        "title": "Web Work: A History of Internet Art (Artforum)",
+        "url": "https://www.artforum.com/print/200005/web-work-a-history-of-internet-art-465",
+        "date": "2000-05",
+        "snippet": "Artforum's history of internet art, as summarised in a search result, notes that in many JODI projects the exposed programming forms the primary content, making the hidden layer of a page the subject.",
+        "via": "search",
+        "note": "Re-found by the verifier's search; Artforum history of internet art, with JODI exposing hidden code as primary content. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "artelectronicmedia.com (Shanken account of JODI)",
+        "url": "https://artelectronicmedia.com/en/?p=184",
+        "date": "",
+        "snippet": "A quoted account describes a 1999 visit to jodi.org returning a mock error message, and a 404 page whose live links lead into other parts of the site.",
+        "via": "search",
+        "note": "Re-found by the verifier: a 1999 visit to jodi.org returned a pseudo-error message and a 404 page with live links. Page not opened.",
+        "verified": true
+      },
+      {
+        "title": "Upstream's Daily Net Art Update (#10)",
+        "url": "https://www.upstreamgallery.nl/news/689/upstreams-daily-net-art-update-10",
+        "date": "",
+        "snippet": "Gallery text on ASDFG (1998): the browser is continually redirected from page to page so the visitor's history list becomes a visible pattern.",
+        "via": "search",
+        "note": "Re-found in a verifier search: it describes ASDFG (1998, by JODI) with a redirect chain visible in the browser history. Only this one gallery text says so, so it is shown as reported, per Upstream Gallery.",
+        "verified": false
+      },
+      {
+        "title": "User See, User Point: Gaze and Cursor Alignment in Web Search (Microsoft Research, CHI 2012)",
+        "url": "https://www.microsoft.com/en-us/research/?p=163078",
+        "date": "2012",
+        "snippet": "Eye-tracking study with 36 subjects and 32 search tasks questions the assumption that gaze is well approximated by the cursor; cursor behaviours such as reading, hesitating, scrolling and clicking carry different meaning.",
+        "via": "search",
+        "note": "Re-found by the verifier in two records (Microsoft Research item and the paper PDF); authors Huang, White and Buscher; 36 subjects, 32 search tasks; questions that gaze is approximated by cursor.",
+        "verified": true
+      },
+      {
+        "title": "this website changes every time you blink (Vice)",
+        "url": "https://www.vice.com/en/article/jg8aap/this-website-changes-every-time-you-blink",
+        "date": "",
+        "snippet": "Coverage of a site that warps when the viewer's eyes close; the result summary lists other reactive weird sites, some that scramble text under the mouse and one that fades text if you do not blink.",
+        "via": "search",
+        "note": "Not returned by the verifier's searches; not relied on.",
+        "verified": false
+      },
+      {
+        "title": "My Boyfriend Came Back from the War (ACMI)",
+        "url": "https://www.acmi.net.au/works/61355--my-boyfriend-came-back-from-the-war/",
+        "date": "",
+        "snippet": "A 1996 browser-based work by Olia Lialina in which each click splits the frame into smaller frames until the screen is a mosaic of empty black frames, telling a nonlinear story.",
+        "via": "search",
+        "note": "Not re-found at ACMI. The verifier's search found the work only through other pages (VPRO, ELMCIP), which did not confirm the frame-splitting mechanic, so that mechanic is not stated as fact.",
+        "verified": false
+      },
+      {
+        "title": "Final GazeCursor CHI12 (Microsoft Research PDF)",
+        "url": "https://microsoft.com/en-us/research/wp-content/uploads/2012/01/Final_GazeCursor_CHI12.pdf",
+        "date": "",
+        "snippet": "User See, User Point: Gaze and Cursor Alignment in Web Search.",
+        "via": "search",
+        "note": "The paper itself (CHI 2012), a second record of the gaze-and-cursor study.",
+        "verified": true
+      },
+      {
+        "title": "jodi something wrong is nothing wrong (Vice)",
+        "url": "https://www.vice.com/en/article/jodi-something-wrong-is-nothing-wrong",
+        "date": "",
+        "snippet": "Describes JODI using accidental errors in HTML and other code to turn the browser into art.",
+        "via": "search",
+        "note": "Independent coverage of JODI turning accidental HTML errors into browser-as-art.",
+        "verified": true
+      },
+      {
+        "title": "20 Years of My Boyfriend Came Back From the War (VPRO)",
+        "url": "https://vpro.nl/nooitmeerslapen/speel~RBX_VPRO_3332970~20-years-of-my-boyfriend-came-back-from-the-war~.html",
+        "date": "",
+        "snippet": "Anniversary page for Lialina's web narrative.",
+        "via": "search",
+        "note": "Dutch page calling the work an interactive web narrative that became iconic and inspired other artists.",
+        "verified": true
+      },
+      {
+        "title": "Olia Lialina (ELMCIP)",
+        "url": "https://beta.elmcip.net/node/2228",
+        "date": "",
+        "snippet": "Researcher profile of Olia Lialina.",
+        "via": "search",
+        "note": "Profile calling Lialina one of the net.art pioneers.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "JODI works use exposed code and mock or accidental error messages as primary content, turning the browser itself into the subject.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A CHI 2012 study by Huang, White and Buscher (36 subjects, 32 web-search tasks) questions the maxim that gaze is well approximated by the cursor, and builds a model that predicts gaze better than the cursor alone.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per Upstream Gallery (single source): the 1998 JODI work ASDFG sends the browser from page to page so the visitor's history list shows a pattern of URLs.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Olia Lialina's 'My Boyfriend Came Back from the War' is an interactive web narrative described as iconic and as inspiring other artists, and Lialina is listed as a net.art pioneer.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "JODI web works",
+      "My Boyfriend Came Back from the War",
+      "ASDFG",
+      "blink-reactive weird sites",
+      "degenerative net art",
+      "marginalia and reading-diary conventions"
+    ]
+  },
+  "design": {
+    "coreLoop": "Ring the doorbell, read a paragraph, see the margin guess, then read the next paragraph that has been chosen from hand-written variants by the running reader model. Pass 1 teaches the rule; pass 2 is play: the visitor performs a reader (skimmer, rereader, lingerer, restless, deliberate) to steer the text and collects distinct portraits and endings. Each portrait is a deterministic canvas glyph of six numbers, so it can be compared and shared through the URL hash.",
+    "sophisticationHooks": [
+      "Reader model: dwell per word, scroll reversals, pointer stillness and horizontal sweeps, tab-away, touch dwell, each blended into five bounded scores with documented thresholds and decay",
+      "Variant text: each paragraph has 3 hand-written versions selected deterministically from the profile, so behaviour is testable with simulated readers",
+      "Honest hedging: confidence shown as words and bars, with a visible 'I was wrong about you' moment when the profile flips, grounded in the cursor-vs-gaze research",
+      "Reading portrait: seeded canvas glyph plus archetype name and hash export; doorbell ring rhythm synthesised procedurally"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: doorbell opener with procedural chime, 6 short paragraphs with 3 hand-written variants each (about 1,000 words), 2 more paragraphs only if time remains, reader-model module with a simulated-reader test hook, margin-note engine, portrait canvas renderer, hash codec, keyboard path (j/k, space, key-rhythm dwell), a manual 'tell the page how you read' panel for screen-reader and no-pointer users, about/making-of panel. Cut: any webcam or eye tracking, any storage of behaviour, multi-essay support. The one persisted item allowed is a list of collected portrait names in localStorage, in try/catch, as a convenience.",
+    "risks": [
+      "Privacy perception: behavioural measurement can look like tracking, so the page states plainly that readings stay in memory, nothing is sent or stored, and no camera or microphone is used; no network, no persistent identifiers.",
+      "Cursor-as-gaze is unreliable (CHI 2012 result confirmed by two records): the page shows inferences as guesses, as of 2026-10-12, per Microsoft Research.",
+      "The ASDFG history-list detail and the Lialina frame mechanic rest on one source or none: the about panel shows them as reported, per Upstream Gallery, as of 2026-10-12, or omits them.",
+      "Touch and keyboard readers lack pointer signals: fall back to scroll velocity and dwell, and offer the manual panel.",
+      "Copy volume is the schedule risk: write 4 paragraphs fully first, then expand to 6; the effect must be felt within ten seconds of the doorbell, so the opening variants get the most polish.",
+      "Reduced motion: text mutation fades or swaps without animation when requested."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "JODI and the CHI 2012 study each re-found in two or more results; the ASDFG history detail stays single-source and the Lialina mechanic is unconfirmed, so both are shown as reported or omitted. Scope trimmed from 8 to 6 paragraphs; a strong but copy-heavy idea with no guardrail problem if the local-only privacy line is kept."
+  }
+}

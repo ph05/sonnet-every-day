@@ -1,0 +1,317 @@
+{
+  "schema": 1,
+  "agent": "jester",
+  "lens": "word-play",
+  "candidates": [
+    {
+      "id": "jester-1",
+      "title": "Tongue Slip Parlour",
+      "pitch": "A parlour where sounds trade places. Type any phrase and a rule engine splits every word into onset and rime, tries every swap between word pairs, and ranks the ones where both halves land as real words, drawing the sounds as tiles that physically change seats. Then play the second side: an Untwist puzzle shows a scrambled phrase and the visitor works out the original, with a seeded daily deck and a link that shares the exact puzzle.",
+      "whyNow": "Timeless: a self-contained language toy with a daily puzzle, no news hook needed. It also fills the owed humor slot with a joke that is a rule the visitor discovers.",
+      "origin": {
+        "agent": "jester",
+        "lens": "word-play"
+      },
+      "fingerprint": {
+        "category": "language-text",
+        "mechanic": "puzzle",
+        "tone": ["playful", "nerdy", "absurd"],
+        "tech": ["dom-ui", "svg", "web-animations", "speech", "localstorage"],
+        "tags": ["spoonerism", "onset-rime", "wordplay", "word-puzzle", "phonology", "daily-puzzle", "tongue-slip", "constraint-writing"],
+        "keywords": ["onset-swap", "rime", "digraph-table", "bundled-lexicon", "untwist", "seeded-daily", "swap-scoring", "read-aloud"],
+        "slot": "humor",
+        "political": false
+      },
+      "research": {
+        "summary": "A spoonerism swaps the opening sounds of two words, as a slip or on purpose, and is named for an Oxford clergyman of the late 19th and early 20th centuries; two separate explainers agree on that, and one adds that many famous quotes credited to him are doubtful, so the page will call its examples traditional or invented, never documented. Search results show the idea has prior art but no polished browser toy that ranks swaps and turns them into a puzzle: a phoneme-based Python package, a spelling-based Rust crate, a browser extension that rewrites page text, and a Finnish JavaScript solver for sananmuunnos, the local cousin of the form. A Finnish academic article frames spoonerisms as a constraint procedure akin to Oulipo, which supports the design of explicit, inspectable rules. The big pronouncing dictionary's licence was reported inconsistently across results, so nothing from it is bundled: the lexicon is hand-written (about 2500 common words with onset and rime splits and part-of-speech tags) and the engine's rules are original.",
+        "sources": [
+          {
+            "title": "Spoonerism - Grammar Monster",
+            "url": "https://www.grammar-monster.com/interesting-words/spoonerism.htm",
+            "date": "",
+            "snippet": "Explains the term as coming from the Oxford clergyman William Archibald Spooner (1844 to 1930) and defines it as a swap of the initial sounds of two words, by slip or on purpose.",
+            "via": "search",
+            "note": "Definition and namesake dates; found with a single-domain search so the attribution is unambiguous.",
+            "verified": true
+          },
+          {
+            "title": "Spoonerism Definition: 3 Examples of Spoonerisms - 2026 - MasterClass",
+            "url": "https://www.masterclass.com/articles/spoonerism-explained",
+            "date": "2026",
+            "snippet": "Describes the same namesake (1844 to 1930, Warden of New College), the swap of opening sounds, and notes that many anecdotes credited to him are disputed.",
+            "via": "search",
+            "note": "Independent second source for the definition and namesake; also source of the doubtful-attribution caution.",
+            "verified": true
+          },
+          {
+            "title": "Sananmuunnos - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/Sananmuunnos",
+            "date": "",
+            "snippet": "Finnish counterpart of the spoonerism. Reported to swap morae rather than syllables, and Finnish suffixes make many swaps yield valid words.",
+            "via": "search",
+            "note": "Cultural cousin for the about panel; seen only in a search summary.",
+            "verified": false
+          },
+          {
+            "title": "sananmuunnos.js - GitHub",
+            "url": "https://github.com/tuukkao/sananmuunnos.js",
+            "date": "",
+            "snippet": "A JavaScript solver for Finnish word transformations, showing that a rule-based swap engine runs fine in plain browser code.",
+            "via": "search",
+            "note": "Prior art that confirms feasibility; code is not reused.",
+            "verified": false
+          },
+          {
+            "title": "spooner 0.5.11 - PyPI",
+            "url": "https://pypi.org/project/spooner/0.5.11/",
+            "date": "",
+            "snippet": "A Python package that builds spoonerisms from sounds rather than spelling; its sample turns a two-word phrase about trails and snacks into one about snails and tracks.",
+            "via": "search",
+            "note": "Shows the sound-based approach; our version uses a hand-made onset table instead.",
+            "verified": false
+          },
+          {
+            "title": "Vakavan sanaleikin mahdollisuudet kotimaisen nykyrunouden anagrammeissa ja spoonerismeissa - JYX",
+            "url": "https://jyx.jyu.fi/handle/123456789/82122",
+            "date": "",
+            "snippet": "A Finnish academic work on serious wordplay that treats anagrams and spoonerisms as constraints, tying them to the Oulipo tradition.",
+            "via": "search",
+            "note": "Supports presenting the swap rules as visible constraints.",
+            "verified": false
+          },
+          {
+            "title": "zummi - Rust crate",
+            "url": "https://rust-digger.code-maven.com/crates/zummi",
+            "date": "",
+            "snippet": "A simple spelling-based spoonerism tool that replaces the beginnings of words.",
+            "via": "search",
+            "note": "Shows the naive approach, whose spelling pitfalls (silent letters, digraphs) the engine must handle.",
+            "verified": false
+          },
+          {
+            "title": "CMU Pronouncing Dictionary - Wikipedia",
+            "url": "https://en.wikipedia.org/wiki/CMU_Pronouncing_Dictionary",
+            "date": "",
+            "snippet": "Describes a large machine-readable pronunciation list using a phoneme set; licence statements in other results conflict, so its terms are unclear.",
+            "via": "search",
+            "note": "Reason to hand-write a small lexicon instead of bundling it.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The term spoonerism comes from William Archibald Spooner (1844 to 1930), an Oxford clergyman, and names a swap of the initial sounds of two words.",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Many famous lines credited to Spooner are doubtful, so a page that quotes them labels them as traditional rather than documented.",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per a Wikipedia entry seen only in a search summary: the Finnish sananmuunnos swaps morae, and Finnish suffixes multiply the valid swaps.",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-12, per a PyPI listing seen in search: at least one sound-based spoonerism generator exists, turning a two-word phrase into another with swapped onsets; no polished browser puzzle built on ranked swaps turned up in the searches.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Search results disagreed about the licence of the large pronouncing dictionary (public domain in some, BSD-style in one), so the project bundles none of it.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["spoonerisms", "sananmuunnos", "contrepeterie", "Oulipo constraint writing", "Wordle-style daily puzzles", "anagram solvers"]
+      },
+      "design": {
+        "coreLoop": "Type or pick a phrase, watch the engine split it into onset and rime tiles and propose ranked swaps. Pick one and the tiles trade seats with a short animation and a read-aloud button. In Untwist mode a scrambled phrase appears and the visitor drags sound tiles back to restore the original; hints reveal which word pair was swapped. Mastery comes from learning the engine's rules (digraphs, silent letters, how vowels start a word) and a codex fills with rare finds. Daily deck and shareable hash keep it fresh.",
+        "sophisticationHooks": [
+          "Rule engine: orthographic onset/rime splitter with a digraph and exception table (ph, kn, wr, qu, sh, ch, th, silent h, vowel starts), then a swap search over all word pairs and positions in the phrase",
+          "Swap scoring: both outputs real words in the bundled lexicon, tile weight, part-of-speech plausibility and a clean-humour filter; ranked results with a visible 'why this scored' breakdown",
+          "Untwist puzzle: seeded daily deck of invented phrases, three difficulty tiers, hint ladder, streak kept in localStorage with try/catch, sharable result and puzzle via URL hash",
+          "Sound-tile animation in SVG with reduced-motion fallback, optional read-aloud through the browser's built-in speech voices"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: lexicon of roughly 2500 hand-written words with onset/rime splits and tags, the splitter and swap engine as a pure module, parlour view, Untwist puzzle with 120 hand-written phrases, codex, about panel with sources. Cut: multi-language modes, user word lists, sound effects, any server.",
+        "risks": [
+          "Spelling-based onset detection will misjudge some words; mitigated by an exception table and by only offering swaps whose results are in the lexicon.",
+          "Famous Spooner quotes are doubtful; the page labels all examples as traditional or invented and quotes nothing as documented.",
+          "Humour must stay mild: lexicon and phrase bank are original, clean-checked and carry no slurs or crude pairs.",
+          "Speech voices vary by device; read-aloud is optional and the page works fully without it.",
+          "As of 2026-10-12 the Finnish and phoneme-tool details are from search summaries only; the about panel shows them as reported, per source, or omits them."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "jester-2",
+      "title": "Frankenword Costume Shop",
+      "pitch": "Halloween is on the way, so the visitor shops for costumes by fusing two words. Choose two cards from a stock of monsters, foods, appliances and falling rocks, and a blend engine hunts for letter and syllable overlaps, ranks the fusions by how recognisable both parents stay, and stitches a drawn costume with a name tag. Collect a rack of the best fusions, send a friend a link to your look, and chase the three judges' scores.",
+      "whyNow": "Halloween falls on 31 October 2026, three weeks away, and costume talk is peaking now. After the season the page still works as a portmanteau lab, but the framing is seasonal.",
+      "origin": {
+        "agent": "jester",
+        "lens": "word-play"
+      },
+      "fingerprint": {
+        "category": "pop-culture",
+        "mechanic": "generator",
+        "tone": ["playful", "absurd", "chaotic"],
+        "tech": ["svg", "dom-ui", "web-animations", "localstorage", "pointer-events"],
+        "tags": ["portmanteau", "word-blend", "halloween", "costumes", "wordplay", "mashup", "collection", "name-tag"],
+        "keywords": ["letter-overlap", "syllable-splice", "recognisability-score", "pronounceability", "costume-card", "three-judges", "svg-costume", "share-link"],
+        "slot": "currentEvents",
+        "political": false
+      },
+      "research": {
+        "summary": "The word portmanteau for a blend comes from Lewis Carroll's 1871 Through the Looking-Glass, where a character explains invented words as two meanings packed into one; two separate results agree. Linguistics results describe blends in terms of phonological and orthographic overlap and how much of each source word survives, and computational work frames blend generation as choosing a pair then merging them, which gives the engine a real rule set: find overlaps, score how much of each parent survives, penalise unpronounceable clusters. Costume-season context is reported by one retailer trend release, syndicated across several outlets (counted as a single source): pop-culture looks lead, with giant mascot heads and novelty costumes expected to bring a meme-friendly, playful note. That context is shown as reported, not confirmed. Halloween's weekday is computed by the page itself from the date. The word stock and the drawn costumes are original; no real brands or characters appear.",
+        "sources": [
+          {
+            "title": "What is a Portmanteau Word? - Interesting Literature",
+            "url": "https://interestingliterature.com/2020/04/what-is-a-portmanteau-word-definition-introduction-examples/",
+            "date": "",
+            "snippet": "Says the term portmanteau word comes from Carroll's 1871 Through the Looking-Glass, where Humpty Dumpty explains the Jabberwocky coinages; gives brunch and smog as typical modern blends.",
+            "via": "search",
+            "note": "Origin of the term and examples of the simple front-plus-back blend.",
+            "verified": true
+          },
+          {
+            "title": "Portmanteau word - Britannica",
+            "url": "https://www.britannica.com/print/article/471231",
+            "date": "",
+            "snippet": "Reported to credit Carroll as the first to use portmanteau for this kind of word, per the OED.",
+            "via": "search",
+            "note": "Independent second source for the Carroll origin.",
+            "verified": true
+          },
+          {
+            "title": "Celebrating Alice in Wonderland with neologisms and whimsy - Planet Word",
+            "url": "https://planetwordmuseum.org/celebrating-alice-in-wonderland-with-neologisms-and-whimsy/",
+            "date": "",
+            "snippet": "A museum page on Carroll's invented words and whimsy, listed among results about the origin of blends.",
+            "via": "search",
+            "note": "Tone inspiration for the shop's copy; only its title was seen in the results.",
+            "verified": false
+          },
+          {
+            "title": "2004 STG Blends ChicLingSoc - Gries",
+            "url": "https://www.stgries.info/research/2004_STG_Blends_ChicLingSoc.pdf",
+            "date": "2004",
+            "snippet": "A linguistics paper that measures how much of each source word survives in blends such as chunnel, looking at both spelling and sound contributions.",
+            "via": "search",
+            "note": "Basis for the recognisability score: share of each parent that survives.",
+            "verified": true
+          },
+          {
+            "title": "DiGirolamo (2012), blend constraints - American Name Society",
+            "url": "https://ans-names.pitt.edu/ans/article/download/1967/1966/3945",
+            "date": "2012",
+            "snippet": "Identifies phonological and orthographic constraints on blends, including preference for overlap and stress placement, and proposes a generation and evaluation model.",
+            "via": "search",
+            "note": "Second independent source that overlap and sound shape drive good blends; supports the scoring rules.",
+            "verified": true
+          },
+          {
+            "title": "Blend formation as sequence labeling - arXiv 1804.02596",
+            "url": "https://arxiv.org/pdf/1804.02596v1.pdf",
+            "date": "2018",
+            "snippet": "Frames blend formation as a sequence labeling task and argues that using structural constraints gives simpler models.",
+            "via": "search",
+            "note": "Supports a small rule-based splice engine rather than anything heavy.",
+            "verified": false
+          },
+          {
+            "title": "Portmanteau generation (Deri and Knight 2015) - ACL Anthology",
+            "url": "https://preview.aclanthology.org/moar-dois/N15-1021.pdf",
+            "date": "2015",
+            "snippet": "Describes blend generation as picking compatible component words and then merging them, using a finite-state transducer; reported to reach 45 percent exact matches.",
+            "via": "search",
+            "note": "Two-stage framing (pick pair, then merge) used for the engine; the percentage is shown only as reported.",
+            "verified": false
+          },
+          {
+            "title": "Spirit Halloween reveals top costume trends for 2026 - NJBIZ",
+            "url": "https://njbiz.com/spirit-halloween-2026-costume-trends/",
+            "date": "2026-10",
+            "snippet": "A retailer trend report says pop-culture looks lead this season and that oversized inflatables, giant mascot heads and novelty costumes should add a playful, meme-friendly mood.",
+            "via": "search",
+            "note": "Seasonal context only; the same release was syndicated by other outlets, so it counts as one source.",
+            "verified": false
+          },
+          {
+            "title": "These are the most popular Halloween costumes this year - WBTV",
+            "url": "https://www.wbtv.com/2026/10/06/these-are-most-popular-halloween-costumes-this-year/",
+            "date": "2026-10-06",
+            "snippet": "A local-news version of the same trend report, dated in the URL to 6 October 2026.",
+            "via": "search",
+            "note": "Copy of the same release as the NJBIZ item, not an independent confirmation.",
+            "verified": false
+          },
+          {
+            "title": "Mark Your Calendar! What Day is Halloween 2026? - Intrafocus",
+            "url": "https://static.intrafocus.com/?p=45300",
+            "date": "",
+            "snippet": "A calendar page about the weekday of Halloween 2026; the search summary gave Saturday 31 October but the weekday was not shown per entry.",
+            "via": "search",
+            "note": "Weekday is therefore unverified here; the page computes it from the date instead.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The word portmanteau for a blend of two words traces to Lewis Carroll's Through the Looking-Glass (1871).",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Linguistic studies of blends describe them through phonological and orthographic overlap and through how much of each source word survives, which is the basis for the engine's scoring.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "Computational work frames blend generation as two steps, choosing compatible words and merging them. Per ACL Anthology result, as reported in a search summary, one 2015 system reached 45 percent exact matches.",
+            "sourceIndex": 6,
+            "alsoIn": [5],
+            "asOf": "2026-10-12"
+          },
+          {
+            "claim": "As of 2026-10-06, per a retailer trend release syndicated by several outlets (one source), pop-culture looks lead costume trends and novelty costumes add a playful, meme-friendly note.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-12"
+          }
+        ],
+        "inspirations": ["Jabberwocky coinages", "brunch and smog style blends", "costume-shop dress-up toys", "mix-and-match picture books", "Mad Libs"]
+      },
+      "design": {
+        "coreLoop": "Pick two cards, the engine proposes five fusions with a recognisability meter showing which letters belong to which parent, the visitor picks one and the shop builds a costume from a head, body and prop assembled from the parents' drawn parts. Three invented judges score it on scare, cute and sayability; the costume joins a rack. Sets and a daily 'customer order' (for example a theme of kitchen plus sky) keep the second and tenth minute different, and recipes are shareable in the URL hash.",
+        "sophisticationHooks": [
+          "Blend engine: finds end-of-A to start-of-B letter overlaps, vowel-aligned splices and syllable-boundary splices, then scores recognisability (share of each parent kept), pronounceability (cluster rules) and length",
+          "Procedural SVG costume builder: each card has 3 drawn layers (head, body, prop) that recombine by rule with a palette per judge scoring",
+          "Three judges with distinct rubric weights and written quips picked from tables by score band, so results read as voiced rather than numeric",
+          "Collection rack with rarity tiers, daily customer order seeded by date, share link via URL hash"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: about 60 hand-written cards with SVG layers, blend engine as a pure module, shop view, judge panel, rack, share hash, about panel. Cut: user-drawn parts, sound, saving more than the local rack, any live trend data.",
+        "risks": [
+          "Seasonal: the framing ages after 31 October 2026, so durable is false; the lab still works afterwards.",
+          "The retailer trend context is one syndicated release, shown only as 'as of 2026-10-06, per a retailer trend report' or dropped; the page names no brand, character or film and uses invented stock.",
+          "Letter-overlap blends can be ugly; the pronounceability filter and a curated pair pool keep the top results funny.",
+          "Drawing 60 cards in SVG is the heavy part; the fallback is 36 cards with 2 layers each.",
+          "Halloween weekday is computed by the page from the current date, not stated from an unverified source."
+        ]
+      },
+      "durable": false
+    }
+  ]
+}

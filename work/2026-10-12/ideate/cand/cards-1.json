@@ -1,0 +1,170 @@
+{
+  "id": "cards-1",
+  "title": "Commute Or Else",
+  "pitch": "Each day deals a rack of seven operator tiles (add chips, add mult, multiply mult, echo the previous two tiles, mirror a neighbour, raise mult to a power) plus one immovable bedrock tile, and you slide them into the order that scores highest. A live score tree shows chips and mult after every tile, then a histogram of all 5,040 possible orderings reveals where your arrangement sits in a wildly long-tailed distribution, and an exact solver tells you the par. The delight is the first time you see one swap turn 400 into 4,000, and the palindrome rule that rewards symmetric racks.",
+  "whyNow": "Timeless: ordering effects in chips-times-mult scoring are a perennial talking point among deckbuilder players, and a daily seeded puzzle with a shareable result grid keeps the page worth revisiting.",
+  "origin": {
+    "agent": "cards",
+    "lens": "balatro-score-math"
+  },
+  "fingerprint": {
+    "category": "cards-odds",
+    "mechanic": "puzzle",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "worker",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "operator-order",
+      "permutations",
+      "non-commutative",
+      "multiplier-algebra",
+      "daily-puzzle",
+      "score-histogram",
+      "retrigger",
+      "exact-enumeration"
+    ],
+    "keywords": [
+      "order-of-operations",
+      "chips-times-mult",
+      "factorial",
+      "par-score",
+      "score-tree",
+      "palindrome-bonus",
+      "bedrock-tile",
+      "share-grid"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "research": {
+    "summary": "Community guides on deckbuilder joker order agree on the shape of the maths: effects resolve left to right, flat mult belongs before multiplicative mult, and copy effects care about position (one copies its right neighbour, another copies the leftmost slot). That is exactly a non-commutative algebra, (c+a)*b differs from c*b+a, which I derived myself and will self-check in node. The number of orderings of eight items is 8! = 40320 per several counting references, so a rack of 7 movable tiles plus one fixed tile (5,040 orderings) is small enough for exact enumeration in a worker in milliseconds and big enough to have a fat-tailed score distribution worth drawing. Several community claims (exact examples, edge cases for scoring-triggered effects) were contradicted by one forum user, so the page uses its own stated rules, invented tile names and does not claim to reproduce any commercial game.",
+    "sources": [
+      {
+        "title": "Best Joker Order in Balatro",
+        "url": "https://progameguides.com/balatro/best-joker-order-in-balatro/",
+        "date": "",
+        "snippet": "Guide reasoning that flat mult sources go left of multiplicative ones, that effects resolve left to right, with a worked example where moving a multiplier to the end raises a hand total (46 to 58.5).",
+        "via": "search",
+        "note": "Order-sensitivity of additive vs multiplicative mult; seen in a search result only, summary was blended with other results so not counted as independently agreed.",
+        "verified": false
+      },
+      {
+        "title": "destructoid.com (joker order result)",
+        "url": "https://destructoid.com/?p=478541",
+        "date": "",
+        "snippet": "Result returned for a query on joker scoring order; the search summary says jokers generally trigger left to right and recommends flat mult before X mult.",
+        "via": "search",
+        "note": "Corroborates the left-to-right convention at the topic level; blended summary, only the title and URL are certain.",
+        "verified": false
+      },
+      {
+        "title": "Steam community discussion on joker order",
+        "url": "https://steamcommunity.com/app/2379780/discussions/0/4334231842063363125",
+        "date": "",
+        "snippet": "Forum thread returned for both order queries; a user reports seeing multipliers apply first regardless of position but admits the test was uncontrolled.",
+        "via": "search",
+        "note": "Shows the community disagreement on edge cases, hence the page defines its own rules explicitly.",
+        "verified": false
+      },
+      {
+        "title": "Balatro Strategy Guide: The Joker Combos That Actually Win Runs",
+        "url": "https://www.twoaveragegamers.com/balatro-strategy-guide-the-joker-combos-that-actually-win-runs/",
+        "date": "",
+        "snippet": "Strategy guide returned for copy-effect queries; summary says one copy joker reads its right neighbour, another reads the leftmost slot, and copies can chain.",
+        "via": "search",
+        "note": "Positional copy rules inspire the mirror and echo tiles; summary blended across results, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "balatro jokers guide (games.gg)",
+        "url": "https://games.gg/balatro/guides/balatro-jokers-guide/",
+        "date": "",
+        "snippet": "Jokers guide returned for the Blueprint/Brainstorm query; indicates position-dependent copy behaviour.",
+        "via": "search",
+        "note": "Second site listed for the positional copy rule, but the per-result text was not visible.",
+        "verified": false
+      },
+      {
+        "title": "8! == 40320 (Wolfram Functions)",
+        "url": "https://functions.wolfram.com/GammaBetaErf/Factorial/03/02/0011",
+        "date": "",
+        "snippet": "Reference page whose title states the factorial identity 8! = 40320.",
+        "via": "search",
+        "note": "Counts orderings of eight items; independent of the gatech handout.",
+        "verified": true
+      },
+      {
+        "title": "Counting handout (Georgia Tech)",
+        "url": "https://www2.isye.gatech.edu/~hsharp/math3070/counting.pdf",
+        "date": "",
+        "snippet": "Course handout that, per the search summary, uses 8! for the number of ways to order eight things (a salesman visiting eight cities).",
+        "via": "search",
+        "note": "Second independent source for 8! = 40320 orderings; I also recompute it in node.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "There are 8! = 40320 ways to order eight distinct items, so 7 movable tiles around one fixed tile give 7! = 5040 orderings (reference, as of 2026-10-12).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Community guides recommend flat mult sources left of multiplicative mult sources because jokers resolve left to right. Page text will say: as of 2026-10-12, per community guides, unconfirmed.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "One forum user reported different behaviour for scoring-triggered effects, so edge cases are disputed in the community (unverified).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Position-based copy effects exist in the inspiration game (one reads its right neighbour, one reads the leftmost slot); reported by guides, unverified.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "joker-order debates in deckbuilder communities",
+      "puzzle-a-day share grids",
+      "histogram of all outcomes as in solver reports",
+      "golf par scoring"
+    ]
+  },
+  "design": {
+    "coreLoop": "Read today's rack and target, drag or keyboard-move tiles into slots, watch the score tree update tile by tile, submit, then see your rank among all 5,040 orderings and the solver's par. The second minute is learning that add-before-multiply is not always best (echo and mirror tiles and the exponent tile bend it); the tenth is hunting palindromic racks and chasing par with fewer moves. A seeded daily rack plus unlimited practice racks by hash keeps it fresh.",
+    "sophisticationHooks": [
+      "Exact enumeration of all orderings in a worker with a histogram showing where the player's order lands (percentile, par, worst)",
+      "Score tree waterfall that shows chips and mult after each tile, with a reverse-the-rack toggle to show non-commutativity",
+      "Tile set with echo (repeat previous two tiles, the riff), mirror (copy right neighbour), exponent, bedrock (fixed slot) and a palindrome symmetry bonus",
+      "Seeded generator guarantees a unique optimum, and a node self-check validates the evaluator against hand-computed racks"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: tile evaluator and enumerator (pure functions), seeded rack generator, drag and keyboard slotting, score tree SVG, histogram, share string and URL hash, about panel, light and dark, reduced motion. Cut: accounts, leaderboards, animations beyond tile slide, sound.",
+    "risks": [
+      "Resemblance to a past scoring-engine toy: tags avoid joker and mod vocabulary and the loop is a puzzle, not a sandbox",
+      "Community rule claims are unverified, so the page uses its own invented tile names and states its rules rather than claiming to reproduce any game",
+      "Unique-optimum racks need generator care; fall back to showing ties",
+      "Floating point: keep scores as integers under 2^53 by capping the exponent tile"
+    ]
+  },
+  "durable": true
+}

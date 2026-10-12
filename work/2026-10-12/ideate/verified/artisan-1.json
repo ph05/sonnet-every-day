@@ -1,0 +1,254 @@
+{
+  "id": "artisan-1",
+  "title": "Between Periods",
+  "pitch": "It is intermission and the rink is a wreck: skate grooves, divots, and one seeded mishap such as a shower of hats or a split water tank. The visitor steers a small ice-resurfacing machine on a 2D rink, laying shave, wash and squeegee passes so that every scar is covered before the buzzer while a limited water tank empties. The finished sheet gleams, and the result becomes a polished postcard of your own lap pattern that friends can race as a ghost via the link.",
+  "whyNow": "The 2026-27 hockey season is underway (opened 29 September 2026, per several schedule pages), so rink lore is in the air, but the mechanic (coverage routing under a turning-radius limit, with a daily rink) works all season and beyond.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "craft-shareable"
+  },
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "cozy",
+      "playful",
+      "competitive"
+    ],
+    "tech": [
+      "canvas2d",
+      "pointer-events",
+      "web-animations",
+      "procedural-audio",
+      "localstorage"
+    ],
+    "tags": [
+      "hockey",
+      "ice-resurfacing",
+      "intermission",
+      "daily-rink",
+      "coverage-path",
+      "share-postcard",
+      "url-hash-seed",
+      "ghost-replay",
+      "turning-radius",
+      "fandom"
+    ],
+    "keywords": [
+      "ice-machine",
+      "rink",
+      "intermission",
+      "daily-challenge",
+      "seeded-world",
+      "ghost-run",
+      "wet-ice-sheen",
+      "water-budget",
+      "path-planning"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "research": {
+    "summary": "Two threads shape the design. First, the real machine does a fixed sequence on each pass (a blade shaves a thin layer, augers carry the shavings to a snow tank, water is sprayed, a vacuum and squeegee pick up dirty water and lay a clean film), which gives three layered passes and a water budget as natural mechanics. The original all-wheel steering was reduced to front-wheel steering because the machine jammed against the boards (Wikipedia and the maker's own history agree), which justifies a turning-radius limit that makes routing a real puzzle. Second, the shareable-seed craft: daily browser puzzles commonly derive the day's puzzle from the date as a PRNG seed, many reset at 00:00 UTC, keep stats in localStorage and share results as an emoji grid; state can be packed compactly into a URL fragment. The season-start date (29 September 2026) is confirmed by several separate results. Sources concern the concept only; no player or team data is used, and the maker's trademarked name stays off the page.",
+    "sources": [
+      {
+        "title": "2026-27 NHL season to start on Sept. 29 with Carolina-Florida, Toronto-Montreal",
+        "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: headline gives Sept. 29 as start of the 2026-27 season. WebFetch on nhl.com failed earlier today.",
+        "verified": true
+      },
+      {
+        "title": "Hurricanes to open the NHL season against the Panthers on Sept. 29",
+        "url": "https://ground.news/article/hurricanes-to-open-the-nhl-season-against-the-panthers-raise-their-stanley-cup-banner-on-sept-29",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Original dossier source, not returned in my search; Sept. 29 confirmed by other results instead.",
+        "verified": false
+      },
+      {
+        "title": "NHL games on today, 2026 Opening Night TV schedule - Yahoo Sports",
+        "url": "https://sports.yahoo.com/articles/nhl-games-today-2026-opening-170904210.html",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result: opening night 29 Sept 2026 with Panthers at Hurricanes and Canadiens at Maple Leafs among five games.",
+        "verified": true
+      },
+      {
+        "title": "2026-27 NHL Opening Night: Sept 29 Schedule & TV",
+        "url": "https://hockeyschedules.net/2026/09/02/2026-27-nhl-opening-night/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Third independent result for the Sept. 29 opening night.",
+        "verified": true
+      },
+      {
+        "title": "making ice nice 1949 brief history zamboni",
+        "url": "https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-zamboni",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: short history of the machine; the first Model A dates to 1949.",
+        "verified": true
+      },
+      {
+        "title": "How Zambonis Work",
+        "url": "https://science.howstuffworks.com/zamboni.htm",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: blade shave, augers to a snow tank, water spray, squeegee and vacuum.",
+        "verified": true
+      },
+      {
+        "title": "Ice resurfacer (encyclopedia)",
+        "url": "https://en.wikipedia.org/wiki/Ice_resurfacer",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: mechanism and history; states all-wheel steering was reduced to front-wheel steering because the machine kept wedging against the boards. Host not openable by WebFetch.",
+        "verified": true
+      },
+      {
+        "title": "Maker's history PDF (Toledo Walleye story)",
+        "url": "https://zamboni.com/wp-content/uploads/2011/10/ZamboniStory_ToledoWalleye.pdf",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent result from the maker's own history material: four-wheel steering on the Model A was dismantled after a jamming effect. Page cites it as history only, without the brand name in the UI.",
+        "verified": true
+      },
+      {
+        "title": "Building a daily puzzle site (DEV Community)",
+        "url": "https://dev.to/nikhil_657d136fec04f0e0b2/building-a-daily-puzzle-site-what-the-tech-stack-actually-looks-like-1hfj",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Describes date-as-PRNG-seed deterministic client-side generation.",
+        "verified": true
+      },
+      {
+        "title": "A daily logic puzzle with no backend at all (DEV Community)",
+        "url": "https://dev.to/solsticioapp/a-daily-logic-puzzle-with-no-backend-at-all-1ef6",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Independent write-up deriving the daily seed from year, month and day.",
+        "verified": true
+      },
+      {
+        "title": "DAILY GAMES - FREE - NO SIGNUP",
+        "url": "https://www.cipherssecurity.com/games/",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Found again: UTC-date-derived puzzles, emoji-grid sharing, stats in local storage.",
+        "verified": true
+      },
+      {
+        "title": "Seeds and determinism (procedural generation course)",
+        "url": "https://abratabia.com/procedural-generation/seeds-and-determinism.php",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Not found again by my searches; the seed concept is covered by the daily-puzzle sources instead.",
+        "verified": false
+      },
+      {
+        "title": "Encoding state in URL-safe 64 bit string",
+        "url": "https://discourse.elm-lang.org/t/encoding-state-in-url-safe-64-bit-string/10138",
+        "date": "",
+        "snippet": "",
+        "via": "search",
+        "note": "Not found again; compact hash encoding is plain engineering the team does itself.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The 2026-27 NHL season opened Tuesday 29 September 2026, with Panthers at Hurricanes and Canadiens at Maple Leafs among the opening-night games.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          2,
+          3
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "An ice-resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water, and picks up dirty water with a vacuum and squeegee.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          4
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The first resurfacing machine (Model A) dates to 1949 and replaced a manual crew process that took far longer.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The Model A's four-wheel steering was removed and reduced to front-wheel steering after it jammed or wedged against the boards.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Browser daily puzzles commonly use the date as a PRNG seed so the same date gives the same puzzle without a server; many reset at 00:00 UTC, keep stats in localStorage and share a Wordle-style emoji grid.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9,
+          10
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "Wordle-style result grids",
+      "Minecraft world seeds",
+      "Mini Metro line routing",
+      "Mario Paint-like tidy satisfaction",
+      "daily golf and daily crossword share cards"
+    ]
+  },
+  "design": {
+    "coreLoop": "Each day's rink (seeded from the date, or from a seed in the URL hash) has a wear map of grooves and divots plus one mishap hazard. The player drives a machine with a real turning radius and a finite water tank, laying a wide three-stage swath; they plan lanes to cover every scar with minimal overlap and refill at the tank door. The score rewards clean coverage, little overlap, and speed against the intermission clock, and retries expose a better lane plan each time, from lawn-mower stripes to spirals that save turns.",
+    "sophisticationHooks": [
+      "Hash-reconstructed world: #seed plus an optional quantized, delta-coded path of a few hundred bytes lets a friend load the identical rink and race your ghost.",
+      "Hero moment: a wet-ice sheen stripe follows the machine across the rink and dries to a high-gloss finish, with a soft three-note intermission chime from WebAudio that starts muted.",
+      "Spoiler-safe share postcard drawn on canvas: your lap pattern rendered as a gleaming print with grade, no rink layout needed to read it, plus a copy-text emoji strip.",
+      "Daily mishap table plus an optional dim-hall mode where only a headlamp pool reveals scars (the blind variant), marked on the card with a moon."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: seeded rink generator with wear map and 5 mishap types, steering model with turning radius, coverage mask on an offscreen canvas, water tank and refill door, scoring (coverage, overlap, time), canvas share postcard plus copy-text emoji strip, URL hash for seed, keyboard and touch drag-to-aim steering, light and dark, reduced motion, wet-ice sheen, making-of panel. Stretch if time remains: ghost replay from a short quantized path in the hash. Cut: dim-hall variant, multiple machine models, leaderboards, music, any real team or player data.",
+    "risks": [
+      "The maker's trademarked name stays off the page; the generic term ice resurfacer is used. The league name appears only in the dated making-of sources, with no logos.",
+      "Mechanism and history facts were re-found in several results but not opened; the page cites them 'as of 2026-10-12, per <source>'.",
+      "Touch steering at 360px uses drag-to-aim with 44px targets, with a pointer-follow mode and no tilt.",
+      "Ghost path in the URL stays short (coarse grid, capped seconds) and is a stretch item, not a core dependency.",
+      "Daily seed uses the UTC date so everyone shares one rink; the page states this.",
+      "Steering feel and coverage scoring need tuning; a fixed time-boxed tuning pass is planned before the share card."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The 29 September season start, the machine mechanism, the 1949 date and the steering change were each returned by several independent results; the seed-and-share pattern is common practice. Scope drops the dim-hall variant and makes ghost replay a stretch item so one morning suffices."
+  }
+}

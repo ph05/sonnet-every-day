@@ -1,0 +1,169 @@
+{
+  "id": "architect-1",
+  "title": "Drift Harp",
+  "pitch": "A harp of plucked strings that you strum by dragging a finger or cursor across them, each string a physically modelled Karplus-Strong string tuned in pure just intonation on a live 3-by-5 lattice. Play a looping chord progression and hear and see the pitch creep up by a syntonic comma (about a fifth of a semitone) every lap, a trick called a comma pump. A tempering dial lets you squeeze the drift shut and hear exactly what equal temperament trades away.",
+  "whyNow": "Timeless: a tuning-system explorer where the surprise is audible. The visitor discovers on their own that pure intervals do not close a loop, which most explainers only state in words.",
+  "origin": {
+    "agent": "architect",
+    "lens": "music-instrument"
+  },
+  "fingerprint": {
+    "category": "music-audio",
+    "mechanic": "instrument",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "webaudio",
+      "procedural-audio",
+      "canvas2d",
+      "pointer-events",
+      "worker"
+    ],
+    "tags": [
+      "just-intonation",
+      "karplus-strong",
+      "comma-pump",
+      "pitch-lattice",
+      "tuning-systems",
+      "plucked-string",
+      "microtonal",
+      "waveguide"
+    ],
+    "keywords": [
+      "syntonic-comma",
+      "pitch-drift",
+      "strum",
+      "lattice",
+      "cents",
+      "tempering",
+      "physical-model"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "A comma pump is a repeating progression whose pure intervals almost, but not exactly, return to the start, so the pitch shifts by a tiny interval each lap. The standard case is the syntonic comma (81:80, roughly 21.5 cents) in the progression C G D A E C. A 5-limit just intonation lattice puts fifths (3/2) on one axis and major thirds (5/4) on the other, and a loop around the lattice that does not close is the drift made visible. Karplus-Strong gives a cheap plucked string: a short noise burst circulating in a filtered delay line, where loop length sets pitch and the in-loop averaging filter sets decay and brightness. That fits an AudioWorklet or a ScriptProcessor-free delay-buffer implementation with several voices. Browser Karplus-Strong instruments exist, which de-risks the sound engine, but none found combines it with a drifting lattice.",
+    "sources": [
+      {
+        "title": "Comma pump",
+        "url": "https://en.wikipedia.org/wiki/Comma_pump",
+        "date": "",
+        "snippet": "Describes a comma pump as a sequence, often chords, that shifts pitch by a small interval each repetition; the usual example is C G D A E C raising pitch by 81:80 in just intonation.",
+        "via": "search",
+        "note": "Defines the drift mechanic and the 81:80 example",
+        "verified": true
+      },
+      {
+        "title": "Comma pump (Xenharmonic Wiki)",
+        "url": "https://en.xen.wiki/w/Pump",
+        "date": "",
+        "snippet": "Independent wiki entry covering comma pumps: loops of just intervals that nearly close, tempered out in systems that equate the comma to unison.",
+        "via": "search",
+        "note": "Second independent description of comma pumps",
+        "verified": true
+      },
+      {
+        "title": "Just Intonation: pitch drift explanation (FIU)",
+        "url": "https://justintonation.fiu.edu/ExplanationDrift.html",
+        "date": "",
+        "snippet": "University page explaining that in just intonation one note name can have several pitches a syntonic comma (about 21.5 cents) apart, and that choirs meet this as drift.",
+        "via": "search",
+        "note": "Source for the roughly 21.5 cent size and real-world drift",
+        "verified": false
+      },
+      {
+        "title": "Karplus-Strong string synthesis",
+        "url": "https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis",
+        "date": "",
+        "snippet": "Physical-modelling method: a burst of noise recirculates through a filtered delay line; loop length sets pitch, filter sets decay. Invented by Alexander Strong and analysed by Kevin Karplus.",
+        "via": "search",
+        "note": "Algorithm definition and history",
+        "verified": true
+      },
+      {
+        "title": "Karplus Strong Algorithm (CCRMA, Stanford)",
+        "url": "https://ccrma.stanford.edu/~jos//pasp//Karplus_Strong_Algorithm.html",
+        "date": "",
+        "snippet": "Stanford physical audio signal processing text on the Karplus-Strong algorithm, a delay line with a lowpass in the feedback loop.",
+        "via": "search",
+        "note": "Independent algorithm reference",
+        "verified": true
+      },
+      {
+        "title": "Lattice (music)",
+        "url": "https://en.wikipedia.org/wiki/Lattice_(music)",
+        "date": "",
+        "snippet": "Pitch lattices place just ratios on axes by prime; the 5-limit lattice uses 3/2 and 5/4, drawn as square or hexagonal grids; the gap between a 5/4 third and the Pythagorean third is the syntonic comma.",
+        "via": "search",
+        "note": "Basis for the lattice display",
+        "verified": false
+      },
+      {
+        "title": "karplus stress tester (GitHub)",
+        "url": "https://github.com/jackschaedler/karplus-stress-tester",
+        "date": "",
+        "snippet": "A browser project that plucks virtual Karplus-Strong strings as a custom audio processing exercise; notes glitches when the browser cannot keep up.",
+        "via": "search",
+        "note": "Shows the string engine runs in browsers; also a performance warning",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A comma pump is a progression that returns almost, but not exactly, to its starting pitch, shifting by a small interval each repetition; the classic syntonic example is C G D A E C, rising by 81:80 per lap in just intonation (as described on Wikipedia and the Xenharmonic Wiki).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "In just intonation one note name can sound at pitches separated by a syntonic comma, about 21.5 cents, as reported on a university just-intonation page (one result).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Karplus-Strong synthesis recirculates a noise burst through a filtered delay line; delay length sets pitch and the loop filter shapes decay and tone.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "As of 2026-10-12, per a search result for the Lattice (music) article, 5-limit lattices put 3/2 and 5/4 on the two axes; this was seen in one result only and is unconfirmed here.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "comma pump progressions",
+      "Karplus-Strong plucked string synthesis",
+      "pitch lattice diagrams from xenharmonic tuning software",
+      "browser Karplus-Strong string demos",
+      "a cappella choir pitch drift"
+    ]
+  },
+  "design": {
+    "coreLoop": "Drag across strings to strum, assemble a short loop of chords on the lattice, and let it cycle. Each lap the drift meter shows the pure tuning rising by one syntonic comma while a ghost of the starting pitch stays put. Turn the tempering dial to close the loop and hear what is lost, or chase a lap that lands back home using adaptive retuning. Every chord choice changes how fast and which way the pitch wanders, so there is always another loop to try.",
+    "sophisticationHooks": [
+      "Karplus-Strong voices with per-string damping, pick position and a stroke-speed-dependent excitation, polyphonic across a harp of 12 to 24 strings",
+      "Live 5-limit pitch lattice with ratio and cents readouts; the drift is the distance between where a loop starts and where it ends on the lattice",
+      "Tempering dial that continuously morphs pure ratios toward 12-tone equal temperament, with a seeded generative drone that makes beating audible",
+      "Shareable URL hash holding the chord loop, tempering amount and seed"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one AudioWorklet or delay-buffer string engine with voice pool, canvas harp and lattice views, pointer/touch strum and keyboard play, loop editor with 8 slots, drift meter, tempering dial, about panel. Cut: MIDI export, 7-limit and higher primes, recording, presets beyond four.",
+    "risks": [
+      "AudioWorklet from a blob or inline module may be blocked by the page CSP, so a delay-buffer fallback in the main audio graph is needed",
+      "Audio only starts after a user gesture and cannot be verified by a headless screenshot, so visuals must carry the story when muted",
+      "Lattice view as seen in one search result only; the page cites it as a general method, not a dated fact"
+    ]
+  },
+  "durable": true
+}
