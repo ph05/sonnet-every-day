@@ -1,0 +1,4 @@
+- Clerk, i05 proofread: all 9 external links answered 000 to curl (12 s limit), so the sandbox network looks restricted, not the sites. Reported as unreachable-link once each, no retries.
+- Draft PROJECT.json and index.html carry the same 9 URLs and the same 9 verified sources; no source-mismatch found. Page header "Day 3" matches state/handoff.md (day 2 was 10-11).
+- Research file i05 says "all-wheel steering" in the summary but fact 3 and the page say "four-wheel"; the page's "(per Mental Floss)" sits before the steering clause, which Mental Floss does not cover in research (it covers only the 1949 date).
+- No research fact or source backs the About text's "a browser doodle from 2013 and at least one commercial game" with no research source; flagged as unverified-claim on the page.

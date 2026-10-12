@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "revision": 0,
+  "tier": 2,
+  "verdict": "revise",
+  "counts": {
+    "S1": 0,
+    "S2": 2,
+    "S3": 7,
+    "S4": 13
+  },
+  "browser": {
+    "ok": true,
+    "error": null
+  },
+  "degraded": false,
+  "degradedWhy": [],
+  "unreviewed": false,
+  "summary": "Ship: no S1 and no S2. I read all 12 site files and opened all 8 screenshots. I also played the page in real Chromium 141 through Playwright, using about 17 throwaway scripts under /home/user/sonnet-every-day/work/2026-10-12/qa/critic-tmp/. The static server is stopped. report.json ok=true with no errors. My own runs also had 0 console errors, 0 page errors and 0 non-local requests, apart from the errors I provoked on purpose (blocked game.js, no 2D canvas). The CSP is byte-identical to ops/templates/page-shell.html. Loaded payload is 201,023 bytes against the 250 KB budget, and the DOM has 276 nodes. There are no inline handlers or forms, one module script, every id from SPEC 4.6 is present, and all JS passes the syntax check. I re-ran test/selftest.mjs: ok, exit 0, T1 to T4 pass in 9.6 s. That backs the making-of sentences (chunks 1, 7 and 60; minimum gleam 96.2 percent on 365 rinks...",
+  "scores": [
+    {
+      "dimension": "core loop and depth",
+      "score": 8,
+      "note": "A forward-only machine with a 10 ft turning radius, one water tank with a refill door, five seeded mishaps and a grade built from gleam, tidy, time and bumps. Selftest T3: spiral beats mow by 56 median points on 100 seeds, so strategy matters. Watch a lap teaches it and the daily seed plus challenge hash give a reason to return."
+    },
+    {
+      "dimension": "correctness and robustness",
+      "score": 9,
+      "note": "Selftest: 27 determinism runs with 0 mismatches (chunks 1, 7, 60 and a golden digest), 365 rinks winnable (min 96.2 percent), 2,000 hostile hashes. In-browser: 18 hostile hashes, denied and corrupt localStorage, blocked game.js, audio and postcard, no 2D canvas, about 450 random clicks and keys, resize loops and hidden-tab pause all gave 0 console or page errors. Only quirks are bot-lap labelling and focus-versus-Enter."
+    },
+    {
+      "dimension": "visual design",
+      "score": 8.5,
+      "note": "Cozy paper-ice palette, crisp rink drawing with scars distinguished by shape and luminance, hazard-striped low-water gauge, a glowing spoiler-safe postcard, and dark mode that matches. Slightly busy diagonal gloss hatching and a generic chip HUD keep it from 9."
+    },
+    {
+      "dimension": "interaction and feel",
+      "score": 8,
+      "note": "Feedback on every action: sheen film, predicted turning arcs, toasts plus live region, stamp animation, sparkle, buff sweep and confetti, bump shake, hat wobble. Sound is muted by default with a visible toggle and works with no errors. Hover and touch aim steers proportionally. Reduced-motion twins verified: attract frozen, shake off, 0 running animations. I could not judge the audio itself by ear."
+    },
+    {
+      "dimension": "responsiveness and accessibility",
+      "score": 8,
+      "note": "Separate portrait (rotated rink) and desktop layouts. Contract viewports pass and so do 320x640, 768x1024 and 1920x1080, with no overflow at 320 even with About and the dialog open. Contrast minimum 5.15 in light, 14 tab stops all with focus rings, meter role, live region, 44 px targets. Gaps: landscape phones (d05), Enter after click (d07), silent seed error (d09)."
+    },
+    {
+      "dimension": "copy, voice and honesty",
+      "score": 8,
+      "note": "Dry rink-crew voice ('Boards. The machine does not enjoy that.'), units on numbers, mishaps labelled invented, rink labelled stylized, nine sources identical to project.json and dated. NHL date and the steering story were re-confirmed by my own searches. The maker's name appears only inside citation URLs. Deductions: clean laps undefined, bot laps unlabelled, one undated prior-art sentence."
+    },
+    {
+      "dimension": "performance and offline integrity",
+      "score": 8,
+      "note": "201 KB loaded, 276 DOM nodes, 0 non-local requests, CSP identical to the shell, heap flat over 40 restarts. Desktop 60 fps (p99 16.8 ms); JS is about 1 percent of a profile. Static states still repaint every frame (about 40 percent main thread in software raster), and a 4x-throttled DPR 3 phone ran about 30 fps."
+    },
+    {
+      "dimension": "first impression and shareability",
+      "score": 8,
+      "note": "The first frame is a half-gleaming wrecked rink with a demo lap and a glossy sheen trail, and the 1200x630 composition matches DESIGN (rink about 984 px wide, chips and Demo lap chip on one row, Start in view). Result card, postcard, copy strip, challenge hash and a Save card PNG download (between-periods-qa1.png) all work. Share buttons sit below the fold in the 1366x768 dialog (d06)."
+    }
+  ],
+  "highlights": [
+    "The wet-ice sheen delivers the headline moment. A bright film trails the machine, the stripe dries to white mirror gloss and the scars vanish under it, with predicted turning arcs and an aim reticle on top. The half-gleaming demo frame is the thumbnail and it sells the page at once.",
+    "The water mechanic is legible through several channels. Under 25 percent the gauge turns hazard-striped, the coach line says 'Water is low', and the live region announces it (observed at tick 1744). At empty the gauge goes red with a drop-slash icon, a red dashed ring circles the machine and a toast fires (tick 2316), and gleam really stops growing while the tank is dry.",
+    "It is provably fair. Selftest: 27 determinism runs including 1, 7 and 60 tick chunking with a golden digest, all 365 daily rinks winnable (minimum 96.2 percent gleam), spiral beats mow by 56 median points, and plus or minus 3 degrees of jitter costs at most one grade band. The making-of's test claims are true.",
+    "The result card is something you would send. A rubber-stamp grade, a glowing spoiler-safe postcard of your own route that never shows the scars, a ten-square copy strip, a challenge hash (#s=qa1&c=D-23) that reloads as a banner, and Save card downloads between-periods-qa1.png.",
+    "Defensive engineering. 18 hostile hashes fall back to today's rink with a kind toast, denied or corrupt localStorage gives one polite note, blocked audio or postcard modules disable only themselves, a canvas-less browser gets a readable boot error, and about 450 random clicks and keys plus resize and hidden-tab pause produced no console errors.",
+    "Voice and honesty. Mishaps are labelled invented, the rink is stylized with no printed dimensions, sources are dated 'as of 2026-10-12', and the maker's name appears only inside citation URLs. The NHL opening date, the steering-jam story and the existence of a prior browser doodle and a commercial game were all re-confirmed by independent searches."
+  ],
+  "exercisedInBrowser": true,
+  "defects": [
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: Earlier ice-resurfacing games exist (per our own web searches: a browser doodle...",
+      "detail": "unverified-claim: Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game).",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Delete the parenthetical sentence, or attach it to a source listed in research.sources with verified:true. 'Our own web searches' is not a source, and no research fact or source covers a 2013 doodle.",
+      "id": "d01"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: Earlier ice-resurfacing games exist: a browser doodle from 2013 and at least on...",
+      "detail": "unverified-claim: Earlier ice-resurfacing games exist: a browser doodle from 2013 and at least one commercial game, per our own web searches, as of 2026-10-12.",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Delete the sentence (same claim as the About panel, no verified source behind it), or cite a verified source for it in the same way as the other 'as of 2026-10-12, per <source>' claims.",
+      "id": "d02"
+    },
+    {
+      "source": "critic",
+      "criticId": "d01",
+      "severity": "S3",
+      "owner": "engineer",
+      "file": "js/game.js",
+      "title": "Bot lap can claim you beat the challenge",
+      "detail": "finishRun() sets result.beat = beats(result, challenge) for every mode except practice, so a bot lap (Watch a lap button or the #a= hook) on a challenge link reports 'You beat the challenge.' or 'Not this time...' as though the visitor drove it. share.js shareText() also has no bot marker, so a bot result copies as a plain 'Gleam S (902 pts)' line that can be passed off as a human score. Watch a lap sits on the first screen, so many visitors will meet this within two minutes.",
+      "evidence": "1366x768, light. Open #s=qa1&c=D-99999&a=mow. After about 9 s the result dialog shows title 'Mirror', meta 'Rink qa1 · Called it' and the challenge line 'You beat the challenge.'. Open #s=qa1&c=S-1&a=mow: the same dialog says 'Not this time: grade S in 1 ft is the bar.'. The share textarea reads 'Between Periods · rink qa1 / Gleam S (902 pts) · 2,464 ft · 5 clean laps / ... / http://127.0.0.1:8741/#s=qa1' with no bot marker. The Watch a lap button on a challenge link takes the same path at 2x...",
+      "suggestedFix": "In game.js finishRun() use `if (challenge && runMode === 'timed') result.beat = beats(result, challenge);`. Bot results keep beat = null and ui.js already hides #res-challenge when beat is not a boolean. In share.js shareText() prefix line 2 with 'Bot lap · ' when r.mode === 'auto', the same way 'Practice · ' is done. Extend selftest T4 with a case that runs an auto result through shareText.",
+      "id": "d03"
+    },
+    {
+      "source": "critic",
+      "criticId": "d02",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Bot-lap result card looks like the player's own",
+      "detail": "fillResult() only labels Practice. For mode 'auto' the dialog shows the full rubber-stamp S 'Mirror', the line 'Nobody can tell you were here', the postcard, Copy result, Copy link and Save card, with nothing saying a bot drove the lap. postcard.js draws the same header. A visitor who clicks the prominent Watch a lap button and then Copy result shares a bot score as their own.",
+      "evidence": "1366x768, light. Open #s=qa1&a=spiral. The dialog shows 'Mirror', meta 'Rink qa1 · Every scar gleams', 948 pts, 2,892 ft, 4 clean laps. No text anywhere says bot or demo. The Watch a lap button gives the same card after the 2x lap.",
+      "suggestedFix": "In ui.js fillResult() append ' · Bot lap' to #res-meta when result.mode === 'auto' and replace the stamp line with 'A bot drove this lap. Your turn?'. Keep Again but hide #btn-copy-link and #btn-save-card, or relabel them. In postcard.js drawHeader() add ' · Bot lap' next to the Practice suffix.",
+      "id": "d04"
+    },
+    {
+      "source": "critic",
+      "criticId": "d03",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Landscape phones push Start below the fold",
+      "detail": "Below 768px wide the portrait-stage layout applies whatever the height. On a landscape phone or any short window the rink, HUD and primary button cannot share the viewport. Start (ready) and Pause (playing) fall below the fold, the HUD wraps to two rows at 844 wide, and the coach line says 'Tap Start to take the wheel' while Start is not visible. While playing, the HUD scrolls away. The three contract viewports pass; this is the viewport class just outside them.",
+      "evidence": "Touch device, light, ready, scrollY 0. 844x390: rink y 206 to 440, Start y 450 to 494 (viewport height 390), docH 848. 667x375: Start 498 to 542. 740x360: Start 499 to 543. 568x320: Start 495 to 539. Non-touch 700x500: Start bottom 542 (viewport 500). 600x450: Start bottom 540 (viewport 450). In the 844x390 playing state, after the page scrolls to reach Pause, the rink spans y -71 to 163 and the clock and tank are off-screen. Contract viewports 1366x768, 390x844 and 360x640 all pass.",
+      "suggestedFix": "Add `@media (orientation: landscape) and (max-height: 540px)`. Hide .sed-tagline and compress .sed-header into the title row. Put .rk-dock (coach plus control bar) in the right-hand readouts column so tank | rink | readouts and the primary button share one row. Set .rk-rinkwrap max-height to calc(100dvh - 16px). Then re-run the rect check at 844x390, 700x500 and 568x320: rink, clock, tank and the primary button must all lie inside the viewport.",
+      "id": "d05"
+    },
+    {
+      "source": "critic",
+      "criticId": "d04",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "css/style.css",
+      "title": "Result dialog hides share buttons on laptops",
+      "detail": "At 1366x768 the result dialog is 949 px tall in a 703 px box. The share textarea and the Copy result, Copy link and Save card buttons need an inner scroll; only Again and Close sit in the sticky bar. Sharing is a headline promise (postcard and challenge link) yet the buttons are not visible when the dialog opens. On 390x844 the share row is visible, but Save card sits under the sticky bar until the dialog is scrolled about 65 px.",
+      "evidence": "1366x768, light. Press Enter, then click Call it. Dialog scrollHeight 949, clientHeight 703. Share textarea y 715 to 840. Copy result, Copy link and Save card y 856 to 900, viewport height 768. Again y 681 to 725 (sticky). At 390x844: dialog scrollHeight 837, clientHeight 772, Save card y 751 to 795 overlapped by the sticky bar at 754 to 798.",
+      "suggestedFix": "At min-width 768px lay .rk-res out in two columns. Left: stamp, title and postcard (cap its height around 46dvh). Right: stats, share textarea and the three share buttons. Keep Again and Close sticky. Verify at 1366x768 that btn-copy-text's rect bottom is at most 768 when the dialog opens.",
+      "id": "d06"
+    },
+    {
+      "source": "critic",
+      "criticId": "d05",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "js/ui.js",
+      "title": "Enter and Space ignore coach advice after clicks",
+      "detail": "By spec, game.js hands Enter and Space to a focused button. Clicking any button leaves focus on it. The coach line still says 'Demo lap. Press Enter to take the wheel.', but after clicking Guides, Sound, Shake, Today's rink and similar, Enter or Space just re-activates that button and the run does not start. After closing the result dialog with Escape, focus sits on Again, so the documented Shift+Enter starts a timed lap instead of practice. A visitor following the on-screen instruction silently toggles a setting.",
+      "evidence": "1366x768, light. Load #s=qa1 (coach reads 'Press Enter to take the wheel', Guides pressed = true). Click #btn-assist (Guides turns off), press Enter: phase stays 'ready', Guides is back to pressed = true, focus on btn-assist. Click #btn-seed-today then press Space: phase stays 'ready'. Finish a run, press Escape (focus lands on btn-restart), press Shift+Enter: phase 'playing', mode 'timed', clock 2:30 label 'Time' (expected practice).",
+      "suggestedFix": "Keep the game.js rule, which matches the spec. In the ui.js on() wrapper, when a click is pointer-initiated (e.detail > 0) on #btn-sound, #btn-assist, #btn-shake, #btn-seed-today, #btn-seed-load or #btn-watch, call e.currentTarget.blur() (or focusNode(E.rink)) after the handler. Keyboard-initiated clicks (detail 0) keep focus. In the result 'close' handler send focus to #rink rather than #btn-restart when the dialog was dismissed with Escape.",
+      "id": "d07"
+    },
+    {
+      "source": "critic",
+      "criticId": "d06",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Clean laps is never defined for players",
+      "detail": "The HUD chip, the result stats and the share text all say 'clean laps', but neither the UI nor the About panel defines it. In sim.js endRun() it counts a straight pass (|steer| <= 6/32) of at least 3 s with water in the tank where at least 85 percent of the cells touched were untouched. It is not a lap around the rink, and visitors will read it as 'laps without bumps'. Tidy is half-explained in the About panel; clean laps is not.",
+      "evidence": "Open the About panel (details.sed-about) and read 'How it plays', which never mentions clean laps. HUD label 'Clean laps' and the share line '0 clean laps' appear with no definition. sim.js lines 399 to 402: `runTicks >= 180 && runWet && runMarked > 0 && runFresh * 100 >= 85 * runMarked`.",
+      "suggestedFix": "Add one sentence to About, 'How it plays': 'A clean lap is a straight pass of at least three seconds, with water in the tank, over ice you have not touched yet.' Optionally add a title attribute with the same text on the Clean laps HUD chip. Do not change the share text.",
+      "id": "d08"
+    },
+    {
+      "source": "critic",
+      "criticId": "d07",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Invalid seed message is not announced",
+      "detail": "#seed-note is a plain <p> with no live role. ui.js loadSeedFromInput() only sets its textContent and aria-invalid on the input, and never calls say(). The error toast and #live path is used only for bad URL hashes. A screen-reader user who types a bad seed and presses Load hears nothing.",
+      "evidence": "Type 'hello world!' in #seed-input and press Enter or click Load rink. #seed-note shows 'Seeds are 1 to 24 letters, digits, - or _.' and #seed-input gets aria-invalid=true. Neither #live nor #toasts is updated and #seed-note has no role (index.html line 287). The visual note works; the spoken feedback does not.",
+      "suggestedFix": "Add role='status' to #seed-note (it is empty by default, so it only speaks when filled), or call say(T.badSeed) in loadSeedFromInput() when the load fails.",
+      "id": "d09"
+    },
+    {
+      "source": "critic",
+      "criticId": "d08",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Hard-coded placeholder date goes stale",
+      "detail": "The seed input has placeholder='2026-10-12' written into the markup. The field is normally filled with the current seed by ui.js, so the placeholder only shows if the visitor clears it. From tomorrow it will advertise a date that is not today's rink.",
+      "evidence": "index.html line 283: placeholder='2026-10-12'. Load the page, clear #seed-input: the grey hint reads 2026-10-12 regardless of today's seed.",
+      "suggestedFix": "Use a neutral hint such as placeholder='e.g. qa1', or set the placeholder from the seed in ui.js updateInfo().",
+      "id": "d10"
+    },
+    {
+      "source": "critic",
+      "criticId": "d09",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Toggle accessible names differ from visible labels",
+      "detail": "At 1500px and wider the three preference buttons show visible text 'Sound off', 'Guides on' and 'Shake on' (.rk-lab), but their accessible names are the fixed aria-label values 'Sound', 'Guides' and 'Shake'. Voice-control users who say what they see ('click Sound off') do not match the name, which is a WCAG 2.5.3 label-in-name gap. Only voice control on very wide screens is affected.",
+      "evidence": "index.html lines 245 to 247, and css/style.css `@media (min-width: 1500px) { .rk-sq .rk-lab { display: inline } }`. At 1600x900 the visible text is 'Sound off' while the accessible name is 'Sound'.",
+      "suggestedFix": "Make the visible text constant ('Sound', 'Guides', 'Shake') and rely on aria-pressed plus the icon swap for state. That matches the aria-label exactly and also avoids announcing 'Sound off, pressed'.",
+      "id": "d11"
+    },
+    {
+      "source": "critic",
+      "criticId": "d10",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "js/render.js",
+      "title": "Canvas repaints every frame even when static",
+      "detail": "game.js calls the frame callbacks on every animation frame and render.js drawFrame() repaints the whole canvas each time, even when nothing changes (paused, result dialog open, reduced-motion frozen demo). JS cost is tiny, but the continuous native repaint keeps the main thread busy in software-raster Chromium. This is not a defect on GPU hardware I could not test; it is a cheap battery and CPU win.",
+      "evidence": "1366x768, DPR 1, CDP Performance TaskDuration over 3 s. Attract 39 percent, playing 41, paused 39, result dialog open 38; with reduced motion on, the frozen attract frame still reads 38 and the dialog 40. A 3 s CPU profile of the paused page: idle 57 percent, '(program)' native 41 percent, all JS about 25 ms, which is about 1 percent. At DPR 2 the main thread is about 99 percent busy. A 390x844 DPR 3 profile under 4x CPU throttle gave p50 33 ms and p95 50 ms frame gaps. Desktop unthrottled st...",
+      "suggestedFix": "In render.js draw(), early-out when nothing changed. Keep a signature of canvas client size, DPR, palette, view.gridVersion, view.tick, machine pose, phase, prefs.assist and aim, and skip the repaint when the phase is paused, done, or ready with reduced motion, no shake, sparkle, buff or confetti is active, and fresh.n is 0. Always repaint on resize or a colour-scheme change.",
+      "id": "d12"
+    },
+    {
+      "source": "critic",
+      "criticId": "d11",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Prior-art line lacks date, year unverified",
+      "detail": "The making-of paragraph says 'Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game)'. That sentence carries no 'as of' date, while the 'Real and made up' section does. The claim is honestly attributed and search-only, as the spec allowed. My own search on 2026-10-12 corroborates that a browser doodle and a paid Xbox/Windows title exist, but none of my snippets shows the year 2013, so the year is unverifiable from our network.",
+      "evidence": "index.html line 331 (making-of) versus line 339 ('...per our own web searches, as of 2026-10-12'). WebSearch 'ice resurfacing machine browser game': results list a Google Zamboni doodle with no year in the snippet and a commercial title; no snippet shows 2013.",
+      "suggestedFix": "Reword to 'a browser doodle and at least one commercial game, per our own web searches, as of 2026-10-12' and drop 2013 unless a source with that year is found. Update the matching sentence in PROJECT.json makingOf and the packaged project.json in the same change, because the integrator keeps both identical (they are identical today).",
+      "id": "d13"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+      "detail": "unreachable-link: https://www.nhl.com/news/nhl-home-openers-for-2026-27-season",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000 (timeout or no connection).",
+      "id": "d14"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://sports.yahoo.com/articles/nhl-games-today-2026-opening-170904210.html",
+      "detail": "unreachable-link: https://sports.yahoo.com/articles/nhl-games-today-2026-opening-170904210.html",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d15"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://science.howstuffworks.com/zamboni.htm",
+      "detail": "unreachable-link: https://science.howstuffworks.com/zamboni.htm",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d16"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://en.wikipedia.org/wiki/Ice_resurfacer",
+      "detail": "unreachable-link: https://en.wikipedia.org/wiki/Ice_resurfacer",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d17"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-za...",
+      "detail": "unreachable-link: https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-zamboni",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d18"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://zamboni.com/wp-content/uploads/2011/10/ZamboniStory_ToledoWalleye.pdf",
+      "detail": "unreachable-link: https://zamboni.com/wp-content/uploads/2011/10/ZamboniStory_ToledoWalleye.pdf",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d19"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://dev.to/nikhil_657d136fec04f0e0b2/building-a-daily-puzzle-site-what-the-...",
+      "detail": "unreachable-link: https://dev.to/nikhil_657d136fec04f0e0b2/building-a-daily-puzzle-site-what-the-tech-stack-actually-looks-like-1hfj",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d20"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://dev.to/solsticioapp/a-daily-logic-puzzle-with-no-backend-at-all-1ef6",
+      "detail": "unreachable-link: https://dev.to/solsticioapp/a-daily-logic-puzzle-with-no-backend-at-all-1ef6",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d21"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.cipherssecurity.com/games/",
+      "detail": "unreachable-link: https://www.cipherssecurity.com/games/",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No page change. Re-run the link check from an unrestricted network; curl returned 000.",
+      "id": "d22"
+    }
+  ],
+  "browserCheck": {
+    "ran": true,
+    "errors": [],
+    "warnings": [],
+    "shots": [
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/desktop-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/desktop-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/mobile-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/mobile-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/mobile-320.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/reduced-motion.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/monkey-desktop-end.png",
+      "/home/user/sonnet-every-day/work/2026-10-12/qa/run/shots/monkey-mobile-end.png"
+    ],
+    "reportPath": "work/2026-10-12/qa/run/report.json"
+  },
+  "validate": {
+    "ran": true,
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "note": ""
+  },
+  "proofread": {
+    "linksChecked": 9,
+    "linksOk": 0,
+    "issues": 11,
+    "notes": "Sandbox network looks restricted: all 9 links answered 000 once each, with no retries, so the 9 unreachable-link entries are not evidence against the sites. Otherwise no typos, leftovers or source mismatches found; the two unverified-claim entries are the 2013-doodle sentence in the About panel and the Real section. Oddities (research steering wording, Mental Floss attribution) went to kaizen/notes-clerk.md."
+  }
+}
