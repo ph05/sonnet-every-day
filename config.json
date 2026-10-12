@@ -179,6 +179,7 @@
       "wantedCount": 2,
       "wantedBonus": 5,
       "starvedDays": 6,
+      "quota": { "tool": 2, "lesson": 2, "explorer": 1, "studio": 1 },
       "legacyDefault": "play"
     }
   },

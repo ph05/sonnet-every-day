@@ -38,7 +38,8 @@ const plan = (date, history, opts = {}) => purposePlan({ date, history, config: 
 test('config and taxonomy carry what the plan needs (play is reserved, the canonical order is tool, lesson, explorer, studio, play)', () => {
   assert.deepEqual(PURPOSES, ['tool', 'lesson', 'explorer', 'studio', 'play']);
   assert.deepEqual(CONFIG.mix.purposes, {
-    windowDays: 7, cooldownDays: 2, playCooldownDays: 3, maxPlayPer7Days: 2, wantedCount: 2, wantedBonus: 5, starvedDays: 6, legacyDefault: 'play',
+    windowDays: 7, cooldownDays: 2, playCooldownDays: 3, maxPlayPer7Days: 2, wantedCount: 2, wantedBonus: 5, starvedDays: 6,
+    quota: { tool: 2, lesson: 2, explorer: 1, studio: 1 }, legacyDefault: 'play',
   });
 });
 
@@ -147,12 +148,13 @@ test('avoid: purposes shipped in the last cooldownDays days, plus play when bloc
   assert.deepEqual(own.avoid, ['tool', 'lesson'], 'the oldest cooldown (play) is lifted to keep three purposes');
 });
 
-test('wanted: fewest shipped in the window first, then the longest gap, then canonical order; at most wantedCount', () => {
+test('wanted: lowest shipped-to-quota ratio first, then the longest gap, then canonical order; at most wantedCount', () => {
   const h = { startDate: '2026-11-05', entries: [ent('2026-11-05', 'explorer'), ent('2026-11-06', 'tool'), ent('2026-11-07', 'lesson')] };
   const p = plan('2026-11-10', h);
-  // tool shipped 4 days ago (counts 1), lesson 3 (counts 1, cooling? no: 3 > 2), explorer 5 (counts 1), studio never (counts 0, gap 5 = since startDate)
+  // studio never shipped (ratio 0); tool and lesson shipped once against a quota of 2 (ratio 0.5, tool's gap of 4 days beats lesson's 3);
+  // explorer shipped once against a quota of 1 (ratio 1)
   assert.deepEqual(p.avoid, []);
-  assert.deepEqual(p.wanted, ['studio', 'explorer']);
+  assert.deepEqual(p.wanted, ['studio', 'tool']);
   assert.deepEqual(plan('2026-11-10', h, { config: cfgWith({ wantedCount: 1 }) }).wanted, ['studio']);
   // an empty history on the start date: every gap is 0, canonical order decides
   assert.deepEqual(plan('2026-11-05', { startDate: '2026-11-05', entries: [] }).wanted, ['tool', 'lesson']);
@@ -204,7 +206,7 @@ test('no plan: a config without mix.purposes or a taxonomy without purposes (or 
  * 60 days from 2026-10-13 on the real first three days. Each day ships one purpose chosen by `pick` among the wanted ones; on
  * every 5th day play ships instead whenever the plan allows it. `skip(i)` makes day i a fallback day (nothing counts).
  */
-function simulate(pick, { days = 60, skip = () => false, seed = 'sim' } = {}) {
+function simulate(pick, { days = 60, skip = () => false, seed = 'sim', playEvery = 5 } = {}) {
   const rng = mulberry32(hashStr(seed));
   const history = realHistory();
   const shipped = [];
@@ -219,7 +221,7 @@ function simulate(pick, { days = 60, skip = () => false, seed = 'sim' } = {}) {
       shipped.push(null);
       continue;
     }
-    const purpose = i % 5 === 4 && p.playAllowed ? PLAY : pick(p.wanted, rng);
+    const purpose = playEvery > 0 && i % playEvery === playEvery - 1 && p.playAllowed ? PLAY : pick(p.wanted, rng);
     assert.ok(purpose === PLAY ? p.playAllowed : !p.avoid.includes(purpose), `${date}: shipped ${purpose} while avoided`);
     history.entries.push(ent(date, purpose));
     shipped.push(purpose);
@@ -269,6 +271,19 @@ for (const [name, pick] of Object.entries(PICKERS)) {
     }
   });
 }
+
+test('quota: with no play, tools and lessons ship clearly more often than explorers and studios (56 days, three pickers)', () => {
+  for (const [name, pick] of Object.entries(PICKERS)) {
+    const { shipped } = simulate(pick, { days: 56, playEvery: 0, seed: name });
+    const n = Object.fromEntries(NON_PLAY.map((p) => [p, shipped.filter((s) => s === p).length]));
+    for (const p of NON_PLAY) assert.ok(n[p] >= 6, `${name}: ${p} only ${n[p]} times in 56 days`);
+    // only a picker that takes the best-ranked purpose shows the quota (always taking the second-ranked one is its own bias)
+    if (name !== 'first') continue;
+    assert.ok(n.tool >= 1.2 * n.explorer && n.tool >= 1.2 * n.studio, `${name}: tool ${n.tool} vs explorer ${n.explorer} studio ${n.studio}`);
+    assert.ok(n.lesson >= 1.2 * n.explorer && n.lesson >= 1.2 * n.studio, `${name}: lesson ${n.lesson} vs explorer ${n.explorer} studio ${n.studio}`);
+    for (const p of NON_PLAY) assert.ok(n[p] >= 6, `${name}: ${p} only ${n[p]} times in 56 days`);
+  }
+});
 
 test('60 simulated days with a fallback day every 6th day: the play cap and the no-repeat rule still hold', () => {
   for (const [name, pick] of Object.entries(PICKERS)) {

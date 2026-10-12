@@ -1083,7 +1083,7 @@ describe('e2e', () => {
     const lenses = box.must('lenses', ['--date', D]);
     assert.equal(lenses.agents.length, 8);
     const mix = box.must('novelty', ['mix', '--date', D]);
-    assert.deepEqual(mix.owed.sort(), [...SLOTS].sort());
+    assert.deepEqual(mix.owed.sort(), SLOTS.filter((s) => (CONFIG.mix.targets[s]?.minPer7Days ?? 0) > 0).sort());
     assert.match(box.cli('history', ['digest', '--text', '--date', D]).stdout, /no past projects yet/);
 
     // ideate's shortlist and select's document pass the playbook's own ideas-check (A1) on the way

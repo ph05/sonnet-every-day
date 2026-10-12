@@ -2805,6 +2805,10 @@ function checkPurposeKeys(report, cfg, taxonomy, f) {
       if (mp[k] !== undefined && !posNum(mp[k])) report.error('config', `mix.purposes.${k} must be a positive number`, f);
     }
     if (mp.wantedCount !== undefined && mp.wantedCount !== 1 && mp.wantedCount !== 2) report.error('config', 'mix.purposes.wantedCount must be 1 or 2', f);
+    if (mp.quota !== undefined) {
+      if (!mp.quota || typeof mp.quota !== 'object' || Array.isArray(mp.quota)) report.error('config', 'mix.purposes.quota must be an object of purpose: positive number', f);
+      else for (const [p, q] of Object.entries(mp.quota)) if (!vocab.includes(p) || !posNum(q)) report.error('config', `mix.purposes.quota.${p} must be a positive number for a purpose (${vocab.join(', ')})`, f);
+    }
     if (mp.legacyDefault !== undefined && !vocab.includes(mp.legacyDefault)) report.error('config', `mix.purposes.legacyDefault ${JSON.stringify(mp.legacyDefault)} is not a purpose (${vocab.join(', ')})`, f);
   }
   if (cfg.ideation?.shortlistMinWanted !== undefined && !(Number.isInteger(cfg.ideation.shortlistMinWanted) && cfg.ideation.shortlistMinWanted >= 0)) {

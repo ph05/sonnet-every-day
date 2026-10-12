@@ -16,6 +16,8 @@ const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const SLOT_ORDER = ['interest', 'currentEvents', 'humor', 'wildcard'];
 /** The reserved purpose the plan special-cases: never wanted, capped and cooled down on its own (validate.mjs repo requires it). */
 export const PLAY = 'play';
+/** Weekly shares used when config.mix.purposes.quota is missing (tools and lessons first). */
+const PURPOSE_QUOTA_DEFAULT = { tool: 2, lesson: 2, explorer: 1, studio: 1 };
 /** Used when a config.mix.purposes value is missing or damaged (validate.mjs repo reports the damage). */
 const PURPOSE_DEFAULTS = {
   windowDays: 7, cooldownDays: 2, playCooldownDays: 3, maxPlayPer7Days: 2, wantedCount: 2, wantedBonus: 5, starvedDays: 6, legacyDefault: PLAY,
@@ -229,6 +231,12 @@ function purposeSettings(raw, vocab) {
   }
   s.wantedBonus = Number.isFinite(raw.wantedBonus) && raw.wantedBonus >= 0 ? raw.wantedBonus : PURPOSE_DEFAULTS.wantedBonus;
   s.legacyDefault = vocab.includes(raw.legacyDefault) ? raw.legacyDefault : PLAY;
+  // how many builds of each purpose a 7-day window should hold; tools and lessons come up twice as often as explorers and studios
+  s.quota = {};
+  for (const p of vocab) {
+    const q = raw.quota?.[p];
+    s.quota[p] = Number.isFinite(q) && q > 0 ? q : PURPOSE_QUOTA_DEFAULT[p] ?? 1;
+  }
   return s;
 }
 
@@ -302,7 +310,7 @@ export function purposePlan({ date, purpose, history, config, taxonomy } = {}) {
   // a purpose idle for starvedDays with nothing in the window becomes the only wanted one, so whichever wanted purpose wins,
   // every purpose ships within a week
   const starved = candidates.filter((p) => counts[p] === 0 && gap(p) >= s.starvedDays).sort((a, b) => gap(b) - gap(a) || canonical(a, b));
-  const ranked = starved.length ? starved : [...candidates].sort((a, b) => counts[a] - counts[b] || gap(b) - gap(a) || canonical(a, b));
+  const ranked = starved.length ? starved : [...candidates].sort((a, b) => counts[a] / s.quota[a] - counts[b] / s.quota[b] || gap(b) - gap(a) || canonical(a, b));
   return { ...plan, wanted: ranked.slice(0, s.wantedCount), avoid: vocab.filter((p) => avoid.has(p)) };
 }
 

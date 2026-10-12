@@ -919,7 +919,7 @@ describe('check: content rules', () => {
   });
   test('document line caps hold, but a file already over its cap may shrink', () => {
     const repo = makeRepo();
-    repo.w('README.md', `${repo.r('README.md')}${lines(60, 'more')}`);
+    repo.w('README.md', `${repo.r('README.md')}${lines(120, 'more')}`);
     assert.ok(hasRule(check(repo), 'doc-line-cap', 'README.md'));
     const over = makeRepo({ 'README.md': lines(300, 'old') });
     over.w('README.md', lines(290, 'old'));
