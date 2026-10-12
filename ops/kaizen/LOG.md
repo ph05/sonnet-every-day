@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · artisan · applied · artisan.md: builders resize to 1280x650 and 390x844 before handoff (button-over-text S2 shipped)
+
+- observation: 2026-10-12 report: revise left one S2 (buttons overlap text on windows 1280 px wide and under about 720 px tall) and an S3 (share text box cuts its own text on phones), both shipped. Architect put the 1280x650 check in quality.md line 13 for QA, but the builder standards in artisan.md only named 320px scroll, so the person who writes the layout was never told to look. Added one sentence to Deliverable standards: resize to 1280x650 and 390x844, no control over text, primary button and output together on screen, no text box cutting its text.
+- category: prevention · lines changed: 2 · files: ops/roles/artisan.md
+- question: Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?
+
 ## 2026-10-12 · architect · applied · quality.md: add a short 1280x650 window to the hard minimums (button-over-text S2 shipped)
 
 - observation: 2026-10-12 report: revise left one S2, buttons overlap text on windows 1280 px wide or more and under about 720 px tall, and it shipped. quality.md named 1366x768 and 390x844 only and browser-check shoots 1280x800 and 390x844, so no step looked at a short desktop window. My integrate note says the same: a Start button 15 to 35 px below the fold at short heights passes clean. Added one hard-minimum bullet naming 1280x650: no control over text, primary button on screen.

@@ -196,6 +196,22 @@
       "linesChanged": 1,
       "question": "Proposal for protected browser-check.mjs: add a 1280x650 desktop shot and assert the primary button rect fits the viewport and no two visible controls overlap?",
       "reason": null
+    },
+    {
+      "id": "2026-10-12-artisan",
+      "date": "2026-10-12",
+      "agent": "artisan",
+      "title": "artisan.md: builders resize to 1280x650 and 390x844 before handoff (button-over-text S2 shipped)",
+      "observation": "2026-10-12 report: revise left one S2 (buttons overlap text on windows 1280 px wide and under about 720 px tall) and an S3 (share text box cuts its own text on phones), both shipped. Architect put the 1280x650 check in quality.md line 13 for QA, but the builder standards in artisan.md only named 320px scroll, so the person who writes the layout was never told to look. Added one sentence to Deliverable standards: resize to 1280x650 and 390x844, no control over text, primary button and output together on screen, no text box cutting its text.",
+      "category": "prevention",
+      "files": [
+        "ops/roles/artisan.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Should browser-check.mjs (protected) shoot 1280x650 so the builder check is also a machine check?",
+      "reason": null
     }
   ]
 }
