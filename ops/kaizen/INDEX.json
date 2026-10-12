@@ -191,7 +191,7 @@
       "files": [
         "ops/rubrics/quality.md"
       ],
-      "sha": null,
+      "sha": "74c3d3b27455d7cc7188b9b70e4e1aa4433c2f22",
       "status": "applied",
       "linesChanged": 1,
       "question": "Proposal for protected browser-check.mjs: add a 1280x650 desktop shot and assert the primary button rect fits the viewport and no two visible controls overlap?",

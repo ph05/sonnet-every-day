@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-12 report: revise left one S2, buttons overlap text on windows 1280 px wide or more and under about 720 px tall, and it shipped. quality.md named 1366x768 and 390x844 only and browser-check shoots 1280x800 and 390x844, so no step looked at a short desktop window. My integrate note says the same: a Start button 15 to 35 px below the fold at short heights passes clean. Added one hard-minimum bullet naming 1280x650: no control over text, primary button on screen.
 - category: prevention · lines changed: 1 · files: ops/rubrics/quality.md
+- commit: 74c3d3b274
 - question: Proposal for protected browser-check.mjs: add a 1280x650 desktop shot and assert the primary button rect fits the viewport and no two visible controls overlap?
 
 ## 2026-10-12 · jester · applied · PLAYBOOK 6.5: budget.spent() is session-cumulative in a persistent session, rebase capTokens before
