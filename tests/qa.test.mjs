@@ -1108,7 +1108,7 @@ browserSuite('browser-check: page contract', { concurrency: 2 }, () => {
 
   test('a transparent intro is hidden, gradient text is not; a result below the first screen is late on desktop and phone; play pages are exempt from the first-frame rule', async () => {
     const transparent = contractVariant(TOOL, {
-      html: (s) => s.replace('data-sed-intro>', 'data-sed-intro style="color: transparent">').replace('<div class="cc-result"', '<div style="height:720px" aria-hidden="true"></div><div class="cc-result"'),
+      html: (s) => s.replace('data-sed-intro>', 'data-sed-intro style="color: transparent">').replace('<div class="cc-result"', '<div style="height:720px;order:-2" aria-hidden="true"></div><div class="cc-result"'),
     });
     const late = await runCheck([transparent, '--contract', ...QUICK]);
     assert.match(late.json.errors.join('\n'), /intro-hidden: .*a fully transparent text colour/);
