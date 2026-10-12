@@ -3668,7 +3668,7 @@ describe('e2e', () => {
     assert.match(mixOut.summary, /^Purpose mix this week: /, 'the summary starts with the purpose sentence, as PLAYBOOK 8.1 says');
     assert.deepEqual(lensOut.purposes, mixOut.purposes, 'lenses.json `purposes` echoes the plan of mix.json');
     const forced = box.must('novelty', ['mix', '--date', D, '--purpose', 'lesson']);
-    assert.deepEqual([forced.purposes.override, forced.purposes.wanted, forced.purposes.avoid, forced.purposes.playAllowed], ['lesson', ['lesson'], [], true], 'PURPOSE=lesson (PLAYBOOK 3.4)');
+    assert.deepEqual([forced.purposes.override, forced.purposes.wanted, forced.purposes.avoid, forced.purposes.playAllowed], ['lesson', ['lesson'], ['tool', 'explorer', 'studio', 'play'], false], 'PURPOSE=lesson (PLAYBOOK 3.4): every other purpose is avoided');
     assert.equal(box.must('lenses', ['--date', D, '--purpose', 'lesson']).purposes.override, 'lesson');
     const digest = box.cli('history', ['digest', '--limit', '90', '--text', '--date', D]);
     assert.equal(digest.code, 0);

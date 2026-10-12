@@ -4,13 +4,13 @@
 // Same date + same state/ideas history => same output. Day D's own ideas file is ignored so reruns are stable.
 // How many lenses of each kind a day gets follows the day's purpose plan (novelty.mjs mix, `purposes`): a wanted tool brings
 // useful lenses, a wanted lesson teach lenses, and humor lenses are drawn only when play is allowed. --purpose P is the manual
-// override, passed through to the plan.
+// override, passed through to the plan (only P wanted, every other purpose avoided, humor only when P is play).
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import {
   rp, readJson, loadConfig, loadTaxonomy, parseArgs, resolveNow, localParts, hashStr, mulberry32, print, die,
 } from './lib/common.mjs';
-import { mix, PLAY } from './novelty.mjs';
+import { mix, applyOverride, PLAY } from './novelty.mjs';
 import { purposeVocabulary } from './history.mjs';
 
 export const AGENTS = ['pulse', 'cards', 'lab', 'jester', 'architect', 'artisan', 'engineer', 'critic'];
@@ -97,9 +97,10 @@ function vocabulary() {
 
 /**
  * The plan used when novelty mix cannot run (an unreadable history): the first wantedCount non-play purposes, nothing avoided,
- * play allowed; or the override. counts and lastShipped are unknown (null).
+ * play allowed; with an override, the override plan of novelty.mjs (applyOverride: only it wanted, every other purpose avoided).
+ * counts and lastShipped are unknown (null).
  */
-export function neutralPlan(purpose = null) {
+export function neutralPlan(purpose = null, date = null) {
   let wantedCount = 2;
   let bonus = 5;
   let windowDays = 7;
@@ -110,18 +111,19 @@ export function neutralPlan(purpose = null) {
     if (Number.isInteger(pc.windowDays) && pc.windowDays > 0) windowDays = pc.windowDays;
   } catch { /* defaults */ }
   const vocab = vocabulary() ?? DEFAULT_PURPOSES;
-  return {
+  const plan = {
     windowDays,
     counts: null,
     lastShipped: null,
-    wanted: purpose ? [purpose] : vocab.filter((p) => p !== PLAY).slice(0, wantedCount),
+    wanted: vocab.filter((p) => p !== PLAY).slice(0, wantedCount),
     avoid: [],
     playAllowed: true,
     playBlockedUntil: null,
     bonus,
-    override: purpose ?? null,
+    override: null,
     legacyAssumed: [],
   };
+  return purpose ? applyOverride(plan, purpose, vocab, date) : plan;
 }
 
 /** The day's purpose plan and owed lens kinds from novelty mix; the neutral plan and the error when mix cannot run. */
@@ -130,7 +132,7 @@ function planFor(date, purpose) {
     const m = mix({ date, purpose: purpose ?? undefined });
     return { plan: m.purposes ?? null, owed: m.owed.map((s) => SLOT_TO_KIND[s]).filter(Boolean), planError: null };
   } catch (err) {
-    return { plan: neutralPlan(purpose), owed: [], planError: err.message };
+    return { plan: neutralPlan(purpose, date), owed: [], planError: err.message };
   }
 }
 

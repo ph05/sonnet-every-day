@@ -472,10 +472,14 @@ test('mix: purposes is the purpose plan and the summary leads with it; no config
     assert.equal(m.purposes.bonus, 5);
     assert.equal(m.purposes.override, null);
     assert.match(m.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Today we want an explorer or a studio \(lead with one\); skip tool and lesson \(shipped in the last 2 days\); play is allowed but must win on merit\. In the last 14 days/);
-    // the manual override
+    // the manual override: only that purpose is wanted and every other one is avoided
     const o = mix({ date: TODAY, purpose: 'play' });
-    assert.deepEqual([o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [['play'], [], true, 'play']);
-    assert.match(o.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Manual override: today we want a play idea \(a game, toy or satire\)\. Lead with it; no purpose is avoided\. /);
+    assert.deepEqual([o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [['play'], ['tool', 'lesson', 'explorer', 'studio'], true, 'play']);
+    assert.match(o.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Manual override: today we want a play idea \(a game, toy or satire\) and nothing else; every other purpose is avoided\. /);
+    const t = mix({ date: TODAY, purpose: 'tool' });
+    assert.deepEqual([t.purposes.wanted, t.purposes.avoid, t.purposes.playAllowed, t.purposes.override], [['tool'], ['lesson', 'explorer', 'studio', 'play'], false, 'tool']);
+    assert.match(t.summary, /^Purpose mix this week: tool 1, lesson 1, explorer 0, studio 0, play 0\. Manual override: today we want a tool and nothing else; every other purpose is avoided\. /);
+    assert.ok(!/paused|skip /.test(t.summary.split('. In the last')[0]), 'the override sentence replaces the plan sentence');
     assert.throws(() => mix({ date: TODAY, purpose: 'game' }), /unknown purpose "game"/);
   });
   // tests/helpers/test-config.json has no mix.purposes: no plan, no purpose sentence, nothing throws
@@ -535,7 +539,7 @@ test('CLI: mix --purpose is the manual override; a bare --purpose exits 2, an un
       const r = cli(box, args);
       assert.equal(r.code, 0, r.err);
       const o = JSON.parse(r.out);
-      assert.deepEqual([o.ok, o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [true, ['play'], [], true, 'play']);
+      assert.deepEqual([o.ok, o.purposes.wanted, o.purposes.avoid, o.purposes.playAllowed, o.purposes.override], [true, ['play'], ['tool', 'lesson', 'explorer', 'studio'], true, 'play']);
       assert.ok(o.summary.startsWith('Purpose mix'));
     }
     for (const args of [['mix', '--date', TODAY, '--purpose'], ['mix', '--purpose', '--date', TODAY], ['mix', '--purpose=', '--date', TODAY]]) {

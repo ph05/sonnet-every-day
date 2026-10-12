@@ -16,9 +16,9 @@ Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, lets you filte
 * **Studios.** A small workbench that makes something worth keeping or exporting: music, patterns, palettes, type.
 * **Play.** A game or a satire with one clear goal and a familiar hook. Welcome, but rare.
 
-**How the mix is kept.** Each morning `node scripts/novelty.mjs mix` reads the last seven days and plans the day: the one or two purposes furthest below their weekly share (tools and lessons twice a week, explorers and studios once) are wanted, the scouts lead with them and the judges add a small bonus; a purpose shipped in the last two days waits its turn, and play comes back at most twice a week, three days apart. The owner can ask for one kind on any day with a manual run (`PURPOSE=tool`; [`ops/OPERATING.md`](ops/OPERATING.md), "Steering the mix").
+**How the mix is kept.** Each morning `node scripts/novelty.mjs mix` reads the last seven days and plans the day: the one or two purposes furthest below their weekly share (tools and lessons twice a week, explorers and studios once) are wanted, the scouts lead with them and selection adds a small bonus; a purpose shipped in the last two days waits its turn, and play comes back at most twice a week, three days apart. The owner can ask for one kind with a manual run (`PURPOSE=tool`): that run avoids every other purpose, so it ships that kind unless no idea of it passes selection ([`ops/OPERATING.md`](ops/OPERATING.md), "Steering the mix").
 
-**The clarity promise.** Plain first: the title, the tagline and the first sentence of the intro say what the page literally is; a theme only decorates. Ten seconds: a stranger can say what it is after ten seconds and reaches a first result within thirty without reading anything, with at most 8 controls on the first screen. An intro and an explainer on every built page: 35 to 70 words right under the title (what it is, who it is for, what to do first) and an explanation for a curious non-expert, with every term defined where it first appears. QA checks it with a stranger who sees only the first screen.
+**The clarity promise.** Plain first: the title, the tagline and the first sentence of the intro say what the page literally is; a theme only decorates. Ten seconds: a stranger can say what it is after ten seconds and reaches a first result within thirty without reading anything, with at most 8 controls on the first screen (more than 8 is flagged, more than 14 fails the page). An intro and an explainer on every built page: 35 to 70 words right under the title (what it is, who it is for, what to do first) and an explanation for a curious non-expert, with every term defined where it first appears. QA checks it with a stranger who sees only the first screen.
 
 **The owner's voice.** What the owner has said lives in [`ops/OWNER.md`](ops/OWNER.md), newest first. Every agent reads it before it researches, scores, designs, builds or reviews, and no kaizen may edit it.
 
@@ -37,7 +37,8 @@ Day 1 is 2026-10-10. The gallery keeps every day, shows a streak, lets you filte
 03:55  preflight   sync, claim the day, read the history, the purpose plan and the lens assignments
        ideate      8 scouts research and propose, led by the day's wanted purposes; a clerk dedupes;
                    a novelty gate and verifiers narrow it to EXACTLY 10 researched ideas
-       select      nine judges score the 10 (clarity among them) and pick the winner (and at most one to save)
+       select      judges score the 10 on nine criteria, clarity among them (four judges on this
+                   2-slot machine), and pick the winner (and at most one to save)
        spec        architect, artisan and engineer write the intro, the explainer, the spec, the design and the file map
        build       builders work on disjoint files in parallel
        QA          headless browser on desktop and phone, light and dark, plus a monkey test;
@@ -109,7 +110,7 @@ The cloud network is restricted: web search works, opening most pages does not. 
 
 ## How a daily project is judged
 
-1. **The ten ideas are scored 0 to 10** on sophistication, delight, distinctness, feasibility, timeliness, interest fit, polish potential, safety and clarity. An idea a stranger could not grasp in ten seconds cannot win, and an idea of the day's wanted purpose gets a small bonus. The judge panel's winner is built.
+1. **The ten ideas are scored 0 to 10** on sophistication, delight, distinctness, feasibility, timeliness, interest fit, polish potential, safety and clarity. An idea the clarity judge scores below 5 (it needs a paragraph, or a metaphor or jargon hides what it is) cannot win, and an idea of the day's wanted purpose gets a small bonus from selection. The judge panel's winner is built.
 2. **Hard gates before anything goes live.** `scripts/validate.mjs` checks the metadata, the thumbnail, the page shell, the Content-Security-Policy, that there are no external resources, secrets or forbidden files, that every script parses, the size and code-volume limits, and the page contract: the purpose, the intro (it must match the metadata word for word) and the explainer's words and headings. A project that fails is left out and can never break the gallery.
 3. **A real browser looks at it.** Headless Chromium loads the page on desktop and phone in light and dark, records console errors, failed or non-local requests, layout overflow and missing labels, counts the controls on the first screen, runs a tool's built-in known-answer tests, then hammers it with random clicks and keys to catch crashes and hangs.
 4. **A critic ranks what is left.** Beside it a stranger who sees only the first screen says what the page is, and an expert checks every claim of the explanation. Serious defects go back to their owners for a fix. The bar is "would a person bookmark this or send it to a friend": keyboard and touch support, 360px layouts, light and dark, reduced motion, shareable state, a making-of panel with the day's sources.

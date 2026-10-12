@@ -11,7 +11,7 @@ Why persistent sessions: a routine that starts a fresh session per firing gets n
 | wdB | Sonnet Every Day: watchdog B (06:47 ET) | `47 6 * * *` | `watchdog-b.md` |
 | closer | Sonnet Every Day: closer (08:47 ET) | `47 8 * * *` | `closer.md` |
 | closerBackup | Sonnet Every Day: closer backup (09:37 ET) | `37 9 * * *` | `closer.md` (same prompt as the closer; it exits quietly when the day is published and covers a closer whose session died, see PLAYBOOK §5.4) |
-| manual | routine Sonnet Every Day: manual run (button), session Sonnet Every Day: manual operator (ad hoc runs, demo) | none (poke-only, fired by hand) | `manual.md` (`ROLE=manual`; the fire text carries `RUN_DATE`, `TARGET_TIER`, `FORCE`; `primary.md` with `ROLE_OVERRIDE=manual` in the fire text works the same) |
+| manual | routine Sonnet Every Day: manual run (button), session Sonnet Every Day: manual operator (ad hoc runs, demo) | none (poke-only, fired by hand) | `manual.md` (`ROLE=manual`; the fire text carries `RUN_DATE`, `TARGET_TIER`, `FORCE`, `PURPOSE`; `primary.md` with `ROLE_OVERRIDE=manual` in the fire text works the same) |
 
 `state/routines.json` is the registry of the session ids and trigger ids; the orchestrator writes it, operators never do. Ids are not secrets. The registry holds the `session_...` form of a session id; inside the session `$CLAUDE_CODE_REMOTE_SESSION_ID` (and with it the lease and the heartbeat files, and `last_run.session_id` in `get_trigger`) is the same id with the prefix `cse_`. `list_triggers` also shows routines that are not among the six: one-off ones from the first days (`DEMO run, Day 1` and `RESUME demo, Day 1`, no schedule, they fire into the manual session) and the phase-watch timers `sed-watch-<date>-<phase>-a<attempt>` that the sessions create. Leave them alone.
 
@@ -44,4 +44,4 @@ node --input-type=module -e "import fs from 'node:fs'; const t = (f) => fs.readF
 
 3. `get_trigger` on each trigger and compare `derived_state.prompt` with the printed text. A difference means the update did not take.
 
-Manual/genesis run: `fire_trigger` the manual routine with text `ROLE_OVERRIDE=manual RUN_DATE=YYYY-MM-DD TARGET_TIER=1` (the playbook reads the override from that fire only).
+Manual/genesis run: `fire_trigger` the manual routine with text `ROLE_OVERRIDE=manual RUN_DATE=YYYY-MM-DD TARGET_TIER=1`, plus `PURPOSE=tool` (or `lesson`, `explorer`, `studio`, `play`) to ask for one kind of page (the playbook reads the override from that fire only; `../OPERATING.md`, "Steering the mix", says what a run for today still faces).

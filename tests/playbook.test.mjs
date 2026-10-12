@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { makeSandbox, makeRepoSandbox, REPO_ROOT } from './helpers/sandbox.mjs';
-import { etIso, tmpDir } from './helpers/env.mjs';
+import { etIso, plusMinutes, tmpDir } from './helpers/env.mjs';
 import { levelConfigFor, stagingDirs } from '../scripts/lib/runstate.mjs';
 
 const D = '2026-10-09';
@@ -1104,7 +1104,8 @@ test('planner (A4): the timetable follows the agent slots; below 6 a Tier 1 day 
   assert.equal(planner(319, 2, 'ideate', { SLOTS: '2' }).available, 319 - 10, 'the narrow reserve is 10 minutes (planned finish about 09:05)');
   // the measured 2026-10-11 moments: build started at 06:47 (163 minutes to grace, MTD 148) and qa at 08:27 (MTD 48)
   assert.equal(planner(148, 2, 'build', { SLOTS: '2' }).feasible, true, 'a compact build at 06:47 still fits');
-  assert.ok(planner(148, 2, 'build', { SLOTS: '2' }).phaseBudgetMinutes >= 80, `build is not squeezed (${planner(148, 2, 'build', { SLOTS: '2' }).phaseBudgetMinutes})`);
+  // since 2026-10-13 qa plans 45 minutes, so a build that starts at 06:47 gets 78 (138 available - qa 45 - package 10 - publish 5)
+  assert.equal(planner(148, 2, 'build', { SLOTS: '2' }).phaseBudgetMinutes, 78, 'build is squeezed only by the longer qa');
   const lateQa = planner(48, 2, 'qa', { SLOTS: '2' });
   assert.deepEqual([lateQa.feasible, lateQa.available, lateQa.suggestTier], [true, 58, 2], 'from qa on, a built site is measured against the grace window (MTD + 10): the 2026-10-11 qa at 08:27 was right to run');
   assert.ok(lateQa.phaseBudgetMinutes >= 30, 'and qa keeps a real budget');
@@ -1117,6 +1118,49 @@ test('planner (A4): the timetable follows the agent slots; below 6 a Tier 1 day 
   assert.deepEqual(auto.phaseBudgetMinutes, planner(319, 2, 'ideate', { SLOTS: String(auto.slots) }).phaseBudgetMinutes);
   assert.match(section(PLAYBOOK, '### 6.3'), /SLOTS=<n>/);
   assert.match(section(PLAYBOOK, '### 8.1'), /narrow timetable/);
+});
+
+test('planner (A4): since 2026-10-13 a narrow compact day plans spec 35 and qa 45 (caps 50 and 55), about 20 minutes longer; SPENT credits a phase under way, so wdB never orders ship-now for a nominal build', () => {
+  const planner = (mtd, tier, phase, extra = {}) => runSnippet(realBox(), 'A4', { MTD: String(mtd), TIER: String(tier), PHASE: phase, SLOTS: '2', ...extra }).json;
+  const a4 = snippet('A4');
+  assert.match(a4, /2: \{ preflight: 5, ideate: 80, select: 25, spec: 35, build: 85, qa: 45, revise: 20, package: 10, publish: 5 \}/);
+  assert.match(a4, /\? \{ preflight: 15, ideate: 110, select: 40, spec: 50, build: 110, qa: 55, revise: 40, package: 25, publish: 15 \}/);
+  // the whole compact day from preflight: 5 + 80 + 25 + 35 + 85 + 45 + 10 + 5 = 290 minutes (270 before), the sentence of 6.3 says so
+  assert.equal(planner(500, 2, 'preflight').needNow, 290);
+  assert.match(section(PLAYBOOK, '### 6.3'), /Since 2026-10-13 a compact day plans about 20 minutes longer \(spec 35 minutes for the complete explainer, qa 45 for the stranger cold read, its judge and the expert\)/);
+  // the wide timetable (8 slots) is untouched
+  assert.equal(planner(500, 2, 'preflight', { SLOTS: '8' }).needNow, 5 + 25 + 10 + 12 + 35 + 12 + 12 + 5);
+  // wdB at 06:52 (158 minutes to grace, MTD 143) finds a nominal primary 32 minutes into its build (it started 06:20):
+  // priced from the start of build the day "cannot finish" (a false ship-now); with SPENT the remaining 53 + 45 + 10 + 5 fit
+  const fresh = planner(143, 2, 'build');
+  assert.deepEqual([fresh.feasible, fresh.suggestTier, fresh.needNow], [false, 3, 145], 'a build that only starts at 06:52 is past the planned finish');
+  const underway = planner(143, 2, 'build', { SPENT: '32' });
+  assert.deepEqual([underway.feasible, underway.suggestTier, underway.needNow], [true, 2, 113]);
+  // the credit never exceeds the phase: an overrunning build counts 0, never less; a missing or damaged SPENT is 0
+  assert.equal(planner(143, 2, 'build', { SPENT: '200' }).needNow, 45 + 10 + 5);
+  for (const bad of ['', 'x', '-5', '3.', '.5', '1e3', '3.5.1']) assert.equal(planner(143, 2, 'build', { SPENT: bad }).needNow, 145, `SPENT=${bad}`);
+  // status prints phaseMinutes in tenths (31.6): the whole minutes count, so the value wdB copies from status is never ignored
+  assert.equal(planner(143, 2, 'build', { SPENT: '3.5' }).needNow, 142);
+  const box = realBox();
+  try {
+    walk(box, 'build');
+    const started = box.state(['phase-start', '--phase', 'build', '--session', 'sP', '--date', D, '--now', plusMinutes(at('06:20'), 0.4)]);
+    assert.equal(started.code, 0, started.stdout + started.stderr);
+    must(box, ['beat', '--role', 'primary', '--session', 'sP', '--phase', 'build'], '06:50');
+    const status = must(box, ['status'], '06:52');
+    assert.deepEqual([status.phase, status.phaseMinutes, status.minutesToGraceUntil], ['build', 31.6, 158]);
+    const wd = planner(status.minutesToGraceUntil - 15, 2, status.phase, { SPENT: String(status.phaseMinutes) });
+    assert.deepEqual([wd.feasible, wd.needNow], [true, 145 - 31], 'the documented wdB check, fed from status, credits the build under way');
+  } finally {
+    box.cleanup();
+  }
+  // later phases are never credited: SPENT is about PHASE only
+  assert.equal(planner(143, 2, 'spec', { SPENT: '10' }).needNow, 25 + 85 + 45 + 10 + 5);
+  assert.match(section(PLAYBOOK, '### 5.3 wdB'), /`MTD=<minutesToGraceUntil - 15> TIER=<targetTier> PHASE=<phase> SPENT=<phaseMinutes>`/);
+  // a wdB takeover after a finished spec: the build fits only if it starts by about 06:50 (MTD 145), as 5.3 step 4 says
+  assert.equal(planner(145, 2, 'build').feasible, true);
+  assert.equal(planner(144, 2, 'build').feasible, false);
+  assert.match(section(PLAYBOOK, '### 5.3 wdB'), /a finished `spec` fits only when the build can start by about 06:50/);
 });
 
 test('planner (A4): a mid-run Tier 1 is priced for Tier 2 from the phase it is in, not as a restart from preflight', () => {
@@ -1546,7 +1590,26 @@ test('purpose override: PLAYBOOK §3.4 documents PURPOSE=, and the preflight com
   for (const needle of [/args\.mix\.purposes/, /`purposes\.override` `<P>`/, /preflight only/, /FM-143/]) assert.match(bullet, needle);
   assert.match(section(PLAYBOOK, '### 8.1 preflight'), /With `PURPOSE=<P>` in this fire \(§3\.4\) the `lenses\.mjs` and `novelty\.mjs mix` lines get `--purpose <P>`/);
   assert.match(read('ops/FAILURE_MODES.md'), /^\| FM-143 \| A manual `PURPOSE=` run \|/m);
-  assert.match(section(read('ops/OPERATING.md'), '## Steering the mix'), /`PURPOSE=tool RUN_DATE=<date>`/);
+  const steering = section(read('ops/OPERATING.md'), '## Steering the mix');
+  assert.match(steering, /`PURPOSE=tool RUN_DATE=<date>`/);
+  // the override delivers the kind, and every document says so (r4a D3): no "nothing avoided" left anywhere
+  const fm143 = /^\| FM-143 \|[^\n]*/m.exec(read('ops/FAILURE_MODES.md'))[0];
+  assert.match(bullet, /`avoid` every other purpose/);
+  assert.match(fm143, /`avoid` = every other purpose/);
+  assert.match(steering, /avoids every other one/);
+  assert.match(read('README.md'), /that run avoids every other purpose/);
+  for (const [name, text] of [['§3.4', bullet], ['FM-143', fm143], ['OPERATING', steering], ['CONTRACT 6.3', section(read('ops/CONTRACT.md'), '### 6.3')]]) {
+    assert.ok(!/nothing is avoided|avoids nothing|`avoid` `\[\]`|`avoid \[\]`/.test(text), `${name} still says the override avoids nothing`);
+  }
+  // r4a D2: a manual run for today is still subject to the watchdogs and the closer, and the docs say so
+  assert.match(steering, /the watchdogs and the closer still act on today's run/);
+  assert.match(fm143, /On today's date the watchdogs and the closer still act on the run/);
+  assert.ok(!/fire it before 03:55: the primary then finds the day taken and stays out\)/.test(steering));
+  // r4a D8: the event is recorded after `begin`, at preflight, with the full command there
+  assert.match(bullet, /After `begin`, at preflight \(§8\.1\), record `event --kind note --msg "purpose override <P>" --by <R> --date <D>`/);
+  assert.match(section(PLAYBOOK, '### 8.1 preflight'), /record `node scripts\/state\.mjs event --kind note --msg "purpose override <P>" --by <R> --date <D>`/);
+  // r4a D7: an unknown purpose fails both commands; it is not a lens-pool fault
+  assert.match(fm143, /An unknown `<P>` makes both `mix --purpose` and `lenses\.mjs --purpose` exit 1/);
 
   const box = mixBox();
   try {
@@ -1560,20 +1623,35 @@ test('purpose override: PLAYBOOK §3.4 documents PURPOSE=, and the preflight com
     for (const P of ['tool', 'play']) {
       const mix = run(cmds[0], P);
       assert.equal(mix.code, 0, mix.stdout + mix.stderr);
-      assert.deepEqual([mix.json.purposes.override, mix.json.purposes.wanted, mix.json.purposes.avoid, mix.json.purposes.playAllowed], [P, [P], [], true], `PURPOSE=${P}`);
-      assert.match(mix.json.summary, /Manual override/);
+      // the override delivers the kind: only <P> is wanted and every other purpose is avoided (select then marks them purpose-avoid)
+      assert.deepEqual([mix.json.purposes.override, mix.json.purposes.wanted, mix.json.purposes.avoid, mix.json.purposes.playAllowed], [P, [P], vocab.filter((q) => q !== P), P === 'play'], `PURPOSE=${P}`);
+      assert.match(mix.json.summary, /Manual override: today we want [^.;]+ and nothing else; every other purpose is avoided\./);
       const lenses = run(cmds[1], P);
       assert.equal(lenses.code, 0, lenses.stdout + lenses.stderr);
       assert.equal(lenses.json.purposes.override, P);
       const kinds = lenses.json.agents.map((a) => a.lens.kind);
-      if (P === 'tool') assert.ok(kinds.filter((k) => k === 'useful').length >= 2 && lenses.json.agents.find((a) => a.agent === 'engineer').lens.kind === 'useful', kinds.join());
+      assert.deepEqual(lenses.json.purposes, mix.json.purposes, 'lenses.json echoes the override plan of mix.json');
+      if (P === 'tool') assert.ok(kinds.filter((k) => k === 'useful').length >= 2 && lenses.json.agents.find((a) => a.agent === 'engineer').lens.kind === 'useful' && !kinds.includes('humor'), kinds.join());
       if (P === 'play') assert.ok(kinds.includes('humor') && kinds.filter((k) => k === 'interest').length >= 2, `a forced play day draws humor and interest lenses even while play is paused: ${kinds}`);
     }
-    // FM-143: a bare --purpose is a usage error, an unknown one a checked failure
+    // FM-143: a bare --purpose is a usage error, an unknown one a checked failure of both commands
     assert.equal(box.cli(NOVELTY, ['mix', '--date', '2026-10-13', '--purpose']).code, 2);
     assert.equal(box.cli(LENSES, ['--date', '2026-10-13', '--purpose']).code, 2);
     const bogus = box.cli(NOVELTY, ['mix', '--date', '2026-10-13', '--purpose', 'bogus']);
     assert.deepEqual([bogus.code, bogus.json.ok], [1, false]);
+    const bogusLenses = box.cli(LENSES, ['--date', '2026-10-13', '--purpose', 'bogus']);
+    assert.deepEqual([bogusLenses.code, bogusLenses.json.ok], [1, false]);
+    assert.match(bogusLenses.json.error, /unknown purpose "bogus"/);
+    // §3.4 / §8.1 order: before `begin` there is no run file, so the note fails; after it the same command works
+    const ev = ['event', '--kind', 'note', '--msg', 'purpose override lesson', '--by', 'manual', '--date', '2026-10-13'];
+    const early = box.state(ev);
+    assert.equal(early.code, 1, early.stdout);
+    assert.match(early.stdout + early.stderr, /no run file/);
+    const begun = box.state(['begin', '--role', 'manual', '--session', 'sM', '--target-tier', '2', '--date', '2026-10-13', '--now', etIso('2026-10-13', '03:30')]);
+    assert.equal(begun.code, 0, begun.stdout + begun.stderr);
+    assert.equal(begun.json.action, 'proceed');
+    const later = box.state(ev);
+    assert.equal(later.code, 0, later.stdout + later.stderr);
   } finally {
     box.cleanup();
   }
@@ -1673,7 +1751,7 @@ test('page contract: every code the validator and browser-check emit for it is n
   }
   // the intro field of the package: the page's own text; a mismatch is package authoring, everything else of the page a builder defect
   assert.match(triage, /\| `intro` \| the exact text of the page's `p\[data-sed-intro\]`, entities decoded/);
-  assert.match(triage, /\| `purpose`, `intro-mismatch`, and `intro-missing` that says project\.json has no "intro" \| You \(package authoring\)/);
+  assert.match(triage, /\| `purpose`, `intro-mismatch` \(and an `intro-length` reported beside it: that one measures the `project\.json` copy\), and `intro-missing` that says project\.json has no "intro" \| You \(package authoring\)/);
   assert.match(triage, /Builder problem: S1 `extraDefects` for `revise`/);
   assert.match(read('ops/workflows/build.js'), /intro = the exact text of the page's p\[data-sed-intro\] \(entities decoded, whitespace collapsed/);
 });
@@ -1694,6 +1772,12 @@ test('intro copy (A7): an intro a revise loop rewrote reaches both project.json 
     box.write(`work/${date}/package/project.json`, JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8')));
     const validate = () => spawnSync(process.execPath, [path.join(REPO_ROOT, 'scripts', 'validate.mjs'), 'project', dir, '--tier', '2', '--contract'], { env: { ...process.env, SED_ROOT: box.root }, encoding: 'utf8' });
     assert.match(validate().stdout, /intro-mismatch/);
+    // a long stale draft in the staged project.json: an intro-length (it measures that copy) comes beside the intro-mismatch, and the
+    // §10.1 triage sends both to package authoring because A7 alone fixes them (r4a D9)
+    const staged = JSON.parse(fs.readFileSync(path.join(dir, 'project.json'), 'utf8'));
+    fs.writeFileSync(path.join(dir, 'project.json'), JSON.stringify({ ...staged, intro: `${Array.from({ length: 98 }, (_, i) => `word${i}`).join(' ')}.` }, null, 2));
+    const both = JSON.parse(validate().stdout).errors;
+    assert.ok(both.some((e) => /^intro-length\b/.test(e)) && both.some((e) => /^intro-mismatch\b/.test(e)), both.join(' | '));
     const r = runSnippet(box, 'A7', { D: date, DIR: dir });
     assert.equal(r.code, 0, r.stdout + r.stderr);
     assert.equal(r.json.intro, 'A lesson on parity bits & how one extra bit catches a flipped bit. You flip bits in a byte, watch the parity bit, and see which errors it catches and which it misses; no maths is needed to start, and two short exercises check what you learned at the end.');
@@ -1751,4 +1835,104 @@ test('numbers: the purpose and contract numbers the documents quote are the ones
     const want = ks.map((k) => (k === 'quota' ? Object.entries(mp.quota).map(([p, n]) => `${p} ${n}`).join(', ') : String(mp[k]))).join(', ');
     assert.equal(now, want, `OPERATING: ${ks.join(', ')} is "${now}", config.json says "${want}"`);
   }
+});
+
+test('owner docs: the hand check passes the live pages, and README and PLAYBOOK §8.3 promise what the code does (r4a D4, D10)', () => {
+  // D4: OPERATING's hand check names no --tier (the validator takes the tier from project.json); a --tier that differs is tier-mismatch
+  const steering = read('ops/OPERATING.md');
+  const hand = /To check one page by hand: `(node scripts\/validate\.mjs project docs\/d\/<dir>[^`]*)`/.exec(steering)?.[1];
+  assert.ok(hand, 'OPERATING has the hand-check command');
+  assert.ok(!/--tier\b/.test(hand), `the hand check names no tier: ${hand}`);
+  assert.match(hand, /--contract$/);
+  const live = ['2026-10-10-jokers-in-phase', '2026-10-11-orbital-knitwear', '2026-10-12-between-periods'].filter((d) => fs.existsSync(path.join(REPO_ROOT, 'docs', 'd', d, 'project.json')));
+  assert.ok(live.length > 0, 'the live pages exist');
+  const validate = (args) => {
+    const r = spawnSync(process.execPath, args, { cwd: REPO_ROOT, encoding: 'utf8' });
+    return { code: r.status, json: JSON.parse(r.stdout) };
+  };
+  for (const dir of live) {
+    const words = hand.replace('<dir>', dir).split(' ');
+    assert.equal(words[0], 'node');
+    const ok = validate(words.slice(1));
+    assert.deepEqual([ok.code, ok.json.ok, ok.json.errors], [0, true, []], `${dir}: the documented hand check`);
+    // the old command (`--tier 1 --contract`) fails a tier-2 page on the tier alone
+    const tier = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'docs', 'd', dir, 'project.json'), 'utf8')).tier;
+    const wrong = validate([...words.slice(1, -1), '--tier', String(tier === 1 ? 2 : 1), '--contract']);
+    assert.equal(wrong.json.ok, false);
+    assert.ok(wrong.json.errors.length === 1 && /^tier-mismatch\b/.test(wrong.json.errors[0]), `${dir}: ${wrong.json.errors.join(' | ')}`);
+  }
+  assert.match(steering, /a `--tier` that differs is the error `tier-mismatch`/);
+
+  // D10: the clarity gate is a score (minClarity), the control budget warns above `warn` and fails above `error`, the panel is
+  // four judges below 6 slots, and selection (not the judges) adds the bonus
+  const readme = read('README.md');
+  const gates = JSON.parse(/```json weights\n([\s\S]*?)\n```/.exec(read('ops/rubrics/selection.md'))[1]).gates;
+  assert.equal(Number(/An idea the clarity judge scores below (\d+) \(/.exec(readme)?.[1]), gates.minClarity);
+  assert.ok(!/could not grasp in ten seconds cannot win/.test(readme), 'README promises a ten-second test the gate does not run');
+  const fsc = REAL_CONFIG.pageContract.firstScreenControls;
+  const budget = /at most (\d+) controls on the first screen \(more than (\d+) is flagged, more than (\d+) fails the page\)/.exec(readme);
+  assert.ok(budget, 'README states the control budget with its warning and its error');
+  assert.deepEqual(budget.slice(1).map(Number), [fsc.warn, fsc.warn, fsc.error]);
+  const select = read('ops/workflows/select.js');
+  assert.match(select, /const NARROW = SLOTS !== null && SLOTS < 6;/);
+  const groups = [.../\{ judge: '\w+', keys: \[([^\]]*)\] \}/g[Symbol.matchAll](/const GROUPS = \[([\s\S]*?)\];/.exec(select)[1])].map((m) => m[1].split(',').length);
+  assert.equal(groups.length, 4, 'four judges hold the criteria below 6 slots');
+  assert.equal(groups.reduce((a, b) => a + b, 0), Object.keys(JSON.parse(/```json weights\n([\s\S]*?)\n```/.exec(read('ops/rubrics/selection.md'))[1]).weights).length, 'together the nine criteria');
+  assert.ok(groups.every((n) => n === 2 || n === 3), 'two or three criteria each');
+  assert.match(readme, /judges score the 10 on nine criteria, clarity among them \(four judges on this\s+2-slot machine\)/);
+  assert.match(section(PLAYBOOK, '### 8.3 select'), /The judges score the ten on nine criteria \(`ops\/rubrics\/selection\.md`; below 6 agent slots four judges hold two or three criteria each\)/);
+  assert.match(readme, /selection adds a small bonus/);
+  assert.ok(!/the judges add a small bonus|Nine judges score/.test(readme + PLAYBOOK), 'the bonus is added by selection, and nine criteria are not nine judges');
+});
+
+test('playbook rows: the spec check on contract days, the closer salvage under the contract, FM-141 severity and the routine prompts say what the code does (r4a D15, D16, D18, D20)', () => {
+  // D15: the §7.3 spec row checks what the armed spec lint checks: the purpose, the intro bounds and the explainer section
+  const specRow = /^\| spec \| `work\/<D>\/spec\/SPEC\.md`[^\n]*/m.exec(section(PLAYBOOK, '### 7.3'))?.[0];
+  assert.ok(specRow, '§7.3 has the spec row');
+  const intro = REAL_CONFIG.pageContract.intro;
+  assert.ok(specRow.includes(`when the page contract is in force (\`pageContract.requiredFrom\` set and on or before \`<D>\`), \`PROJECT.json\` also has \`fingerprint.purpose\` and a ${intro.minWords} to ${intro.maxWords} word \`intro\`, and \`SPEC.md\` has a \`## Intro and explainer\` section`), specRow);
+  assert.ok(read('ops/workflows/spec.js').includes('SPEC.md has no "## Intro and explainer" section'), 'the heading is the one the spec lint looks for');
+
+  // D18: under the contract the closer's salvage makes only the package-authoring fixes; FM-101 says the same
+  const salvage = section(PLAYBOOK, '### 5.4 closer');
+  assert.match(salvage, /\(with the page contract in force only the package-authoring rows of §10\.1 may be fixed here, `purpose` and an intro copied with Appendix A7; any other `intro-\*`, `explainer-\*`, `controls-excess` or `selftest-\*` error means step 5\)/);
+  assert.match(section(PLAYBOOK, '### 10.1 Stage'), /^\| `purpose`, `intro-mismatch` [^\n]*\| You \(package authoring\)/m);
+  const fm = read('ops/FAILURE_MODES.md');
+  assert.match(/^\| FM-101 \|[^\n]*/m.exec(fm)[0], /with the page contract in force that includes a missing intro, explainer or tool self-test: salvage may only make the package-authoring fixes of PLAYBOOK §10\.1/);
+
+  // D16: a paywall or product claim on the page is a clean-room breach, always S1, as safety.md says
+  const fm141 = /^\| FM-141 \|[^\n]*/m.exec(fm)[0];
+  assert.match(fm141, /QA files it as S1 \(a clean-room breach, `ops\/rubrics\/safety\.md`\)/);
+  assert.ok(!/\bS2\b/.test(fm141), 'FM-141 offers no S2');
+  assert.match(read('ops/rubrics/safety.md'), /\(each breach is S1\)/);
+
+  // D20: the routine prompt files name the purposes; the manual run knows PURPOSE=, and so does every prompt through the bootstrap
+  const purposes = Object.keys(JSON.parse(TAXONOMY).purposes);
+  const primary = read('ops/prompts/primary.md');
+  assert.match(primary, /a new tool, lesson, explorer, studio or game is built and published every day as a static page \(ops\/OWNER\.md\)/);
+  assert.ok(!/sophisticated, one-of-a-kind/.test(primary));
+  assert.ok(read('ops/prompts/manual.md').includes(`PURPOSE=${purposes.join('|')}`), 'manual.md lists PURPOSE with every purpose of the taxonomy');
+  assert.ok(read('ops/prompts/_bootstrap.md').includes(`FORCE=1 or PURPOSE=${purposes.join('|')}, apply them as the playbook describes`), 'the bootstrap names PURPOSE among the overrides');
+  const prompts = read('ops/prompts/README.md');
+  assert.match(prompts, /^\| manual \|[^\n]*the fire text carries `RUN_DATE`, `TARGET_TIER`, `FORCE`, `PURPOSE`/m);
+  assert.match(prompts, /Manual\/genesis run: `fire_trigger` the manual routine with text `ROLE_OVERRIDE=manual RUN_DATE=YYYY-MM-DD TARGET_TIER=1`, plus `PURPOSE=tool`/);
+});
+
+test('timetable: every stated live window of a compact day is the narrow planner\'s (primary start plus the Tier 2 day, to the planner\'s aim), in the playbook, CONTRACT and every routine prompt', () => {
+  const sched = REAL_CONFIG.schedule;
+  const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3));
+  const hhmm = (m) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
+  const day = runSnippet(realBox(), 'A4', { MTD: '500', TIER: '2', PHASE: 'preflight', SLOTS: '2' }).json.needNow;
+  const from = hhmm(toMin(sched.primary) + day);
+  const to = hhmm(toMin(sched.graceUntil) - 15);
+  assert.deepEqual([day, from, to], [290, '08:45', '09:15'], 'the narrow Tier 2 day without revise, from the 03:55 start, aimed at minutesToGraceUntil - 15');
+  const files = ['ops/PLAYBOOK.md', 'ops/CONTRACT.md', 'README.md', 'ops/OPERATING.md', ...fs.readdirSync(path.join(REPO_ROOT, 'ops', 'prompts')).filter((f) => f.endsWith('.md')).map((f) => `ops/prompts/${f}`)];
+  const found = [];
+  for (const file of files) {
+    for (const m of read(file).matchAll(/(?:goes live|ends) (?:between )?(\d\d:\d\d) (?:and|to) (\d\d:\d\d)/g)) {
+      found.push(file);
+      assert.deepEqual([m[1], m[2]], [from, to], `${file}: "${m[0]}"`);
+    }
+  }
+  for (const file of ['ops/PLAYBOOK.md', 'ops/CONTRACT.md', 'ops/prompts/_bootstrap.md', 'ops/prompts/watchdog-a.md', 'ops/prompts/watchdog-b.md']) assert.ok(found.includes(file), `${file} states the live window`);
 });

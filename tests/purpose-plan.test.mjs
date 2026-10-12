@@ -177,12 +177,26 @@ test('starved: a purpose idle for starvedDays with nothing in the window becomes
   assert.deepEqual(plan('2026-11-09', h, { config: cfgWith({ starvedDays: 5 }) }).wanted, ['studio']);
 });
 
-test('override: wanted [P], nothing avoided, play allowed; counts stay real; an unknown purpose throws', () => {
+test('override: wanted [P] and every other purpose avoided, so only P can win; play allowed only for P=play; counts stay real; an unknown purpose throws', () => {
   for (const P of PURPOSES) {
     const p = plan('2026-10-13', realHistory(), { purpose: P });
-    assert.deepEqual([p.wanted, p.avoid, p.playAllowed, p.playBlockedUntil, p.override], [[P], [], true, null, P], P);
+    assert.deepEqual([p.wanted, p.avoid, p.playAllowed, p.override], [[P], PURPOSES.filter((q) => q !== P), P === PLAY, P], P);
+    // play is paused until 2026-10-18 anyway: a play override allows it today, any other override keeps that date
+    assert.equal(p.playBlockedUntil, P === PLAY ? null : '2026-10-18', P);
     assert.equal(p.counts.play, 3);
+    assert.ok(p.avoid.length === PURPOSES.length - 1 && !p.avoid.includes(P), `${P}: everything but ${P} is avoided`);
   }
+  // a day on which play would be allowed (the last play was 8 days before): a lesson override pauses play for this run only,
+  // so the first date it is allowed again is the next day; without the override nothing is avoided and play is allowed
+  const free = plan('2026-10-20', realHistory());
+  assert.deepEqual([free.override, free.avoid, free.playAllowed, free.playBlockedUntil], [null, [], true, null]);
+  const lesson = plan('2026-10-20', realHistory(), { purpose: 'lesson' });
+  assert.deepEqual([lesson.wanted, lesson.avoid, lesson.playAllowed, lesson.playBlockedUntil], [['lesson'], ['tool', 'explorer', 'studio', 'play'], false, '2026-10-21']);
+  assert.deepEqual(plan('2026-10-20', realHistory(), { purpose: 'play' }).avoid, ['tool', 'lesson', 'explorer', 'studio']);
+  // the override touches only wanted, avoid, play and override: counts, lastShipped, bonus, window and legacy stay the plan's own
+  const { wanted, avoid, playAllowed, playBlockedUntil, override, ...rest } = lesson;
+  const { wanted: w0, avoid: a0, playAllowed: p0, playBlockedUntil: b0, override: o0, ...rest0 } = free;
+  assert.deepEqual(rest, rest0);
   assert.throws(() => plan('2026-10-13', realHistory(), { purpose: 'game' }), /unknown purpose "game" \(one of tool, lesson, explorer, studio, play\)/);
   assert.throws(() => plan('2026-10-13', realHistory(), { purpose: '' }), /unknown purpose ""/);
 });
@@ -315,7 +329,10 @@ test('CLI: novelty.mjs mix prints the plan; --purpose overrides it; a bare --pur
     assert.ok(m.json.summary.startsWith('Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Today we want a tool or a lesson (lead with one); play is paused until 2026-10-18.'), m.json.summary);
     const o = cli(box, ['mix', '--date', '2026-10-13', '--purpose', 'play']);
     assert.equal(o.code, 0);
-    assert.deepEqual([o.json.purposes.wanted, o.json.purposes.avoid, o.json.purposes.playAllowed, o.json.purposes.override], [['play'], [], true, 'play']);
+    assert.deepEqual([o.json.purposes.wanted, o.json.purposes.avoid, o.json.purposes.playAllowed, o.json.purposes.override], [['play'], ['tool', 'lesson', 'explorer', 'studio'], true, 'play']);
+    const l = cli(box, ['mix', '--date', '2026-10-13', '--purpose', 'lesson']);
+    assert.deepEqual([l.code, l.json.purposes.wanted, l.json.purposes.avoid, l.json.purposes.playAllowed], [0, ['lesson'], ['tool', 'explorer', 'studio', 'play'], false]);
+    assert.ok(l.json.summary.startsWith('Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Manual override: today we want a lesson and nothing else; every other purpose is avoided.'), l.json.summary);
     assert.deepEqual([cli(box, ['mix', '--date', '2026-10-13', '--purpose']).code, cli(box, ['mix', '--purpose', '--date', '2026-10-13']).code], [2, 2]);
     const bad = cli(box, ['mix', '--date', '2026-10-13', '--purpose', 'toy']);
     assert.deepEqual([bad.code, bad.json.ok], [1, false]);

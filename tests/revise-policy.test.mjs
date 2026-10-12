@@ -416,6 +416,39 @@ describe('shared numbers', () => {
     assert.deepEqual([decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 29 }).decision, decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil: 29 }).code], ['skip', 'no-time']);
   });
 
+  test('A4 and the policy are one timetable: the revise tail, its cap, the reserve, the late-phase grace and the slack agree at both slot counts (the narrow compact day of 2026-10-13: spec 35, qa 45, caps 50 and 55)', () => {
+    const m = /### A4 [^\n]*\n[\s\S]*?```bash\n([\s\S]*?)\n```/.exec(PLAYBOOK);
+    assert.ok(m, 'PLAYBOOK.md has no snippet A4');
+    const src = m[1];
+    const pair = (name) => {
+      const t = new RegExp(`const ${name} = NARROW\\n\\s*\\? (\\{[\\s\\S]*?\\})\\n\\s*: (\\{[\\s\\S]*?\\});`).exec(src);
+      assert.ok(t, `A4 has no ${name}`);
+      return { narrow: new Function(`return ${t[1]}`)(), wide: new Function(`return ${t[2]}`)() };
+    };
+    const typical = pair('TYPICAL');
+    const cap = pair('CAP');
+    const reserve = /const RESERVE = NARROW \? (\d+) : (\d+);/.exec(src);
+    const slack = /const SLACK = (\d+);/.exec(src);
+    const lateGrace = /const available = LATE\.includes\(FROM\) \? MTD \+ (\d+) : MTD - RESERVE;/.exec(src);
+    assert.ok(reserve && slack && lateGrace, 'A4 keeps RESERVE, SLACK and the late-phase grace in their usual form');
+    for (const [slots, table, capOf, res] of [[2, typical.narrow, cap.narrow, Number(reserve[1])], [8, typical.wide, cap.wide, Number(reserve[2])]]) {
+      const P = rv.plannerFor(slots);
+      for (const tier of [1, 2]) {
+        for (const phase of ['revise', 'package', 'publish']) assert.equal(P.TYPICAL[tier][phase], table[tier][phase], `${slots} slots, tier ${tier}: ${phase}`);
+      }
+      assert.equal(P.CAP_REVISE, capOf.revise, `${slots} slots: the revise cap`);
+      assert.equal(P.RESERVE, res, `${slots} slots: the reserve`);
+      assert.equal(P.SLACK, Number(slack[1]), `${slots} slots: the slack`);
+    }
+    assert.equal(rv.plannerFor(2).LATE_GRACE, Number(lateGrace[1]), 'from qa on a narrow day is measured against the grace window, in both');
+    // the numbers that moved on 2026-10-13 live in A4 only (revise plan needs only the tail), and they are these
+    assert.deepEqual([typical.narrow[2].spec, typical.narrow[2].qa, cap.narrow.spec, cap.narrow.qa], [35, 45, 50, 55]);
+    assert.deepEqual([typical.wide[2].spec, typical.wide[2].qa, cap.wide.spec, cap.wide.qa], [12, 12, 35, 30], 'the wide day is unchanged');
+    // and they reach revise plan only through the clock: a narrow qa that ends later leaves less time, never a different tail
+    const atQaEnd = (minutesToGraceUntil) => decide({ slots: 2, counts: { S2: 1 }, minutesToGraceUntil });
+    assert.deepEqual([atQaEnd(60).decision, atQaEnd(60).minutes.need, atQaEnd(60).minutes.available], ['run', 35, 55]);
+  });
+
   test('revise.js and the policy agree on the loop time and the loop ceiling', () => {
     const src = read('ops/workflows/revise.js');
     assert.equal(Number(/const MINUTES = \{ loop: (\d+) \}/.exec(src)?.[1]), rv.LOOP_MINUTES);

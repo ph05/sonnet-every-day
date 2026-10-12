@@ -4,7 +4,7 @@
 //   novelty.mjs mix [--date D] [--now ISO] [--purpose tool|lesson|explorer|studio|play]
 // Only history entries with countsForNovelty:true that are dated before the target date count.
 // mix also prints the purpose plan (`purposes`: what to make today, what to avoid, whether play is allowed; see purposePlan);
-// --purpose P is the manual override (wanted [P], nothing avoided). check takes no --purpose: a purpose is never a novelty conflict.
+// --purpose P is the manual override (wanted [P], every other purpose avoided). check takes no --purpose: a purpose is never a novelty conflict.
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import {
@@ -241,11 +241,29 @@ function purposeSettings(raw, vocab) {
 }
 
 /**
+ * The manual override (`PURPOSE=<P>`, `--purpose P`) applied to a plan: only P is wanted and every other purpose is avoided, so
+ * select can only pick an idea of P (when none is eligible, its "best total anyway, flagged" rule still picks one). Play is allowed
+ * only when P is play; otherwise playBlockedUntil is the natural date when play was paused anyway, else the next day (the override
+ * binds one run). counts, lastShipped and legacyAssumed stay real. lenses.mjs uses the same function for its neutral plan.
+ */
+export function applyOverride(plan, purpose, vocab, date) {
+  const play = purpose === PLAY;
+  return {
+    ...plan,
+    wanted: [purpose],
+    avoid: vocab.filter((p) => p !== purpose),
+    playAllowed: play,
+    playBlockedUntil: play ? null : plan.playBlockedUntil ?? (date ? addDays(date, 1) : null),
+    override: purpose,
+  };
+}
+
+/**
  * Today's purpose plan (DESIGN section 3), a pure function of the history: which purposes the scouts should lead with
  * (`wanted`), which to avoid, and whether play is allowed. Entries count when countsForNovelty is true and they are dated
  * before `date`; an entry without a known purpose counts as config.mix.purposes.legacyDefault (listed in `legacyAssumed`).
- * `purpose` is the manual override: wanted [purpose], nothing avoided, play allowed. Returns null (no plan) when config.mix.purposes
- * or taxonomy.purposes (with play) is missing; then an override throws, as does an unknown override.
+ * `purpose` is the manual override (applyOverride): wanted [purpose] and every other purpose avoided. Returns null (no plan) when
+ * config.mix.purposes or taxonomy.purposes (with play) is missing; then an override throws, as does an unknown override.
  * @param {{date?:string, purpose?:string|null, history?:{entries:object[], startDate?:string}, config?:object, taxonomy?:object}} opts
  *   `history`, `config` and `taxonomy` default to the files of the repo.
  */
@@ -294,7 +312,7 @@ export function purposePlan({ date, purpose, history, config, taxonomy } = {}) {
   const plan = {
     windowDays: s.windowDays, counts, lastShipped, wanted: [], avoid: [], playAllowed, playBlockedUntil, bonus: s.wantedBonus, override: null, legacyAssumed,
   };
-  if (override !== null) return { ...plan, wanted: [override], avoid: [], playAllowed: true, playBlockedUntil: null, override };
+  if (override !== null) return applyOverride(plan, override, vocab, day);
 
   const canonical = (a, b) => vocab.indexOf(a) - vocab.indexOf(b);
   const cooling = vocab.filter((p) => lastShipped[p] && ago(lastShipped[p]) <= s.cooldownDays);
@@ -321,7 +339,7 @@ const listWith = (items, word) => (items.length < 2 ? items.join('') : `${items.
 /** The purpose sentence of the mix summary (always pieces[0]). */
 function purposeSentence(plan, cfg) {
   const counts = `Purpose mix this week: ${Object.entries(plan.counts).map(([p, n]) => `${p} ${n}`).join(', ')}.`;
-  if (plan.override) return `${counts} Manual override: today we want ${phrase(plan.override)}. Lead with it; no purpose is avoided.`;
+  if (plan.override) return `${counts} Manual override: today we want ${phrase(plan.override)} and nothing else; every other purpose is avoided.`;
   const parts = [];
   if (plan.wanted.length) parts.push(`Today we want ${listWith(plan.wanted.map(phrase), 'or')} (lead with ${plan.wanted.length > 1 ? 'one' : 'it'})`);
   const cooling = plan.avoid.filter((p) => p !== PLAY || plan.playAllowed);

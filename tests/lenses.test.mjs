@@ -481,10 +481,12 @@ test('a damaged history file never breaks lens assignment: the neutral plan and 
     assert.match(day.planError, /readJson/);
     assert.deepEqual([day.purposes.wanted, day.purposes.avoid, day.purposes.playAllowed, day.purposes.counts], [['tool', 'lesson'], [], true, null]);
     assert.deepEqual(day.owedKinds, []);
-    // the override survives a broken history
+    // the override survives a broken history, with the same rule as novelty mix: only it wanted, every other purpose avoided
     const forced = oneDay('2026-11-10', { purpose: 'studio' });
-    assert.deepEqual([forced.purposes.wanted, forced.purposes.override], [['studio'], 'studio']);
+    assert.deepEqual([forced.purposes.wanted, forced.purposes.avoid, forced.purposes.playAllowed, forced.purposes.override], [['studio'], ['tool', 'lesson', 'explorer', 'play'], false, 'studio']);
+    assert.match(forced.planError, /readJson/);
     assert.ok(kindCounts(forced).wildcard >= 2);
+    assert.equal(kindCounts(forced).humor ?? 0, 0, 'play is avoided, so no humor lens');
     // a config without mix.purposes (tests/helpers/test-config.json): no plan, old counts (one of each main kind), nothing throws
     fs.writeFileSync(path.join(box.root, 'state', 'history.json'), JSON.stringify({ schema: 1, startDate: START, entries: [] }));
     const cfg = box.readJson('config.json');
@@ -496,24 +498,42 @@ test('a damaged history file never breaks lens assignment: the neutral plan and 
     assert.equal(noPlan.planError, undefined);
     assertDayShape(noPlan);
     for (const k of MAIN) assert.ok(kindCounts(noPlan)[k] >= 1, k);
+    // ...and an override there: novelty mix --purpose exits 1 (no plan to override), the lens draw falls back to the override plan
+    // with planError (FAILURE_MODES FM-143)
+    const forcedNoPlan = oneDay('2026-11-10', { purpose: 'lesson' });
+    assert.match(forcedNoPlan.planError, /no purpose plan/);
+    assert.deepEqual([forcedNoPlan.purposes.wanted, forcedNoPlan.purposes.avoid, forcedNoPlan.purposes.playAllowed, forcedNoPlan.purposes.override], [['lesson'], ['tool', 'explorer', 'studio', 'play'], false, 'lesson']);
+    assertDayShape(forcedNoPlan);
+    assert.ok(kindCounts(forcedNoPlan).teach >= 2 && !kindCounts(forcedNoPlan).humor, JSON.stringify(kindCounts(forcedNoPlan)));
   } finally {
     box.cleanup();
   }
 });
 
-test('--purpose override: the plan wants it, nothing is avoided, its lenses come; play brings humor and interest', () => {
+test('--purpose override: the plan wants only it and avoids every other purpose, its lenses come; play brings humor and interest, any other purpose no humor', () => {
   const box = makeSandbox();
   try {
     const real = JSON.parse(fs.readFileSync(path.join(REAL_ROOT, 'state', 'history.json'), 'utf8'));
     box.write('state/history.json', { schema: 1, startDate: '2026-10-09', entries: real.entries.filter((e) => e.date < '2026-10-13') });
     const play = oneDay('2026-10-13', { purpose: 'play' });
-    assert.deepEqual([play.purposes.wanted, play.purposes.avoid, play.purposes.playAllowed, play.purposes.override], [['play'], [], true, 'play']);
+    assert.deepEqual([play.purposes.wanted, play.purposes.avoid, play.purposes.playAllowed, play.purposes.override], [['play'], ['tool', 'lesson', 'explorer', 'studio'], true, 'play']);
     assertDayShape(play);
     const c = kindCounts(play);
     assert.ok(c.humor >= 1 && c.interest >= 2, JSON.stringify(c));
     assert.equal(play.agents.find((a) => a.agent === 'jester').lens.kind, 'humor');
     const explorer = oneDay('2026-10-13', { purpose: 'explorer' });
+    assert.deepEqual([explorer.purposes.avoid, explorer.purposes.playAllowed], [['tool', 'lesson', 'studio', 'play'], false]);
     assert.ok(kindCounts(explorer).wildcard >= 2 && kindCounts(explorer).teach >= 1);
+    // a lesson asked for while play is paused: two teach lenses and no humor lens (the jester draws another kind), every rerun the same
+    const lesson = oneDay('2026-10-13', { purpose: 'lesson' });
+    assert.deepEqual([lesson.purposes.wanted, lesson.purposes.avoid, lesson.purposes.playAllowed], [['lesson'], ['tool', 'explorer', 'studio', 'play'], false]);
+    assertDayShape(lesson);
+    assert.ok(kindCounts(lesson).teach >= 2 && !kindCounts(lesson).humor, JSON.stringify(kindCounts(lesson)));
+    assert.notEqual(lesson.agents.find((a) => a.agent === 'jester').lens.kind, 'humor');
+    assert.deepEqual(oneDay('2026-10-13', { purpose: 'lesson' }).agents, lesson.agents);
+    // no override: the plan of the day is untouched (tool and lesson wanted, only play avoided)
+    const plain = oneDay('2026-10-13');
+    assert.deepEqual([plain.purposes.wanted, plain.purposes.avoid, plain.purposes.override], [['tool', 'lesson'], ['play'], null]);
     assert.throws(() => oneDay('2026-10-13', { purpose: 'game' }), /unknown purpose "game"/);
   } finally {
     box.cleanup();
@@ -612,8 +632,9 @@ test('CLI: --purpose passes the override through; a bare --purpose exits 2, an u
     const r = cli(box, ['--date', '2026-10-12', '--purpose', 'lesson']);
     assert.equal(r.code, 0, r.err);
     const out = JSON.parse(r.out);
-    assert.deepEqual([out.purposes.wanted, out.purposes.avoid, out.purposes.override], [['lesson'], [], 'lesson']);
+    assert.deepEqual([out.purposes.wanted, out.purposes.avoid, out.purposes.override], [['lesson'], ['tool', 'explorer', 'studio', 'play'], 'lesson']);
     assert.ok(out.agents.filter((a) => a.lens.kind === 'teach').length >= 2);
+    assert.ok(!out.agents.some((a) => a.lens.kind === 'humor'), 'a lesson day draws no humor lens');
     for (const args of [['--date', '2026-10-12', '--purpose'], ['--purpose', '--date', '2026-10-12']]) {
       const u = cli(box, args);
       assert.equal(u.code, 2, args.join(' '));
