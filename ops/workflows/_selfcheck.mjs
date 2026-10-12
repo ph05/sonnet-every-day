@@ -816,6 +816,10 @@ export function qaWorld(sb, cfg = {}) {
       if (label.startsWith('browser-check')) return cfg.browser || okBrowser({ reportPath: `${sb.work('qa', 'run')}/report.json` });
       if (label.startsWith('validate dry run')) return cfg.realGate ? emulateFileClerk(sb, prompt, rec) : emulateFilesOnly(sb, prompt, { ran: true, ok: !(cfg.gateErrors || []).length, errors: cfg.gateErrors || [], warnings: [], expected: ['missing thumb.png'], stats: {} });
       if (label === 'proofread') return cfg.proof || { issues: [], linksChecked: 3, linksOk: 3, notes: '' };
+      // the purpose checks beside the critic (DESIGN 8): a clear first screen and a clean expert review unless cfg says otherwise
+      if (label === 'cold read') return cfg.coldRead === null ? null : { whatIsThis: 'A checker that tells you whether two colours have enough contrast.', whatWouldIDoFirst: 'Change the text colour.', termsNotUnderstood: [], confidence: 5, screenshotsSeen: 2, ...(cfg.coldRead || {}) };
+      if (label === 'cold read judge') return cfg.judge === null ? null : { matchesPlainSentence: true, specific: true, firstStepOk: true, plainSentence: 'A checker for colour contrast.', reason: 'Same thing and job.', ...(cfg.judge || {}) };
+      if (label === 'expert review') return cfg.expert === null ? null : { recomputed: 5, claimsChecked: 6, defects: [], notes: '', ...(cfg.expert || {}) };
       if (label.startsWith('critic review')) {
         if (cfg.criticNull) return null;
         return {
@@ -840,7 +844,14 @@ export function reviseWorld(sb, cfg = {}) {
     respond: async ({ prompt, opts, sink: rec }) => {
       const label = opts.label;
       if (label.startsWith('pulse')) return { ok: true, pushed: true, note: '' };
-      if (/^roster|^read defects|^rewrite qa report|^write recheck|^write revise|^clock |^copy site|^promote loop /.test(label)) return emulateFileClerk(sb, prompt, rec);
+      if (/^roster|^read defects|^rewrite qa report|^write recheck|^write revise|^clock |^copy site|^promote loop |^page text loop /.test(label)) return emulateFileClerk(sb, prompt, rec);
+      // the fresh stranger cold read of an open opaque-first-screen defect (DESIGN 8): clear unless cfg says otherwise
+      const loopOf = () => Number((/loop (\d+)/.exec(label) || [0, 0])[1]);
+      if (label.startsWith('cold read judge loop')) return cfg.judge ? cfg.judge(loopOf()) : { matchesPlainSentence: true, specific: true, firstStepOk: true, plainSentence: 'A checker.', reason: 'Same thing.' };
+      if (label.startsWith('cold read loop')) {
+        state.coldReads = [...(state.coldReads || []), { label, prompt }];
+        return cfg.coldRead ? cfg.coldRead(loopOf()) : { whatIsThis: 'A checker for colour contrast.', whatWouldIDoFirst: 'Change a colour.', termsNotUnderstood: [], confidence: 5, screenshotsSeen: 2 };
+      }
       if (label.startsWith('fix ')) {
         state.fixCalls.push(label);
         if (/wave 2/.test(label)) state.wave2++;
@@ -3482,6 +3493,461 @@ describe('revise.js', () => {
       const rep = rd(s);
       assert.equal(rep.counts.S1, 1, 'the forgotten S1 is still in the report, so the day cannot ship it unseen');
       assert.ok(rep.defects.some((d) => d.id === 'd01' && d.severity === 'S1'));
+    } finally { s.clean(); }
+  });
+});
+
+// ================================================================== C1: purpose, page contract and the clarity bar (DESIGN 8)
+// Every page-contract check in a program is enforced only when config.json pageContract.requiredFrom is a date on or before the run
+// date (read inside the program, like the validator); these helpers arm it in a sandbox and seed a chosen idea with a purpose.
+const c1plain = (v) => JSON.parse(JSON.stringify(v));
+function armContract(s, requiredFrom) {
+  const cfg = s.json(s.p('config.json'));
+  cfg.pageContract = { ...(cfg.pageContract || {}), requiredFrom };
+  s.write(s.p('config.json'), cfg);
+}
+function seedPurposeIdea(s, purpose, extra = {}) {
+  const idea = makeDossier('seed', 4, 'cards', 'lens');
+  idea.id = 'i04';
+  if (purpose) idea.fingerprint.purpose = purpose;
+  Object.assign(idea, { plainSentence: 'A checker that tells you whether text in one colour is readable on another colour.', firstMinute: 'A sample pair is filled in and its ratio shows. Change a colour and the verdict updates.', conceptsToLearn: ['contrast ratio'], ...extra });
+  s.write(s.p('state', 'ideas', `${DATE}.json`), { schema: 1, date: DATE, lenses: [], carryoverIn: null, ideas: [idea], chosenId: 'i04', carryoverOutId: null });
+  return idea;
+}
+// 47 words; the first sentence (19 words) says what the thing literally is.
+const C1_INTRO = 'A contrast checker that tells you whether text in one colour is readable on a background of another colour. It is for designers and developers who choose colours for screens. Type two colours, or keep the sample pair, and the ratio and the verdict appear at once.';
+const c1prose = (n) => Array.from({ length: n }, (_, i) => `word${i}`).join(' ');
+/** Writes a spec that meets the page contract for `purpose`; the options break one rule at a time. */
+function writeContractSpec(s, o = {}) {
+  const purpose = o.purpose === undefined ? 'tool' : o.purpose;
+  const compact = o.compact !== false;
+  const owners = { ...(compact ? COMPACT_OWNERS : FULL_OWNERS), ...(o.selftest === false ? {} : { 'selftest.js': 'engineer' }) };
+  seedSpecFiles(s, { compact, owners });
+  const vectors = o.vectors ?? 8;
+  const sourced = o.sourced ?? vectors;
+  const words = o.explainerWords ?? 760;
+  const rows = Array.from({ length: vectors }, (_, i) => `| ${i + 1} | pair ${i} | ratio ${i}:1 | ${i < sourced ? 'WCAG 2.1, definition of contrast ratio' : ''} |`);
+  const spec = [
+    fs.readFileSync(s.work('spec', 'SPEC.md'), 'utf8'),
+    '## Intro and explainer', o.intro === null ? '' : (o.intro ?? C1_INTRO), '### Explainer', `${o.h ?? '####'} How it works (h2)`, c1prose(Math.ceil(words / 2)), `${o.h ?? '####'} Why it matters (h3)`, c1prose(Math.floor(words / 2)),
+    '### Glossary', '| term | definition | where |', '|---|---|---|', '| contrast ratio | how much lighter one colour is | the first paragraph |',
+    '### First 30 seconds', 'A sample pair is filled in and its ratio shows.', '### Control budget', 'Two colour inputs and a swap button; the rest behind More.',
+    '## Tool design', '| # | input | expected output | source |', '|---|---|---|---|', ...rows, '',
+  ].join('\n');
+  s.write(s.work('spec', 'SPEC.md'), spec);
+  const base = projectJson(compact ? 2 : 1);
+  const extra = { fingerprint: { ...base.fingerprint, ...(purpose === null ? {} : { purpose }) }, ...(o.intro === null ? {} : { intro: o.intro ?? C1_INTRO }), concepts: o.concepts ?? ['contrast ratio', 'relative luminance'] };
+  s.write(s.work('spec', 'PROJECT.json'), projectJson(compact ? 2 : 1, extra));
+}
+/** A spec world whose architect writes through `write(n, prompt)` (n counts the architect's calls from 1). */
+function contractSpecWorld(s, write) {
+  const base = specWorld(s);
+  let n = 0;
+  return {
+    sb: s,
+    respond: async (ctx) => {
+      if (!ctx.opts.label.startsWith('architect ')) return base.respond(ctx);
+      write(++n, ctx.prompt);
+      return { files: Object.keys(s.json(s.work('spec', 'OWNERSHIP.json'))).length, owners: ['artisan', 'engineer'], slug: 'glass-ledger', title: 'Glass Ledger', openIssues: [], notes: 'done' };
+    },
+  };
+}
+const NARROW_ARGS = { maxAgents: 2, osHeartbeat: true };
+
+describe('spec.js: purpose, intro first, page-contract lint (DESIGN 8)', () => {
+  test('the prompts carry OWNER.md, the intro-first rule and the design section of the idea\'s purpose, read before the architect starts', async () => {
+    for (const [purpose, must, mustNot] of [
+      ['tool', ['"## Tool design"', 'selftest.js', '| # | input | expected output | source |', 'at least 8 known-answer vectors', 'at least 250 words of prose and 2 headings for a tool'], ['"## Lesson design"']],
+      ['lesson', ['"## Lesson design"', 'data-sed-check', 'at least 700 words of prose and 4 headings for a lesson'], ['"## Tool design"']],
+    ]) {
+      const s = makeSandbox();
+      try {
+        seedPurposeIdea(s, purpose);
+        const run = await runWorkflow('spec', baseArgs(s), { world: specWorld(s) });
+        checkRunInvariants('spec', run);
+        assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+        assert.ok(run.rec.logs.includes(`the chosen idea's purpose: ${purpose}`), run.rec.logs.join('\n'));
+        const rec = run.rec.calls.find((c) => c.label === 'architect reconcile').prompt;
+        for (const m of ['ops/OWNER.md', `The idea's purpose is "${purpose}"`, 'plainSentence', 'firstMinute', '"## Intro and explainer"', '"### Explainer"', '"### Glossary"', '"### First 30 seconds"', '"### Control budget"', 'write it before anything else in the spec', 'no entities such as &mdash;', 'concepts (1 to 6 terms', 'purpose included', 'never an outline', 'at most 8, and the ones behind a "More" toggle', ...must]) assert.ok(rec.includes(m), `${purpose}: the reconcile prompt lacks ${m}`);
+        for (const m of mustNot) assert.ok(!rec.includes(m), `${purpose}: the reconcile prompt names another purpose's section ${m}`);
+        assert.ok(run.rec.calls.find((c) => c.label === 'plan architect').prompt.includes('Start from the intro'), 'the architect drafts the intro first');
+        assert.ok(run.rec.calls.find((c) => c.label === 'plan artisan').prompt.includes('the first frame shows the thing working'));
+        // requiredFrom is null in the real config: the contract findings are warnings, never a fix pass
+        assert.ok(!run.rec.calls.some((c) => c.label.startsWith('architect spec fix')), 'no fix pass while the contract is not enforced');
+        assert.ok(run.result.warnings.some((w) => w.startsWith('page contract (warning only: pageContract.requiredFrom is not set): PROJECT.json: intro is missing')), run.result.warnings.join(' | '));
+        assert.deepEqual(c1plain(run.result.pageContract), { enforced: false, requiredFrom: null });
+      } finally { s.clean(); }
+    }
+    // no readable idea: every purpose's section is named, and nothing breaks
+    const s = makeSandbox();
+    try {
+      const run = await runWorkflow('spec', baseArgs(s, NARROW_ARGS), { world: specWorld(s) });
+      checkRunInvariants('spec', run, { skipPhaseUse: true });
+      assert.equal(run.result.ok, true);
+      const rec = run.rec.calls.find((c) => c.label === 'architect mini-spec').prompt;
+      for (const m of ['"## Tool design"', '"## Lesson design"', '"## Explorer design"', '"## Studio design"', '"## Play design"', 'if it has none, choose the one that fits']) assert.ok(rec.includes(m), `fallback prompt lacks ${m}`);
+    } finally { s.clean(); }
+  });
+
+  test('gate armed: a spec without intro, explainer, purpose or vectors fails the lint by name; the fix pass repairs it and DONE.json records the enforced contract', async () => {
+    const s = makeSandbox();
+    try {
+      armContract(s, '2026-10-01');
+      seedPurposeIdea(s, 'tool');
+      const run = await runWorkflow('spec', baseArgs(s, NARROW_ARGS), { world: contractSpecWorld(s, (n) => (n === 1 ? seedSpecFiles(s, { compact: true }) : writeContractSpec(s))) });
+      checkRunInvariants('spec', run, { skipPhaseUse: true });
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 400));
+      const fix = run.rec.calls.find((c) => c.label === 'architect spec fix 1');
+      assert.ok(fix, 'a fix pass ran');
+      for (const m of ['page contract: PROJECT.json: fingerprint.purpose is missing', 'page contract: PROJECT.json: intro is missing', 'page contract: SPEC.md has no "## Intro and explainer" section', 'known-answer vector(s) name the source', 'selftest.js owned by engineer']) assert.ok(fix.prompt.includes(m), `the fix pass lacks "${m}"`);
+      assert.equal(run.result.purpose, 'tool');
+      assert.deepEqual(c1plain(run.result.pageContract), { enforced: true, requiredFrom: '2026-10-01' });
+      const done = s.json(s.work('spec', 'DONE.json'));
+      assert.deepEqual([done.purpose, done.pageContract], ['tool', { enforced: true, requiredFrom: '2026-10-01' }]);
+      assert.ok(!done.warnings.some((w) => w.startsWith('page contract')), done.warnings.join(' | '));
+    } finally { s.clean(); }
+  });
+
+  test('gate armed: each rule fails with its own message; a conforming lesson passes without vectors; a later requiredFrom only warns', async () => {
+    const lint = async (opts, { requiredFrom = '2026-10-01', idea = 'tool' } = {}) => {
+      const s = makeSandbox();
+      try {
+        if (requiredFrom !== undefined) armContract(s, requiredFrom);
+        seedPurposeIdea(s, idea);
+        const run = await runWorkflow('spec', baseArgs(s, NARROW_ARGS), { world: contractSpecWorld(s, () => writeContractSpec(s, opts)) });
+        checkRunInvariants('spec', run, { skipPhaseUse: true });
+        return { ok: run.result.ok, errors: arr(run.result.errors), warnings: arr(run.result.warnings) };
+      } finally { s.clean(); }
+    };
+    const arr = (v) => (Array.isArray(v) ? [...v] : []);
+    for (const [opts, needle, idea] of [
+      [{ intro: 'A checker for colours. It is short and says too little to pass.' }, 'PROJECT.json: intro has 13 words; pageContract.intro allows 35 to 70'],
+      [{ intro: C1_INTRO.replace('colour. It', 'colour &mdash; it') }, 'intro must be plain typed text'],
+      [{ purpose: 'lesson' }, 'fingerprint.purpose is "lesson" but the chosen idea\'s is "tool"'],
+      [{ purpose: 'gizmo' }, 'fingerprint.purpose "gizmo" is not one of tool, lesson, explorer, studio, play'],
+      [{ concepts: ['x'] }, 'concepts must be an array of 1 to 6 strings'],
+      [{ explainerWords: 100 }, 'the explainer prose has 100 words; a tool needs at least 250'],
+      [{ explainerWords: 500, purpose: 'lesson' }, 'the explainer prose has 500 words; a lesson needs at least 700', 'lesson'],
+      [{ sourced: 5 }, '5 known-answer vector(s) name the source of their expected value; a tool needs at least 8'],
+      [{ selftest: false }, 'selftest.js owned by engineer'],
+    ]) {
+      const r = await lint(opts, { idea });
+      assert.equal(r.ok, false, `${needle}: the lint must fail`);
+      assert.ok(r.errors.some((e) => e.startsWith('page contract: ') && e.includes(needle)), `expected "${needle}" in: ${r.errors.join(' | ')}`);
+    }
+    const lesson = await lint({ purpose: 'lesson', vectors: 0, selftest: false }, { idea: 'lesson' });
+    assert.equal(lesson.ok, true, `a conforming lesson needs no vectors and no selftest.js: ${lesson.errors.join(' | ')}`);
+    const tool = await lint({});
+    assert.equal(tool.ok, true, tool.errors.join(' | '));
+    const flat = await lint({ h: '###', explainerWords: 300 });
+    assert.equal(flat.ok, true, `explainer headings one level too high still count as the explainer: ${flat.errors.join(' | ')}`);
+    const later = await lint({ intro: 'A checker for colours. It is short and says too little to pass.', sourced: 0 }, { requiredFrom: '2026-10-30' });
+    assert.equal(later.ok, true, 'a requiredFrom after the run date enforces nothing');
+    assert.ok(later.warnings.some((w) => w.startsWith('page contract (warning only: pageContract.requiredFrom is 2026-10-30): PROJECT.json: intro has 13 words')), later.warnings.join(' | '));
+    assert.ok(later.warnings.some((w) => w.includes('0 known-answer vector(s)')));
+  });
+});
+
+describe('build.js: the page contract in the builder prompts, --meta on every browser check (DESIGN 8)', () => {
+  test('builders get the static-markup rule, the clarity bar and the purpose rules; the index.html owner pastes the intro and explainer; every browser check passes --meta', async () => {
+    const s = makeSandbox();
+    try {
+      seedSpecFiles(s);
+      const args = baseArgs(s);
+      args.config = { ...args.config, pageContract: { ...args.config.pageContract, toolMinSelfTests: 10, firstScreenControls: { warn: 6, error: 12 } } };
+      const run = await runWorkflow('build', args, { world: buildWorld(s) });
+      checkRunInvariants('build', run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      const meta = `--meta ${s.work('spec', 'PROJECT.json')}`;
+      const builders = run.rec.calls.filter((c) => c.label.startsWith('build '));
+      assert.ok(builders.length >= 2);
+      for (const c of builders) {
+        for (const m of ['STATIC markup in index.html', 'scripts may enhance them but never create, fill or replace them', 'ops/OWNER.md', 'At most 6 controls are visible in the first viewport at 1280x800', 'fails above 12', 'behind a "More" toggle', 'a demo already running, or a sample input filled in with its result', 'defined where it first appears', 'window.__sedSelfTest', 'at least 10)', 'within 10 s', 'data-sed-check', 'copied or exported', 'checked by a script you run', 'no unsourced figure', '4. Check your part against the page contract']) assert.ok(c.prompt.includes(m), `${c.label} lacks "${m}"`);
+      }
+      const html = builders.find((c) => c.label === 'build artisan').prompt;
+      for (const m of ['Paste the intro from SPEC.md "Intro and explainer" word for word', 'p.sed-intro[data-sed-intro]', 'no named entities such as &mdash;', 'explicit </p>', 'section.sed-explainer[data-sed-explainer]', 'keep the section, its id and the h2\'s id']) assert.ok(html.includes(m), `the index.html owner lacks "${m}"`);
+      assert.ok(!builders.find((c) => c.label === 'build engineer').prompt.includes('Paste the intro from SPEC.md'), 'only the index.html owner pastes the intro');
+      const integ = run.rec.calls.find((c) => c.label === 'integrate').prompt;
+      assert.ok(integ.includes(`--out ${s.work('qa', 'first')} --no-monkey ${meta}`), 'the integrator\'s first-load loop passes --meta');
+      for (const m of ['intro-*, explainer-*, selftest-* and controls-excess', 'intro = the exact text of the page\'s p[data-sed-intro]', 'fingerprint.purpose and concepts as in spec/PROJECT.json']) assert.ok(integ.includes(m), `the integrator lacks "${m}"`);
+      const checks = run.rec.calls.filter((c) => c.label.startsWith('first-load check'));
+      assert.ok(checks.length >= 1 && checks.every((c) => c.prompt.includes(`--out ${s.work('qa', 'first-verify')} --no-monkey ${meta}`)), 'every first-load check passes --meta');
+    } finally { s.clean(); }
+  });
+});
+
+/** A page with a title, a tagline and (unless intro is null) an intro paragraph, as the shell's slots hold them. */
+function seedContractPage(s, { intro = C1_INTRO } = {}) {
+  const lines = Array.from({ length: 260 }, (_, i) => `<p>line ${i}</p>`).join('\n');
+  sbWritePage(s, `<!doctype html>\n<html lang="en"><head><title>Glass Ledger</title></head><body><main id="main">\n<h1 class="sed-title">Glass Ledger</h1>\n<div class="sed-lede"><p class="sed-tagline">A checker for colour contrast &amp; legibility.</p></div>\n${intro === null ? '' : `<p class="sed-intro" data-sed-intro>${intro}</p>\n`}${lines}\n</main></body></html>\n`);
+}
+const sbWritePage = (s, html) => s.write(s.work('build', 'site', 'index.html'), html);
+
+describe('qa.js: the stranger cold read, the expert review and the page contract (DESIGN 8)', () => {
+  const D = (id, severity, owner, file, detail = `${id} problem`) => ({ id, severity, owner, file, title: `${id} title`, detail, evidence: 'ran the script', suggestedFix: 'fix it' });
+  const toolProject = (s, extra = {}) => s.write(s.work('spec', 'PROJECT.json'), projectJson(1, { fingerprint: { ...projectJson(1).fingerprint, purpose: 'tool' }, intro: C1_INTRO, ...extra }));
+
+  test('beside the critic on 2 slots: the stranger sees only the first-screen shots and texts, a judge compares with plainSentence, the expert gets the tool steps; --meta reaches the full check', async () => {
+    const s = makeSandbox();
+    try {
+      seedProject(s);
+      seedPurposeIdea(s, 'tool');
+      toolProject(s);
+      seedContractPage(s);
+      const w = qaWorld(s, { realGate: true });
+      const inner = w.respond;
+      const seen = new Set();
+      let besideCritic = false;
+      const waitFor = async (cond) => { for (let i = 0; i < 400 && !cond(); i++) await new Promise((r) => setTimeout(r, 5)); return cond(); };
+      w.respond = async (ctx) => {
+        seen.add(ctx.opts.label);
+        // the critic answers only once the cold read, its judge and the expert have started: they must not wait for it
+        if (ctx.opts.label === 'critic review') besideCritic = await waitFor(() => seen.has('cold read judge') && seen.has('expert review'));
+        return inner(ctx);
+      };
+      const run = await runWorkflow('qa', baseArgs(s, NARROW_ARGS), { world: w });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      checkPrograms(run);
+      assert.equal(besideCritic, true, 'the purpose checks run beside the critic, not after it');
+      assert.ok(run.rec.maxActive <= 2);
+      assert.ok(!s.json(s.work('qa', 'report.json')).defects.some((d) => d.source === 'cold-read' || d.source === 'expert'), 'a clear first screen and a clean expert review add no defect');
+      const full = run.rec.calls.find((c) => c.label === 'browser-check (full)').prompt;
+      assert.ok(full.includes(`--seconds 20 --meta ${s.work('spec', 'PROJECT.json')}`), 'the full check passes --meta');
+      const cold = run.rec.calls.find((c) => c.label === 'cold read');
+      assert.deepEqual([cold.model, cold.effort], ['sonnet', 'medium']);
+      for (const m of [s.work('qa', 'run', 'shots', 'desktop-light.png'), s.work('qa', 'run', 'shots', 'mobile-light.png'), 'Read no other file', 'overrides the premortem habit', '<untrusted-research label="first-screen text">', 'Title: Glass Ledger', 'Tagline: A checker for colour contrast & legibility.', `Intro: ${C1_INTRO}`, 'termsNotUnderstood', 'confidence']) assert.ok(cold.prompt.includes(m), `the cold read lacks "${m}"`);
+      for (const m of ['state/ideas', 'SPEC.md', `${s.work('build', 'site')}/`, 'OWNERSHIP']) assert.ok(!cold.prompt.includes(m), `the stranger must not be pointed at ${m}`);
+      const judge = run.rec.calls.find((c) => c.label === 'cold read judge');
+      for (const m of [`state/ideas/${DATE}.json`, 'plainSentence', 'firstMinute', '<untrusted-research label="stranger answer">', 'A theme, a mood or a metaphor alone is not a match']) assert.ok(judge.prompt.includes(m), `the judge lacks "${m}"`);
+      assert.equal(judge.model, 'sonnet');
+      const expert = run.rec.calls.find((c) => c.label === 'expert review');
+      for (const m of ['purpose: tool', 'Recompute at least 5 outputs independently', 'critic-tmp/expert/', 'metrics.selfTest', 'locale-style', 'A wrong output is S1', 'every factual claim and every worked example']) assert.ok(expert.prompt.includes(m), `the expert lacks "${m}"`);
+      assert.ok(!expert.prompt.includes('data-sed-check): its answer'), 'a tool gets no lesson steps');
+      const critic = run.rec.calls.find((c) => c.label === 'critic review').prompt;
+      for (const m of ['ops/OWNER.md', 'intro inaccurate', 'Purpose: tool', 'a stranger cold-reads the first screen', 'at most 8 controls visible']) assert.ok(critic.includes(m), `the critic lacks "${m}"`);
+      const rep = s.json(s.work('qa', 'report.json'));
+      assert.equal(rep.coldRead.opaque, false);
+      assert.equal(rep.coldRead.judged, true);
+      assert.deepEqual([rep.expert.purpose, rep.expert.recomputed], ['tool', 5]);
+      assert.deepEqual(rep.pageContract, { purpose: 'tool', enforced: false, requiredFrom: null, introFound: true });
+      assert.deepEqual(c1plain(run.result.stranger), { opaque: false, confidence: 5 });
+      assert.equal(run.result.expertReviewed, true);
+    } finally { s.clean(); }
+  });
+
+  test('an opaque first screen is an S2 for the index.html owner: a wrong or vague answer, confidence 2 or less, or 3 unknown terms; anything else is no defect', async () => {
+    const opaque = (r) => r.defects.filter((d) => d.kind === 'opaque-first-screen');
+    for (const [cfg, expectOpaque, needle] of [
+      [{ judge: { matchesPlainSentence: false, reason: 'The stranger thinks it is a knitting game.' } }, true, 'does not match the plain sentence'],
+      [{ judge: { specific: false } }, true, 'the stranger\'s answer is vague'],
+      [{ coldRead: { confidence: 2 } }, true, 'confidence is 2 of 5'],
+      [{ coldRead: { termsNotUnderstood: ['phase', 'coupling', 'fireflies'] } }, true, '3 terms not understood'],
+      [{ coldRead: { termsNotUnderstood: ['phase', 'coupling'], confidence: 3 } }, false],
+      [{ judge: null }, false],
+      [{ judge: null, coldRead: { confidence: 1 } }, true, 'confidence is 1 of 5'],
+      [{ coldRead: { screenshotsSeen: 0, confidence: 1 } }, false],
+    ]) {
+      const s = makeSandbox();
+      try {
+        seedProject(s);
+        const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, cfg) });
+        checkRunInvariants('qa', run, { skipPhaseUse: true });
+        const rep = s.json(s.work('qa', 'report.json'));
+        const found = opaque(rep);
+        assert.equal(found.length, expectOpaque ? 1 : 0, `${JSON.stringify(cfg)}: ${JSON.stringify(rep.coldRead)}`);
+        if (!expectOpaque) { assert.equal(run.result.verdict, 'ship', JSON.stringify(cfg)); continue; }
+        const d = found[0];
+        assert.deepEqual([d.severity, d.owner, d.file, d.source], ['S2', 'artisan', 'index.html', 'cold-read']);
+        assert.ok(d.detail.includes(needle) && d.detail.includes('A checker that tells you whether two colours have enough contrast.'), d.detail);
+        assert.ok(d.suggestedFix.includes('first sentence of the intro'), d.suggestedFix);
+        assert.equal(run.result.verdict, 'revise');
+        if (cfg.coldRead && cfg.coldRead.termsNotUnderstood) assert.ok(d.suggestedFix.includes('phase, coupling, fireflies'));
+        if (cfg.judge && cfg.judge.reason) assert.ok(d.detail.includes('Judge: The stranger thinks it is a knitting game.'));
+      } finally { s.clean(); }
+    }
+    // no browser, no screenshots: no cold read at all
+    const s = makeSandbox();
+    try {
+      seedProject(s);
+      const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, { browser: okBrowser({ ran: true, ok: false, noBrowser: true, errors: ['no-browser: chromium missing'] }) }) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      assert.ok(!run.rec.calls.some((c) => c.label.startsWith('cold read')));
+      assert.ok(run.result.skipped.includes('stranger cold read'));
+      assert.equal(s.json(s.work('qa', 'report.json')).coldRead, null);
+    } finally { s.clean(); }
+  });
+
+  test('expert defects are merged and routed (a wrong tool output is an S1); the expert is the first purpose check to go when the budget is thin', async () => {
+    let s = makeSandbox();
+    try {
+      seedProject(s);
+      const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, { expert: { defects: [D('e1', 'S1', 'artisan', 'js/engine.js', 'Output for 0.5 is 12, the standard gives 21'), D('e2', 'S2', 'engineer', './index.html', 'The explainer says 4.5:1 is the AAA level; AAA is 7:1')] } }) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      const rep = s.json(s.work('qa', 'report.json'));
+      const out = rep.defects.find((d) => d.detail.includes('Output for 0.5'));
+      const claim = rep.defects.find((d) => d.detail.includes('AAA is 7:1'));
+      assert.deepEqual([out.severity, out.owner, out.source, out.file], ['S1', 'engineer', 'expert', 'js/engine.js'], 'routed by OWNERSHIP, not by the expert');
+      assert.deepEqual([claim.severity, claim.owner, claim.file], ['S2', 'artisan', 'index.html']);
+      assert.equal(run.result.verdict, 'revise');
+      assert.equal(rep.expert.defects, 2);
+    } finally { s.clean(); }
+    s = makeSandbox();
+    try {
+      seedProject(s);
+      const run = await runWorkflow('qa', baseArgs(s, { capTokens: 200000 }), { world: qaWorld(s) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      assert.ok(run.result.skipped.includes('expert review'), JSON.stringify(run.result.skipped));
+      assert.ok(run.rec.calls.some((c) => c.label === 'critic review'), 'the critic keeps its share');
+      assert.ok(run.rec.calls.some((c) => c.label === 'cold read'), 'the cheap cold read still runs');
+      assert.equal(s.json(s.work('qa', 'report.json')).expert, null);
+    } finally { s.clean(); }
+  });
+
+  test('the dry run carries the page\'s own intro: a missing intro is an S1 only when the contract is armed, and a page intro unlike the spec\'s is no drift error', async () => {
+    const dry = (s) => s.json(s.work('tmp', 'qa-pkg', `${DATE}-glass-ledger`, 'project.json'));
+    const introErrors = (rep) => rep.validate.errors.filter((e) => /intro/i.test(e));
+    // gate off, a page without an intro, a spec PROJECT.json with one: nothing about the intro, and the dry run holds no intro
+    let s = makeSandbox();
+    try {
+      seedProject(s);
+      toolProject(s);
+      seedContractPage(s, { intro: null });
+      const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, { realGate: true }) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      const rep = s.json(s.work('qa', 'report.json'));
+      assert.equal(rep.validate.ran, true, JSON.stringify(rep.validate));
+      assert.deepEqual(introErrors(rep), [], 'no intro error before requiredFrom');
+      assert.equal(dry(s).intro, undefined, 'the spec\'s intro is not copied over a page that has none');
+      assert.equal(dry(s).fingerprint.purpose, 'tool');
+      assert.deepEqual(rep.pageContract, { purpose: 'tool', enforced: false, requiredFrom: null, introFound: false });
+      assert.ok(!rep.defects.some((d) => /intro/i.test(d.detail) && d.severity === 'S1'));
+    } finally { s.clean(); }
+    // the same page with the contract armed: the missing intro is an S1
+    s = makeSandbox();
+    try {
+      armContract(s, '2026-10-01');
+      seedProject(s);
+      toolProject(s);
+      seedContractPage(s, { intro: null });
+      const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, { realGate: true }) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      const rep = s.json(s.work('qa', 'report.json'));
+      assert.ok(introErrors(rep).length >= 1, JSON.stringify(rep.validate.errors));
+      assert.ok(rep.defects.some((d) => d.source === 'validate' && d.severity === 'S1' && /intro/i.test(d.detail)), 'a missing intro is an S1 once the contract applies');
+      assert.equal(rep.pageContract.enforced, true);
+      assert.equal(run.result.verdict, 'revise');
+    } finally { s.clean(); }
+    // the page's own intro differs from the spec's: the dry run checks the page, so there is no intro-mismatch
+    s = makeSandbox();
+    try {
+      armContract(s, '2026-10-01');
+      seedProject(s);
+      toolProject(s, { intro: `${C1_INTRO} It was written before the build.` });
+      const pageIntro = C1_INTRO.replace('at once', 'right away').replace('designers and', 'designers &amp; ');
+      seedContractPage(s, { intro: pageIntro });
+      const run = await runWorkflow('qa', baseArgs(s), { world: qaWorld(s, { realGate: true }) });
+      checkRunInvariants('qa', run, { skipPhaseUse: true });
+      const rep = s.json(s.work('qa', 'report.json'));
+      assert.equal(dry(s).intro, C1_INTRO.replace('at once', 'right away').replace('designers and', 'designers &'), 'the dry run holds the page\'s own intro text, entities decoded and whitespace collapsed');
+      assert.ok(!rep.validate.errors.some((e) => /intro-mismatch|differs from project\.json/.test(e)), JSON.stringify(rep.validate.errors));
+      assert.ok(!rep.validate.errors.some((e) => /no p\[data-sed-intro\]/.test(e)), 'the intro is present');
+      assert.equal(rep.pageContract.introFound, true);
+    } finally { s.clean(); }
+  });
+});
+
+describe('roles and rubrics carry the purpose rules the workflows rely on (DESIGN 8)', () => {
+  const read = (...p) => fs.readFileSync(path.join(REAL_REPO, ...p), 'utf8');
+  test('quality.md: the intro, the explainer and the clarity bar are hard minimums; line 14 measures from the app\'s first control; research.md and safety.md hold the tool and lesson rules', () => {
+    const q = read('ops', 'rubrics', 'quality.md');
+    const hard = q.slice(q.indexOf('## Hard minimums'), q.indexOf('## Dimensions'));
+    for (const m of ['**The intro.**', '35 to 70 words', '**The explainer.**', '**The clarity bar**', 'ops/OWNER.md', 'At most 8 controls', 'static markup', 'window.__sedSelfTest', 'intro inaccurate']) assert.ok(hard.includes(m), `the hard minimums lack "${m}"`);
+    assert.ok(q.split('\n')[13].includes('The intro sits above the app; "without scrolling" is measured from the app\'s first control.'), 'line 14 carries the intro clarification');
+    assert.ok(q.split('\n')[12].includes('1280x650'), 'line 13 (cited by artisan.md) is still the short-window check');
+    for (const m of ['an opaque first screen (the stranger cold read)', 'a wrong output a tool shows', 'Read it through the purpose']) assert.ok(q.includes(m), `quality.md lacks "${m}"`);
+    const r = read('ops', 'rubrics', 'research.md');
+    for (const m of ['**Paywall evidence is research.**', 'paywallEvidence[].factIndex', '**Lesson accuracy.**', '**An authoritative oracle (tools).**', 'is not an oracle']) assert.ok(r.includes(m), `research.md lacks "${m}"`);
+    const s = read('ops', 'rubrics', 'safety.md');
+    for (const m of ['**Clean room.**', 'No claim of parity', 'estimates, not advice', 'never fake precision', 'never `type=password`', 'do not type a real password', 'IBAN and card checkers are out of scope', '"-----BEGIN" armor', '`political: true`']) assert.ok(s.toLowerCase().includes(m.toLowerCase()), `safety.md lacks "${m}"`);
+  });
+  test('each role whose work changes says so in a line or two', () => {
+    for (const [role, needles] of Object.entries({
+      architect: ['Write the intro first', '## Intro and explainer', 'selftest.js` owned by engineer'],
+      artisan: ['The first frame shows the thing working', 'At most 8 controls', '.sed-intro'],
+      engineer: ['you own `selftest.js`', 'window.__sedSelfTest', 'at least 8'],
+      critic: ['The stranger test', 'The expert review', 'plainSentence'],
+      lab: ['For a lesson or an explorer you own accuracy'],
+      jester: ['plain first, warm second', 'never replaces a definition'],
+      cards: ['through today\'s wanted purpose', 'equity calculator or an ICM lesson'],
+      pulse: ['through today\'s wanted purpose', 'the concept behind the headline'],
+    })) {
+      const text = read('ops', 'roles', `${role}.md`);
+      for (const m of needles) assert.ok(text.includes(m), `${role}.md lacks "${m}"`);
+    }
+  });
+});
+
+describe('revise.js: the recheck re-runs the purpose checks (DESIGN 8)', () => {
+  const D = (id, severity, owner, file, title = `${id} problem`, extra = {}) => ({ id, severity, owner, file, title, detail: `${title}, in detail`, evidence: 'open it', suggestedFix: 'fix it', ...extra });
+  const opaqueReport = (s) => {
+    seedProject(s);
+    seedContractPage(s);
+    seedQaReport(s, [D('d01', 'S2', 'artisan', 'index.html', 'Opaque first screen (stranger cold read)', { kind: 'opaque-first-screen' }), D('d02', 'S2', 'engineer', 'js/engine.js', 'Output for 0.5 is wrong')]);
+  };
+
+  test('--meta on every browser check; an open opaque first screen gets a fresh stranger beside the recheck critic, and only a clear reading fixes it', async () => {
+    // the fake recheck critic calls every open defect fixed, d01 included: only the stranger may decide d01
+    const s = makeSandbox();
+    try {
+      opaqueReport(s);
+      const w = reviseWorld(s);
+      const run = await runWorkflow('revise', baseArgs(s), { world: w });
+      checkRunInvariants('revise', run);
+      checkPrograms(run);
+      assert.equal(run.result.ok, true, JSON.stringify(run.result).slice(0, 300));
+      assert.deepEqual([...run.result.fixed].sort(), ['d01', 'd02']);
+      assert.equal(run.result.promoted, 1);
+      const meta = `--meta ${s.work('spec', 'PROJECT.json')}`;
+      assert.ok(run.rec.calls.find((c) => c.label === 'recheck browser loop 1').prompt.includes(`--seconds 10 ${meta}`), 'the recheck browser check passes --meta');
+      assert.ok(run.rec.calls.filter((c) => c.label.startsWith('fix ')).every((c) => c.prompt.includes(`--no-monkey ${meta}`) && c.prompt.includes('stay static markup in index.html')), 'the fixers\' quick check passes --meta');
+      const cold = w.state.coldReads[0].prompt;
+      for (const m of [s.work('qa', 'recheck-1', 'shots', 'desktop-light.png'), s.work('qa', 'recheck-1', 'shots', 'mobile-light.png'), 'Title: Glass Ledger', `Intro: ${C1_INTRO}`, 'Read no other file']) assert.ok(cold.includes(m), `the recheck stranger lacks "${m}"`);
+      const recheck = run.rec.calls.find((c) => c.label === 'recheck loop 1').prompt;
+      assert.ok(recheck.includes('d01 (opaque first screen) are re-judged by a fresh stranger cold read') && recheck.includes('critic-tmp/expert/'), 'the recheck critic is told what the stranger decides and how to re-run the expert checks');
+      assert.ok(run.rec.calls.some((c) => c.label === 'cold read judge loop 1'));
+    } finally { s.clean(); }
+  });
+
+  test('a stranger who still finds it opaque, or no fresh reading at all, keeps the defect open whatever the critic says; no opaque defect, no stranger', async () => {
+    let s = makeSandbox();
+    try {
+      opaqueReport(s);
+      const run = await runWorkflow('revise', baseArgs(s), { world: reviseWorld(s, { coldRead: () => ({ whatIsThis: 'Some kind of visualization.', whatWouldIDoFirst: 'Not sure.', termsNotUnderstood: ['ratio', 'luminance', 'AA'], confidence: 2, screenshotsSeen: 2 }) }) });
+      checkRunInvariants('revise', run);
+      assert.deepEqual([...run.result.fixed], ['d02']);
+      assert.equal(run.result.promoted, 1, 'one S2 fewer is still a better page');
+      const left = s.json(s.work('qa', 'report.json')).defects.find((d) => d.id === 'd01');
+      assert.ok(left && left.kind === 'opaque-first-screen' && left.detail.includes("After loop 1 a fresh stranger said it is: 'Some kind of visualization.'") && left.detail.includes('3 terms not understood'), JSON.stringify(left));
+    } finally { s.clean(); }
+    s = makeSandbox();
+    try {
+      opaqueReport(s);
+      const w = reviseWorld(s, { browser: () => okBrowser({ ran: true, ok: false, noBrowser: true, errors: ['no-browser: chromium missing'] }) });
+      const run = await runWorkflow('revise', baseArgs(s), { world: w });
+      checkRunInvariants('revise', run);
+      assert.ok(!w.state.coldReads, 'no screenshots, no stranger');
+      assert.ok(run.result.remaining.some((d) => d.id === 'd01'), 'without a fresh reading the opaque defect stays open');
+      assert.ok(run.rec.logs.some((l) => l.includes('no fresh screenshots')));
+    } finally { s.clean(); }
+    s = makeSandbox();
+    try {
+      seedProject(s);
+      seedQaReport(s, [D('d01', 'S1', 'engineer', 'js/engine.js')]);
+      const w = reviseWorld(s);
+      const run = await runWorkflow('revise', baseArgs(s), { world: w });
+      checkRunInvariants('revise', run);
+      assert.ok(!w.state.coldReads && !run.rec.calls.some((c) => c.label.startsWith('page text')), 'no opaque defect, no cold read');
+      assert.ok(!run.rec.calls.find((c) => c.label === 'recheck loop 1').prompt.includes('re-judged by a fresh stranger'));
     } finally { s.clean(); }
   });
 });

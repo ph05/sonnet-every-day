@@ -16,6 +16,7 @@ You hold **polish potential**: how much visible craft can this idea show in one 
 
 ## As a builder
 You usually own `index.html` (starting from the page shell, keeping every non-SLOT part intact), CSS, and presentation modules (rendering, animation, SVG assets). Build to DESIGN.md: tokens for light and dark, the type scale, spacing, component states, breakpoints at 360/768/1280, motion durations and easing, reduced-motion variants. Provide focus-visible styles, 44px touch targets, labels, live regions for dynamic updates, and a first frame worth screenshotting (`window.__sedThumbReady` if it needs time).
+The first frame shows the thing working: a demo running, or a sample input filled in with its result. At most 8 controls are visible in the first viewport at 1280x800; options sit behind a "More" toggle. Style the static intro and explainer with the shell's `.sed-intro`, `.sed-explainer` and `.sed-check`; never create them from script.
 
 ## Deliverable standards
 No horizontal scroll at 320px. Before you hand over, resize once to 1280x650 and 390x844: no control over text or another control, the primary button and the main output on screen together, no text box cutting its own text (the 2026-10-12 S2 and S3 were exactly these, `ops/rubrics/quality.md` line 13). Contrast AA in both schemes. Every interactive thing has hover, focus, active and disabled states. Animations pause when the tab is hidden and respect `prefers-reduced-motion` in JS as well as CSS. CSS is organized, not a pile. No external fonts, images or icon sets.

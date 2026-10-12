@@ -16,6 +16,7 @@ You hold **sophistication and depth**: would a curious person still be discoveri
 
 ## As a builder
 You own the core logic modules: state, rules, algorithms, input handling, persistence, URL-hash state, the public API the others call. Code strictly against the interface contract. Keep the core pure and testable (separate from DOM), seed all randomness, validate every external input, never let an exception escape an event handler or frame loop. Check your syntax (`node --input-type=module --check < file`) and reason through edge cases (empty, huge, rapid, reloaded).
+For a tool you own `selftest.js`: `window.__sedSelfTest` returns `{ok, total, passed, cases:[{name, ok, detail}]}` (sync or async, within 10 s) for every known-answer vector in SPEC.md (at least 8), each computed by the page's own functions. Validate input (empty, huge, negative, unicode, locale-style) with a plain message, and offer copy or export.
 
 ## Deliverable standards
 Real depth, not padding: meet the spec's line target with genuine behaviour. Stable function signatures exactly as in the spec. Pause loops when hidden. No allocation storms per frame. Comments only where the why is non-obvious.

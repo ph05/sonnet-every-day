@@ -29,6 +29,13 @@ Required: `id`, `title` (2 to 4 words), `pitch` (2 to 3 concrete sentences), `wh
 
 **Unverified facts never appear as facts.** A fact whose source is `verified:false` may stay in the dossier, flagged. In published copy it is either omitted or shown as "as of <date>, per <source title>" so the visitor can see it is reported, not confirmed. Builders follow the SPEC's facts policy; QA reports anything else as `unverified-claim`.
 
+## Tools, lessons and explorers
+
+* **Paywall evidence is research.** Every claim that a product gates a feature (an idea's `purposeDetail.paywallEvidence[].factIndex`) is a `research.facts` entry with its source, verified like any fact. An unverified paywall claim may stay in the dossier, flagged; it never reaches the page, and the page never names the product (`ops/rubrics/safety.md`, clean room).
+* **Lesson accuracy.** State the concept from a textbook, university course notes, a standard or an encyclopedia article that a second independent source agrees with. A misconception to bust must be documented (a teaching paper, a FAQ, a textbook warning), never assumed.
+* **An authoritative oracle (tools).** A known-answer vector's expected value comes from a standard (ISO, IEC, NIST, W3C, an RFC), a published test-vector set, a textbook's worked example, or a reference implementation's documented output. A blog post or a forum answer alone is not an oracle. Each vector names its source; a value you computed yourself is a regression check, not an oracle.
+* **Explorer data.** Bundled data is public domain or licence-compatible; record its provenance and licence in the dossier.
+
 ## Scores of a good dossier
 
 * 2: vague pitch, sources not seen, claims that cannot be traced.

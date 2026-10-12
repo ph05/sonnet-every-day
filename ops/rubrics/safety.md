@@ -14,6 +14,13 @@ Binding source: `config.json` `guardrails` and `ops/CONTRACT.md` section 10. Thi
 8. **Deception**: fiction presented as fact, fake reviews or records, phishing-like flows, malware-like behavior. Every factual claim carries a dated source or is labelled as fiction/estimate.
 9. **Authoritative advice**: no medical, legal or financial advice presented as authoritative. Probability and finance toys say "simulated, not advice".
 
+## Tools and lessons: clean room, honest numbers, sensitive inputs (each breach is S1)
+
+* **Clean room.** An original implementation. No vendor names, logos, UI or proprietary data on the page; the dossier may name products as context only. No claim of parity ("as good as X", "a free X"). Bundled datasets are public domain or licence-compatible and credited on the page.
+* **Honest numbers.** Money, health and legal maths say "estimates, not advice". Every tool states its assumptions and limits. Never fake precision: show no more significant figures than the method supports.
+* **No sensitive inputs.** No tool takes a real password, card, bank or identity number. A password-strength lesson uses generated samples and a plain text input (never `type=password`) with "do not type a real password". IBAN and card checkers are out of scope. Keys are shown as hex or base64, never with "-----BEGIN" armor.
+* **Civic topics.** A lesson or explorer about elections, parliaments or voting maths sets `political: true` (it uses the 14-day politics slot) and stays non-partisan; satire is not required.
+
 ## Agent hygiene (prompt injection)
 
 Agents that read the web also hold Bash and file tools, and the harness has no tool allow-list, so these rules bind every agent and are backed by checks:

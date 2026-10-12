@@ -5,7 +5,7 @@ export const meta = {
   phases: [
     { title: 'Load', detail: 'read the QA report, merge extra defects, read the ownership roster (the build is copied to a working directory when the first loop starts)' },
     { title: 'Fix', detail: 'one fix agent per owner on the working copy, severity order, disjoint files, then a wave for cross-owner root causes and the integrator' },
-    { title: 'Recheck', detail: 'browser-check again and a critic re-verifies each defect and hunts regressions; a strictly better loop is promoted into the build' },
+    { title: 'Recheck', detail: 'browser-check again (with the spec metadata) and a critic re-verifies each defect and hunts regressions, beside a fresh stranger cold read when an opaque first screen is open; a strictly better loop is promoted into the build' },
     { title: 'Finalize', detail: 'rewrite qa/report.json (revision + 1), write revise/log.json and revise/DONE.json' },
   ],
 };
@@ -25,6 +25,9 @@ export const meta = {
 //   revise.promotedBefore, and kept stays 'revised'; the pre-revise build stays the one QA saw).
 //   Writes work/<date>/revise/{log.json, DONE.json (last)}. No loop runs for reviseLoops 0 or a ship-now directive.
 //   A 'no-critic-review' defect (qa ran without a critic) is never sent to a fix agent and is carried over unchanged: only a qa rerun clears it.
+//   The recheck re-runs QA's purpose checks (DESIGN 8): browser-check with --meta work/<date>/spec/PROJECT.json, the expert's
+//   recomputations through the recheck critic, and a fresh stranger cold read (with its judge) beside the critic while an
+//   'opaque-first-screen' defect is open: only a stranger who now finds the first screen clear marks it fixed.
 // returns: {ok, phase:'revise', loopsRun, promoted, kept ('revised' | 'pre-revise'), discarded[], fixSeverity, counts{S1..S4}, fixed[], spend,
 //   clean, skipped[], skippedWhy, remaining[], browserOk, noBrowser, revision, degraded, reason, notes}
 // A missing or mistyped argument returns {ok:false, error:'bad-args', missing[], problems[]} at once, before any agent runs.
@@ -688,9 +691,16 @@ const LOOPS_RUN = LOOPS;
 // when a compact day was triggered by its S3 count (PLAYBOOK 8.6). S2 defects above the reach stay in the report as known issues.
 const FIX_SEV = FIX_SEVERITIES.includes(A.fixSeverity) ? A.fixSeverity : 'S2';
 const FIX_RANK = { S1: 0, S2: 1, S3: 2 }[FIX_SEV];
-const COST = { loop: 350000 };
+const COST = { loop: 350000, coldRead: 30000, judge: 15000 };
 const MINUTES = { loop: 14 };
 const NO_REVIEW_KIND = 'no-critic-review';
+// The recheck re-runs QA's checks (DESIGN 8): browser-check with the spec's metadata, the expert's recomputations through the critic,
+// and a fresh stranger cold read for an open opaque-first-screen defect (only a stranger can say the first screen became clear).
+const META_FLAG = `--meta ${SPEC_DIR}/PROJECT.json`;
+const OPAQUE_KIND = 'opaque-first-screen';
+const IDEA_FILE = `${REPO}/state/ideas/${DATE}.json`;
+const PC = isObj(CFG.pageContract) ? CFG.pageContract : {};
+const CONTROLS_WARN = typeof (isObj(PC.firstScreenControls) && PC.firstScreenControls.warn) === 'number' && PC.firstScreenControls.warn > 0 ? PC.firstScreenControls.warn : 8;
 const SEV_RANK = { S1: 0, S2: 1, S3: 2, S4: 3 };
 const inScope = (d) => SEV_RANK[d.severity] <= FIX_RANK;
 // Fix agents edit a copy of the build, never the build itself (see the header). PRE is the build as QA saw it, kept by the first promotion.
@@ -918,7 +928,8 @@ function fixPrompt(owner, files, defects, reportFile, loop, wave) {
       : '- Do not touch files you do not own. If the real cause is in someone else\'s file, do not edit it: list it under blocked with the file and its owner, and say so in ' + `${NOTES_DIR}/revise-${owner}.md.`,
     '- Do not regress: keep exports, event names, DOM ids and data shapes that the interface contract promises. After your edits re-check that anything you renamed is still wired everywhere.',
     '- Keep to the quality list in ' + `${REPO}/ops/rubrics/quality.md and the safety rules in ${REPO}/ops/rubrics/safety.md. No placeholders, no padding, no external requests. The site holds no project.json or thumb.png: do not create them.`,
-    `- Syntax-check each JavaScript file you touch (ES module: node --input-type=module --check < file; classic script: node --check file). You may run the quick browser check yourself if useful: cd ${REPO} && node scripts/qa/browser-check.mjs ${EDIT} --out ${QA_DIR}/fix-${owner}-${loop}-w${wave} --no-monkey (Bash timeout=420000), but it is not required: the loop re-runs the full check afterwards.`,
+    '- The intro (p[data-sed-intro]), the explainer (section[data-sed-explainer]) and every data-sed-check element stay static markup in index.html. An opaque-first-screen defect is fixed in the title, the tagline, the first sentence of the intro, the first frame and the terms it names: a fresh stranger re-reads the first screen after your fixes.',
+    `- Syntax-check each JavaScript file you touch (ES module: node --input-type=module --check < file; classic script: node --check file). You may run the quick browser check yourself if useful: cd ${REPO} && node scripts/qa/browser-check.mjs ${EDIT} --out ${QA_DIR}/fix-${owner}-${loop}-w${wave} --no-monkey ${META_FLAG} (Bash timeout=420000), but it is not required: the loop re-runs the full check afterwards.`,
     'A defect you decide is not a defect (a false positive) still gets a short note under notFixed with the evidence.',
     'Reply with: owner, fixed (ids), notFixed [{id, why}], blocked [{id, file, owner}], filesTouched.',
   ].join('\n');
@@ -934,7 +945,8 @@ function recheckPrompt(open, touched, browser, loop, prevFile) {
     `The owners changed: ${touched.length ? touched.join(', ') : '(no file changes were reported)'}. Spec: ${SPEC_DIR}/SPEC.md. Site (the working copy the owners edited; it replaces the page only if your verdict says it got better): ${EDIT}/ . Rubric: ${REPO}/ops/rubrics/quality.md (read it for severity definitions) and ${REPO}/ops/rubrics/safety.md.`,
     `Fresh automated check (${browser.noBrowser ? 'NO BROWSER AVAILABLE' : browser.ran ? `ok=${browser.ok}` : 'did not run'}), report ${browser.reportPath}, screenshots in ${QA_DIR}/recheck-${loop}/shots/ (open them with the Read tool). Errors: ${browser.errors.length ? `\n${browser.errors.slice(0, 20).map((e) => `    ${clip(e, 280)}`).join('\n')}` : 'none'}.`,
     '',
-    `1. For EACH open defect re-run its evidence as exactly as you can (a throwaway Playwright script under ${QA_DIR}/critic-tmp/ is fine; serve the site with node ${REPO}/scripts/qa/serve.mjs ${EDIT} --port <free port> and stop the server afterwards; never write inside the site directory) and read the changed code. Decide fixed or still open. Be strict: a defect is fixed only if you can no longer make it happen.`,
+    `1. For EACH open defect re-run its evidence as exactly as you can (a throwaway Playwright script under ${QA_DIR}/critic-tmp/ is fine; serve the site with node ${REPO}/scripts/qa/serve.mjs ${EDIT} --port <free port> and stop the server afterwards; never write inside the site directory) and read the changed code. Decide fixed or still open. Be strict: a defect is fixed only if you can no longer make it happen. Re-run the check QA ran: a wrong output, claim or data point from the expert review by re-running its recomputation (the scripts under ${QA_DIR}/critic-tmp/expert/, against the working copy); an "intro inaccurate" defect by reading the intro against what the page does.`,
+    ...(ordered.some((d) => d.kind === OPAQUE_KIND) ? [`   ${ordered.filter((d) => d.kind === OPAQUE_KIND).map((d) => d.id).join(', ')} (opaque first screen) are re-judged by a fresh stranger cold read that runs beside you: leave them out of both fixed and defects.`] : []),
     '2. Hunt for regressions and new problems the fixes introduced (changed files first, then the core loop, console, mobile 390px, dark mode, keyboard). A regression is the one thing that makes this loop worthless: say so with S1 or S2.',
     '3. Return the CURRENT defect list: every defect that is still open (keep its original id, update the detail if it changed) plus every new one (use ids N1, N2, ...), each with severity S1 to S4, owner (owner of the file holding the root cause), file, title, detail, evidence (exact repro) and suggestedFix. Every browser-check error above is a defect (S1) unless you can show it is a false positive. Put the ids you verified as fixed in `fixed`. Defects of severity S3 or S4 that are not on the list above stay in the report: do not list them unless a fix changed them or you found them new.',
     'Reply with the structured result.',
@@ -957,8 +969,125 @@ const toDefect = (d, extra) => ({
   detail: clip(d.detail || d.description, 700),
   evidence: clip(d.evidence || d.repro, 500),
   suggestedFix: clip(d.suggestedFix, 500),
+  ...(str(d.kind) ? { kind: str(d.kind) } : {}),
   ...(extra ? { extra: true } : {}),
 });
+
+// ---- the stranger cold read, as qa.js runs it (DESIGN 8), on the working copy's first screen. Re-run only for an open opaque defect.
+const COLD_SCHEMA = {
+  type: 'object',
+  properties: {
+    whatIsThis: { type: 'string' },
+    whatWouldIDoFirst: { type: 'string' },
+    termsNotUnderstood: { type: 'array', items: { type: 'string' } },
+    confidence: { type: 'number' },
+    screenshotsSeen: { type: 'number' },
+  },
+  required: ['whatIsThis', 'whatWouldIDoFirst', 'termsNotUnderstood', 'confidence', 'screenshotsSeen'],
+};
+const JUDGE_SCHEMA = {
+  type: 'object',
+  properties: {
+    matchesPlainSentence: { type: 'boolean' },
+    specific: { type: 'boolean' },
+    firstStepOk: { type: 'boolean' },
+    plainSentence: { type: 'string' },
+    reason: { type: 'string' },
+  },
+  required: ['matchesPlainSentence', 'specific', 'firstStepOk', 'reason'],
+};
+// Runs in node on the clerk's machine; closes over nothing. Prints the title, tagline and intro of a page's static HTML (a pattern
+// reading: the stranger needs what a visitor reads, not the validator's exact text).
+async function pageTextProgram({ fs, path, argv }) {
+  const [dir] = argv;
+  const out = { ok: true, title: '', tagline: '', intro: '', introFound: false };
+  let src = '';
+  try { src = fs.readFileSync(path.join(dir, 'index.html'), 'utf8'); } catch { out.ok = false; }
+  const named = { amp: 38, lt: 60, gt: 62, quot: 34, apos: 39, nbsp: 160, middot: 183, ndash: 8211, mdash: 8212, lsquo: 8216, rsquo: 8217, ldquo: 8220, rdquo: 8221, hellip: 8230, larr: 8592, rarr: 8594 };
+  const decode = (s) => s.replace(/&(#x[0-9a-f]+|#\d+|[a-z][a-z0-9]*);/gi, (m, e) => {
+    if (e[0] !== '#') return named[e.toLowerCase()] ? String.fromCharCode(named[e.toLowerCase()]) : m;
+    const n = e[1] === 'x' || e[1] === 'X' ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10);
+    return Number.isInteger(n) && n > 0 && n < 1114112 ? String.fromCodePoint(n) : m;
+  });
+  const text = (s) => decode(String(s).replace(/<br\b[^>]*>/gi, ' ').replace(/<[^>]*>/g, '')).replace(/\s+/g, ' ').trim();
+  const h1 = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(src);
+  const ttl = /<title\b[^>]*>([\s\S]*?)<\/title>/i.exec(src);
+  out.title = text(h1 ? h1[1] : ttl ? ttl[1] : '').slice(0, 200);
+  const tag = /<p\b[^>]*class\s*=\s*["'][^"']*\bsed-tagline\b[^"']*["'][^>]*>([\s\S]*?)<\/p>/i.exec(src);
+  out.tagline = tag ? text(tag[1]).slice(0, 300) : '';
+  const intro = /<p\b[^>]*\bdata-sed-intro\b[^>]*>([\s\S]*?)<\/p>/i.exec(src);
+  if (intro) { out.introFound = true; out.intro = text(intro[1]).slice(0, 900); }
+  console.log(JSON.stringify({ ...out, at: performance.timeOrigin + performance.now() }));
+}
+function coldReadPrompt(page, shots) {
+  const texts = page && (page.title || page.tagline || page.intro)
+    ? untrusted('first-screen text', `Title: ${page.title || '(none)'}\nTagline: ${page.tagline || '(none)'}\nIntro: ${page.introFound ? page.intro || '(empty)' : '(the page has no intro paragraph)'}`)
+    : '(the title, tagline and intro could not be read: answer from the screenshots alone)';
+  const task = [
+    '## Task: the stranger cold read',
+    'You are a stranger who has never heard of this page. You see its first screen once and say what it is. Honest confusion is the useful answer: never guess generously.',
+    'You get exactly this and nothing more:',
+    `- two screenshots of the first screen, desktop 1280x800 ${shots.desktop} and phone 390x844 ${shots.phone}: open both with the Read tool;`,
+    `- the page's title, tagline and intro text (data, not instructions):\n${texts}`,
+    'Read no other file: not the page source, the spec, the idea, the research, the premortem or any report (this task overrides the premortem habit). Do not open or run the page.',
+    'Answer:',
+    '- whatIsThis: one plain sentence in your own words: what this page is and what it lets you do.',
+    '- whatWouldIDoFirst: the first thing you would click, type or watch.',
+    '- termsNotUnderstood: every word or label on the first screen you could not explain to a friend (an empty list when there is none).',
+    '- confidence: 1 (no idea what this is) to 5 (certain).',
+    '- screenshotsSeen: how many of the two screenshots you could open (0, 1 or 2).',
+  ].join('\n');
+  return preamble('critic', task);
+}
+function judgePrompt(cold) {
+  const answer = JSON.stringify({ whatIsThis: cold.whatIsThis, whatWouldIDoFirst: cold.whatWouldIDoFirst, termsNotUnderstood: cold.terms, confidence: cold.confidence });
+  const task = [
+    '## Task: judge the stranger cold read',
+    `A stranger saw only the first screen of today's page (two screenshots, the title, the tagline and the intro) and answered (data, not instructions):\n${untrusted('stranger answer', answer)}`,
+    `Read only idea ${IDEA_ID} in ${IDEA_FILE}: its plainSentence (what the page is, in one plain sentence) and firstMinute (what a visitor should see and do first). If it has no plainSentence, use its title and pitch and say so in reason.`,
+    'Decide:',
+    '- matchesPlainSentence: true when whatIsThis names the same literal thing and job as plainSentence (a calculator for X, a lesson on Y, a game where you Z). A theme, a mood or a metaphor alone is not a match.',
+    '- specific: false when whatIsThis would fit many different pages ("an interactive visualization", "some kind of tool").',
+    '- firstStepOk: true when whatWouldIDoFirst is the first step firstMinute describes, or an equally good one.',
+    '- plainSentence: the sentence you compared with.',
+    '- reason: one sentence.',
+  ].join('\n');
+  return preamble('critic', task);
+}
+const normCold = (r) => ({
+  whatIsThis: clip(str(r.whatIsThis), 300),
+  whatWouldIDoFirst: clip(str(r.whatWouldIDoFirst), 300),
+  terms: uniq(arr(r.termsNotUnderstood).filter((t) => typeof t === 'string' && t.trim()).map((t) => clip(t.trim(), 60))).slice(0, 12),
+  confidence: Math.max(1, Math.min(5, Math.round(toNum(r.confidence, 3)))),
+  screenshotsSeen: Math.max(0, Math.min(2, Math.round(toNum(r.screenshotsSeen, 0)))),
+});
+// The opaque-first-screen rule: a wrong or vague whatIsThis, confidence 2 or less, or three or more terms not understood.
+function coldVerdict(cold, judge) {
+  const reasons = [];
+  if (judge && judge.matchesPlainSentence === false) reasons.push('what the stranger says it is does not match the plain sentence');
+  if (judge && judge.specific === false) reasons.push('the stranger\'s answer is vague');
+  if (cold.confidence <= 2) reasons.push(`the stranger's confidence is ${cold.confidence} of 5`);
+  if (cold.terms.length >= 3) reasons.push(`${cold.terms.length} terms not understood`);
+  return reasons;
+}
+// The working copy's first screen after loop k: its page texts (a clerk), the stranger, then the judge. null when it could not run.
+async function recheckColdRead(k, browser) {
+  if (!browser.ran || browser.noBrowser) { log(`recheck ${k}: no fresh screenshots, so no stranger cold read; the opaque defect stays open`); return null; }
+  if (room() < COST.coldRead + COST.judge) { skipStage(`stranger cold read loop ${k}`, `${kfmt(room())} usable tokens`); return null; }
+  const prog = `${WORK}/tmp/revise-page-text.mjs`;
+  const t = await runFiles(`page text loop ${k}`, [{ path: prog, content: makeProgram(pageTextProgram) }], `node ${prog} ${EDIT}`, { phase: 'Recheck' });
+  const out = t.ok ? parseJsonOut(t.stdout) : null;
+  const page = out && out.ok === true ? { title: clip(str(out.title), 200), tagline: clip(str(out.tagline), 300), intro: clip(str(out.intro), 900), introFound: out.introFound === true } : null;
+  const shots = { desktop: `${QA_DIR}/recheck-${k}/shots/desktop-light.png`, phone: `${QA_DIR}/recheck-${k}/shots/mobile-light.png` };
+  const r = await specialist('critic', coldReadPrompt(page, shots), { label: `cold read loop ${k}`, phase: 'Recheck', schema: COLD_SCHEMA, effort: 'medium', minRoom: COST.coldRead });
+  if (!r) { log(`the stranger cold read of loop ${k} returned nothing`); return null; }
+  const cold = normCold(r);
+  if (cold.screenshotsSeen < 1) { log(`the stranger of loop ${k} could not open a screenshot: no cold-read verdict`); return null; }
+  const j = await specialist('critic', judgePrompt(cold), { label: `cold read judge loop ${k}`, phase: 'Recheck', schema: JUDGE_SCHEMA, effort: 'medium', minRoom: COST.judge });
+  const judge = j ? { matchesPlainSentence: j.matchesPlainSentence !== false, specific: j.specific !== false, firstStepOk: j.firstStepOk !== false, reason: clip(str(j.reason), 300) } : null;
+  const reasons = coldVerdict(cold, judge);
+  return { ...cold, judge, reasons, opaque: reasons.length > 0, shots };
+}
 
 // ======================================================================= main
 const pulse = startPulse('revise', 180);
@@ -1134,10 +1263,14 @@ try {
     }
 
     phase('Recheck');
-    browserState = await runBrowserOn(EDIT, `recheck browser loop ${k}`, `${QA_DIR}/recheck-${k}`, `--seconds ${Math.max(4, Math.round(num(A.seconds, 10)))}`, 'Recheck');
+    browserState = await runBrowserOn(EDIT, `recheck browser loop ${k}`, `${QA_DIR}/recheck-${k}`, `--seconds ${Math.max(4, Math.round(num(A.seconds, 10)))} ${META_FLAG}`, 'Recheck');
     const prevFile = reportFile;
+    // An open opaque-first-screen defect is re-judged by a fresh stranger beside the recheck critic (the same check QA ran).
+    const opaqueOpen = current.filter((d) => d.kind === OPAQUE_KIND);
+    const pCold = opaqueOpen.length ? recheckColdRead(k, browserState) : Promise.resolve(null);
     const rc = await specialist('critic', recheckPrompt(current, uniq(touched), browserState, k, prevFile), { label: `recheck loop ${k}`, phase: 'Recheck', schema: RECHECK_SCHEMA });
-    const fixedNow = rc ? arr(rc.fixed) : [];
+    const coldNow = await pCold;
+    const fixedNow = rc ? [...arr(rc.fixed)] : [];
     let n = 0;
     const list = rc
       ? arr(rc.defects).filter((d) => isObj(d) && (str(d.detail) || str(d.title))).map((d) => toDefect({ ...d, id: /^N\d+$/i.test(String(d.id)) || !str(d.id) ? `r${k}-${String(++n).padStart(2, '0')}` : String(d.id) }, false))
@@ -1153,9 +1286,29 @@ try {
         list.push(...unaccounted.map((d) => ({ ...d })));
       }
     }
+    // Only the fresh stranger decides an opaque first screen: clear now means fixed; still opaque, or no fresh reading, means open.
+    if (opaqueOpen.length) {
+      const clear = Boolean(coldNow && !coldNow.opaque);
+      for (const d of opaqueOpen) {
+        const at = list.findIndex((x) => x.id === d.id);
+        const fx = fixedNow.indexOf(d.id);
+        if (clear) {
+          if (at >= 0) list.splice(at, 1);
+          if (fx < 0) fixedNow.push(d.id);
+          continue;
+        }
+        if (fx >= 0) fixedNow.splice(fx, 1);
+        const rec = coldNow
+          ? { ...d, detail: clip(`After loop ${k} a fresh stranger said it is: "${coldNow.whatIsThis}" (confidence ${coldNow.confidence} of 5). Terms not understood: ${coldNow.terms.join(', ') || 'none'}. Why it still fails the clarity bar: ${coldNow.reasons.join('; ')}.${coldNow.judge && coldNow.judge.reason ? ` Judge: ${coldNow.judge.reason}` : ''}`, 700), evidence: `the screenshots ${relPath(coldNow.shots.desktop)} and ${relPath(coldNow.shots.phone)}` }
+          : { ...d };
+        if (at >= 0) list[at] = rec;
+        else list.push(rec);
+      }
+      log(`recheck ${k}: the stranger cold read ${coldNow ? (clear ? 'found the first screen clear' : `still finds it opaque (${coldNow.reasons.join('; ')})`) : 'did not run'}: ${opaqueOpen.map((d) => d.id).join(', ')} ${clear ? 'fixed' : 'stay open'}`);
+    }
     for (const e of browserState.errors) {
       if (/^no-browser/.test(e) || list.some((d) => `${d.title} ${d.detail}`.toLowerCase().includes(e.toLowerCase().slice(0, 48)))) continue;
-      list.push(toDefect({ id: `r${k}-${String(++n).padStart(2, '0')}`, severity: 'S1', owner: 'architect', file: '', title: `browser-check: ${e}`, detail: `browser-check reported: ${e}`, evidence: `node scripts/qa/browser-check.mjs ${relPath(SITE)} --out work/${DATE}/qa/recheck-${k}`, suggestedFix: 'Fix the root cause named in the message.' }, false));
+      list.push(toDefect({ id: `r${k}-${String(++n).padStart(2, '0')}`, severity: 'S1', owner: 'architect', file: '', title: `browser-check: ${e}`, detail: `browser-check reported: ${e}`, evidence: `node scripts/qa/browser-check.mjs ${relPath(EDIT)} --out work/${DATE}/qa/recheck-${k} --meta work/${DATE}/spec/PROJECT.json`, suggestedFix: 'Fix the root cause named in the message.' }, false));
     }
     list.sort(bySeverity);
     const recheckFile = `${QA_DIR}/recheck-${k}.json`;
