@@ -98,10 +98,12 @@ test('pool: useful and teach briefs carry what DESIGN 4a asks for, spread over m
   }
   // spread: the fields of DESIGN 4a each have a lens
   const has = (list, re) => list.some((l) => re.test(`${l.id} ${l.name} ${l.brief}`));
-  for (const re of [/regex/i, /JSON|CSV/, /cron/i, /subnet|CIDR/i, /contrast/i, /image/i, /PDF/, /chord|scale/i, /tuner|metronome/i, /depth of field/i, /sunrise|golden hour/i, /resistor/i, /beam/i, /molar|stoichiometr|balanc/i, /amortization|loan/i, /time zone/i, /spaced repetition/i, /kana|IPA/i, /readability|citation/i, /SHA-256|hash/i]) {
+  // the 2026-10-12 web audit (ops/OWNER.md rule 4) dropped the photography, electronics and readability lenses (free tools already
+  // do those jobs) and re-aimed the others at the function that really is gated, so the field list follows the audited pool
+  for (const re of [/regex/i, /JSON|CSV/, /cron/i, /subnet|CIDR/i, /contrast/i, /photo|image/i, /PDF/, /chord|scale/i, /tuner|metronome|temperament/i, /sunrise|golden hour/i, /beam/i, /molar|stoichiometr|balanc/i, /amortization|loan/i, /time zone/i, /spaced repetition|flashcard/i, /kana|IPA|hangul/i, /SHA-256|hash/i, /\.docx|Word document/i, /Unicode/i]) {
     assert.ok(has(useful, re), `no useful lens for ${re}`);
   }
-  for (const re of [/Bloom/, /Raft|CRDT/, /LSM/, /Huffman/, /consistent hashing/i, /unification|type inference|Algorithm W/i, /eigen/i, /Fourier/, /Bayes/, /group theory|wallpaper/i, /knot/i, /p-adic/i, /Lagrangian|phase space/i, /black-body/i, /Le Chatelier/, /Simpson/, /comparative advantage|auction/i, /Hardy-Weinberg|Lotka-Volterra/, /temperament|harmonic series/i, /ergative|phonotactics/i, /projection/i, /kerning|typograph/i, /Diffie-Hellman|hash/i, /PID|control/i]) {
+  for (const re of [/Bloom/, /Raft|CRDT/, /LSM/, /Huffman|Burrows-Wheeler/, /two choices|balls into bins|balls into/i, /unification|type inference|Algorithm W/i, /singular value|SVD/i, /Fourier/, /Viterbi|Markov/, /group theory|wallpaper/i, /knot/i, /-adic/i, /Lagrangian|phase space|orbit/i, /black-body|Wien/i, /Le Chatelier/, /Simpson/, /comparative advantage|auction/i, /Hardy-Weinberg|Lotka-Volterra/, /temperament|harmonic series/i, /ergative|phonotactics/i, /projection/i, /kerning|typograph/i, /Shamir|secret.shar|vault code/i, /PID|control/i, /garbage.collect|mark-and-sweep/i, /satisfiab|unit propagation/i]) {
     assert.ok(has(teach, re), `no teach lens for ${re}`);
   }
   // the wildcard additions: studio and explorer sources
