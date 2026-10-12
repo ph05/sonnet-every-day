@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "date": "2026-10-12",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 2,
-  "tier": null,
-  "phase": "publish",
+  "tier": 2,
+  "phase": "kaizen",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -63,7 +63,8 @@
     "build": 1,
     "qa": 1,
     "revise": 1,
-    "package": 1
+    "package": 1,
+    "publish": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
@@ -74,13 +75,14 @@
     "qa": "2026-10-12T11:16:51.077Z",
     "revise": "2026-10-12T11:49:10.803Z",
     "package": "2026-10-12T12:45:02.657Z",
-    "publish": "2026-10-12T12:46:24.305Z"
+    "publish": "2026-10-12T12:46:54.562Z",
+    "kaizen": "2026-10-12T12:46:55.364Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T12:46:24.305Z"
+    "heartbeatAt": "2026-10-12T12:46:54.562Z"
   },
   "directives": [
     {
@@ -131,8 +133,8 @@
       }
     }
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-12T12:46:55.364Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-12-between-periods/",
   "createdAt": "2026-10-12T07:56:39.207Z",
   "events": [
     {
@@ -239,6 +241,12 @@
       "kind": "note",
       "code": "watch-extended",
       "msg": "phase watch extended: revise attempt 1 was 2.6 min past 2026-10-12T12:39:11.334Z but a file under work/2026-10-12 changed 0.9 min ago; due 2026-10-12T12:56:46.705Z now (extension 1 of 2)"
+    },
+    {
+      "at": "2026-10-12T12:46:55.364Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "published at tier 2"
     }
   ],
   "watch": {
