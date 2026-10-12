@@ -1,10 +1,4 @@
 {
   "schema": 1,
-  "skipped": [
-    "jester",
-    "architect",
-    "artisan",
-    "engineer",
-    "cards"
-  ]
+  "skipped": []
 }
