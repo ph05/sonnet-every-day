@@ -1,0 +1,64 @@
+{
+  "phase": "build",
+  "ok": true,
+  "date": "2026-10-12",
+  "tier": 2,
+  "compact": true,
+  "owners": {
+    "artisan": [
+      "index.html",
+      "css/style.css",
+      "js/render.js",
+      "js/ui.js",
+      "js/audio.js",
+      "js/postcard.js"
+    ],
+    "engineer": [
+      "js/main.js",
+      "js/sim.js",
+      "js/bot.js",
+      "js/game.js",
+      "js/share.js",
+      "test/selftest.mjs"
+    ]
+  },
+  "files": 12,
+  "missing": [],
+  "ownLoc": 4889,
+  "conflicts": [],
+  "integration": {
+    "agentOk": true,
+    "rounds": 2,
+    "browserChecked": true,
+    "browserOk": true,
+    "errors": [],
+    "edits": [
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/build/site/index.html",
+        "why": "Two About-panel copy fixes (artisan file, integration only). (1) The .sed-making-of sentence claiming three bot planners reach par on 365 rinks was only true for the spiral planner; it now states what test/selftest.mjs asserts and passes (chunked replay identical; closed-lap bot gleams at least 95 percent on each of the next 365 rinks; best of three planners out-scores the mow). (2) 'Real and made up' source attributions aligned with the research notes: Mental Floss cited only for the 1949 Model A date, the resurfacing pass cites HowStuffWorks and Wikipedia, the steering story cites Wikipedia and the maker's PDF."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/build/site/js/ui.js",
+        "why": "Added a first-screen fit (about 30 lines plus two scheduleFit() calls) that measures the real space around the rink down to the first visible primary button and writes it to --rk-chrome on #app; CSS values stay as fallback. The hand-tuned constants only held at the three contract sizes: the Start button sat 4 to 66 px below the fold on common viewports (390x750, 412x732, 430x740, 1280x650, 1366x650, any challenge banner at 375 to 430 px wide, 1536x730). Sweep of 264 sizes: 79 failures before, 5 after; 60 common viewport/phase combinations: 12 (21 with banner) before, 0 (2 with banner at 1280x600) after. Contract sizes still pass."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/package/project.json",
+        "why": "New: draft metadata for packaging, started from spec/PROJECT.json; makingOf identical to the About paragraph (with the corrected self-test sentence), title equals <title> and <h1>, tagline 118 chars, tier 2, tech tags set to what the build uses, tag 'fandom' replaced by 'emoji-grid', palette = the page's real colours (background first), nine verified sources, network [], stats zeros. Validated on a scratch copy with validate.mjs project --tier 2: ok, no errors or warnings."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/build/notes/integration.md",
+        "why": "New: edit log, conformance sweep results, evidence, viewport method, known limits."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/build/notes/viewport-integrated.json",
+        "why": "New: integrator re-run of the SPEC 11.6 viewport rects on the integrated page (QA attaches the same numbers)."
+      },
+      {
+        "file": "/home/user/sonnet-every-day/work/2026-10-12/kaizen/notes-architect.md",
+        "why": "Appended two friction lines (file now at five lines): browser-check cannot see an out-of-view primary control at common viewports; the scratchpad is shared across roles."
+      }
+    ]
+  },
+  "siteDir": "work/2026-10-12/build/site",
+  "projectDraft": "work/2026-10-12/package/project.json"
+}

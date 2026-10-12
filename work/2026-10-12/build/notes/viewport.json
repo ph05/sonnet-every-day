@@ -1,0 +1,664 @@
+{
+ "generatedBy": "artisan, against a stub view (scratch mock of game.js), Playwright + Chromium",
+ "date": "2026-10-12",
+ "results": [
+  {
+   "phase": "ready",
+   "viewport": "1366x768",
+   "scheme": "light",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 71,
+     "y": 181,
+     "w": 1224,
+     "h": 518,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 722,
+     "y": 140,
+     "w": 52,
+     "h": 23,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 210,
+     "y": 134,
+     "w": 421,
+     "h": 22,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 468,
+     "y": 709,
+     "w": 192,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "1366x768",
+   "scheme": "light",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 71,
+     "y": 181,
+     "w": 1224,
+     "h": 518,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 737,
+     "y": 140,
+     "w": 52,
+     "h": 23,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 127,
+     "y": 134,
+     "w": 519,
+     "h": 22,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 541,
+     "y": 709,
+     "w": 108,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "1366x768",
+   "scheme": "dark",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 71,
+     "y": 181,
+     "w": 1224,
+     "h": 518,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 722,
+     "y": 140,
+     "w": 52,
+     "h": 23,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 210,
+     "y": 134,
+     "w": 421,
+     "h": 22,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 468,
+     "y": 709,
+     "w": 192,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "1366x768",
+   "scheme": "dark",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 71,
+     "y": 181,
+     "w": 1224,
+     "h": 518,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 737,
+     "y": 140,
+     "w": 52,
+     "h": 23,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 127,
+     "y": 134,
+     "w": 519,
+     "h": 22,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 541,
+     "y": 709,
+     "w": 108,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "390x844",
+   "scheme": "light",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 156,
+     "w": 202,
+     "h": 481,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 292,
+     "y": 200,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 172,
+     "w": 26,
+     "h": 449,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 16,
+     "y": 691,
+     "w": 185,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "390x844",
+   "scheme": "light",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 156,
+     "w": 202,
+     "h": 481,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 292,
+     "y": 174,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 172,
+     "w": 26,
+     "h": 449,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 16,
+     "y": 691,
+     "w": 127,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "390x844",
+   "scheme": "dark",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 156,
+     "w": 202,
+     "h": 481,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 292,
+     "y": 200,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 172,
+     "w": 26,
+     "h": 449,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 16,
+     "y": 691,
+     "w": 185,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "390x844",
+   "scheme": "dark",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 156,
+     "w": 202,
+     "h": 481,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 292,
+     "y": 174,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 172,
+     "w": 26,
+     "h": 449,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 16,
+     "y": 691,
+     "w": 127,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "360x640",
+   "scheme": "light",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 90,
+     "w": 172,
+     "h": 410,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 262,
+     "y": 133,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 105,
+     "w": 26,
+     "h": 379,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 16,
+     "y": 553,
+     "w": 170,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "360x640",
+   "scheme": "light",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 90,
+     "w": 172,
+     "h": 410,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 262,
+     "y": 107,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 105,
+     "w": 26,
+     "h": 379,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 16,
+     "y": 553,
+     "w": 117,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "360x640",
+   "scheme": "dark",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 90,
+     "w": 172,
+     "h": 410,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 262,
+     "y": 133,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 105,
+     "w": 26,
+     "h": 379,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 16,
+     "y": 553,
+     "w": 170,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "360x640",
+   "scheme": "dark",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 90,
+     "w": 172,
+     "h": 410,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 262,
+     "y": 107,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 105,
+     "w": 26,
+     "h": 379,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 16,
+     "y": 553,
+     "w": 117,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "ready",
+   "viewport": "320x568",
+   "scheme": "light",
+   "primary": "btn-start",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 119,
+     "w": 132,
+     "h": 316,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 222,
+     "y": 163,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 135,
+     "w": 26,
+     "h": 316,
+     "inside": true
+    },
+    "btn-start": {
+     "x": 16,
+     "y": 521,
+     "w": 288,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  },
+  {
+   "phase": "playing",
+   "viewport": "320x568",
+   "scheme": "light",
+   "primary": "btn-pause",
+   "rects": {
+    "rink": {
+     "x": 70,
+     "y": 119,
+     "w": 132,
+     "h": 316,
+     "inside": true
+    },
+    "hud-clock": {
+     "x": 222,
+     "y": 137,
+     "w": 72,
+     "h": 16,
+     "inside": true
+    },
+    "hud-tank": {
+     "x": 25,
+     "y": 135,
+     "w": 26,
+     "h": 290,
+     "inside": true
+    },
+    "btn-pause": {
+     "x": 16,
+     "y": 495,
+     "w": 104,
+     "h": 44,
+     "inside": true
+    }
+   },
+   "scrollY": 0,
+   "overflowX": false,
+   "touchAction": "none",
+   "bodyTouchAction": "auto",
+   "allInside": true,
+   "wheelOverRink": {
+    "pageTallerThanViewport": true,
+    "scrollYBefore": 0,
+    "scrollYAfter": 120,
+    "scrolled": true
+   }
+  }
+ ]
+}

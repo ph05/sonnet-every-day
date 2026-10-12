@@ -1,0 +1,111 @@
+{
+  "schema": 1,
+  "date": "2026-10-12",
+  "slug": "between-periods",
+  "title": "Between Periods",
+  "tagline": "It's intermission and the ice is wrecked. Steer the machine, ration your water, and buff every scar before the buzzer.",
+  "description": "It is intermission and the rink is a wreck: skate grooves, divots and one seeded mishap. Steer an ice-resurfacing machine that cannot turn on a dime, ration one tank of water, and buff every scar to a mirror gleam before the buzzer. Every UTC day brings its own rink, and your finish becomes a spoiler-safe postcard and a challenge link a friend can try to beat.",
+  "tier": 2,
+  "fingerprint": {
+    "category": "hockey-sports",
+    "mechanic": "game",
+    "tone": [
+      "cozy",
+      "playful",
+      "competitive"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "svg",
+      "pointer-events",
+      "webaudio",
+      "procedural-audio",
+      "localstorage",
+      "url-hash"
+    ],
+    "tags": [
+      "hockey",
+      "ice-resurfacing",
+      "intermission",
+      "daily-rink",
+      "coverage-path",
+      "share-postcard",
+      "url-hash-seed",
+      "challenge-link",
+      "turning-radius",
+      "emoji-grid"
+    ],
+    "keywords": [
+      "ice-machine",
+      "rink",
+      "intermission",
+      "daily-challenge",
+      "seeded-world",
+      "fixed-timestep",
+      "wet-ice-sheen",
+      "water-budget",
+      "path-planning"
+    ],
+    "slot": "currentEvents",
+    "political": false
+  },
+  "palette": [
+    "#e9f1f5",
+    "#0b6e82",
+    "#f2a900",
+    "#12212b",
+    "#0b1820",
+    "#5fd3e8",
+    "#c8412f",
+    "#2b5fb4"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "NHL.com: 2026-27 season start date (29 September 2026)",
+      "url": "https://www.nhl.com/news/nhl-home-openers-for-2026-27-season"
+    },
+    {
+      "title": "Yahoo Sports: opening-night schedule for 29 September 2026",
+      "url": "https://sports.yahoo.com/articles/nhl-games-today-2026-opening-170904210.html"
+    },
+    {
+      "title": "HowStuffWorks: how an ice resurfacer works",
+      "url": "https://science.howstuffworks.com/zamboni.htm"
+    },
+    {
+      "title": "Wikipedia: Ice resurfacer",
+      "url": "https://en.wikipedia.org/wiki/Ice_resurfacer"
+    },
+    {
+      "title": "Mental Floss: a brief history of the ice resurfacer (1949)",
+      "url": "https://www.mentalfloss.com/article/24700/making-ice-nice-1949-brief-history-zamboni"
+    },
+    {
+      "title": "Maker's own history PDF: the early machine and its steering",
+      "url": "https://zamboni.com/wp-content/uploads/2011/10/ZamboniStory_ToledoWalleye.pdf"
+    },
+    {
+      "title": "DEV Community: building a daily puzzle site (craft note)",
+      "url": "https://dev.to/nikhil_657d136fec04f0e0b2/building-a-daily-puzzle-site-what-the-tech-stack-actually-looks-like-1hfj"
+    },
+    {
+      "title": "DEV Community: a daily logic puzzle with no backend (craft note)",
+      "url": "https://dev.to/solsticioapp/a-daily-logic-puzzle-with-no-backend-at-all-1ef6"
+    },
+    {
+      "title": "Daily-games roundup: UTC dates, share grids, local stats (craft note)",
+      "url": "https://www.cipherssecurity.com/games/"
+    }
+  ],
+  "makingOf": "A fixed-step simulation (60 ticks a second, in logical rink coordinates) scores against a typed-array grid, never canvas pixels, so one seed and one set of inputs always earn the same grade on any screen. Self-tests replay scripted routes with the ticks fed in chunks of 1, 7 and 60 and compare every result, check that a bot driving closed laps gleams at least 95 percent of the scars on each of the next 365 daily rinks, and check that the best of three bot planners (skip-lane mow, spiral, racetrack) out-scores the plain mow. Everything is game scale: the rink is stylized; the machine, its mishaps and every number are invented. One pass has three zones (shave, wash, squeegee), a simplification of a machine that shaves, washes, vacuums and floods in one pass. As of 2026-10-12: the 2026-27 NHL season opened on 29 September 2026 (per nhl.com and Yahoo Sports); a resurfacing pass shaves a thin layer, carries the shavings by augers to a snow tank, sprays water and picks up dirty water with a vacuum and squeegee (per HowStuffWorks and Wikipedia); the 1949 Model A's four-wheel steering was cut back to front-wheel steering after it jammed against the boards (per Wikipedia and the maker's own history PDF). Earlier ice-resurfacing games exist (per our own web searches: a browser doodle from 2013 and at least one commercial game). Seeding a daily puzzle from the date is common practice (per three craft write-ups listed below).",
+  "stats": {
+    "files": 0,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

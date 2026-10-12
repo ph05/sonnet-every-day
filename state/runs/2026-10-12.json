@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "build",
+  "phase": "qa",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -29,6 +29,12 @@
       "at": "2026-10-12T09:17:13.940Z",
       "by": "primary",
       "note": "spec ok (compact, tier 2)"
+    },
+    {
+      "phase": "build",
+      "at": "2026-10-12T11:16:42.139Z",
+      "by": "primary",
+      "note": "build ok, trial validate ok (ownLoc 4692)"
     }
   ],
   "attempts": {
@@ -36,20 +42,22 @@
     "ideate": 2,
     "select": 1,
     "spec": 1,
-    "build": 1
+    "build": 1,
+    "qa": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-12T07:56:56.306Z",
     "ideate": "2026-10-12T07:59:32.633Z",
     "select": "2026-10-12T08:30:54.796Z",
     "spec": "2026-10-12T08:48:53.008Z",
-    "build": "2026-10-12T09:17:21.200Z"
+    "build": "2026-10-12T09:17:21.200Z",
+    "qa": "2026-10-12T11:16:51.077Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-12T07:56:39.207Z",
-    "heartbeatAt": "2026-10-12T09:17:58.704Z"
+    "heartbeatAt": "2026-10-12T11:17:02.391Z"
   },
   "directives": [
     {
@@ -67,8 +75,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 825644,
-    "agentCalls": 43,
+    "outputTokens": 1836383,
+    "agentCalls": 54,
     "byPhase": {
       "ideate": {
         "outputTokens": 454562,
@@ -81,6 +89,10 @@
       "spec": {
         "outputTokens": 219874,
         "agentCalls": 6
+      },
+      "build": {
+        "outputTokens": 1010739,
+        "agentCalls": 11
       }
     }
   },
@@ -171,27 +183,35 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: build attempt 1, due 2026-10-12T11:17:21.822Z (120 min: budget 110 + 10 margin)"
+    },
+    {
+      "at": "2026-10-12T11:16:51.705Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: qa attempt 1, due 2026-10-12T12:11:51.705Z (55 min: budget 45 + 10 margin)"
     }
   ],
   "watch": {
-    "phase": "build",
+    "phase": "qa",
     "attempt": 1,
-    "armedAt": "2026-10-12T09:17:21.822Z",
-    "dueAt": "2026-10-12T11:17:21.822Z",
+    "armedAt": "2026-10-12T11:16:51.705Z",
+    "dueAt": "2026-10-12T12:11:51.705Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01Ay9dMUq5dVqgL3KUQhvJTH",
-    "workflowTask": "wjsv781vw",
+    "triggerId": "trig_01HEzLtu54mT8dJCZJzW4kvd",
+    "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 110,
-    "delayMinutes": 120,
+    "budgetMinutes": 45,
+    "delayMinutes": 55,
     "clamped": null,
     "arms": {
       "ideate": 2,
       "select": 1,
       "spec": 1,
-      "build": 1
+      "build": 1,
+      "qa": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-12T09:17:58.704Z"
+    "boundAt": "2026-10-12T11:17:02.391Z"
   }
 }

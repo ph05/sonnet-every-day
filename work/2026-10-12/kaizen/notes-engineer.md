@@ -1,1 +1,2 @@
 WebFetch to two news hosts both failed on DNS right after the network.json probe; a pre-probed okHosts list with at least one reachable site would save scouts the attempt.
+SPEC data schema left a rectangle's anchor open (zone x,y: corner or centre); the two builders read it differently and only a screenshot of the joined page showed the 15 ft offset, so a one-line anchor note per rect in the schema block would have saved the late hunt.

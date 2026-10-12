@@ -1,2 +1,3 @@
 Search summaries blend several results, so the two-independent-results rule is hard to satisfy; a per-result snippet list in the WebSearch output would make verified:true easier to earn honestly.
 Shortlist.json runs to about 2,750 lines and needs three paged reads; a judge-sized digest (id, pitch, hero moment, scope cuts) per idea would halve the reading cost for the two-criteria judges.
+Both builders write blind against a contract, so I wrote a throwaway stub of the game view to test the layout and result dialog; a shared stub view generator under ops/ would spare every builder rewriting one and keep the viewport check identical.

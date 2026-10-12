@@ -1,0 +1,275 @@
+/* Between Periods: look and feel. Linked after the page shell's inline <style>, so it overrides the shell tokens. */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  --bg: #e9f1f5;
+  --surface: #ffffff;
+  --fg: #12212b;
+  --muted: #4a5d69;
+  --border: #c3d3dc;
+  --accent: #0b6e82;
+  --accent-fg: #ffffff;
+  --ring: #1f6feb;
+  --shadow: 0 1px 2px rgb(18 33 43 / 10%), 0 8px 24px rgb(18 33 43 / 10%);
+  --radius: 14px;
+
+  /* Rink colours are read by js/render.js through getComputedStyle. They must stay plain hex values. */
+  --rk-ice: #f4fafc;
+  --rk-dull: #c9d8e0;
+  --rk-gleam: #ffffff;
+  --rk-scar: #4d6678;
+  --rk-red: #c8412f;
+  --rk-blue: #2b5fb4;
+  --rk-machine: #f2a900;
+  --rk-ink: #2a2f33;
+  --rk-water: #3fb6d1;
+  --rk-apron: #cfdde5;
+
+  --rk-warn: #8a5200;
+  --rk-g-s: #0b6e82;
+  --rk-g-a: #2b5fb4;
+  --rk-g-b: #8a5200;
+  --rk-g-c: #4a5d69;
+  --rk-g-d: #b5301f;
+  --rk-chrome: 215px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1820;
+    --surface: #12252f;
+    --fg: #e8f2f6;
+    --muted: #9db3bf;
+    --border: #24404d;
+    --accent: #5fd3e8;
+    --accent-fg: #06222b;
+    --ring: #79b8ff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 45%), 0 8px 24px rgb(0 0 0 / 40%);
+    --rk-ice: #cfe3ec;
+    --rk-dull: #9fb6c2;
+    --rk-scar: #2f4658;
+    --rk-apron: #0f2230;
+    --rk-warn: #f2a900;
+    --rk-g-s: #5fd3e8;
+    --rk-g-a: #8db4ff;
+    --rk-g-b: #f2a900;
+    --rk-g-c: #9db3bf;
+    --rk-g-d: #ff8a78;
+  }
+}
+
+[hidden] { display: none !important; }
+
+/* ---------- 2. Page chrome ---------- */
+.sed-header { padding-block: 0.25rem; }
+.sed-back { min-height: 44px; }
+.sed-main { position: relative; max-width: 1400px; margin-inline: auto; padding-top: 0.25rem; padding-bottom: 1.25rem; }
+.rk-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 16px; }
+.sed-title { margin: 0.1rem 0 0.15rem; font-size: clamp(1.5rem, 1rem + 2vw, 2.6rem); }
+.sed-tagline { flex: 1 1 300px; margin: 0 0 0.5rem; font-size: 0.875rem; line-height: 1.4; }
+@media (max-height: 699px) { .sed-tagline { display: none; } }
+
+.rk-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.rk-ic { width: 20px; height: 20px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.rk-boot-note { position: absolute; left: 0; right: 0; top: 7rem; margin: 0; text-align: center; color: var(--muted); font-size: 1.125rem; }
+html:not([data-boot="loading"]) .rk-boot-note { display: none; }
+.rk-boot-error { margin: 1rem 0; padding: 14px 16px; border: 2px solid var(--rk-red); border-radius: var(--radius); background: var(--surface); font-weight: 600; }
+/* If the module never finishes booting, show the markup anyway after a few seconds instead of a blank page. */
+html[data-boot="loading"] #app { visibility: hidden; animation: rk-reveal 0s 6s forwards; }
+html[data-boot="error"] #app { display: none; }
+@keyframes rk-reveal { to { visibility: visible; } }
+
+/* ---------- 3. Buttons and inputs ---------- */
+.rk-btn { min-width: 44px; padding: 0.4rem 0.8rem; font-size: 0.875rem; line-height: 1.2; text-align: center; transition: transform 0.12s ease-out, filter 0.12s ease-out, background-color 0.12s ease-out, border-color 0.12s ease-out; }
+.rk-btn:focus-visible, .rk-input:focus-visible, .rk-select:focus-visible, .rk-share:focus-visible { border-radius: 10px; }
+.rk-btn.is-quiet:hover { border-color: var(--accent); filter: none; }
+.rk-btn:active { transform: translateY(1px) scale(0.98); }
+.rk-btn[disabled] { opacity: 0.55; cursor: not-allowed; transform: none; }
+.rk-tog[aria-pressed="true"] { border-color: var(--accent); border-width: 2px; background: color-mix(in srgb, var(--accent) 16%, var(--surface)); }
+.rk-input, .rk-select { min-height: 44px; padding: 0 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--surface); color: var(--fg); font: inherit; font-size: 0.875rem; }
+.rk-input { flex: 1 1 120px; min-width: 0; }
+.rk-input[aria-invalid="true"] { border-color: var(--rk-red); }
+.rk-input::placeholder { color: var(--muted); opacity: 1; }
+
+/* ---------- 4. Stage: portrait grid below 768px, tank | rink | readouts ---------- */
+.rk-app { display: block; --rk-w: 100%; }
+.rk-stage { display: grid; grid-template-columns: 44px minmax(0, 1fr) 92px; gap: 8px; align-items: start; width: var(--rk-w); margin-inline: auto; }
+.rk-hud { display: contents; }
+.rk-tank { grid-column: 1; grid-row: 1 / span 2; align-self: stretch; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 0; }
+.rk-readouts { grid-column: 3; grid-row: 1; display: flex; flex-direction: column; gap: 4px; }
+.rk-prefs { grid-column: 3; grid-row: 2; align-self: end; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px; }
+.rk-rinkwrap { grid-column: 2; grid-row: 1 / span 2; position: relative; width: 100%; aspect-ratio: 85 / 200; min-height: 220px; max-height: calc(100dvh - var(--rk-chrome)); background: var(--rk-apron); border: 2px solid var(--border); border-radius: 12px; }
+.rk-rink { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border-radius: 10px; touch-action: none; cursor: crosshair; }
+.rk-rink:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; border-radius: 10px; }
+
+.rk-chip-l { display: block; color: var(--muted); font-size: 0.75rem; line-height: 1.1; font-weight: 500; }
+.rk-num { font-family: var(--font-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+.rk-chip { display: flex; flex-direction: column; justify-content: center; min-height: 42px; padding: 3px 8px; border: 2px solid var(--border); border-radius: 10px; background: var(--surface); }
+.rk-chip .rk-num { font-size: 0.8125rem; line-height: 1.25; white-space: nowrap; }
+.rk-chip.is-warn { border-color: var(--rk-warn); }
+.rk-chip.is-warn .rk-num { color: var(--rk-warn); }
+.rk-demo { align-self: flex-start; padding: 2px 10px; border-radius: 999px; background: var(--rk-machine); color: #2a2f33; font-size: 0.75rem; font-weight: 700; line-height: 1.5; }
+
+.rk-tank .rk-num { font-size: 0.75rem; line-height: 1.2; }
+.rk-gauge { position: relative; flex: 1 1 auto; width: 26px; min-height: 90px; border: 2px solid var(--muted); border-radius: 14px; background: var(--surface); overflow: hidden; --gdir: to top; }
+.rk-gauge-fill { position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--fill, 100) * 1%); background: linear-gradient(90deg, var(--rk-water), #2597b3); border-top: 2px solid var(--accent); }
+.rk-gauge::after { content: ""; position: absolute; inset: 0; opacity: 0.5; pointer-events: none;
+  background:
+    linear-gradient(var(--gdir), transparent calc(25% - 1px), var(--fg) calc(25% - 1px) calc(25% + 1px), transparent calc(25% + 1px)),
+    linear-gradient(var(--gdir), transparent calc(50% - 1px), var(--fg) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(var(--gdir), transparent calc(75% - 1px), var(--fg) calc(75% - 1px) calc(75% + 1px), transparent calc(75% + 1px)); }
+.rk-gauge.is-low { border-color: var(--rk-warn); animation: rk-pulse 1.2s ease-in-out infinite; }
+.rk-gauge.is-low .rk-gauge-fill { background: repeating-linear-gradient(45deg, var(--rk-machine) 0 6px, var(--rk-ink) 6px 12px); }
+.rk-gauge.is-dry { border-color: var(--rk-red); animation: none; }
+.rk-gauge.is-dry .rk-gauge-fill { height: 0; border-top-width: 0; }
+.rk-dry-ic { display: none; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; color: var(--rk-red); }
+.rk-gauge.is-dry .rk-dry-ic { display: block; }
+@keyframes rk-pulse { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--rk-machine) 55%, transparent); } }
+
+.rk-sq { width: 44px; padding: 0; }
+.rk-sq .rk-lab { display: none; }
+
+.rk-veil { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 8px; border-radius: 10px; background: rgb(8 22 30 / 58%); color: #ffffff; text-align: center; pointer-events: none; }
+.rk-veil-t { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.01em; }
+.rk-veil-s { font-size: 0.8125rem; }
+
+/* ---------- 5. Dock: coach line and control bar ---------- */
+.rk-below { display: block; width: var(--rk-w); margin: 8px auto 0; }
+.rk-dock { display: flex; flex-direction: column; gap: 6px; }
+.rk-coach { margin: 0; min-height: 2.7em; font-size: 0.875rem; line-height: 1.35; }
+.rk-bar { display: flex; flex-wrap: wrap; gap: 8px; min-height: 44px; }
+.rk-bar > .rk-btn { display: none; flex: 1 1 auto; min-width: 0; }
+html[data-phase="ready"] .rk-bar > [data-show~="ready"],
+html[data-phase="playing"] .rk-bar > [data-show~="playing"],
+html[data-phase="paused"] .rk-bar > [data-show~="paused"],
+html[data-phase="done"] .rk-bar > [data-show~="done"] { display: inline-flex; }
+html[data-mode="auto"][data-phase="playing"] .rk-bar > [data-show~="playing"] { display: none; }
+html[data-mode="auto"][data-phase="playing"] .rk-bar > [data-show~="auto"] { display: inline-flex; }
+html[data-phase="done"] #btn-restart { background: var(--accent); border-color: transparent; color: var(--accent-fg); }
+html[data-phase="done"] #btn-restart:hover { filter: brightness(1.08); }
+
+.rk-more { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; max-width: 640px; }
+.rk-hint, .rk-info, .rk-note { margin: 0; color: var(--muted); font-size: 0.8125rem; line-height: 1.4; }
+.rk-hint kbd { font-size: 0.75rem; }
+html:not([data-phase="ready"]):not([data-phase="paused"]) .rk-hint { display: none; }
+.rk-note { min-height: 0; }
+.rk-note:empty { display: none; }
+.rk-note.is-error { color: var(--rk-g-d); font-weight: 600; }
+.rk-watch, .rk-seed { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.rk-seed-l { font-size: 0.875rem; font-weight: 600; }
+.rk-watch .rk-select { flex: 1 1 140px; }
+.rk-watch .rk-btn { flex: 0 0 auto; }
+html:not([data-phase="ready"]) .rk-watch { display: none; }
+
+/* ---------- 6. Banner and toasts ---------- */
+.rk-banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: var(--rk-w); margin: 0 auto 8px; padding: 8px 12px; border: 2px solid var(--accent); border-radius: 12px; background: var(--surface); font-size: 0.875rem; line-height: 1.35; }
+.rk-banner.is-error { border-color: var(--rk-red); }
+.rk-banner .rk-btn { flex: 0 0 auto; }
+
+.rk-toasts { position: fixed; z-index: 50; left: 50%; top: 6px; display: flex; flex-direction: column; gap: 8px; width: min(92vw, 420px); transform: translateX(-50%); pointer-events: none; }
+.rk-toast { padding: 10px 14px; border-radius: 12px; background: var(--fg); color: var(--bg); box-shadow: var(--shadow); font-size: 0.875rem; line-height: 1.35; animation: rk-toast-in 0.16s ease-out; }
+.rk-toast.is-error { background: var(--rk-red); color: #ffffff; }
+.rk-toast.is-out { animation: rk-toast-out 0.16s ease-in forwards; }
+@keyframes rk-toast-in { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes rk-toast-out { to { opacity: 0; transform: translateY(-8px); } }
+
+/* ---------- 7. Result dialog ---------- */
+.rk-dialog { width: min(94vw, 640px); max-height: 92dvh; padding: 0; border: 2px solid var(--border); border-radius: var(--radius); background: var(--surface); color: var(--fg); box-shadow: var(--shadow); overflow: auto; }
+.rk-dialog::backdrop { background: rgb(7 20 28 / 64%); }
+.rk-dialog[open] { animation: rk-dialog-in 0.18s ease-out; }
+@keyframes rk-dialog-in { from { opacity: 0; transform: scale(0.98); } }
+.rk-res { display: grid; gap: 12px; padding: var(--pad); --pad: 16px; --gc: var(--rk-g-d); }
+.rk-res[data-grade="S"] { --gc: var(--rk-g-s); }
+.rk-res[data-grade="A"] { --gc: var(--rk-g-a); }
+.rk-res[data-grade="B"] { --gc: var(--rk-g-b); }
+.rk-res[data-grade="C"] { --gc: var(--rk-g-c); }
+.rk-res-head { display: flex; align-items: center; gap: 16px; }
+.rk-stamp { flex: 0 0 auto; display: grid; place-items: center; width: 76px; height: 76px; border: 5px double var(--gc); border-radius: 50%; color: var(--gc); font-size: 2.5rem; font-weight: 800; line-height: 1; transform: rotate(-7deg); animation: rk-stamp 0.22s cubic-bezier(0.2, 1.4, 0.4, 1); }
+@keyframes rk-stamp { from { opacity: 0; transform: rotate(-7deg) scale(1.7); } }
+.rk-res-text { min-width: 0; }
+.rk-res-text h2 { width: fit-content; max-width: 100%; margin: 0; font-size: 1.75rem; color: var(--gc); }
+.rk-res-text h2:focus-visible { outline-offset: 4px; }
+.rk-res-line { margin: 2px 0 0; font-size: 1rem; line-height: 1.35; }
+.rk-res-meta { margin: 2px 0 0; color: var(--muted); font-size: 0.75rem; }
+.rk-postcard { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 630; border: 2px solid var(--border); border-radius: 10px; background: #0b1820; }
+.rk-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.rk-stats > div { padding: 6px 10px; border: 2px solid var(--border); border-radius: 10px; }
+.rk-stats dt { color: var(--muted); font-size: 0.75rem; line-height: 1.2; }
+.rk-stats dd { margin: 0; font-family: var(--font-mono); font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rk-challenge { margin: 0; padding: 8px 12px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 14%, var(--surface)); border: 2px solid var(--accent); font-weight: 600; font-size: 0.875rem; }
+.rk-challenge.is-lost { border-color: var(--border); background: var(--surface); }
+.rk-share-l { color: var(--muted); font-size: 0.75rem; margin-bottom: -6px; }
+.rk-share { width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--fg); font: 0.875rem/1.45 var(--font-mono); resize: vertical; }
+.rk-share-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.rk-share-actions .rk-btn { flex: 1 1 auto; }
+.rk-res-actions { position: sticky; bottom: 0; display: flex; gap: 8px; margin: 0 calc(var(--pad) * -1) calc(var(--pad) * -1); padding: 10px var(--pad); border-top: 2px solid var(--border); background: var(--surface); }
+.rk-res-actions .rk-btn { flex: 1 1 0; }
+
+/* ---------- 8. About panel additions ---------- */
+.sed-about-body h3 { margin: 0.9rem 0 0.3rem; color: var(--fg); font-size: 0.95rem; }
+.sed-about-body kbd { font-size: 0.8em; }
+.sed-about > summary { min-height: 44px; display: flex; align-items: center; }
+
+/* ---------- 9. Wider screens ---------- */
+@media (min-width: 768px) {
+  .sed-title { font-size: clamp(1.5rem, 1rem + 1.2vw, 2rem); }
+  .rk-app.has-banner { --rk-chrome: 298px; }
+  .rk-app { --rk-chrome: 246px; --rk-w: min(100%, max(560px, calc((100dvh - var(--rk-chrome)) * 200 / 85))); }
+  .rk-stage { display: flex; flex-direction: column; align-items: stretch; gap: 8px; }
+  .rk-hud { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .rk-readouts { display: contents; }
+  .rk-demo { order: 0; align-self: center; }
+  .rk-chip-clock { order: 1; }
+  .rk-tank { order: 2; flex: 1 1 160px; flex-direction: row; align-items: center; gap: 10px; min-height: 52px; padding: 3px 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--surface); }
+  .rk-chip { order: 3; min-width: 76px; padding: 3px 10px; }
+  .rk-prefs { order: 4; flex-wrap: nowrap; margin-left: auto; align-self: center; gap: 6px; }
+  .rk-chip .rk-num { font-size: 1.125rem; }
+  .rk-tank .rk-num { min-width: 3.4em; font-size: 0.875rem; text-align: right; }
+  .rk-gauge { flex: 1 1 auto; width: auto; min-width: 80px; height: 22px; min-height: 0; --gdir: to right; }
+  .rk-gauge-fill { top: 0; right: auto; bottom: 0; width: calc(var(--fill, 100) * 1%); height: auto; background: linear-gradient(180deg, var(--rk-water), #2597b3); border-top: 0; border-right: 2px solid var(--accent); }
+  .rk-gauge.is-dry .rk-gauge-fill { width: 0; border-right-width: 0; height: auto; }
+  .rk-rinkwrap { grid-column: auto; grid-row: auto; aspect-ratio: 200 / 85; min-height: 0; max-height: none; }
+  .rk-veil-t { font-size: 2.25rem; }
+  .rk-coach { min-height: 0; flex: 1 1 auto; align-self: center; font-size: 1rem; }
+  .rk-dock { flex-direction: row; align-items: center; gap: 16px; }
+  .rk-bar { flex: 0 0 auto; justify-content: flex-end; }
+  .rk-bar > .rk-btn { flex: 0 0 auto; padding-inline: 1.1rem; font-size: 0.9375rem; }
+  .rk-more { max-width: none; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .rk-hint { flex: 1 1 100%; }
+  .rk-seed { flex: 1 1 340px; }
+  .rk-info, .rk-note { flex: 1 1 100%; }
+  .rk-stamp { width: 88px; height: 88px; font-size: 3rem; }
+  .rk-res { --pad: 24px; gap: 16px; }
+}
+
+@media (min-width: 1500px) {
+  .rk-sq { width: auto; padding: 0.4rem 0.8rem; }
+  .rk-sq .rk-lab { display: inline; }
+}
+
+@media (min-width: 1280px) {
+  .rk-below { display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 440px); gap: 16px; align-items: start; }
+  .rk-more { flex-direction: column; align-items: stretch; margin-top: 0; }
+  .rk-seed { flex: 0 0 auto; }
+  .rk-dock { flex-wrap: wrap; }
+  .rk-coach { flex: 1 1 200px; }
+}
+
+@media (min-width: 768px) and (max-height: 699px) {
+  .rk-app { --rk-chrome: 232px; }
+  .rk-app.has-banner { --rk-chrome: 284px; }
+}
+
+@media (max-width: 767px) {
+  .rk-below { margin-top: 8px; }
+  .rk-btn { padding-inline: 0.55rem; }
+  .rk-app.has-banner { --rk-chrome: 267px; }
+}
+
+/* ---------- 10. Reduced motion twins (the shell already shortens durations) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .rk-gauge.is-low { animation: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--rk-machine) 55%, transparent); }
+  .rk-toast, .rk-toast.is-out, .rk-stamp, .rk-dialog[open] { animation: none; }
+  .rk-btn { transition: none; }
+}
