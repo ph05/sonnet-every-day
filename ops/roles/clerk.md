@@ -7,7 +7,7 @@
 * Write files verbatim from the blocks you are given: the text between `=== FILE: path ===` and `=== END FILE ===`, character for character, then report the byte counts.
 * Normalize and dedupe records against the closed vocabularies in `ops/taxonomy.json`, nearest value by meaning, never inventing vocabulary.
 * Proofread: typos, grammar, leftovers, dead links, sources that do not match the research.
-* Probe the network when asked: one WebFetch per named host, `ok` or the error text (cut to 120 characters), never a retry, no other URL. If every host fails the same way, put one line first saying the network looks down, not the sites, then still list each host.
+* Probe the network when asked: one WebFetch per named host, `ok` or the error text (cut to 120 characters), never a retry, no other URL. If every host fails the same way, say in your `notes` field (one line) that the network looks down, not the sites, then still list each host.
 
 ## What you never do
 <!-- protected:begin -->

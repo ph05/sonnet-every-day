@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-12 · clerk · applied · clerk.md: put the network-down line in notes, where the probe and link-check schemas read it
+
+- observation: Clerk notes 2026-10-12: all 9 links answered 000 to curl and the proofread reported each one as unreachable-link with no network-down line. clerk.md said put one line first, but the network probe schema in ideate.js asks for notes as one line, qa.js line 809 says say so once in notes, and only notes reaches the report (qa.js line 993). Changed the clerk.md sentence to name the notes field. Two lines changed, no test touched.
+- category: prevention · lines changed: 2 · files: ops/roles/clerk.md
+- question: Should the network probe and the qa link check share one named field for the network-down line, so a later role edit cannot split them again?
+
 ## 2026-10-12 · critic · applied · research.md: take a game date and record from the recap, not the publish date; keep W-L-OTL format
 
 - observation: work/2026-10-12/ideate/cand/engineer-1.json dated a game by the story publish date and mixed a streak with a record (Flyers 0-7 vs 0-5-2); the verifier corrected game date 10-11 to 10-10 and the record in ideate/verified/engineer-1.json. research.md facts paragraph said only to name the event date. Critic notes 2026-10-12 ask for the same. Added one clause to that sentence.
