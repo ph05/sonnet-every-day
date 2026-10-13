@@ -320,7 +320,7 @@
         "ops/workflows/qa.js",
         "tests/playbook.test.mjs"
       ],
-      "sha": null,
+      "sha": "2d798c2efaef65ce6ca9b38471fc87303673176b",
       "status": "applied",
       "linesChanged": 22,
       "question": "Should the selfcheck emulate the other runtime rules it cannot see (what else besides dynamic import does the Workflow runtime refuse)? _selfcheck.mjs is over the 256 KB kaizen file cap, so a kaizen cannot edit it: split it?",
