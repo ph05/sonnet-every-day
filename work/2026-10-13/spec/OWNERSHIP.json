@@ -1,0 +1,11 @@
+{
+  "index.html": "artisan",
+  "style.css": "artisan",
+  "view.js": "artisan",
+  "app.js": "engineer",
+  "state.js": "engineer",
+  "engine.js": "engineer",
+  "report.js": "engineer",
+  "selftest.js": "engineer",
+  "data/places.js": "engineer"
+}

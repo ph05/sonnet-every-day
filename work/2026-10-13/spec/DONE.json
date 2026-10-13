@@ -1,0 +1,38 @@
+{
+  "phase": "spec",
+  "ok": true,
+  "date": "2026-10-13",
+  "ideaId": "i01",
+  "tier": 2,
+  "compact": true,
+  "slug": "historical-date-converter",
+  "title": "Historical Date Converter",
+  "owners": {
+    "artisan": [
+      "index.html",
+      "style.css",
+      "view.js"
+    ],
+    "engineer": [
+      "app.js",
+      "state.js",
+      "engine.js",
+      "report.js",
+      "selftest.js",
+      "data/places.js"
+    ]
+  },
+  "files": 9,
+  "warnings": [],
+  "openIssues": [
+    "France, Denmark-Norway, Soviet Russia, Spain, Portugal, Scotland's 1600 new year and the famous-date backgrounds (Washington, Newton, October 1917) rest on search-result sources named by the critic (no URLs kept, pages not opened); shipped labelled 'as of 2026-10-13, per search results'. A verifier who opens the pages or finds two separate result entries each could promote them to plain fact.",
+    "SPEC.md sections 1-12 run about 8,000 words against the 900-1,500 guideline; kept deliberately so two parallel builders need no guessing. Trim candidates if wanted: About-panel lists, critic answers, golden ViewModel examples.",
+    "Optional features listed first in the cut-list (days-between, 'none' place, Copy link, custom place, extra famous dates) may be dropped by the builders if the clock demands; the spec says what must survive.",
+    "The explainer is about 1,090 words (minimum 250) because the owner asked for more concept explanation; the artisan may wrap lines at about 100 characters but must paste the words exactly."
+  ],
+  "purpose": "tool",
+  "pageContract": {
+    "enforced": true,
+    "requiredFrom": "2026-10-13"
+  }
+}

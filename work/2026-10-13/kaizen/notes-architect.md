@@ -1,2 +1,3 @@
 Search snippets rarely show exact worked numbers from reference pages, so a scout should compute oracle values with node and label them regression checks; a shared note on which numbers are only computed would save the verifier time.
 Judging two criteria meant reading a 190 KB shortlist.json twice over; a printed one-page digest per idea (plain sentence, oracle, scope, risks) from the select step would let a two-criterion judge read once.
+The spec lint exists only as a function inside ops/workflows/spec.js, so I copied it out by hand to pre-check my four files; a runnable script (or a short list of its rules in the architect role file) would save every architect that detour and a fix pass.

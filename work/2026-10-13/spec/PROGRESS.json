@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "phase": "spec",
+  "date": "2026-10-13",
+  "stage": "architect",
+  "ideaId": "i01",
+  "slug": "historical-date-converter",
+  "title": "Historical Date Converter",
+  "compact": true,
+  "tier": 2,
+  "minOwnLoc": 350,
+  "order": [
+    "OWNERSHIP.json",
+    "PROJECT.json",
+    "SPEC.md",
+    "DESIGN.md"
+  ],
+  "log": "work/2026-10-13/spec/progress.log",
+  "note": "Written by the spec workflow before its architect starts. If the phase is finished by hand, DONE.json copies compact and tier from here."
+}
