@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Historical Date Converter</title>
+<meta name="description" content="Converts a date between the Julian and Gregorian calendars using the switch day of the place you choose, and flags dates that never existed there. It shows the weekday and every step of the working, and runs entirely in your browser.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 4 &middot; 2026-10-13</p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Historical Date Converter</h1>
+  <div class="sed-lede">
+    <p class="sed-tagline">Convert old dates to today's calendar, find the days a place skipped, and check every step.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+  <p class="sed-intro" data-sed-intro>A converter that turns a Julian date (from the old calendar) into a Gregorian date (today's calendar), and back, for the place you pick. It flags dates that never existed there, like 13 October 1582 in Rome. Made for family historians and anyone reading old letters: a sample is loaded, so change the day or place, or try a famous date.</p>
+
+  <section class="hdc-app" id="app" aria-label="Date converter">
+    <form class="hdc-form hdc-card" id="form" novalidate autocomplete="off">
+      <div class="hdc-dmy hdc-a-dmy">
+        <div class="hdc-field hdc-day">
+          <label for="f-day">Day</label>
+          <input id="f-day" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done" value="13">
+        </div>
+        <div class="hdc-field hdc-month">
+          <label for="f-month">Month</label>
+          <select id="f-month"></select>
+        </div>
+        <div class="hdc-field hdc-year">
+          <label for="f-year">Year<span class="sed-visually-hidden"> (as written)</span></label>
+          <input id="f-year" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done" value="1582">
+        </div>
+      </div>
+      <p class="hdc-hint hdc-a-hint" id="year-rule">The year is counted from 1 January.</p>
+      <div class="hdc-field hdc-a-place">
+        <label for="f-place">Place</label>
+        <select id="f-place"></select>
+      </div>
+      <div class="hdc-custom hdc-a-custom" id="custom-box" role="group" aria-labelledby="custom-legend" hidden>
+        <p class="hdc-legend" id="custom-legend">Last day on the old calendar</p>
+        <div class="hdc-dmy">
+          <div class="hdc-field hdc-day">
+            <label for="c-day"><span class="sed-visually-hidden">Last day on the old calendar: </span>Day</label>
+            <input id="c-day" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done">
+          </div>
+          <div class="hdc-field hdc-month">
+            <label for="c-month"><span class="sed-visually-hidden">Last day on the old calendar: </span>Month</label>
+            <select id="c-month"></select>
+          </div>
+          <div class="hdc-field hdc-year">
+            <label for="c-year"><span class="sed-visually-hidden">Last day on the old calendar: </span>Year</label>
+            <input id="c-year" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done">
+          </div>
+        </div>
+        <p class="hdc-hint" id="c-line"></p>
+      </div>
+      <div class="hdc-extra hdc-a-extra">
+        <div class="hdc-field hdc-famous">
+          <label for="f-famous">Try a famous date</label>
+          <select id="f-famous"><option value="">Try a famous date...</option></select>
+        </div>
+        <button type="button" class="hdc-more" id="btn-more" aria-expanded="false" aria-controls="more-panel">
+          <svg class="hdc-ico hdc-chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg>
+          <span class="hdc-label">More options</span>
+        </button>
+      </div>
+      <div class="hdc-more-panel hdc-a-more" id="more-panel" hidden>
+        <div class="hdc-field">
+          <label for="f-written">Read my date as</label>
+          <select id="f-written">
+            <option value="auto">Work it out from the place</option>
+            <option value="julian">Julian (old calendar)</option>
+            <option value="gregorian">Gregorian (today's calendar)</option>
+          </select>
+        </div>
+        <fieldset class="hdc-between">
+          <legend>Count the days to another date</legend>
+          <div class="hdc-dmy">
+            <div class="hdc-field hdc-day">
+              <label for="b-day"><span class="sed-visually-hidden">Count the days to another date: </span>Day</label>
+              <input id="b-day" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done">
+            </div>
+            <div class="hdc-field hdc-month">
+              <label for="b-month"><span class="sed-visually-hidden">Count the days to another date: </span>Month</label>
+              <select id="b-month"></select>
+            </div>
+            <div class="hdc-field hdc-year">
+              <label for="b-year"><span class="sed-visually-hidden">Count the days to another date: </span>Year</label>
+              <input id="b-year" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" enterkeyhint="done">
+            </div>
+          </div>
+          <p class="hdc-hint" id="b-line" data-tone="none" hidden></p>
+        </fieldset>
+        <div class="hdc-actions">
+          <button type="button" class="hdc-quiet" id="btn-link"><span class="hdc-label">Copy link to this date</span></button>
+          <button type="button" class="hdc-quiet" id="btn-selftest"><span class="hdc-label">Check this tool against known answers</span></button>
+        </div>
+        <div class="hdc-selftest" id="selftest-out" aria-live="polite">Not run yet.</div>
+      </div>
+    </form>
+
+    <div class="hdc-result" id="result" data-sed-result data-tone="skip" data-sample="true" aria-live="off">
+      <div class="hdc-toolbar">
+        <div class="hdc-state">
+          <span class="hdc-badge" id="result-badge"></span>
+          <span class="hdc-tag" id="result-sample">Sample</span>
+        </div>
+        <div class="hdc-tools">
+          <button type="button" class="sed-btn hdc-copy" id="btn-copy">
+            <svg class="hdc-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>
+            <span class="hdc-label">Copy result</span>
+          </button>
+          <button type="button" class="sed-btn is-quiet hdc-stepsbtn" id="btn-steps" aria-expanded="false" aria-controls="steps-panel">
+            <svg class="hdc-ico" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>
+            <span class="hdc-label">Show the steps</span>
+          </button>
+        </div>
+        <span class="hdc-status" id="copy-status" aria-live="polite"></span>
+      </div>
+      <div class="hdc-body">
+        <div class="hdc-text">
+          <p class="hdc-headline" id="result-headline">Loading the converter...</p>
+          <div class="hdc-detail" id="result-detail"></div>
+          <dl class="hdc-rows" id="result-rows"></dl>
+          <div class="hdc-yearbox" id="year-box" hidden>
+            <p class="hdc-yearbox-title" id="year-box-title"></p>
+            <dl class="hdc-rows" id="year-box-rows"></dl>
+          </div>
+          <p class="hdc-caption" id="result-caption"></p>
+        </div>
+        <figure class="hdc-leaf" id="grid">
+          <figcaption class="hdc-leaf-title" id="grid-title"></figcaption>
+          <svg class="hdc-holes" viewBox="0 0 100 14" aria-hidden="true" focusable="false"><circle cx="22" cy="7" r="4.5"/><circle cx="78" cy="7" r="4.5"/></svg>
+          <p class="hdc-leaf-sub" id="grid-sub"></p>
+          <div class="hdc-leaf-body" id="grid-body"></div>
+          <div class="hdc-gap" id="grid-gap"></div>
+        </figure>
+      </div>
+      <div class="hdc-steps" id="steps-panel" hidden>
+        <ol class="hdc-steps-list" id="steps-list"></ol>
+      </div>
+      <p class="hdc-limits" id="limits-note">One switch day per place. Not genealogical or legal proof. <a href="#limits">Read the limits.</a></p>
+    </div>
+    <div class="sed-visually-hidden" id="live" role="status"></div>
+  </section>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">Why one date can name two different days</h2>
+    <p>A calendar is a set of rules for naming days with a day of the month, a month and a year. Two calendars can give one real day two different names, and this page works with two of them: the Julian calendar and the Gregorian calendar.</p>
+    <p>The Julian calendar puts a leap year (a year with an extra day, 29 February) in every fourth year, so its year averages 365.25 days. The Gregorian calendar, the one in use today, leaves out the leap year in century years that are not divisible by 400, so 97 of every 400 years are leap years and its year averages 365.2425 days.</p>
+    <p>That small difference adds up. Measured against the Gregorian average, the Julian calendar gains about 3 days every 400 years, so the two names for the same day drift apart. In 1582 the Gregorian name was 10 days ahead of the Julian one. From 1 March 1700 on today's calendar the gap was 11 days, from 1 March 1800 it was 12, and from 1 March 1900 it was 13.</p>
+    <table class="hdc-table">
+      <thead><tr><th scope="col">Dates on today's calendar</th><th scope="col">The Gregorian name is ahead of the Julian name by</th></tr></thead>
+      <tbody>
+        <tr><td>15 October 1582 to 28 February 1700</td><td>10 days</td></tr>
+        <tr><td>1 March 1700 to 28 February 1800</td><td>11 days</td></tr>
+        <tr><td>1 March 1800 to 28 February 1900</td><td>12 days</td></tr>
+        <tr><td>1 March 1900 to 28 February 2100</td><td>13 days</td></tr>
+      </tbody>
+    </table>
+    <p>A place that moved from the Julian calendar to the Gregorian one had to choose which names to drop so that the two lined up. This page calls that moment the place's switch day, and the names that were dropped skipped dates.</p>
+    <p>Rome switched in 1582: the day after Thursday 4 October was Friday 15 October, so the names 5 to 14 October never existed there. No real day was lost and the weekdays carried on without a break. Only ten names were skipped.</p>
+    <p><button type="button" class="sed-btn is-quiet" data-famous="rome-1582">Try it: 13 October 1582 in Rome</button></p>
+    <p>Britain and its colonies switched 170 years later, under the Calendar (New Style) Act 1750. Wednesday 2 September 1752 was followed by Thursday 14 September 1752, so 3 to 13 September never existed there. That is eleven skipped names, one more than in Rome, because 1700 was a leap year on the Julian calendar but not on the Gregorian one.</p>
+    <p><button type="button" class="sed-btn is-quiet" data-famous="england-1752">Try it: 3 September 1752 in England</button></p>
+    <p>A popular story says angry crowds demanded their eleven days back. Historians find little evidence for it, and the slogan is tied to a banner in a painting from 1755.</p>
+    <h2>Old Style, New Style and the year that began in March</h2>
+    <p>Old Style (O.S.) means a date on the Julian calendar, and New Style (N.S.) means a date on the Gregorian calendar. Mixing them up moves a date by 10 to 13 days after 1582, as the table above shows.</p>
+    <p>The year could also start on a different day. In England, Wales, Ireland and the colonies the year began on 25 March until 1751, and on 1 January from 1752. So a date from 1 January to 24 March still belonged to the old year: a letter dated 11 February 1731 was written in 1731 by the calendar of the day, which today's count calls 1732. A dual date writes both years together, like 11 February 1731/32, for a day between 1 January and 24 March.</p>
+    <p>When you enter a date from 1 January to 24 March for a place with a 25 March year, the converter shows two readings. The first is the year as then written. The second counts the year from 1 January, because your source may already have used the modern count. For 11 February 1731 in England the first reading is Friday 22 February 1732 on today's calendar and the second is Thursday 22 February 1731. The first adds one to the year and 11 days to the date, the second only the 11 days.</p>
+    <p><button type="button" class="sed-btn is-quiet" data-famous="washington">Try it: 11 February 1731 in England</button></p>
+    <p>Scotland moved its new year to 1 January earlier, in 1600 (as of 2026-10-13, per search results from the National Records of Scotland and the Wikipedia article "Dual dating"), and the converter follows that. For every other place the converter counts the year from 1 January, even if your place started its year on another day, so check that yourself.</p>
+    <h2>How the converter works</h2>
+    <p>The converter never works with month names directly. It turns your date into a day number, a plain count of days with no months and no leap years, and then turns that number back into a date on the other calendar. Day number 2299160 is 4 October 1582 on the Julian calendar, and day number 2299161 is 15 October 1582 on the Gregorian calendar. The count runs on without a gap; only the names jump. This count is known as the Julian day number. It counts days rather than names, so it can connect the two calendars.</p>
+    <p>The weekday comes from the same number. Add 1, divide by 7 and keep the remainder, written "mod 7": 0 means Sunday, 1 Monday and so on. For day number 2299160 the sum is (2299160 + 1) mod 7 = 4, which is Thursday. The seven-day cycle carried on unbroken through the switches in 1582 and 1752, so one rule gives the right weekday on both sides.</p>
+    <p>Before a place switched, nobody there used the Gregorian calendar, but the converter can still say what a day would be called on it. Extending a calendar backwards in this way is called proleptic use. That is how it can say that 4 October 1582 on the Julian calendar is 14 October 1582 on the Gregorian one, a name nobody in Rome used at the time.</p>
+    <p>The date type that web pages normally use (JavaScript's Date) extends today's calendar backwards, so it reads 29 February 1700, a real day on the Julian calendar, as 1 March 1700. The converter does its own arithmetic and finds that Julian 29 February 1700 is Thursday 11 March 1700 on today's calendar.</p>
+    <h3 id="limits">What the converter cannot tell you</h3>
+    <p>Each place has one switch day. These places are not included because this page has no confirmed switch day for them: Greece, Sweden, Germany, the Netherlands, Switzerland, Austria, Poland-Lithuania, the colonies of other powers and every other place not in the list. If you know when your place switched, choose "A place that is not listed" and enter the last day it used the Julian calendar; the converter works out the next day for you.</p>
+    <p>The 25 March year is applied only to England, Wales, Ireland, the colonies and Scotland. Dates on today's calendar from before a place switched are counted backwards, so nobody there used them at the time. The page handles the years 1500 to 2099 and does not cover other calendar systems, such as the Hebrew, Islamic or Chinese calendars.</p>
+    <p>Some rows rest on search results rather than on pages the team opened (as of 2026-10-13): Spain, Portugal, France, Denmark-Norway and Soviet Russia, and Scotland's new-year change in 1600. A result is a calculation, not genealogical or legal proof: check it against the original record.</p>
+  </section>
+
+  <script type="module" src="selftest.js"></script>
+  <script type="module" src="app.js"></script>
+  <script type="module">
+    setTimeout(() => {
+      if (window.__sedReady !== true) {
+        const headline = document.getElementById('result-headline');
+        if (headline) headline.textContent = 'The converter could not start. Reload the page, or try a current browser.';
+      }
+    }, 5000);
+  </script>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">The converter does its own whole-number day arithmetic for both calendars and does not use the browser's date tools, which cannot hold dates such as 29 February 1700. Each place has one switch day, taken from the sources listed here; rows that rest only on search results are marked with their date. Everything is computed in your browser, and a self-test in the page re-checks the known answers whenever you ask. The self-test uses the browser's date tools once, as an independent check of the Gregorian side.</p>
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://en.wikipedia.org/wiki/Julian_day" rel="noopener noreferrer">Julian day</a>: Day number 2299161 is 15 October 1582 on the Gregorian calendar, with no gap in the count. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://www.historytoday.com/archive/gregorian-calendar-adopted-england" rel="noopener noreferrer">The Gregorian Calendar Adopted in England</a>: Wednesday 2 September 1752 was followed by Thursday 14 September, and New Year's Day moved from 25 March to 1 January. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html" rel="noopener noreferrer">Calendar (New Style) Act 1750 (Irish Statute Book)</a>: The Act's own text. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://familytreemagazine.com/history/gregorian-calendar-adoption-map/" rel="noopener noreferrer">When Did the Gregorian Calendar Start in Each Country? (Family Tree Magazine)</a>: Catholic countries went from 4 to 15 October 1582. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://aa.usno.navy.mil/faq/leap_years" rel="noopener noreferrer">Leap years (US Naval Observatory FAQ)</a>: The Gregorian leap year rule. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://tondering.dk/claus/cal/gregorian.php" rel="noopener noreferrer">Gregorian calendar (Claus Tondering, Calendar FAQ)</a>: A second source for the leap year rule. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/" rel="noopener noreferrer">Give us our eleven days!: calendar reform in eighteenth century England</a>: The story of calendar riots in 1752 is largely a later myth. Seen in search results, as of 2026-10-13.</li>
+        <li><a href="https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/" rel="noopener noreferrer">Give Us Our Eleven Days</a>: The slogan is tied to a banner in a painting from 1755. Seen in search results, as of 2026-10-13.</li>
+      </ul>
+      <h2>Also seen in search results</h2>
+      <p>Named by the review step of this build as seen in search results on 2026-10-13; the team did not open these pages and keeps no links.</p>
+      <ul>
+        <li>Spain and Portugal, 1582: Wikipedia "1582"; Catholic Answers "The day the Church altered time".</li>
+        <li>France, 1582: Wikipedia "1582 in France"; icalendars.net "Gregorian reform: one day or another".</li>
+        <li>Denmark-Norway, 1700: Wikipedia "Adoption of the Gregorian calendar"; Debian tzdata "calendars" file.</li>
+        <li>Soviet Russia, 1918: Soviet History archive (Michigan State); prlib.ru.</li>
+        <li>Scotland's new year in 1600: National Records of Scotland; Wikipedia "Dual dating".</li>
+        <li>The 1582 date pair: Britannica entry on Gregory XIII.</li>
+        <li>Offsets of 10 to 13 days: Wikipedia "Conversion between Julian and Gregorian calendars".</li>
+        <li>Famous dates: 11 February 1731 as then written, the birth date of George Washington (National Park Service article; Philadelphia Inquirer); 25 December 1642, the birth date of Isaac Newton (Newton Project, Oxford; Wikipedia "Early life of Isaac Newton"); 25 October 1917, the date of the Russian October Revolution (Wikipedia "October Revolution"; Cambridge University Library exhibition). The page computes the conversions of these dates itself; only the stories attached to them rest on search results.</li>
+      </ul>
+      <h2>Switch days used</h2>
+      <table class="hdc-places" id="place-table">
+        <caption>Switch days used by this page, as of 2026-10-13</caption>
+        <thead>
+          <tr>
+            <th scope="col">Place</th>
+            <th scope="col">Last day on the old calendar</th>
+            <th scope="col">First day on today's calendar</th>
+            <th scope="col">Skipped</th>
+            <th scope="col">Basis</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h2>What is estimated or simulated</h2>
+      <p>Nothing is simulated. Day numbers and weekdays are computed. Rows marked search results have not been checked against an opened page.</p>
+      <p>Wikipedia text is licensed CC BY-SA; this page links to articles and copies none of their wording.</p>
+    </div>
+  </details>
+  <p class="sed-credits">Built by the Sonnet Every Day team</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>

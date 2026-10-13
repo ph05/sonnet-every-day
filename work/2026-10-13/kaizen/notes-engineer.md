@@ -1,1 +1,2 @@
 A scout cannot tell from the search tool whether a cited man page text came from one result or a blended summary, so I re-searched with allowed_domains to force separate entries; a note on that trick in the research rubric would save a search.
+Builders can drive the real page headless with Playwright from the node22 global modules plus PLAYWRIGHT_BROWSERS_PATH, but no role file says so and npm is off limits, so I lost a search finding it; one pointer line in the engineer role would save that.
