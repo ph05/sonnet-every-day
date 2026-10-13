@@ -352,7 +352,7 @@
       "files": [
         "ops/roles/engineer.md"
       ],
-      "sha": null,
+      "sha": "d9ab90f3b3e6ea587d3e35f7f7e28e0c2f285bb8",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should the QA probe template also be named in the spec or build prompts so every builder sees it? Those are protected, so it would be a proposal.",
