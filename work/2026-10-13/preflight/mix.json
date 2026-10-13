@@ -1,0 +1,61 @@
+{
+  "ok": true,
+  "window": {
+    "days": 14,
+    "from": "2026-09-29",
+    "to": "2026-10-12",
+    "builds": 3
+  },
+  "categoryCounts": {
+    "modding-games": 1,
+    "science-sim": 1,
+    "hockey-sports": 1
+  },
+  "slotCounts": {
+    "interest": 1,
+    "currentEvents": 1,
+    "humor": 0,
+    "wildcard": 1
+  },
+  "owed": [],
+  "owedDetail": [],
+  "avoidCategories": [
+    "hockey-sports"
+  ],
+  "avoidMechanics": [
+    "game",
+    "simulator",
+    "toy"
+  ],
+  "politicsAllowed": true,
+  "purposes": {
+    "windowDays": 7,
+    "counts": {
+      "tool": 0,
+      "lesson": 0,
+      "explorer": 0,
+      "studio": 0,
+      "play": 3
+    },
+    "lastShipped": {
+      "tool": null,
+      "lesson": null,
+      "explorer": null,
+      "studio": null,
+      "play": "2026-10-12"
+    },
+    "wanted": [
+      "tool",
+      "lesson"
+    ],
+    "avoid": [
+      "play"
+    ],
+    "playAllowed": false,
+    "playBlockedUntil": "2026-10-18",
+    "bonus": 5,
+    "override": null,
+    "legacyAssumed": []
+  },
+  "summary": "Purpose mix this week: tool 0, lesson 0, explorer 0, studio 0, play 3. Today we want a tool or a lesson (lead with one); play is paused until 2026-10-18. In the last 14 days we shipped 3 builds: hockey-sports x1, modding-games x1, science-sim x1. Do not propose these categories today (cooldown or already used twice this week): hockey-sports. Avoid these mechanics, used within the last 7 days: game, simulator, toy. A political idea is permitted but rare: playful or satirical, never partisan."
+}

@@ -1,0 +1,201 @@
+{
+  "ok": true,
+  "date": "2026-10-13",
+  "agents": [
+    {
+      "agent": "pulse",
+      "lens": {
+        "id": "on-this-day",
+        "name": "On This Day",
+        "kind": "current",
+        "brief": "Every calendar date has a pile of anniversaries: inventions, eclipses, first flights, game releases, rule changes. Build the timeline toy for today's date that makes the past feel like the same Tuesday: a then-and-now explorer, a what-else-happened slider, a day-in-history game.",
+        "sourceHints": [
+          "Wikipedia: Main Page 'On this day' and the date article (for example October 9)",
+          "r/todayilearned and r/history top of the week",
+          "Public domain archives and museum open-access collections",
+          "Hockey-Reference.com 'this day in hockey' style pages"
+        ]
+      },
+      "provocation": [
+        "static",
+        "booster",
+        "bluff"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lens": {
+        "id": "reddit-hot-threads",
+        "name": "Front Page Alchemy",
+        "kind": "interest",
+        "brief": "Every day Reddit produces a few threads whose central question is secretly a toy waiting to be built: a joke with a mechanic, an argument that wants a calculator, a 'someone should make' that nobody did. Find one, extract the idea (never the people), and build the thing the thread was asking for.",
+        "sourceHints": [
+          "r/InternetIsBeautiful, r/dataisbeautiful, r/webdev, r/gamedev top of the day and week",
+          "r/Damnthatsinteresting, r/MapPorn, r/Showerthoughts, r/AskReddit",
+          "r/balatro, r/hockey, r/poker, r/boardgames hot threads",
+          "r/OutOfTheLoop for what the internet is talking about"
+        ]
+      },
+      "provocation": [
+        "anvil",
+        "semaphore",
+        "lullaby"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lens": {
+        "id": "type-and-color",
+        "name": "Type and Color",
+        "kind": "wildcard",
+        "brief": "Typography and color are craft with measurable physics: contrast, kerning, readability, perceptual uniformity. Build a tool or toy that makes the invisible rules visible: a palette generator with a point of view, a kerning game, a typeface built from geometry in code.",
+        "sourceHints": [
+          "r/typography, r/Design_Critiques, r/web_design",
+          "Wikipedia: Color space, CIELAB, Kerning, WCAG contrast",
+          "Are.na channels on type and color",
+          "r/InternetIsBeautiful design toys"
+        ]
+      },
+      "provocation": [
+        "lighthouse",
+        "voucher",
+        "faceoff"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lens": {
+        "id": "tool-local-pdf",
+        "name": "Local PDF Helpers",
+        "kind": "useful",
+        "brief": "Merging, splitting by page range, reordering, rotating and page-numbering PDFs are tiny jobs, yet web PDF suites commonly allow only a few tasks per day or hour, cap pages or file size, or want an upload and an account. Rebuild them in a clean-room page that runs entirely in the browser: ISO 32000 is available at no cost, and copying page objects between simple unencrypted files is a few hundred lines. Check each output by reopening it in the browser's viewer, counting pages and comparing extracted text with the input. Print the limits loudly: encrypted, damaged or exotic files are refused with a clear message, and nothing is uploaded.",
+        "sourceHints": [
+          "\"merge pdf without uploading\" and \"pdf free limit per day\" searches",
+          "ISO 32000 free copies: Adobe (PDF 1.7) and the PDF Association (PDF 2.0)",
+          "Wikipedia: PDF (file structure, cross-reference table)",
+          "r/privacy and r/software threads on offline PDF tools"
+        ]
+      },
+      "provocation": [
+        "chorus",
+        "overture",
+        "teleprinter"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lens": {
+        "id": "lesson-map-projections",
+        "name": "Every Map Distorts",
+        "kind": "teach",
+        "brief": "A flat map of a round Earth must distort area, shape, distance or direction, and every projection chooses which. Mercator keeps angles true, but its area scale at latitude phi is the square of the secant of phi: about 4 times at 60 degrees and more than 30 times at 80. Let the visitor drag countries across a Mercator map and watch them shrink toward the equator, switch projections with Tissot's circles drawn on them, and plot a great-circle flight that is curved on Mercator and straight on a gnomonic map. Bust the misconception that one projection is the true one: Greenland has about one eighth of South America's area yet Mercator draws it larger, and Africa is about 14 times Greenland. The aha is that every map is an argument, for travellers and geography fans.",
+        "sourceHints": [
+          "Snyder, Map Projections: A Working Manual (USGS Professional Paper 1395)",
+          "PROJ documentation: Mercator projection",
+          "Wikipedia: Map projection, Tissot's indicatrix, Mercator projection, Great circle",
+          "Natural Earth country outlines",
+          "r/MapPorn and r/geography projection threads"
+        ]
+      },
+      "provocation": [
+        "vortex",
+        "rhythm",
+        "cinder"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lens": {
+        "id": "puzzle-forge",
+        "name": "Puzzle Forge",
+        "kind": "wildcard",
+        "brief": "Don't just ship a puzzle: ship the generator, the solver and the difficulty rating. Nonograms, logic grids, mazes with a twist, a new sudoku variant. The best forge teaches itself, then lets the visitor design a puzzle and see whether it has a unique solution.",
+        "sourceHints": [
+          "r/puzzles, r/sudoku, r/nonograms and r/logicpuzzles",
+          "Wikipedia: Constraint satisfaction, Exact cover, Dancing Links",
+          "Hacker News posts on puzzle generation",
+          "itch.io puzzle jam entries"
+        ]
+      },
+      "provocation": [
+        "beacon",
+        "kettle",
+        "hornet"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lens": {
+        "id": "tool-cron-clock-changes",
+        "name": "Cron on Clock-Change Nights",
+        "kind": "useful",
+        "brief": "A cron line says when a job runs on paper, but the machine's time zone and its scheduler decide what happens on the two nights a year the clock jumps. Free explainers list the next few runs; few show the daylight-saving nights, and this page needs no account and no upload. Build a rehearsal for those two nights: pick an IANA zone and a five-field expression, and see the real run times around the spring-forward and fall-back dates, under two named rules: classic cron (a skipped job runs right after the jump, a repeated one runs once) and a plain wall-clock scheduler (skipped is lost, repeated runs twice). The oracle is the crontab(5) and cron(8) man pages plus hand-made calendars for a few zones. Print the limits: dialects differ, and the page does not know which scheduler the visitor runs.",
+        "sourceHints": [
+          "crontab(5) and cron(8) manual pages (Vixie cron, cronie, FreeBSD)",
+          "IANA Time Zone Database (iana.org/time-zones)",
+          "Red Hat knowledge base: cron jobs and daylight saving changes",
+          "Wikipedia: Cron and Daylight saving time",
+          "MDN: Intl.DateTimeFormat timeZone option",
+          "\"cron daylight saving skipped job\" searches"
+        ]
+      },
+      "provocation": [
+        "chip",
+        "carousel",
+        "tide"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lens": {
+        "id": "lesson-markets-games",
+        "name": "How Markets and Games Decide",
+        "kind": "teach",
+        "brief": "A second-price sealed-bid auction makes honest bidding the best strategy, and comparative advantage says two countries gain from trade even when one is better at everything. Both are taught as conclusions, so they sound like opinions rather than arithmetic. Let the visitor bid against simulated rivals in first-price and second-price auctions and see what shading a bid does to the profit, then fill in a two-country production table and find the swap that leaves both sides with more. Bust the misconception that trade only helps the stronger side, and show that honest bidding is only best when bids are sealed and simultaneous. The aha is that the rules of the game shape the behaviour, for anyone who argues about economics.",
+        "sourceHints": [
+          "Ricardo, On the Principles of Political Economy and Taxation (1817), on foreign trade",
+          "Vickrey, Counterspeculation, Auctions, and Competitive Sealed Tenders (Journal of Finance, 1961)",
+          "Ausubel and Milgrom, The Lovely but Lonely Vickrey Auction (2005)",
+          "OpenStax Principles of Microeconomics, absolute and comparative advantage",
+          "Wikipedia: Comparative advantage, Vickrey auction"
+        ]
+      },
+      "provocation": [
+        "ladder",
+        "quilt",
+        "heron"
+      ]
+    }
+  ],
+  "owedKinds": [],
+  "relaxedDays": 0,
+  "purposes": {
+    "windowDays": 7,
+    "counts": {
+      "tool": 0,
+      "lesson": 0,
+      "explorer": 0,
+      "studio": 0,
+      "play": 3
+    },
+    "lastShipped": {
+      "tool": null,
+      "lesson": null,
+      "explorer": null,
+      "studio": null,
+      "play": "2026-10-12"
+    },
+    "wanted": [
+      "tool",
+      "lesson"
+    ],
+    "avoid": [
+      "play"
+    ],
+    "playAllowed": false,
+    "playBlockedUntil": "2026-10-18",
+    "bonus": 5,
+    "override": null,
+    "legacyAssumed": []
+  }
+}

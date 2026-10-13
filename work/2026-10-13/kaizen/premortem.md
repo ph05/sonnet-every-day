@@ -1,0 +1,3 @@
+- Ideate ran about 110 minutes against a 75 minute budget on 2 agent slots on 10-11, and today's extra QA cold-read and expert agents leave less room to revise. Scouts: file one candidate each first and add a second only before minute 40.
+- Browser-check shoots only 1280x800 and 390x844, so a first frame with intro, explainer and 8 controls can push the primary button below the fold at 1280x650, the S2 that shipped on 10-12. Builders: resize to 1280x650 and keep the primary button on screen.
+- Scout web fetches failed on every host on 10-10, 10-11 and 10-12 (okHosts empty), so a tool pitch's claim that it is paywalled elsewhere rests on search snippets alone. Scouts: cite two independent results per paywall claim, else mark it unverified.
