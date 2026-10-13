@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-13 · clerk · applied · gallery.css: masthead-bar padding written once, not overridden by padding-top
+
+- observation: Scan of site-src/gallery.css lines 168-169: .masthead-bar set padding 6px 0 10px and then padding-top 10px further down, so the top edge read two ways and the shorthand was partly dead. Rewrote it as padding 10px 0 with the second declaration removed. Computed padding is unchanged (top 10px, bottom 10px, sides 0), so no visual change. Today's prevention theme (QA rejected by the Workflow runtime) is not reachable from this stylesheet, so this is the normal kaizen.
+- category: simplification · lines changed: 4 · files: site-src/gallery.css
+- question: Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?
+
 ## 2026-10-13 · critic · applied · FM-34: a runtime refusal of a script construct is deterministic, so skip the retry
 
 - observation: 2026-10-13 report: qa.js was rejected twice (import() is not available in workflow scripts) and FM-34 said retry once with no mention of this cause, which the selfcheck compiles but never runs. FM-34 now names the four refused constructs, says a refusal that names a construct is deterministic so go straight to no-Workflow mode, and points at the tests that guard them (added today by architect and artisan). One row, 2 lines.

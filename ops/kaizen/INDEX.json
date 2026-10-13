@@ -373,6 +373,22 @@
       "linesChanged": 2,
       "question": "Should PLAYBOOK 6.7 and the line 402 table row say the same, so the retry-once advice cannot be read as applying to a named-construct refusal?",
       "reason": null
+    },
+    {
+      "id": "2026-10-13-clerk",
+      "date": "2026-10-13",
+      "agent": "clerk",
+      "title": "gallery.css: masthead-bar padding written once, not overridden by padding-top",
+      "observation": "Scan of site-src/gallery.css lines 168-169: .masthead-bar set padding 6px 0 10px and then padding-top 10px further down, so the top edge read two ways and the shorthand was partly dead. Rewrote it as padding 10px 0 with the second declaration removed. Computed padding is unchanged (top 10px, bottom 10px, sides 0), so no visual change. Today's prevention theme (QA rejected by the Workflow runtime) is not reachable from this stylesheet, so this is the normal kaizen.",
+      "category": "simplification",
+      "files": [
+        "site-src/gallery.css"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 4,
+      "question": "Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?",
+      "reason": null
     }
   ]
 }
