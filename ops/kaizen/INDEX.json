@@ -384,7 +384,7 @@
       "files": [
         "site-src/gallery.css"
       ],
-      "sha": null,
+      "sha": "6d6e18610512f2090f52f0035e9a1833edce1def",
       "status": "applied",
       "linesChanged": 4,
       "question": "Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?",

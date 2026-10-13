@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: Scan of site-src/gallery.css lines 168-169: .masthead-bar set padding 6px 0 10px and then padding-top 10px further down, so the top edge read two ways and the shorthand was partly dead. Rewrote it as padding 10px 0 with the second declaration removed. Computed padding is unchanged (top 10px, bottom 10px, sides 0), so no visual change. Today's prevention theme (QA rejected by the Workflow runtime) is not reachable from this stylesheet, so this is the normal kaizen.
 - category: simplification · lines changed: 4 · files: site-src/gallery.css
+- commit: 6d6e186105
 - question: Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?
 
 ## 2026-10-13 · critic · applied · FM-34: a runtime refusal of a script construct is deterministic, so skip the retry
