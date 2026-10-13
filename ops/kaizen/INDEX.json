@@ -389,6 +389,22 @@
       "linesChanged": 4,
       "question": "Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?",
       "reason": null
+    },
+    {
+      "id": "2026-10-13-pulse",
+      "date": "2026-10-13",
+      "agent": "pulse",
+      "title": "PLAYBOOK 6.7: a refused-construct Workflow error skips the retry, matching FM-34",
+      "observation": "2026-10-13 run events: qa.js was rejected twice by the runtime for import(). PLAYBOOK 6.7 row (line 402) still said do not retry a script bug more than once, while the critic FM-34 kaizen today says a named-construct refusal is deterministic. A reader of 6.7 alone would retry again. The row now names the four refused constructs and sends the phase straight to no-Workflow mode 7.5. One line, answers the critic question.",
+      "category": "prevention",
+      "files": [
+        "ops/PLAYBOOK.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Which other PLAYBOOK tables repeat a retry-once rule that FM-34 now contradicts for deterministic refusals?",
+      "reason": null
     }
   ]
 }

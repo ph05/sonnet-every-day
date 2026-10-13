@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-13 · pulse · applied · PLAYBOOK 6.7: a refused-construct Workflow error skips the retry, matching FM-34
+
+- observation: 2026-10-13 run events: qa.js was rejected twice by the runtime for import(). PLAYBOOK 6.7 row (line 402) still said do not retry a script bug more than once, while the critic FM-34 kaizen today says a named-construct refusal is deterministic. A reader of 6.7 alone would retry again. The row now names the four refused constructs and sends the phase straight to no-Workflow mode 7.5. One line, answers the critic question.
+- category: prevention · lines changed: 2 · files: ops/PLAYBOOK.md
+- question: Which other PLAYBOOK tables repeat a retry-once rule that FM-34 now contradicts for deterministic refusals?
+
 ## 2026-10-13 · clerk · applied · gallery.css: masthead-bar padding written once, not overridden by padding-top
 
 - observation: Scan of site-src/gallery.css lines 168-169: .masthead-bar set padding 6px 0 10px and then padding-top 10px further down, so the top edge read two ways and the shorthand was partly dead. Rewrote it as padding 10px 0 with the second declaration removed. Computed padding is unchanged (top 10px, bottom 10px, sides 0), so no visual change. Today's prevention theme (QA rejected by the Workflow runtime) is not reachable from this stylesheet, so this is the normal kaizen.
