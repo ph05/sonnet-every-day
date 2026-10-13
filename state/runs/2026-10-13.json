@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "date": "2026-10-13",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 2,
-  "tier": null,
-  "phase": "publish",
+  "tier": 2,
+  "phase": "kaizen",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -63,7 +63,8 @@
     "build": 1,
     "qa": 1,
     "revise": 1,
-    "package": 1
+    "package": 1,
+    "publish": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-13T07:57:30.246Z",
@@ -74,13 +75,14 @@
     "qa": "2026-10-13T10:45:28.284Z",
     "revise": "2026-10-13T10:55:53.975Z",
     "package": "2026-10-13T10:56:03.234Z",
-    "publish": "2026-10-13T10:56:54.776Z"
+    "publish": "2026-10-13T10:57:22.176Z",
+    "kaizen": "2026-10-13T10:57:23.073Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-13T07:57:14.350Z",
-    "heartbeatAt": "2026-10-13T10:56:54.776Z"
+    "heartbeatAt": "2026-10-13T10:57:22.176Z"
   },
   "directives": [
     {
@@ -123,8 +125,8 @@
       }
     }
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-13T10:57:23.073Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-13-historical-date-converter/",
   "createdAt": "2026-10-13T07:57:14.350Z",
   "events": [
     {
@@ -210,6 +212,12 @@
       "by": "primary",
       "kind": "budget",
       "msg": "revise skipped by operator: 12 S2 (10 are Haiku source-labelling findings the critic did not raise, 1 opaque-first-screen, 1 more) and 4 S3 but only 168k of the 350k a revise loop needs remain under spend.workflowCapTokens; critic verdict ship, S1=0; known issues go in the report"
+    },
+    {
+      "at": "2026-10-13T10:57:23.073Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "published at tier 2"
     }
   ],
   "watch": {
