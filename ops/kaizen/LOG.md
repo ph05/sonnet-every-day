@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-13 · critic · applied · FM-34: a runtime refusal of a script construct is deterministic, so skip the retry
+
+- observation: 2026-10-13 report: qa.js was rejected twice (import() is not available in workflow scripts) and FM-34 said retry once with no mention of this cause, which the selfcheck compiles but never runs. FM-34 now names the four refused constructs, says a refusal that names a construct is deterministic so go straight to no-Workflow mode, and points at the tests that guard them (added today by architect and artisan). One row, 2 lines.
+- category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- question: Should PLAYBOOK 6.7 and the line 402 table row say the same, so the retry-once advice cannot be read as applying to a named-construct refusal?
+
 ## 2026-10-13 · engineer · applied · Engineer role points builders at the headless page probe template
 
 - observation: Friction note 2026-10-13: builders can drive the real page headless but no builder-facing file says how, and npm is off limits, so a search was lost finding it. ops/templates/qa-probe.example.mjs already resolves Playwright and Chromium and is named only in critic.md. A day whose QA ran by hand needs builders to catch state bugs before QA. One pointer line in ops/roles/engineer.md.
