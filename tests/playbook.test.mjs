@@ -1980,3 +1980,10 @@ test('no workflow script contains a dynamic import: the runtime rejects the whol
   assert.ok(files.includes('qa.js'), 'qa.js is among the scripts scanned');
   for (const f of files) assert.doesNotMatch(fs.readFileSync(path.join(REPO_ROOT, 'ops', 'workflows', f), 'utf8'), /\bimport\s*\(/, `${f}: a clerk program gets a static import line instead`);
 });
+
+test('no workflow script calls Date.now(), Math.random() or an argless new Date(): they throw in the runtime and the selfcheck never runs them', () => {
+  const dir = path.join(REPO_ROOT, 'ops', 'workflows');
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.js'))) {
+    assert.doesNotMatch(fs.readFileSync(path.join(dir, f), 'utf8'), /Date\.now\s*\(|Math\.random\s*\(|new Date\s*\(\s*\)/, `${f}: take the time from args or the clerk, and vary by index instead of randomness`);
+  }
+});

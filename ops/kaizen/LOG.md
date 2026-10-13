@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-13 · artisan · applied · Test: workflow scripts must not call Date.now, Math.random or an argless new Date
+
+- observation: 2026-10-13 qa.js was rejected by the Workflow runtime for import(), a rule the selfcheck cannot see because it compiles scripts in vm and never runs them. The architect guarded import() today; the workflow-authoring reference names three more constructs that throw at run time (Date.now(), Math.random(), argless new Date()). grep shows none in ops/workflows today, so the new test in tests/playbook.test.mjs passes now and fails the day one is added. 7 lines.
+- category: prevention · lines changed: 7 · files: tests/playbook.test.mjs
+- question: What else does the Workflow runtime refuse that a vm compile cannot show (top-level require, fs, process outside clerk programs)? A regex cannot tell a clerk function body from script code.
+
 ## 2026-10-13 · architect · applied · qa.js: no dynamic import in the workflow script (runtime rejected it); test guards every workflow
 
 - observation: 2026-10-13 report: ops/workflows/qa.js was rejected twice by the Workflow runtime (dynamic import in pageTexts, old lines 802-803), so QA ran by hand and the expert review was skipped. The selfcheck compiles scripts in vm and never runs that code, so it passed. pageTexts now takes the validator module from a static import line the gate program is given, with the pattern reading as fallback for a relative repoDir. New test in tests/playbook.test.mjs fails if any ops/workflows script holds a dynamic import.
