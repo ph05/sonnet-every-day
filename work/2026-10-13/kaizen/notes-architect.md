@@ -1,0 +1,1 @@
+Search snippets rarely show exact worked numbers from reference pages, so a scout should compute oracle values with node and label them regression checks; a shared note on which numbers are only computed would save the verifier time.

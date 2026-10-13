@@ -1,0 +1,519 @@
+{
+  "schema": 1,
+  "agent": "jester",
+  "lens": "tool-local-pdf",
+  "candidates": [
+    {
+      "id": "jester-1",
+      "title": "PDF Page Arranger",
+      "plainSentence": "A tool that lets you merge PDFs, keep chosen pages, reorder, rotate and number them, all inside your browser with nothing uploaded.",
+      "pitch": "Drop one or more PDFs onto the page and every page becomes a card showing its size, rotation and first words. Drag cards into a new order, delete or rotate them, type a range such as 1-3,7,9- to keep only some, optionally stamp 'Page 3 of 12' numbers, and download the new file. A printed check strip then re-reads the output with a second parser and reports its page count and whether each page's text matches the input.",
+      "firstMinute": "On load two small sample documents are already merged into five page cards, with a finished check strip beneath them that types itself out like teleprinter paper (page count 5, text matches). One button, 'Download PDF', gives a working file without reading anything; dragging a card or pressing Rotate updates the strip instantly.",
+      "conceptsToLearn": [],
+      "whyNow": "Timeless. Merging and reordering pages is a weekly chore, and free web suites commonly meter it (a per-hour or per-day task cap, a size cap, or an account), so a private, unlimited, offline version keeps being useful.",
+      "origin": {
+        "agent": "jester",
+        "lens": "tool-local-pdf"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "tool",
+        "tone": [
+          "analytical",
+          "playful"
+        ],
+        "tech": [
+          "dom-ui",
+          "worker",
+          "svg"
+        ],
+        "tags": [
+          "pdf",
+          "merge-pdf",
+          "split-pdf",
+          "reorder-pages",
+          "rotate-pages",
+          "page-numbers",
+          "offline",
+          "no-upload",
+          "iso-32000",
+          "privacy"
+        ],
+        "keywords": [
+          "pdf-merge",
+          "pdf-split",
+          "page-range",
+          "page-numbering",
+          "client-side",
+          "clean-room",
+          "xref",
+          "iso-32000"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Combine, extract, reorder, rotate and page-number the pages of unencrypted PDF files, producing one new PDF that is re-read and checked before the visitor downloads it.",
+        "audience": "Anyone who occasionally assembles a PDF from several files (forms, scans, receipts, a thesis, a legal or school packet) and does not want to upload private documents or hit a daily cap.",
+        "paywallEvidence": [
+          {
+            "product": "A large web PDF suite (named in the dossier only, never on the page)",
+            "whatIsGated": "Its own pricing page sells a Premium plan that lists unlimited document processing and no ads, at 5 USD a month billed annually or 9 USD billed monthly, as of 2026-10-13; the free tier is therefore limited.",
+            "factIndex": 0
+          },
+          {
+            "product": "A second web PDF suite (dossier only)",
+            "whatIsGated": "Third-party listings report about two free tasks a day and a small free file-size cap, with a paid plan lifting them. One reviewer reports one document a day, and no official page was seen, so this stays unverified and is not shown as fact.",
+            "factIndex": 1
+          }
+        ],
+        "freeGap": "Free in-browser mergers already exist (some self-describe as pdf-lib based and offline-capable), so privacy alone is not new. The remaining gap is an all-five-jobs page that is exact and shows its working: a second-parser check strip (page count, per-page text match), page-number stamping that respects rotation and crop boxes, known-answer tests against the PDF standard, and loud, specific refusals (encrypted, damaged or exotic files) instead of silent breakage.",
+        "oracle": "ISO 32000-1:2008 (PDF 1.7), free from the publisher of the format via the PDF Association: file structure (cross-reference table, trailer, page tree and inheritable attributes, the Rotate rule). Plus round-trip checks: page count and extracted text of each output page must equal the chosen input page.",
+        "oracleFactIndex": 2,
+        "inputs": "One or more PDF files from disk (drag and drop or file picker), a page-range text such as 1-3,7,9-, per-card rotate and delete, drag order, and optional page-number settings (position, start, 'of N').",
+        "outputs": "A downloaded PDF (1.4-style classic cross-reference table written by the page itself), plus a copyable plain-text check receipt.",
+        "limits": "Printed on the page: encrypted or password-protected files, files with a damaged cross-reference table, and signed documents are refused or lose their signature; form fields, links, bookmarks and tagged-structure data are dropped from copied pages; page thumbnails are text summaries, not rendered images; very large files are limited by browser memory."
+      },
+      "research": {
+        "summary": "The job is real and metered: one large suite's own pricing page sells unlimited processing as Premium, third-party listings describe daily or hourly free caps, but free client-side mergers exist, so the build must win on exactness and visible checking. The standard is free to read (ISO 32000-1 via Adobe, 32000-2 via the PDF Association), the tricky parts are known (page-tree inheritance of Resources, MediaBox, CropBox and Rotate; xref entries of 20 bytes; xref streams and object streams in PDF 1.5 and later), and the browser now offers deflate decompression natively, so no vendored library is required.",
+        "sources": [
+          {
+            "title": "Pricing plans (iLovePDF)",
+            "url": "https://www.ilovepdf.com/pricing",
+            "date": "",
+            "snippet": "The vendor's own pricing page lists a Premium plan at 5 USD per month billed annually (60 USD) or 9 USD billed monthly, with unlimited document processing, no ads and priority support.",
+            "via": "search",
+            "note": "Primary source for what the paid tier adds; it does not itself state the free-tier limits.",
+            "verified": true
+          },
+          {
+            "title": "Smallpdf pricing and features (toolradar)",
+            "url": "https://toolradar.com/tools/smallpdf/pricing",
+            "date": "",
+            "snippet": "A third-party listing gives the free tier as about 2 tasks per day, basic tools, a small file-size cap and ads, with a paid plan above it.",
+            "via": "search",
+            "note": "Third-party only; a G2 reviewer in the same result set says one document per day, so the figure conflicts.",
+            "verified": false
+          },
+          {
+            "title": "Smallpdf Pricing 2026 (Capterra)",
+            "url": "https://www.capterra.com/p/172606/Smallpdf/pricing/",
+            "date": "",
+            "snippet": "A review-site pricing page for the same product; the search summary reported the same roughly two tasks per day, with Pro prices that differ between sites.",
+            "via": "search",
+            "note": "Prices disagree across aggregators and no official page was found, so the limit is reported, not confirmed.",
+            "verified": false
+          },
+          {
+            "title": "ISO 32000-1 (PDF 1.7) (PDF Association)",
+            "url": "https://pdfa.org/resource/iso-32000-1-pdf-1-7/",
+            "date": "",
+            "snippet": "The PDF Association's resource page lists ISO 32000-1 and links to Adobe's no-charge copy; the text is technically identical to Adobe's own PDF 1.7 reference.",
+            "via": "search",
+            "note": "Names the free, authoritative oracle for file structure rules.",
+            "verified": true
+          },
+          {
+            "title": "Page class reference (Apryse PDF SDK docs)",
+            "url": "https://docs.apryse.com/api/web/7.3/PDFNet.Page.html",
+            "date": "",
+            "snippet": "SDK documentation restating the spec's page-tree rule: Resources, MediaBox, CropBox and Rotate are inheritable, and a page that omits one takes it from an ancestor node.",
+            "via": "search",
+            "note": "Shows why copied pages must have inherited attributes flattened onto them.",
+            "verified": true
+          },
+          {
+            "title": "pdfsyntax 0.0.6 (PyPI)",
+            "url": "https://pypi.org/project/pdfsyntax/0.0.6/",
+            "date": "",
+            "snippet": "A PDF-parsing library's description noting that its rotate function accounts for attributes inherited from the page hierarchy.",
+            "via": "search",
+            "note": "Independent second site agreeing that Rotate and friends are inherited.",
+            "verified": true
+          },
+          {
+            "title": "The PDF Format (pypdf documentation)",
+            "url": "https://pypdf.readthedocs.io/en/stable/dev/pdf-format.html",
+            "date": "",
+            "snippet": "Walks through a complete minimal file: the end-of-file startxref pointer, xref subsections, 10-digit offsets, 5-digit generations with n or f flags, and the trailer's Root and Size keys.",
+            "via": "search",
+            "note": "Source for xref entry layout and a worked minimal file.",
+            "verified": true
+          },
+          {
+            "title": "PDF file format: Basic structure (Infosec Institute)",
+            "url": "https://infosecinstitute.com/resources/hacking/pdf-file-format-basic-structure/",
+            "date": "",
+            "snippet": "A structure primer stating that each xref entry is 20 bytes, the first ten being the object's byte offset, and describing the trailer and header.",
+            "via": "search",
+            "note": "Independent agreement on the 20-byte entry layout.",
+            "verified": true
+          },
+          {
+            "title": "DecompressionStream constructor (MDN Web Docs)",
+            "url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream/DecompressionStream",
+            "date": "",
+            "snippet": "MDN documents the 'deflate' format (zlib container) as supported by DecompressionStream and marks the API as widely available across browsers since 2023.",
+            "via": "search",
+            "note": "Makes a no-library reader of Flate-compressed PDF streams possible.",
+            "verified": true
+          },
+          {
+            "title": "Compression and decompression in the browser with the Compression Streams API (Chrome for Developers)",
+            "url": "https://developer.chrome.com/blog/compression-streams-api/",
+            "date": "",
+            "snippet": "The browser vendor's article introducing the built-in compression streams for gzip and deflate.",
+            "via": "search",
+            "note": "Second independent source for native deflate support.",
+            "verified": true
+          },
+          {
+            "title": "merge-pdf.app, a free privacy-first PDF merging tool",
+            "url": "https://ryansouthgate.com/merge-pdfs/",
+            "date": "",
+            "snippet": "A free browser tool that says it merges files locally, has no analytics or storage, and works offline after a first visit via a service worker.",
+            "via": "search",
+            "note": "Shows free client-side mergers already exist; the claims are self-reported.",
+            "verified": false
+          },
+          {
+            "title": "PdfPageObject Rotate entry (ABCpdf documentation)",
+            "url": "https://www.websupergoo.com/helppdfnet/source/9-abcpdf.elements/07-syntax/1085-pageobjectelement/2-properties/12-entryrotate.htm",
+            "date": "",
+            "snippet": "Describes the page Rotate entry as clockwise degrees that must be a multiple of 90, default 0, inherited from the parent node when absent; cites the ISO 32000 tables.",
+            "via": "search",
+            "note": "Rotate rule for the rotation self-tests.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-13 the vendor's own pricing page for one large web PDF suite lists a Premium plan at 5 USD a month billed annually (60 USD) or 9 USD billed monthly, offering unlimited document processing and no ads.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, third-party listings (not an official page) report that another web PDF suite's free tier allows about two tasks a day with a small file-size cap; one reviewer reports one document a day, so the figure is unconfirmed.",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "ISO 32000-1:2008 (PDF 1.7) is available at no charge from Adobe, as listed on the PDF Association's own resource page, and is technically identical to Adobe's PDF 1.7 reference.",
+            "sourceIndex": 3,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Under the PDF page tree, Resources, MediaBox, CropBox and Rotate are inheritable: a page lacking one takes it from the nearest ancestor that has it, so a page copied out of its tree needs those values written onto it.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              5
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A classic cross-reference entry is 20 bytes: a 10-digit byte offset, a 5-digit generation number and the keyword n (in use) or f (free); a subsection starts with the first object number and the count.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Browsers expose native deflate (zlib) decompression through DecompressionStream, widely available since 2023, which suffices to read Flate-compressed PDF object and cross-reference streams without a vendored library.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A page Rotate value is clockwise degrees and a multiple of 90 (0, 90, 180, 270), defaulting to 0 and inheritable from the page tree.",
+            "sourceIndex": 11,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, per a self-description on its own site, at least one free browser-only PDF merger exists that says it works offline after the first visit; the claim is self-reported and unconfirmed.",
+            "sourceIndex": 10,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "desktop page-organizer utilities",
+          "web PDF suites",
+          "teleprinter paper strips",
+          "stage programme running orders"
+        ]
+      },
+      "design": {
+        "coreLoop": "The visitor adds files, sees every page as a card, drags, rotates, deletes or range-selects, optionally turns on page numbers, and reads the check strip that updates after each change; downloading and re-adding the result is a quick round trip.",
+        "sophisticationHooks": [
+          "Own reader for the file structure: classic xref tables, xref streams and object streams, with Flate and PNG-predictor decoding via the built-in decompression API",
+          "Page-tree flattening of inherited attributes so copied pages keep their size, crop and rotation",
+          "Page-number stamping computed in the page's visible orientation (rotation and crop box aware), using a standard built-in font so nothing is embedded",
+          "Check strip: second-pass parse of the output, page count and per-page text comparison, printed like teleprinter paper and copyable as a receipt"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: parser (classic xref plus xref streams plus object streams), page-closure copier with object renumbering, classic-xref writer, card grid with drag and keyboard reordering, rotate/delete/range, three page-number styles, check strip, 8 or more known-answer self-tests that build their own tiny PDFs in code, printed limits panel, intro and explainer. Cut: rendered thumbnails, form and bookmark preservation, encrypted files, repair of damaged files, compression of output.",
+        "risks": [
+          "The Smallpdf-style free-tier numbers are third-party and conflicting; the page will not name any product and shows no cap figures as fact. Only the iLovePDF pricing entry is primary, and it does not itself state the free limits.",
+          "Free in-browser mergers already exist, so the pitch rests on exactness, the visible check strip and honest refusals, not on privacy alone.",
+          "Section and table numbers inside ISO 32000-1 (for example an annex with a minimal file) were not seen in any result; self-tests must cite only rules confirmed above or checked against the spec text by the builder.",
+          "No real-world PDFs can be bundled for testing; vectors are generated in code, so exotic producers are untested. The page must say so.",
+          "Real thumbnails need a PDF renderer, which is out of scope; cards show a text summary and an outline of the page, which may disappoint.",
+          "Whether the page shell's security policy lets a blob PDF open in a new tab or frame was not checked; the fallback is download only.",
+          "Scope is large for one morning; if time runs out, cut page numbers before cutting the check strip."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "jester-2",
+      "title": "Inside a PDF File",
+      "plainSentence": "A lesson that shows how a PDF file finds its pages, and why deleted content can stay inside it, with editable demos.",
+      "pitch": "The lesson opens a tiny PDF as plain, line-numbered text on teleprinter-style paper and walks a ladder of five editable demos: object numbers, the cross-reference table of byte offsets, the page tree that sets page order, appended revisions that keep old content, and why a black box is not a delete key. Each rung changes a live file and shows what a reader would do, and two or more self-check questions apply the rules to new files.",
+      "firstMinute": "A three-line-page PDF is already open in the left pane as text, and the right pane shows the page it draws. Clicking any numbered object lights up its bytes and its entry in the offset table; changing one word of the page text redraws the page and recomputes every offset on screen.",
+      "conceptsToLearn": [
+        "A PDF is a file made of numbered objects that you can read as text."
+      ],
+      "whyNow": "Timeless. Failed black-box redactions and 'deleted' text surviving in files are recurring stories, and almost nobody has seen the structure that explains them.",
+      "origin": {
+        "agent": "jester",
+        "lens": "tool-local-pdf"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "nerdy",
+          "analytical",
+          "playful"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg",
+          "canvas2d"
+        ],
+        "tags": [
+          "pdf",
+          "file-format",
+          "cross-reference-table",
+          "byte-offsets",
+          "page-tree",
+          "incremental-update",
+          "redaction",
+          "iso-32000"
+        ],
+        "keywords": [
+          "pdf-structure",
+          "xref",
+          "startxref",
+          "page-order",
+          "hidden-content",
+          "redaction",
+          "file-formats"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "How a PDF is organised: numbered objects, a cross-reference table that maps object numbers to byte offsets, a page tree that decides page order, and append-only revisions that explain why 'deleted' or 'blacked out' content can still be in the file.",
+        "whyNiche": "People use PDFs daily and trust them to hide things, yet the file layout is rarely shown. Seeing the offsets and the appended revision turns folklore into a mental model.",
+        "audience": "Curious non-experts, students, and anyone who redacts or edits documents before sharing them.",
+        "prerequisites": [],
+        "misconceptions": [
+          "Deleting text in a PDF editor removes it from the file.",
+          "Drawing a black box over text removes the text.",
+          "Pages appear in the order their objects sit in the file."
+        ],
+        "misconceptionFactIndexes": [
+          0,
+          1,
+          2
+        ],
+        "ahaMoment": "Pressing 'show revision 1' on a file whose text was 'deleted' brings the old words back from the same bytes, and extracting text under a black box returns it.",
+        "demos": [
+          "Overture: the smallest legal one-page file as numbered lines; click an object to see its bytes",
+          "Offsets: edit the text and watch every cross-reference entry recompute; break one on purpose and see the mismatch flagged",
+          "Page tree: reorder the Kids list and see the pages swap while the object bytes stay put",
+          "Revisions: delete a line, see the appended update with its Prev pointer, then view the file as of revision 1",
+          "Black box versus removal: draw a box, extract text, then actually drop the text and compare"
+        ],
+        "checkQuestions": [
+          "Given a short file listing, what number belongs in the startxref line and why?",
+          "Given a Kids list and object order, which page is first?",
+          "Given a file with two revisions, is the 'deleted' word still present, and where?",
+          "After a black box is drawn over a name, what does text extraction return?"
+        ]
+      },
+      "research": {
+        "summary": "Appended revisions, black-box redaction failures and page-tree ordering are all documented outside the standard, and the file-layout facts (startxref, xref entries, trailer Root, Prev chain) are described consistently by independent references, with the free ISO text as the named authority. The lesson can be built from tiny files authored in code, so no third-party documents are bundled.",
+        "sources": [
+          {
+            "title": "Incremental and Full Save in PDFs (Nutrient)",
+            "url": "https://www.nutrient.io/blog/incremental-and-full-save-in-pdfs/",
+            "date": "",
+            "snippet": "Explains that incremental saves append changes with their own cross-reference table and trailer linked by a Prev pointer, so the file keeps a history of earlier content.",
+            "via": "search",
+            "note": "Mechanism of append-only revisions.",
+            "verified": true
+          },
+          {
+            "title": "Didier Stevens blog, May 2008",
+            "url": "https://blog.didierstevens.com/2008/05/07/",
+            "date": "2008-05-07",
+            "snippet": "A security researcher's note that cutting everything after the first end-of-file marker recovers the original version of an incrementally updated file.",
+            "via": "search",
+            "note": "Independent confirmation that old revisions remain recoverable.",
+            "verified": true
+          },
+          {
+            "title": "PDF without Adobe 14: PDF is inherently not secure (The Eclectic Light Company)",
+            "url": "https://eclecticlight.co/2019/03/06/pdf-without-adobe-14-pdf-is-inherently-not-secure/",
+            "date": "2019-03-06",
+            "snippet": "Shows that an edited file can still contain the original content, because incremental updating is the common way editors save.",
+            "via": "search",
+            "note": "Third independent site on surviving content.",
+            "verified": true
+          },
+          {
+            "title": "Why black boxes don't protect sensitive data (Syncfusion)",
+            "url": "https://www.syncfusion.com/resource-center/why-black-boxes-dont-protect-sensitive-data/",
+            "date": "",
+            "snippet": "Explains that many editors draw a shape over text without changing the content underneath, so the text stays selectable and extractable.",
+            "via": "search",
+            "note": "Documents the black-box misconception (vendor with an interest, so paired with a second site).",
+            "verified": true
+          },
+          {
+            "title": "The black box in your PDF is a shape, not a delete key (DEV Community)",
+            "url": "https://dev.to/haruodev/the-black-box-in-your-pdf-is-a-shape-not-a-delete-key-1nc3",
+            "date": "",
+            "snippet": "A developer article making the same point: a drawn rectangle is an overlay and the underlying text remains in the file.",
+            "via": "search",
+            "note": "Independent second site for the black-box claim.",
+            "verified": true
+          },
+          {
+            "title": "Understanding PDF Page Trees: Why Page Order Matters (loslab blog)",
+            "url": "https://blog.loslab.com/en-us/pdf-structure/understanding-pdf-page-trees-why-page-order-matters.html",
+            "date": "",
+            "snippet": "Argues page order comes from the Kids array in the page tree, not from object numbers or file position, with a worked example where the last-stored object is the first page.",
+            "via": "search",
+            "note": "Single-site support for page order; the cited spec section was not checked.",
+            "verified": false
+          },
+          {
+            "title": "The PDF Format (pypdf documentation)",
+            "url": "https://pypdf.readthedocs.io/en/stable/dev/pdf-format.html",
+            "date": "",
+            "snippet": "Library documentation walking through a minimal file: header, objects, xref subsections with 10-digit offsets, trailer with Root and Size, and startxref.",
+            "via": "search",
+            "note": "Source for the minimal file used as the overture.",
+            "verified": true
+          },
+          {
+            "title": "PDF file format: Basic structure (Infosec Institute)",
+            "url": "https://infosecinstitute.com/resources/hacking/pdf-file-format-basic-structure/",
+            "date": "",
+            "snippet": "A primer stating each xref entry is 20 bytes with the byte offset first, and that readers begin at the end of the file.",
+            "via": "search",
+            "note": "Independent agreement on cross-reference layout.",
+            "verified": true
+          },
+          {
+            "title": "ISO 32000-1 (PDF 1.7) (PDF Association)",
+            "url": "https://pdfa.org/resource/iso-32000-1-pdf-1-7/",
+            "date": "",
+            "snippet": "The PDF Association's page links to Adobe's no-charge copy of ISO 32000-1, identical to the PDF 1.7 reference.",
+            "via": "search",
+            "note": "Named free authority the lesson links to as reading.",
+            "verified": true
+          },
+          {
+            "title": "Sponsored standards (PDF Association)",
+            "url": "https://pdfa.org/sponsored-standards",
+            "date": "",
+            "snippet": "The PDF Association hosts no-cost access to ISO 32000-2 (PDF 2.0), sponsored by member companies.",
+            "via": "search",
+            "note": "Free route to the 2.0 text.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A PDF incremental update appends new objects, a new cross-reference section and a trailer with a Prev pointer to the end of the file; readers show the newest revision while earlier bytes remain in the file and can be recovered.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Drawing a black rectangle over text in many PDF editors adds a graphic on top and leaves the underlying text in the file, where it can still be selected or extracted; real redaction deletes the content.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Per one publisher's article only, page order comes from the Kids array of the page tree rather than from object numbers or their position in the file; not independently confirmed.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A reader finds the file's structure from the end: startxref gives the byte offset of the last cross-reference section, whose 20-byte entries (10-digit offset, 5-digit generation, n or f) lead to the trailer's Root and the page tree.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "ISO 32000-1 (PDF 1.7) is free from Adobe as listed by the PDF Association, and ISO 32000-2 (PDF 2.0) is free through the PDF Association's sponsored-standards page.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "hex-dump tutorials",
+          "teleprinter paper",
+          "minimal-file walkthroughs in library documentation",
+          "git-style history viewers"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: the visitor edits a live tiny file at each rung, sees the offsets, order or revision change, and then answers a check question on a new file that applies the rule just shown.",
+        "sophisticationHooks": [
+          "A real in-page parser and writer for tiny files, so every number on screen (offsets, startxref, Prev) is computed, not drawn by hand",
+          "Revision viewer that rolls the file back to any appended update",
+          "Honest 'what readers do' notes that say behaviour varies between viewers",
+          "Self-check questions generated from fresh small files"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: five demos on files authored in code, line-numbered teleprinter-style file view with object highlighting, a minimal page-text renderer for the demo files only, at least four self-check questions, intro and explainer, links to the free standard texts. Cut: arbitrary uploaded files, stream compression, fonts, images.",
+        "risks": [
+          "The page-order claim rests on one site; the lesson must either confirm it against the free ISO text during build or show it as 'per one reference'.",
+          "How individual viewers treat a wrong offset varies and was not researched; the page must say 'readers differ' instead of claiming one behaviour.",
+          "Redaction is a sensitive topic: the lesson uses made-up sample names only and says it is not legal or security advice.",
+          "Overlaps in subject with jester-1 (same file format); if both reach the shortlist only one should win."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

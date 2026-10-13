@@ -1,0 +1,255 @@
+{
+  "id": "cards-2",
+  "title": "Priority Inversion Lesson",
+  "plainSentence": "A lesson that shows, on draggable task timelines, how a low-priority task holding a lock can stall an urgent one, and what fixes it.",
+  "pitch": "In 1997 the Mars Pathfinder spacecraft kept resetting because a lock was held by the wrong task at the wrong time, and the fix was a single setting. This lesson replays that bug on a three-task timeline, lets the visitor stretch one task and see the urgent one wait longer and longer, then flips on priority inheritance and watches it recover. A last rung compares a binary semaphore with a mutex.",
+  "firstMinute": "The first frame already shows three coloured task lanes over time, with the urgent task blocked behind a lock and a red 'reset' marker where its deadline passes. A toggle labelled priority inheritance sits beside it; flipping it replays the same schedule and the urgent task finishes on time. No reading is needed to see the before and after.",
+  "conceptsToLearn": [
+    "A lock lets only one task use shared data at a time, so others wait"
+  ],
+  "whyNow": "Timeless: the 1997 Pathfinder resets are a standard teaching case, documented first-hand by the mission's software lead. Not news-bound.",
+  "origin": {
+    "agent": "cards",
+    "lens": "reddit-hot-threads"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "algorithms-cs",
+    "mechanic": "lesson",
+    "tone": [
+      "nerdy",
+      "analytical",
+      "dramatic"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "pointer-events"
+    ],
+    "tags": [
+      "priority-inversion",
+      "mutex",
+      "semaphore",
+      "priority-inheritance",
+      "real-time-scheduling",
+      "concurrency",
+      "locks",
+      "embedded-systems"
+    ],
+    "keywords": [
+      "mutex-vs-semaphore",
+      "priority-ceiling",
+      "task-scheduling",
+      "deadline",
+      "mars-pathfinder",
+      "binary-semaphore",
+      "preemption"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "Priority inversion: when tasks share a lock and are scheduled by priority, a low-priority lock holder can be preempted by medium-priority work, so the urgent task waits for the medium one without ever sharing its lock; priority inheritance boosts the holder while it blocks someone more urgent.",
+    "whyNiche": "Most explanations of locks stop at 'only one at a time'. Priority inversion is the part that sinks real-time systems, and the mutex versus binary semaphore difference only makes sense once the visitor has seen it.",
+    "audience": "Curious programmers and students who have used locks or heard 'mutex vs semaphore' and want the picture, plus anyone who likes engineering failure stories.",
+    "prerequisites": [
+      "A lock lets one task at a time use shared data"
+    ],
+    "misconceptions": [
+      "A binary semaphore is just a mutex with a count of one (a common shortcut that RTOS tutorials correct).",
+      "A lock can only delay an urgent task by the length of the other task's critical section (without inheritance the delay is uncontrolled)."
+    ],
+    "misconceptionFactIndexes": [
+      2,
+      1
+    ],
+    "ahaMoment": "Stretching the medium-priority task, which never touches the lock, and watching the urgent task's wait grow with it; then switching inheritance on and seeing the wait shrink to just the lock holder's short section.",
+    "demos": [
+      "Two tasks, one lock: the second waits (the only prerequisite concept).",
+      "Three tasks by priority with a shared lock: the bug replays, the urgent task misses its deadline and a watchdog marker fires.",
+      "Stretch the medium task: the urgent task's wait grows without limit.",
+      "Switch priority inheritance on: the holder is boosted, the wait is only its critical section.",
+      "Switch to a priority ceiling and to a plain binary semaphore: see which protects and which does not boost."
+    ],
+    "checkQuestions": [
+      "Which task runs while the urgent one waits, and why does it not need the lock?",
+      "With inheritance on, what priority does the lock holder run at while the urgent task is blocked on it?",
+      "Why does a signalling semaphore not give the holder a boost?",
+      "What is the longest the urgent task can now wait?"
+    ]
+  },
+  "research": {
+    "summary": "The 1997 Pathfinder reset story is documented first-hand by a JPL software lead (a Dr. Dobb's article and a mailing-list message copied on a course page) and retold by a student blog: a low-priority task held a lock a high-priority bus task needed, medium-priority work kept preempting the holder, a watchdog forced resets, and the fix was enabling the lock's priority-inheritance option, sent to the spacecraft remotely. The formal result comes from the 1990 Sha, Rajkumar and Lehoczky paper (abstract and lecture notes seen): ordinary primitives allow uncontrolled inversion, inheritance and ceiling protocols fix it, and the ceiling protocol bounds blocking to one critical section and prevents deadlock. RTOS tutorials agree that mutexes have an owner and priority inheritance while binary semaphores are for signalling, with the boundary depending on the API. Reddit was not reachable, so no forum thread was seen.",
+    "sources": [
+      {
+        "title": "Glenn E Reeves account of the Pathfinder problem (Cornell course page)",
+        "url": "https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder2.html",
+        "date": "",
+        "snippet": "A first-hand message from the mission software lead: the fix was to change the creation flags of the lock to enable priority inheritance.",
+        "via": "search",
+        "note": "Re-found. First-hand message from the mission software lead: the fix was changing the lock's creation flags to enable priority inheritance.",
+        "verified": true
+      },
+      {
+        "title": "What really happened on Mars Rover Pathfinder (Cornell course page)",
+        "url": "https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder.html",
+        "date": "",
+        "snippet": "Account of the bus task, communications task and meteorological task interaction and the watchdog resets.",
+        "via": "search",
+        "note": "Not re-found by my searches; the claim it supports is covered by the other Pathfinder sources.",
+        "verified": false
+      },
+      {
+        "title": "The case of Mysterious System Resets on Mars Pathfinder (delta.nitt.edu blog)",
+        "url": "https://delta.nitt.edu/blogs/the-case-of-mysterious-system-resets-on-mars-pathfinder",
+        "date": "",
+        "snippet": "Student blog retelling the resets, the lab replica, the trace analysis and the remote patch enabling priority inheritance.",
+        "via": "search",
+        "note": "Re-found. Independent student retelling: lab replica with trace logs reproduced the reset, then a remote patch enabled inheritance.",
+        "verified": true
+      },
+      {
+        "title": "SRL 1990: Priority Inheritance Protocols (Sha, Rajkumar, Lehoczky)",
+        "url": "https://www.math.unipd.it/~tullio/RTS/2009/SRL-1990.pdf",
+        "date": "1990",
+        "snippet": "Paper copy: ordinary primitives can block a higher-priority job for an unbounded time; inheritance removes unbounded inversion; the ceiling protocol bounds blocking to one critical section and prevents deadlock.",
+        "via": "search",
+        "note": "Re-found: a course copy of the paper; the abstract says plain primitives allow uncontrolled inversion and that the ceiling protocol bounds blocking to one critical section and prevents deadlock.",
+        "verified": true
+      },
+      {
+        "title": "Priority inheritance (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Priority_inheritance",
+        "date": "",
+        "snippet": "Encyclopedia article on the technique of temporarily raising a lock holder's priority to that of the highest-priority task it blocks.",
+        "via": "search",
+        "note": "Not re-found by my searches (Wikipedia cannot be fetched today).",
+        "verified": false
+      },
+      {
+        "title": "Difference between Binary Semaphore and Mutex (GeeksforGeeks)",
+        "url": "https://www.geeksforgeeks.org/?p=472010",
+        "date": "",
+        "snippet": "Tutorial comparing the two; the search summary noted that a binary semaphore is often thought equivalent to a mutex, which is not completely correct.",
+        "via": "search",
+        "note": "Not re-found by my searches; single result earlier.",
+        "verified": false
+      },
+      {
+        "title": "Semaphores and Mutexes (High Integrity Systems RTOS tutorial)",
+        "url": "https://www.highintegritysystems.com/downloads/RTOS_Tutorials/Semaphores_and_Mutexes.pdf",
+        "date": "",
+        "snippet": "RTOS tutorial: mutexes carry priority inheritance, which only makes sense when the same task takes and gives; binary semaphores suit signalling between tasks and interrupts.",
+        "via": "search",
+        "note": "Re-found: an RTOS tutorial saying mutexes carry priority inheritance with ownership, binary semaphores suit signalling. Agrees with other RTOS articles in the same results.",
+        "verified": true
+      },
+      {
+        "title": "Semaphores chapter 31 (OSTEP, hosted copy at Villanova)",
+        "url": "https://www.ece.villanova.edu/~rperry/os/ostep/Chapters/31-threads-sema.pdf",
+        "date": "",
+        "snippet": "Operating-systems textbook chapter: a semaphore is an integer manipulated by wait and post, the initial value sets its behaviour, and a negative value counts waiting threads.",
+        "via": "search",
+        "note": "Not re-found by my searches; the textbook definition is dropped from the facts.",
+        "verified": false
+      },
+      {
+        "title": "Priority Inversion: How We Found It, How We Fixed It (Dr. Dobb's)",
+        "url": "https://www.drdobbs.com/a-conversation-with-glenn-reeves/184411097?pgno=4",
+        "date": "",
+        "snippet": "Article by the mission's software lead on finding priority inversion on the lab replica and fixing it by enabling the mutex's inheritance flag.",
+        "via": "search",
+        "note": "Re-found as a separate result from the Cornell copy; the same author, so first-hand.",
+        "verified": true
+      },
+      {
+        "title": "Real-time systems lecture notes on resource access protocols (Hamburg host of Lund notes)",
+        "url": "https://tams.informatik.uni-hamburg.de/lehre/2016ss/vorlesung/es/doc/cs.lth.se-RTP-F6b.pdf",
+        "date": "",
+        "snippet": "Course notes on the priority ceiling protocol: a task that has entered its first critical section is not blocked again, so blocking is at most one critical section.",
+        "via": "search",
+        "note": "Independent course material that agrees with the 1990 paper's abstract on the ceiling bound.",
+        "verified": true
+      },
+      {
+        "title": "Mutex vs. Semaphores, Part 2: The Mutex (Feabhas blog)",
+        "url": "https://blog.feabhas.com/2009/09/mutex-vs-semaphores-–-part-2-the-mutex/",
+        "date": "",
+        "snippet": "Embedded-training blog on the mutex, ownership and priority inversion.",
+        "via": "search",
+        "note": "Appeared with the RTOS articles that distinguish ownership and signalling; individual claims not attributed in the summary.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In the 1997 Mars Pathfinder resets, a low-priority task held a lock needed by a high-priority bus task, medium-priority work kept preempting the holder, a watchdog forced system resets, and the fix enabled the lock's priority-inheritance flag, uplinked to the spacecraft.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          8,
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Sha, Rajkumar and Lehoczky (IEEE Transactions on Computers, 1990): direct use of ordinary synchronisation primitives can cause uncontrolled priority inversion; basic priority inheritance and the priority ceiling protocol both solve it, and the ceiling protocol bounds blocking to one critical section of a lower-priority task and prevents deadlock.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "RTOS tutorials distinguish a mutex (has an owner, supports priority inheritance, for mutual exclusion) from a binary semaphore (no owner, for signalling between tasks and interrupts); the boundary is API-specific, so the page teaches intent and not a universal rule.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Under basic priority inheritance a lock holder runs at the priority of the highest-priority task blocked on it while it holds the lock (the mechanism the Pathfinder fix switched on).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Mars Pathfinder post-mortems",
+      "Operating-systems course scheduling timelines",
+      "RTOS tutorial diagrams",
+      "Dining philosophers visualisers"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: each rung is one fixed-priority timeline the visitor edits (task length, lock on or off, inheritance on or off), predicts the outcome for the urgent task, then sees it replay step by step. Check questions follow the rungs.",
+    "sophisticationHooks": [
+      "A small deterministic fixed-priority scheduler as a pure function (tasks, lock sections, protocol: none, inheritance, ceiling) that returns the exact timeline and the urgent task's wait.",
+      "Unbounded-wait chart: urgent-task wait versus medium-task length, flat with inheritance and rising without it.",
+      "Semaphore rung that shows plainly why a signalling semaphore gives the holder no boost, taught as intent and not as a universal ownership rule."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: three-task timeline view in svg, scheduler function with three protocols, five rungs, four check questions, node self-checks hand-traced from a textbook-style three-task example (urgent wait with and without inheritance). Cut: more than three tasks, interrupts, multi-core, code editing, saved progress.",
+    "risks": [
+      "No forum thread was seen (Reddit unreachable); the page makes no claim about what programmers ask or argue, and names no thread or user.",
+      "The Cornell page 1, the Wikipedia inheritance article, the tutorial site and the OSTEP chapter were not re-found; the page does not rely on them.",
+      "The mutex versus binary semaphore difference was re-found in one attributable RTOS tutorial and in blended search results; treat the second source as unverified and word the rung as 'usually' with the tutorial's name and date.",
+      "Mutex versus binary semaphore is API-specific; the page presents it as 'usually' and teaches intent plus inheritance, never a universal ownership rule.",
+      "A scheduler timeline can look like a simulator; the page is a lesson with fixed demos and check questions and says it is a classroom model, not flight software.",
+      "One search result gave a motive for the disabled flag (reducing overhead) that the first-hand accounts do not state; the page leaves the motive out.",
+      "The page uses the mission and agency names only as text references: no logos, mission imagery or implied endorsement; the rover or spacecraft is drawn from scratch.",
+      "Self-checks are hand-traced from the page's own three-task example; they are regression checks for a lesson, not an oracle."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The Pathfinder cause and fix are stated first-hand by the software lead in two places and retold independently; the 1990 paper's abstract and lecture notes agree on inheritance and the ceiling bound. The mutex versus semaphore intent rests on one re-found tutorial plus blended results, so it is flagged. A scheduler function with an SVG timeline and five rungs fits a morning."
+  }
+}

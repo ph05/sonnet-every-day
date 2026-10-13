@@ -1,0 +1,269 @@
+{
+  "id": "jester-2",
+  "title": "Inside a PDF File",
+  "plainSentence": "A lesson that lets you edit a tiny PDF as text and see how it finds its pages and why deleted content can survive.",
+  "pitch": "The lesson opens a tiny PDF as plain, line-numbered text on teleprinter-style paper and walks a ladder of five editable demos: object numbers, the cross-reference table of byte offsets, the page tree that sets page order, appended revisions that keep old content, and why a black box is not a delete key. Each rung changes a live file and shows what a reader would do, and two or more self-check questions apply the rules to new files.",
+  "firstMinute": "A three-line-page PDF is already open in the left pane as text, and the right pane shows the page it draws. Clicking any numbered object lights up its bytes and its entry in the offset table; changing one word of the page text redraws the page and recomputes every offset on screen.",
+  "conceptsToLearn": [
+    "A PDF is a file made of numbered objects that you can read as text.",
+    "A byte offset is a position counted in characters from the start of the file."
+  ],
+  "whyNow": "Timeless. Failed black-box redactions and 'deleted' text surviving in files are recurring stories, and almost nobody has seen the structure that explains them.",
+  "origin": {
+    "agent": "jester",
+    "lens": "tool-local-pdf"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "nerdy",
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "canvas2d"
+    ],
+    "tags": [
+      "pdf",
+      "file-format",
+      "cross-reference-table",
+      "byte-offsets",
+      "page-tree",
+      "incremental-update",
+      "redaction",
+      "iso-32000"
+    ],
+    "keywords": [
+      "pdf-structure",
+      "xref",
+      "startxref",
+      "page-order",
+      "hidden-content",
+      "redaction",
+      "file-formats"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "How a PDF is organised: numbered objects, a cross-reference table that maps object numbers to byte offsets, a page tree that decides page order, and append-only revisions that explain why 'deleted' or 'blacked out' content can still be in the file.",
+    "whyNiche": "People use PDFs daily and trust them to hide things, yet the file layout is rarely shown. Seeing the offsets and the appended revision turns folklore into a mental model.",
+    "audience": "Curious non-experts, students, and anyone who redacts or edits documents before sharing them.",
+    "prerequisites": [],
+    "misconceptions": [
+      "Deleting text in a PDF editor removes it from the file.",
+      "Drawing a black box over text removes the text.",
+      "Pages appear in the order their objects sit in the file."
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      1,
+      2
+    ],
+    "ahaMoment": "Pressing 'show revision 1' on a file whose text was 'deleted' brings the old words back from the same bytes, and extracting text under a black box returns it.",
+    "demos": [
+      "Overture: the smallest legal one-page file as numbered lines; click an object to see its bytes",
+      "Offsets: edit the text and watch every cross-reference entry recompute; break one on purpose and see the mismatch flagged",
+      "Page tree: reorder the Kids list and see the pages swap while the object bytes stay put",
+      "Revisions: delete a line, see the appended update with its Prev pointer, then view the file as of revision 1",
+      "Black box versus removal: draw a box, extract text, then actually drop the text and compare"
+    ],
+    "checkQuestions": [
+      "Given a short file listing, what number belongs in the startxref line and why?",
+      "Given a Kids list and object order, which page is first?",
+      "Given a file with two revisions, is the 'deleted' word still present, and where?",
+      "After a black box is drawn over a name, what does text extraction return?"
+    ]
+  },
+  "research": {
+    "summary": "Verified by search only (no page opened). Incremental updates, black-box redaction failures and page-tree ordering are each confirmed by at least two independent results. The cross-reference layout (20-byte entries, startxref, trailer) is described the same way by two separate write-ups. The ISO 32000-2 text is free through the PDF Association's own pages; a free copy of ISO 32000-1 was not confirmed, so the page links only to the PDF Association. The lesson uses tiny files written in code, so no third-party documents are bundled.",
+    "sources": [
+      {
+        "title": "Incremental and Full Save in PDFs (Nutrient)",
+        "url": "https://www.nutrient.io/blog/incremental-and-full-save-in-pdfs/",
+        "date": "",
+        "snippet": "Explains that incremental saves append changes with their own cross-reference table and trailer linked by a Prev pointer, so the file keeps a history of earlier content.",
+        "via": "search",
+        "note": "Re-found by my search: incremental saves append objects, a new cross-reference section and a trailer linked by a Prev pointer.",
+        "verified": true
+      },
+      {
+        "title": "Didier Stevens blog, May 2008",
+        "url": "https://blog.didierstevens.com/2008/05/07/",
+        "date": "2008-05-07",
+        "snippet": "A security researcher's note that cutting everything after the first end-of-file marker recovers the original version of an incrementally updated file.",
+        "via": "search",
+        "note": "Re-found by my search: a researcher's note that cutting off the appended part recovers the earlier version.",
+        "verified": true
+      },
+      {
+        "title": "PDF without Adobe 14: PDF is inherently not secure (The Eclectic Light Company)",
+        "url": "https://eclecticlight.co/2019/03/06/pdf-without-adobe-14-pdf-is-inherently-not-secure/",
+        "date": "2019-03-06",
+        "snippet": "Shows that an edited file can still contain the original content, because incremental updating is the common way editors save.",
+        "via": "search",
+        "note": "Not re-found by my searches; kept as a lead only.",
+        "verified": false
+      },
+      {
+        "title": "Why black boxes don't protect sensitive data (Syncfusion)",
+        "url": "https://www.syncfusion.com/resource-center/why-black-boxes-dont-protect-sensitive-data/",
+        "date": "",
+        "snippet": "Explains that many editors draw a shape over text without changing the content underneath, so the text stays selectable and extractable.",
+        "via": "search",
+        "note": "Re-found by my search: a black box is a shape over text and the text stays extractable. A vendor with an interest, paired with the independent developer article (source 4).",
+        "verified": true
+      },
+      {
+        "title": "A black rectangle is not PDF redaction: a reproducible test (DEV Community)",
+        "url": "https://dev.to/giscarunir/a-black-rectangle-is-not-pdf-redaction-a-reproducible-test-1jkf",
+        "date": "",
+        "snippet": "Developer article showing that text under a drawn black rectangle can still be selected and copied.",
+        "via": "search",
+        "note": "Found by my search; independent second site for the black-box claim (replaces an address I could not find again).",
+        "verified": true
+      },
+      {
+        "title": "Understanding PDF Page Trees: Why Page Order Matters (loslab blog)",
+        "url": "https://blog.loslab.com/en-us/pdf-structure/understanding-pdf-page-trees-why-page-order-matters.html",
+        "date": "",
+        "snippet": "Argues page order comes from the Kids array in the page tree, not from object numbers or file position, with a worked example where the last-stored object is the first page.",
+        "via": "search",
+        "note": "Found by my search: page order comes from the Kids array, with a worked example where the highest-numbered object is page 1. The ABCpdf documentation (source 11) independently says the order of Kids entries defines page order.",
+        "verified": true
+      },
+      {
+        "title": "The PDF Format (pypdf documentation)",
+        "url": "https://pypdf.readthedocs.io/en/stable/dev/pdf-format.html",
+        "date": "",
+        "snippet": "Library documentation walking through a minimal file: header, objects, xref subsections with 10-digit offsets, trailer with Root and Size, and startxref.",
+        "via": "search",
+        "note": "Not re-found by my searches; the minimal-file layout is covered by sources 7 and 10 instead.",
+        "verified": false
+      },
+      {
+        "title": "PDF file format: Basic structure (Infosec Institute)",
+        "url": "https://infosecinstitute.com/resources/hacking/pdf-file-format-basic-structure/",
+        "date": "",
+        "snippet": "A primer stating each xref entry is 20 bytes with the byte offset first, and that readers begin at the end of the file.",
+        "via": "search",
+        "note": "Found again by my search: 20-byte cross-reference entries, 10-digit offset, 5-digit generation, n or f, and the trailer and startxref layout. Search summary also drew on other write-ups, so source 10 is the second.",
+        "verified": true
+      },
+      {
+        "title": "ISO 32000-1 (PDF 1.7) (PDF Association)",
+        "url": "https://pdfa.org/resource/iso-32000-1-pdf-1-7/",
+        "date": "",
+        "snippet": "The PDF Association's page links to Adobe's no-charge copy of ISO 32000-1, identical to the PDF 1.7 reference.",
+        "via": "search",
+        "note": "Not re-found by my searches; a free Adobe copy of ISO 32000-1 is not confirmed and is not stated on the page.",
+        "verified": false
+      },
+      {
+        "title": "Sponsored standards (PDF Association)",
+        "url": "https://pdfa.org/sponsored-standards",
+        "date": "",
+        "snippet": "The PDF Association hosts no-cost access to ISO 32000-2 (PDF 2.0), sponsored by member companies.",
+        "via": "search",
+        "note": "Re-found by my search: the PDF Association's own pages offer ISO 32000-2 (PDF 2.0) at no cost; this is the primary source's official domain.",
+        "verified": true
+      },
+      {
+        "title": "libpdf++ implementation notes",
+        "url": "https://libpdfxx.sourceforge.net/doc/impl_note.html",
+        "date": "",
+        "snippet": "Implementation notes for a PDF library that discuss cross-reference entries and generation numbers.",
+        "via": "search",
+        "note": "Found by my search; independent of the Infosec primer on the layout of cross-reference entries.",
+        "verified": true
+      },
+      {
+        "title": "Kids entry of a page tree node (ABCpdf documentation)",
+        "url": "https://www.websupergoo.com/helppdfnet/source/9-abcpdf.elements/07-syntax/1084-pagetreenodeelement/2-properties/03-entrykids.htm",
+        "date": "",
+        "snippet": "Library documentation saying the order of entries in Kids defines the page order and citing ISO 32000.",
+        "via": "search",
+        "note": "Found by my search; independent of the loslab blog on page order.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A PDF incremental update appends new objects, a new cross-reference section and a trailer with a Prev pointer to the end of the file; readers show the newest revision while earlier bytes remain in the file and can be recovered.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Drawing a black rectangle over text in many PDF editors adds a graphic on top and leaves the underlying text in the file, where it can still be selected or extracted; real redaction removes the content.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Page order comes from the order of entries in the Kids array of the page tree, not from object numbers or the position of objects in the file.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A reader finds the structure from the end of the file: startxref gives the byte offset of the cross-reference section, whose 20-byte entries (10-digit offset, 5-digit generation, n or f) lead to the trailer, with its Root and Size entries, and the page tree.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The PDF Association offers ISO 32000-2 (PDF 2.0) at no cost through its sponsored-standards page.",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "hex-dump tutorials",
+      "teleprinter paper",
+      "minimal-file walkthroughs in library documentation",
+      "git-style history viewers"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: the visitor edits a live tiny file at each rung, sees the offsets, order or revision change, and then answers a check question on a new file that applies the rule just shown.",
+    "sophisticationHooks": [
+      "A real in-page parser and writer for tiny files, so every number on screen (offsets, startxref, Prev) is computed, not drawn by hand",
+      "Revision viewer that rolls the file back to any appended update",
+      "Honest 'what readers do' notes that say behaviour varies between viewers",
+      "Self-check questions generated from fresh small files"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: five demos on files authored in code, line-numbered teleprinter-style file view with object highlighting, a minimal page-text renderer for the demo files only, at least four self-check questions, intro and explainer, links to the free standard texts. Cut: arbitrary uploaded files, stream compression, fonts, images.",
+    "risks": [
+      "How individual viewers treat a wrong offset varies and was not researched; the page says readers differ instead of claiming one behaviour.",
+      "Redaction is a sensitive topic: the lesson uses made-up sample names only and says it is not legal or security advice.",
+      "A free copy of ISO 32000-1 from Adobe is unverified and never appears on the page; the page links only to the PDF Association for the standard.",
+      "The wrong-page-order mistake is documented for people who write PDF parsers, not as a belief of ordinary users; the page words it that way.",
+      "Overlaps in subject with jester-1 (same file format); if both reach the shortlist only one should win.",
+      "The demo parser handles only the tiny files the page authors, and the page says so; a viewer's real files are out of scope."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Every central claim now has two independent search results or the PDF Association's own page; the page-order claim, previously single-site, is confirmed by library documentation. A small in-page PDF writer with computed offsets and a revision viewer is buildable in a morning and the aha (the black box that hides nothing) is strong."
+  }
+}

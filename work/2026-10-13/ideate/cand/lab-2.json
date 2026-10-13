@@ -1,0 +1,247 @@
+{
+  "id": "lab-2",
+  "title": "How Letters Get Spaced",
+  "plainSentence": "A lesson that shows, with draggable letters, how type designers space letters by equalising white area and when a pair still needs kerning.",
+  "pitch": "Start by fixing an ugly word with a tracking slider and one kerning drag, then discover why the same distance between letter edges looks different for HH, HO and AV: what the eye reads is the white area. A ladder of small demos built on a typeface drawn in code lets the visitor space letters by area, watch the rhythm of a row of n and o, blur the text to see its grey tone, and learn which pairs spacing cannot fix.",
+  "firstMinute": "The page opens on the word AVOID set with default spacing, with the gap between A and V shaded so the hole is visible, and a tracking slider plus a draggable pair handle. Dragging the V towards the A closes the hole and the shaded area number drops, which is the first success with no reading.",
+  "conceptsToLearn": [
+    "Every letter sits in a box with a little space on each side; the gap you see between two letters is the sum of those two spaces"
+  ],
+  "whyNow": "Timeless: anyone who sets headlines, logos or slides meets uneven letter gaps. Type spacing is a niche most people have never been shown properly.",
+  "origin": {
+    "agent": "lab",
+    "lens": "type-and-color"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "cozy",
+      "nerdy",
+      "analytical"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "pointer-events",
+      "dom-ui"
+    ],
+    "tags": [
+      "typography",
+      "kerning",
+      "letter-spacing",
+      "tracking",
+      "sidebearings",
+      "white-space",
+      "type-design",
+      "optical-spacing"
+    ],
+    "keywords": [
+      "kerning-lesson",
+      "letterspacing",
+      "type-design-basics",
+      "white-area",
+      "spacing-rhythm",
+      "geometric-typeface"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "Letter spacing is set by the white area between letters, not by the distance between their edges; kerning is a patch for the few pairs that spacing cannot fix.",
+    "whyNiche": "People know the words kerning and tracking but rarely see how a type designer sets the space on each side of every letter first, or why diagonal and round letters break the rules.",
+    "audience": "Designers, students, slide-makers and curious readers; no design knowledge needed.",
+    "prerequisites": [],
+    "misconceptions": [
+      "Kerning and tracking are the same thing.",
+      "Uneven spacing is fixed by adding kerning pairs everywhere."
+    ],
+    "misconceptionFactIndexes": [
+      1,
+      2
+    ],
+    "ahaMoment": "Two pairs with identical edge-to-edge distance, H next to H and A next to V, look nothing alike, and the shaded white areas show why; closing the area, not the distance, evens the row.",
+    "demos": [
+      "1. Tracking against kerning: a slider moves every gap, a handle moves one pair.",
+      "2. Same distance, different area: shaded gaps for HH, HO, OO and AV with live area numbers.",
+      "3. Space by area: set one target area and see sidebearings computed for a small geometric typeface drawn from shapes, with an n-and-o rhythm strip.",
+      "4. Blur test: a squint slider shows the grey tone of a line before and after spacing.",
+      "5. What spacing cannot fix: AV, To and WA, where a hand-set kerning pair is the right tool."
+    ],
+    "checkQuestions": [
+      "If you tighten every gap in a headline equally, are you tracking or kerning?",
+      "Which pair needs more care at equal edge distance: HH or AV, and why?",
+      "After spacing by area, one pair still looks open. What is the right fix?"
+    ]
+  },
+  "research": {
+    "summary": "The lesson rests on how type designers space fonts. Foundry guidance says to fix spacing through each glyph's side spaces first and use kerning only for pairs that remain awkward. Spacing guides describe judging letters against a fence of n or m and aiming for an even grey tone. An open area-based spacing script equalises the white area and depth per letter group but does not kern and does not replace the eye. Kerning and tracking are widely confused. The typeface will be drawn in code from shapes, so no font file is used. Page fetching failed, so everything is from search results.",
+    "sources": [
+      {
+        "title": "Bad Spacing (Monotype Foundry Support)",
+        "url": "https://foundrysupport.monotype.com/hc/en-us/articles/360029598672-Bad-Spacing",
+        "date": "",
+        "snippet": "Foundry guidance: spacing problems are not to be solved with kerning pairs; set each glyph's sidebearings first, then add kerning for specific exceptions; a round o should sit centred in its space.",
+        "via": "search",
+        "note": "Primary-domain statement of the sidebearings-first order.",
+        "verified": true
+      },
+      {
+        "title": "FontLab TV: spacing letters from scratch",
+        "url": "https://blog.fontlab.com/2024/12/10/fontlab-tv-spacing-letters/",
+        "date": "2024-12-10",
+        "snippet": "Advises solving spacing with sidebearings wherever possible and reserving kerning for pairs nothing else can fix.",
+        "via": "search",
+        "note": "Independent second source for the order of work.",
+        "verified": true
+      },
+      {
+        "title": "The Briem method and the geometry of nothing (FontLab blog)",
+        "url": "https://blog.fontlab.com/2025/11/04/the-briem-method-and-the-geometry-of-nothing/",
+        "date": "2025-11-04",
+        "snippet": "Treats spacing as setting rhythm and describes linking sidebearings of related letters to the n.",
+        "via": "search",
+        "note": "Control-letter method and rhythm.",
+        "verified": true
+      },
+      {
+        "title": "Leiden University thesis on letter spacing",
+        "url": "https://scholarlypublications.universiteitleiden.nl/access/item%3A2915031/view",
+        "date": "",
+        "snippet": "States that type designers often start with a fence of n or m and judge other letters against it, and that only the x-height zone matters for spacing roman lowercase.",
+        "via": "search",
+        "note": "Academic support for the n-fence and the x-height zone.",
+        "verified": true
+      },
+      {
+        "title": "A free tool for spacing fonts (HT Letterspacer)",
+        "url": "https://letterspacer.huertatipografica.com",
+        "date": "",
+        "snippet": "An open spacing tool sets sidebearings from the white area and depth of each glyph; it does not kern and does not replace the eye of an experienced designer.",
+        "via": "search",
+        "note": "Area-and-depth method and its stated limits; the tool's own page.",
+        "verified": true
+      },
+      {
+        "title": "Class 4 - Controlling Space, Leading, Tracking and Kerning (CUNY City Tech course)",
+        "url": "https://openlab.citytech.cuny.edu/browncomd1127sp2019/2019/02/12/lesson-4-controlling-space-leading-tracking-and-kerning",
+        "date": "2019-02-12",
+        "snippet": "A design course page that treats kerning as pair adjustment and notes it is often confused with tracking.",
+        "via": "search",
+        "note": "Documents the misconception; the search summary attributing this was blended.",
+        "verified": true
+      },
+      {
+        "title": "Adventures in Space: Tracking (FontShop article on MyFonts)",
+        "url": "https://www.myfonts.com/de/pages/fontshop-adventures-in-space_tracking/",
+        "date": "",
+        "snippet": "Says the two terms are frequently confused; kerning fixes a specific pair, tracking spaces a run of text as a design choice.",
+        "via": "search",
+        "note": "Definitions and the confusion; many language copies of one article count once.",
+        "verified": true
+      },
+      {
+        "title": "Kerning glossary (unicodefyi)",
+        "url": "https://unicodefyi.com/glossary/kerning/",
+        "date": "",
+        "snippet": "Explains that a letter's bounding box ignores its shape, so diagonal and round letters leave uneven gaps, with A-V, T-o and W-A as typical problem pairs.",
+        "via": "search",
+        "note": "Why box-to-box spacing fails; many language copies count once.",
+        "verified": true
+      },
+      {
+        "title": "Journal of Graphic Engineering and Design paper on letterspacing",
+        "url": "https://jged.uns.ac.rs/index.php/jged/article/download/541/615/1285",
+        "date": "",
+        "snippet": "States the goal as letters that look equally distant within words and paragraphs, giving an even value of grey without darker or lighter patches.",
+        "via": "search",
+        "note": "Supports the even-grey goal and the blur test.",
+        "verified": true
+      },
+      {
+        "title": "Adventures in Space: Kerning (FontShop article on MyFonts)",
+        "url": "https://www.myfonts.com/de/pages/fontshop-adventures-in-space-kerning/remove%20hyperlink/",
+        "date": "",
+        "snippet": "Search summary said sidebearings handle most issues but letters such as A, L, T, V, W and Y trap space so some pairs need kerning.",
+        "via": "search",
+        "note": "Seen only in a blended summary, so lower confidence.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Kerning adjusts the space of one specific letter pair; tracking (also called letter-spacing) changes the spacing of a whole run of text.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Kerning and tracking are frequently confused with each other.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Foundry guidance says spacing problems should not be fixed by adding kerning pairs: set sidebearings first, then kern the exceptions.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Type designers commonly judge spacing against a fence of n or m letters and aim for an even grey value; only the x-height zone matters for roman lowercase.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          8,
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "An open area-based spacing tool equalises the white area and depth of letters per group, does not kern, and does not replace a designer's eye.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A letter's bounding box ignores its shape, so diagonal and round letters (A-V, T-o, W-A) leave uneven gaps that need kerning.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Kern Type",
+      "Type designers' n-and-o spacing strings",
+      "Metrics-and-kerning view in font editors",
+      "Squint test"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: see a flaw, move a handle or slider to remove it, read the number that changes, then answer a check question whose answer follows from the same model; each rung adds one idea.",
+    "sophisticationHooks": [
+      "A geometric typeface of about 12 letters drawn in code from rectangles, circles and polygons, so area is computed exactly and no font file is used",
+      "Live white-area readout between neighbours inside the x-height zone, capped by depth",
+      "Blur slider to see grey tone before and after spacing",
+      "Kerning pair editor that shows when area equalisation has run out"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: glyph set as SVG paths, area-between-glyphs routine (raster on an offscreen canvas, fixed resolution), five demos, three check questions with computed answers, intro and glossary. Cut: real font loading, full alphabet, export of a font, language-specific rules.",
+    "risks": [
+      "Area equalisation is a simplified model of a judgement-based craft; the page must say it is a model and that real fonts are finished by eye.",
+      "Kerning and tracking confusion is documented by a course page and a FontShop article, but the summary attributing it was blended, so the page words it as widely reported.",
+      "The A-L-T-V-W-Y claim was seen only in a blended summary and is not stated as fact.",
+      "The page must not name tools or foundries as endorsements; the method is described in its own words and credited generically.",
+      "Brief's claim of measurable physics holds for contrast and colour difference; spacing is partly perceptual and the lesson shows that honestly."
+    ]
+  },
+  "durable": true
+}

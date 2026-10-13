@@ -1,0 +1,274 @@
+{
+  "id": "engineer-2",
+  "title": "Skipped And Repeated Times",
+  "plainSentence": "A lesson that shows, with live clocks, why some local times never happen and others happen twice on daylight-saving nights, and how software should pick.",
+  "pitch": "A short ladder of interactive demos starts from the familiar sentence 'clocks go forward an hour' and ends at the aha: a wall-clock time is not a single moment. The visitor drags a pointer along the real UTC timeline of a clock-change night and watches the local clock skip 02:30 in March or show 01:30 twice in November, then tries the four ways software resolves such a time (earlier, later, reject, compatible) and meets a half-hour zone. Check-yourself questions end each rung, with answers worked out by the page's own time functions.",
+  "firstMinute": "The first frame shows a running timeline of New York on 2026-11-01 with two clocks ticking from UTC: the local clock reads 01:30, then 01:30 again an hour later, with the repeat highlighted. A single slider scrubs through the night, so the first success (seeing 01:30 occur twice) takes seconds and needs no reading.",
+  "conceptsToLearn": [],
+  "whyNow": "Clocks go back in the EU and UK on 2026-10-25 and in the US on 2026-11-01, the two weeks in which this confusion is in the news and in production incidents; the concept itself is timeless.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "tool-cron-clock-changes"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg"
+    ],
+    "tags": [
+      "time-zones",
+      "daylight-saving",
+      "gap-and-fold",
+      "wall-clock",
+      "utc",
+      "disambiguation",
+      "iana",
+      "ambiguous-time",
+      "dates-and-times"
+    ],
+    "keywords": [
+      "skipped-time",
+      "repeated-hour",
+      "fold",
+      "gap",
+      "local-time",
+      "utc-offset",
+      "temporal",
+      "earlier-later-reject",
+      "lord-howe"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A local wall-clock time is not always one instant: on a spring-forward night some local times do not exist (a gap) and on a fall-back night some occur twice (a fold), so software must choose a rule to turn wall-clock time into a moment.",
+    "whyNiche": "Programmers learn 'store UTC' but rarely see the gap and the fold as a picture, nor the four standard resolution policies; most explainers list falsehoods without letting the learner poke the timeline.",
+    "audience": "Curious people and working developers who schedule, book or log things in local time and have been surprised by a daylight-saving night.",
+    "prerequisites": [
+      "Knowing that clocks change by about an hour for daylight saving time"
+    ],
+    "misconceptions": [
+      "Every day has 24 hours",
+      "Every local time exists exactly once",
+      "Daylight saving always shifts clocks by exactly one hour, at the same moment everywhere"
+    ],
+    "misconceptionFactIndexes": [
+      4,
+      5
+    ],
+    "ahaMoment": "Scrubbing the UTC slider through the November night and seeing the local clock read 01:30 at two different UTC moments, then seeing the March night skip from 01:59 to 03:00: the local reading is only a label, and the offset is what makes it a moment.",
+    "demos": [
+      "Scrub a UTC slider through a clock-change night in a chosen zone while local and UTC clocks run side by side",
+      "Click any local time on a day strip to see how many real moments match it (zero, one or two) and with which offsets",
+      "Resolver bench: pick a gap or repeated time and see what earlier, later, reject and compatible each return, with UTC and offset",
+      "Day-length demo: add 24 hours versus add one calendar day across the jump and compare",
+      "Half-hour zone (Lord Howe) and a southern-hemisphere zone, to bust the 'always one hour, always March and November' belief"
+    ],
+    "checkQuestions": [
+      "On 2026-11-01 in New York, how many real moments read 01:30, and what are their offsets?",
+      "A meeting is booked for 02:30 local on the spring-forward date: which moment does 'compatible' pick, and why might 'reject' be safer?",
+      "How long is the calendar day of the fall-back date in hours?",
+      "Why can two different UTC moments print the same local time without any error in the clock?"
+    ]
+  },
+  "research": {
+    "summary": "The vocabulary and the resolution policies are standardised, not invented. PEP 495 names the two cases (fold for a backward change with ambiguous times, gap for a forward change with missing times) and uses a 0 or 1 flag to choose the earlier or later reading; MDN documents the four Temporal options (compatible, earlier, later, reject, default compatible); library docs (Whenever) give worked gap and fold examples. Falsehoods lists document the misconceptions (24-hour days, same moment everywhere, always an hour). Lord Howe Island's 30-minute shift is documented by two independent results. The IANA tz database page frames the data the demos rest on.",
+    "sources": [
+      {
+        "title": "PEP 495 - Local Time Disambiguation",
+        "url": "https://peps.python.org/pep-0495/",
+        "date": "",
+        "snippet": "Python's standards-track proposal that adds a fold flag (0 or 1) to separate two instants with the same wall-clock reading; a backward change makes ambiguous times, a forward change makes missing times.",
+        "via": "search",
+        "note": "Defines gap and fold and earlier/later via fold (primary: python.org)",
+        "verified": true
+      },
+      {
+        "title": "Migration Guide - pytz-deprecation-shim",
+        "url": "https://pytz-deprecation-shim.readthedocs.io/en/latest/migration.html",
+        "date": "",
+        "snippet": "Worked example: America/Los_Angeles on 2020-11-01 at 01:00 resolves to -07:00 with fold 0 and to -08:00 with fold 1.",
+        "via": "search",
+        "note": "A published worked example usable as a known-answer vector",
+        "verified": true
+      },
+      {
+        "title": "Temporal.PlainDateTime.toZonedDateTime() - MDN",
+        "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDateTime/toZonedDateTime",
+        "date": "",
+        "snippet": "MDN lists four disambiguation options for ambiguous or non-existent local times (compatible, earlier, later, reject), default compatible, with reject throwing a RangeError.",
+        "via": "search",
+        "note": "The four named policies the resolver bench demonstrates",
+        "verified": true
+      },
+      {
+        "title": "Ambiguity in timezones - Whenever documentation",
+        "url": "https://whenever.readthedocs.io/en/latest/guide/ambiguity.html",
+        "date": "",
+        "snippet": "Library guide with worked examples: earlier resolves a skipped 02:30 to 01:30 before the gap, reject raises an error, and for a fold earlier means the summer-time reading and later the winter-time one.",
+        "via": "search",
+        "note": "Second independent description of the policies; library-specific wording, so the page states its own rule",
+        "verified": true
+      },
+      {
+        "title": "Falsehoods programmers believe about time zones",
+        "url": "https://zainrizvi.io/blog/falsehoods-programmers-believe-about-time-zones/",
+        "date": "",
+        "snippet": "A list of false beliefs including that days have 24 hours, that DST happens at the same moment everywhere, and that DST always moves clocks by an hour.",
+        "via": "search",
+        "note": "Documents the misconceptions the lesson busts",
+        "verified": true
+      },
+      {
+        "title": "Falsehoods Programmers Believe About Time",
+        "url": "https://libarynth.net/falsehoods_programmers_believe_about_time",
+        "date": "",
+        "snippet": "A long community list of false assumptions about time, including that there are always 24 hours in a day.",
+        "via": "search",
+        "note": "Independent second list for the 24-hour-day misconception (mirror of the same list also appeared on other hosts)",
+        "verified": true
+      },
+      {
+        "title": "lord howe island - timeanddate.com time changes",
+        "url": "https://www.timeanddate.com/time/change/australia/lord-howe-island?year=1991",
+        "date": "",
+        "snippet": "Says Lord Howe Island sets its clocks forward 30 minutes, from UTC+10:30 to UTC+11, rather than a whole hour.",
+        "via": "search",
+        "note": "Half-hour DST zone, busting the always-an-hour belief",
+        "verified": true
+      },
+      {
+        "title": "LHI daylight savings (fwd) - tz mailing list archive",
+        "url": "https://mm.icann.org/pipermail/tz/2000-October/036258.html",
+        "date": "2000-10",
+        "snippet": "A tz mailing-list post quoting the island's practice of moving clocks 30 minutes at the start and end of daylight saving.",
+        "via": "search",
+        "note": "Independent second result for the 30-minute shift (old post, so the current rule rests on the timeanddate page)",
+        "verified": true
+      },
+      {
+        "title": "Theory and pragmatics of the tz code and data",
+        "url": "https://www.iana.org/time-zones/theory.html",
+        "date": "",
+        "snippet": "IANA's page says the time zone database records the history and predicted future of civil time scales, grouping places whose clocks agree on timestamps since 1970, with rules that can change over time.",
+        "via": "search",
+        "note": "Primary description of the data behind the demos",
+        "verified": true
+      },
+      {
+        "title": "DST Transition Edge Cases: Lost and Repeated Hours",
+        "url": "https://inventivehq.com/blog/dst-transition-edge-cases-lost-repeated-hours",
+        "date": "",
+        "snippet": "A third-party guide that recommends storing UTC and warns a scheduled 01:30 job can run twice on fall-back day.",
+        "via": "search",
+        "note": "Context only; single secondary source",
+        "verified": false
+      },
+      {
+        "title": "Daylight Saving Time 2026: When Clocks Change in Every Major Country",
+        "url": "https://www.universaltimedate.com/articles/daylight-saving-time-2026-when-clocks-change",
+        "date": "2026",
+        "snippet": "Lists EU and UK daylight saving as 29 March to 25 October 2026 and US daylight saving ending on Sunday 1 November 2026.",
+        "via": "search",
+        "note": "Dates for the preset nights",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "PEP 495 calls the result of a backward clock change a fold (ambiguous local times) and of a forward change a gap (missing local times), and uses a fold flag of 0 or 1 to select the earlier or later reading of an ambiguous time.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A published worked example: America/Los_Angeles on 2020-11-01 at 01:00 is -07:00 with fold 0 and -08:00 with fold 1.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "MDN documents four disambiguation options for Temporal conversions of ambiguous or non-existent local times (compatible, earlier, later, reject), default compatible, and reject throws a RangeError.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The Whenever library guide shows earlier resolving a skipped 02:30 to 01:30 before the gap and reject raising an error (library-specific example; the page states its own rule).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Documented misconception: community lists of false beliefs about time state that every day has 24 hours.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Documented misconception: the same lists state that daylight saving does not begin at the same moment everywhere and does not always move clocks by an hour; Lord Howe Island uses a 30-minute shift.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The IANA tz database page describes the data as the history and predicted future of civil time scales, grouped into zones whose clocks agree after 1970, with rules that can change.",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "In 2026 the EU and UK return to winter time on Sunday 2026-10-25 and the US on Sunday 2026-11-01.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "PEP 495 fold and gap",
+      "Temporal disambiguation options",
+      "falsehoods-about-time lists",
+      "explorable explanations"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, predict, check: the visitor scrubs or clicks a time, predicts how many moments match, then sees the answer computed by the page, and answers a short check question before the next rung. The pull is the small shock of seeing one label map to zero or two moments.",
+    "sophisticationHooks": [
+      "Honest engine: every clock and count comes from the browser's zone data through an offset probe and bisection, checked by a self-test against the published Los Angeles example and hand-made calendars",
+      "Resolver bench that implements the four named policies and shows UTC and offset for each result",
+      "Half-hour and southern-hemisphere presets so the lesson busts 'always one hour in March and November'",
+      "Day-length demo: 23-hour and 25-hour days next to a 24-hour day"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: five rungs with one SVG timeline component, slider and click picking, resolver bench, day-length demo, preset nights for New York, London, Lord Howe and Sydney, check questions with worked answers, an intro paragraph and a short glossary. Cut: arbitrary-zone search beyond a small list, recurring-event rules, history of DST, tz database internals.",
+    "risks": [
+      "Browser zone data can lag the newest tzdata release, so the presets use dates in 2026 and the page states the data source",
+      "Compatible resolution differs between libraries (Temporal, Java, Python); the page must state its own definition and avoid claiming it is universal",
+      "The Lord Howe current rule rests on one site's page plus an old mailing-list post; as of 2026-10-13 it is shown with its source, and the bisection output from the browser is the page's own check",
+      "Only search results were seen, no page was opened; the third-party edge-case guide is a single secondary source and is not used as fact",
+      "Overlap in subject with a cron rehearsal tool if both were built; the lesson stands alone and does not need cron"
+    ]
+  },
+  "durable": true
+}

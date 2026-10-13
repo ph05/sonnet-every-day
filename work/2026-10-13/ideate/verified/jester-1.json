@@ -1,0 +1,269 @@
+{
+  "id": "jester-1",
+  "title": "PDF Page Arranger",
+  "plainSentence": "A tool that lets you merge PDFs, keep chosen pages, reorder, rotate and number them, all inside your browser with nothing uploaded.",
+  "pitch": "Drop one or more PDFs onto the page and every page becomes a card showing its size, rotation and first words. Drag cards into a new order, delete or rotate them, type a range such as 1-3,7,9- to keep only some, optionally stamp 'Page 3 of 12' numbers, and download the new file. A printed check strip then re-reads the output in a second pass and reports its page count and whether each page's decoded content matches the input page.",
+  "firstMinute": "On load two small sample documents are already merged into five page cards, with a finished check strip beneath them that types itself out like teleprinter paper (page count 5, content matches). One button, 'Download PDF', gives a working file without reading anything; dragging a card or pressing Rotate updates the strip instantly.",
+  "conceptsToLearn": [],
+  "whyNow": "Timeless. Merging and reordering pages is a weekly chore. As of 2026-10-13 one large web suite's own pricing page sells unlimited processing as a paid plan, so a private, offline, no-account version stays useful; no free-tier cap figure is claimed.",
+  "origin": {
+    "agent": "jester",
+    "lens": "tool-local-pdf"
+  },
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "tools-utility",
+    "mechanic": "tool",
+    "tone": [
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "worker",
+      "svg"
+    ],
+    "tags": [
+      "pdf",
+      "merge-pdf",
+      "split-pdf",
+      "reorder-pages",
+      "rotate-pages",
+      "page-numbers",
+      "offline",
+      "no-upload",
+      "iso-32000",
+      "privacy"
+    ],
+    "keywords": [
+      "pdf-merge",
+      "pdf-split",
+      "page-range",
+      "page-numbering",
+      "client-side",
+      "clean-room",
+      "xref",
+      "iso-32000"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "job": "Combine, extract, reorder, rotate and page-number the pages of unencrypted PDF files, producing one new PDF that is re-read and checked before the visitor downloads it.",
+    "audience": "Anyone who occasionally assembles a PDF from several files (forms, scans, receipts, a thesis, a legal or school packet) and does not want to upload private documents or hit a daily cap.",
+    "paywallEvidence": [
+      {
+        "product": "A large web PDF suite (named in the dossier only, never on the page)",
+        "whatIsGated": "Its own pricing page sells a Premium plan listing unlimited document processing and no ads, at 5 USD a month billed annually or 9 USD billed monthly, as of 2026-10-13. The page does not itself state the free-tier limits.",
+        "factIndex": 0
+      },
+      {
+        "product": "A second web PDF suite (dossier only)",
+        "whatIsGated": "Third-party listings report a small daily task limit and a file-size cap on its free tier, with figures that conflict (two tasks a day versus one document); no official page was seen, so this is unverified and never shown on the page.",
+        "factIndex": 1
+      }
+    ],
+    "freeGap": "Free in-browser mergers already exist (some self-describe as pdf-lib based and offline-capable), so privacy alone is not new. The remaining gap is an all-five-jobs page that is exact and shows its working: a second-parser check strip (page count, per-page text match), page-number stamping that respects rotation and crop boxes, known-answer tests against the PDF standard, and loud, specific refusals (encrypted, damaged or exotic files) instead of silent breakage.",
+    "oracle": "ISO 32000-1:2008 (PDF 1.7), free from Adobe and listed by the PDF Association: file structure (cross-reference table, trailer, page tree and inheritable attributes, the Rotate rule). Known-answer cases are small PDFs built in code whose expected page count, rotation and order follow from those rules, plus round-trip checks of decoded page content.",
+    "oracleFactIndex": 2,
+    "inputs": "One or more PDF files from disk (drag and drop or file picker), a page-range text such as 1-3,7,9-, per-card rotate and delete, drag order, and optional page-number settings (position, start, 'of N').",
+    "outputs": "A downloaded PDF (1.4-style classic cross-reference table written by the page itself), plus a copyable plain-text check receipt.",
+    "limits": "Printed on the page: encrypted or password-protected files, files with a damaged cross-reference table, and signed documents are refused or lose their signature; form fields, links, bookmarks and tagged-structure data are dropped from copied pages; cards show text summaries, not images; the check compares decoded content, not pixels; very large files are limited by browser memory."
+  },
+  "research": {
+    "summary": "Re-checked by search only. The vendor's own pricing page for one large web PDF suite lists a Premium plan with unlimited document processing (5 USD a month billed annually, 9 USD monthly) but does not state the free-tier limits; a second suite's free caps appear only in third-party listings with conflicting figures, so they stay unverified. The PDF Association's own page lists ISO 32000-1 and points to Adobe's free copy. Two results agree that classic cross-reference entries are 20 bytes (10-digit offset, 5-digit generation, n or f). The page-tree inheritance of Resources, MediaBox, CropBox and Rotate and the Rotate rule were not found again in my searches, so builders confirm them in the spec text. Browser decompression is documented by MDN. Free in-browser mergers exist, so the build wins on exactness and visible checking.",
+    "sources": [
+      {
+        "title": "Pricing plans (iLovePDF)",
+        "url": "https://www.ilovepdf.com/pricing",
+        "date": "",
+        "snippet": "The vendor's own pricing page lists Premium at 5 USD a month billed annually (60 USD) or 9 USD billed monthly, with unlimited document processing and no ads.",
+        "via": "search",
+        "note": "Primary source for the paid tier; found again in my search; it does not state the free-tier limits.",
+        "verified": true
+      },
+      {
+        "title": "Smallpdf Pricing 2026 (Capterra)",
+        "url": "https://www.capterra.com/p/172606/Smallpdf/pricing/",
+        "date": "",
+        "snippet": "A review site's pricing page for the product; search results elsewhere say the free plan caps daily tasks and file size, one listing says two a day.",
+        "via": "search",
+        "note": "Third-party only, figures conflict, no official page found; unverified.",
+        "verified": false
+      },
+      {
+        "title": "ISO 32000-1 (PDF 1.7) (PDF Association)",
+        "url": "https://pdfa.org/resource/iso-32000-1-pdf-1-7/",
+        "date": "",
+        "snippet": "The PDF Association's own page describes ISO 32000-1 as identical to Adobe's PDF 1.7 reference and points to Adobe's no-charge copy.",
+        "via": "search",
+        "note": "Names the free authoritative oracle; the association's own page states it; I did not open the Adobe copy.",
+        "verified": true
+      },
+      {
+        "title": "Page class reference (Apryse PDF SDK docs)",
+        "url": "https://docs.apryse.com/api/web/7.3/PDFNet.Page.html",
+        "date": "",
+        "snippet": "SDK docs restating that Resources, MediaBox, CropBox and Rotate are inheritable from ancestor page-tree nodes.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches, so the inheritance rule is unverified here.",
+        "verified": false
+      },
+      {
+        "title": "The PDF Format (pypdf documentation)",
+        "url": "https://pypdf.readthedocs.io/en/stable/dev/pdf-format.html",
+        "date": "",
+        "snippet": "Walks through a minimal file: startxref, xref subsections, 10-digit offsets, 5-digit generations with n or f flags, trailer keys.",
+        "via": "search",
+        "note": "xref layout; found again in my search.",
+        "verified": true
+      },
+      {
+        "title": "PDF file format: Basic structure (Infosec Institute)",
+        "url": "https://infosecinstitute.com/resources/hacking/pdf-file-format-basic-structure/",
+        "date": "",
+        "snippet": "Structure primer stating each cross-reference entry is 20 bytes: a 10-digit offset, a 5-digit generation and n or f.",
+        "via": "search",
+        "note": "Independent agreement on the 20-byte entry; found again in my search.",
+        "verified": true
+      },
+      {
+        "title": "DecompressionStream constructor (MDN Web Docs)",
+        "url": "https://developer.mozilla.org/docs/Web/API/DecompressionStream/DecompressionStream",
+        "date": "",
+        "snippet": "MDN documents the deflate format as zlib-wrapped DEFLATE and marks the API as widely available across browsers since May 2023.",
+        "via": "search",
+        "note": "Found again in my search; MDN is the reference documentation for the browser API.",
+        "verified": true
+      },
+      {
+        "title": "PdfPageObject Rotate entry (ABCpdf documentation)",
+        "url": "https://www.websupergoo.com/helppdfnet/source/9-abcpdf.elements/07-syntax/1085-pageobjectelement/2-properties/12-entryrotate.htm",
+        "date": "",
+        "snippet": "Describes Rotate as clockwise degrees, a multiple of 90, default 0, inherited from the parent when absent.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches, so the Rotate rule is unverified here.",
+        "verified": false
+      },
+      {
+        "title": "pdfsyntax 0.0.6 (PyPI)",
+        "url": "https://pypi.org/project/pdfsyntax/0.0.6/",
+        "date": "",
+        "snippet": "A PDF-parsing library description noting its rotate function accounts for attributes inherited from the page hierarchy.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches.",
+        "verified": false
+      },
+      {
+        "title": "Compression Streams API (Chrome for Developers)",
+        "url": "https://developer.chrome.com/blog/compression-streams-api/",
+        "date": "",
+        "snippet": "Browser vendor's article introducing the built-in compression streams.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches.",
+        "verified": false
+      },
+      {
+        "title": "merge-pdf.app, a free privacy-first PDF merging tool",
+        "url": "https://ryansouthgate.com/merge-pdfs/",
+        "date": "",
+        "snippet": "A free browser tool that says it merges locally and works offline after a first visit.",
+        "via": "search",
+        "note": "Self-reported and not found again in my searches; shows free mergers may exist.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "As of 2026-10-13 the vendor's own pricing page for one large web PDF suite lists a Premium plan at 5 USD a month billed annually (60 USD) or 9 USD billed monthly, offering unlimited document processing and no ads; the page does not state the free-tier limits.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, third-party listings (not an official page) report that another web PDF suite limits its free tier to a few tasks a day and a small file size; one listing says two tasks, one reviewer says one document, so the figure is unconfirmed.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "ISO 32000-1:2008 (PDF 1.7) is available at no charge from Adobe, as the PDF Association's own page for the standard says, and is technically identical to Adobe's PDF 1.7 reference.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Unconfirmed in my searches: under the PDF page tree, Resources, MediaBox, CropBox and Rotate are inheritable from the nearest ancestor, so a copied page needs those values written onto it. Builders confirm this in the spec text.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A classic cross-reference entry is 20 bytes: a 10-digit byte offset, a 5-digit generation number and the keyword n (in use) or f (free).",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "MDN documents native deflate (zlib container) decompression through DecompressionStream, available across browsers since May 2023, enough to read Flate-compressed PDF streams without a vendored library; builders test it in the headless browser.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Unconfirmed in my searches: a page Rotate value is clockwise degrees and a multiple of 90, defaulting to 0 and inheritable from the page tree.",
+        "sourceIndex": 7,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, a free browser-only PDF merger says on its own site that it works offline after the first visit; self-reported and unconfirmed.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "desktop page-organizer utilities",
+      "teleprinter paper strips",
+      "stage programme running orders"
+    ]
+  },
+  "design": {
+    "coreLoop": "The visitor adds files, sees every page as a card, drags, rotates, deletes or range-selects, optionally turns on page numbers, and reads the check strip that updates after each change; downloading and re-adding the result is a quick round trip.",
+    "sophisticationHooks": [
+      "Own reader for the file structure: classic xref tables, xref streams and object streams, with Flate and PNG-predictor decoding via the built-in decompression API",
+      "Page-tree flattening of inherited attributes so copied pages keep their size, crop and rotation",
+      "Page-number stamping computed in the page's visible orientation (rotation and crop box aware), using a standard built-in font so nothing is embedded",
+      "Check strip: second-pass parse of the output, page count and per-page text comparison, printed like teleprinter paper and copyable as a receipt"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: reader for classic tables, xref streams and object streams with Flate decoding (built-in decompression, hand-written inflate as fallback); page copier flattening inherited attributes; classic-xref writer; card grid with drag and keyboard reorder, rotate, delete, range; check strip comparing page count and decoded page content; 8 or more self-tests on PDFs built in code; limits panel; intro and explainer. Cut first: page-number stamping. Cut anyway: thumbnails, forms and bookmarks, encrypted files, repair, output compression, text-extraction matching.",
+    "risks": [
+      "Scope is the largest of the day: a reader for xref streams and object streams, a writer and a checker. If time runs short, cut page numbers first, then object-stream support (modern producers use it, so such files would be refused loudly).",
+      "The free-tier limits of the second suite are third-party and conflicting; the page names no product and shows no cap figure. The first suite's pricing page is primary but does not state free limits.",
+      "Free in-browser mergers already exist, so the pitch rests on exactness, the visible check strip and honest refusals, not on privacy alone.",
+      "The page-tree inheritance rule and the Rotate rule were not found again in my searches; builders confirm them in the ISO 32000-1 text and cite only rules they have read. Section and table numbers are not cited unless read.",
+      "The per-page check compares decoded content streams, not extracted text: text extraction across arbitrary fonts is out of scope, so the strip says 'content matches', never 'text matches'.",
+      "No real-world PDFs can be bundled; vectors are generated in code, so exotic producers are untested and the page says so.",
+      "Real thumbnails need a renderer; cards show a text summary and a page outline, which may disappoint.",
+      "The page shell's security policy blocks framing a blob PDF (frames fall back to the same-origin default), so the output is download only.",
+      "Browser decompression is documented by MDN; builders test it and keep a hand-written inflate as fallback."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 5,
+    "feasibleInOneDay": true,
+    "notes": "The paid-tier claim is on the vendor's own page and the xref layout and free ISO copy each agreed across results, but the page-tree inheritance and Rotate rules were not found again and the second suite's free limits stay unverified. Scope is heavy; feasible in a morning only with page numbers and text matching cut."
+  }
+}

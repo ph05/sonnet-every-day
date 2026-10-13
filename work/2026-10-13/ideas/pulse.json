@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "on-this-day",
+  "candidates": [
+    {
+      "id": "pulse-1",
+      "title": "Historical Date Converter",
+      "plainSentence": "A converter that lets you turn a past date into the calendar another country used then, and warns when that date never existed.",
+      "pitch": "Pick a date between 1500 and 1930 and a place, and the page shows what that day was called under the old Julian calendar and the modern Gregorian one, with the weekday, the day count and a clear flag when the date was skipped there. It opens on today's date in 1582, a day that did not exist in Rome, so the first result is a surprise. Genealogists, history writers and curious people get a private, offline answer with the working shown step by step.",
+      "firstMinute": "The page opens with 13 October 1582 in Rome already entered and the result on screen: that date never existed there, the calendar jumped from Thursday 4 October to Friday 15 October, and the same day in England was 3 October. One button swaps in any other date or place, so the visitor gets a first success without reading anything.",
+      "conceptsToLearn": ["A calendar date can name different days depending on which calendar a country was using at the time."],
+      "whyNow": "Today is 13 October, a date inside the ten days (5 to 14 October 1582) that were skipped in Rome, Spain and Portugal. The topic is timeless for anyone reading old letters, parish records or diaries.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "on-this-day"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "converter",
+        "tone": ["analytical", "nerdy", "cozy"],
+        "tech": ["dom-ui", "svg", "localstorage"],
+        "tags": ["calendar", "julian-calendar", "gregorian-calendar", "old-style-new-style", "dual-dating", "genealogy", "day-of-week", "julian-day-number", "calendar-reform", "missing-days"],
+        "keywords": ["date-converter", "julian-to-gregorian", "calendar-switch", "on-this-day", "1582", "1752", "history-dates", "weekday-finder"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Convert a historical date between the Julian and Gregorian calendars using the switch date of the chosen country, and say when the date was skipped or ambiguous.",
+        "audience": "Family-history researchers, history students, writers and anyone reading old documents, letters or diaries dated before their country changed calendars.",
+        "paywallEvidence": [],
+        "freeGap": "Free general Julian-to-Gregorian converters exist, and a genealogy magazine points to old-style/new-style converters. No paywall claim is verified, so none is made. The remaining gap: one page that is private and offline, knows each region's own switch date, flags skipped dates and the old 25 March New Year, and shows every step of the arithmetic.",
+        "oracle": "Julian Day Number relations documented in the Julian day reference and in the IDL JULDAY documentation (4 and 15 October 1582 are consecutive days in the day count), the Gregorian leap rule, and the published skips: Rome 4 to 15 October 1582, Britain 2 to 14 September 1752.",
+        "oracleFactIndex": 2,
+        "inputs": "A year, month and day, plus a region from a bundled list of about 20 places with their switch dates, and an optional choice of which calendar the date was written in.",
+        "outputs": "The date in both calendars, the weekday, the Julian Day Number, a dual-date form such as 1731/32 for dates before the New Year moved, a skipped-date warning, and days between two dates across a switch. Results can be copied as text.",
+        "limits": "Switch dates varied inside some countries (German states, Swiss cantons, colonies); the page uses one date per region and says so. It does not handle non-Christian calendars, and it is not legal or genealogical proof."
+      },
+      "research": {
+        "summary": "In Rome, Spain, Portugal and most of Italy the day after Thursday 4 October 1582 was Friday 15 October, so 5 to 14 October 1582 never happened there, and today's date (13 October) is one of them. Britain and its colonies skipped 2 to 14 September 1752. Day counts such as the Julian Day Number run on without a gap, which gives a clean oracle. The famous riots over lost days in 1752 are largely a myth, which suits a corrections box. Switch dates elsewhere (Russia 1918, Greece 1923, Sweden 1753) came back only from blended or single results and stay unverified for now.",
+        "sources": [
+          {"title": "Inter gravissimas", "url": "https://en.wikipedia.org/wiki/Inter_gravissimas", "date": "", "snippet": "The 1582 papal bull reformed the Julian calendar; it dropped ten days so that 4 October 1582 was followed by 15 October 1582.", "via": "search", "note": "Establishes the 1582 skip.", "verified": true},
+          {"title": "Routines: J > JULDAY (IDL reference)", "url": "https://www.irya.unam.mx/computo/sites/manuales/IDL/Content/Reference%20Material/J/JULDAY.html", "date": "", "snippet": "Software documentation whose example gives day numbers 2299160 and 2299161 for 4, 5 and 15 October 1582; a cutoff at 2299161 separates Julian from Gregorian dates.", "via": "search", "note": "Independent software documentation for the 1582 boundary and the day-count oracle.", "verified": true},
+          {"title": "Julian day", "url": "https://en.wikipedia.org/wiki/Julian_day", "date": "", "snippet": "Reference article on the continuous day count used by astronomers and by calendar software.", "via": "search", "note": "Names the Julian Day Number as the common key between calendars.", "verified": true},
+          {"title": "The Gregorian Calendar Adopted in England", "url": "https://www.historytoday.com/archive/gregorian-calendar-adopted-england", "date": "", "snippet": "The 1750 act made Wednesday 2 September 1752 be followed by Thursday 14 September, and moved New Year's Day from 25 March to 1 January.", "via": "search", "note": "Britain 1752 skip and the New Year change.", "verified": true},
+          {"title": "List of adoption dates of the Gregorian calendar by country", "url": "https://en.wikipedia.org/wiki/List_of_adoption_dates_of_the_Gregorian_calendar_by_country", "date": "", "snippet": "A table of switch dates by country; results seen only through a blended search summary (Britain 1752, Russia 1918, Greece 1923, a conflicting Sweden entry).", "via": "search", "note": "Candidate data source for the bundled switch table; each row needs its own check.", "verified": false},
+          {"title": "Leap years (University of Warwick)", "url": "https://warwick.ac.uk/news/knowledgecentre/science/physics-astrophysics/leap_years", "date": "", "snippet": "University explainer on leap years: the Gregorian rule skips three century leap days in 400 years, giving 97 leap years per 400.", "via": "search", "note": "Gregorian leap rule from a university.", "verified": true},
+          {"title": "Leap year", "url": "https://en.wikipedia.org/wiki/Leap_year", "date": "", "snippet": "Gregorian average year is 365 + 97/400 days; the Julian calendar's 365.25 days gains about 3.1 days every 400 years.", "via": "search", "note": "Second source for the leap rule and Julian drift.", "verified": true},
+          {"title": "Give us our eleven days!: calendar reform in eighteenth century England", "url": "https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/", "date": "", "snippet": "Robert Poole's academic study of the 1752 calendar change and how the story of rioting crowds was built later.", "via": "search", "note": "Scholarly basis for the myth-busting box.", "verified": true},
+          {"title": "Give Us Our Eleven Days", "url": "https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/", "date": "", "snippet": "Ties the slogan to a banner in a 1755 painting about an election rather than to mass riots.", "via": "search", "note": "Independent second source for the riot myth.", "verified": true},
+          {"title": "Save the Dates (Family Tree Magazine)", "url": "https://www.familytreemagazine.com/history/save-the-dates/", "date": "", "snippet": "Advises genealogists to look up when a country changed calendars, to record dates as found, and mentions dual-year forms and existing old-style/new-style converters.", "via": "search", "note": "Shows the audience need and the existing free tools; single source.", "verified": false},
+          {"title": "February 30 (timeanddate)", "url": "https://www.timeanddate.com/date/february-30.html", "date": "", "snippet": "Explains the one-off Swedish 30 February in 1712 and Sweden's later 1753 switch.", "via": "search", "note": "Sweden case; details seen in a blended summary.", "verified": false},
+          {"title": "February 30 isn't a real date, but it was once in this country", "url": "https://sbs.com.au/news/article/february-30-isnt-a-real-date-but-it-was-once-in-this-country/5cq9k9n2e", "date": "", "snippet": "News feature on Sweden's botched move to the Gregorian calendar and the extra day in 1712.", "via": "search", "note": "Second look at the Sweden story; blended, so unverified.", "verified": false}
+        ],
+        "facts": [
+          {"claim": "In Rome, Spain, Portugal and most of Italy, Thursday 4 October 1582 was followed by Friday 15 October 1582, so 5 to 14 October 1582 do not exist there.", "sourceIndex": 0, "alsoIn": [1], "asOf": "2026-10-13"},
+          {"claim": "Britain and its colonies moved to the Gregorian calendar so that Wednesday 2 September 1752 was followed by Thursday 14 September 1752, and New Year's Day moved from 25 March to 1 January.", "sourceIndex": 3, "alsoIn": [4], "asOf": "2026-10-13"},
+          {"claim": "Oracle: the day count is continuous across the 1582 switch; 4 October 1582 (Julian) and 15 October 1582 (Gregorian) are consecutive days, with Julian day numbers 2299160 and 2299161 in the IDL documentation example.", "sourceIndex": 1, "alsoIn": [2], "asOf": "2026-10-13"},
+          {"claim": "The Gregorian rule makes a year a leap year if divisible by 4, except century years not divisible by 400, giving 97 leap years per 400 years and an average year of 365.2425 days; the Julian average of 365.25 days gains about 3.1 days per 400 years.", "sourceIndex": 5, "alsoIn": [6], "asOf": "2026-10-13"},
+          {"claim": "Historians treat the story of 1752 mobs demanding their eleven days back as largely a myth; the slogan is tied to a 1755 painting and a 1754 election, with some smaller real protests.", "sourceIndex": 7, "alsoIn": [8, 3], "asOf": "2026-10-13"},
+          {"claim": "As reported in a blended search summary, as of 2026-10-13: Russia moved from 31 January to 14 February 1918 and Greece adopted Gregorian civil dates in 1923. Not confirmed by two separate results.", "sourceIndex": 4, "alsoIn": [], "asOf": "2026-10-13"},
+          {"claim": "As reported by timeanddate and an SBS feature (seen in a blended summary), Sweden skipped 11 days in February 1753 after the 1712 extra 30 February. Not confirmed; the page would say 'per timeanddate' or leave Sweden out.", "sourceIndex": 10, "alsoIn": [11], "asOf": "2026-10-13"},
+          {"claim": "As reported by Family Tree Magazine, researchers should check each country's switch date and may meet dual years such as 1747OS and 1748NS. Single source.", "sourceIndex": 9, "alsoIn": [], "asOf": "2026-10-13"}
+        ],
+        "inspirations": ["genealogy old-style/new-style converters", "Julian day number tables", "the 1752 British calendar change", "Unix cal output for September 1752"]
+      },
+      "design": {
+        "coreLoop": "Enter or nudge a date and pick a place; read the result in both calendars with the working; open the 'show the steps' panel; try a famous date from a short list (4 to 15 October 1582, 2 to 14 September 1752, 31 January 1918); copy the result. A built-in known-answer table is visible on the page.",
+        "sophisticationHooks": ["Skipped-date detection per region, with the neighbouring valid days named", "Dual-year display for dates before the 1 January New Year was adopted", "Days-between across a switch, counted by day number so no day is lost or invented", "A self-test panel that re-runs the published known answers in the visitor's browser"],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: date entry, about 20 regions with switch dates, two-way conversion, weekday, day number, skip warning, dual year, steps panel, self-test panel, intro and explainer. Cut: Easter dates, non-Christian calendars, sub-region splits, anything fetched live.",
+        "risks": [
+          "Switch dates for Russia, Greece and Sweden are unverified here (blended or single results); the verifier or builder must check each region's row against two sources or drop the row.",
+          "No paywall is claimed; free converters exist, so the pitch rests on private, offline, per-region and shows-its-working, not on beating a paid product.",
+          "Regional variation (German states, Swiss cantons, colonies) means one date per region is a simplification; the page says so.",
+          "The Wikipedia list could not be opened (host failed today); the table must be assembled from search-seen sources and marked 'as of' with source names.",
+          "Which Wikipedia mirror URL a search showed varies; the dossier uses the clean en.wikipedia.org addresses seen in results."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "pulse-2",
+      "title": "Equation of Time Lesson",
+      "plainSentence": "A lesson that lets you slide through the year to see why a sundial runs minutes ahead of or behind your clock.",
+      "pitch": "Start on today's date with a sundial and a clock side by side, then drag through the year and watch the gap rise and fall. Three short demos separate the two causes (a tilted axis and an oval orbit), explain why the earliest sunset comes weeks before the shortest day, and show how railways and a 13 October 1884 vote replaced every town's own sun time. Check-yourself questions end each step.",
+      "firstMinute": "The page opens on 13 October with a sundial reading and a clock reading shown together and the gap printed in minutes. Dragging the year slider moves both and draws the gap curve, so the visitor sees the sun run ahead of and behind the clock before reading a word.",
+      "conceptsToLearn": [],
+      "whyNow": "On 13 October 1884 delegates at the International Meridian Conference voted for Greenwich as the world's zero line, the step that ended each town keeping its own sun time. In mid-October the sundial also runs several minutes ahead of the clock, and the earliest sunsets of winter are weeks away.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "on-this-day"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": ["analytical", "serene", "nerdy"],
+        "tech": ["svg", "dom-ui", "canvas2d"],
+        "tags": ["equation-of-time", "solar-noon", "sundial", "time-zones", "longitude", "earliest-sunset", "analemma", "meridian-conference", "standard-time"],
+        "keywords": ["sun-time-vs-clock-time", "greenwich-meridian", "railway-time", "local-mean-time", "orbit-tilt", "interactive-lesson", "on-this-day"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "The equation of time: why solar time (what a sundial shows) and clock time (mean solar time) differ by up to about a quarter of an hour during the year, and how longitude and time zones add a second, separate offset.",
+        "whyNiche": "Most people learn that noon is when the sun is highest and the day is longest on the solstice. The idea that sunrise, noon and sunset drift against the clock all year is rarely taught, yet it explains everyday puzzles like the earliest sunset coming before the shortest day.",
+        "audience": "Curious adults and older students, hobby astronomers, sundial and photography fans, anyone who has wondered why sunset times keep changing after the solstice.",
+        "prerequisites": [],
+        "misconceptions": [
+          "The earliest sunset of the year falls on the shortest day (winter solstice).",
+          "Solar noon is always at 12:00 clock time at the middle of a time zone."
+        ],
+        "misconceptionFactIndexes": [3],
+        "ahaMoment": "Sunrise and sunset sit on either side of solar noon, and solar noon itself drifts against the clock; so in early December the sun sets earlier even as the day's length is still falling more slowly, and the earliest sunset arrives weeks before the solstice.",
+        "demos": [
+          "Sundial and clock side by side with a day-of-year slider and a live gap curve, opening on today's date.",
+          "Two-cause split: switch on only the tilted axis, only the oval orbit, then both, and watch the two small curves add into the real one.",
+          "Longitude ladder: pick a town, see the 4-minutes-per-degree offset from its zone's central line, and replay the 18 November 1883 railway switch with the 'two noons' effect.",
+          "Sunset finder: choose a latitude and find the earliest sunset and the shortest day, then see the gap between them."
+        ],
+        "checkQuestions": [
+          "On 3 November is a sundial ahead of or behind the clock, and by about how much?",
+          "If a town is 2 degrees of longitude west of its zone's central line, how many minutes later does its sun reach the highest point?",
+          "Why does the earliest sunset not fall on the winter solstice in the northern hemisphere?",
+          "Which single cause gives a half-year rhythm and which gives a one-year rhythm?"
+        ]
+      },
+      "research": {
+        "summary": "Delegates at the 1884 International Meridian Conference voted on 13 October for Greenwich (22 for, 1 against, 2 abstaining), a few months after North American railways replaced local sun times on 18 November 1883. Local time changes by 4 minutes per degree of longitude. The puzzle that the earliest sunset comes before the shortest day is documented by several independent outlets and traces to the equation of time. Exact extremes of the equation of time (about +16 min 33 s in early November and -14 min 6 s in mid February) and the split between tilt and orbit shape were seen only in blended summaries, so the page will compute them and label them as computed, not as quoted.",
+        "sources": [
+          {"title": "Lewis Rutherfurd and Cleveland Abbe (Linda Hall Library)", "url": "https://www.lindahall.org/lewis-rutherfurd-and-cleveland-abbe/", "date": "", "snippet": "Library history piece saying delegates voted on 13 October 1884 to set a prime meridian and that Greenwich won 22 to 1.", "via": "search", "note": "Vote date and tally.", "verified": true},
+          {"title": "International Meridian Conference", "url": "https://en.wikipedia.org/wiki/International_Meridian_Conference", "date": "", "snippet": "Encyclopedia article: resolutions were adopted on 22 October 1884, with the voting on the meridian taking place on 13 October.", "via": "search", "note": "Separates the vote date from the formal resolutions.", "verified": true},
+          {"title": "BBC via History News Network: how Britain became the centre of time", "url": "https://historynewsnetwork.org/article/118749", "date": "", "snippet": "Recounts the Washington conference: one vote against (San Domingo), France and Brazil abstaining; 41 delegates from 25 nations by this count.", "via": "search", "note": "Independent tally; delegate counts differ between sources.", "verified": true},
+          {"title": "The day that New York had two noons", "url": "https://untappedcities.com/2020/07/17/the-day-that-new-york-had-two-noons-a-century-after-losing-11-days/", "date": "2020-07-17", "snippet": "Describes 18 November 1883 when railroad standard time began and many places lived through two noons; New York's clock paused for just under four minutes.", "via": "search", "note": "Day of Two Noons.", "verified": true},
+          {"title": "November 18: The Day of the Two Noons", "url": "https://www.scholarsonline.org/Blog/?p=1186", "date": "", "snippet": "Blog post on the same day: North American railroads moved to four zone times in place of many local sun times.", "via": "search", "note": "Second result with the same date and event.", "verified": true},
+          {"title": "Earliest sunset (timeanddate)", "url": "https://www.timeanddate.com/astronomy/earliest-sunset.html", "date": "", "snippet": "Explains that the earliest sunset comes before the winter solstice because of the equation of time and latitude; New York's earliest sunset is 7 to 8 December in the 2025 table.", "via": "search", "note": "Documents the misconception and its cause.", "verified": true},
+          {"title": "Orbital oddity: Later sunsets before winter solstice (MPR News)", "url": "https://www.mprnews.org/story/2016/12/19/orbital-oddity-later-sunsets-before-winter-solstice", "date": "2016-12-19", "snippet": "News explainer on sunsets getting later before the winter solstice, from the Earth's uneven orbital motion.", "via": "search", "note": "Independent explainer of the same effect.", "verified": true},
+          {"title": "Why are earliest sunsets upon us now despite being more than 2 weeks from winter solstice?", "url": "https://foxweather.com/learn/earliest-sunsets-not-on-winter-solstice", "date": "", "snippet": "Weather outlet explainer that the earliest sunset arrives about two weeks before the solstice.", "via": "search", "note": "Third independent explainer.", "verified": true},
+          {"title": "Finding the Local Standard Time (LST) from the Local Mean Time (LMT)", "url": "https://nakedeyeplanets.com/lmt-to-lst.htm", "date": "", "snippet": "Method: a zone's central meridian is its hour offset times 15 degrees; each degree away shifts sun events by four minutes. Uses New York at 75 degrees west.", "via": "search", "note": "4 minutes per degree and the zone-meridian method.", "verified": true},
+          {"title": "Local mean time (timeanddate)", "url": "https://www.timeanddate.com/time/local-mean-time.html", "date": "", "snippet": "Explains local mean time as the pre-time-zone civil time of each place, differing by 4 minutes per degree of longitude.", "via": "search", "note": "Second source for the longitude rule.", "verified": true},
+          {"title": "Equation of time: Why times vary for your high noon (EarthSky)", "url": "https://earthsky.org/earth/equation-of-time-why-times-vary-for-your-high-noon/", "date": "", "snippet": "Explainer on why solar noon drifts from clock noon through the year.", "via": "search", "note": "Extremes and the tilt-versus-orbit split were seen only in a blended summary; unverified.", "verified": false},
+          {"title": "The Equation of Time: Aequarto Dierum (British Sundial Society)", "url": "https://sundialsoc.org.uk/documents/publications/theEOT/The_Equation_of_Time_AEquarto_Dierum.pdf", "date": "", "snippet": "Sundial society publication on the equation of time; listed in results, content not checked by me.", "via": "search", "note": "Candidate source for the verifier to read for extremes and the two-cause split.", "verified": false}
+        ],
+        "facts": [
+          {"claim": "On 13 October 1884 the International Meridian Conference voted to adopt the Greenwich meridian: 22 for, 1 against, with France and Brazil abstaining; the formal resolutions were adopted on 22 October.", "sourceIndex": 0, "alsoIn": [1, 2], "asOf": "2026-10-13"},
+          {"claim": "On 18 November 1883 North American railroads moved from many local sun times to zone standard time, known as the Day of Two Noons; New York's timekeeper paused the clock for 3 minutes 58 seconds.", "sourceIndex": 3, "alsoIn": [4], "asOf": "2026-10-13"},
+          {"claim": "Local mean time shifts by 4 minutes per degree of longitude, while standard time steps by one hour per 15 degrees.", "sourceIndex": 8, "alsoIn": [9], "asOf": "2026-10-13"},
+          {"claim": "In the northern hemisphere the earliest sunset of the year comes before the winter solstice (for New York 7 to 8 December in the 2025 table) because solar noon drifts later on the clock; the shortest day and the earliest sunset are different events.", "sourceIndex": 5, "alsoIn": [6, 7], "asOf": "2026-10-13"},
+          {"claim": "As reported, unconfirmed: the equation of time peaks near +16 min 33 s around 3 November and dips to about -14 min 6 s around 11 February, driven by the tilt of the axis (about 23.44 degrees, the larger part) and the orbit's eccentricity (about 0.0167). The page computes these values and labels them computed.", "sourceIndex": 10, "alsoIn": [11], "asOf": "2026-10-13"}
+        ],
+        "inspirations": ["analemma photographs", "sundial equation-of-time correction plaques", "NOAA-style solar calculators", "explorable-explanation lessons"]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: drag the year to see the gap, answer a prediction question before revealing the next demo, split the gap into its two causes, then use the sunset finder to confirm the earliest-sunset surprise; each step ends with a check question and a plain-language summary.",
+        "sophisticationHooks": ["Equation of time computed from a published series in the browser and checked against the extremes on the page", "Two-cause split showing tilt and orbit curves adding up", "Sunset finder for any latitude showing earliest sunset versus shortest day", "Longitude ladder with a replay of the 1883 railway switch"],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: four demos, an intro paragraph, glossary, check questions, a small bundled list of about 40 cities with longitudes. Cut: full analemma 3-D view, daylight-saving rules, high-latitude polar day edge cases, live fetching.",
+        "risks": [
+          "The equation-of-time extremes and the tilt-versus-orbit split are unverified in this dossier (blended summary); the verifier should read the sundial-society document or another source, or the page shows computed values labelled 'computed here'.",
+          "Oracle for the computed curve is not yet pinned to a published vector; builders should compare against the extremes above and a published almanac or solar-calculator table, naming it on the page.",
+          "Sunset timing needs a careful sunrise-equation implementation; refraction and elevation are ignored and the page says 'about a minute'.",
+          "Delegate counts for the 1884 conference differ between sources (25, 26 or 27 nations); the page quotes only the vote date and 22-1 tally."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

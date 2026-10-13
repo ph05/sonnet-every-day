@@ -1,0 +1,231 @@
+{
+  "id": "carry-1",
+  "title": "Drift Harp",
+  "pitch": "A harp of plucked strings that you strum by dragging a finger or cursor across them, each string a Karplus-Strong plucked string tuned in pure just intonation and shown on a live fifths-and-thirds lattice. Play a looping chord progression and hear and see the pitch creep up by a syntonic comma (about a fifth of a semitone) every lap, a trick called a comma pump. A tempering dial lets you squeeze the drift shut and hear exactly what equal temperament trades away.",
+  "whyNow": "Timeless: a tuning-system explorer where the surprise is audible. The visitor discovers on their own that pure intervals do not close a loop, which most explainers only state in words.",
+  "origin": {
+    "agent": "carryover",
+    "lens": "music-instrument",
+    "scoutId": "architect-1",
+    "originalAgent": "architect",
+    "carriedFrom": "2026-10-13"
+  },
+  "fingerprint": {
+    "category": "music-audio",
+    "mechanic": "instrument",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "webaudio",
+      "procedural-audio",
+      "canvas2d",
+      "pointer-events"
+    ],
+    "tags": [
+      "just-intonation",
+      "karplus-strong",
+      "comma-pump",
+      "pitch-lattice",
+      "tuning-systems",
+      "plucked-string",
+      "microtonal",
+      "waveguide"
+    ],
+    "keywords": [
+      "syntonic-comma",
+      "pitch-drift",
+      "strum",
+      "lattice",
+      "cents",
+      "tempering",
+      "physical-model"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "research": {
+    "summary": "A comma pump is a repeating progression whose pure intervals almost, but not exactly, return to the start, so the pitch shifts by a small interval each lap. The standard case is the syntonic comma (81:80, about 21.5 cents) in the progression C G D A E C; both Wikipedia and the Xenharmonic Wiki describe it. A 5-limit just intonation lattice puts fifths (3/2) on one axis and major thirds (5/4) on the other, so a loop that does not close is the drift made visible. Karplus-Strong gives a cheap plucked string: a noise burst circulating in a delay line with an averaging filter, where loop length sets pitch and the filter sets decay. Browser Karplus-Strong demos exist (one was seen), which de-risks the sound engine, but none found combines it with a drifting lattice.",
+    "sources": [
+      {
+        "title": "Comma pump",
+        "url": "https://en.wikipedia.org/wiki/Comma_pump",
+        "date": "",
+        "snippet": "Describes a comma pump as a sequence, often chords, that shifts pitch by a small interval each repetition; the usual example is C G D A E C raising pitch by 81:80 in just intonation.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 (Comma pump article: sequence, often chords, shifting pitch by a comma each pass; C G D A E C raises it by 81:80).",
+        "verified": true
+      },
+      {
+        "title": "Comma pump (Xenharmonic Wiki)",
+        "url": "https://en.xen.wiki/w/Pump",
+        "date": "",
+        "snippet": "Independent wiki entry covering comma pumps: loops of just intervals that nearly close, tempered out in systems that equate the comma to unison.",
+        "via": "search",
+        "note": "Found again by search; xenharmonic wiki entry on comma pumps, independent of Wikipedia.",
+        "verified": true
+      },
+      {
+        "title": "Just Intonation: pitch drift explanation (FIU)",
+        "url": "https://justintonation.fiu.edu/ExplanationDrift.html",
+        "date": "",
+        "snippet": "University page explaining that in just intonation one note name can have several pitches a syntonic comma (about 21.5 cents) apart, and that choirs meet this as drift.",
+        "via": "search",
+        "note": "Not found again in the 2026-10-12 results; the 21.5 cent size is carried by the xen.wiki 81/80 entry and Wikipedia comma articles instead.",
+        "verified": false
+      },
+      {
+        "title": "Karplus-Strong string synthesis",
+        "url": "https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis",
+        "date": "",
+        "snippet": "Physical-modelling method: a burst of noise recirculates through a filtered delay line; loop length sets pitch, filter sets decay. Invented by Alexander Strong and analysed by Kevin Karplus.",
+        "via": "search",
+        "note": "Found again by search at the Wikipedia address (the page itself could not be fetched). Algorithm definition and history.",
+        "verified": true
+      },
+      {
+        "title": "Karplus Strong Algorithm (CCRMA, Stanford)",
+        "url": "https://ccrma.stanford.edu/~jos//pasp//Karplus_Strong_Algorithm.html",
+        "date": "",
+        "snippet": "Stanford physical audio signal processing text on the Karplus-Strong algorithm, a delay line with a lowpass in the feedback loop.",
+        "via": "search",
+        "note": "Not found again at this address; the Blynn Stanford page, Csound manual and others carry the same method.",
+        "verified": false
+      },
+      {
+        "title": "Lattice (music)",
+        "url": "https://en.wikipedia.org/wiki/Lattice_(music)",
+        "date": "",
+        "snippet": "Pitch lattices place just ratios on axes by prime; the 5-limit lattice uses 3/2 and 5/4, drawn as square or hexagonal grids; the gap between a 5/4 third and the Pythagorean third is the syntonic comma.",
+        "via": "search",
+        "note": "Found again by search on 2026-10-12 together with xen.wiki 5-limit and a music-theory article: vertical axis fifths 3/2, horizontal axis thirds 5/4.",
+        "verified": true
+      },
+      {
+        "title": "karplus stress tester (GitHub)",
+        "url": "https://github.com/jackschaedler/karplus-stress-tester",
+        "date": "",
+        "snippet": "A browser project that plucks virtual Karplus-Strong strings as a custom audio processing exercise; notes glitches when the browser cannot keep up.",
+        "via": "search",
+        "note": "Not found again by search; kept only as a performance warning that voice counts must be budgeted.",
+        "verified": false
+      },
+      {
+        "title": "Interval information: 81/80",
+        "url": "https://en.xen.wiki/w/81/80",
+        "date": "",
+        "snippet": "Xenharmonic wiki entry on the ratio 81/80, the syntonic comma, about 21.5 cents.",
+        "via": "search",
+        "note": "Independent confirmation of the comma size and name.",
+        "verified": true
+      },
+      {
+        "title": "Comma (music)",
+        "url": "https://en.wikipedia.org/wiki/Comma_(music)",
+        "date": "",
+        "snippet": "Wikipedia article on commas, including the syntonic comma as the gap between a Pythagorean ditone (81:64) and a just major third (5:4).",
+        "via": "search",
+        "note": "Second site confirming the 81:80 ratio and the roughly 21.5 cent size.",
+        "verified": true
+      },
+      {
+        "title": "The Karplus-Strong Algorithm",
+        "url": "https://theory.stanford.edu/~blynn/sound/karplusstrong.html",
+        "date": "",
+        "snippet": "Explainer: a buffer of random values is repeatedly averaged, the loop length sets the pitch and averaging damps high harmonics faster.",
+        "via": "search",
+        "note": "Independent of Wikipedia; also notes the half-sample delay and the tuning error from integer loop lengths.",
+        "verified": true
+      },
+      {
+        "title": "Csound manual: pluck opcode",
+        "url": "https://csound.com/manual/opcodes/pluck/",
+        "date": "",
+        "snippet": "Manual page for a plucked-string opcode with simple and stretched averaging decay methods.",
+        "via": "search",
+        "note": "Third independent description of the Karplus-Strong decay methods.",
+        "verified": true
+      },
+      {
+        "title": "5 limit (Xenharmonic Wiki)",
+        "url": "https://en.xen.wiki/w/5-limit",
+        "date": "",
+        "snippet": "Wiki entry on the 5-limit: a two-dimensional lattice of pitch classes built from fifths and major thirds.",
+        "via": "search",
+        "note": "Second source for the lattice axes.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A comma pump is a progression that returns almost, but not exactly, to its starting pitch, shifting by a small interval each repetition; the classic syntonic example is C G D A E C, rising by 81:80 per lap in just intonation, and the pump closes exactly in 12-tone equal temperament (Wikipedia and Xenharmonic Wiki, as of 2026-10-12).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "The syntonic comma is the ratio 81:80, about 21.5 cents, the gap between a Pythagorean ditone (81:64) and a just major third (5:4) (Xenharmonic Wiki and Wikipedia, as of 2026-10-12).",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "Karplus-Strong synthesis circulates a burst of noise through a delay line with an averaging low-pass filter; loop length sets pitch and the filter shapes decay, so high harmonics fade faster (Wikipedia, a Stanford explainer and the Csound manual, as of 2026-10-12).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          9,
+          10
+        ],
+        "asOf": "2026-10-12"
+      },
+      {
+        "claim": "A 5-limit pitch lattice puts just fifths (3/2) on one axis and just major thirds (5/4) on the other (Wikipedia Lattice article and Xenharmonic Wiki 5-limit entry, as of 2026-10-12).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-12"
+      }
+    ],
+    "inspirations": [
+      "comma pump progressions",
+      "Karplus-Strong plucked string synthesis",
+      "pitch lattice diagrams from xenharmonic tuning software",
+      "browser Karplus-Strong string demos",
+      "a cappella choir pitch drift"
+    ]
+  },
+  "design": {
+    "coreLoop": "Drag across strings to strum, assemble a short loop of chords on the lattice, and let it cycle. Each lap the drift meter shows the pure tuning rising by one syntonic comma while a ghost of the starting pitch stays put. Turn the tempering dial to close the loop and hear what is lost, or chase a lap that lands back home using adaptive retuning. Every chord choice changes how fast and which way the pitch wanders, so there is always another loop to try.",
+    "sophisticationHooks": [
+      "Karplus-Strong voices with per-string damping, pick position and a stroke-speed-dependent excitation, polyphonic across a harp of 12 strings",
+      "Live 5-limit pitch lattice with ratio and cents readouts; the drift is the distance between where a loop starts and where it ends on the lattice",
+      "Tempering dial that continuously morphs pure ratios toward 12-tone equal temperament, with a seeded generative drone that makes beating audible",
+      "Shareable URL hash holding the chord loop, tempering amount and seed"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Shrunk and de-risked. Build: Karplus-Strong plucks rendered on demand into AudioBuffers in the main thread (no AudioWorklet, so no CSP issue) with a voice pool, 12 strings, canvas harp and lattice views, pointer/touch strum and keyboard play, loop editor with 6 slots, drift meter with a ghost of the starting pitch, tempering dial, a muted-state visual story (lattice path, cents readout), URL-hash share, about panel. Cut: AudioWorklet, MIDI export, 7-limit and higher primes, recording, presets beyond three.",
+    "risks": [
+      "AudioWorklet from a blob or inline module may be blocked by the page CSP; the plan renders each pluck into an AudioBuffer instead, which needs no worklet.",
+      "Audio only starts after a user gesture and a headless screenshot cannot hear it, so the lattice path, drift meter and cents readout must carry the story when muted.",
+      "Voice cost: each pluck buffer is generated in JavaScript; short buffers (about 2 seconds) and a voice cap keep it responsive, as the stress-test project warns of glitches when the browser cannot keep up (that project was not found again, so it is not cited as fact).",
+      "The pump claim is solid, but the audible effect depends on voice-leading that keeps every chord pure; the spec fixes four tested loops, including the C G D A E C case, and checks the lap drift numerically in a unit test.",
+      "Unverified sources: the FIU drift page, the CCRMA Stanford page and the karplus stress tester were not found again; the page cites only sources seen on 2026-10-12."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-12",
+    "evidence": "search-only",
+    "confidence": 8,
+    "feasibleInOneDay": true,
+    "notes": "Comma pump, 81:80 at about 21.5 cents, Karplus-Strong and the 5-limit lattice axes were each found in independent results (WebFetch to ccrma.stanford.edu, en.xen.wiki and justintonation.fiu.edu failed at DNS). Buildable in a morning if plucks render to AudioBuffers; no data needed."
+  }
+}

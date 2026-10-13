@@ -1,0 +1,1 @@
+Lens sourceHints for on-this-day name Wikipedia, Reddit and hockey-reference, none of which open here; listing hosts that WebSearch actually surfaces (timeanddate, university and library pages) would save a few searches.

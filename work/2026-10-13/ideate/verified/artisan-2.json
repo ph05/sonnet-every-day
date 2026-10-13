@@ -1,0 +1,258 @@
+{
+  "id": "artisan-2",
+  "title": "How Puzzle Solvers Work",
+  "plainSentence": "A lesson that lets you step a computer solver through tiling puzzles, undo its dead ends and count every solution, up to sudoku.",
+  "pitch": "Watch a slow-motion solver tile small boards with dominoes and pentominoes, then take the controls: pick the next piece yourself, see the dead end, back up, and watch a counter tick up as every tiling is found. A glowing marker always points at the square with the fewest options, and you learn why that one rule tames the search. The last rung shows that sudoku is the same kind of problem, so a puzzle designer can ask 'does it have exactly one answer?' by counting to two.",
+  "firstMinute": "A small board is already being tiled by a slow-motion solver: pieces drop in, a dead end appears, the pieces lift out, and a counter shows how many tilings have been found. A glowing marker sits on the square with the fewest options. The visitor presses Step to advance the solver and sees it hit a dead end, back up and find a full tiling, which is the first success.",
+  "conceptsToLearn": [
+    "Covering a board exactly means every square is covered by exactly one piece: no gaps, no overlaps"
+  ],
+  "whyNow": "Timeless. The same small idea sits behind pentomino puzzles and sudoku solvers, and few people see that it is one idea.",
+  "origin": {
+    "agent": "artisan",
+    "lens": "puzzle-forge"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "algorithms-cs",
+    "mechanic": "lesson",
+    "tone": [
+      "nerdy",
+      "playful",
+      "analytical"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "web-animations",
+      "worker",
+      "pointer-events"
+    ],
+    "tags": [
+      "exact-cover",
+      "algorithm-x",
+      "dancing-links",
+      "backtracking",
+      "pentominoes",
+      "sudoku",
+      "tiling",
+      "solution-counting"
+    ],
+    "keywords": [
+      "exact-cover",
+      "backtracking",
+      "pentomino",
+      "sudoku-solver",
+      "constraint-search",
+      "tiling-puzzle",
+      "count-solutions",
+      "knuth",
+      "most-constrained-first"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "Exact cover: choose from a list of allowed placements so that every square is covered exactly once, and how a backtracking solver finds, and counts, all the ways by always branching on the most constrained square.",
+    "whyNiche": "It is the hidden common core of pentomino tilings, sudoku, and scheduling puzzles, yet most people meet it only as 'a clever linked-list trick'. Seeing the table of placements makes the trick obvious.",
+    "audience": "Curious puzzle fans, students meeting backtracking, and anyone who has wondered how a sudoku solver can prove a puzzle has only one answer.",
+    "prerequisites": [],
+    "misconceptions": [
+      "A puzzle solver just tries every combination until one works (a natural first guess).",
+      "Tiling puzzles and sudoku are unrelated families of puzzle (a natural first guess)."
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      3
+    ],
+    "ahaMoment": "Re-draw the board as a table where each row is one legal placement and each column is one thing that must be covered once; solving is just picking rows with exactly one tick in every column. Then the same table solves a sudoku.",
+    "demos": [
+      "Rung 1: slow-motion solver tiling a small board with dominoes; step, undo, and a counter of tilings found",
+      "Rung 2: you pick pieces by hand and the page lights the beacon on the tightest square; compare your tries with the solver's",
+      "Rung 3: the table view, rows as placements and columns as squares, with choose, cover and undo highlighted",
+      "Rung 4: a board with two opposite corners removed, where the solver proves zero tilings; and the 6 by 10 pentomino board counted live against the published total",
+      "Rung 5: sudoku redrawn as the same table, and 'count to two' as a uniqueness check on a puzzle the visitor edits"
+    ],
+    "checkQuestions": [
+      "If a square has zero legal placements left, what must the solver do, and why is that good news for speed?",
+      "Why does picking the square with the fewest options first usually shrink the search?",
+      "A sudoku solver finds one answer. What else must it check before saying the puzzle has exactly one?",
+      "In the table view, what does it mean when a column has no rows left?"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search only. Knuth's Dancing Links paper (arXiv) presents Algorithm X as a recursive depth-first backtracking search, uses pentomino placement as its worked example, notes that the choice of which item to branch on matters, and reports 2339 essentially different tilings of the 6 by 10 rectangle; a lecture-notes paper agrees on 2339 excluding rotations and reflections of the whole board. A second paper applies Algorithm X to pentominoes, Latin squares and sudoku. The 17-clue minimum for a one-answer sudoku was found in one attributed result and stays flagged, as do the Norvig essay and the 729 by 324 counts, which the page derives from the rules. The two named misconceptions are natural first guesses, not documented beliefs.",
+    "sources": [
+      {
+        "title": "Dancing Links (Knuth, arXiv cs/0011047)",
+        "url": "https://arxiv.org/pdf/cs/0011047",
+        "date": "",
+        "snippet": "Knuth's paper on Algorithm X and Dancing Links, with pentomino placement as the worked example (1568 placements on his board) and 2339 essentially different tilings of the 6 by 10 rectangle.",
+        "via": "search",
+        "note": "Primary source for the algorithm, the pentomino example and the 2339 count; found again by my search, not opened.",
+        "verified": true
+      },
+      {
+        "title": "Python for education: the exact cover problem (Kapanowski, arXiv 1010.5890)",
+        "url": "https://arxiv.org/abs/1010.5890",
+        "date": "",
+        "snippet": "Algorithm X applied to pentominoes, Latin squares and sudoku as exact cover problems.",
+        "via": "search",
+        "note": "Independent paper showing pentominoes and sudoku are both exact cover.",
+        "verified": true
+      },
+      {
+        "title": "Tilings (arXiv math/0501170, lecture notes)",
+        "url": "https://arxiv.org/pdf/math/0501170",
+        "date": "",
+        "snippet": "Lecture notes on tilings; search summary says they give 2339 distinct ways to tile a 6 by 10 rectangle excluding whole-board rotations and reflections.",
+        "via": "search",
+        "note": "Independent math source for 2339.",
+        "verified": true
+      },
+      {
+        "title": "Pentomino (Mathwords)",
+        "url": "https://www.mathwords.com/p/pentomino.htm",
+        "date": "",
+        "snippet": "Pentomino page; several results agree on 2339 distinct 6 by 10 tilings excluding rotations and reflections.",
+        "via": "search",
+        "note": "Result listed for the 2339 query; the summary did not quote it individually, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "Mathematics of Sudoku (encyclopedia article)",
+        "url": "https://en.wikipedia.org/wiki/Mathematics_of_Sudoku",
+        "date": "",
+        "snippet": "Says an ordinary one-answer sudoku needs at least 17 clues, from an exhaustive computer search by McGuire, Tugemann and Civario.",
+        "via": "search",
+        "note": "Only one attributed result saw the 17-clue claim, so it stays flagged.",
+        "verified": false
+      },
+      {
+        "title": "Sudoku Solver implementing Knuth's Dancing Links (Berkeley)",
+        "url": "https://ocf.berkeley.edu/~jchu/publicportal/sudoku/sudoku.paper.html",
+        "date": "",
+        "snippet": "Sudoku solver paper using the exact-cover encoding of sudoku.",
+        "via": "search",
+        "note": "Counts of 729 and 324 appeared in a blended summary, so unverified; the page derives them.",
+        "verified": false
+      },
+      {
+        "title": "Exact Cover Examples (St. Olaf)",
+        "url": "https://www.stolaf.edu/people/hansonr/sudoku/exactcover.htm",
+        "date": "",
+        "snippet": "Page of exact cover examples including the sudoku encoding.",
+        "via": "search",
+        "note": "Blended summary again; unverified.",
+        "verified": false
+      },
+      {
+        "title": "Solving Every Sudoku Puzzle (Norvig)",
+        "url": "https://www.norvig.com/sudoku.html",
+        "date": "",
+        "snippet": "Essay solving sudoku by constraint propagation and search, branching on the square with the fewest possibilities.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "Algorithm X: exact cover definition (tech.io playground)",
+        "url": "https://tech.io/playgrounds/156252/algorithm-x/exact-cover-definition",
+        "date": "",
+        "snippet": "Tutorial on exact cover and Algorithm X mentioning fewest-options heuristics.",
+        "via": "search",
+        "note": "Scout's source; not found again in my searches.",
+        "verified": false
+      },
+      {
+        "title": "There is no 16-clue sudoku (McGuire, Tugemann, Civario, arXiv 1201.0749)",
+        "url": "https://arxiv.org/abs/1201.0749",
+        "date": "",
+        "snippet": "Exhaustive computer search found no sudoku with 16 clues and a unique solution.",
+        "via": "search",
+        "note": "Scout's source; not found again by me, so the 17-clue fact is flagged.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Pentomino tilings and sudoku are both worked as exact cover problems, and Knuth's Algorithm X is a recursive depth-first backtracking search that finds all solutions; Dancing Links is its fast implementation.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Knuth's Dancing Links paper uses pentomino placement as its worked example, with each possible placement of a piece as one row of the table.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The 6 by 10 rectangle can be tiled by the 12 pentominoes in 2339 essentially different ways, counting rotations and reflections of the whole board as the same (so 4 times 2339 = 9356 raw tilings, computed).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Knuth's paper stresses that the choice of which item to branch on strongly affects speed (branch where something is hardest to fill); the page measures the effect of branching on the fewest-options square on its own boards, computed.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, per the encyclopedia article on the mathematics of sudoku, an ordinary one-answer sudoku needs at least 17 clues (exhaustive computer search by McGuire, Tugemann and Civario); only one attributed result found, unconfirmed.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Derived from the rules, not quoted: sudoku as exact cover has 9 times 9 times 9 = 729 candidate placements and 4 times 81 = 324 things to cover once (cells, row-digit, column-digit and box-digit pairs).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Dancing Links",
+      "pentomino puzzles",
+      "sudoku solvers",
+      "visual algorithm explainers"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: watch a small solver, take over and choose the next piece, see the table behind the board, answer a check question, and move up a rung until sudoku turns out to be the same table.",
+    "sophisticationHooks": [
+      "A beacon that glows on the square with the fewest options and reveals why branching there prunes the search",
+      "Board and table views kept in sync, so every placement is both a shape and a table row, and cover and undo are visible in both",
+      "Live counting against a published total: the in-page solver counts the 6 by 10 pentomino tilings in a worker and checks them against 2,339",
+      "A sudoku designer rung: edit clues and the solver counts to two, reporting none, one or several answers"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one generic exact-cover solver (plain recursive search over arrays, no pointer trick needed), pentomino and domino boards, board and table views, step and undo controls, a worker-based 6 by 10 count checked against 2339 (raw 9356), a sudoku rung with a count-to-two answer counter, five rungs with check questions. Cut: free-form piece editor, other polyominoes, speed race. If time runs short the table-view animation shrinks to a static highlighted table, and rung 4's mutilated board stays as a single preset.",
+    "risks": [
+      "The 729 and 324 sudoku counts are derived from the rules by the page and shown as derived, not as a sourced figure.",
+      "The 2339 figure counts tilings up to rotating or flipping the whole board; the page says so and labels the raw total it finds (9356) as computed.",
+      "Counting all tilings of the 6 by 10 board live must stay fast; builders time it, run it in a worker (the page shell allows blob workers), and fall back to counting the 3 by 20 board or showing a progress bar if it is slow.",
+      "The 17-clue minimum rests on one attributed result and shows as 'as of 2026-10-13, per the encyclopedia article on the mathematics of sudoku', or is omitted.",
+      "The Norvig essay and tutorial pages were not found again; the page cites Knuth's paper for the branching rule and shows its own measured node counts.",
+      "The two misconceptions are natural first guesses, not documented beliefs; the page words them as 'a natural first guess' and cites no survey.",
+      "The mutilated-board claim (zero tilings with two opposite corners removed) is computed by the page and labelled computed.",
+      "Risk of being too abstract: board view first, table view second, plain sentence in the intro's first line; the term 'exact cover' is introduced only after the first success."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Algorithm X, the pentomino example and the 2339 count for the 6 by 10 board are stated in the primary paper, with a second paper agreeing on the count; the sudoku clue minimum and the Norvig essay stay flagged. A single generic solver with five rungs is buildable in a morning, and the misconceptions are honest first guesses, not documented beliefs."
+  }
+}

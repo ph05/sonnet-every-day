@@ -1,0 +1,1 @@
+A scout cannot tell from the search tool whether a cited man page text came from one result or a blended summary, so I re-searched with allowed_domains to force separate entries; a note on that trick in the research rubric would save a search.

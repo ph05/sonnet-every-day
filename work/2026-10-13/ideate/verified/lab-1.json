@@ -1,0 +1,255 @@
+{
+  "id": "lab-1",
+  "title": "Colour-Blind Palette Checker",
+  "plainSentence": "A checker that lets you paste chart colours and see which pairs look alike to colour-blind viewers, then nudges them apart.",
+  "pitch": "Paste the 3 to 8 colours of a chart or a brand palette and the page shows, for every pair, the worst-case perceptual distance across normal vision and three kinds of colour blindness, as a head-to-head matrix with the numbers shown. Pairs that collapse are flagged in red; one button nudges only the offending colours by the smallest lightness and chroma change until every pair clears a threshold you can set, and the result exports as hex and CSS variables. Everything runs in the browser, nothing is uploaded.",
+  "firstMinute": "The page opens with a sample 6-colour chart palette already analysed: a strip of swatches, the same strip as seen with red-green and blue-yellow colour blindness, and a pair matrix where two cells glow red because those colours merge. Pressing Fix turns the red cells green and shows what changed in each colour, with no reading needed. Pasting your own hex codes replaces the sample instantly.",
+  "conceptsToLearn": [
+    "Some people cannot tell apart colours that look clearly different to others, so a chart needs colours that differ in lightness as well as hue",
+    "A colour is written as a hex code such as #1b9e77; a sample palette is loaded so no code is needed at first"
+  ],
+  "whyNow": "Timeless: every dashboard and chart needs a categorical palette, and colour-blindness checks are usually done by eye on a screenshot. Not news-bound.",
+  "origin": {
+    "agent": "lab",
+    "lens": "type-and-color"
+  },
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "design-craft",
+    "mechanic": "checker",
+    "tone": [
+      "analytical",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "canvas2d"
+    ],
+    "tags": [
+      "color-blindness",
+      "palette",
+      "ciede2000",
+      "chart-colors",
+      "accessibility",
+      "oklch",
+      "contrast",
+      "cvd-simulation"
+    ],
+    "keywords": [
+      "colour-blind-safe",
+      "palette-checker",
+      "color-difference",
+      "delta-e",
+      "categorical-palette",
+      "data-visualisation-colour"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "job": "Find the colour pairs in a palette that become indistinguishable under colour-vision deficiency, show the measured distance for each pair, and repair them with the smallest change.",
+    "audience": "Designers, analysts and developers who pick colours for charts, maps, UI states and brand palettes and have no quick way to test them beyond eyeballing a simulator.",
+    "paywallEvidence": [
+      {
+        "product": "A design-plugin accessibility suite (colour-blindness simulator and contrast checker)",
+        "whatIsGated": "Reportedly 3 of the simulation types free and all types on a paid plan; from a 2021 archive only, price conflicting, unconfirmed for today and never shown on the page",
+        "factIndex": 3
+      }
+    ],
+    "freeGap": "Free options already simulate colour blindness and flag look-alike colours (a free palette evaluator does this and exports values), so no paywall is relied on. The remaining gap is a private, offline page that shows its working as a pair-by-pair distance table, tests normal, protan, deutan and tritan views at once, checks each colour against a chosen background, and proposes a minimal repair. The page does not claim to replace any other tool.",
+    "oracle": "The supplementary CIEDE2000 test data of Sharma, Wu and Dalal (2005) from the first author's page, and the colour-vision-deficiency matrices of Machado, Oliveira and Fernandes (2009). Where a builder cannot reproduce the published rows exactly, CIEDE2000 values are computed by script from the formula in the paper and labelled computed.",
+    "oracleFactIndex": 0,
+    "inputs": "3 to 8 hex colours (typed, pasted from a list, or picked), an optional background colour, a distance threshold.",
+    "outputs": "A pair matrix of worst-case colour difference, simulated strips for normal vision, protan, deutan and tritan, contrast ratio against the background, a repaired palette; exports as a hex list, CSS custom properties and a PNG strip.",
+    "limits": "Simulations are models of full dichromacy, not of every person; there is no accepted universal distance threshold, so the default is a labelled convention; it does not test text legibility, patterns or shape cues, and is a screening aid, not a certification."
+  },
+  "research": {
+    "summary": "Verified by search only (no page opened). The CIEDE2000 test data is on the author's own page, with a third-party validation notebook; the Machado 2009 model is on the authors' own page and used by two open libraries. A free palette evaluator already simulates colour blindness and flags look-alike colours, confirmed by two sites. The paid-tier split of a design-plugin suite is NOT confirmed: only a 2021 archive and conflicting directory listings were found, so no paywall claim goes on the page. No standard minimum distance was found, so the threshold is a labelled convention.",
+    "sources": [
+      {
+        "title": "The CIEDE2000 (Gaurav Sharma, University of Rochester)",
+        "url": "https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/",
+        "date": "",
+        "snippet": "The author's page offers test data for checking CIEDE2000 software: plain-text rows of reference and sample CIELAB values with the expected difference, a spreadsheet and a MATLAB program. It says it is not an official CIE implementation.",
+        "via": "search",
+        "note": "Re-found by my search on the author's own page: plain-text test rows (reference Lab, sample Lab, expected difference), a MATLAB program and a spreadsheet; the paper is Color Research and Application 30(1), 21-30 (2005). Code is for personal or research use with citation; the page cites it and does not copy code.",
+        "verified": true
+      },
+      {
+        "title": "Validation of CIEDE2000 color-difference formula implementation using test data from Sharma, Wu & Dalal",
+        "url": "https://skinoptics.readthedocs.io/en/latest/_static/validation_Delta_E_00.html",
+        "date": "",
+        "snippet": "A third-party notebook loads the paper's table of pairs with intermediate terms and final colour differences and compares an implementation against them.",
+        "via": "search",
+        "note": "Re-found by my search: a third-party notebook validates an implementation against the paper's table.",
+        "verified": true
+      },
+      {
+        "title": "CVD Simulation (Oliveira, UFRGS)",
+        "url": "https://www.inf.ufrgs.br/~oliveira/pubs_files/CVD_Simulation/CVD_Simulation.html",
+        "date": "",
+        "snippet": "The authors' page for the 2009 physiologically-based model of colour-vision-deficiency simulation (IEEE TVCG 15(6), pp. 1291-1298) covering dichromacy and anomalous trichromacy.",
+        "via": "search",
+        "note": "Re-found by my search on the authors' own page: the 2009 IEEE TVCG 15(6) model for dichromacy and anomalous trichromacy. Matrix coefficients were not visible.",
+        "verified": true
+      },
+      {
+        "title": "Source code for colour.blindness.machado2009 (colour-science docs)",
+        "url": "https://colour.readthedocs.io/en/v0.4.7/_modules/colour/blindness/machado2009.html",
+        "date": "",
+        "snippet": "An open-source colour library implements the Machado 2009 model as a function that returns the deficiency matrix.",
+        "via": "search",
+        "note": "Re-found by my search: an open library exposes the Machado 2009 matrices.",
+        "verified": true
+      },
+      {
+        "title": "Viz Palette Helps You Pick Colors for Your Maps and Data Visualizations (Geography Realm)",
+        "url": "https://www.geographyrealm.com/viz-palette-helps-pick-colors-data-visualizations/",
+        "date": "",
+        "snippet": "Describes a free palette tool by two visualization practitioners that switches between colour-deficiency views, marks colours that are hard to tell apart with arcs and exports hex, RGB or HSL.",
+        "via": "search",
+        "note": "Re-found by my search: free tool, deficiency views, arcs marking hard-to-tell pairs, hex/RGB/HSL export.",
+        "verified": true
+      },
+      {
+        "title": "Visualization color picker based on perception research (FlowingData)",
+        "url": "https://flowingdata.com/2018/04/12/visualization-color-picker-based-on-perception-research/",
+        "date": "2018-04-12",
+        "snippet": "Blog post introducing the free Viz Palette tool for evaluating data-visualisation palettes.",
+        "via": "search",
+        "note": "Found by my search; independent of the Geography Realm article (replaces an address I could not find again).",
+        "verified": true
+      },
+      {
+        "title": "Announcing Stark's Paid Plans (Stark blog)",
+        "url": "https://www.getstark.co/blog/announcing-starks-paid-plans/",
+        "date": "",
+        "snippet": "Vendor blog post announcing paid plans for designers and teams; the snippet did not show which features sit behind them.",
+        "via": "search",
+        "note": "Not re-found by my searches; Stark's own current pricing page did not surface, so no paywall claim is confirmed.",
+        "verified": false
+      },
+      {
+        "title": "Stark review (Who Is Accessible)",
+        "url": "https://whoisaccessible.com/reviews/stark/",
+        "date": "",
+        "snippet": "A review lists a limited free plan and a Pro plan at about 15 USD per month with extra checks, and a cheaper team tier.",
+        "via": "search",
+        "note": "Not re-found by my searches; third-party pricing is undated.",
+        "verified": false
+      },
+      {
+        "title": "palettecore: Derive, optimise and audit a scientific colour palette from one seed colour",
+        "url": "https://pypi.org/project/palettecore/0.2.1/",
+        "date": "",
+        "snippet": "A package maximises the smallest pairwise colour difference across normal vision and three simulated deficiencies, and states its thresholds are configurable design rules, not accessibility standards.",
+        "via": "search",
+        "note": "Not re-found by my searches; the claim of no standard threshold is a negative finding I could not confirm either.",
+        "verified": false
+      },
+      {
+        "title": "Oklab color space",
+        "url": "https://en.wikipedia.org/wiki/Oklab_color_space",
+        "date": "",
+        "snippet": "Background: Oklab was introduced in December 2020, is defined relative to D65 XYZ, and appears in CSS Color 4 and 5 drafts.",
+        "via": "search",
+        "note": "Not re-found by my searches; Oklab facts are not relied on as page claims.",
+        "verified": false
+      },
+      {
+        "title": "Pricing Plans (archived snapshot of a design-plugin vendor's page, 2021)",
+        "url": "https://webcf.waybackmachine.org/web/20210921202619/https://www.getstark.co/pricing",
+        "date": "2021-09-21",
+        "snippet": "A 2021 archived pricing page listing a free tier with 3 types of simulation and a paid tier with all types.",
+        "via": "search",
+        "note": "Found by my search; an old archive, not the vendor's current page, and listings elsewhere give conflicting prices, so unverified.",
+        "verified": false
+      },
+      {
+        "title": "Color vision deficiency (colorspace package documentation)",
+        "url": "https://zeileis.codeberg.page/colorspace/articles/color_vision_deficiency.html",
+        "date": "",
+        "snippet": "Package article on colour vision deficiency simulation that credits the Machado et al. transformation matrices.",
+        "via": "search",
+        "note": "Found by my search; a third independent use of the Machado 2009 matrices.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Sharma, Wu and Dalal (2005) published supplementary CIEDE2000 test data as rows of reference and sample CIELAB values with the expected colour difference, because the CIE's own worked examples do not expose several implementation errors.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Machado, Oliveira and Fernandes (2009, IEEE TVCG 15(6) 1291-1298) give a model for simulating protan, deutan and tritan vision that open-source libraries implement as deficiency matrices.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3,
+          11
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A free palette-evaluation tool (Viz Palette) already simulates colour-vision deficiencies, marks hard-to-distinguish colour pairs and exports hex, RGB or HSL, so a simulator alone is not a gap.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, per a 2021 archived pricing snapshot only: a design-plugin suite listed 3 simulation types free and all types on a paid plan; later directory listings give conflicting prices. Not confirmed on the vendor's current page, never shown on the page.",
+        "sourceIndex": 10,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13: I found no published minimum CIEDE2000 distance for colour-blind-safe categorical palettes; this is a negative search result, not a confirmed absence, so the default threshold is a labelled convention.",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Viz Palette",
+      "Coblis",
+      "Okabe-Ito palette",
+      "ColorBrewer",
+      "Color Oracle"
+    ]
+  },
+  "design": {
+    "coreLoop": "Paste or edit colours, read the pair matrix where each cell is a head-to-head between two colours, press Fix on the red cells, compare before and after strips, tune the threshold and background, export. It stays interesting because each edit moves the numbers instantly and the repair shows exactly which colour moved and by how much.",
+    "sophisticationHooks": [
+      "Worst-case CIEDE2000 across normal, protan, deutan and tritan views, shown as numbers in a matrix",
+      "Minimal repair that moves only offending colours in a perceptual space and prints before and after values",
+      "Self-test panel that runs the published CIEDE2000 test rows and lists pass or fail",
+      "Contrast ratio of each colour against a chosen background"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: hex parser, sRGB to linear, three simulation matrices, CIELAB and CIEDE2000, pair matrix, greedy maximin repair in OKLCH, swatch strips, hex/CSS/PNG export, self-test with the test rows. Cut: image upload, anomalous trichromacy severities, saved palettes, text-legibility checks.",
+    "risks": [
+      "The builder works offline: the published test rows and the three Machado matrices are not in the search results. They must be reproduced exactly from the paper or the author's file, with a check that each matrix row sums to 1 (white stays white), otherwise the oracle is only a regression check and the page says so.",
+      "The paid-tier split of a design-plugin suite is unverified and is not shown on the page; the page never names any product.",
+      "No standard distance threshold was found; the page labels its default as a convention and lets the visitor change it.",
+      "Free tools overlap; the pitch rests on private, offline, numeric and repairing, not on novelty or on a paywall.",
+      "Simulation applies in linear RGB; mistakes there silently skew results, so the self-test must cover the simulator and the repair loop too.",
+      "The author's page allows the code for personal or research use with citation; the page bundles no copied code, credits the paper, and uses test numbers only as self-test vectors.",
+      "Simulations model full dichromacy, not every person; the page says it is a screening aid and not a certification."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "Oracle sources are the authors' own pages and the free-tool overlap is confirmed by two sites; the paywall claim is unconfirmed and removed from the pitch. Buildable in a morning, but the offline builders must reproduce the test rows and matrices exactly, which is the main risk."
+  }
+}

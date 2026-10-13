@@ -1,0 +1,244 @@
+{
+  "id": "cards-1",
+  "title": "Poker Chips Aren't Dollars",
+  "plainSentence": "A lesson that lets you drag poker tournament stacks and prizes to see why chips are not worth their share of the prize money.",
+  "pitch": "Why would anyone fold a big hand near the money? This lesson answers it with a ladder of live demos: set the stacks and prizes, watch chip share and prize-money share drift apart, then test a bubble all-in and see the extra winning chance a call needs. Every number is computed in the page and the sum is shown step by step, with simulated chips only and no real money.",
+  "firstMinute": "The first frame already shows three stacks and a 50/30/20 prize split, with a bar for each player's chip share beside a bar for the prize money the model gives them (the 50% stack gets about 38%). Sliding any stack makes both bars move at once, so the gap is seen before any text is read. A one-line caption names the gap, and that is the first success.",
+  "conceptsToLearn": [
+    "A tournament pays prizes by finishing place, not by how many chips you hold"
+  ],
+  "whyNow": "Timeless: the question of why chips are not worth their face value near the money is a standard one in tournament poker teaching, and the answer is a short sum that few explainers let you move. Not news-bound. A claim that discussion forums ask it every week is unverified (the forum site could not be searched) and stays off the page.",
+  "origin": {
+    "agent": "cards",
+    "lens": "reddit-hot-threads"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "cards-odds",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "pointer-events"
+    ],
+    "tags": [
+      "icm",
+      "poker-tournament",
+      "bubble",
+      "prize-pool",
+      "expected-value",
+      "chip-equity",
+      "risk-premium",
+      "simulated-chips"
+    ],
+    "keywords": [
+      "independent-chip-model",
+      "bubble-play",
+      "tournament-equity",
+      "nonlinear-value",
+      "required-equity",
+      "stack-sizes",
+      "payout-structure"
+    ],
+    "slot": "interest",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "The independent chip model: a way to turn each player's chips into expected prize money, by treating finishing order as repeated draws where each remaining player is picked in proportion to chips. It shows why chip value is not linear in dollars.",
+    "whyNiche": "Everyone has heard that you fold aces on the bubble, almost nobody has moved the numbers. Most explainers state one worked example; this one lets the visitor change stacks, prizes and the all-in and see each sum.",
+    "audience": "Curious non-experts and casual tournament players who want to understand why 'a chip is a chip' fails in a prize-ladder game. No poker-hand knowledge needed.",
+    "prerequisites": [
+      "A tournament pays prizes by finishing place"
+    ],
+    "misconceptions": [
+      "Doubling your chips doubles what they are worth in prize money.",
+      "A player with half the chips owns half the prize pool."
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      2
+    ],
+    "ahaMoment": "Moving a slider so one stack doubles and watching its prize-money bar rise by far less than double, while the short stacks gain without risking a chip.",
+    "demos": [
+      "Winner-take-all with two players: chips equal dollars exactly, the one case where the common belief holds.",
+      "Three players, 50/30/20 split: drag stacks and compare chip share bars with prize-money bars, with the finishing-order table shown.",
+      "The double-up: one stack doubles by taking chips from another and the prize-money gain is compared with the chip gain.",
+      "The bubble all-in: pick two stacks and a call, and see the winning chance a call needs under chip counting versus under the model, and the gap between them (dead money in the pot is left out and said so).",
+      "Where the model is only an approximation: skill, blinds and position are ignored, with a plain list of limits."
+    ],
+    "checkQuestions": [
+      "If the prize ladder were flat (everyone paid the same), what would a chip be worth?",
+      "Why does the short stack's prize share exceed its chip share?",
+      "A medium stack faces an all-in from a bigger stack: does the required winning chance go up or down compared with chip counting, and why?",
+      "What does the model leave out that a real table has?"
+    ]
+  },
+  "research": {
+    "summary": "The idea is a real, recurring poker-discussion question (why chips are worth less than face value near the money). The model is documented in a university course lecture (MIT OpenCourseWare 15.S50 lecture 6) and many strategy guides; its mechanics (finishing probability proportional to chips, remove the winner, repeat) are the Harville procedure from horse-racing statistics. I reproduced a published 3-player example (500/300/200 chips, 50/30/20 prizes of 100) exactly in a script: 38.39, 32.75, 28.86, but only one guide's numbers were seen (flagged unverified), and another guide's similar example shows about 42% for the big stack, so published figures do not agree and the page must compute and show its own sum. Free browser ICM calculators for final tables already exist, so this is a lesson, not a paywall-clone tool. Search could not reach Reddit, so the brief's thread claim is unconfirmed.",
+    "sources": [
+      {
+        "title": "Lecture 6: Independent Chip Model (MIT OpenCourseWare 15.S50, IAP 2016)",
+        "url": "https://ocw.mit.edu/courses/15-s50-how-to-win-at-texas-holdem-poker-january-iap-2016/resources/lecture-6-independent-chip-model/",
+        "date": "",
+        "snippet": "Official course page for lecture 6 of MIT 15.S50 (IAP 2016, lecturer Will Ma) on the independent chip model; search result says tournament chips are not worth face value linearly and contrasts this with chip-EV play as an approximation.",
+        "via": "search",
+        "note": "Re-found on 2026-10-13 on the course's own official domain (ocw.mit.edu) by an independent search; page not opened (the host failed for fetching today). Primary-domain case (c).",
+        "verified": true
+      },
+      {
+        "title": "Gambler's Ruin and the ICM (arXiv 2011.07610)",
+        "url": "https://arxiv.org/pdf/2011.07610",
+        "date": "",
+        "snippet": "Academic paper treating the ICM as a benchmark and comparing its finishing-order estimate with an exact gambler's-ruin derivation for three players.",
+        "via": "search",
+        "note": "Not re-found in this pass; only the original search summary exists. Unverified.",
+        "verified": false
+      },
+      {
+        "title": "A Step-by-Step Guide to the Independent Chip Model (ICM)",
+        "url": "https://www.pokerlistings.com/a-step-by-step-guide-to-the-independent-chip-model-icm-for-tournament-poker-players",
+        "date": "",
+        "snippet": "Strategy guide with a 3-player, 100-unit, 50/30/20 example; the search summary reported 38.39, 32.75 and 28.86 for stacks 500/300/200.",
+        "via": "search",
+        "note": "Not re-found: a search for the example figures returned a different site (VIP-Grinders, source 9) carrying them and no result for this page. Unverified; unused by the page.",
+        "verified": false
+      },
+      {
+        "title": "CardPlayer article on ICM (p=1628207)",
+        "url": "https://www.cardplayer.com/?p=1628207",
+        "date": "",
+        "snippet": "A worked example with a similar structure gives the 50% stack about 42% of the prize money and calls its figures illustrative.",
+        "via": "search",
+        "note": "URL surfaced again for the example query but the result showed no text of its 42% figure. Unverified; the figure is dropped from the facts.",
+        "verified": false
+      },
+      {
+        "title": "Poker ICM 101: What is ICM poker?",
+        "url": "https://blog.icmizer.com/poker-icm-101-what-is-icm-poker/",
+        "date": "",
+        "snippet": "Vendor blog explaining that doubling a stack does not double its equity, with a 10-player example valuing a 200-chip stack at about 184.44 instead of 200.",
+        "via": "search",
+        "note": "Page title surfaced again in a result but no text of the 184.44 figure was visible. Unverified; figure dropped from the facts.",
+        "verified": false
+      },
+      {
+        "title": "Final Table ICM Calculator (VIP-Grinders)",
+        "url": "https://www.vip-grinders.com/?p=143535",
+        "date": "",
+        "snippet": "Page describing a free final-table ICM calculator for 2 to 9 players with payout presets and custom splits.",
+        "via": "search",
+        "note": "This exact page was not re-found; other pages of the same site surfaced. The free-calculator claim stays unverified and never goes on the page.",
+        "verified": false
+      },
+      {
+        "title": "ICM poker guide (esports.gg)",
+        "url": "https://esports.gg/guides/betting/icm-poker",
+        "date": "",
+        "snippet": "Guide whose search result states that ICM values chips nonlinearly because prizes sit in the top places; the result also gave a 60% chip leader at roughly 44% equity (not used).",
+        "via": "search",
+        "note": "Re-found by an independent search: agrees with the MIT course page that chip value in prize money is nonlinear. Betting-site guide, background only.",
+        "verified": true
+      },
+      {
+        "title": "Ranking probability model paper (Berkeley statistics site, Ali)",
+        "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/ali.pdf",
+        "date": "",
+        "snippet": "Describes the Harville procedure (winner chosen in proportion to strength, remove, renormalise) and reports that it misestimates 2nd and 3rd place chances in thoroughbred data.",
+        "via": "search",
+        "note": "Not re-found in this pass; the mechanics and the limits claims it supports stay unverified. The page defines the procedure itself and shows its sums.",
+        "verified": false
+      },
+      {
+        "title": "Independent Chip Model (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Independent_Chip_Model",
+        "date": "",
+        "snippet": "Encyclopedia article on the independent chip model; the search summary said it contains a three-player table with 50/30/20 payouts but the figures were cut off.",
+        "via": "search",
+        "note": "Seen as a result only, text of the figures not visible; page cannot be fetched (host failed today). Unverified.",
+        "verified": false
+      },
+      {
+        "title": "Table of content (VIP-Grinders, what is ICM in poker)",
+        "url": "https://www.vip-grinders.com/independent-chip-model-what-is-icm-in-poker",
+        "date": "",
+        "snippet": "Article on the independent chip model; the search summary reported a 3-player, 100-unit example with 500/300/200 chips and 50/30/20 prizes giving 38.39, 32.75 and 28.86.",
+        "via": "search",
+        "note": "One non-primary result carries the figures (summary attributed them to this article); fetch of the host failed with a DNS error. Unverified, but a script using the procedure reproduces all three figures.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "MIT OpenCourseWare 15.S50 (How to Win at Texas Hold'em, IAP 2016) has a Lecture 6 on the independent chip model, which says tournament chip value is nonlinear in prize money and contrasts it with chip-EV play, treated as an approximation; a betting-site guide also says doubling a stack does not double its equity.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Reported procedure behind ICM (Harville): the chance a player finishes first is their chips divided by all chips; remove that player, renormalise to get second place, and so on; equity is the sum of place probability times prize. Not re-found by this pass, so the page presents it as the model's definition and shows the sums.",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Reported worked example (as of 2026-10-13, per VIP-Grinders): stacks 500/300/200 with prizes 50/30/20 of 100 give 38.39, 32.75 and 28.86. A script using the procedure above reproduced 38.3929, 32.75 and 28.8571 (a regression check, not an independent oracle).",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Reported (unverified, per VIP-Grinders): free browser ICM calculators for final tables of 2 to 9 players exist, so the page makes no paywall claim and does not name any calculator.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Reported (unverified, per a Berkeley statistics paper): Harville-type models misestimate second and third place chances in horse-racing data, so ICM is an approximation; the page lists what the model leaves out as its own assumptions (finishing order is driven by chip counts only).",
+        "sourceIndex": 7,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "MIT OCW poker course",
+      "ICM calculators",
+      "bubble-factor explainers",
+      "Poker Odds Calculator pages"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: each rung shows chips and dollars side by side, the visitor changes one slider, predicts the direction of the gap, then sees the exact sum. A check question follows each rung and the next rung changes one assumption (second prize, more players, an all-in).",
+    "sophisticationHooks": [
+      "Exact enumeration of finishing orders for up to 9 players with the full probability-by-place table shown, no sampling.",
+      "Required-winning-chance readout for a bubble all-in: (equity now minus equity if lost) divided by (equity if won minus equity if lost), compared with the chip-counting break-even.",
+      "Honest limits panel and a note that published worked examples disagree, with this page's sums shown for checking by hand."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: 5 rungs, one pure ICM function (exact enumeration, up to 6 players on sliders and 9 in the table, any prize list), an all-in required-equity function, a shown-working table, 4 check questions, and a node self-check for 2-player winner-take-all, 3-player 500/300/200 and equal-prize cases plus one hand-checked all-in. Cut: tournament simulation, hand ranges, blinds, multi-table, saved progress. Plenty of slack for QA at this size.",
+    "risks": [
+      "Unverified claim: that discussion forums ask this question every week. The forum site could not be searched, so the page names no thread or user and does not state the claim.",
+      "Unverified claim: the published 38.39/32.75/28.86 example. The page says computed here, shows its sum, and quotes a published figure only as 'as of 2026-10-13, per VIP-Grinders' or omits it.",
+      "Unverified claims: the Harville procedure source, the approximation-in-horse-racing remark and the free-calculator claim. The page defines the model itself, never names a calculator, and treats the horse-racing remark as omitted.",
+      "ICM is an approximation (skill, blinds and position ignored); the page states this, avoids advice wording, uses simulated chips only and says estimates, not advice.",
+      "Free calculators may exist; differentiation is the teaching ladder and shown working, so the page stays a lesson and not a calculator.",
+      "The all-in required-chance formula ignores dead money, chops and later hands: define it exactly in the spec and check it by hand on one case in the node self-check.",
+      "Rung 4 and the up-to-9-player enumeration are the heaviest parts; if time runs short, cap the sliders at 6 players and keep exact enumeration."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Concept and nonlinearity confirmed by the MIT course's own page plus a second guide; the worked example is only reported by one site but a script reproduced it exactly. Four supporting sources could not be re-found and the forum-thread hook is unconfirmed, so the page must compute and show its own sums."
+  }
+}

@@ -1,0 +1,273 @@
+{
+  "id": "engineer-1",
+  "title": "Cron Daylight Saving Checker",
+  "plainSentence": "A checker that lets you enter a cron line and a time zone and see which runs vanish or double on the two daylight-saving nights.",
+  "pitch": "The visitor enters a five-field cron line and picks an IANA time zone. The page draws the spring-forward and fall-back nights as a minute timeline and marks every run under two named rules: the literal wall-clock rule in crontab(5) (skipped time never fires, repeated time fires twice) and the classic cron(8) rule (a skipped fixed-time job fires right after the jump, a repeated one fires once). Each run shows local time, UTC and offset, so a nightly 02:30 job is seen vanishing in New York in March, and a 01:30 job running twice in November under the literal rule. It runs offline from the browser's zone data, with no account or upload, and prints its limits.",
+  "firstMinute": "The page opens with a sample line (30 2 * * *) in America/New_York and the March spring-forward night already drawn: the 02:30 run is marked as lost under the wall-clock rule and as run at 03:00 under the classic rule. One click on the fall-back tab shows the 01:30 run counted twice versus once, so the first success needs no reading.",
+  "conceptsToLearn": [
+    "A cron line has five fields: minute, hour, day of month, month, day of week"
+  ],
+  "whyNow": "Clocks go back in the EU and UK on 2026-10-25 and in the US on 2026-11-01, so people with nightly jobs are about to meet the repeated hour; the tool stays useful every spring and autumn.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "tool-cron-clock-changes"
+  },
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "dev-tools",
+    "mechanic": "checker",
+    "tone": [
+      "analytical",
+      "nerdy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "localstorage"
+    ],
+    "tags": [
+      "cron",
+      "crontab",
+      "daylight-saving",
+      "time-zones",
+      "iana",
+      "scheduler",
+      "dst",
+      "sysadmin",
+      "rehearsal",
+      "offline-tool"
+    ],
+    "keywords": [
+      "cron-dst",
+      "spring-forward",
+      "fall-back",
+      "skipped-job",
+      "repeated-hour",
+      "crontab-5",
+      "cron-8",
+      "next-run-times",
+      "intl-datetimeformat"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "job": "Show what a five-field cron line does on the two clock-change nights of one IANA zone, under two named scheduler rules, with local time, UTC and offset for every run.",
+    "audience": "Developers, sysadmins and data engineers with nightly or hourly jobs who need to know whether a job will be lost or doubled at a daylight-saving change, without trusting a next-runs list that ignores the jump.",
+    "paywallEvidence": [
+      {
+        "product": "Pay-per-event cron parser listings on a cloud automation marketplace",
+        "whatIsGated": "Metered calls that return next fire times, priced per expression; no listing seen draws the daylight-saving nights or compares scheduler rules",
+        "factIndex": 5
+      }
+    ],
+    "freeGap": "Free options already list next runs and some claim DST handling (fact 4). The real gap is that none seen draws the two clock-change nights as a timeline, compares the literal and the classic rule, shows its working per run, or works offline with no upload. This is not a paywalled job; the value is private, offline and explanatory, and the paywall claim never goes on the page.",
+    "oracle": "The crontab(5) and cron(8) manual pages (Linux man-pages and OpenBSD) for the two rules, applied to the published 2026 fall-back dates (EU and UK 2026-10-25, US 2026-11-01); each self-test vector names the rule and the date it comes from. Vectors for spring-forward nights are regression checks unless their dates are sourced.",
+    "oracleFactIndex": 1,
+    "inputs": "A five-field cron line (with lists, ranges, steps and month or weekday names), an IANA zone chosen from a bundled list, and a choice of year and of spring or fall night.",
+    "outputs": "A minute-level timeline of the chosen night, a table of every run with local time, UTC and offset under each rule, a one-line verdict (lost, doubled, shifted, unchanged), and a copyable plain-text report.",
+    "limits": "Dialects differ and the page cannot know which scheduler the visitor runs; it models two documented rules only. Not modelled: systemd timers, cloud schedulers, Quartz, jobs started late by a busy machine, and clock changes of three hours or more (which cron(8) treats as clock corrections). Zone data comes from the visitor's browser and may lag the newest tzdata release."
+  },
+  "research": {
+    "summary": "The two named rules are real and documented separately. The Linux crontab(5) page says times that do not exist never match and times that occur twice run matching jobs twice; the cron(8) pages (OpenBSD, Debian cronie, NetBSD) say clock changes under three hours get special handling for fixed-time or longer-than-hourly jobs: skipped ones run immediately after a forward jump, repeated ones are not run twice, and more frequent jobs are scheduled normally. A FreeBSD bug report is titled as a contradiction between the two pages, and the Healthchecks author says their CronSim library follows Debian cron, which shows dialects differ and the tool should say so. Search results suggest free next-run testers do not draw the DST nights; that was not confirmed by opening any of them. The EU and UK change dates for 2026 are confirmed by two results.",
+    "sources": [
+      {
+        "title": "crontab(5) - Linux manual page",
+        "url": "https://man7.org/linux/man-pages/./man5/crontab.5.html",
+        "date": "",
+        "snippet": "Non-existent local times in a daylight-saving conversion never match so jobs in the missing time are not run; times that occur more than once make matching jobs run twice.",
+        "via": "search",
+        "note": "Primary: the Linux man-pages project's own page, seen in two result entries on 2026-10-13 (not opened). Oracle for the literal wall-clock rule.",
+        "verified": true
+      },
+      {
+        "title": "cron(8) - OpenBSD manual pages",
+        "url": "https://man.openbsd.org/cron",
+        "date": "",
+        "snippet": "Time changes under three hours get special handling for jobs at a specific time or coarser than hourly: forward, skipped jobs run immediately; backward, jobs are not run twice; more frequent jobs run normally; larger changes are treated as corrections.",
+        "via": "search",
+        "note": "Primary: OpenBSD's own manual page, seen in results 2026-10-13. Oracle for the classic small-change rule.",
+        "verified": true
+      },
+      {
+        "title": "cron(8) - Linux manual page",
+        "url": "https://man7.org/linux/man-pages/./man8/cron.8.html",
+        "date": "",
+        "snippet": "The Linux cron(8) page carries the same special handling for specific-time and coarser jobs as the OpenBSD page.",
+        "via": "search",
+        "note": "Seen in results 2026-10-13; second project documenting the same rule (replaces the Debian cronie address, not seen today).",
+        "verified": true
+      },
+      {
+        "title": "NetBSD Problem Report 48648",
+        "url": "https://gnats.netbsd.org/48648",
+        "date": "",
+        "snippet": "A user report that a job scheduled at 03:00 across a forward change did not run, contrary to what the manual page suggested; no confirmed resolution seen.",
+        "via": "search",
+        "note": "Seen in results 2026-10-13: an implementation report that differs from the man page (replaces the NetBSD 9.3 page, not seen today). Single report, so used only as evidence that daemons differ.",
+        "verified": true
+      },
+      {
+        "title": "How Debian Cron Handles DST Transitions",
+        "url": "https://blog.healthchecks.io/hp-rewrite/55459acaf5fec7ca23b4160f7908c23e",
+        "date": "",
+        "snippet": "The author's experiment: when the clock jumps from 1AM to 2AM a Debian cron job set for 1:30 AM runs at 2AM.",
+        "via": "search",
+        "note": "Seen in two results 2026-10-13; the author's own page for their own test. Only the skipped-hour case was visible to me.",
+        "verified": true
+      },
+      {
+        "title": "Bug 166318 - Contradicting information in crontab(5) and cron(8) about DST",
+        "url": "https://bugs.freebsd.org/166318",
+        "date": "",
+        "snippet": "FreeBSD bug report whose title says crontab(5) and cron(8) contradict each other about DST; the search summary said it was closed as fixed.",
+        "via": "search",
+        "note": "Primary: FreeBSD's own tracker, seen 2026-10-13. Shows the two pages have disagreed, so the page names its rules.",
+        "verified": true
+      },
+      {
+        "title": "crondst - PyPI",
+        "url": "https://pypi.org/project/crondst",
+        "date": "",
+        "snippet": "A Python package whose page says it supports time zones and daylight saving time for cron schedules.",
+        "via": "search",
+        "note": "A free developer library exists (seen 2026-10-13); not a visual rehearsal.",
+        "verified": true
+      },
+      {
+        "title": "Deploy cron-visualizer (Railway)",
+        "url": "https://railway.com/deploy/cron-visualizer",
+        "date": "",
+        "snippet": "A self-hostable tool that says it shows next run times in any IANA zone with daylight saving handled, running in the browser.",
+        "via": "search",
+        "note": "Seen 2026-10-13: a free option that claims DST handling; the listing was not opened, so how it treats skipped and repeated hours is unknown.",
+        "verified": true
+      },
+      {
+        "title": "Cron Expression Parser & Next Runs (hipersoft/cron-next-runs) - Apify",
+        "url": "https://apify.com/hipersoft/cron-next-runs",
+        "date": "",
+        "snippet": "A pay-per-event marketplace actor, listed from about $0.001 per cron expression parsed.",
+        "via": "search",
+        "note": "Vendor's own store page for what it sells, seen 2026-10-13 (not opened).",
+        "verified": true
+      },
+      {
+        "title": "Cron Expression Parser - Validate, Explain, Next Run Times (eliai) - Apify",
+        "url": "https://apify.com/eliai/cron-expression-parser",
+        "date": "",
+        "snippet": "A second, separately authored pay-per-event actor, priced per parsed expression (listing shows two different figures).",
+        "via": "search",
+        "note": "Second independent listing on the same marketplace, seen 2026-10-13; price figures inconsistent, so only 'priced per parse' is claimed.",
+        "verified": true
+      },
+      {
+        "title": "Daylight Saving Time 2026: When Clocks Change in Every Major Country",
+        "url": "https://www.universaltimedate.com/articles/daylight-saving-time-2026-when-clocks-change",
+        "date": "2026",
+        "snippet": "Lists EU and UK daylight saving ending 25 October 2026 at 01:00 UTC and US daylight saving ending on Sunday 1 November 2026.",
+        "via": "search",
+        "note": "Seen again 2026-10-13 (first of three agreeing results).",
+        "verified": true
+      },
+      {
+        "title": "DST start and end 2026 (ConvertTime blog)",
+        "url": "https://converttime.com/en/blog/dst-start-end-2026",
+        "date": "2026",
+        "snippet": "Blog post on 2026 daylight saving start and end dates; the search summary gave Europe 25 October and the US 1 November.",
+        "via": "search",
+        "note": "Seen 2026-10-13; second independent result for the fall-back dates.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The Linux crontab(5) page says local times that do not exist during a daylight-saving change never match (jobs in the gap do not run), and times that occur twice make matching jobs run twice (the man-pages project's own page, seen in search results 2026-10-13).",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The cron(8) manual pages (OpenBSD, and the Linux man-pages version) say clock changes under three hours get special handling for jobs at a specific time or coarser than hourly: forward, skipped jobs run immediately; backward, running a job twice is avoided; more frequent jobs run normally; OpenBSD treats changes over three hours as corrections.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A FreeBSD bug report is titled as contradicting information in crontab(5) and cron(8) about DST, and a NetBSD problem report describes a job at 03:00 that did not run across a forward change contrary to the man page; so pages and daemons have disagreed (log excerpt only, resolution not seen).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A tester's experiment reports that on Debian cron, when the clock jumps from 1AM to 2AM, a job set for 1:30 AM runs at 2AM (skipped-hour case only).",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Free options exist: an open-source Python package (CronDst) states support for time zones and DST and a self-hostable browser tool lists next run times in any IANA zone with DST handled; neither listing, as seen, draws the two clock-change nights or compares scheduler rules (absence judged from search snippets only).",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, per two separately authored marketplace listings, pay-per-event cron parsers are priced per expression parsed (fractions of a cent); this gates only metered API calls, not a unique capability.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "In 2026 the EU and UK end summer time on Sunday 2026-10-25 at 01:00 UTC and the US on Sunday 2026-11-01.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "next-run list cron testers",
+      "CronSim (Healthchecks)",
+      "Vixie cron DST handling",
+      "tz transition tables"
+    ]
+  },
+  "design": {
+    "coreLoop": "Edit the cron line or change zone, year or night; the timeline and the run table redraw instantly under both rules; the visitor compares, then tries a hazard (a nightly 02:30 job, an every-10-minutes job, an hourly job) and reads the one-line verdict. Why it stays interesting: the same line gives different answers in different zones, and southern-hemisphere zones and half-hour shifts behave in surprising ways.",
+    "sophisticationHooks": [
+      "Exact transition finding from the browser's zone data (offset probe with bisection, no bundled zone files), with a bundled hand-made calendar used as the page's own known-answer test",
+      "Full cron grammar: lists, ranges, steps, names, and the day-of-month OR day-of-week rule",
+      "Side-by-side rule comparison with a verdict per run (lost, doubled, shifted to the jump instant, unchanged)",
+      "Half-hour and southern-hemisphere zones (Lord Howe, Sydney, Chatham) alongside New York and London, plus a copyable report"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: cron parser, offset-probe transition finder, two scheduler models, timeline SVG, run table, report copy, a short zone list with a search box, a self-test of at least 8 vectors from a hand-made calendar. Cut: other dialects, systemd, cloud schedulers, multi-day ranges, import of whole crontab files, three-hour-plus changes beyond a printed note.",
+    "risks": [
+      "The exact definition of a wildcard job in classic cron (which fields make a job exempt from special handling) was not confirmed from source code, only from man page wording; the page shows it as the man page's rule and says so.",
+      "Real daemons differ (a NetBSD report and a Debian experiment each differ from the other man page), so the page presents two named models, not a prediction.",
+      "No page was opened (all WebFetch hosts failed to resolve on 2026-10-13); the paywall claim rests on two marketplace listing entries and is shown nowhere on the page; the page names no product and the value case is private, offline and shows-its-working.",
+      "The lens brief said repeated jobs run once under classic cron; cron(8) supports that only for fixed-time or longer-than-hourly jobs, and the page prints that condition. The Debian experiment was verified for the skipped-hour case only.",
+      "Browser time zone data can lag the newest tzdata release and Intl cannot list transitions directly, so bisection is tested against a hand calendar; the spring dates (2026-03-08 US, 2026-03-29 EU) were not re-sourced today, so spring vectors are regression checks and the page shows them as computed from zone data; zones with unusual changes are out of scope.",
+      "The title carries no vendor name; the oracle list names man pages only as sources, with no copied text.",
+      "The pitch draft said a 02:30 job doubles in November; in New York the repeated hour in November is 01:00 to 02:00, so the 02:30 job is lost in March and the 01:30 job doubles in November. Copy and presets must use those times."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The two scheduler rules were found on their own man-page domains (man7.org, man.openbsd.org) and the fall-back dates in three agreeing results; no page could be opened (WebFetch to man7.org failed at DNS). Buildable in a morning (cron parser, Intl offset bisection, two rule models, SVG timeline); free testers exist so the value is the two-rule night view, not a paywall."
+  }
+}

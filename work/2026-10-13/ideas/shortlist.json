@@ -1,0 +1,3062 @@
+{
+  "schema": 1,
+  "date": "2026-10-13",
+  "lenses": [
+    {
+      "agent": "pulse",
+      "lensId": "on-this-day",
+      "provocation": [
+        "static",
+        "booster",
+        "bluff"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lensId": "reddit-hot-threads",
+      "provocation": [
+        "anvil",
+        "semaphore",
+        "lullaby"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lensId": "type-and-color",
+      "provocation": [
+        "lighthouse",
+        "voucher",
+        "faceoff"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lensId": "tool-local-pdf",
+      "provocation": [
+        "chorus",
+        "overture",
+        "teleprinter"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lensId": "lesson-map-projections",
+      "provocation": [
+        "vortex",
+        "rhythm",
+        "cinder"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lensId": "puzzle-forge",
+      "provocation": [
+        "beacon",
+        "kettle",
+        "hornet"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lensId": "tool-cron-clock-changes",
+      "provocation": [
+        "chip",
+        "carousel",
+        "tide"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lensId": "lesson-markets-games",
+      "provocation": [
+        "ladder",
+        "quilt",
+        "heron"
+      ]
+    }
+  ],
+  "carryoverIn": {
+    "id": "i02",
+    "title": "Drift Harp",
+    "pitch": "A harp of plucked strings that you strum by dragging a finger or cursor across them, each string a Karplus-Strong plucked string tuned in pure just intonation and shown on a live fifths-and-thirds lattice. Play a looping chord progression and hear and see the pitch creep up by a syntonic comma (about a fifth of a semitone) every lap, a trick called a comma pump. A tempering dial lets you squeeze the drift shut and hear exactly what equal temperament trades away.",
+    "whyNow": "Timeless: a tuning-system explorer where the surprise is audible. The visitor discovers on their own that pure intervals do not close a loop, which most explainers only state in words.",
+    "origin": {
+      "agent": "architect",
+      "lens": "music-instrument",
+      "scoutId": "architect-1"
+    },
+    "fingerprint": {
+      "category": "music-audio",
+      "mechanic": "instrument",
+      "tone": [
+        "serene",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "webaudio",
+        "procedural-audio",
+        "canvas2d",
+        "pointer-events"
+      ],
+      "tags": [
+        "just-intonation",
+        "karplus-strong",
+        "comma-pump",
+        "pitch-lattice",
+        "tuning-systems",
+        "plucked-string",
+        "microtonal",
+        "waveguide"
+      ],
+      "keywords": [
+        "syntonic-comma",
+        "pitch-drift",
+        "strum",
+        "lattice",
+        "cents",
+        "tempering",
+        "physical-model"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "research": {
+      "summary": "A comma pump is a repeating progression whose pure intervals almost, but not exactly, return to the start, so the pitch shifts by a small interval each lap. The standard case is the syntonic comma (81:80, about 21.5 cents) in the progression C G D A E C; both Wikipedia and the Xenharmonic Wiki describe it. A 5-limit just intonation lattice puts fifths (3/2) on one axis and major thirds (5/4) on the other, so a loop that does not close is the drift made visible. Karplus-Strong gives a cheap plucked string: a noise burst circulating in a delay line with an averaging filter, where loop length sets pitch and the filter sets decay. Browser Karplus-Strong demos exist (one was seen), which de-risks the sound engine, but none found combines it with a drifting lattice.",
+      "sources": [
+        {
+          "title": "Comma pump",
+          "url": "https://en.wikipedia.org/wiki/Comma_pump",
+          "date": "",
+          "snippet": "Describes a comma pump as a sequence, often chords, that shifts pitch by a small interval each repetition; the usual example is C G D A E C raising pitch by 81:80 in just intonation.",
+          "via": "search",
+          "note": "Found again by search on 2026-10-12 (Comma pump article: sequence, often chords, shifting pitch by a comma each pass; C G D A E C raises it by 81:80).",
+          "verified": true
+        },
+        {
+          "title": "Comma pump (Xenharmonic Wiki)",
+          "url": "https://en.xen.wiki/w/Pump",
+          "date": "",
+          "snippet": "Independent wiki entry covering comma pumps: loops of just intervals that nearly close, tempered out in systems that equate the comma to unison.",
+          "via": "search",
+          "note": "Found again by search; xenharmonic wiki entry on comma pumps, independent of Wikipedia.",
+          "verified": true
+        },
+        {
+          "title": "Just Intonation: pitch drift explanation (FIU)",
+          "url": "https://justintonation.fiu.edu/ExplanationDrift.html",
+          "date": "",
+          "snippet": "University page explaining that in just intonation one note name can have several pitches a syntonic comma (about 21.5 cents) apart, and that choirs meet this as drift.",
+          "via": "search",
+          "note": "Not found again in the 2026-10-12 results; the 21.5 cent size is carried by the xen.wiki 81/80 entry and Wikipedia comma articles instead.",
+          "verified": false
+        },
+        {
+          "title": "Karplus-Strong string synthesis",
+          "url": "https://en.wikipedia.org/wiki/Karplus%E2%80%93Strong_string_synthesis",
+          "date": "",
+          "snippet": "Physical-modelling method: a burst of noise recirculates through a filtered delay line; loop length sets pitch, filter sets decay. Invented by Alexander Strong and analysed by Kevin Karplus.",
+          "via": "search",
+          "note": "Found again by search at the Wikipedia address (the page itself could not be fetched). Algorithm definition and history.",
+          "verified": true
+        },
+        {
+          "title": "Karplus Strong Algorithm (CCRMA, Stanford)",
+          "url": "https://ccrma.stanford.edu/~jos//pasp//Karplus_Strong_Algorithm.html",
+          "date": "",
+          "snippet": "Stanford physical audio signal processing text on the Karplus-Strong algorithm, a delay line with a lowpass in the feedback loop.",
+          "via": "search",
+          "note": "Not found again at this address; the Blynn Stanford page, Csound manual and others carry the same method.",
+          "verified": false
+        },
+        {
+          "title": "Lattice (music)",
+          "url": "https://en.wikipedia.org/wiki/Lattice_(music)",
+          "date": "",
+          "snippet": "Pitch lattices place just ratios on axes by prime; the 5-limit lattice uses 3/2 and 5/4, drawn as square or hexagonal grids; the gap between a 5/4 third and the Pythagorean third is the syntonic comma.",
+          "via": "search",
+          "note": "Found again by search on 2026-10-12 together with xen.wiki 5-limit and a music-theory article: vertical axis fifths 3/2, horizontal axis thirds 5/4.",
+          "verified": true
+        },
+        {
+          "title": "karplus stress tester (GitHub)",
+          "url": "https://github.com/jackschaedler/karplus-stress-tester",
+          "date": "",
+          "snippet": "A browser project that plucks virtual Karplus-Strong strings as a custom audio processing exercise; notes glitches when the browser cannot keep up.",
+          "via": "search",
+          "note": "Not found again by search; kept only as a performance warning that voice counts must be budgeted.",
+          "verified": false
+        },
+        {
+          "title": "Interval information: 81/80",
+          "url": "https://en.xen.wiki/w/81/80",
+          "date": "",
+          "snippet": "Xenharmonic wiki entry on the ratio 81/80, the syntonic comma, about 21.5 cents.",
+          "via": "search",
+          "note": "Independent confirmation of the comma size and name.",
+          "verified": true
+        },
+        {
+          "title": "Comma (music)",
+          "url": "https://en.wikipedia.org/wiki/Comma_(music)",
+          "date": "",
+          "snippet": "Wikipedia article on commas, including the syntonic comma as the gap between a Pythagorean ditone (81:64) and a just major third (5:4).",
+          "via": "search",
+          "note": "Second site confirming the 81:80 ratio and the roughly 21.5 cent size.",
+          "verified": true
+        },
+        {
+          "title": "The Karplus-Strong Algorithm",
+          "url": "https://theory.stanford.edu/~blynn/sound/karplusstrong.html",
+          "date": "",
+          "snippet": "Explainer: a buffer of random values is repeatedly averaged, the loop length sets the pitch and averaging damps high harmonics faster.",
+          "via": "search",
+          "note": "Independent of Wikipedia; also notes the half-sample delay and the tuning error from integer loop lengths.",
+          "verified": true
+        },
+        {
+          "title": "Csound manual: pluck opcode",
+          "url": "https://csound.com/manual/opcodes/pluck/",
+          "date": "",
+          "snippet": "Manual page for a plucked-string opcode with simple and stretched averaging decay methods.",
+          "via": "search",
+          "note": "Third independent description of the Karplus-Strong decay methods.",
+          "verified": true
+        },
+        {
+          "title": "5 limit (Xenharmonic Wiki)",
+          "url": "https://en.xen.wiki/w/5-limit",
+          "date": "",
+          "snippet": "Wiki entry on the 5-limit: a two-dimensional lattice of pitch classes built from fifths and major thirds.",
+          "via": "search",
+          "note": "Second source for the lattice axes.",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A comma pump is a progression that returns almost, but not exactly, to its starting pitch, shifting by a small interval each repetition; the classic syntonic example is C G D A E C, rising by 81:80 per lap in just intonation, and the pump closes exactly in 12-tone equal temperament (Wikipedia and Xenharmonic Wiki, as of 2026-10-12).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "The syntonic comma is the ratio 81:80, about 21.5 cents, the gap between a Pythagorean ditone (81:64) and a just major third (5:4) (Xenharmonic Wiki and Wikipedia, as of 2026-10-12).",
+          "sourceIndex": 7,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "Karplus-Strong synthesis circulates a burst of noise through a delay line with an averaging low-pass filter; loop length sets pitch and the filter shapes decay, so high harmonics fade faster (Wikipedia, a Stanford explainer and the Csound manual, as of 2026-10-12).",
+          "sourceIndex": 3,
+          "alsoIn": [
+            9,
+            10
+          ],
+          "asOf": "2026-10-12"
+        },
+        {
+          "claim": "A 5-limit pitch lattice puts just fifths (3/2) on one axis and just major thirds (5/4) on the other (Wikipedia Lattice article and Xenharmonic Wiki 5-limit entry, as of 2026-10-12).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            11
+          ],
+          "asOf": "2026-10-12"
+        }
+      ],
+      "inspirations": [
+        "comma pump progressions",
+        "Karplus-Strong plucked string synthesis",
+        "pitch lattice diagrams from xenharmonic tuning software",
+        "browser Karplus-Strong string demos",
+        "a cappella choir pitch drift"
+      ]
+    },
+    "design": {
+      "coreLoop": "Drag across strings to strum, assemble a short loop of chords on the lattice, and let it cycle. Each lap the drift meter shows the pure tuning rising by one syntonic comma while a ghost of the starting pitch stays put. Turn the tempering dial to close the loop and hear what is lost, or chase a lap that lands back home using adaptive retuning. Every chord choice changes how fast and which way the pitch wanders, so there is always another loop to try.",
+      "sophisticationHooks": [
+        "Karplus-Strong voices with per-string damping, pick position and a stroke-speed-dependent excitation, polyphonic across a harp of 12 strings",
+        "Live 5-limit pitch lattice with ratio and cents readouts; the drift is the distance between where a loop starts and where it ends on the lattice",
+        "Tempering dial that continuously morphs pure ratios toward 12-tone equal temperament, with a seeded generative drone that makes beating audible",
+        "Shareable URL hash holding the chord loop, tempering amount and seed"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Shrunk and de-risked. Build: Karplus-Strong plucks rendered on demand into AudioBuffers in the main thread (no AudioWorklet, so no CSP issue) with a voice pool, 12 strings, canvas harp and lattice views, pointer/touch strum and keyboard play, loop editor with 6 slots, drift meter with a ghost of the starting pitch, tempering dial, a muted-state visual story (lattice path, cents readout), URL-hash share, about panel. Cut: AudioWorklet, MIDI export, 7-limit and higher primes, recording, presets beyond three.",
+      "risks": [
+        "AudioWorklet from a blob or inline module may be blocked by the page CSP; the plan renders each pluck into an AudioBuffer instead, which needs no worklet.",
+        "Audio only starts after a user gesture and a headless screenshot cannot hear it, so the lattice path, drift meter and cents readout must carry the story when muted.",
+        "Voice cost: each pluck buffer is generated in JavaScript; short buffers (about 2 seconds) and a voice cap keep it responsive, as the stress-test project warns of glitches when the browser cannot keep up (that project was not found again, so it is not cited as fact).",
+        "The pump claim is solid, but the audible effect depends on voice-leading that keeps every chord pure; the spec fixes four tested loops, including the C G D A E C case, and checks the lap drift numerically in a unit test.",
+        "Unverified sources: the FIU drift page, the CCRMA Stanford page and the karplus stress tester were not found again; the page cites only sources seen on 2026-10-12."
+      ]
+    },
+    "durable": true,
+    "verification": {
+      "by": "verifier",
+      "at": "2026-10-12",
+      "evidence": "search-only",
+      "confidence": 8,
+      "feasibleInOneDay": true,
+      "notes": "Comma pump, 81:80 at about 21.5 cents, Karplus-Strong and the 5-limit lattice axes were each found in independent results (WebFetch to ccrma.stanford.edu, en.xen.wiki and justintonation.fiu.edu failed at DNS). Buildable in a morning if plucks render to AudioBuffers; no data needed."
+    },
+    "scores": {
+      "sophistication": 7.4,
+      "delight": 5.3,
+      "distinctness": 7,
+      "feasibility": 6.2,
+      "timeliness": 8,
+      "interestFit": 4.8,
+      "polishPotential": 8.2,
+      "safety": 9.4
+    },
+    "total": 69.2,
+    "noveltyCheck": {
+      "ok": true,
+      "conflicts": []
+    }
+  },
+  "ideas": [
+    {
+      "id": "i01",
+      "title": "Historical Date Converter",
+      "plainSentence": "A converter that lets you turn a date from the Julian or Gregorian calendar into the other, by country, and flags dates that never existed.",
+      "pitch": "Pick a date between 1500 and 1930 and a place, and the page shows what that day was called under the old Julian calendar and the modern Gregorian one, with the weekday, the day count and a clear flag when the date was skipped there. It opens on today's date in 1582, a day that did not exist in Rome, so the first result is a surprise. Genealogists, history writers and curious people get a private, offline answer with the working shown step by step.",
+      "firstMinute": "The page opens with 13 October 1582 in Rome already entered and the result on screen: that date never existed there, the calendar jumped from Thursday 4 October to Friday 15 October, and the same day in England was 3 October. One button swaps in any other date or place, so the visitor gets a first success without reading anything.",
+      "conceptsToLearn": [
+        "A calendar date can name different days depending on which calendar a country was using at the time."
+      ],
+      "whyNow": "Today is 13 October, a date inside the ten days (5 to 14 October 1582) that were skipped in Rome, Spain and Portugal. The topic is timeless for anyone reading old letters, parish records or diaries.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "on-this-day",
+        "scoutId": "pulse-1"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "converter",
+        "tone": [
+          "analytical",
+          "nerdy",
+          "cozy"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg",
+          "localstorage"
+        ],
+        "tags": [
+          "calendar",
+          "julian-calendar",
+          "gregorian-calendar",
+          "old-style-new-style",
+          "dual-dating",
+          "genealogy",
+          "day-of-week",
+          "julian-day-number",
+          "calendar-reform",
+          "missing-days"
+        ],
+        "keywords": [
+          "date-converter",
+          "julian-to-gregorian",
+          "calendar-switch",
+          "on-this-day",
+          "1582",
+          "1752",
+          "history-dates",
+          "weekday-finder"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Convert a historical date between the Julian and Gregorian calendars using the switch date of the chosen country, and say when the date was skipped or ambiguous.",
+        "audience": "Family-history researchers, history students, writers and anyone reading old documents, letters or diaries dated before their country changed calendars.",
+        "paywallEvidence": [],
+        "freeGap": "Free Julian-to-Gregorian converters and old-style/new-style converters already exist, so no paywall is claimed. The remaining gap is one page that is private and offline, knows each region's own switch date, flags skipped dates and the old 25 March New Year, and shows every step of its arithmetic.",
+        "oracle": "Julian day numbers (2299160 for 4 October 1582 Julian and 2299161 for 15 October 1582 Gregorian, from the IDL documentation example and the Julian day reference), the Gregorian leap rule from the Naval Observatory and a calendar FAQ, and the published skips: 4 to 15 October 1582 in Rome and 2 to 14 September 1752 in Britain (the Act's text). Further cases are computed per the leap rule and labelled computed.",
+        "oracleFactIndex": 2,
+        "inputs": "A year, month and day, plus a region from a bundled list of about 20 places with their switch dates, and an optional choice of which calendar the date was written in.",
+        "outputs": "The date in both calendars, the weekday, the Julian Day Number, a dual-date form such as 1731/32 for dates before the New Year moved, a skipped-date warning, and days between two dates across a switch. Results can be copied as text.",
+        "limits": "Switch dates varied inside some countries (German states, Swiss cantons, colonies); the page uses one date per region and says so. It does not handle non-Christian calendars, and it is not legal or genealogical proof."
+      },
+      "research": {
+        "summary": "Verified by search only (no page opened). The 1582 jump from 4 to 15 October is confirmed by day-count documentation, a reference article and a genealogy magazine; Britain's 2 to 14 September 1752 jump and the move of New Year to 1 January are confirmed by the Act itself and a magazine article. The leap rule matches the Naval Observatory's FAQ and a calendar FAQ. The riots over lost days in 1752 are called a largely later myth by a historian and a second site. Russia 1918 and Greece (1923 or 1924, tables differ) are single-table claims and stay unverified; Sweden was not confirmed and is left out.",
+        "sources": [
+          {
+            "title": "Inter gravissimas",
+            "url": "https://en.wikipedia.org/wiki/Inter_gravissimas",
+            "date": "",
+            "snippet": "The 1582 papal bull reformed the Julian calendar; it dropped ten days so that 4 October 1582 was followed by 15 October 1582.",
+            "via": "search",
+            "note": "Not re-found by my searches under this address; the 1582 skip is confirmed by sources 1, 2 and 9 instead.",
+            "verified": false
+          },
+          {
+            "title": "Routines: J > JULDAY (IDL reference)",
+            "url": "https://www.irya.unam.mx/computo/sites/manuales/IDL/Content/Reference%20Material/J/JULDAY.html",
+            "date": "",
+            "snippet": "Software documentation whose example gives day numbers 2299160 and 2299161 for 4, 5 and 15 October 1582; a cutoff at 2299161 separates Julian from Gregorian dates.",
+            "via": "search",
+            "note": "Re-found by my search: example gives day numbers 2299160 for 4 October 1582 and 2299161 for 5 October 1582 (the first Gregorian-side day) with a Julian-versus-Gregorian cutoff.",
+            "verified": true
+          },
+          {
+            "title": "Julian day",
+            "url": "https://en.wikipedia.org/wiki/Julian_day",
+            "date": "",
+            "snippet": "Reference article saying 15 October 1582 (Gregorian) carries day number 2299161, with no gap in the day count across the calendar switch.",
+            "via": "search",
+            "note": "Re-found by my search: day number 2299161 is 15 October 1582 Gregorian (5 October Julian) and 2299160 is 4 October 1582 Julian.",
+            "verified": true
+          },
+          {
+            "title": "The Gregorian Calendar Adopted in England",
+            "url": "https://www.historytoday.com/archive/gregorian-calendar-adopted-england",
+            "date": "",
+            "snippet": "The 1750 act made Wednesday 2 September 1752 be followed by Thursday 14 September, and moved New Year's Day from 25 March to 1 January.",
+            "via": "search",
+            "note": "Re-found by my search: Wednesday 2 September 1752 followed by Thursday 14 September and New Year moved from 25 March to 1 January. The Act's text (source 10) agrees.",
+            "verified": true
+          },
+          {
+            "title": "List of adoption dates of the Gregorian calendar by country",
+            "url": "https://en.wikipedia.org/wiki/List_of_adoption_dates_of_the_Gregorian_calendar_by_country",
+            "date": "",
+            "snippet": "A table of switch dates by country; results seen only through a blended search summary (Britain 1752, Russia 1918, Greece 1923, a conflicting Sweden entry).",
+            "via": "search",
+            "note": "The list showed up in a search but its rows were not readable; Russia 1918 and Greece disagree between tables, so each row needs two sources or is dropped.",
+            "verified": false
+          },
+          {
+            "title": "Leap years (University of Warwick)",
+            "url": "https://warwick.ac.uk/news/knowledgecentre/science/physics-astrophysics/leap_years",
+            "date": "",
+            "snippet": "University explainer on leap years: the Gregorian rule skips three century leap days in 400 years, giving 97 leap years per 400.",
+            "via": "search",
+            "note": "Not re-found by my searches; the leap rule is confirmed by sources 6 and 11 instead.",
+            "verified": false
+          },
+          {
+            "title": "Gregorian calendar (Claus Tondering, Calendar FAQ)",
+            "url": "https://tondering.dk/claus/cal/gregorian.php",
+            "date": "",
+            "snippet": "Calendar FAQ page on the Gregorian calendar and its leap rule.",
+            "via": "search",
+            "note": "Found by my search; independent of the US Naval Observatory page for the leap rule.",
+            "verified": true
+          },
+          {
+            "title": "Give us our eleven days!: calendar reform in eighteenth century England",
+            "url": "https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/",
+            "date": "",
+            "snippet": "Robert Poole's academic study of the 1752 calendar change and how the story of rioting crowds was built later.",
+            "via": "search",
+            "note": "Re-found by my search: scholar Robert Poole traces the story of calendar riots to a later myth; contemporary newspapers do not bear it out.",
+            "verified": true
+          },
+          {
+            "title": "Give Us Our Eleven Days",
+            "url": "https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/",
+            "date": "",
+            "snippet": "Ties the slogan to a banner in a 1755 painting about an election rather than to mass riots.",
+            "via": "search",
+            "note": "Re-found by my search: historians now call the riot stories exaggerated, and the slogan is tied to a 1755 painting of the 1754 election.",
+            "verified": true
+          },
+          {
+            "title": "When Did the Gregorian Calendar Start in Each Country? (Family Tree Magazine)",
+            "url": "https://familytreemagazine.com/history/gregorian-calendar-adoption-map/",
+            "date": "",
+            "snippet": "Genealogy magazine page with a map of adoption dates; Catholic countries moved on 4 to 15 October 1582.",
+            "via": "search",
+            "note": "Found by my search: Catholic countries went from 4 October straight to 15 October 1582.",
+            "verified": true
+          },
+          {
+            "title": "Calendar (New Style) Act 1750 (Irish Statute Book)",
+            "url": "https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html",
+            "date": "",
+            "snippet": "Text of the Act: days keep their order to 2 September 1752 inclusive, the next day counted as 14 September; the year starts on 1 January.",
+            "via": "search",
+            "note": "Found by my search; the statute itself, on the official statute-book domain.",
+            "verified": true
+          },
+          {
+            "title": "Leap years (US Naval Observatory FAQ)",
+            "url": "https://aa.usno.navy.mil/faq/leap_years",
+            "date": "",
+            "snippet": "Official observatory FAQ on the leap-year rule.",
+            "via": "search",
+            "note": "Found by my search; the primary agency's own page for the Gregorian leap rule.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In 1582 the Catholic countries that adopted the reform at once (Rome and most of Italy among them) went from Thursday 4 October straight to Friday 15 October, so 5 to 14 October 1582 do not exist there.",
+            "sourceIndex": 9,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Britain and its colonies moved to the Gregorian calendar by the Calendar (New Style) Act 1750 so that Wednesday 2 September 1752 was followed by Thursday 14 September 1752, and New Year's Day moved from 25 March to 1 January.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Oracle: the day count is continuous across the 1582 switch; Julian day number 2299160 is 4 October 1582 (Julian) and 2299161 is 15 October 1582 (Gregorian).",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Gregorian rule: a year is a leap year if divisible by 4, except century years not divisible by 400, giving 97 leap years per 400 years and an average year of 365.2425 days; the Julian average of 365.25 days gains about 3 days per 400 years.",
+            "sourceIndex": 11,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Historians treat the story of 1752 mobs demanding their eleven days back as largely a later myth; the slogan is tied to a banner in a 1755 painting about the 1754 Oxfordshire election.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, per one table only: Russia moved after 31 January 1918 and Greece changed in 1923 (another table gives 1924). Not confirmed by two separate results, so the page shows these rows as reported or leaves them out.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "genealogy old-style/new-style converters",
+          "Julian day number tables",
+          "the 1752 British calendar change",
+          "Unix cal output for September 1752"
+        ]
+      },
+      "design": {
+        "coreLoop": "Enter or nudge a date and pick a place; read the result in both calendars with the working; open the 'show the steps' panel; try a famous date from a short list (4 to 15 October 1582, 2 to 14 September 1752, 31 January 1918); copy the result. A built-in known-answer table is visible on the page.",
+        "sophisticationHooks": [
+          "Skipped-date detection per region, with the neighbouring valid days named",
+          "Dual-year display for dates before the 1 January New Year was adopted",
+          "Days-between across a switch, counted by day number so no day is lost or invented",
+          "A self-test panel that re-runs the published known answers in the visitor's browser"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: date entry, about 20 regions with switch dates, two-way conversion, weekday, day number, skip warning, dual year, steps panel, self-test panel, intro and explainer. Cut: Easter dates, non-Christian calendars, sub-region splits, anything fetched live. Region table limited to rows with two agreeing sources (Rome and Italy 1582, Britain 1752 and its colonies); other rows are labelled 'as reported' or left out.",
+        "risks": [
+          "Switch dates for Russia, Greece and Sweden are unverified (single table; Greece 1923 versus 1924); the builder keeps only rows with two agreeing sources or labels them 'as of 2026-10-13, per one table'. Sweden is left out.",
+          "No paywall is claimed; free converters exist, so the pitch rests on private, offline, per-region and shows-its-working, not on beating a paid product.",
+          "Regional variation (German states, Swiss cantons, colonies, Scotland keeping 1 January as New Year since 1600) means one date per region is a simplification; the page says so.",
+          "The known-answer table has few sourced cases (1582 and 1752 jumps, day numbers 2299160 and 2299161, weekdays of those days, the leap rule); other self-test rows are computed per the leap rule and labelled as regression checks, not oracles.",
+          "The Wikipedia list could not be opened; the table is assembled from search-seen sources and marked 'as of' with source names.",
+          "Dates before 1500 and the proleptic Gregorian calendar are out of scope; the page says the weekday shown follows the day count, not any local calendar.",
+          "Not genealogical or legal proof; the page says so."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The 1582 and 1752 skips and the day-count oracle are confirmed by independent results and the Act's own text, and the riot myth by a historian and a second site. Russia, Greece and Sweden rows stay unverified, so the table is scoped to well-sourced rows; the conversion arithmetic is small and buildable in a morning."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i02",
+      "title": "Sealed-Bid Auction Lesson",
+      "plainSentence": "A lesson that lets you bid against simulated rivals in first-price and second-price sealed auctions and see how shading your bid changes your profit.",
+      "pitch": "You get a private value for an item (say a mug worth 60 play-dollars to you) and bid against four simulated rivals, first in a rising-price auction, then in sealed first-price and second-price versions. A slider shades your bid below or above your value and a profit curve, built from thousands of replayed rounds, shows that shading pays in the first-price auction and never pays in the second-price one. You leave knowing why the rule of the game, not good manners, makes honest bidding the best plan, and exactly when that stops being true.",
+      "firstMinute": "The first frame already shows an ascending auction running: a price ladder climbs, rivals drop out, and a card says what the item is worth to you. You tap Drop out when the price reaches your value, see you won with a small profit, and see the same round replayed with a higher and a lower dropout point so you can see why leaving at your value was best.",
+      "conceptsToLearn": [
+        "your value for an item is what it is worth to you; profit is value minus the price you pay"
+      ],
+      "whyNow": "Timeless. The ad-tech industry's 2019 switch from second-price to first-price auctions (per two trade reports) made bid shading a live topic, and this lesson shows the arithmetic behind it.",
+      "origin": {
+        "agent": "critic",
+        "lens": "lesson-markets-games",
+        "scoutId": "critic-1"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "finance-economics",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "canvas2d"
+        ],
+        "tags": [
+          "auction-theory",
+          "second-price-auction",
+          "first-price-auction",
+          "bid-shading",
+          "sealed-bid",
+          "dominant-strategy",
+          "mechanism-design",
+          "game-theory",
+          "vickrey"
+        ],
+        "keywords": [
+          "auction",
+          "vickrey",
+          "bidding",
+          "bid-shading",
+          "sealed-bid",
+          "profit-curve",
+          "price-ladder",
+          "incentives",
+          "rules-shape-behaviour"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "In a sealed-bid second-price auction the highest bidder wins but pays the second-highest bid, so your own bid only decides whether you win, never what you pay; bidding your true value is therefore a dominant strategy when values are private. In a first-price auction you pay what you bid, so you shade below value; with n risk-neutral bidders (n counts you) whose values are independent and uniform on 0 to 1, the equilibrium bid is (n-1)/n of your value.",
+        "whyNiche": "It is usually taught as a theorem or as a one-line conclusion, so it sounds like an opinion. Few places let a learner try to cheat the rule and watch it fail, or show that the same honest bid is wrong under a different rule.",
+        "audience": "Curious adults, students of economics or computer science, and anyone who has argued about eBay, ad markets or spectrum sales.",
+        "prerequisites": [
+          "what an auction is",
+          "subtracting a price from a value"
+        ],
+        "misconceptions": [
+          "In a sealed second-price auction, bidding above my value helps me win more, so it is worth it.",
+          "Shading my bid below value is always the smart move, whatever the auction rule."
+        ],
+        "misconceptionFactIndexes": [
+          2,
+          3
+        ],
+        "ahaMoment": "Fix the rivals' bids in a single round and drag your bid anywhere above the highest rival bid: in the second-price auction the price you pay never moves. Then run the replay: the average-profit curve peaks exactly at your value, while the first-price curve peaks lower, at four fifths of value with four rivals.",
+        "demos": [
+          "Rung 1: a rising-price ladder auction with four simulated rivals; you choose when to drop out; the page replays the round with other dropout points.",
+          "Rung 2: sealed first-price round; type or drag a bid; the winner pays their own bid; a few single rounds, then a 5000-round replay shows average profit against bid as a fraction of value, peaking at the shaded point (n-1)/n.",
+          "Rung 3: sealed second-price round with the same slider; the profit curve now peaks exactly at honest bidding, and the page marks the winning-and-paying breakdown for any bid you choose.",
+          "Rung 4: what-if panel: change the number of rivals and watch the first-price best shade move toward honesty while second-price stays at honest.",
+          "Rung 5: break the guarantee: switch to pay-your-bid pricing, or add a seller who places a fake bid just under yours; honest bidding stops being best, shown by the page's own arithmetic from the stated rules. Interdependent values appear only as a short static worked example.",
+          "Rung 6: real world card: a large ad exchange moved from second-price to first-price auctions in 2019, per two trade reports, and buyers added bid shading; the rules changed the behaviour. No brand name or logo on the page."
+        ],
+        "checkQuestions": [
+          "Your value is 60 and the highest rival bids 45. You bid 50 in a second-price auction. What do you pay? (45)",
+          "Same values, first-price auction, you bid 50 and the highest rival bids 45 so you win. What is your profit? (10)",
+          "With 4 bidders in all (you included) with values spread evenly from 0 to 1, what share of your value should you bid in a first-price auction? (three quarters)",
+          "Name one change to the rules that stops honest bidding being best in a second-price auction."
+        ]
+      },
+      "research": {
+        "summary": "University course notes agree that truthful bidding is a dominant strategy in the second-price sealed-bid auction and that bidding (n-1)/n of value, with n counting every bidder including you, is the symmetric equilibrium of the first-price auction for independent uniform values; both were found again on 2026-10-13 in separate courses. Lab studies are reported to show people overbid in the sealed second-price format; that rising-price formats are learned faster is reported but could not be tied to one result today. The equivalence of the rising-price auction and the second-price auction holds for private values per one handbook page only. Google's move to first-price auctions in 2019 (AdExchanger, PPC Land) is a live example of rules reshaping behaviour. The Ausubel and Milgrom paper and the two Toronto lectures from the scout were not found again and are not used.",
+        "sources": [
+          {
+            "title": "second price auctions (Brown CS 1440 lecture notes)",
+            "url": "https://cs.brown.edu/courses/csci1440/lectures/2025/second_price_auctions.pdf",
+            "date": "2025",
+            "snippet": "Course notes: in a second-price sealed-bid auction bidding your value is a dominant strategy whatever the others bid.",
+            "via": "search",
+            "note": "Seen in results 2026-10-13 (not opened).",
+            "verified": true
+          },
+          {
+            "title": "McGill COMP/MATH 553 Lecture 2",
+            "url": "https://cs.mcgill.ca/~cai/COMP_MATH_553/Lecture02.pdf",
+            "date": "",
+            "snippet": "Lecture notes: truthful bidding maximises the bidder's utility regardless of the other bids.",
+            "via": "search",
+            "note": "Independent second course for the dominant-strategy fact, seen 2026-10-13.",
+            "verified": true
+          },
+          {
+            "title": "first price auctions (Brown CS 1440 lecture notes)",
+            "url": "https://cs.brown.edu/courses/csci1440/lectures/2025/first_price_auctions.pdf",
+            "date": "2025",
+            "snippet": "With i.i.d. values uniform on 0 to 1, bidding (n-1)/n times value is the symmetric Bayes-Nash equilibrium of the first-price sealed-bid auction.",
+            "via": "search",
+            "note": "Seen 2026-10-13; the shading formula for the first-price demo.",
+            "verified": true
+          },
+          {
+            "title": "Sealed-Bid First-Price Auction Analysis (MetricGate)",
+            "url": "https://metricgate.com/calculator/auction-first-price-sealed",
+            "date": "",
+            "snippet": "Calculator page giving the symmetric equilibrium bid for n bidders with uniform private values as (n-1)/n of value.",
+            "via": "search",
+            "note": "Applied second source for the formula, seen 2026-10-13.",
+            "verified": true
+          },
+          {
+            "title": "first price BNE (Brown CS 1951k lecture notes)",
+            "url": "https://cs.brown.edu/courses/cs1951k/lectures/2020/first_price_BNE.pdf",
+            "date": "2020",
+            "snippet": "Lecture notes on the Bayes-Nash equilibrium of the first-price auction.",
+            "via": "search",
+            "note": "Seen in results 2026-10-13; a different course from the other Brown notes. The search summary for the derivation was blended across results.",
+            "verified": true
+          },
+          {
+            "title": "Auction experiments: English and second-price (Georgia State EconPort handbook)",
+            "url": "https://econport.gsu.edu/content/handbook/auctions/auctionsexperiments/auctionexpenglishandsecond.html",
+            "date": "",
+            "snippet": "Handbook page on experiments: the equivalence of the English and second-price sealed auctions applies for private values, or if there are just two bidders.",
+            "via": "search",
+            "note": "The only result seen for the equivalence caveat (2026-10-13), so reported, not confirmed.",
+            "verified": false
+          },
+          {
+            "title": "Why people fail to see their dominant strategy in strategy-proof auctions (Berlin School of Economics)",
+            "url": "https://berlinschoolofeconomics.de/insight/why-people-fail-to-see-their-dominant-strategy-in-strategy-proof-auctions",
+            "date": "",
+            "snippet": "Research summary on why subjects miss the dominant strategy in second-price type auctions.",
+            "via": "search",
+            "note": "Seen 2026-10-13: lab subjects miss the dominant strategy.",
+            "verified": true
+          },
+          {
+            "title": "Efficiency in Second-Price Auctions: A New Look at Old Data (UTS)",
+            "url": "https://opus.lib.uts.edu.au/handle/10453/15734",
+            "date": "",
+            "snippet": "Re-analysis of laboratory second-price data; overbidding persists while efficiency rises over time.",
+            "via": "search",
+            "note": "Seen 2026-10-13; independent of the Berlin item. The figures quoted in the summary came from a blended result, so no numbers are claimed.",
+            "verified": true
+          },
+          {
+            "title": "Google switches to first price auction (AdExchanger)",
+            "url": "https://www.adexchanger.com/online-advertising/google-switches-to-first-price-auction",
+            "date": "2019",
+            "snippet": "Trade report that Google Ad Manager would move to first-price auctions by the end of 2019 with a unified auction and no last look.",
+            "via": "search",
+            "note": "Seen again 2026-10-13.",
+            "verified": true
+          },
+          {
+            "title": "Bid shading (PPC Land)",
+            "url": "https://ppc.land/bid-shading/",
+            "date": "",
+            "snippet": "Explainer: bid shading is the buyer-side response to paying one's own bid after the first-price shift.",
+            "via": "search",
+            "note": "Independent report seen 2026-10-13; dates differ between outlets, so none is claimed beyond 2019.",
+            "verified": true
+          },
+          {
+            "title": "Pre- and Post-Auction Discounts in First-Price Auctions (arXiv)",
+            "url": "https://arxiv.org/pdf/2403.06278",
+            "date": "2024",
+            "snippet": "Paper noting the top rival value among n-1 uniform rivals has a Beta(n-1,1) distribution with mean (n-1)/n.",
+            "via": "search",
+            "note": "Seen 2026-10-13; a research-level check of the formula's logic.",
+            "verified": true
+          },
+          {
+            "title": "Google shifts to first price auction: what it means (Clickio)",
+            "url": "https://blog.clickio.com/?p=1046",
+            "date": "",
+            "snippet": "Blog on the shift to first-price auctions and price optimisation.",
+            "via": "search",
+            "note": "Seen 2026-10-13; context for the ad-tech example only.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In a sealed-bid second-price auction the highest bidder wins and pays the second-highest bid, and bidding your true value is a dominant strategy under private values (Brown and McGill course notes, as of 2026-10-13).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "In a first-price sealed-bid auction with n risk-neutral bidders (you included) whose values are independent and uniform on 0 to 1, bidding (n-1)/n of your value is the symmetric equilibrium (Brown course notes and a calculator page, with a second Brown course and an arXiv paper consistent; as of 2026-10-13).",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Lab experiments find people often bid above value in sealed second-price auctions, missing the dominant strategy, and the overbidding persists with experience (Berlin School of Economics summary and a UTS re-analysis, as of 2026-10-13).",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Google announced in 2019 that its Ad Manager exchange would move to first-price auctions by the end of 2019; buyers responded with bid shading (AdExchanger and PPC Land, as of 2026-10-13); no more precise rollout date is claimed.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported, per one handbook page (unconfirmed): under independent private values the rising-price auction and the sealed second-price auction share the same optimal strategy; the equivalence is said not to hold for interdependent values with more than two bidders.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported, not confirmed (summary of a citing paper, source result not identified): the same lab literature says people find the dominant strategy quickly in the rising-price format while overbidding persists in the sealed format.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "classroom auction experiments with a jar of coins",
+          "eBay proxy bidding",
+          "ad exchange bid-shading explainers",
+          "Vickrey 1961 paper"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: play a round with a value card, move the bid slider, see profit and price for that round, then run the replay that draws the whole profit-against-bid curve; answer a check question; unlock the next rung where a rule changes.",
+        "sophisticationHooks": [
+          "A replay engine that simulates thousands of seeded rounds so the profit curve is exact and reproducible; rivals follow the equilibrium shading, so the curves can be checked against (n-1)/n.",
+          "Counterfactual strip: for any single round, drag the bid and see the winner and price change or not, which is the proof of dominance made visible.",
+          "Rule-breaker toggles (pay-your-bid rule, a seller's fake bid, values that depend on each other) with honest labels that these are model arithmetic.",
+          "Self-checking numbers: every worked example on the page is recomputed by a built-in test."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Build: five rungs plus a short card on one page with an SVG price ladder, SVG profit curve, seeded random generator, simulation core with tests, check questions and a short explainer. Rung 5 keeps two arithmetic toggles (pay-your-bid pricing, a seller's fake bid); interdependent values is a static worked example. Cut: multi-item and package auctions, risk aversion, real-money anything, accounts, sharing, any common-value simulation.",
+        "risks": [
+          "Honest bidding is best under the second-price rule with private values and independent bidders; the rising-price auction shares that strategy under private values, which rests on one handbook page, so the page shows that line as reported, per that page.",
+          "Equilibrium shading (n-1)/n holds only for risk-neutral bidders with independent uniform values and n counts you; with four rivals n is 5 and the best shade is four fifths. The page states the assumptions and labels rival behaviour as simulated, play money only.",
+          "The claim that people learn the dominant strategy quickly in the rising-price format could not be tied to one result today; it is shown as reported or omitted, and the ladder rung is justified by the page's own demonstration, not by that claim.",
+          "The seller-fake-bid and pay-your-bid demos are the page's own arithmetic from stated rules, not sourced claims about real markets; labelled as models.",
+          "Outlets disagree on the exact start of the 2019 rollout; the page says 'in 2019, per AdExchanger and PPC Land' and no more precise date, and uses no company logo or brand styling.",
+          "The scout's Ausubel and Milgrom claim (the Vickrey format is rare in practice) and the revenue-equivalence claim were not found again and are not used; revenue equivalence may appear only as the simulation's own output.",
+          "Check question wording must name that you win; the profit curve in the second-price auction is a smooth peak at your value, not a flat line with cliffs: only the single-round counterfactual shows a flat price."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The second-price dominant strategy and the first-price (n-1)/n formula were found in independent course notes on 2026-10-13, and the 2019 exchange switch in two trade reports; no page could be opened. The English-auction equivalence and quick learning in rising-price formats stay reported-only, and the scout's aha line about a flat profit curve was corrected."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i03",
+      "title": "Cron Daylight Saving Checker",
+      "plainSentence": "A checker that lets you enter a cron line and a time zone and see which runs vanish or double on the two daylight-saving nights.",
+      "pitch": "The visitor enters a five-field cron line and picks an IANA time zone. The page draws the spring-forward and fall-back nights as a minute timeline and marks every run under two named rules: the literal wall-clock rule in crontab(5) (skipped time never fires, repeated time fires twice) and the classic cron(8) rule (a skipped fixed-time job fires right after the jump, a repeated one fires once). Each run shows local time, UTC and offset, so a nightly 02:30 job is seen vanishing in New York in March, and a 01:30 job running twice in November under the literal rule. It runs offline from the browser's zone data, with no account or upload, and prints its limits.",
+      "firstMinute": "The page opens with a sample line (30 2 * * *) in America/New_York and the March spring-forward night already drawn: the 02:30 run is marked as lost under the wall-clock rule and as run at 03:00 under the classic rule. One click on the fall-back tab shows the 01:30 run counted twice versus once, so the first success needs no reading.",
+      "conceptsToLearn": [
+        "A cron line has five fields: minute, hour, day of month, month, day of week"
+      ],
+      "whyNow": "Clocks go back in the EU and UK on 2026-10-25 and in the US on 2026-11-01, so people with nightly jobs are about to meet the repeated hour; the tool stays useful every spring and autumn.",
+      "origin": {
+        "agent": "engineer",
+        "lens": "tool-cron-clock-changes",
+        "scoutId": "engineer-1"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "dev-tools",
+        "mechanic": "checker",
+        "tone": [
+          "analytical",
+          "nerdy"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg",
+          "localstorage"
+        ],
+        "tags": [
+          "cron",
+          "crontab",
+          "daylight-saving",
+          "time-zones",
+          "iana",
+          "scheduler",
+          "dst",
+          "sysadmin",
+          "rehearsal",
+          "offline-tool"
+        ],
+        "keywords": [
+          "cron-dst",
+          "spring-forward",
+          "fall-back",
+          "skipped-job",
+          "repeated-hour",
+          "crontab-5",
+          "cron-8",
+          "next-run-times",
+          "intl-datetimeformat"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Show what a five-field cron line does on the two clock-change nights of one IANA zone, under two named scheduler rules, with local time, UTC and offset for every run.",
+        "audience": "Developers, sysadmins and data engineers with nightly or hourly jobs who need to know whether a job will be lost or doubled at a daylight-saving change, without trusting a next-runs list that ignores the jump.",
+        "paywallEvidence": [
+          {
+            "product": "Pay-per-event cron parser listings on a cloud automation marketplace",
+            "whatIsGated": "Metered calls that return next fire times, priced per expression; no listing seen draws the daylight-saving nights or compares scheduler rules",
+            "factIndex": 5
+          }
+        ],
+        "freeGap": "Free options already list next runs and some claim DST handling (fact 4). The real gap is that none seen draws the two clock-change nights as a timeline, compares the literal and the classic rule, shows its working per run, or works offline with no upload. This is not a paywalled job; the value is private, offline and explanatory, and the paywall claim never goes on the page.",
+        "oracle": "The crontab(5) and cron(8) manual pages (Linux man-pages and OpenBSD) for the two rules, applied to the published 2026 fall-back dates (EU and UK 2026-10-25, US 2026-11-01); each self-test vector names the rule and the date it comes from. Vectors for spring-forward nights are regression checks unless their dates are sourced.",
+        "oracleFactIndex": 1,
+        "inputs": "A five-field cron line (with lists, ranges, steps and month or weekday names), an IANA zone chosen from a bundled list, and a choice of year and of spring or fall night.",
+        "outputs": "A minute-level timeline of the chosen night, a table of every run with local time, UTC and offset under each rule, a one-line verdict (lost, doubled, shifted, unchanged), and a copyable plain-text report.",
+        "limits": "Dialects differ and the page cannot know which scheduler the visitor runs; it models two documented rules only. Not modelled: systemd timers, cloud schedulers, Quartz, jobs started late by a busy machine, and clock changes of three hours or more (which cron(8) treats as clock corrections). Zone data comes from the visitor's browser and may lag the newest tzdata release."
+      },
+      "research": {
+        "summary": "The two named rules are real and documented separately. The Linux crontab(5) page says times that do not exist never match and times that occur twice run matching jobs twice; the cron(8) pages (OpenBSD, Debian cronie, NetBSD) say clock changes under three hours get special handling for fixed-time or longer-than-hourly jobs: skipped ones run immediately after a forward jump, repeated ones are not run twice, and more frequent jobs are scheduled normally. A FreeBSD bug report is titled as a contradiction between the two pages, and the Healthchecks author says their CronSim library follows Debian cron, which shows dialects differ and the tool should say so. Search results suggest free next-run testers do not draw the DST nights; that was not confirmed by opening any of them. The EU and UK change dates for 2026 are confirmed by two results.",
+        "sources": [
+          {
+            "title": "crontab(5) - Linux manual page",
+            "url": "https://man7.org/linux/man-pages/./man5/crontab.5.html",
+            "date": "",
+            "snippet": "Non-existent local times in a daylight-saving conversion never match so jobs in the missing time are not run; times that occur more than once make matching jobs run twice.",
+            "via": "search",
+            "note": "Primary: the Linux man-pages project's own page, seen in two result entries on 2026-10-13 (not opened). Oracle for the literal wall-clock rule.",
+            "verified": true
+          },
+          {
+            "title": "cron(8) - OpenBSD manual pages",
+            "url": "https://man.openbsd.org/cron",
+            "date": "",
+            "snippet": "Time changes under three hours get special handling for jobs at a specific time or coarser than hourly: forward, skipped jobs run immediately; backward, jobs are not run twice; more frequent jobs run normally; larger changes are treated as corrections.",
+            "via": "search",
+            "note": "Primary: OpenBSD's own manual page, seen in results 2026-10-13. Oracle for the classic small-change rule.",
+            "verified": true
+          },
+          {
+            "title": "cron(8) - Linux manual page",
+            "url": "https://man7.org/linux/man-pages/./man8/cron.8.html",
+            "date": "",
+            "snippet": "The Linux cron(8) page carries the same special handling for specific-time and coarser jobs as the OpenBSD page.",
+            "via": "search",
+            "note": "Seen in results 2026-10-13; second project documenting the same rule (replaces the Debian cronie address, not seen today).",
+            "verified": true
+          },
+          {
+            "title": "NetBSD Problem Report 48648",
+            "url": "https://gnats.netbsd.org/48648",
+            "date": "",
+            "snippet": "A user report that a job scheduled at 03:00 across a forward change did not run, contrary to what the manual page suggested; no confirmed resolution seen.",
+            "via": "search",
+            "note": "Seen in results 2026-10-13: an implementation report that differs from the man page (replaces the NetBSD 9.3 page, not seen today). Single report, so used only as evidence that daemons differ.",
+            "verified": true
+          },
+          {
+            "title": "How Debian Cron Handles DST Transitions",
+            "url": "https://blog.healthchecks.io/hp-rewrite/55459acaf5fec7ca23b4160f7908c23e",
+            "date": "",
+            "snippet": "The author's experiment: when the clock jumps from 1AM to 2AM a Debian cron job set for 1:30 AM runs at 2AM.",
+            "via": "search",
+            "note": "Seen in two results 2026-10-13; the author's own page for their own test. Only the skipped-hour case was visible to me.",
+            "verified": true
+          },
+          {
+            "title": "Bug 166318 - Contradicting information in crontab(5) and cron(8) about DST",
+            "url": "https://bugs.freebsd.org/166318",
+            "date": "",
+            "snippet": "FreeBSD bug report whose title says crontab(5) and cron(8) contradict each other about DST; the search summary said it was closed as fixed.",
+            "via": "search",
+            "note": "Primary: FreeBSD's own tracker, seen 2026-10-13. Shows the two pages have disagreed, so the page names its rules.",
+            "verified": true
+          },
+          {
+            "title": "crondst - PyPI",
+            "url": "https://pypi.org/project/crondst",
+            "date": "",
+            "snippet": "A Python package whose page says it supports time zones and daylight saving time for cron schedules.",
+            "via": "search",
+            "note": "A free developer library exists (seen 2026-10-13); not a visual rehearsal.",
+            "verified": true
+          },
+          {
+            "title": "Deploy cron-visualizer (Railway)",
+            "url": "https://railway.com/deploy/cron-visualizer",
+            "date": "",
+            "snippet": "A self-hostable tool that says it shows next run times in any IANA zone with daylight saving handled, running in the browser.",
+            "via": "search",
+            "note": "Seen 2026-10-13: a free option that claims DST handling; the listing was not opened, so how it treats skipped and repeated hours is unknown.",
+            "verified": true
+          },
+          {
+            "title": "Cron Expression Parser & Next Runs (hipersoft/cron-next-runs) - Apify",
+            "url": "https://apify.com/hipersoft/cron-next-runs",
+            "date": "",
+            "snippet": "A pay-per-event marketplace actor, listed from about $0.001 per cron expression parsed.",
+            "via": "search",
+            "note": "Vendor's own store page for what it sells, seen 2026-10-13 (not opened).",
+            "verified": true
+          },
+          {
+            "title": "Cron Expression Parser - Validate, Explain, Next Run Times (eliai) - Apify",
+            "url": "https://apify.com/eliai/cron-expression-parser",
+            "date": "",
+            "snippet": "A second, separately authored pay-per-event actor, priced per parsed expression (listing shows two different figures).",
+            "via": "search",
+            "note": "Second independent listing on the same marketplace, seen 2026-10-13; price figures inconsistent, so only 'priced per parse' is claimed.",
+            "verified": true
+          },
+          {
+            "title": "Daylight Saving Time 2026: When Clocks Change in Every Major Country",
+            "url": "https://www.universaltimedate.com/articles/daylight-saving-time-2026-when-clocks-change",
+            "date": "2026",
+            "snippet": "Lists EU and UK daylight saving ending 25 October 2026 at 01:00 UTC and US daylight saving ending on Sunday 1 November 2026.",
+            "via": "search",
+            "note": "Seen again 2026-10-13 (first of three agreeing results).",
+            "verified": true
+          },
+          {
+            "title": "DST start and end 2026 (ConvertTime blog)",
+            "url": "https://converttime.com/en/blog/dst-start-end-2026",
+            "date": "2026",
+            "snippet": "Blog post on 2026 daylight saving start and end dates; the search summary gave Europe 25 October and the US 1 November.",
+            "via": "search",
+            "note": "Seen 2026-10-13; second independent result for the fall-back dates.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The Linux crontab(5) page says local times that do not exist during a daylight-saving change never match (jobs in the gap do not run), and times that occur twice make matching jobs run twice (the man-pages project's own page, seen in search results 2026-10-13).",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The cron(8) manual pages (OpenBSD, and the Linux man-pages version) say clock changes under three hours get special handling for jobs at a specific time or coarser than hourly: forward, skipped jobs run immediately; backward, running a job twice is avoided; more frequent jobs run normally; OpenBSD treats changes over three hours as corrections.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A FreeBSD bug report is titled as contradicting information in crontab(5) and cron(8) about DST, and a NetBSD problem report describes a job at 03:00 that did not run across a forward change contrary to the man page; so pages and daemons have disagreed (log excerpt only, resolution not seen).",
+            "sourceIndex": 5,
+            "alsoIn": [
+              3
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A tester's experiment reports that on Debian cron, when the clock jumps from 1AM to 2AM, a job set for 1:30 AM runs at 2AM (skipped-hour case only).",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Free options exist: an open-source Python package (CronDst) states support for time zones and DST and a self-hostable browser tool lists next run times in any IANA zone with DST handled; neither listing, as seen, draws the two clock-change nights or compares scheduler rules (absence judged from search snippets only).",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, per two separately authored marketplace listings, pay-per-event cron parsers are priced per expression parsed (fractions of a cent); this gates only metered API calls, not a unique capability.",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "In 2026 the EU and UK end summer time on Sunday 2026-10-25 at 01:00 UTC and the US on Sunday 2026-11-01.",
+            "sourceIndex": 10,
+            "alsoIn": [
+              11
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "next-run list cron testers",
+          "CronSim (Healthchecks)",
+          "Vixie cron DST handling",
+          "tz transition tables"
+        ]
+      },
+      "design": {
+        "coreLoop": "Edit the cron line or change zone, year or night; the timeline and the run table redraw instantly under both rules; the visitor compares, then tries a hazard (a nightly 02:30 job, an every-10-minutes job, an hourly job) and reads the one-line verdict. Why it stays interesting: the same line gives different answers in different zones, and southern-hemisphere zones and half-hour shifts behave in surprising ways.",
+        "sophisticationHooks": [
+          "Exact transition finding from the browser's zone data (offset probe with bisection, no bundled zone files), with a bundled hand-made calendar used as the page's own known-answer test",
+          "Full cron grammar: lists, ranges, steps, names, and the day-of-month OR day-of-week rule",
+          "Side-by-side rule comparison with a verdict per run (lost, doubled, shifted to the jump instant, unchanged)",
+          "Half-hour and southern-hemisphere zones (Lord Howe, Sydney, Chatham) alongside New York and London, plus a copyable report"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: cron parser, offset-probe transition finder, two scheduler models, timeline SVG, run table, report copy, a short zone list with a search box, a self-test of at least 8 vectors from a hand-made calendar. Cut: other dialects, systemd, cloud schedulers, multi-day ranges, import of whole crontab files, three-hour-plus changes beyond a printed note.",
+        "risks": [
+          "The exact definition of a wildcard job in classic cron (which fields make a job exempt from special handling) was not confirmed from source code, only from man page wording; the page shows it as the man page's rule and says so.",
+          "Real daemons differ (a NetBSD report and a Debian experiment each differ from the other man page), so the page presents two named models, not a prediction.",
+          "No page was opened (all WebFetch hosts failed to resolve on 2026-10-13); the paywall claim rests on two marketplace listing entries and is shown nowhere on the page; the page names no product and the value case is private, offline and shows-its-working.",
+          "The lens brief said repeated jobs run once under classic cron; cron(8) supports that only for fixed-time or longer-than-hourly jobs, and the page prints that condition. The Debian experiment was verified for the skipped-hour case only.",
+          "Browser time zone data can lag the newest tzdata release and Intl cannot list transitions directly, so bisection is tested against a hand calendar; the spring dates (2026-03-08 US, 2026-03-29 EU) were not re-sourced today, so spring vectors are regression checks and the page shows them as computed from zone data; zones with unusual changes are out of scope.",
+          "The title carries no vendor name; the oracle list names man pages only as sources, with no copied text.",
+          "The pitch draft said a 02:30 job doubles in November; in New York the repeated hour in November is 01:00 to 02:00, so the 02:30 job is lost in March and the 01:30 job doubles in November. Copy and presets must use those times."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The two scheduler rules were found on their own man-page domains (man7.org, man.openbsd.org) and the fall-back dates in three agreeing results; no page could be opened (WebFetch to man7.org failed at DNS). Buildable in a morning (cron parser, Intl offset bisection, two rule models, SVG timeline); free testers exist so the value is the two-rule night view, not a paywall."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i04",
+      "title": "How Puzzle Solvers Work",
+      "plainSentence": "A lesson that lets you step a computer solver through tiling puzzles, undo its dead ends and count every solution, up to sudoku.",
+      "pitch": "Watch a slow-motion solver tile small boards with dominoes and pentominoes, then take the controls: pick the next piece yourself, see the dead end, back up, and watch a counter tick up as every tiling is found. A glowing marker always points at the square with the fewest options, and you learn why that one rule tames the search. The last rung shows that sudoku is the same kind of problem, so a puzzle designer can ask 'does it have exactly one answer?' by counting to two.",
+      "firstMinute": "A small board is already being tiled by a slow-motion solver: pieces drop in, a dead end appears, the pieces lift out, and a counter shows how many tilings have been found. A glowing marker sits on the square with the fewest options. The visitor presses Step to advance the solver and sees it hit a dead end, back up and find a full tiling, which is the first success.",
+      "conceptsToLearn": [
+        "Covering a board exactly means every square is covered by exactly one piece: no gaps, no overlaps"
+      ],
+      "whyNow": "Timeless. The same small idea sits behind pentomino puzzles and sudoku solvers, and few people see that it is one idea.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "puzzle-forge",
+        "scoutId": "artisan-2"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "algorithms-cs",
+        "mechanic": "lesson",
+        "tone": [
+          "nerdy",
+          "playful",
+          "analytical"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "web-animations",
+          "worker",
+          "pointer-events"
+        ],
+        "tags": [
+          "exact-cover",
+          "algorithm-x",
+          "dancing-links",
+          "backtracking",
+          "pentominoes",
+          "sudoku",
+          "tiling",
+          "solution-counting"
+        ],
+        "keywords": [
+          "exact-cover",
+          "backtracking",
+          "pentomino",
+          "sudoku-solver",
+          "constraint-search",
+          "tiling-puzzle",
+          "count-solutions",
+          "knuth",
+          "most-constrained-first"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "Exact cover: choose from a list of allowed placements so that every square is covered exactly once, and how a backtracking solver finds, and counts, all the ways by always branching on the most constrained square.",
+        "whyNiche": "It is the hidden common core of pentomino tilings, sudoku, and scheduling puzzles, yet most people meet it only as 'a clever linked-list trick'. Seeing the table of placements makes the trick obvious.",
+        "audience": "Curious puzzle fans, students meeting backtracking, and anyone who has wondered how a sudoku solver can prove a puzzle has only one answer.",
+        "prerequisites": [],
+        "misconceptions": [
+          "A puzzle solver just tries every combination until one works (a natural first guess).",
+          "Tiling puzzles and sudoku are unrelated families of puzzle (a natural first guess)."
+        ],
+        "misconceptionFactIndexes": [
+          0,
+          3
+        ],
+        "ahaMoment": "Re-draw the board as a table where each row is one legal placement and each column is one thing that must be covered once; solving is just picking rows with exactly one tick in every column. Then the same table solves a sudoku.",
+        "demos": [
+          "Rung 1: slow-motion solver tiling a small board with dominoes; step, undo, and a counter of tilings found",
+          "Rung 2: you pick pieces by hand and the page lights the beacon on the tightest square; compare your tries with the solver's",
+          "Rung 3: the table view, rows as placements and columns as squares, with choose, cover and undo highlighted",
+          "Rung 4: a board with two opposite corners removed, where the solver proves zero tilings; and the 6 by 10 pentomino board counted live against the published total",
+          "Rung 5: sudoku redrawn as the same table, and 'count to two' as a uniqueness check on a puzzle the visitor edits"
+        ],
+        "checkQuestions": [
+          "If a square has zero legal placements left, what must the solver do, and why is that good news for speed?",
+          "Why does picking the square with the fewest options first usually shrink the search?",
+          "A sudoku solver finds one answer. What else must it check before saying the puzzle has exactly one?",
+          "In the table view, what does it mean when a column has no rows left?"
+        ]
+      },
+      "research": {
+        "summary": "Re-checked by search only. Knuth's Dancing Links paper (arXiv) presents Algorithm X as a recursive depth-first backtracking search, uses pentomino placement as its worked example, notes that the choice of which item to branch on matters, and reports 2339 essentially different tilings of the 6 by 10 rectangle; a lecture-notes paper agrees on 2339 excluding rotations and reflections of the whole board. A second paper applies Algorithm X to pentominoes, Latin squares and sudoku. The 17-clue minimum for a one-answer sudoku was found in one attributed result and stays flagged, as do the Norvig essay and the 729 by 324 counts, which the page derives from the rules. The two named misconceptions are natural first guesses, not documented beliefs.",
+        "sources": [
+          {
+            "title": "Dancing Links (Knuth, arXiv cs/0011047)",
+            "url": "https://arxiv.org/pdf/cs/0011047",
+            "date": "",
+            "snippet": "Knuth's paper on Algorithm X and Dancing Links, with pentomino placement as the worked example (1568 placements on his board) and 2339 essentially different tilings of the 6 by 10 rectangle.",
+            "via": "search",
+            "note": "Primary source for the algorithm, the pentomino example and the 2339 count; found again by my search, not opened.",
+            "verified": true
+          },
+          {
+            "title": "Python for education: the exact cover problem (Kapanowski, arXiv 1010.5890)",
+            "url": "https://arxiv.org/abs/1010.5890",
+            "date": "",
+            "snippet": "Algorithm X applied to pentominoes, Latin squares and sudoku as exact cover problems.",
+            "via": "search",
+            "note": "Independent paper showing pentominoes and sudoku are both exact cover.",
+            "verified": true
+          },
+          {
+            "title": "Tilings (arXiv math/0501170, lecture notes)",
+            "url": "https://arxiv.org/pdf/math/0501170",
+            "date": "",
+            "snippet": "Lecture notes on tilings; search summary says they give 2339 distinct ways to tile a 6 by 10 rectangle excluding whole-board rotations and reflections.",
+            "via": "search",
+            "note": "Independent math source for 2339.",
+            "verified": true
+          },
+          {
+            "title": "Pentomino (Mathwords)",
+            "url": "https://www.mathwords.com/p/pentomino.htm",
+            "date": "",
+            "snippet": "Pentomino page; several results agree on 2339 distinct 6 by 10 tilings excluding rotations and reflections.",
+            "via": "search",
+            "note": "Result listed for the 2339 query; the summary did not quote it individually, so unverified.",
+            "verified": false
+          },
+          {
+            "title": "Mathematics of Sudoku (encyclopedia article)",
+            "url": "https://en.wikipedia.org/wiki/Mathematics_of_Sudoku",
+            "date": "",
+            "snippet": "Says an ordinary one-answer sudoku needs at least 17 clues, from an exhaustive computer search by McGuire, Tugemann and Civario.",
+            "via": "search",
+            "note": "Only one attributed result saw the 17-clue claim, so it stays flagged.",
+            "verified": false
+          },
+          {
+            "title": "Sudoku Solver implementing Knuth's Dancing Links (Berkeley)",
+            "url": "https://ocf.berkeley.edu/~jchu/publicportal/sudoku/sudoku.paper.html",
+            "date": "",
+            "snippet": "Sudoku solver paper using the exact-cover encoding of sudoku.",
+            "via": "search",
+            "note": "Counts of 729 and 324 appeared in a blended summary, so unverified; the page derives them.",
+            "verified": false
+          },
+          {
+            "title": "Exact Cover Examples (St. Olaf)",
+            "url": "https://www.stolaf.edu/people/hansonr/sudoku/exactcover.htm",
+            "date": "",
+            "snippet": "Page of exact cover examples including the sudoku encoding.",
+            "via": "search",
+            "note": "Blended summary again; unverified.",
+            "verified": false
+          },
+          {
+            "title": "Solving Every Sudoku Puzzle (Norvig)",
+            "url": "https://www.norvig.com/sudoku.html",
+            "date": "",
+            "snippet": "Essay solving sudoku by constraint propagation and search, branching on the square with the fewest possibilities.",
+            "via": "search",
+            "note": "Scout's source; not found again in my searches, so unverified.",
+            "verified": false
+          },
+          {
+            "title": "Algorithm X: exact cover definition (tech.io playground)",
+            "url": "https://tech.io/playgrounds/156252/algorithm-x/exact-cover-definition",
+            "date": "",
+            "snippet": "Tutorial on exact cover and Algorithm X mentioning fewest-options heuristics.",
+            "via": "search",
+            "note": "Scout's source; not found again in my searches.",
+            "verified": false
+          },
+          {
+            "title": "There is no 16-clue sudoku (McGuire, Tugemann, Civario, arXiv 1201.0749)",
+            "url": "https://arxiv.org/abs/1201.0749",
+            "date": "",
+            "snippet": "Exhaustive computer search found no sudoku with 16 clues and a unique solution.",
+            "via": "search",
+            "note": "Scout's source; not found again by me, so the 17-clue fact is flagged.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Pentomino tilings and sudoku are both worked as exact cover problems, and Knuth's Algorithm X is a recursive depth-first backtracking search that finds all solutions; Dancing Links is its fast implementation.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              0
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Knuth's Dancing Links paper uses pentomino placement as its worked example, with each possible placement of a piece as one row of the table.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The 6 by 10 rectangle can be tiled by the 12 pentominoes in 2339 essentially different ways, counting rotations and reflections of the whole board as the same (so 4 times 2339 = 9356 raw tilings, computed).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Knuth's paper stresses that the choice of which item to branch on strongly affects speed (branch where something is hardest to fill); the page measures the effect of branching on the fewest-options square on its own boards, computed.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, per the encyclopedia article on the mathematics of sudoku, an ordinary one-answer sudoku needs at least 17 clues (exhaustive computer search by McGuire, Tugemann and Civario); only one attributed result found, unconfirmed.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Derived from the rules, not quoted: sudoku as exact cover has 9 times 9 times 9 = 729 candidate placements and 4 times 81 = 324 things to cover once (cells, row-digit, column-digit and box-digit pairs).",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "Dancing Links",
+          "pentomino puzzles",
+          "sudoku solvers",
+          "visual algorithm explainers"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: watch a small solver, take over and choose the next piece, see the table behind the board, answer a check question, and move up a rung until sudoku turns out to be the same table.",
+        "sophisticationHooks": [
+          "A beacon that glows on the square with the fewest options and reveals why branching there prunes the search",
+          "Board and table views kept in sync, so every placement is both a shape and a table row, and cover and undo are visible in both",
+          "Live counting against a published total: the in-page solver counts the 6 by 10 pentomino tilings in a worker and checks them against 2,339",
+          "A sudoku designer rung: edit clues and the solver counts to two, reporting none, one or several answers"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: one generic exact-cover solver (plain recursive search over arrays, no pointer trick needed), pentomino and domino boards, board and table views, step and undo controls, a worker-based 6 by 10 count checked against 2339 (raw 9356), a sudoku rung with a count-to-two answer counter, five rungs with check questions. Cut: free-form piece editor, other polyominoes, speed race. If time runs short the table-view animation shrinks to a static highlighted table, and rung 4's mutilated board stays as a single preset.",
+        "risks": [
+          "The 729 and 324 sudoku counts are derived from the rules by the page and shown as derived, not as a sourced figure.",
+          "The 2339 figure counts tilings up to rotating or flipping the whole board; the page says so and labels the raw total it finds (9356) as computed.",
+          "Counting all tilings of the 6 by 10 board live must stay fast; builders time it, run it in a worker (the page shell allows blob workers), and fall back to counting the 3 by 20 board or showing a progress bar if it is slow.",
+          "The 17-clue minimum rests on one attributed result and shows as 'as of 2026-10-13, per the encyclopedia article on the mathematics of sudoku', or is omitted.",
+          "The Norvig essay and tutorial pages were not found again; the page cites Knuth's paper for the branching rule and shows its own measured node counts.",
+          "The two misconceptions are natural first guesses, not documented beliefs; the page words them as 'a natural first guess' and cites no survey.",
+          "The mutilated-board claim (zero tilings with two opposite corners removed) is computed by the page and labelled computed.",
+          "Risk of being too abstract: board view first, table view second, plain sentence in the intro's first line; the term 'exact cover' is introduced only after the first success."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "Algorithm X, the pentomino example and the 2339 count for the 6 by 10 board are stated in the primary paper, with a second paper agreeing on the count; the sudoku clue minimum and the Norvig essay stay flagged. A single generic solver with five rungs is buildable in a morning, and the misconceptions are honest first guesses, not documented beliefs."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i05",
+      "title": "Why Flat Maps Distort",
+      "plainSentence": "A lesson that lets you drag countries on a world map and watch their size change, to see why flat maps always distort something.",
+      "pitch": "Drag Greenland down a Mercator map and watch it shrink beside Africa, then switch to other projections with Tissot's circles drawn on them and plot a flight that is curved on one map and straight on another. A ladder of five small demos with check-yourself questions tests the assumption that one map is the true one and ends on the point that every map is an argument. Made for travellers and geography fans, no maths needed, all offline.",
+      "firstMinute": "The page opens on a Mercator world map where a ghost-ember copy of Greenland already slides toward Africa and shrinks, with the caption that it is the same country with the same true area. The visitor drags Greenland themself and sees a live 'drawn size vs true size' readout fall to 1x at the equator. No reading is needed for that first success.",
+      "conceptsToLearn": [
+        "A map is a flat picture of a ball, so some stretching is unavoidable",
+        "Drawn size versus true size is a ratio: 1x means the country is drawn at its real size"
+      ],
+      "whyNow": "Timeless: the Greenland-versus-Africa picture is a perennial geography topic and a hot spot for a classroom assumption about map sizes. Nothing on the page depends on the date.",
+      "origin": {
+        "agent": "architect",
+        "lens": "lesson-map-projections",
+        "scoutId": "architect-1"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "canvas2d",
+          "pointer-events",
+          "dom-ui"
+        ],
+        "tags": [
+          "mercator",
+          "tissot-indicatrix",
+          "area-distortion",
+          "great-circle",
+          "equal-area",
+          "cartography",
+          "true-size",
+          "gnomonic"
+        ],
+        "keywords": [
+          "mercator",
+          "tissot",
+          "greenland-vs-africa",
+          "conformal",
+          "equal-area",
+          "great-circle-route",
+          "map-lesson",
+          "area-scale"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A sphere cannot be flattened without distorting something. A projection chooses what to keep: Mercator keeps angles (conformal) and so stretches lengths by sec(latitude) and areas by sec squared (4 times at 60 degrees, about 33 times at 80); equal-area maps keep area and bend shapes; no projection can be both conformal and equal-area; great circles are straight only on a gnomonic map.",
+        "whyNiche": "Usual explanations are either a static 'Mercator is bad' infographic or a true-size drag toy with no why: nobody shows the area-scale curve, the Tissot circles and the great-circle flight together, or says that Mercator is excellent at its actual job (straight compass courses).",
+        "audience": "Curious travellers, geography fans, students and anyone who has argued about Greenland on a world map.",
+        "prerequisites": [
+          "what latitude and longitude are, roughly",
+          "that Earth is a ball"
+        ],
+        "misconceptions": [
+          "The wall-map (Mercator) shows true country sizes.",
+          "There is one correct projection and the others are wrong.",
+          "The straight line drawn on a map is the shortest route."
+        ],
+        "misconceptionFactIndexes": [
+          0,
+          5
+        ],
+        "ahaMoment": "Dragging the same Tissot circle from the equator to the Arctic: on Mercator it stays round but swells to many times its size, on the equal-area map it keeps its size but flattens into an ellipse, and you realise you can never keep both.",
+        "demos": [
+          "Rung 1: drag Greenland (and any country) across a Mercator map with a live drawn-size-over-true-size readout and a ghost showing home size.",
+          "Rung 2: the stretch dial: slide a latitude marker and see the sec-squared area multiplier (1x, 2x at 45 degrees, 4x at 60, about 33x at 80, computed) beside a row of identical true-size circles.",
+          "Rung 3: Tissot's circles on a gallery of five projections (Mercator, plain equirectangular, equal-area cylindrical, sinusoidal, azimuthal) with a shape-error and area-error meter showing that no map zeroes both.",
+          "Rung 4: pick two cities and fly the shortest route: curved on Mercator, straight on a gnomonic view, with the constant-compass-heading line (rhumb line) for contrast.",
+          "Rung 5: 'argue with a map': match jobs (sailing course, country sizes, polar flights) to the projection that serves them."
+        ],
+        "checkQuestions": [
+          "On a Mercator map, by about what factor is the area of a small shape at 60 degrees latitude exaggerated? (4)",
+          "Greenland is about what fraction of South America's real area? (about one eighth; Mercator draws it larger)",
+          "On an equal-area map, what happens to a Tissot circle near the edge? (same area, becomes an ellipse)",
+          "What does a great-circle flight look like on a gnomonic map? (a straight line)",
+          "Why can't a map be both equal-area and conformal? (a sphere cannot be flattened keeping both angles and areas true)"
+        ]
+      },
+      "research": {
+        "summary": "Re-checked by search only. PROJ's own documentation says Mercator is conformal, draws rhumb lines straight, is poor for world maps, and shows Greenland larger than South America though it is about one eighth of its area. Several results agree great circles are straight only on a gnomonic map and that Mercator straight lines are rhumb lines. Four results agree on Tissot behaviour (circles stay round but change size on conformal maps, keep area but become ellipses on equal-area maps). A sphere cannot be mapped both conformally and equal-area; the sec-squared area multipliers are derived by the page. Africa about 14 times Greenland and the belief that wall maps show true sizes rest on weak or informal sources, so they stay flagged.",
+        "sources": [
+          {
+            "title": "Mercator (PROJ documentation)",
+            "url": "https://proj.org/en/stable/operations/projections/merc.html",
+            "date": "",
+            "snippet": "The PROJ project's own page describes Mercator as conformal, rhumb lines as straight, and as unsuited to world maps: Greenland is drawn larger than South America although it is about 1/8 of its area.",
+            "via": "search",
+            "note": "Primary documentation; found again in my search.",
+            "verified": true
+          },
+          {
+            "title": "Gnomonic (ArcGIS Pro documentation)",
+            "url": "https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/gnomonic.html",
+            "date": "",
+            "snippet": "The vendor's page says gnomonic projects great circles as straight lines and is neither conformal nor equal-area.",
+            "via": "search",
+            "note": "Vendor documentation of its own projection list.",
+            "verified": true
+          },
+          {
+            "title": "Understanding great circles and rhumb lines (Mapscaping)",
+            "url": "https://mapscaping.com/understanding_great_circles_and_rhumb_lines/",
+            "date": "",
+            "snippet": "Great circles are shortest paths and appear curved on Mercator; rhumb lines are constant-bearing paths.",
+            "via": "search",
+            "note": "Re-found by my search; independent of the vendor page.",
+            "verified": true
+          },
+          {
+            "title": "Great Circle vs Rhumb Line (Kavas)",
+            "url": "https://www.kavas.com/blog/great-circle-and-rhumbline",
+            "date": "",
+            "snippet": "Explains that Mercator straight lines are rhumb lines and the great-circle route looks curved.",
+            "via": "search",
+            "note": "Re-found by my search.",
+            "verified": true
+          },
+          {
+            "title": "Map Distortion with Tissot's Indicatrix (GIS Geography)",
+            "url": "https://gisgeography.com/map-distortion-tissots-indicatrix/",
+            "date": "",
+            "snippet": "On a conformal map such as Web Mercator the indicatrices are all circles of different sizes.",
+            "via": "search",
+            "note": "Tissot behaviour for conformal maps.",
+            "verified": true
+          },
+          {
+            "title": "Tissot's indicatrix (encyclopedia article)",
+            "url": "https://en.wikipedia.org/wiki/Tissot%27s_indicatrix",
+            "date": "",
+            "snippet": "On equal-area maps the indicatrices have the same area while shapes and orientations vary.",
+            "via": "search",
+            "note": "Independent source for both classes.",
+            "verified": true
+          },
+          {
+            "title": "Visualize spatial error using Tissot indicatrices (MathWorks)",
+            "url": "https://www.mathworks.com/help/map/visualize-spatial-error-using-tissot-indicatrices.html",
+            "date": "",
+            "snippet": "Software documentation noting that equal-area projections produce ellipses of equal area.",
+            "via": "search",
+            "note": "Third independent result for Tissot behaviour.",
+            "verified": true
+          },
+          {
+            "title": "Map projection concept page (EPFL GraphSearch)",
+            "url": "https://graphsearch.epfl.ch/en/concept/15346132",
+            "date": "",
+            "snippet": "Says a conformal projection cannot be equal-area, attributed to Euler (1775) and a consequence of Gauss's 1827 theorem.",
+            "via": "search",
+            "note": "The Euler attribution is secondary; the site mirrors encyclopedia text.",
+            "verified": true
+          },
+          {
+            "title": "Map Distortion with Tissot's Indicatrix (University of Lyon course page)",
+            "url": "https://math.univ-lyon1.fr/~alachal/diaporamas/diaporama_cartographie3/Map_Distortion_Tissot_Indicatrix.htm",
+            "date": "",
+            "snippet": "Course page noting every projection distorts shape, distance, direction, scale or area and cannot preserve all at once.",
+            "via": "search",
+            "note": "Supports the trade-off in general terms, not the theorem itself.",
+            "verified": true
+          },
+          {
+            "title": "The True Size of Africa: immappancy (UCSB geography)",
+            "url": "https://legacy.geog.ucsb.edu/?p=13058",
+            "date": "",
+            "snippet": "Essay arguing Mercator's northern exaggeration persists in the popular imagination; cites an informal size-guessing survey.",
+            "via": "search",
+            "note": "Not found again in my searches; informal source for the misconception.",
+            "verified": false
+          },
+          {
+            "title": "Are you prone to 'immappancy'? (Development Education)",
+            "url": "https://developmenteducation.ie/?p=1293",
+            "date": "",
+            "snippet": "Education article on how people misjudge country sizes from Mercator maps.",
+            "via": "search",
+            "note": "Not found again in my searches; informal.",
+            "verified": false
+          },
+          {
+            "title": "Actual size of Greenland (Mental Floss)",
+            "url": "https://www.mentalfloss.com/geography/actual-size-greenland",
+            "date": "",
+            "snippet": "Popular article on Greenland's real size against its Mercator look; several results put Africa at roughly 14 times Greenland.",
+            "via": "search",
+            "note": "Search summary did not attribute the figures to single entries, so the ratio is unverified.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "PROJ's documentation says Mercator is conformal, draws rhumb lines (constant heading) as straight lines, and is poor for world maps because the projected area of Greenland looks larger than South America's although it is about one eighth of it.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Great circles are straight lines on a gnomonic projection, while on Mercator the straight lines are rhumb lines and most great circles are curved.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2,
+              3
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "On conformal maps (Mercator) Tissot circles stay circles but change size; on equal-area maps they keep their area but become ellipses of varying shape.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              5,
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "No map projection can be both equal-area and conformal (a result tied to Gauss's Theorema Egregium; the Euler attribution is secondary).",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Derived, not quoted: Mercator's linear scale is sec(latitude) in every direction, so area scales by sec squared: 4.00 at 60 degrees, 8.55 at 70 and 33.16 at 80 (computed here). The page computes these; builders check the formulas against Snyder's USGS Working Manual.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The belief that wall maps show true country sizes is described in informal essays and an education article, not in a controlled study; unverified by my search and shown only as a commonly raised assumption.",
+            "sourceIndex": 9,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, several search results put Africa at roughly 14 times Greenland's area (about 30.2 versus 2.17 million square km); the entries were not individually attributed, so the page shows 'about' and uses its own bundled outlines.",
+            "sourceIndex": 11,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "a drag-countries true-size web toy",
+          "Tissot's indicatrix figures in GIS manuals",
+          "Snyder's Map Projections: A Working Manual (USGS Professional Paper 1395)",
+          "Wolfram Demonstrations on projection distortion"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: each rung gives one manipulable map with a live readout, then one check question that must be answered before the next rung unlocks; the ladder ends on the trade-off slider and the 'argue with a map' matching exercise.",
+        "sophisticationHooks": [
+          "Live distortion meters: drawn-to-true area ratio per country computed by spherical polygon area against projected polygon area, not a canned number.",
+          "Tissot circles drawn exactly (analytic Jacobian per projection) and a morph slider between projections.",
+          "Great-circle flight drawn on Mercator and on a gnomonic view with the rhumb line, with an honest note that gnomonic shows under a hemisphere.",
+          "Ember ghost of each dragged country at its home size and a spin-the-pole azimuthal view whose meridians whirl like a vortex."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: about 25 coarse hand-simplified country and continent outlines (original, a few dozen vertices each, labelled approximate), 12 cities, five projections as pure functions, five rungs with fixed presets, check questions, intro and explainer. Cut: the Mercator-to-equal-area morph slider, full-resolution coastlines, ellipsoid maths, more than five projections, user data, shareable states. Jargon (conformal, equal-area, Tissot circle, gnomonic, rhumb line) is defined at first use and capped at those five terms.",
+        "risks": [
+          "Country outlines must be hand-made because public-domain datasets cannot be downloaded into the repo; coarse shapes make drawn areas approximate, so the page shows ratios as 'about' and labels outlines approximate.",
+          "The Africa-to-Greenland ratio of about 14 is unverified (blended search summary); the page shows ratios computed from its own outlines and quotes only the PROJ statement (Greenland about one eighth of South America) as sourced.",
+          "The sec-squared multipliers are derived by the page (area is the product of two equal linear scales); builders check the scale formula against Snyder's USGS manual and label numbers as computed.",
+          "The misconception that wall maps show true sizes is documented only informally (sources not found again by me); the page says 'commonly raised assumption', never cites a study or a percentage.",
+          "A drag-countries toy already exists on the web; the differentiation is the area-scale dial, Tissot circles and gnomonic flight, so the first screen must not read as a clone, and no site is named on the page.",
+          "Jargon load: five technical terms across five rungs; QA's stranger test should confirm each is defined where it first appears.",
+          "Equal Earth, Gall-Peters and other named projections were not source-verified; the page names only the five bundled projections and no inventors or years."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "Mercator facts, gnomonic and rhumb line facts, Tissot behaviour and the conformal versus equal-area limit each agreed across separate results or the PROJ docs; area ratio and the misconception stay flagged. Scope cut to five rungs and 25 coarse outlines is buildable in a morning."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i06",
+      "title": "Priority Inversion Lesson",
+      "plainSentence": "A lesson that shows, on draggable task timelines, how a low-priority task holding a lock can stall an urgent one, and what fixes it.",
+      "pitch": "In 1997 the Mars Pathfinder spacecraft kept resetting because a lock was held by the wrong task at the wrong time, and the fix was a single setting. This lesson replays that bug on a three-task timeline, lets the visitor stretch one task and see the urgent one wait longer and longer, then flips on priority inheritance and watches it recover. A last rung compares a binary semaphore with a mutex.",
+      "firstMinute": "The first frame already shows three coloured task lanes over time, with the urgent task blocked behind a lock and a red 'reset' marker where its deadline passes. A toggle labelled priority inheritance sits beside it; flipping it replays the same schedule and the urgent task finishes on time. No reading is needed to see the before and after.",
+      "conceptsToLearn": [
+        "A lock lets only one task use shared data at a time, so others wait"
+      ],
+      "whyNow": "Timeless: the 1997 Pathfinder resets are a standard teaching case, documented first-hand by the mission's software lead. Not news-bound.",
+      "origin": {
+        "agent": "cards",
+        "lens": "reddit-hot-threads",
+        "scoutId": "cards-2"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "algorithms-cs",
+        "mechanic": "lesson",
+        "tone": [
+          "nerdy",
+          "analytical",
+          "dramatic"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "pointer-events"
+        ],
+        "tags": [
+          "priority-inversion",
+          "mutex",
+          "semaphore",
+          "priority-inheritance",
+          "real-time-scheduling",
+          "concurrency",
+          "locks",
+          "embedded-systems"
+        ],
+        "keywords": [
+          "mutex-vs-semaphore",
+          "priority-ceiling",
+          "task-scheduling",
+          "deadline",
+          "mars-pathfinder",
+          "binary-semaphore",
+          "preemption"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "Priority inversion: when tasks share a lock and are scheduled by priority, a low-priority lock holder can be preempted by medium-priority work, so the urgent task waits for the medium one without ever sharing its lock; priority inheritance boosts the holder while it blocks someone more urgent.",
+        "whyNiche": "Most explanations of locks stop at 'only one at a time'. Priority inversion is the part that sinks real-time systems, and the mutex versus binary semaphore difference only makes sense once the visitor has seen it.",
+        "audience": "Curious programmers and students who have used locks or heard 'mutex vs semaphore' and want the picture, plus anyone who likes engineering failure stories.",
+        "prerequisites": [
+          "A lock lets one task at a time use shared data"
+        ],
+        "misconceptions": [
+          "A binary semaphore is just a mutex with a count of one (a common shortcut that RTOS tutorials correct).",
+          "A lock can only delay an urgent task by the length of the other task's critical section (without inheritance the delay is uncontrolled)."
+        ],
+        "misconceptionFactIndexes": [
+          2,
+          1
+        ],
+        "ahaMoment": "Stretching the medium-priority task, which never touches the lock, and watching the urgent task's wait grow with it; then switching inheritance on and seeing the wait shrink to just the lock holder's short section.",
+        "demos": [
+          "Two tasks, one lock: the second waits (the only prerequisite concept).",
+          "Three tasks by priority with a shared lock: the bug replays, the urgent task misses its deadline and a watchdog marker fires.",
+          "Stretch the medium task: the urgent task's wait grows without limit.",
+          "Switch priority inheritance on: the holder is boosted, the wait is only its critical section.",
+          "Switch to a priority ceiling and to a plain binary semaphore: see which protects and which does not boost."
+        ],
+        "checkQuestions": [
+          "Which task runs while the urgent one waits, and why does it not need the lock?",
+          "With inheritance on, what priority does the lock holder run at while the urgent task is blocked on it?",
+          "Why does a signalling semaphore not give the holder a boost?",
+          "What is the longest the urgent task can now wait?"
+        ]
+      },
+      "research": {
+        "summary": "The 1997 Pathfinder reset story is documented first-hand by a JPL software lead (a Dr. Dobb's article and a mailing-list message copied on a course page) and retold by a student blog: a low-priority task held a lock a high-priority bus task needed, medium-priority work kept preempting the holder, a watchdog forced resets, and the fix was enabling the lock's priority-inheritance option, sent to the spacecraft remotely. The formal result comes from the 1990 Sha, Rajkumar and Lehoczky paper (abstract and lecture notes seen): ordinary primitives allow uncontrolled inversion, inheritance and ceiling protocols fix it, and the ceiling protocol bounds blocking to one critical section and prevents deadlock. RTOS tutorials agree that mutexes have an owner and priority inheritance while binary semaphores are for signalling, with the boundary depending on the API. Reddit was not reachable, so no forum thread was seen.",
+        "sources": [
+          {
+            "title": "Glenn E Reeves account of the Pathfinder problem (Cornell course page)",
+            "url": "https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder2.html",
+            "date": "",
+            "snippet": "A first-hand message from the mission software lead: the fix was to change the creation flags of the lock to enable priority inheritance.",
+            "via": "search",
+            "note": "Re-found. First-hand message from the mission software lead: the fix was changing the lock's creation flags to enable priority inheritance.",
+            "verified": true
+          },
+          {
+            "title": "What really happened on Mars Rover Pathfinder (Cornell course page)",
+            "url": "https://www.cs.cornell.edu/courses/cs614/1999sp/papers/pathfinder.html",
+            "date": "",
+            "snippet": "Account of the bus task, communications task and meteorological task interaction and the watchdog resets.",
+            "via": "search",
+            "note": "Not re-found by my searches; the claim it supports is covered by the other Pathfinder sources.",
+            "verified": false
+          },
+          {
+            "title": "The case of Mysterious System Resets on Mars Pathfinder (delta.nitt.edu blog)",
+            "url": "https://delta.nitt.edu/blogs/the-case-of-mysterious-system-resets-on-mars-pathfinder",
+            "date": "",
+            "snippet": "Student blog retelling the resets, the lab replica, the trace analysis and the remote patch enabling priority inheritance.",
+            "via": "search",
+            "note": "Re-found. Independent student retelling: lab replica with trace logs reproduced the reset, then a remote patch enabled inheritance.",
+            "verified": true
+          },
+          {
+            "title": "SRL 1990: Priority Inheritance Protocols (Sha, Rajkumar, Lehoczky)",
+            "url": "https://www.math.unipd.it/~tullio/RTS/2009/SRL-1990.pdf",
+            "date": "1990",
+            "snippet": "Paper copy: ordinary primitives can block a higher-priority job for an unbounded time; inheritance removes unbounded inversion; the ceiling protocol bounds blocking to one critical section and prevents deadlock.",
+            "via": "search",
+            "note": "Re-found: a course copy of the paper; the abstract says plain primitives allow uncontrolled inversion and that the ceiling protocol bounds blocking to one critical section and prevents deadlock.",
+            "verified": true
+          },
+          {
+            "title": "Priority inheritance (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Priority_inheritance",
+            "date": "",
+            "snippet": "Encyclopedia article on the technique of temporarily raising a lock holder's priority to that of the highest-priority task it blocks.",
+            "via": "search",
+            "note": "Not re-found by my searches (Wikipedia cannot be fetched today).",
+            "verified": false
+          },
+          {
+            "title": "Difference between Binary Semaphore and Mutex (GeeksforGeeks)",
+            "url": "https://www.geeksforgeeks.org/?p=472010",
+            "date": "",
+            "snippet": "Tutorial comparing the two; the search summary noted that a binary semaphore is often thought equivalent to a mutex, which is not completely correct.",
+            "via": "search",
+            "note": "Not re-found by my searches; single result earlier.",
+            "verified": false
+          },
+          {
+            "title": "Semaphores and Mutexes (High Integrity Systems RTOS tutorial)",
+            "url": "https://www.highintegritysystems.com/downloads/RTOS_Tutorials/Semaphores_and_Mutexes.pdf",
+            "date": "",
+            "snippet": "RTOS tutorial: mutexes carry priority inheritance, which only makes sense when the same task takes and gives; binary semaphores suit signalling between tasks and interrupts.",
+            "via": "search",
+            "note": "Re-found: an RTOS tutorial saying mutexes carry priority inheritance with ownership, binary semaphores suit signalling. Agrees with other RTOS articles in the same results.",
+            "verified": true
+          },
+          {
+            "title": "Semaphores chapter 31 (OSTEP, hosted copy at Villanova)",
+            "url": "https://www.ece.villanova.edu/~rperry/os/ostep/Chapters/31-threads-sema.pdf",
+            "date": "",
+            "snippet": "Operating-systems textbook chapter: a semaphore is an integer manipulated by wait and post, the initial value sets its behaviour, and a negative value counts waiting threads.",
+            "via": "search",
+            "note": "Not re-found by my searches; the textbook definition is dropped from the facts.",
+            "verified": false
+          },
+          {
+            "title": "Priority Inversion: How We Found It, How We Fixed It (Dr. Dobb's)",
+            "url": "https://www.drdobbs.com/a-conversation-with-glenn-reeves/184411097?pgno=4",
+            "date": "",
+            "snippet": "Article by the mission's software lead on finding priority inversion on the lab replica and fixing it by enabling the mutex's inheritance flag.",
+            "via": "search",
+            "note": "Re-found as a separate result from the Cornell copy; the same author, so first-hand.",
+            "verified": true
+          },
+          {
+            "title": "Real-time systems lecture notes on resource access protocols (Hamburg host of Lund notes)",
+            "url": "https://tams.informatik.uni-hamburg.de/lehre/2016ss/vorlesung/es/doc/cs.lth.se-RTP-F6b.pdf",
+            "date": "",
+            "snippet": "Course notes on the priority ceiling protocol: a task that has entered its first critical section is not blocked again, so blocking is at most one critical section.",
+            "via": "search",
+            "note": "Independent course material that agrees with the 1990 paper's abstract on the ceiling bound.",
+            "verified": true
+          },
+          {
+            "title": "Mutex vs. Semaphores, Part 2: The Mutex (Feabhas blog)",
+            "url": "https://blog.feabhas.com/2009/09/mutex-vs-semaphores-–-part-2-the-mutex/",
+            "date": "",
+            "snippet": "Embedded-training blog on the mutex, ownership and priority inversion.",
+            "via": "search",
+            "note": "Appeared with the RTOS articles that distinguish ownership and signalling; individual claims not attributed in the summary.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "In the 1997 Mars Pathfinder resets, a low-priority task held a lock needed by a high-priority bus task, medium-priority work kept preempting the holder, a watchdog forced system resets, and the fix enabled the lock's priority-inheritance flag, uplinked to the spacecraft.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              8,
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Sha, Rajkumar and Lehoczky (IEEE Transactions on Computers, 1990): direct use of ordinary synchronisation primitives can cause uncontrolled priority inversion; basic priority inheritance and the priority ceiling protocol both solve it, and the ceiling protocol bounds blocking to one critical section of a lower-priority task and prevents deadlock.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "RTOS tutorials distinguish a mutex (has an owner, supports priority inheritance, for mutual exclusion) from a binary semaphore (no owner, for signalling between tasks and interrupts); the boundary is API-specific, so the page teaches intent and not a universal rule.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Under basic priority inheritance a lock holder runs at the priority of the highest-priority task blocked on it while it holds the lock (the mechanism the Pathfinder fix switched on).",
+            "sourceIndex": 3,
+            "alsoIn": [
+              0
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "Mars Pathfinder post-mortems",
+          "Operating-systems course scheduling timelines",
+          "RTOS tutorial diagrams",
+          "Dining philosophers visualisers"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: each rung is one fixed-priority timeline the visitor edits (task length, lock on or off, inheritance on or off), predicts the outcome for the urgent task, then sees it replay step by step. Check questions follow the rungs.",
+        "sophisticationHooks": [
+          "A small deterministic fixed-priority scheduler as a pure function (tasks, lock sections, protocol: none, inheritance, ceiling) that returns the exact timeline and the urgent task's wait.",
+          "Unbounded-wait chart: urgent-task wait versus medium-task length, flat with inheritance and rising without it.",
+          "Semaphore rung that shows plainly why a signalling semaphore gives the holder no boost, taught as intent and not as a universal ownership rule."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: three-task timeline view in svg, scheduler function with three protocols, five rungs, four check questions, node self-checks hand-traced from a textbook-style three-task example (urgent wait with and without inheritance). Cut: more than three tasks, interrupts, multi-core, code editing, saved progress.",
+        "risks": [
+          "No forum thread was seen (Reddit unreachable); the page makes no claim about what programmers ask or argue, and names no thread or user.",
+          "The Cornell page 1, the Wikipedia inheritance article, the tutorial site and the OSTEP chapter were not re-found; the page does not rely on them.",
+          "The mutex versus binary semaphore difference was re-found in one attributable RTOS tutorial and in blended search results; treat the second source as unverified and word the rung as 'usually' with the tutorial's name and date.",
+          "Mutex versus binary semaphore is API-specific; the page presents it as 'usually' and teaches intent plus inheritance, never a universal ownership rule.",
+          "A scheduler timeline can look like a simulator; the page is a lesson with fixed demos and check questions and says it is a classroom model, not flight software.",
+          "One search result gave a motive for the disabled flag (reducing overhead) that the first-hand accounts do not state; the page leaves the motive out.",
+          "The page uses the mission and agency names only as text references: no logos, mission imagery or implied endorsement; the rover or spacecraft is drawn from scratch.",
+          "Self-checks are hand-traced from the page's own three-task example; they are regression checks for a lesson, not an oracle."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The Pathfinder cause and fix are stated first-hand by the software lead in two places and retold independently; the 1990 paper's abstract and lecture notes agree on inheritance and the ceiling bound. The mutex versus semaphore intent rests on one re-found tutorial plus blended results, so it is flagged. A scheduler function with an SVG timeline and five rungs fits a morning."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i07",
+      "title": "Great-Circle Route Calculator",
+      "plainSentence": "A calculator that lets you compare the shortest route between two places with the straight-line map course, with distances and headings.",
+      "pitch": "Pick two places from a bundled list or type coordinates, and see the great-circle distance, the constant-heading (rhumb line) distance, the extra distance the straight-on-the-map course costs, and how the compass heading changes along the shortest route. Two small maps show the same trip on Mercator and on a gnomonic view, and the waypoints (every N km) can be copied as a plain list. Everything runs in the browser and shows its formulas.",
+      "firstMinute": "The page opens with a sample trip, Los Angeles airport (LAX) to Tokyo Narita (NRT), already computed here on a sphere: about 8,754 km along the great circle against about 9,236 km along the constant-heading course, roughly 5.5 percent more. Both routes are drawn on the Mercator map, and the visitor swaps either end to see the numbers change instantly.",
+      "conceptsToLearn": [
+        "great circle: the shortest path between two points on a sphere",
+        "rhumb line: a path that keeps one compass heading, a straight line on a Mercator map"
+      ],
+      "whyNow": "Timeless utility for travellers, pilots-in-training, sailors and trivia lovers; it pairs with the map-distortion lesson but works alone.",
+      "origin": {
+        "agent": "architect",
+        "lens": "lesson-map-projections",
+        "scoutId": "architect-2"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "calculator",
+        "tone": [
+          "analytical",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "localstorage"
+        ],
+        "tags": [
+          "great-circle",
+          "rhumb-line",
+          "haversine",
+          "bearing",
+          "waypoints",
+          "route-planning",
+          "distance-calculator",
+          "gnomonic"
+        ],
+        "keywords": [
+          "great-circle-distance",
+          "rhumb-line",
+          "initial-bearing",
+          "route-waypoints",
+          "shortest-route",
+          "flight-distance",
+          "haversine-formula",
+          "mercator-straight-line"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Compute, for any two points on Earth, the great-circle distance and bearings, the rhumb-line distance and constant bearing, the percentage penalty of the rhumb line, and evenly spaced waypoints along either path.",
+        "audience": "Travellers curious why flights curve, student pilots and sailors learning route planning, teachers, trivia and map fans.",
+        "paywallEvidence": [],
+        "freeGap": "Free tools already do the core job: a map-click nautical calculator with distances and bearings, free spreadsheets with waypoints, a free lite desktop program. No paywall is claimed. The remaining gap: private and offline, every formula shown with numbers, side-by-side Mercator and gnomonic pictures, an honest sphere-error note. The page names no product.",
+        "oracle": "Exact identities on a sphere of radius 6371 km (stated on the page): quarter meridian = pi/2 times R = 10007.54 km; one equatorial degree of longitude = 111.195 km; antipodes = pi times R = 20015.09 km; a rhumb along a parallel = cos(latitude) times longitude difference times R; rhumb equals great circle along a meridian. Computed by script. Worked pair LAX to NRT: 8,754 km great circle (two sites), 9,236 km rhumb (one site, plus my computation).",
+        "oracleFactIndex": 1,
+        "inputs": "Two places (a bundled list of about 60 cities with coordinates rounded to 0.1 degree, or typed latitude and longitude in decimal degrees), waypoint spacing, radius fixed at 6371 km.",
+        "outputs": "Distances in km, miles and nautical miles; initial, final and rhumb bearings; percent penalty; midpoint; waypoint list as plain text rows; two small SVG maps.",
+        "limits": "Spherical Earth only, so distances can be off by up to about 0.3 percent; no land, airspace, weather or wind; not for navigation; antimeridian paths wrap longitude; the gnomonic view cannot show points more than 90 degrees from its centre; city coordinates are rounded centres, so airport pairs differ (city centres give 8,819 km for Los Angeles to Tokyo, not 8,754)."
+      },
+      "research": {
+        "summary": "The method is textbook: haversine for great-circle distance, the initial-bearing formula and the isometric-latitude formula for rhumb lines. The reference-script author's own page says a spherical model typically errs by up to about 0.3 percent. A rhumb line is straight on a Mercator chart and a great circle is straight on a gnomonic chart, which navigators use to plan routes. Free tools already compute both (a map-click calculator, spreadsheets, a free lite program), so no paywall is claimed. Los Angeles airport to Tokyo Narita is about 8,754 km by great circle per two sites; the 9,236 km rhumb figure is from one site and matches my own computation, as do other pairs I computed.",
+        "sources": [
+          {
+            "title": "Calculate distance, bearing and more between latitude/longitude points (Movable Type Scripts)",
+            "url": "https://movable-type.co.uk/scripts/latlong.html",
+            "date": "",
+            "snippet": "Reference page for haversine great-circle distance and related formulas on a sphere; says the Earth is slightly ellipsoidal so a spherical model typically errs by up to about 0.3 percent.",
+            "via": "search",
+            "note": "Re-found: the author's own page states the 0.3 percent figure and presents haversine as the standard method. I could not read the rhumb-line section in the result text.",
+            "verified": true
+          },
+          {
+            "title": "Great Circle Routes: Why Pacific Flights Curve North Past Alaska (migflug)",
+            "url": "https://migflug.com/afterburner/great-circle-routes-why-pacific-flights-curve-north-past-alaska/",
+            "date": "",
+            "snippet": "Gives Los Angeles to Tokyo Narita as about 8,754 km by great circle against 9,236 km by rhumb line, 483 km more, and Los Angeles to Sydney as 12,061 against 12,093.",
+            "via": "search",
+            "note": "Re-found (translated copies of the same article appeared, counted once). Great-circle figure is confirmed by a second site; the rhumb figure is single-source.",
+            "verified": true
+          },
+          {
+            "title": "NRT to LAX Route Guide (rotatepilot)",
+            "url": "https://rotatepilot.com/routes/rjaa-klax",
+            "date": "",
+            "snippet": "Route guide listing the Narita to Los Angeles great-circle distance as about 8,754 km (4,727 nautical miles).",
+            "via": "search",
+            "note": "Independent second site for the great-circle figure; it is an airport pair, so city-centre coordinates give a different number.",
+            "verified": true
+          },
+          {
+            "title": "Navigation paths notes (Naval Postgraduate School)",
+            "url": "https://www.oc.nps.edu/oc2902w/maps/navpaths.pdf",
+            "date": "",
+            "snippet": "Course notes on navigation paths: rhumb lines are straight on Mercator, great circles are straight on a gnomonic chart.",
+            "via": "search",
+            "note": "Appeared with Bodleian and others for the Mercator and gnomonic query; the summary credited the group, so treat as agreeing but not individually quoted.",
+            "verified": true
+          },
+          {
+            "title": "The shortest distance between two points (Bodleian Libraries Maps blog)",
+            "url": "https://blogs.bodleian.ox.ac.uk/maps/2018/05/16/the-shortest-distance-between-two-points/",
+            "date": "2018-05-16",
+            "snippet": "Library blog on why the shortest route looks curved on a Mercator map.",
+            "via": "search",
+            "note": "Independent library source for the Mercator versus great-circle picture; not individually quoted in the summary.",
+            "verified": true
+          },
+          {
+            "title": "Nautical distance calculator (Mapscaping)",
+            "url": "https://mapscaping.com/map-and-measure-nautical-miles/",
+            "date": "",
+            "snippet": "A browser map tool reporting great-circle and rhumb distances plus initial and final bearings per segment.",
+            "via": "search",
+            "note": "A free competitor, seen in a result.",
+            "verified": true
+          },
+          {
+            "title": "Great circle sailing calculator (nauticalalmanac.it)",
+            "url": "https://www.nauticalalmanac.it/en/navigation-astronomy/great-circle-sailing-calculator",
+            "date": "",
+            "snippet": "Free spreadsheets for great-circle sailing and rhumb lines with up to 60 waypoints.",
+            "via": "search",
+            "note": "A second free competitor, seen in a result.",
+            "verified": true
+          },
+          {
+            "title": "GreatCirc program (gunamoi.com.au)",
+            "url": "https://www.gunamoi.com.au/soft/greatcirc/features.html",
+            "date": "",
+            "snippet": "Downloadable program whose free Lite version offers great-circle distance, endpoint and rhumb-line calculations.",
+            "via": "search",
+            "note": "A third free competitor, seen in a result.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A spherical Earth model typically errs by up to about 0.3 percent in distance against the real ellipsoid, per the reference-script author's own page (an encyclopedia figure of 0.5 percent was not re-checked).",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Haversine is the standard great-circle distance on a sphere; the reference page also gives initial bearing, midpoint and rhumb-line formulas (rhumb section not read in the result). The page's exact-identity checks follow from these formulas and are computed by script on a 6371 km sphere.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A rhumb line (constant compass heading) is a straight line on a Mercator chart, and a great circle is a straight line on a gnomonic chart, which navigators use to plan long routes before transferring them to Mercator charts.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Los Angeles airport (LAX) to Tokyo Narita (NRT) is about 8,754 km by great circle per two independent sites.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The 9,236 km rhumb-line distance for the same pair (5.5 percent longer) is published by one site; my haversine and rhumb computation with airport coordinates on a 6371 km sphere gives 8,754 and 9,236, so it is a regression check, not an oracle.",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Computed here on a 6371 km sphere with airport-area coordinates: New York JFK to London LHR great circle about 5,540 km, rhumb about 5,759 km (3.9 percent longer); Los Angeles to Sydney 12,061 against 12,092 km (0.3 percent), close to the published 12,061 and 12,093. Los Angeles centre to Tokyo centre gives 8,819 and 9,317 km.",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Free tools already compute great-circle and rhumb distances: a map-click nautical calculator with bearings, free spreadsheets with up to 60 waypoints, and a free lite desktop program.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "Great Circle Mapper style route strings",
+          "Movable Type Scripts calculators",
+          "chartplotter route legs",
+          "gnomonic charts used by navigators"
+        ]
+      },
+      "design": {
+        "coreLoop": "Input, output, refine: choose two places, read the distances, bearings and penalty with the formula steps beside them, look at both maps, change spacing or ends, copy the waypoint list.",
+        "sophisticationHooks": [
+          "Bearing-along-the-way strip showing how the heading rotates over the great circle, versus the flat line of the rhumb bearing.",
+          "Self-test panel that runs the exact-identity checks in the browser and shows pass marks.",
+          "Gnomonic view that centres on the midpoint and warns when an end falls outside 90 degrees.",
+          "Show-your-working drawer with each formula substituted with the numbers."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: spherical haversine, bearing, midpoint, destination point, rhumb distance and bearing, waypoint generator, about 60 bundled cities with coordinates written by hand and checked by script (rounded to 0.1 degree and labelled as city centres), two SVG maps (Mercator and gnomonic) with a graticule and about a dozen coarse hand-made continent outlines, copy-as-text output, show-your-working drawer, self-test. Cut: ellipsoid mode, GPX export, wind or time estimates, multi-stop routes, a 150-city list.",
+        "risks": [
+          "Several free tools already do the core job (a map-click calculator, spreadsheets, a free lite program); the page wins only on private, offline, shows-its-working and the two-map picture. The pitch must not claim a free version of a paid product, and the page names no product.",
+          "City coordinates are hand-entered; a wrong one corrupts an answer, so the spec needs a table checked by script against known distances and labelled approximate. City centres differ from airports, so the sample must say LAX to NRT.",
+          "The 9,236 km rhumb figure rests on one site; the page shows it as 'computed here' and cites only the identities and formulas as its oracle.",
+          "The rhumb-line formula section of the reference page was not readable in the search result; the identities are mathematically exact but the builder must check the formula against a textbook before the page cites it.",
+          "The 0.5 percent encyclopedia figure was not re-checked and stays off the page.",
+          "A navigation-flavoured tool needs a clear 'not for navigation, no weather or airspace' notice.",
+          "Overlap with the map-projection lesson idea: if both reach the shortlist only one should win.",
+          "Hand-made coastlines look crude if rushed; keep them coarse and clearly schematic, or drop them for a graticule."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 6,
+        "feasibleInOneDay": true,
+        "notes": "The 0.3 percent sphere error and the Mercator versus gnomonic fact are supported, the LAX to NRT great-circle figure by two sites, and my own computation reproduces 8,754 and 9,236 km. Free competitors are plentiful, so the value is private, offline and shows-its-working; scope shrunk to about 60 cities and coarse outlines. Oracle is mathematical identities, not an external vector set."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i08",
+      "title": "Nonogram Puzzle Checker",
+      "plainSentence": "A picture-by-numbers (nonogram) maker that lets you draw a picture, get its clues, and check whether it can be solved without guessing.",
+      "pitch": "Draw a picture on a small grid and the page writes the number clues around it, like a picture-by-numbers puzzle. It then solves the puzzle the way a person would, one row or column at a time, and reports whether the clues have exactly one answer and whether the whole grid falls out without guessing. If it does not, it shades the stuck squares and suggests a one-square change that repairs it; then you print the puzzle sheet and an answer page.",
+      "firstMinute": "A 10 by 10 sample picture is already drawn with its clues written around it, and a slow replay is solving it pass by pass in colour. A verdict card reads something like 'One answer, no guessing needed, 6 passes, easy'. Click a single square to flip it and watch the verdict change, perhaps to 'Two answers' with the ambiguous squares shaded.",
+      "conceptsToLearn": [
+        "A nonogram is a picture-by-numbers grid: each number says how long a run of filled squares is in that row or column."
+      ],
+      "whyNow": "Timeless: anyone who makes puzzles for a book, a class or a friend hits the same trap, a puzzle that has one answer on paper but forces guessing. The page makes that visible in seconds.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "puzzle-forge",
+        "scoutId": "artisan-1"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "math-puzzle",
+        "mechanic": "checker",
+        "tone": [
+          "analytical",
+          "cozy",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "pointer-events",
+          "worker",
+          "localstorage",
+          "web-animations"
+        ],
+        "tags": [
+          "nonogram",
+          "picture-logic",
+          "line-solver",
+          "unique-solution",
+          "puzzle-design",
+          "difficulty-rating",
+          "print-export",
+          "no-guess"
+        ],
+        "keywords": [
+          "nonogram",
+          "griddler",
+          "hanjie",
+          "picture-cross",
+          "puzzle-maker",
+          "solvability",
+          "line-solving",
+          "difficulty",
+          "printable-puzzle"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Turn a drawn picture into nonogram clues and prove, with visible working, whether the puzzle has exactly one answer and can be finished by row-and-column logic alone.",
+        "audience": "Puzzle makers, teachers, parents and hobbyists who want to design nonograms that are fair to solve, and solvers curious why a puzzle got stuck.",
+        "paywallEvidence": [
+          {
+            "product": "A paid no-guess nonogram toolkit sold through a small-seller storefront",
+            "whatIsGated": "The check that every accepted puzzle can be finished by row-and-column logic alone, plus a print-ready puzzle-book PDF with answer pages; listed at 29 US dollars as of 2026-10-13, per the seller's own listing (never shown on the page).",
+            "factIndex": 0
+          }
+        ],
+        "freeGap": "Free options check uniqueness (a game's maker feature, open-source editors and solvers), so uniqueness alone is not the gap. I saw no free tool that tests the stricter no-guess property, shows each solving pass and proposes a one-square repair, but that is unconfirmed. The remaining gap: private, in the browser, shows its working, suggests the fix. The page names no product.",
+        "oracle": "OEIS A391619: the number of n by n grids with a unique solution reachable by row-and-column logic alone is 1, 2, 14, 384, 51234 for sizes 0 to 4 and 24976511 for size 5. The self-test enumerates every grid up to 4 by 4 and compares; the 5 by 5 count is an optional background run. The newsletter's stuck 5 by 5 puzzle is a further case.",
+        "oracleFactIndex": 2,
+        "inputs": "A picture drawn by clicking or dragging on a grid from 5 by 5 to 15 by 15 (20 by 20 under More), or pasted clue numbers; a sample picture is preloaded.",
+        "outputs": "Clue numbers, a verdict (no solution, several solutions, one solution needing guesses, or one solution reached by logic alone), a difficulty label from the pass count, the stuck squares, a suggested one-square repair, and exports: puzzle sheet and answer page as PNG, SVG and a print layout, plus a share link holding the grid.",
+        "limits": "Black-and-white nonograms only, 5 to 15 squares a side. Exhaustive checking of larger grids is capped and reported as 'could not decide' rather than guessed. Difficulty is a rough label from solving passes, not a verdict on how hard a person will find it. No photo import."
+      },
+      "research": {
+        "summary": "Uniqueness and no-guess solvability are different properties. A seller of a paid toolkit says most nonogram generators check nothing or only uniqueness, while its own accepted puzzles must be finished by working one row or column at a time (seller claim). OEIS A391619 counts n by n grids that are unique and line-solvable (1, 2, 14, 384, 51234, 24976511 for sizes 0 to 5), and the 5 by 5 value is also reported by a puzzle newsletter and a forum thread. A larger unique-solution count for 5 by 5 was relayed by a commenter and is unverified. Uniqueness checking is NP-hard in general, but a line solver is cheap, so an auditable in-browser checker with a capped search and a repair suggestion is realistic in one morning.",
+        "sources": [
+          {
+            "title": "No-Guess Nonogram Toolkit (seller listing)",
+            "url": "https://payhip.com/b/enbgi",
+            "date": "",
+            "snippet": "Seller listing at 29 US dollars (re-found as of 2026-10-13). Says puzzles are accepted only if row-by-row and column-by-column logic finishes the grid, and that most generators check nothing or only uniqueness. Outputs a print-ready PDF with answer pages.",
+            "via": "search",
+            "note": "Re-found by my search; the seller's own page for what it sells (price, what is gated, no-guess definition). Seller claims only, no independent reviews seen.",
+            "verified": true
+          },
+          {
+            "title": "Pixelogic Weekly issue 14",
+            "url": "https://weekly.pixelogic.app/p/pixelogic-weekly-14",
+            "date": "",
+            "snippet": "Defines logically solvable as unique solution plus line-solvable, gives a small 5 by 5 puzzle with one answer where row-by-row work gets stuck, and quotes a brute-force count of 24,976,511 for 5 by 5.",
+            "via": "search",
+            "note": "Re-found twice. Defines logically solvable as unique plus line-solvable, gives a 5 by 5 puzzle with one answer where line work gets stuck, and the brute-force count 24,976,511.",
+            "verified": true
+          },
+          {
+            "title": "Hacker News thread about a 5 by 5 nonogram game (mirror site)",
+            "url": "https://hn.matthewblode.com/item/44140918",
+            "date": "",
+            "snippet": "Discussion where 24,976,511 is given as the number of 5 by 5 grids solvable by logic, and a commenter points to a larger count of uniquely solvable grids from OEIS.",
+            "via": "search",
+            "note": "Re-found (a second mirror of the same thread also appeared, counted once). Gives 24,976,511 for 5 by 5; a commenter's larger unique count stays unverified.",
+            "verified": true
+          },
+          {
+            "title": "OEIS A391619",
+            "url": "https://oeis.org/A391619",
+            "date": "2026-01-17",
+            "snippet": "Entry counts n by n nonograms solvable by analysing each row and column in isolation with no guessing; terms 1, 2, 14, 384, 51234, 24976511, 48625108931 (offset 0); submitted 2026-01-17, a(6) added 2026-05-02.",
+            "via": "search",
+            "note": "Primary entry on its own domain, seen in a search result (not opened; oeis.org did not resolve for WebFetch). Named oracle for the self-test; agrees with two other sites on 24,976,511.",
+            "verified": true
+          },
+          {
+            "title": "OEIS A242876",
+            "url": "https://oeis.org/A242876",
+            "date": "",
+            "snippet": "Counts n by n nonograms (hanjie) that can be solved uniquely; about 75 percent of 5 by 5 grids; cites Ueda and Nagao for hardness of uniqueness.",
+            "via": "search",
+            "note": "Entry cites Ueda and Nagao for the hardness of uniqueness (seen in a result). The 5 by 5 value 25,309,575 was relayed by a forum commenter, never seen on the entry, so that number stays unverified.",
+            "verified": true
+          },
+          {
+            "title": "On Solving Simple Curved Nonograms (arXiv 2505.01554)",
+            "url": "https://arxiv.org/pdf/2505.01554",
+            "date": "2025",
+            "snippet": "Background on nonogram complexity: existence is NP-complete, uniqueness of a given solution is NP-hard, and 'simple' nonograms are those a polynomial method solves cell by cell.",
+            "via": "search",
+            "note": "Re-found by my search on NP-completeness; the paper credits Ueda and Nagao for NP-completeness of solvability and says uniqueness of a given solution is NP-hard; also describes polynomial methods for simple nonograms.",
+            "verified": true
+          },
+          {
+            "title": "Nonograms Katana wiki: My Nonograms",
+            "url": "https://nonograms-katana.fandom.com/wiki/My_Nonograms",
+            "date": "",
+            "snippet": "Describes a built-in checker that tries to solve a submitted puzzle and rejects ones with several solutions or only trivial lines.",
+            "via": "search",
+            "note": "Re-found: a fan-wiki page saying the game's maker feature has a solver bot that rejects puzzles with several solutions or trivial lines; uniqueness only. Single page.",
+            "verified": false
+          },
+          {
+            "title": "number loom (itch.io page)",
+            "url": "https://paul-stansifer.itch.io/number-loom",
+            "date": "",
+            "snippet": "Open-source HTML5 nonogram editor listed as in development that tracks solvability as you edit; MIT-licensed code.",
+            "via": "search",
+            "note": "Not re-found by my searches and itch.io cannot be fetched today; the claim about its solvability tracking is unverified and dropped from the facts.",
+            "verified": false
+          },
+          {
+            "title": "Solvability of nonograms (Patrick Stevens)",
+            "url": "https://www.patrickstevens.co.uk/posts/2014-07-13-solvability-of-nonograms/",
+            "date": "2014-07-13",
+            "snippet": "Blog post asking whether every nonogram is solvable and uniquely so; result snippet did not show its conclusions.",
+            "via": "search",
+            "note": "Re-found as a result, background only; no claim rests on it.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-13 a seller's own listing offers a no-guess nonogram toolkit for 29 US dollars. It says a puzzle is accepted only if working one row or column at a time, filling only forced squares, finishes the grid, and that most generators check nothing or only uniqueness (seller claim).",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A nonogram can have exactly one solution and still not be solvable by row-and-column logic alone; a puzzle newsletter gives a small 5 by 5 example where line work gets stuck.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Of the 33,554,432 possible 5 by 5 grids, 24,976,511 give puzzles that are unique and solvable by line logic alone; OEIS A391619 lists 1, 2, 14, 384, 51234, 24976511 for sizes 0 to 5.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Deciding whether a nonogram has a solution is NP-complete (Ueda and Nagao, 1996), and deciding uniqueness of a given solution is also hard, so an exhaustive answer count on large grids needs a work cap; simple nonograms are solved by cheap local line reasoning.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A free game's maker feature uses a solver that rejects puzzles with several solutions, and open-source nonogram editors and solvers exist; no free tool seen in my searches tests the stricter no-guess property with a repair suggestion (not confirmed for every tool).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "picture-by-numbers puzzles",
+          "puzzle-book proofreading",
+          "line solving",
+          "level editors with a built-in playtest"
+        ]
+      },
+      "design": {
+        "coreLoop": "Input, output, refine: draw or edit squares, see clues and the verdict update instantly, replay the solver pass by pass, apply the suggested repair or redraw, then export when the verdict is green.",
+        "sophisticationHooks": [
+          "Pass-coloured replay: each square is tinted by the pass in which logic fixed it, so the rating is visible, not just a number",
+          "Stuck squares shaded when logic stops, plus an exhaustive count of answers up to two with a node cap and an honest 'could not decide'",
+          "One-square repair search: try flipping each square and report flips that make the puzzle unique and line-solvable",
+          "Self-test panel that enumerates every grid up to 4 by 4 and checks the counts against published sequences"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: drawing grid (5, 10, 15), clue generator, line solver with pass replay, depth-first answer counter with a node cap, difficulty label, single-flip repair search in a worker, SVG and print-layout export, share link in the page address, self-test over all grids up to 4 by 4 plus the optional 5 by 5 run. Cut: 20 by 20 grids, PNG export, coloured nonograms, photo import, puzzle packs, accounts.",
+        "risks": [
+          "The paywall claim rests on one seller listing (its own page, so verified under the primary-source rule, but a marketing claim with no independent review); it never goes on the page and the page names no product.",
+          "The 5 by 5 unique-solution count 25,309,575 and the 333,064 gap are unverified (relayed by a commenter); the page leaves them out or shows them as 'as of 2026-10-13, per a forum commenter'.",
+          "The OEIS entry was seen in a search result and could not be opened; the self-test relies on terms for sizes 0 to 4, which the other two sources and a brute-force run check anyway.",
+          "The self-test must reach 8 known-answer cases from named sources: counts for sizes 1 to 4, the 5 by 5 count and the newsletter's stuck example are 6; the spec must add definition-based cases labelled as such, or report fewer named-source cases honestly.",
+          "The free-gap claim (no free tool tests no-guess solvability) is unconfirmed; the page states only what it does.",
+          "Brute-force over all 33 million 5 by 5 grids may be slow in a browser; keep sizes 0 to 4 automatic and make the 5 by 5 run an optional worker with a progress bar.",
+          "A drawn grid has many focusable squares; it must be one composite widget with a single tab stop and arrow-key movement so the first screen stays within 8 controls and the primary button stays visible at 1280x650.",
+          "Difficulty by pass count is a rough proxy; the page says so rather than claiming a human rating."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The key count (24,976,511) and the sequence are stated on the OEIS entry itself and agree with a puzzle newsletter and a forum thread; the seller price and claim are on its own listing. The 25,309,575 figure and the free-gap claim stay unverified; a line solver, capped counter and flip-repair search fit a morning if the 20 by 20 size and PNG export are cut."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i09",
+      "title": "Poker Chips Aren't Dollars",
+      "plainSentence": "A lesson that lets you drag poker tournament stacks and prizes to see why chips are not worth their share of the prize money.",
+      "pitch": "Why would anyone fold a big hand near the money? This lesson answers it with a ladder of live demos: set the stacks and prizes, watch chip share and prize-money share drift apart, then test a bubble all-in and see the extra winning chance a call needs. Every number is computed in the page and the sum is shown step by step, with simulated chips only and no real money.",
+      "firstMinute": "The first frame already shows three stacks and a 50/30/20 prize split, with a bar for each player's chip share beside a bar for the prize money the model gives them (the 50% stack gets about 38%). Sliding any stack makes both bars move at once, so the gap is seen before any text is read. A one-line caption names the gap, and that is the first success.",
+      "conceptsToLearn": [
+        "A tournament pays prizes by finishing place, not by how many chips you hold"
+      ],
+      "whyNow": "Timeless: the question of why chips are not worth their face value near the money is a standard one in tournament poker teaching, and the answer is a short sum that few explainers let you move. Not news-bound. A claim that discussion forums ask it every week is unverified (the forum site could not be searched) and stays off the page.",
+      "origin": {
+        "agent": "cards",
+        "lens": "reddit-hot-threads",
+        "scoutId": "cards-1"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "cards-odds",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "nerdy",
+          "cozy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "pointer-events"
+        ],
+        "tags": [
+          "icm",
+          "poker-tournament",
+          "bubble",
+          "prize-pool",
+          "expected-value",
+          "chip-equity",
+          "risk-premium",
+          "simulated-chips"
+        ],
+        "keywords": [
+          "independent-chip-model",
+          "bubble-play",
+          "tournament-equity",
+          "nonlinear-value",
+          "required-equity",
+          "stack-sizes",
+          "payout-structure"
+        ],
+        "slot": "interest",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "The independent chip model: a way to turn each player's chips into expected prize money, by treating finishing order as repeated draws where each remaining player is picked in proportion to chips. It shows why chip value is not linear in dollars.",
+        "whyNiche": "Everyone has heard that you fold aces on the bubble, almost nobody has moved the numbers. Most explainers state one worked example; this one lets the visitor change stacks, prizes and the all-in and see each sum.",
+        "audience": "Curious non-experts and casual tournament players who want to understand why 'a chip is a chip' fails in a prize-ladder game. No poker-hand knowledge needed.",
+        "prerequisites": [
+          "A tournament pays prizes by finishing place"
+        ],
+        "misconceptions": [
+          "Doubling your chips doubles what they are worth in prize money.",
+          "A player with half the chips owns half the prize pool."
+        ],
+        "misconceptionFactIndexes": [
+          0,
+          2
+        ],
+        "ahaMoment": "Moving a slider so one stack doubles and watching its prize-money bar rise by far less than double, while the short stacks gain without risking a chip.",
+        "demos": [
+          "Winner-take-all with two players: chips equal dollars exactly, the one case where the common belief holds.",
+          "Three players, 50/30/20 split: drag stacks and compare chip share bars with prize-money bars, with the finishing-order table shown.",
+          "The double-up: one stack doubles by taking chips from another and the prize-money gain is compared with the chip gain.",
+          "The bubble all-in: pick two stacks and a call, and see the winning chance a call needs under chip counting versus under the model, and the gap between them (dead money in the pot is left out and said so).",
+          "Where the model is only an approximation: skill, blinds and position are ignored, with a plain list of limits."
+        ],
+        "checkQuestions": [
+          "If the prize ladder were flat (everyone paid the same), what would a chip be worth?",
+          "Why does the short stack's prize share exceed its chip share?",
+          "A medium stack faces an all-in from a bigger stack: does the required winning chance go up or down compared with chip counting, and why?",
+          "What does the model leave out that a real table has?"
+        ]
+      },
+      "research": {
+        "summary": "The idea is a real, recurring poker-discussion question (why chips are worth less than face value near the money). The model is documented in a university course lecture (MIT OpenCourseWare 15.S50 lecture 6) and many strategy guides; its mechanics (finishing probability proportional to chips, remove the winner, repeat) are the Harville procedure from horse-racing statistics. I reproduced a published 3-player example (500/300/200 chips, 50/30/20 prizes of 100) exactly in a script: 38.39, 32.75, 28.86, but only one guide's numbers were seen (flagged unverified), and another guide's similar example shows about 42% for the big stack, so published figures do not agree and the page must compute and show its own sum. Free browser ICM calculators for final tables already exist, so this is a lesson, not a paywall-clone tool. Search could not reach Reddit, so the brief's thread claim is unconfirmed.",
+        "sources": [
+          {
+            "title": "Lecture 6: Independent Chip Model (MIT OpenCourseWare 15.S50, IAP 2016)",
+            "url": "https://ocw.mit.edu/courses/15-s50-how-to-win-at-texas-holdem-poker-january-iap-2016/resources/lecture-6-independent-chip-model/",
+            "date": "",
+            "snippet": "Official course page for lecture 6 of MIT 15.S50 (IAP 2016, lecturer Will Ma) on the independent chip model; search result says tournament chips are not worth face value linearly and contrasts this with chip-EV play as an approximation.",
+            "via": "search",
+            "note": "Re-found on 2026-10-13 on the course's own official domain (ocw.mit.edu) by an independent search; page not opened (the host failed for fetching today). Primary-domain case (c).",
+            "verified": true
+          },
+          {
+            "title": "Gambler's Ruin and the ICM (arXiv 2011.07610)",
+            "url": "https://arxiv.org/pdf/2011.07610",
+            "date": "",
+            "snippet": "Academic paper treating the ICM as a benchmark and comparing its finishing-order estimate with an exact gambler's-ruin derivation for three players.",
+            "via": "search",
+            "note": "Not re-found in this pass; only the original search summary exists. Unverified.",
+            "verified": false
+          },
+          {
+            "title": "A Step-by-Step Guide to the Independent Chip Model (ICM)",
+            "url": "https://www.pokerlistings.com/a-step-by-step-guide-to-the-independent-chip-model-icm-for-tournament-poker-players",
+            "date": "",
+            "snippet": "Strategy guide with a 3-player, 100-unit, 50/30/20 example; the search summary reported 38.39, 32.75 and 28.86 for stacks 500/300/200.",
+            "via": "search",
+            "note": "Not re-found: a search for the example figures returned a different site (VIP-Grinders, source 9) carrying them and no result for this page. Unverified; unused by the page.",
+            "verified": false
+          },
+          {
+            "title": "CardPlayer article on ICM (p=1628207)",
+            "url": "https://www.cardplayer.com/?p=1628207",
+            "date": "",
+            "snippet": "A worked example with a similar structure gives the 50% stack about 42% of the prize money and calls its figures illustrative.",
+            "via": "search",
+            "note": "URL surfaced again for the example query but the result showed no text of its 42% figure. Unverified; the figure is dropped from the facts.",
+            "verified": false
+          },
+          {
+            "title": "Poker ICM 101: What is ICM poker?",
+            "url": "https://blog.icmizer.com/poker-icm-101-what-is-icm-poker/",
+            "date": "",
+            "snippet": "Vendor blog explaining that doubling a stack does not double its equity, with a 10-player example valuing a 200-chip stack at about 184.44 instead of 200.",
+            "via": "search",
+            "note": "Page title surfaced again in a result but no text of the 184.44 figure was visible. Unverified; figure dropped from the facts.",
+            "verified": false
+          },
+          {
+            "title": "Final Table ICM Calculator (VIP-Grinders)",
+            "url": "https://www.vip-grinders.com/?p=143535",
+            "date": "",
+            "snippet": "Page describing a free final-table ICM calculator for 2 to 9 players with payout presets and custom splits.",
+            "via": "search",
+            "note": "This exact page was not re-found; other pages of the same site surfaced. The free-calculator claim stays unverified and never goes on the page.",
+            "verified": false
+          },
+          {
+            "title": "ICM poker guide (esports.gg)",
+            "url": "https://esports.gg/guides/betting/icm-poker",
+            "date": "",
+            "snippet": "Guide whose search result states that ICM values chips nonlinearly because prizes sit in the top places; the result also gave a 60% chip leader at roughly 44% equity (not used).",
+            "via": "search",
+            "note": "Re-found by an independent search: agrees with the MIT course page that chip value in prize money is nonlinear. Betting-site guide, background only.",
+            "verified": true
+          },
+          {
+            "title": "Ranking probability model paper (Berkeley statistics site, Ali)",
+            "url": "https://www.stat.berkeley.edu/~aldous/157/Papers/ali.pdf",
+            "date": "",
+            "snippet": "Describes the Harville procedure (winner chosen in proportion to strength, remove, renormalise) and reports that it misestimates 2nd and 3rd place chances in thoroughbred data.",
+            "via": "search",
+            "note": "Not re-found in this pass; the mechanics and the limits claims it supports stay unverified. The page defines the procedure itself and shows its sums.",
+            "verified": false
+          },
+          {
+            "title": "Independent Chip Model (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Independent_Chip_Model",
+            "date": "",
+            "snippet": "Encyclopedia article on the independent chip model; the search summary said it contains a three-player table with 50/30/20 payouts but the figures were cut off.",
+            "via": "search",
+            "note": "Seen as a result only, text of the figures not visible; page cannot be fetched (host failed today). Unverified.",
+            "verified": false
+          },
+          {
+            "title": "Table of content (VIP-Grinders, what is ICM in poker)",
+            "url": "https://www.vip-grinders.com/independent-chip-model-what-is-icm-in-poker",
+            "date": "",
+            "snippet": "Article on the independent chip model; the search summary reported a 3-player, 100-unit example with 500/300/200 chips and 50/30/20 prizes giving 38.39, 32.75 and 28.86.",
+            "via": "search",
+            "note": "One non-primary result carries the figures (summary attributed them to this article); fetch of the host failed with a DNS error. Unverified, but a script using the procedure reproduces all three figures.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "MIT OpenCourseWare 15.S50 (How to Win at Texas Hold'em, IAP 2016) has a Lecture 6 on the independent chip model, which says tournament chip value is nonlinear in prize money and contrasts it with chip-EV play, treated as an approximation; a betting-site guide also says doubling a stack does not double its equity.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported procedure behind ICM (Harville): the chance a player finishes first is their chips divided by all chips; remove that player, renormalise to get second place, and so on; equity is the sum of place probability times prize. Not re-found by this pass, so the page presents it as the model's definition and shows the sums.",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported worked example (as of 2026-10-13, per VIP-Grinders): stacks 500/300/200 with prizes 50/30/20 of 100 give 38.39, 32.75 and 28.86. A script using the procedure above reproduced 38.3929, 32.75 and 28.8571 (a regression check, not an independent oracle).",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported (unverified, per VIP-Grinders): free browser ICM calculators for final tables of 2 to 9 players exist, so the page makes no paywall claim and does not name any calculator.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Reported (unverified, per a Berkeley statistics paper): Harville-type models misestimate second and third place chances in horse-racing data, so ICM is an approximation; the page lists what the model leaves out as its own assumptions (finishing order is driven by chip counts only).",
+            "sourceIndex": 7,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "MIT OCW poker course",
+          "ICM calculators",
+          "bubble-factor explainers",
+          "Poker Odds Calculator pages"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: each rung shows chips and dollars side by side, the visitor changes one slider, predicts the direction of the gap, then sees the exact sum. A check question follows each rung and the next rung changes one assumption (second prize, more players, an all-in).",
+        "sophisticationHooks": [
+          "Exact enumeration of finishing orders for up to 9 players with the full probability-by-place table shown, no sampling.",
+          "Required-winning-chance readout for a bubble all-in: (equity now minus equity if lost) divided by (equity if won minus equity if lost), compared with the chip-counting break-even.",
+          "Honest limits panel and a note that published worked examples disagree, with this page's sums shown for checking by hand."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: 5 rungs, one pure ICM function (exact enumeration, up to 6 players on sliders and 9 in the table, any prize list), an all-in required-equity function, a shown-working table, 4 check questions, and a node self-check for 2-player winner-take-all, 3-player 500/300/200 and equal-prize cases plus one hand-checked all-in. Cut: tournament simulation, hand ranges, blinds, multi-table, saved progress. Plenty of slack for QA at this size.",
+        "risks": [
+          "Unverified claim: that discussion forums ask this question every week. The forum site could not be searched, so the page names no thread or user and does not state the claim.",
+          "Unverified claim: the published 38.39/32.75/28.86 example. The page says computed here, shows its sum, and quotes a published figure only as 'as of 2026-10-13, per VIP-Grinders' or omits it.",
+          "Unverified claims: the Harville procedure source, the approximation-in-horse-racing remark and the free-calculator claim. The page defines the model itself, never names a calculator, and treats the horse-racing remark as omitted.",
+          "ICM is an approximation (skill, blinds and position ignored); the page states this, avoids advice wording, uses simulated chips only and says estimates, not advice.",
+          "Free calculators may exist; differentiation is the teaching ladder and shown working, so the page stays a lesson and not a calculator.",
+          "The all-in required-chance formula ignores dead money, chops and later hands: define it exactly in the spec and check it by hand on one case in the node self-check.",
+          "Rung 4 and the up-to-9-player enumeration are the heaviest parts; if time runs short, cap the sliders at 6 players and keep exact enumeration."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "Concept and nonlinearity confirmed by the MIT course's own page plus a second guide; the worked example is only reported by one site but a script reproduced it exactly. Four supporting sources could not be re-found and the forum-thread hook is unconfirmed, so the page must compute and show its own sums."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "i10",
+      "title": "Gains From Trade Lesson",
+      "plainSentence": "A lesson where you set two neighbours' working hours and find a swap that leaves both better off, even if one is better at everything.",
+      "pitch": "Two neighbours split their working day between quilts and fish, and one of them is faster at both. You set each one's hours with a slider, see the pair's total output, then try to find a swap that leaves both with more. The page shows the opportunity cost behind it, the range of exchange rates that works for both sides, and what the stronger side misses by refusing to trade.",
+      "firstMinute": "The first frame shows a table of hours needed per item for two neighbours and a small quilt-like grid of their output, with a sample swap already done. You nudge one slider and watch both totals update; a banner says who now has more of what, and the first success is finding a swap where both columns grow.",
+      "conceptsToLearn": [
+        "opportunity cost: what you give up to make one more of something"
+      ],
+      "whyNow": "Timeless; useful for anyone who argues about trade, outsourcing or who should do which chore.",
+      "origin": {
+        "agent": "critic",
+        "lens": "lesson-markets-games",
+        "scoutId": "critic-2"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "cozy",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui"
+        ],
+        "tags": [
+          "comparative-advantage",
+          "opportunity-cost",
+          "gains-from-trade",
+          "specialization",
+          "absolute-advantage",
+          "production-table",
+          "ricardo",
+          "economics"
+        ],
+        "keywords": [
+          "comparative-advantage",
+          "opportunity-cost",
+          "trade",
+          "specialization",
+          "production-table",
+          "exchange-rate",
+          "economics-lesson",
+          "absolute-advantage"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A party has a comparative advantage in a good when its opportunity cost of making it is lower than its partner's. Even if one party needs fewer hours for everything (an absolute advantage in both), the two have different opportunity costs, so each specialising where its cost is lower and swapping at a rate between the two costs leaves both with more of both goods.",
+        "whyNiche": "The idea is taught as a conclusion and tangled with absolute advantage, so learners assume the stronger side has nothing to gain. Textbooks give one worked table; few let you search for the swap yourself.",
+        "audience": "Curious adults, students, and anyone who argues about trade or outsourcing.",
+        "prerequisites": [
+          "division and simple ratios"
+        ],
+        "misconceptions": [
+          "A person or country that is better at everything gains nothing from trading with a weaker partner.",
+          "Comparative advantage and absolute advantage mean the same thing."
+        ],
+        "misconceptionFactIndexes": [
+          2,
+          1
+        ],
+        "ahaMoment": "You see the stronger neighbour's own opportunity cost for fishing is higher than the weaker neighbour's, because every hour on fish is an hour not spent on the quilt it makes faster; the swap that fits between the two costs leaves both with more.",
+        "demos": [
+          "Rung 1: absolute advantage table with sliders for hours; total output before trade.",
+          "Rung 2: the same table turned into opportunity costs; the page shows the cost of one quilt in fish for each neighbour.",
+          "Rung 3: find the swap yourself by dragging the exchange rate; a green band shows the range where both gain and red shows where one loses.",
+          "Rung 4: the stronger neighbour refuses to trade, then trades at a rate inside the range, and the page compares the two outcomes (for example 2.5 quilts for 2.5 fish).",
+          "Rung 5: change the table so both costs are equal and watch the gains vanish; then explain why.",
+          "Rung 6: checks with new numbers drawn from the textbook-style examples."
+        ],
+        "checkQuestions": [
+          "Neighbour A needs 2 hours per quilt and 3 hours per fish. What does one quilt cost A in fish? (two thirds of a fish)",
+          "Neighbour B needs 6 hours per quilt and 4 hours per fish. Who has the comparative advantage in fish? (B)",
+          "Can a swap at one fish per quilt help both? (yes, it lies between 2/3 and 3/2)",
+          "If both neighbours had the same opportunity cost, would trade create gains? (no)"
+        ]
+      },
+      "research": {
+        "summary": "Textbooks define comparative advantage through opportunity cost and warn that absolute advantage alone is incomplete; OpenStax, a publisher of free textbooks, states this on its own page, and study guides and glossaries list confusing the two as a common error. The page's own two-neighbour table is hand-checked: with 24 working hours each, neighbour A needs 2 hours per quilt and 3 per fish, B needs 6 and 4. Before trade A makes 6 quilts and 4 fish and B makes 2 and 3 (totals 8 and 7). At A 9 quilts and 2 fish and B 6 fish the totals are 9 and 8, and swapping 2.5 quilts for 2.5 fish at one fish per quilt leaves A with 6.5 and 4.5 and B with 2.5 and 3.5, strictly more of both. This is my own regression check, not an oracle. A claim that complete specialisation is a misreading is single-source and flagged.",
+        "sources": [
+          {
+            "title": "OpenStax Principles of Economics 2e, 33.1 Absolute and Comparative Advantage",
+            "url": "https://openstax.org/books/principles-economics-2e/pages/33-1-absolute-and-comparative-advantage",
+            "date": "",
+            "snippet": "Section on absolute and comparative advantage and opportunity cost; says trade rests on comparative rather than absolute advantage alone, with worked examples such as copper and corn for Zambia and oil and corn for Saudi Arabia and the US.",
+            "via": "search",
+            "note": "Re-found on the publisher's own domain: definitions via opportunity cost, trade occurs because of comparative advantage, copper-and-corn and oil-and-corn examples; figures differ between editions, so the page uses its own numbers.",
+            "verified": true
+          },
+          {
+            "title": "The Theory of Comparative Advantage: Overview (Saylor, Suranovic trade text)",
+            "url": "https://saylordotorg.github.io/text_international-trade-theory-and-policy/s05-02-the-theory-of-comparative-adva.html",
+            "date": "",
+            "snippet": "Trade text warning that even readers who study comparative advantage often confuse it with absolute advantage, and that the confusion fuels fears of losing comparative advantage everywhere.",
+            "via": "search",
+            "note": "Not re-found by my searches (a search for the passage found only the book's catalogue entries); the confusion claim is covered by two study guides instead.",
+            "verified": false
+          },
+          {
+            "title": "Confusions About Comparative Advantage (Econlib)",
+            "url": "https://www.econlib.org/confusions-about-comparative-advantage/",
+            "date": "",
+            "snippet": "Article listing common misreadings, including that the result means complete specialisation, when the degree of specialisation depends on relative prices.",
+            "via": "search",
+            "note": "Not re-found; a search for it returned a different Econlib post. Unverified.",
+            "verified": false
+          },
+          {
+            "title": "Comparative advantage versus absolute advantage (Mises blog)",
+            "url": "https://mises.org/blog/comparative-advantage-versus-absolute-advantage",
+            "date": "",
+            "snippet": "Essay saying comparative advantage, not absolute advantage, is what matters when considering the gains to trade.",
+            "via": "search",
+            "note": "Re-found under this URL (the earlier mises-wire URL was not seen). The publisher is an advocacy institute; the page cites it for nothing beyond the distinction, and prefers textbook sources.",
+            "verified": true
+          },
+          {
+            "title": "Economic Affairs Spring 2018, Foundations (Institute of Economic Affairs)",
+            "url": "https://iea.org.uk/wp-content/uploads/2018/03/EA-SPRING-2018-FOUNDATIONS-1.pdf",
+            "date": "2018",
+            "snippet": "Piece describing Ricardo's point that specialising and trading produces more goods in total even though resources and technology are unchanged.",
+            "via": "search",
+            "note": "Not re-found by my searches.",
+            "verified": false
+          },
+          {
+            "title": "Principles of Political Economy and Taxation (Mises wiki entry)",
+            "url": "https://wiki.mises.org/wiki/Principles_of_Political_Economy_and_Taxation",
+            "date": "",
+            "snippet": "Wiki entry for Ricardo's 1817 book, the classical source of the comparative advantage argument.",
+            "via": "search",
+            "note": "Not re-found; Ricardo's 1817 book is not needed as a fact on the page.",
+            "verified": false
+          },
+          {
+            "title": "Absolute vs comparative advantage (RevisionDojo study guide)",
+            "url": "https://www.revisiondojo.com/student-faq/absolute-vs-comparative-advantage-hl",
+            "date": "",
+            "snippet": "Study guide: absolute advantage compares productivity, comparative advantage compares what is given up; students who confuse them miss the logic; gains arise even for the less efficient partner.",
+            "via": "search",
+            "note": "Re-found study aid; documents the confusion and the gains claim.",
+            "verified": true
+          },
+          {
+            "title": "Comparative advantage (glossary entry)",
+            "url": "https://empower.primequadrant.com/glossary/comparative-advantage/",
+            "date": "",
+            "snippet": "Glossary listing common confusions, including mixing up absolute and comparative advantage and thinking it means being good at everything.",
+            "via": "search",
+            "note": "Independent second result documenting the confusion.",
+            "verified": true
+          },
+          {
+            "title": "Limitations of comparative advantage (RevisionDojo)",
+            "url": "https://www.revisiondojo.com/student-faq/limitations-comparative-advantage-hl",
+            "date": "",
+            "snippet": "Study guide listing limits of the simple model: increasing opportunity costs make complete specialisation unlikely.",
+            "via": "search",
+            "note": "Single result; same site as source 6, so not independent.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "A country has a comparative advantage in a good when its opportunity cost of making it is lower than its partner's; absolute advantage compares inputs per unit, and trade rests on comparative advantage rather than absolute advantage alone.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              3,
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Study guides and glossaries list confusing comparative advantage with absolute advantage as a common error.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Specialising along comparative advantage can raise total output from unchanged resources, so both sides can gain even when one is better at making both goods.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              3,
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Increasing opportunity costs and other real-world limits make complete specialisation unlikely; the lesson's constant-cost table is a classroom simplification (one study guide only, flagged).",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "Ricardo's cloth and wine",
+          "OpenStax production tables",
+          "the lawyer and her typist example",
+          "chore-splitting between housemates"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: set hours on the sliders, see total output and each side's opportunity cost, drag the exchange rate to find the range where both gain, answer a check question, then change the table and repeat.",
+        "sophisticationHooks": [
+          "A green and red band on the exchange-rate slider computed from the two opportunity costs.",
+          "A stronger-neighbour-refuses scenario that compares outcomes with and without trade.",
+          "An equal-costs table where gains vanish, proving the cause is the cost difference.",
+          "A built-in test that recomputes every number on the page from the table."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Build: three production tables (the hand-checked 24-hour one, a textbook-style one, a trap with equal costs), SVG quilt-patch output grids, exchange-rate band, five or six rungs, check questions, explainer, a script check of every number against the table. The worked swap must give strictly more of both goods, for example 2.5 quilts for 2.5 fish. Cut: more than two goods or parties, money, tariffs and policy, who gains inside each country, complete-specialisation claims.",
+        "risks": [
+          "The lesson is a simplified constant-cost two-good model; the page says so and makes no claims about real trade policy or about who gains and loses inside a country. Keep political: false and take no stance on tariffs.",
+          "The scout's swap of 3 quilts for 3 fish leaves A's quilts and B's fish unchanged, a weak gain; the builders use 2.5 for 2.5 or a table with strict gains in every column.",
+          "The complete-specialisation point rests on one study guide, and the Ricardo source and the Saylor and Econlib pages were not re-found; the page uses its own numbers, labels them as such and does not call complete specialisation a misconception.",
+          "A 2023 paper reportedly argues Ricardo's four numbers were not unit labour coefficients; no source was recorded, so the page does not claim to reproduce Ricardo's own numbers.",
+          "The sources are textbooks and study aids; the making-of panel lists the textbook first and avoids advocacy institutes where a textbook says the same.",
+          "Keep the first screen simple: at most 8 controls and the primary action visible at 1280x650."
+        ]
+      },
+      "durable": true,
+      "verification": {
+        "by": "verifier",
+        "at": "2026-10-13",
+        "evidence": "search-only",
+        "confidence": 7,
+        "feasibleInOneDay": true,
+        "notes": "The concept is the textbook one, stated on the OpenStax publisher's own page and agreed by study guides; the confusion misconception is documented by two study aids. I recomputed the table: the scout's swap gives only weak gains, a 2.5-for-2.5 swap gives strict gains for both. Small slider-and-table lesson, buildable in a morning."
+      },
+      "scores": {
+        "sophistication": 0,
+        "delight": 0,
+        "distinctness": 0,
+        "feasibility": 0,
+        "timeliness": 0,
+        "interestFit": 0,
+        "polishPotential": 0,
+        "safety": 0,
+        "clarity": 0
+      },
+      "total": 0,
+      "noveltyCheck": {
+        "ok": true,
+        "conflicts": []
+      }
+    }
+  ],
+  "chosenId": null,
+  "carryoverOutId": null,
+  "rejectedNotes": [],
+  "rationale": "",
+  "selectedAt": null,
+  "generatedBy": "ideate",
+  "degraded": false,
+  "notes": "17 candidates entered the pool, 17 survived, 10 shortlisted; purpose plan: 10 of 10 shortlisted have a wanted purpose (tool, lesson); 0 have no purpose; the carried-over idea 'Drift Harp' did not make the shortlist (dropped or filtered, see the drop log)",
+  "count": 10
+}

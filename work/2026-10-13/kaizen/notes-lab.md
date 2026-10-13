@@ -1,0 +1,1 @@
+Scout: all web hosts for Lab failed WebFetch again (DNS), so the two probes cost nothing but also gave nothing; a per-lens shortlist of primary-source search queries in the prompt would save the first 3 searches.

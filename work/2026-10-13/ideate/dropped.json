@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "date": "2026-10-13",
+  "dropped": [
+    {
+      "stage": "shortlist",
+      "id": "pulse-2",
+      "title": "Equation of Time Lesson",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-1",
+      "title": "Palette Collision Checker",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "lab-2",
+      "title": "How Letters Get Spaced",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 6.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "jester-1",
+      "title": "PDF Page Arranger",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 5.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "jester-2",
+      "title": "Inside a PDF File",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "engineer-2",
+      "title": "Skipped And Repeated Times",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    },
+    {
+      "stage": "shortlist",
+      "id": "carry-1",
+      "title": "Drift Harp",
+      "reason": "surplus: 17 survivors for 10 places, lower rank (confidence 7.0) or category/slot cap"
+    }
+  ]
+}

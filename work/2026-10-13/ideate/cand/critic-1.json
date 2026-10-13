@@ -1,0 +1,278 @@
+{
+  "id": "critic-1",
+  "title": "Sealed-Bid Auction Lesson",
+  "plainSentence": "A lesson that lets you bid against simulated rivals in first-price and second-price sealed auctions and see how shading your bid changes your profit.",
+  "pitch": "You get a private value for an item (say a mug worth 60 play-dollars to you) and bid against four simulated rivals, first in a rising-price auction, then in sealed first-price and second-price versions. A slider shades your bid below or above your value and a profit curve, built from thousands of replayed rounds, shows that shading pays in the first-price auction and never pays in the second-price one. You leave knowing why the rule of the game, not good manners, makes honest bidding the best plan, and exactly when that stops being true.",
+  "firstMinute": "The first frame already shows an ascending auction running: a price ladder climbs, rivals drop out, and a card says what the item is worth to you. You tap Drop out when the price reaches your value, see you won with a small profit, and see the same round replayed with a higher and a lower dropout point so you can see why leaving at your value was best.",
+  "conceptsToLearn": [
+    "your value for an item is what it is worth to you; profit is value minus the price you pay"
+  ],
+  "whyNow": "Timeless. The ad-tech industry's 2019 switch from second-price to first-price auctions made bid shading a live topic, and nobody shows the arithmetic behind it.",
+  "origin": {
+    "agent": "critic",
+    "lens": "lesson-markets-games"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "finance-economics",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "canvas2d"
+    ],
+    "tags": [
+      "auction-theory",
+      "second-price-auction",
+      "first-price-auction",
+      "bid-shading",
+      "sealed-bid",
+      "dominant-strategy",
+      "mechanism-design",
+      "game-theory",
+      "vickrey"
+    ],
+    "keywords": [
+      "auction",
+      "vickrey",
+      "bidding",
+      "bid-shading",
+      "sealed-bid",
+      "profit-curve",
+      "price-ladder",
+      "incentives",
+      "rules-shape-behaviour"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "In a sealed-bid second-price auction the highest bidder wins but pays the second-highest bid, so your own bid only decides whether you win, never what you pay; bidding your true value is therefore a dominant strategy when values are private. In a first-price auction you pay what you bid, so you shade below value; with n risk-neutral bidders whose values are independent and uniform on 0 to 1, the equilibrium bid is (n-1)/n of your value.",
+    "whyNiche": "It is usually taught as a theorem or as a one-line conclusion, so it sounds like an opinion. Few places let a learner try to cheat the rule and watch it fail, or show that the same honest bid is wrong under a different rule.",
+    "audience": "Curious adults, students of economics or computer science, and anyone who has argued about eBay, ad markets or spectrum sales.",
+    "prerequisites": [
+      "what an auction is",
+      "subtracting a price from a value"
+    ],
+    "misconceptions": [
+      "Bidding below my value always saves me money, in any auction.",
+      "Honest bidding is a naive rule that leaves money on the table.",
+      "Honest bidding is best in every auction format, whatever the other rules or information."
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      3,
+      4,
+      5
+    ],
+    "ahaMoment": "You drag your bid anywhere you like in the second-price auction, and the price you pay never moves until the exact point where you stop winning. The profit curve is flat across winning bids and drops off a cliff either side of your value, whereas the first-price curve has a hump below your value.",
+    "demos": [
+      "Rung 1: a rising-price ladder auction with four simulated rivals; you choose when to drop out; the page replays the round with other dropout points.",
+      "Rung 2: sealed first-price round; type or drag a bid; the winner pays their own bid; a few single rounds, then a 5000-round replay shows average profit against bid as a fraction of value, peaking at the shaded point (n-1)/n.",
+      "Rung 3: sealed second-price round with the same slider; the profit curve now peaks exactly at honest bidding, and the page marks the winning-and-paying breakdown for any bid you choose.",
+      "Rung 4: what-if panel: change the number of rivals and watch the first-price best shade move toward honesty while second-price stays at honest.",
+      "Rung 5: break the guarantee: switch to a rule where the price follows your bid (first-price), or add a seller who can place a fake bid just under yours, or give bidders values that depend on each other; honest bidding stops being best, shown by arithmetic from the stated rules.",
+      "Rung 6: real world card: an advertising exchange moved from second-price to first-price auctions in 2019 and buyers added bid shading software; the rules changed the behaviour."
+    ],
+    "checkQuestions": [
+      "Your value is 60 and the highest rival bids 45. You bid 50 in a second-price auction. What do you pay? (45)",
+      "Same values, first-price auction, bid 50. What is your profit? (10)",
+      "With 4 bidders with values spread evenly from 0 to 1, what share of your value should you bid in a first-price auction? (three quarters)",
+      "Name one change to the rules that stops honest bidding being best in a second-price auction."
+    ]
+  },
+  "research": {
+    "summary": "University course notes agree that truthful bidding is a dominant strategy in the second-price sealed-bid auction and that bidding (n-1)/n of value is the symmetric equilibrium of the first-price auction for uniform independent values. Lab studies repeatedly find real people overbid in the sealed second-price format yet learn the dominant strategy almost at once in the equivalent rising-price format, which justifies leading with the ladder. Ausubel and Milgrom's paper explains that the format is rare in practice despite its theoretical appeal, and Google's move to first-price auctions in 2019 gives a live example of rules reshaping behaviour. The brief's claim that honest bidding is best only when bids are sealed and simultaneous is imprecise: the equivalent rising-price auction gives the same strategy under private values, and what breaks it is first-price pricing or interdependent values.",
+    "sources": [
+      {
+        "title": "second price auctions (Brown CS 1440 lecture notes)",
+        "url": "https://cs.brown.edu/courses/csci1440/lectures/2025/second_price_auctions.pdf",
+        "date": "2025",
+        "snippet": "States the second-price rule (highest bid wins, pays second-highest, ties broken at random) and the theorem that bidding your value is a dominant strategy whatever the others' values.",
+        "via": "search",
+        "note": "Course-notes statement of the second-price dominant strategy",
+        "verified": true
+      },
+      {
+        "title": "McGill COMP/MATH 553 Lecture 2",
+        "url": "https://cs.mcgill.ca/~cai/COMP_MATH_553/Lecture02.pdf",
+        "date": "",
+        "snippet": "Lecture notes giving the same second-price result: truthful bidding maximises the bidder's utility regardless of the other bids.",
+        "via": "search",
+        "note": "Independent second source for the dominant-strategy fact",
+        "verified": true
+      },
+      {
+        "title": "first price auctions (Brown CS 1440 lecture notes)",
+        "url": "https://cs.brown.edu/courses/csci1440/lectures/2025/first_price_auctions.pdf",
+        "date": "2025",
+        "snippet": "States and proves that with i.i.d. values uniform on 0 to 1 the strategy of bidding (n-1)/n times value is a Bayes-Nash equilibrium of the first-price sealed-bid auction.",
+        "via": "search",
+        "note": "Equilibrium shading formula for the oracle of the first-price demo",
+        "verified": true
+      },
+      {
+        "title": "Sealed-Bid First-Price Auction Analysis (MetricGate)",
+        "url": "https://metricgate.com/calculator/auction-first-price-sealed",
+        "date": "",
+        "snippet": "Calculator page giving the symmetric equilibrium bid for n risk-neutral bidders with uniform private values as (n-1)/n of value; two bidders shade to half, ten bid ninety percent.",
+        "via": "search",
+        "note": "Applied second source for the shading formula",
+        "verified": true
+      },
+      {
+        "title": "Ausubel and Milgrom, The Lovely but Lonely Vickrey Auction (2005 chapter PDF)",
+        "url": "https://www.csc2.ncsu.edu/faculty/mpsingh/local/Social/f24/wrap/readings/Ausubel+Milgrom-Vickrey-auction-2005.pdf",
+        "date": "2005",
+        "snippet": "Describes the Vickrey design's influence on theory, notes that practical uses are rare at best, and calls it a cautionary tale with theoretical virtues but weaknesses that are often decisive.",
+        "via": "search",
+        "note": "Why the elegant format is seldom used",
+        "verified": true
+      },
+      {
+        "title": "The Lovely but Lonely Vickrey Auction (Stanford SIEPR working paper page)",
+        "url": "https://siepr.stanford.edu/publications/working-paper/lovely-lonely-vickrey-auction",
+        "date": "2004",
+        "snippet": "Institute page for the same working paper by Ausubel and Milgrom.",
+        "via": "search",
+        "note": "Second listing of the paper on its publishing institute's domain",
+        "verified": true
+      },
+      {
+        "title": "Kagel and Levin, Auctions: A Survey of Experimental Research (Handbook vol 2 draft)",
+        "url": "https://www.asc.ohio-state.edu/kagel.4/Auctions_Handbook_vol2.pdf",
+        "date": "",
+        "snippet": "Survey of lab auction experiments; earlier work found subjects bid above value in sealed second-price auctions, while the strategically equivalent ascending auction converges almost at once to the dominant strategy.",
+        "via": "search",
+        "note": "Documents overbidding in the sealed format and quick learning in the ascending one",
+        "verified": true
+      },
+      {
+        "title": "Optimistic irrationality and overbidding in private value auctions (City Research Online)",
+        "url": "https://openaccess.city.ac.uk/16386",
+        "date": "",
+        "snippet": "Paper proposing that bidders overestimate the added chance of winning or underestimate the loss when bidding above value, and so miss the dominant strategy in second-price sealed-bid auctions.",
+        "via": "search",
+        "note": "Independent paper agreeing on lab overbidding",
+        "verified": true
+      },
+      {
+        "title": "Google switches to first price auction (AdExchanger)",
+        "url": "https://www.adexchanger.com/online-advertising/google-switches-to-first-price-auction",
+        "date": "2019",
+        "snippet": "Trade report that Google would move its Ad Manager exchange to first-price auctions by the end of 2019 and run a unified auction without last look.",
+        "via": "search",
+        "note": "Real-world rule change",
+        "verified": true
+      },
+      {
+        "title": "Bid shading (PPC Land)",
+        "url": "https://ppc.land/bid-shading/",
+        "date": "",
+        "snippet": "Explainer saying the first-price rollout began on 10 September 2019 and that bid shading is the buyer-side response to paying one's own bid.",
+        "via": "search",
+        "note": "Independent report of the switch and of bid shading; start date differs between outlets",
+        "verified": true
+      },
+      {
+        "title": "CSC304 Lecture 10 (University of Toronto slides)",
+        "url": "https://www.cs.toronto.edu/~nisarg/teaching/304f17/slides/CSC304-L10.pdf",
+        "date": "2017",
+        "snippet": "Slides on auctions; the search summary said the English ascending auction matches the second-price sealed-bid one under private values, but could not say which of two lectures made the point about interdependent values.",
+        "via": "search",
+        "note": "Equivalence under private values; blended summary so not marked verified",
+        "verified": false
+      },
+      {
+        "title": "Auctions lecture, Episode 8 (University of Toronto ECE 1771)",
+        "url": "https://iqua.ece.toronto.edu/baochun/ece1771f/lectures/Episode%208.pdf",
+        "date": "",
+        "snippet": "Lecture that proves truthful bidding in the second-price auction by checking a raised and a lowered bid; likely also the source of the private-versus-interdependent values caveat.",
+        "via": "search",
+        "note": "Second lecture on equivalence caveat; attribution blended, so unverified",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In a sealed-bid second-price auction the highest bidder wins and pays the second-highest bid, and bidding your true value is a dominant strategy (private values), per course notes seen 2026-10-13.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "In a first-price sealed-bid auction with n risk-neutral bidders whose values are independent and uniform on 0 to 1, bidding (n-1)/n of your value is the symmetric equilibrium.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Ausubel and Milgrom (2005 chapter, working paper 2004) argue the Vickrey design is theoretically appealing but rarely used in practice because of weaknesses that are often decisive.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Lab experiments (Kagel and colleagues 1987, 1993 and later work) find people often bid above value in sealed second-price auctions, while the equivalent ascending auction converges almost immediately to the dominant strategy.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Google announced in 2019 that its Ad Manager exchange would move to first-price auctions; outlets differ on dates, one reporting the rollout began on 10 September 2019; buyers responded with bid shading.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Under independent private values the rising-price (English) auction and the sealed second-price auction share the same optimal strategy; the equivalence is reported not to hold under interdependent values. Not confirmed as two separate results, so shown as 'reported, per Toronto course notes'.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "classroom auction experiments with a jar of coins",
+      "eBay proxy bidding",
+      "ad exchange bid-shading explainers",
+      "Vickrey 1961 paper"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: play a round with a value card, move the bid slider, see profit and price for that round, then run the replay that draws the whole profit-against-bid curve; answer a check question; unlock the next rung where a rule changes.",
+    "sophisticationHooks": [
+      "A replay engine that simulates thousands of seeded rounds so the profit curve is exact and reproducible; rivals follow the equilibrium shading, so the curves can be checked against (n-1)/n.",
+      "Counterfactual strip: for any single round, drag the bid and see the winner and price change or not, which is the proof of dominance made visible.",
+      "Rule-breaker toggles (pay-your-bid rule, a seller's fake bid, values that depend on each other) with honest labels that these are model arithmetic.",
+      "Self-checking numbers: every worked example on the page is recomputed by a built-in test."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build: six rungs on one page with an SVG price ladder, SVG profit curve, seeded random generator, simulation core with tests, check questions and a short explainer. Cut: multi-item and package auctions, risk aversion, real-money anything, accounts, sharing.",
+    "risks": [
+      "The brief says honest bidding is best only when bids are sealed and simultaneous. That is imprecise: the rising-price auction has the same strategy under private values; the page should say honest bidding is best under the second-price rule with private values and independent bidders. I could not confirm the brief's wording from any result.",
+      "Equilibrium shading (n-1)/n holds only for risk-neutral bidders with independent uniform values; the page must state this and label rival behaviour as simulated, play money only.",
+      "The English/second-price equivalence caveat (interdependent values) rests on two lecture results whose attribution was blended, so show it as 'reported, per Toronto course notes' and keep it out of the check questions.",
+      "The seller-fake-bid and interdependent-value demos are the page's own arithmetic from stated rules, not sourced claims about real markets; label them as models.",
+      "Outlets disagree on the exact start date of Google's first-price rollout; show 'in 2019, per AdExchanger and PPC Land' and no more precise date.",
+      "Revenue equivalence (same expected seller revenue in first and second price) appeared in search results but no single result was attributed, so it is not claimed as fact; the page may show it only as the simulation's own output."
+    ]
+  },
+  "durable": true
+}

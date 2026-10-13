@@ -1,0 +1,236 @@
+{
+  "id": "critic-2",
+  "title": "Gains From Trade Lesson",
+  "plainSentence": "A lesson where you set two neighbours' working hours and find a swap that leaves both better off, even if one is better at everything.",
+  "pitch": "Two neighbours split their working day between quilts and fish, and one of them is faster at both. You set each one's hours with a slider, see the pair's total output, then try to find a swap that leaves both with more. The page shows the opportunity cost behind it, the range of exchange rates that works for both sides, and what the stronger side misses by refusing to trade.",
+  "firstMinute": "The first frame shows a table of hours needed per item for two neighbours and a small quilt-like grid of their output, with a sample swap already done. You nudge one slider and watch both totals update; a banner says who now has more of what, and the first success is finding a swap where both columns grow.",
+  "conceptsToLearn": [
+    "opportunity cost: what you give up to make one more of something"
+  ],
+  "whyNow": "Timeless; useful for anyone who argues about trade, outsourcing or who should do which chore.",
+  "origin": {
+    "agent": "critic",
+    "lens": "lesson-markets-games"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "cozy",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui"
+    ],
+    "tags": [
+      "comparative-advantage",
+      "opportunity-cost",
+      "gains-from-trade",
+      "specialization",
+      "absolute-advantage",
+      "production-table",
+      "ricardo",
+      "economics"
+    ],
+    "keywords": [
+      "comparative-advantage",
+      "opportunity-cost",
+      "trade",
+      "specialization",
+      "production-table",
+      "exchange-rate",
+      "economics-lesson",
+      "absolute-advantage"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A party has a comparative advantage in a good when its opportunity cost of making it is lower than its partner's. Even if one party needs fewer hours for everything (an absolute advantage in both), the two have different opportunity costs, so each specialising where its cost is lower and swapping at a rate between the two costs leaves both with more of both goods.",
+    "whyNiche": "The idea is taught as a conclusion and tangled with absolute advantage, so learners assume the stronger side has nothing to gain. Textbooks give one worked table; few let you search for the swap yourself.",
+    "audience": "Curious adults, students, and anyone who argues about trade or outsourcing.",
+    "prerequisites": [
+      "division and simple ratios"
+    ],
+    "misconceptions": [
+      "A person or country that is better at everything gains nothing from trading with a weaker partner.",
+      "Comparative advantage and absolute advantage mean the same thing."
+    ],
+    "misconceptionFactIndexes": [
+      2,
+      1
+    ],
+    "ahaMoment": "You see the stronger neighbour's own opportunity cost for fishing is higher than the weaker neighbour's, because every hour on fish is an hour not spent on the quilt it makes faster; the swap that fits between the two costs leaves both with more.",
+    "demos": [
+      "Rung 1: absolute advantage table with sliders for hours; total output before trade.",
+      "Rung 2: the same table turned into opportunity costs; the page shows the cost of one quilt in fish for each neighbour.",
+      "Rung 3: find the swap yourself by dragging the exchange rate; a green band shows the range where both gain and red shows where one loses.",
+      "Rung 4: the stronger neighbour refuses to trade, then trades at a rate inside the range, and the page compares the two outcomes (for example 2.5 quilts for 2.5 fish).",
+      "Rung 5: change the table so both costs are equal and watch the gains vanish; then explain why.",
+      "Rung 6: checks with new numbers drawn from the textbook-style examples."
+    ],
+    "checkQuestions": [
+      "Neighbour A needs 2 hours per quilt and 3 hours per fish. What does one quilt cost A in fish? (two thirds of a fish)",
+      "Neighbour B needs 6 hours per quilt and 4 hours per fish. Who has the comparative advantage in fish? (B)",
+      "Can a swap at one fish per quilt help both? (yes, it lies between 2/3 and 3/2)",
+      "If both neighbours had the same opportunity cost, would trade create gains? (no)"
+    ]
+  },
+  "research": {
+    "summary": "Textbooks define comparative advantage through opportunity cost and warn that absolute advantage alone is incomplete; OpenStax, a publisher of free textbooks, states this on its own page, and study guides and glossaries list confusing the two as a common error. The page's own two-neighbour table is hand-checked: with 24 working hours each, neighbour A needs 2 hours per quilt and 3 per fish, B needs 6 and 4. Before trade A makes 6 quilts and 4 fish and B makes 2 and 3 (totals 8 and 7). At A 9 quilts and 2 fish and B 6 fish the totals are 9 and 8, and swapping 2.5 quilts for 2.5 fish at one fish per quilt leaves A with 6.5 and 4.5 and B with 2.5 and 3.5, strictly more of both. This is my own regression check, not an oracle. A claim that complete specialisation is a misreading is single-source and flagged.",
+    "sources": [
+      {
+        "title": "OpenStax Principles of Economics 2e, 33.1 Absolute and Comparative Advantage",
+        "url": "https://openstax.org/books/principles-economics-2e/pages/33-1-absolute-and-comparative-advantage",
+        "date": "",
+        "snippet": "Section on absolute and comparative advantage and opportunity cost; says trade rests on comparative rather than absolute advantage alone, with worked examples such as copper and corn for Zambia and oil and corn for Saudi Arabia and the US.",
+        "via": "search",
+        "note": "Re-found on the publisher's own domain: definitions via opportunity cost, trade occurs because of comparative advantage, copper-and-corn and oil-and-corn examples; figures differ between editions, so the page uses its own numbers.",
+        "verified": true
+      },
+      {
+        "title": "The Theory of Comparative Advantage: Overview (Saylor, Suranovic trade text)",
+        "url": "https://saylordotorg.github.io/text_international-trade-theory-and-policy/s05-02-the-theory-of-comparative-adva.html",
+        "date": "",
+        "snippet": "Trade text warning that even readers who study comparative advantage often confuse it with absolute advantage, and that the confusion fuels fears of losing comparative advantage everywhere.",
+        "via": "search",
+        "note": "Not re-found by my searches (a search for the passage found only the book's catalogue entries); the confusion claim is covered by two study guides instead.",
+        "verified": false
+      },
+      {
+        "title": "Confusions About Comparative Advantage (Econlib)",
+        "url": "https://www.econlib.org/confusions-about-comparative-advantage/",
+        "date": "",
+        "snippet": "Article listing common misreadings, including that the result means complete specialisation, when the degree of specialisation depends on relative prices.",
+        "via": "search",
+        "note": "Not re-found; a search for it returned a different Econlib post. Unverified.",
+        "verified": false
+      },
+      {
+        "title": "Comparative advantage versus absolute advantage (Mises blog)",
+        "url": "https://mises.org/blog/comparative-advantage-versus-absolute-advantage",
+        "date": "",
+        "snippet": "Essay saying comparative advantage, not absolute advantage, is what matters when considering the gains to trade.",
+        "via": "search",
+        "note": "Re-found under this URL (the earlier mises-wire URL was not seen). The publisher is an advocacy institute; the page cites it for nothing beyond the distinction, and prefers textbook sources.",
+        "verified": true
+      },
+      {
+        "title": "Economic Affairs Spring 2018, Foundations (Institute of Economic Affairs)",
+        "url": "https://iea.org.uk/wp-content/uploads/2018/03/EA-SPRING-2018-FOUNDATIONS-1.pdf",
+        "date": "2018",
+        "snippet": "Piece describing Ricardo's point that specialising and trading produces more goods in total even though resources and technology are unchanged.",
+        "via": "search",
+        "note": "Not re-found by my searches.",
+        "verified": false
+      },
+      {
+        "title": "Principles of Political Economy and Taxation (Mises wiki entry)",
+        "url": "https://wiki.mises.org/wiki/Principles_of_Political_Economy_and_Taxation",
+        "date": "",
+        "snippet": "Wiki entry for Ricardo's 1817 book, the classical source of the comparative advantage argument.",
+        "via": "search",
+        "note": "Not re-found; Ricardo's 1817 book is not needed as a fact on the page.",
+        "verified": false
+      },
+      {
+        "title": "Absolute vs comparative advantage (RevisionDojo study guide)",
+        "url": "https://www.revisiondojo.com/student-faq/absolute-vs-comparative-advantage-hl",
+        "date": "",
+        "snippet": "Study guide: absolute advantage compares productivity, comparative advantage compares what is given up; students who confuse them miss the logic; gains arise even for the less efficient partner.",
+        "via": "search",
+        "note": "Re-found study aid; documents the confusion and the gains claim.",
+        "verified": true
+      },
+      {
+        "title": "Comparative advantage (glossary entry)",
+        "url": "https://empower.primequadrant.com/glossary/comparative-advantage/",
+        "date": "",
+        "snippet": "Glossary listing common confusions, including mixing up absolute and comparative advantage and thinking it means being good at everything.",
+        "via": "search",
+        "note": "Independent second result documenting the confusion.",
+        "verified": true
+      },
+      {
+        "title": "Limitations of comparative advantage (RevisionDojo)",
+        "url": "https://www.revisiondojo.com/student-faq/limitations-comparative-advantage-hl",
+        "date": "",
+        "snippet": "Study guide listing limits of the simple model: increasing opportunity costs make complete specialisation unlikely.",
+        "via": "search",
+        "note": "Single result; same site as source 6, so not independent.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A country has a comparative advantage in a good when its opportunity cost of making it is lower than its partner's; absolute advantage compares inputs per unit, and trade rests on comparative advantage rather than absolute advantage alone.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          3,
+          6
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Study guides and glossaries list confusing comparative advantage with absolute advantage as a common error.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Specialising along comparative advantage can raise total output from unchanged resources, so both sides can gain even when one is better at making both goods.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          3,
+          6
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Increasing opportunity costs and other real-world limits make complete specialisation unlikely; the lesson's constant-cost table is a classroom simplification (one study guide only, flagged).",
+        "sourceIndex": 8,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Ricardo's cloth and wine",
+      "OpenStax production tables",
+      "the lawyer and her typist example",
+      "chore-splitting between housemates"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: set hours on the sliders, see total output and each side's opportunity cost, drag the exchange rate to find the range where both gain, answer a check question, then change the table and repeat.",
+    "sophisticationHooks": [
+      "A green and red band on the exchange-rate slider computed from the two opportunity costs.",
+      "A stronger-neighbour-refuses scenario that compares outcomes with and without trade.",
+      "An equal-costs table where gains vanish, proving the cause is the cost difference.",
+      "A built-in test that recomputes every number on the page from the table."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Build: three production tables (the hand-checked 24-hour one, a textbook-style one, a trap with equal costs), SVG quilt-patch output grids, exchange-rate band, five or six rungs, check questions, explainer, a script check of every number against the table. The worked swap must give strictly more of both goods, for example 2.5 quilts for 2.5 fish. Cut: more than two goods or parties, money, tariffs and policy, who gains inside each country, complete-specialisation claims.",
+    "risks": [
+      "The lesson is a simplified constant-cost two-good model; the page says so and makes no claims about real trade policy or about who gains and loses inside a country. Keep political: false and take no stance on tariffs.",
+      "The scout's swap of 3 quilts for 3 fish leaves A's quilts and B's fish unchanged, a weak gain; the builders use 2.5 for 2.5 or a table with strict gains in every column.",
+      "The complete-specialisation point rests on one study guide, and the Ricardo source and the Saylor and Econlib pages were not re-found; the page uses its own numbers, labels them as such and does not call complete specialisation a misconception.",
+      "A 2023 paper reportedly argues Ricardo's four numbers were not unit labour coefficients; no source was recorded, so the page does not claim to reproduce Ricardo's own numbers.",
+      "The sources are textbooks and study aids; the making-of panel lists the textbook first and avoids advocacy institutes where a textbook says the same.",
+      "Keep the first screen simple: at most 8 controls and the primary action visible at 1280x650."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The concept is the textbook one, stated on the OpenStax publisher's own page and agreed by study guides; the confusion misconception is documented by two study aids. I recomputed the table: the scout's swap gives only weak gains, a 2.5-for-2.5 swap gives strict gains for both. Small slider-and-table lesson, buildable in a morning."
+  }
+}

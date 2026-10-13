@@ -1,0 +1,541 @@
+{
+  "schema": 1,
+  "agent": "engineer",
+  "lens": "tool-cron-clock-changes",
+  "candidates": [
+    {
+      "id": "engineer-1",
+      "title": "Cron DST Night Rehearsal",
+      "plainSentence": "A checker that lets you enter a cron line and a time zone and see which runs vanish or double on the two daylight-saving nights.",
+      "pitch": "The visitor enters a five-field cron line and picks an IANA time zone. The page draws the spring-forward and fall-back nights as a minute timeline and marks every run under two named rules: the literal wall-clock rule in crontab(5) (skipped time never fires, repeated time fires twice) and the classic cron(8) rule (a skipped fixed-time job fires right after the jump, a repeated one fires once). Each run shows local time, UTC and offset, so a nightly 02:30 job is seen vanishing in New York in March and doubling in November. It runs offline from the browser's zone data, with no account or upload, and prints its limits.",
+      "firstMinute": "The page opens with a sample line (30 2 * * *) in America/New_York and the March spring-forward night already drawn: the 02:30 run is marked as lost under the wall-clock rule and as run at 03:00 under the classic rule. One click on the fall-back tab shows the 01:30 run counted twice versus once, so the first success needs no reading.",
+      "conceptsToLearn": [
+        "A cron line has five fields: minute, hour, day of month, month, day of week"
+      ],
+      "whyNow": "Clocks go back in the EU and UK on 2026-10-25 and in the US on 2026-11-01, so people with nightly jobs are about to meet the repeated hour; the tool stays useful every March and October.",
+      "origin": {
+        "agent": "engineer",
+        "lens": "tool-cron-clock-changes"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "dev-tools",
+        "mechanic": "checker",
+        "tone": [
+          "analytical",
+          "nerdy"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg",
+          "localstorage"
+        ],
+        "tags": [
+          "cron",
+          "crontab",
+          "daylight-saving",
+          "time-zones",
+          "iana",
+          "scheduler",
+          "dst",
+          "sysadmin",
+          "rehearsal",
+          "offline-tool"
+        ],
+        "keywords": [
+          "cron-dst",
+          "spring-forward",
+          "fall-back",
+          "skipped-job",
+          "repeated-hour",
+          "crontab-5",
+          "cron-8",
+          "next-run-times",
+          "intl-datetimeformat"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Show what a five-field cron line does on the two clock-change nights of one IANA zone, under two named scheduler rules, with local time, UTC and offset for every run.",
+        "audience": "Developers, sysadmins and data engineers with nightly or hourly jobs who need to know whether a job will be lost or doubled at a daylight-saving change, without trusting a next-runs list that ignores the jump.",
+        "paywallEvidence": [
+          {
+            "product": "Pay-per-use cron expression parser services listed on a cloud automation marketplace",
+            "whatIsGated": "Metered API calls that return next fire times; listings advertise time zone awareness, but none shown in the results draws the daylight-saving nights or compares scheduler rules",
+            "factIndex": 5
+          }
+        ],
+        "freeGap": "Free options exist: next-run testers need no signup and an open-source library claims DST support. The real gap is that none seen shows the two clock-change nights as a timeline, compares the literal and the classic rule, shows its working per run, or runs offline with no upload. Not a paywalled job as such; the value is private, offline and explanatory.",
+        "oracle": "The crontab(5) and cron(8) manual pages (Linux man-pages, OpenBSD, NetBSD, Debian cronie wording) for the two rules, plus hand-made transition calendars for a few zones (New York, London, Lord Howe, Sydney) written from published transition dates.",
+        "oracleFactIndex": 1,
+        "inputs": "A five-field cron line (with lists, ranges, steps and month or weekday names), an IANA zone chosen from a bundled list, and a choice of year and of spring or fall night.",
+        "outputs": "A minute-level timeline of the chosen night, a table of every run with local time, UTC and offset under each rule, a one-line verdict (lost, doubled, shifted, unchanged), and a copyable plain-text report.",
+        "limits": "Dialects differ and the page cannot know which scheduler the visitor runs; it models two documented rules only. Not modelled: systemd timers, cloud schedulers, Quartz, jobs started late by a busy machine, and clock changes of three hours or more (which cron(8) treats as clock corrections). Zone data comes from the visitor's browser and may lag the newest tzdata release."
+      },
+      "research": {
+        "summary": "The two named rules are real and documented separately. The Linux crontab(5) page says times that do not exist never match and times that occur twice run matching jobs twice; the cron(8) pages (OpenBSD, Debian cronie, NetBSD) say clock changes under three hours get special handling for fixed-time or longer-than-hourly jobs: skipped ones run immediately after a forward jump, repeated ones are not run twice, and more frequent jobs are scheduled normally. A FreeBSD bug report is titled as a contradiction between the two pages, and the Healthchecks author says their CronSim library follows Debian cron, which shows dialects differ and the tool should say so. Search results suggest free next-run testers do not draw the DST nights; that was not confirmed by opening any of them. The EU and UK change dates for 2026 are confirmed by two results.",
+        "sources": [
+          {
+            "title": "crontab(5) - Linux manual page",
+            "url": "https://www.man7.org/linux/man-pages/man5/crontab.5.html",
+            "date": "",
+            "snippet": "The Linux crontab(5) page states that non-existent local times during the daylight-saving conversion never match so such jobs do not run, while times occurring more than once cause matching jobs to run twice.",
+            "via": "search",
+            "note": "Oracle for the literal wall-clock rule (primary: the man-pages project's own page, seen as a search result, not opened)",
+            "verified": true
+          },
+          {
+            "title": "cron(8) - OpenBSD manual pages",
+            "url": "https://man.openbsd.org/cron.8",
+            "date": "",
+            "snippet": "Local time changes of less than three hours, such as the start or end of daylight saving time, are handled specially for jobs at a specific time or with granularity above one hour; more frequent jobs are scheduled normally.",
+            "via": "search",
+            "note": "Oracle for the classic small-change rule (primary: OpenBSD's own manual page)",
+            "verified": true
+          },
+          {
+            "title": "cron(8) cronie - Debian testing - Debian Manpages",
+            "url": "https://manpages.debian.org/testing/cronie/cron.8.en.html",
+            "date": "",
+            "snippet": "The cronie man page uses nearly identical wording: after a one-hour forward change jobs from the skipped interval run immediately, and after a backward change running the same job twice is avoided.",
+            "via": "search",
+            "note": "Second independent project carrying the same cron(8) rule",
+            "verified": true
+          },
+          {
+            "title": "cron(8) - NetBSD Manual Pages (NetBSD 9.3)",
+            "url": "https://man.netbsd.org/NetBSD-9.3/cron.8",
+            "date": "",
+            "snippet": "The NetBSD page describes the same special handling and adds that time changes of more than three hours are treated as corrections to the clock or time zone, with the new time used immediately.",
+            "via": "search",
+            "note": "Third project; also documents the three-hour threshold",
+            "verified": true
+          },
+          {
+            "title": "How Debian Cron Handles DST Transitions",
+            "url": "https://blog.healthchecks.io/hp-rewrite/55459acaf5fec7ca23b4160f7908c23e",
+            "date": "",
+            "snippet": "The author tested Debian cron around DST changes: fixed-time jobs in a skipped hour run right after the jump, jobs in a repeated hour are not rerun, wildcard jobs keep even intervals; their CronSim library mimics this.",
+            "via": "search",
+            "note": "Experiment-based confirmation of the man page rule, and evidence that implementations choose differently",
+            "verified": true
+          },
+          {
+            "title": "Bug 166318 - Contradicting information in crontab(5) and cron(8) about DST",
+            "url": "https://bugs.freebsd.org/166318",
+            "date": "",
+            "snippet": "A FreeBSD bug report whose title says crontab(5) and cron(8) give contradicting information about daylight saving; the search summary said it was closed as fixed in 2012.",
+            "via": "search",
+            "note": "Shows the two man pages have disagreed, so the page must name its rules and printed limits",
+            "verified": true
+          },
+          {
+            "title": "How are cron jobs affected when a Daylight Savings change occurs",
+            "url": "https://access.redhat.com/solutions/477963",
+            "date": "",
+            "snippet": "Red Hat knowledge base article, shown marked as an unverified solution, restating the cron man page: fixed-time jobs skipped by a forward jump run right away, and the repeated run is avoided on a backward jump.",
+            "via": "search",
+            "note": "Vendor article agreeing with the man pages; only the title and summary were visible",
+            "verified": true
+          },
+          {
+            "title": "crondst - PyPI",
+            "url": "https://pypi.org/project/crondst",
+            "date": "",
+            "snippet": "An open-source Python library whose page says it supports time zones and daylight saving time for cron schedules.",
+            "via": "search",
+            "note": "A free option exists; it is a developer library, not a visual rehearsal",
+            "verified": true
+          },
+          {
+            "title": "cron tester - enterno.io",
+            "url": "https://enterno.io/en/cron-tester",
+            "date": "",
+            "snippet": "A free web tester that validates a cron string and lists upcoming run times with UTC and server time; the page does not say how it treats daylight saving.",
+            "via": "search",
+            "note": "Free next-run list without a stated DST treatment (not opened, so DST behaviour unknown)",
+            "verified": true
+          },
+          {
+            "title": "Cron Expression Parser & Next Runs (hipersoft/cron-next-runs) - Apify",
+            "url": "https://apify.com/hipersoft/cron-next-runs",
+            "date": "",
+            "snippet": "A pay-per-use marketplace actor that returns next run times for cron expressions; the search summary said it starts from about a thousandth of a dollar per expression, and sibling listings quoted different prices.",
+            "via": "search",
+            "note": "Weak paywall evidence: listings disagree on price, summary was blended",
+            "verified": false
+          },
+          {
+            "title": "End of daylight saving time: what's the status of scrapping it in 2026?",
+            "url": "https://www.sortiraparis.com/en/news/in-paris/articles/353276-end-of-daylight-saving-time-what-s-the-status-of-its-abolition-in-2026",
+            "date": "2026",
+            "snippet": "Says clocks in the EU go back on the last Sunday of October, which is 25 October in 2026, the earliest date possible.",
+            "via": "search",
+            "note": "EU fall-back date for 2026",
+            "verified": true
+          },
+          {
+            "title": "Daylight Saving Time 2026: When Clocks Change in Every Major Country",
+            "url": "https://www.universaltimedate.com/articles/daylight-saving-time-2026-when-clocks-change",
+            "date": "2026",
+            "snippet": "Lists EU and UK daylight saving as 29 March to 25 October 2026 (both at 01:00 UTC) and US daylight saving ending on Sunday 1 November 2026.",
+            "via": "search",
+            "note": "Independent second result for the EU dates; also lists the US date",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The Linux crontab(5) page says local times that do not exist during a daylight-saving change never match (jobs in the gap do not run), and times that occur twice make matching jobs run twice (seen in a search result, 2026-10-13).",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The cron(8) manual pages of OpenBSD, Debian cronie and NetBSD say clock changes under three hours are handled specially for fixed-time jobs or granularity above one hour: after a forward change skipped jobs run immediately, after a backward change running a job twice is avoided; more frequent jobs are scheduled normally; changes over three hours are treated as corrections.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2,
+              3
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A FreeBSD bug report titled as contradicting information in crontab(5) and cron(8) about DST exists, so the two man pages have disagreed on the topic.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The Healthchecks author reports from experiment that Debian cron follows its man page (fixed-time jobs in a skipped hour run after the jump, repeated-hour jobs are not rerun, wildcard jobs keep even intervals), and that their CronSim library copies this behaviour.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Free options exist: an open-source library (CronDst) states support for time zones and DST, and a free browser tester (enterno.io) lists next run times without saying how it treats DST; neither seen draws the two clock-change nights.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "As of 2026-10-13, per one marketplace listing (unconfirmed, listings disagree), a pay-per-use cron parser charges per expression parsed.",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "In 2026 the EU and UK change from summer to winter time on Sunday 2026-10-25 at 01:00 UTC, having started summer time on Sunday 2026-03-29.",
+            "sourceIndex": 10,
+            "alsoIn": [
+              11
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "next-run list cron testers",
+          "CronSim (Healthchecks)",
+          "Vixie cron DST handling",
+          "tz transition tables"
+        ]
+      },
+      "design": {
+        "coreLoop": "Edit the cron line or change zone, year or night; the timeline and the run table redraw instantly under both rules; the visitor compares, then tries a hazard (a nightly 02:30 job, an every-10-minutes job, an hourly job) and reads the one-line verdict. Why it stays interesting: the same line gives different answers in different zones, and southern-hemisphere zones and half-hour shifts behave in surprising ways.",
+        "sophisticationHooks": [
+          "Exact transition finding from the browser's zone data (offset probe with bisection, no bundled zone files), with a bundled hand-made calendar used as the page's own known-answer test",
+          "Full cron grammar: lists, ranges, steps, names, and the day-of-month OR day-of-week rule",
+          "Side-by-side rule comparison with a verdict per run (lost, doubled, shifted to the jump instant, unchanged)",
+          "Half-hour and southern-hemisphere zones (Lord Howe, Sydney, Chatham) alongside New York and London, plus a copyable report"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: cron parser, offset-probe transition finder, two scheduler models, timeline SVG, run table, report copy, a short zone list with a search box, a self-test of at least 8 vectors from a hand-made calendar. Cut: other dialects, systemd, cloud schedulers, multi-day ranges, import of whole crontab files, three-hour-plus changes beyond a printed note.",
+        "risks": [
+          "The exact definition of a wildcard job in classic cron (which fields make a job exempt) was not confirmed from source code, only from the man page wording; the page must show it as the man page's rule and say so",
+          "Real daemons differ (one source reports a fixed-time job missing on the jump night in Debian, which contradicts the man page; that report was a blended search summary and is unconfirmed), so the page presents two named models, not a prediction",
+          "No page was opened (all evidence is search results), so the paywall claim is unverified: as of 2026-10-13, per one marketplace listing, pay-per-use pricing exists; the page will not name any product and the value case rests on private, offline and shows-its-working",
+          "The lens brief said repeated jobs run once under classic cron; the cron(8) wording supports this only for fixed-time or longer-than-hourly jobs, and the page must print that condition",
+          "Browser time zone data can lag the newest tzdata release and Intl cannot list transitions directly, so bisection must be tested against the hand calendar; zones with negative or unusual changes are out of scope"
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "engineer-2",
+      "title": "Skipped And Repeated Times",
+      "plainSentence": "A lesson that shows, with live clocks, why some local times never happen and others happen twice on daylight-saving nights, and how software should pick.",
+      "pitch": "A short ladder of interactive demos starts from the familiar sentence 'clocks go forward an hour' and ends at the aha: a wall-clock time is not a single moment. The visitor drags a pointer along the real UTC timeline of a clock-change night and watches the local clock skip 02:30 in March or show 01:30 twice in November, then tries the four ways software resolves such a time (earlier, later, reject, compatible) and meets a half-hour zone. Check-yourself questions end each rung, with answers worked out by the page's own time functions.",
+      "firstMinute": "The first frame shows a running timeline of New York on 2026-11-01 with two clocks ticking from UTC: the local clock reads 01:30, then 01:30 again an hour later, with the repeat highlighted. A single slider scrubs through the night, so the first success (seeing 01:30 occur twice) takes seconds and needs no reading.",
+      "conceptsToLearn": [],
+      "whyNow": "Clocks go back in the EU and UK on 2026-10-25 and in the US on 2026-11-01, the two weeks in which this confusion is in the news and in production incidents; the concept itself is timeless.",
+      "origin": {
+        "agent": "engineer",
+        "lens": "tool-cron-clock-changes"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg"
+        ],
+        "tags": [
+          "time-zones",
+          "daylight-saving",
+          "gap-and-fold",
+          "wall-clock",
+          "utc",
+          "disambiguation",
+          "iana",
+          "ambiguous-time",
+          "dates-and-times"
+        ],
+        "keywords": [
+          "skipped-time",
+          "repeated-hour",
+          "fold",
+          "gap",
+          "local-time",
+          "utc-offset",
+          "temporal",
+          "earlier-later-reject",
+          "lord-howe"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A local wall-clock time is not always one instant: on a spring-forward night some local times do not exist (a gap) and on a fall-back night some occur twice (a fold), so software must choose a rule to turn wall-clock time into a moment.",
+        "whyNiche": "Programmers learn 'store UTC' but rarely see the gap and the fold as a picture, nor the four standard resolution policies; most explainers list falsehoods without letting the learner poke the timeline.",
+        "audience": "Curious people and working developers who schedule, book or log things in local time and have been surprised by a daylight-saving night.",
+        "prerequisites": [
+          "Knowing that clocks change by about an hour for daylight saving time"
+        ],
+        "misconceptions": [
+          "Every day has 24 hours",
+          "Every local time exists exactly once",
+          "Daylight saving always shifts clocks by exactly one hour, at the same moment everywhere"
+        ],
+        "misconceptionFactIndexes": [
+          4,
+          5
+        ],
+        "ahaMoment": "Scrubbing the UTC slider through the November night and seeing the local clock read 01:30 at two different UTC moments, then seeing the March night skip from 01:59 to 03:00: the local reading is only a label, and the offset is what makes it a moment.",
+        "demos": [
+          "Scrub a UTC slider through a clock-change night in a chosen zone while local and UTC clocks run side by side",
+          "Click any local time on a day strip to see how many real moments match it (zero, one or two) and with which offsets",
+          "Resolver bench: pick a gap or repeated time and see what earlier, later, reject and compatible each return, with UTC and offset",
+          "Day-length demo: add 24 hours versus add one calendar day across the jump and compare",
+          "Half-hour zone (Lord Howe) and a southern-hemisphere zone, to bust the 'always one hour, always March and November' belief"
+        ],
+        "checkQuestions": [
+          "On 2026-11-01 in New York, how many real moments read 01:30, and what are their offsets?",
+          "A meeting is booked for 02:30 local on the spring-forward date: which moment does 'compatible' pick, and why might 'reject' be safer?",
+          "How long is the calendar day of the fall-back date in hours?",
+          "Why can two different UTC moments print the same local time without any error in the clock?"
+        ]
+      },
+      "research": {
+        "summary": "The vocabulary and the resolution policies are standardised, not invented. PEP 495 names the two cases (fold for a backward change with ambiguous times, gap for a forward change with missing times) and uses a 0 or 1 flag to choose the earlier or later reading; MDN documents the four Temporal options (compatible, earlier, later, reject, default compatible); library docs (Whenever) give worked gap and fold examples. Falsehoods lists document the misconceptions (24-hour days, same moment everywhere, always an hour). Lord Howe Island's 30-minute shift is documented by two independent results. The IANA tz database page frames the data the demos rest on.",
+        "sources": [
+          {
+            "title": "PEP 495 - Local Time Disambiguation",
+            "url": "https://peps.python.org/pep-0495/",
+            "date": "",
+            "snippet": "Python's standards-track proposal that adds a fold flag (0 or 1) to separate two instants with the same wall-clock reading; a backward change makes ambiguous times, a forward change makes missing times.",
+            "via": "search",
+            "note": "Defines gap and fold and earlier/later via fold (primary: python.org)",
+            "verified": true
+          },
+          {
+            "title": "Migration Guide - pytz-deprecation-shim",
+            "url": "https://pytz-deprecation-shim.readthedocs.io/en/latest/migration.html",
+            "date": "",
+            "snippet": "Worked example: America/Los_Angeles on 2020-11-01 at 01:00 resolves to -07:00 with fold 0 and to -08:00 with fold 1.",
+            "via": "search",
+            "note": "A published worked example usable as a known-answer vector",
+            "verified": true
+          },
+          {
+            "title": "Temporal.PlainDateTime.toZonedDateTime() - MDN",
+            "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Temporal/PlainDateTime/toZonedDateTime",
+            "date": "",
+            "snippet": "MDN lists four disambiguation options for ambiguous or non-existent local times (compatible, earlier, later, reject), default compatible, with reject throwing a RangeError.",
+            "via": "search",
+            "note": "The four named policies the resolver bench demonstrates",
+            "verified": true
+          },
+          {
+            "title": "Ambiguity in timezones - Whenever documentation",
+            "url": "https://whenever.readthedocs.io/en/latest/guide/ambiguity.html",
+            "date": "",
+            "snippet": "Library guide with worked examples: earlier resolves a skipped 02:30 to 01:30 before the gap, reject raises an error, and for a fold earlier means the summer-time reading and later the winter-time one.",
+            "via": "search",
+            "note": "Second independent description of the policies; library-specific wording, so the page states its own rule",
+            "verified": true
+          },
+          {
+            "title": "Falsehoods programmers believe about time zones",
+            "url": "https://zainrizvi.io/blog/falsehoods-programmers-believe-about-time-zones/",
+            "date": "",
+            "snippet": "A list of false beliefs including that days have 24 hours, that DST happens at the same moment everywhere, and that DST always moves clocks by an hour.",
+            "via": "search",
+            "note": "Documents the misconceptions the lesson busts",
+            "verified": true
+          },
+          {
+            "title": "Falsehoods Programmers Believe About Time",
+            "url": "https://libarynth.net/falsehoods_programmers_believe_about_time",
+            "date": "",
+            "snippet": "A long community list of false assumptions about time, including that there are always 24 hours in a day.",
+            "via": "search",
+            "note": "Independent second list for the 24-hour-day misconception (mirror of the same list also appeared on other hosts)",
+            "verified": true
+          },
+          {
+            "title": "lord howe island - timeanddate.com time changes",
+            "url": "https://www.timeanddate.com/time/change/australia/lord-howe-island?year=1991",
+            "date": "",
+            "snippet": "Says Lord Howe Island sets its clocks forward 30 minutes, from UTC+10:30 to UTC+11, rather than a whole hour.",
+            "via": "search",
+            "note": "Half-hour DST zone, busting the always-an-hour belief",
+            "verified": true
+          },
+          {
+            "title": "LHI daylight savings (fwd) - tz mailing list archive",
+            "url": "https://mm.icann.org/pipermail/tz/2000-October/036258.html",
+            "date": "2000-10",
+            "snippet": "A tz mailing-list post quoting the island's practice of moving clocks 30 minutes at the start and end of daylight saving.",
+            "via": "search",
+            "note": "Independent second result for the 30-minute shift (old post, so the current rule rests on the timeanddate page)",
+            "verified": true
+          },
+          {
+            "title": "Theory and pragmatics of the tz code and data",
+            "url": "https://www.iana.org/time-zones/theory.html",
+            "date": "",
+            "snippet": "IANA's page says the time zone database records the history and predicted future of civil time scales, grouping places whose clocks agree on timestamps since 1970, with rules that can change over time.",
+            "via": "search",
+            "note": "Primary description of the data behind the demos",
+            "verified": true
+          },
+          {
+            "title": "DST Transition Edge Cases: Lost and Repeated Hours",
+            "url": "https://inventivehq.com/blog/dst-transition-edge-cases-lost-repeated-hours",
+            "date": "",
+            "snippet": "A third-party guide that recommends storing UTC and warns a scheduled 01:30 job can run twice on fall-back day.",
+            "via": "search",
+            "note": "Context only; single secondary source",
+            "verified": false
+          },
+          {
+            "title": "Daylight Saving Time 2026: When Clocks Change in Every Major Country",
+            "url": "https://www.universaltimedate.com/articles/daylight-saving-time-2026-when-clocks-change",
+            "date": "2026",
+            "snippet": "Lists EU and UK daylight saving as 29 March to 25 October 2026 and US daylight saving ending on Sunday 1 November 2026.",
+            "via": "search",
+            "note": "Dates for the preset nights",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "PEP 495 calls the result of a backward clock change a fold (ambiguous local times) and of a forward change a gap (missing local times), and uses a fold flag of 0 or 1 to select the earlier or later reading of an ambiguous time.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A published worked example: America/Los_Angeles on 2020-11-01 at 01:00 is -07:00 with fold 0 and -08:00 with fold 1.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              0
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "MDN documents four disambiguation options for Temporal conversions of ambiguous or non-existent local times (compatible, earlier, later, reject), default compatible, and reject throws a RangeError.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The Whenever library guide shows earlier resolving a skipped 02:30 to 01:30 before the gap and reject raising an error (library-specific example; the page states its own rule).",
+            "sourceIndex": 3,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Documented misconception: community lists of false beliefs about time state that every day has 24 hours.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              5
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Documented misconception: the same lists state that daylight saving does not begin at the same moment everywhere and does not always move clocks by an hour; Lord Howe Island uses a 30-minute shift.",
+            "sourceIndex": 4,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The IANA tz database page describes the data as the history and predicted future of civil time scales, grouped into zones whose clocks agree after 1970, with rules that can change.",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "In 2026 the EU and UK return to winter time on Sunday 2026-10-25 and the US on Sunday 2026-11-01.",
+            "sourceIndex": 10,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "PEP 495 fold and gap",
+          "Temporal disambiguation options",
+          "falsehoods-about-time lists",
+          "explorable explanations"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, predict, check: the visitor scrubs or clicks a time, predicts how many moments match, then sees the answer computed by the page, and answers a short check question before the next rung. The pull is the small shock of seeing one label map to zero or two moments.",
+        "sophisticationHooks": [
+          "Honest engine: every clock and count comes from the browser's zone data through an offset probe and bisection, checked by a self-test against the published Los Angeles example and hand-made calendars",
+          "Resolver bench that implements the four named policies and shows UTC and offset for each result",
+          "Half-hour and southern-hemisphere presets so the lesson busts 'always one hour in March and November'",
+          "Day-length demo: 23-hour and 25-hour days next to a 24-hour day"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: five rungs with one SVG timeline component, slider and click picking, resolver bench, day-length demo, preset nights for New York, London, Lord Howe and Sydney, check questions with worked answers, an intro paragraph and a short glossary. Cut: arbitrary-zone search beyond a small list, recurring-event rules, history of DST, tz database internals.",
+        "risks": [
+          "Browser zone data can lag the newest tzdata release, so the presets use dates in 2026 and the page states the data source",
+          "Compatible resolution differs between libraries (Temporal, Java, Python); the page must state its own definition and avoid claiming it is universal",
+          "The Lord Howe current rule rests on one site's page plus an old mailing-list post; as of 2026-10-13 it is shown with its source, and the bisection output from the browser is the page's own check",
+          "Only search results were seen, no page was opened; the third-party edge-case guide is a single secondary source and is not used as fact",
+          "Overlap in subject with a cron rehearsal tool if both were built; the lesson stands alone and does not need cron"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

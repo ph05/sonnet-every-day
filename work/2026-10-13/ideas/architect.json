@@ -1,0 +1,529 @@
+{
+  "schema": 1,
+  "agent": "architect",
+  "lens": "lesson-map-projections",
+  "candidates": [
+    {
+      "id": "architect-1",
+      "title": "Why Flat Maps Distort",
+      "plainSentence": "A lesson that lets you drag countries on a world map and watch their size change, to see why flat maps always distort something.",
+      "pitch": "Drag Greenland down a Mercator map and watch it shrink beside Africa, then switch to other projections with Tissot's circles drawn on them and plot a flight that is curved on one map and straight on another. A ladder of six small demos and check-yourself questions busts the idea that one map is the true one and ends on the point that every map is an argument. Made for travellers and geography fans, no maths needed, all offline.",
+      "firstMinute": "The page opens on a Mercator world map where a ghost-ember copy of Greenland already slides toward Africa and shrinks, with the caption that it is the same country with the same true area. The visitor drags Greenland themself and sees a live 'drawn size vs true size' readout fall to 1x at the equator. No reading is needed for that first success.",
+      "conceptsToLearn": [
+        "a map is a flat picture of a ball, so some stretching is unavoidable"
+      ],
+      "whyNow": "Timeless: the Greenland-versus-Africa picture is a perennial map-geek topic and a hot spot of a classroom misconception; the lens brief and a 2026 article on the Greenland versus Mercator size comparison show it is still discussed.",
+      "origin": {
+        "agent": "architect",
+        "lens": "lesson-map-projections"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "canvas2d",
+          "pointer-events",
+          "dom-ui"
+        ],
+        "tags": [
+          "mercator",
+          "tissot-indicatrix",
+          "area-distortion",
+          "great-circle",
+          "equal-area",
+          "cartography",
+          "true-size",
+          "gnomonic"
+        ],
+        "keywords": [
+          "mercator",
+          "tissot",
+          "greenland-vs-africa",
+          "conformal",
+          "equal-area",
+          "great-circle-route",
+          "map-lesson",
+          "area-scale"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A sphere cannot be flattened without distorting something. A projection chooses what to keep: Mercator keeps angles (conformal) and so stretches lengths by sec(latitude) and areas by sec squared (4 times at 60 degrees, about 33 times at 80); equal-area maps keep area and bend shapes; no projection can be both conformal and equal-area; great circles are straight only on a gnomonic map.",
+        "whyNiche": "Usual explanations are either a static 'Mercator is bad' infographic or a true-size drag toy with no why: nobody shows the area-scale curve, the Tissot circles and the great-circle flight together, or says that Mercator is excellent at its actual job (straight compass courses).",
+        "audience": "Curious travellers, geography fans, students and anyone who has argued about Greenland on a world map.",
+        "prerequisites": [
+          "what latitude and longitude are, roughly",
+          "that Earth is a ball"
+        ],
+        "misconceptions": [
+          "The map on the classroom wall (Mercator) shows true country sizes.",
+          "There is one correct projection and the others are wrong.",
+          "The straight line on a map is the shortest route."
+        ],
+        "misconceptionFactIndexes": [
+          6
+        ],
+        "ahaMoment": "Dragging the same Tissot circle from the equator to the Arctic: on Mercator it stays round but swells to many times its size, on the equal-area map it keeps its size but flattens into an ellipse, and you realise you can never keep both.",
+        "demos": [
+          "Rung 1: drag Greenland (and any country) across a Mercator map with a live drawn-size-over-true-size readout and a ghost showing home size.",
+          "Rung 2: the stretch dial: slide a latitude marker and see the sec-squared area multiplier (1x, 2x, 4x at 60 degrees, about 33x at 80) beside a row of identical true-size circles.",
+          "Rung 3: Tissot's circles on a gallery of five projections (Mercator, plain equirectangular, equal-area cylindrical, sinusoidal, azimuthal) with a shape-error and area-error meter.",
+          "Rung 4: the trade-off slider: morph Mercator toward an equal-area map and watch the two errors trade places but never both reach zero.",
+          "Rung 5: pick two cities and fly the shortest route: curved on Mercator, straight on a gnomonic view, with the constant-compass-heading line (rhumb line) for contrast.",
+          "Rung 6: 'argue with a map': match jobs (sailing course, country sizes, polar flights) to the projection that serves them."
+        ],
+        "checkQuestions": [
+          "On a Mercator map, by about what factor is the area of a small shape at 60 degrees latitude exaggerated? (4)",
+          "Africa is roughly how many times Greenland's real area? (about 14)",
+          "On an equal-area map, what happens to a Tissot circle near the edge? (same area, becomes an ellipse)",
+          "What does a great-circle flight look like on a gnomonic map? (a straight line)",
+          "Why can't a map be both equal-area and conformal? (curvature of a sphere cannot be flattened without losing one)"
+        ]
+      },
+      "research": {
+        "summary": "Searches confirm the core mathematics (Mercator is conformal, rhumb lines straight, scale grows as the secant of latitude, so area as its square), the Tissot behaviour per class of projection (circles stay round but grow on conformal maps, keep area but become ellipses on equal-area maps), and the standard Greenland-versus-Africa teaching case (Africa about 14 times Greenland by area, Greenland about one eighth of South America). The 'one projection is the true one' misconception is documented only in informal sources (an essay by a graphic designer about 'immappancy', a development-education article), not a controlled study. Great circles straight on a gnomonic map and curved on Mercator is stated by navigation sources. My own node computations agree: secant squared is 4.00 at 60 degrees, 8.55 at 70 and 33.16 at 80; Africa over Greenland is 14.0; Greenland over South America is 0.121, about one eighth.",
+        "sources": [
+          {
+            "title": "Mercator (PROJ documentation, operations/projections/merc)",
+            "url": "https://osgeo-proj.readthedocs.io/en/latest/operations/projections/merc.html",
+            "date": "",
+            "snippet": "PROJ's own page describes Mercator as conformal with the equator at constant scale and says a rhumb line (constant heading) projects to a straight line; it is judged poor for world maps because of gross distortion.",
+            "via": "search",
+            "note": "Primary documentation for Mercator conformality, rhumb-line property and unsuitability for world maps.",
+            "verified": true
+          },
+          {
+            "title": "Map Distortion with Tissot's Indicatrix (GIS Geography)",
+            "url": "https://gisgeography.com/map-distortion-tissots-indicatrix/",
+            "date": "",
+            "snippet": "Explains the grid of small circles that show distortion; on a globe all are equal circles; on conformal maps they stay circles but vary in size, on equal-area maps they keep area but become ellipses.",
+            "via": "search",
+            "note": "Tissot behaviour per projection class.",
+            "verified": true
+          },
+          {
+            "title": "Tissot's indicatrix helps illustrate map projection distortion (ArcGIS Blog)",
+            "url": "https://www.esri.com/arcgis-blog/products/arcgis/mapping/tissots-indicatrix-helps-illustrate-map-projection-distortion",
+            "date": "",
+            "snippet": "A software vendor's blog showing Tissot circles drawn on different projections to illustrate area, shape and angle distortion.",
+            "via": "search",
+            "note": "Second independent explainer of Tissot circles.",
+            "verified": true
+          },
+          {
+            "title": "Navigation column, Mercator projection (Stony Brook mathematics)",
+            "url": "https://www.math.stonybrook.edu/~tony/whatsnew/column/navigation-0700/navigation5.html",
+            "date": "",
+            "snippet": "University column on Mercator navigation: a circle of latitude is stretched by sec(latitude) so chart lengths need a latitude correction; also treats rhumb lines.",
+            "via": "search",
+            "note": "Secant stretch of Mercator.",
+            "verified": false
+          },
+          {
+            "title": "logbook 3GL9 (school classroom log, PDF)",
+            "url": "https://www.claytonschools.net/cms/lib/MO01000419/Centricity/Domain/670/logbook - 3GL9.pdf",
+            "date": "",
+            "snippet": "A classroom exercise estimating Mercator area stretch for Greenland: about 8.5 times at roughly 70 degrees and about 33 times at 80 degrees.",
+            "via": "search",
+            "note": "Independent classroom statement of the area multipliers; matches my own computation.",
+            "verified": false
+          },
+          {
+            "title": "The true size of Greenland versus Mercator (New Space Economy, 2026-01-19)",
+            "url": "https://newspaceeconomy.ca/2026/01/19/the-true-size-of-greenland-a-comparison-with-the-united-states-and-europe-versus-the-mercator-projection/",
+            "date": "2026-01-19",
+            "snippet": "Gives Greenland's area as about 2.166 million square km and compares it with other regions against Mercator; a low-authority site.",
+            "via": "search",
+            "note": "Greenland area and Africa about 14 times ratio; weak source, treat as unverified.",
+            "verified": false
+          },
+          {
+            "title": "The True Size of Africa: immappancy (UCSB geography, Kai Krause)",
+            "url": "https://legacy.geog.ucsb.edu/?p=13058",
+            "date": "",
+            "snippet": "A graphic-designer essay and graphic arguing that Mercator's northern exaggeration persists in the popular imagination; cites an informal survey where size guesses were off by factors of 2 to 3.",
+            "via": "search",
+            "note": "Documents the misconception informally; not a controlled study.",
+            "verified": true
+          },
+          {
+            "title": "Are you prone to 'immappancy'? (Development Education)",
+            "url": "https://developmenteducation.ie/?p=1293",
+            "date": "",
+            "snippet": "Education article on how people misjudge country sizes from Mercator maps, and a quiz-style way to challenge it.",
+            "via": "search",
+            "note": "Second independent mention of the misconception in a teaching context.",
+            "verified": true
+          },
+          {
+            "title": "Equal-area projection (Wikipedia, via search)",
+            "url": "https://en.wikipedia.org/wiki/Equal-area_projection",
+            "date": "",
+            "snippet": "States that by Gauss's Theorema Egregium an equal-area projection cannot be conformal, so it must distort shapes.",
+            "via": "search",
+            "note": "Equal-area and conformal are mutually exclusive.",
+            "verified": true
+          },
+          {
+            "title": "Map projection concept page (EPFL GraphSearch)",
+            "url": "https://graphsearch.epfl.ch/en/concept/15346132",
+            "date": "",
+            "snippet": "Says a conformal projection cannot be equal-area and vice versa, citing Euler (1775) and a consequence of Gauss's 1827 theorem.",
+            "via": "search",
+            "note": "Independent agreement on the impossibility; the Euler date is a secondary attribution.",
+            "verified": true
+          },
+          {
+            "title": "Great Circle vs Rhumb Line: Why the Shortest Route Looks Curved on a Map (Kavas)",
+            "url": "https://www.kavas.com/blog/great-circle-and-rhumbline",
+            "date": "",
+            "snippet": "Explains that Mercator straight lines are rhumb lines and the great circle, the shortest route, appears curved.",
+            "via": "search",
+            "note": "Great circle curved on Mercator.",
+            "verified": true
+          },
+          {
+            "title": "Understanding great circles and rhumb lines (Mapscaping)",
+            "url": "https://mapscaping.com/understanding_great_circles_and_rhumb_lines/",
+            "date": "",
+            "snippet": "Describes great circles as shortest paths curved on Mercator and rhumb lines as constant-bearing paths; a gnomonic map is used to find the great-circle route.",
+            "via": "search",
+            "note": "Independent agreement on the gnomonic and Mercator relationship.",
+            "verified": true
+          }
+        ],
+        "facts": [
+          {
+            "claim": "On conformal maps (Mercator) Tissot circles stay circles but change size; on equal-area maps they keep their area but turn into ellipses; on a globe all are equal circles.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Mercator is conformal, its equator has constant scale, and a rhumb line (constant heading) is a straight line on it; PROJ calls it inappropriate for world maps.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Mercator stretches lengths along a parallel by sec(latitude), so area scales by sec squared: 4 times at 60 degrees, about 8.5 at 70, about 33 at 80 (computed with node: 4.00, 8.55, 33.16).",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Greenland's area is about 2.17 million square km and Africa's about 30.4 million, a ratio of about 14 (computed 14.0); Greenland is about one eighth of South America (computed 0.121). Source is low authority: show as approximate.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "No map projection can be both equal-area and conformal (Gauss's Theorema Egregium; Euler attribution is secondary).",
+            "sourceIndex": 8,
+            "alsoIn": [
+              9
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Great circles are curves on a Mercator map where straight lines are rhumb lines; a gnomonic map shows great circles as straight lines.",
+            "sourceIndex": 10,
+            "alsoIn": [
+              11
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "The belief that Mercator shows true country sizes (people misjudging Africa against Greenland) is documented in informal essays and an education article, not in a controlled study.",
+            "sourceIndex": 6,
+            "alsoIn": [
+              7
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "a drag-countries true-size web toy",
+          "Tissot's indicatrix figures in GIS manuals",
+          "Snyder's Map Projections: A Working Manual (USGS Professional Paper 1395)",
+          "an xkcd strip on Greenland size",
+          "Wolfram Demonstrations on projection distortion"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: each rung gives one manipulable map with a live readout, then one check question that must be answered before the next rung unlocks; the ladder ends on the trade-off slider and the 'argue with a map' matching exercise.",
+        "sophisticationHooks": [
+          "Live distortion meters: drawn-to-true area ratio per country computed by spherical polygon area against projected polygon area, not a canned number.",
+          "Tissot circles drawn exactly (analytic Jacobian per projection) and a morph slider between projections.",
+          "Great-circle flight drawn on Mercator and on a gnomonic view with the rhumb line, with an honest note that gnomonic shows under a hemisphere.",
+          "Ember ghost of each dragged country at its home size and a spin-the-pole azimuthal view whose meridians whirl like a vortex."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: about 25 coarse hand-simplified country and continent outlines (original, a few dozen vertices each, labelled approximate), 12 cities, five projections as pure functions, six rungs with fixed presets, check questions, intro and explainer. Cut: full-resolution coastlines, ellipsoid maths, more than five projections, user-uploaded data, shareable states.",
+        "risks": [
+          "Country outlines must be hand-made because the public-domain datasets cannot be downloaded into the repo; coarse shapes make drawn areas only approximate, so the page must show the ratio as 'about' and take official areas as labelled approximations.",
+          "Greenland and Africa areas rest on a low-authority source (unverified); the page says 'as of 2026-10-13, about' or shows computed ratios of the bundled shapes.",
+          "The lens brief says Mercator draws Greenland larger than South America; I only saw this in a third-party copy of PROJ text, so the page will measure it from its own shapes instead of asserting it.",
+          "The misconception is documented only informally; the page must say 'commonly believed', not cite a study.",
+          "A drag-countries toy already exists on the web; the differentiation is the ladder, Tissot circles and gnomonic flight, so the first screen must not read as a clone.",
+          "Equal Earth, Gall-Peters and other named projections were not source-verified in this dossier; the page names only the five bundled projections and no inventors or years."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "architect-2",
+      "title": "Shortest Route Calculator",
+      "plainSentence": "A calculator that compares the shortest route between two places with the straight-line course on a flat map, giving distances, headings and waypoints.",
+      "pitch": "Pick two places from a bundled list or type coordinates, and see the great-circle distance, the constant-heading (rhumb line) distance, the extra distance the straight-on-the-map course costs, and how the compass heading changes along the shortest route. Two small maps show the same trip on Mercator and on a gnomonic view, and the waypoints (every N km) can be copied as a plain list. Everything runs in the browser and shows its formulas.",
+      "firstMinute": "The page opens with a sample trip, Los Angeles to Tokyo, already computed: 8,753 km along the great circle against 9,236 km along the straight course, about 5.5 percent more. The curved route and the straight line are drawn on the Mercator map, and the visitor swaps either end to see the numbers change instantly.",
+      "conceptsToLearn": [],
+      "whyNow": "Timeless utility for travellers, pilots-in-training, sailors and trivia lovers; it pairs with the map-distortion lesson but works alone.",
+      "origin": {
+        "agent": "architect",
+        "lens": "lesson-map-projections"
+      },
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "calculator",
+        "tone": [
+          "analytical",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "localstorage"
+        ],
+        "tags": [
+          "great-circle",
+          "rhumb-line",
+          "haversine",
+          "bearing",
+          "waypoints",
+          "route-planning",
+          "distance-calculator",
+          "gnomonic"
+        ],
+        "keywords": [
+          "great-circle-distance",
+          "rhumb-line",
+          "initial-bearing",
+          "route-waypoints",
+          "shortest-route",
+          "flight-distance",
+          "haversine-formula",
+          "mercator-straight-line"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "job": "Compute, for any two points on Earth, the great-circle distance and bearings, the rhumb-line distance and constant bearing, the percentage penalty of the rhumb line, and evenly spaced waypoints along either path.",
+        "audience": "Travellers curious why flights curve, student pilots and sailors learning route planning, teachers, trivia and map fans.",
+        "paywallEvidence": [],
+        "freeGap": "Free options already do the core job: a popular web mapper gives great-circle distances for multi-stop routes and a free calculator compares great-circle with rhumb routes and generates waypoints. No paywall was found, so the real remaining gap is: fully private and offline, formulas and every step shown, side-by-side Mercator and gnomonic pictures, and an honest sphere-error note.",
+        "oracle": "Exact identities on the sphere (radius 6371.0088 km): a quarter meridian is pi/2 times R = 10007.54 km; a degree of longitude on the equator is 111.195 km; a rhumb along a parallel is cos(latitude) times longitude difference times R; the rhumb equals the great circle along a meridian; antipodes are pi times R apart. Plus a worked pair, Los Angeles to Tokyo, whose published values (8754 and 9236 km) my own haversine and rhumb code reproduce (8753 and 9236).",
+        "oracleFactIndex": 0,
+        "inputs": "Two places (bundled list of about 150 cities or typed latitude and longitude in decimal degrees), waypoint spacing, radius choice (mean sphere).",
+        "outputs": "Distances in km, miles and nautical miles; initial, final and rhumb bearings; percent penalty; midpoint; waypoint list as plain text rows; two small SVG maps.",
+        "limits": "Spherical Earth only, so distances can be off by up to about 0.3 to 0.5 percent against the true ellipsoid; no land, airspace, weather or wind; not for navigation; paths crossing the antimeridian are handled by wrapping longitude; the gnomonic view cannot show points more than 90 degrees from its centre."
+      },
+      "research": {
+        "summary": "The method is textbook: haversine for great-circle distance, the standard initial-bearing formula and the isometric-latitude formula for rhumb lines. The author of the best-known reference scripts states that spherical formulas are accurate to about 0.3 percent, and an encyclopedia states about 0.5 percent. Free competitors exist (a popular great-circle mapper for flights, a route calculator that compares great circle and rhumb and lists waypoints), so no paywall is claimed. A navigation note says great circles only save much when both ends are above about 45 degrees and far apart; my own computation shows Los Angeles to Tokyo costs 5.5 percent on the rhumb line, New York to London 3.9 percent, Los Angeles to Sydney 0.3 percent.",
+        "sources": [
+          {
+            "title": "Vincenty formulae for distance on an ellipsoid (Movable Type Scripts)",
+            "url": "https://movable-type.co.uk/scripts/latlong-vincenty.html",
+            "date": "",
+            "snippet": "The reference-script author's own page states that spherical-earth calculations such as the haversine are accurate to around 0.3 percent and that Vincenty's inverse can fail for nearly antipodal points.",
+            "via": "search",
+            "note": "Primary statement of the sphere-model error and the haversine method.",
+            "verified": true
+          },
+          {
+            "title": "Calculate distance, bearing and more between latitude/longitude points (Movable Type Scripts)",
+            "url": "https://movable-type.co.uk/scripts/latlong.html",
+            "date": "",
+            "snippet": "Reference page for haversine distance, initial bearing, midpoint and rhumb-line formulas on a sphere with mean radius 6371 km.",
+            "via": "search",
+            "note": "Named source of the formulas; the result showed no readable text, so details come from general knowledge and a library summary.",
+            "verified": false
+          },
+          {
+            "title": "Great-circle distance (Wikipedia, via search)",
+            "url": "https://en.wikipedia.org/wiki/Great-circle_distance",
+            "date": "",
+            "snippet": "States that with a spherical Earth any single distance formula is only guaranteed correct to within about 0.5 percent.",
+            "via": "search",
+            "note": "Independent statement of sphere error.",
+            "verified": true
+          },
+          {
+            "title": "Haversine calculator (cznull.com)",
+            "url": "https://cznull.com/calculators/everyday/haversine/",
+            "date": "",
+            "snippet": "A calculator that uses the IUGG mean radius 6371.0088 km and says it is not a WGS 84 geodesic.",
+            "via": "search",
+            "note": "Source for the radius value.",
+            "verified": false
+          },
+          {
+            "title": "Great Circle Routes: Why Pacific Flights Curve North Past Alaska (migflug)",
+            "url": "https://migflug.com/afterburner/great-circle-routes-why-pacific-flights-curve-north-past-alaska/",
+            "date": "",
+            "snippet": "Gives Los Angeles to Tokyo as about 8,754 km great circle against 9,236 km rhumb line, and Los Angeles to Sydney as 12,061 against 12,093.",
+            "via": "search",
+            "note": "Worked pairs; one site only (mirrors in many languages), unverified, but my own code reproduces them.",
+            "verified": false
+          },
+          {
+            "title": "Great Circle vs Rhumb Line: Why the Shortest Route Looks Curved on a Map (Kavas)",
+            "url": "https://www.kavas.com/blog/great-circle-and-rhumbline",
+            "date": "",
+            "snippet": "Explains that Mercator straight lines are rhumb lines and the great circle appears curved.",
+            "via": "search",
+            "note": "Concept check.",
+            "verified": true
+          },
+          {
+            "title": "Understanding great circles and rhumb lines (Mapscaping)",
+            "url": "https://mapscaping.com/understanding_great_circles_and_rhumb_lines/",
+            "date": "",
+            "snippet": "Describes both path types and how a gnomonic map is used to find the great-circle route.",
+            "via": "search",
+            "note": "Independent agreement on the concept.",
+            "verified": true
+          },
+          {
+            "title": "Navigation column, Mercator projection (Stony Brook mathematics)",
+            "url": "https://www.math.stonybrook.edu/~tony/whatsnew/column/navigation-0700/navigation5.html",
+            "date": "",
+            "snippet": "Treats Mercator charts, the stretched latitude correction and a worked Farallones to Tokyo case where the great circle is 234 nautical miles shorter than the chart's straight line.",
+            "via": "search",
+            "note": "Rhumb-line distance method and example.",
+            "verified": false
+          },
+          {
+            "title": "ShipUniverse rhumb line and great circle calculator",
+            "url": "https://www.shipuniverse.com/?p=18484",
+            "date": "",
+            "snippet": "A free calculator comparing great-circle and rhumb routes and generating waypoints, with a warning that it does not check land, dangers or weather.",
+            "via": "search",
+            "note": "A free competitor exists.",
+            "verified": false
+          },
+          {
+            "title": "RL v GC in qtVlm (Starpath)",
+            "url": "https://www.starpath.com/ENC/RL_v_GC_in_qtVlm.pdf",
+            "date": "",
+            "snippet": "A sailing note saying a great circle is not much shorter unless both endpoints lie above roughly 45 degrees latitude and are thousands of miles apart.",
+            "via": "search",
+            "note": "When the penalty matters; single source.",
+            "verified": false
+          },
+          {
+            "title": "Quickly Find Flight Distance & Duration With Great Circle Mapper (Million Mile Secrets)",
+            "url": "https://millionmilesecrets.com/guides/quickly-find-flight-distance-duration-with-great-circle-mapper/",
+            "date": "",
+            "snippet": "A guide showing a free mapper giving distance per leg and total for multi-stop routes with an optional ground speed for time.",
+            "via": "search",
+            "note": "A free competitor exists.",
+            "verified": false
+          },
+          {
+            "title": "Geodesic equations and their numerical solutions on an oblate spheroid (arXiv 1612.01357)",
+            "url": "https://arxiv.org/pdf/1612.01357",
+            "date": "",
+            "snippet": "Paper using the extended GeographicLib test set of 500,000 WGS84 geodesics in groups such as random, near-antipodal and short.",
+            "via": "search",
+            "note": "Existence of a published ellipsoid test set for a future ellipsoid mode.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Spherical-Earth distance formulas (haversine) are accurate to about 0.3 percent (reference-script author) and guaranteed only to about 0.5 percent (encyclopedia).",
+            "sourceIndex": 0,
+            "alsoIn": [
+              2
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A rhumb line is straight on a Mercator map, the great circle appears curved, and a gnomonic map is used to find the great circle.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6
+            ],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Los Angeles to Tokyo: great circle about 8,754 km, rhumb line about 9,236 km (5.5 percent longer); my haversine and rhumb code on a sphere of radius 6371.0088 km gives 8,753 and 9,236. Single published source, so a regression check, not an oracle.",
+            "sourceIndex": 4,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Computed with node on the sphere, rhumb versus great circle: New York (JFK) to London (LHR) 5,541 versus 5,759 km (3.9 percent); Los Angeles to Sydney 12,061 versus 12,092 km (0.3 percent).",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "A sailing note says a great circle saves little unless both ends are above roughly 45 degrees latitude and thousands of miles apart.",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-13"
+          },
+          {
+            "claim": "Free web tools already compute great-circle distances for multi-stop routes and compare great circle with rhumb routes with waypoints, so no paywall is claimed.",
+            "sourceIndex": 10,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-13"
+          }
+        ],
+        "inspirations": [
+          "Great Circle Mapper style route strings",
+          "Movable Type Scripts calculators",
+          "chartplotter route legs",
+          "gnomonic charts used by navigators"
+        ]
+      },
+      "design": {
+        "coreLoop": "Input, output, refine: choose two places, read the distances, bearings and penalty with the formula steps beside them, look at both maps, change spacing or ends, copy the waypoint list.",
+        "sophisticationHooks": [
+          "Bearing-along-the-way strip showing how the heading rotates over the great circle, versus the flat line of the rhumb bearing.",
+          "Self-test panel that runs the exact-identity checks in the browser and shows pass marks.",
+          "Gnomonic view that centres on the midpoint and warns when an end falls outside 90 degrees.",
+          "Show-your-working drawer with each formula substituted with the numbers."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: spherical haversine, bearing, midpoint, destination point, rhumb distance and bearing, waypoint generator, about 150 bundled cities with coordinates written by hand, two SVG maps using a coarse hand-made coastline, copy-as-text output, selftest. Cut: ellipsoid mode (optional stretch), GPX file export, wind or time estimates, multi-stop routes.",
+        "risks": [
+          "No paywall was found and free competitors exist, so the page wins only on private, offline, shows-its-working and the two-map picture; the pitch must not claim a free version of a paid product.",
+          "City coordinates must be hand-entered and checked; a wrong coordinate corrupts an answer, so the spec needs a table verified by script against the identities.",
+          "The Los Angeles to Tokyo figures rest on one site (unverified); the page cites exact identities and its formulas, and shows that pair as 'a worked example computed here'.",
+          "A navigation-flavoured tool needs a clear 'not for navigation, no weather or airspace' notice.",
+          "It overlaps with the lesson candidate's great-circle rung; if both reach the shortlist only one should win."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

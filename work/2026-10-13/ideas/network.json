@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "date": "2026-10-13",
+  "note": "WebFetch is attempted at most once per host per day; hosts under failedHosts are skipped by every later agent. Use WebSearch results for them.",
+  "failedHosts": [
+    {
+      "host": "en.wikipedia.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND en.wikipedia.org"
+    },
+    {
+      "host": "www.reddit.com",
+      "by": "probe",
+      "error": "Claude Code is unable to fetch from www.reddit.com"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND news.ycombinator.com"
+    },
+    {
+      "host": "hockey-reference.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND hockey-reference.com"
+    },
+    {
+      "host": "itch.io",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND itch.io"
+    },
+    {
+      "host": "iana.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND iana.org"
+    },
+    {
+      "host": "ocw.mit.edu",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND ocw.mit.edu"
+    },
+    {
+      "host": "www.ece.rochester.edu",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND www.ece.rochester.edu"
+    },
+    {
+      "host": "www.inf.ufrgs.br",
+      "by": "lab",
+      "error": "getaddrinfo ENOTFOUND www.inf.ufrgs.br"
+    },
+    {
+      "host": "www.man7.org",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.man7.org"
+    },
+    {
+      "host": "www.vip-grinders.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.vip-grinders.com"
+    },
+    {
+      "host": "oeis.org",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND oeis.org"
+    }
+  ],
+  "okHosts": []
+}

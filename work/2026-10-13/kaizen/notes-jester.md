@@ -1,0 +1,1 @@
+Search summaries blend several results into one paragraph, so deciding which URL said what for the two-independent-results rule took extra queries; a per-claim targeted search worked better than a broad one.

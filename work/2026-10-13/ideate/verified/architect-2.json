@@ -1,0 +1,227 @@
+{
+  "id": "architect-2",
+  "title": "Great-Circle Route Calculator",
+  "plainSentence": "A calculator that lets you compare the shortest route between two places with the straight-line map course, with distances and headings.",
+  "pitch": "Pick two places from a bundled list or type coordinates, and see the great-circle distance, the constant-heading (rhumb line) distance, the extra distance the straight-on-the-map course costs, and how the compass heading changes along the shortest route. Two small maps show the same trip on Mercator and on a gnomonic view, and the waypoints (every N km) can be copied as a plain list. Everything runs in the browser and shows its formulas.",
+  "firstMinute": "The page opens with a sample trip, Los Angeles airport (LAX) to Tokyo Narita (NRT), already computed here on a sphere: about 8,754 km along the great circle against about 9,236 km along the constant-heading course, roughly 5.5 percent more. Both routes are drawn on the Mercator map, and the visitor swaps either end to see the numbers change instantly.",
+  "conceptsToLearn": [
+    "great circle: the shortest path between two points on a sphere",
+    "rhumb line: a path that keeps one compass heading, a straight line on a Mercator map"
+  ],
+  "whyNow": "Timeless utility for travellers, pilots-in-training, sailors and trivia lovers; it pairs with the map-distortion lesson but works alone.",
+  "origin": {
+    "agent": "architect",
+    "lens": "lesson-map-projections"
+  },
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "tools-utility",
+    "mechanic": "calculator",
+    "tone": [
+      "analytical",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "great-circle",
+      "rhumb-line",
+      "haversine",
+      "bearing",
+      "waypoints",
+      "route-planning",
+      "distance-calculator",
+      "gnomonic"
+    ],
+    "keywords": [
+      "great-circle-distance",
+      "rhumb-line",
+      "initial-bearing",
+      "route-waypoints",
+      "shortest-route",
+      "flight-distance",
+      "haversine-formula",
+      "mercator-straight-line"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "job": "Compute, for any two points on Earth, the great-circle distance and bearings, the rhumb-line distance and constant bearing, the percentage penalty of the rhumb line, and evenly spaced waypoints along either path.",
+    "audience": "Travellers curious why flights curve, student pilots and sailors learning route planning, teachers, trivia and map fans.",
+    "paywallEvidence": [],
+    "freeGap": "Free tools already do the core job: a map-click nautical calculator with distances and bearings, free spreadsheets with waypoints, a free lite desktop program. No paywall is claimed. The remaining gap: private and offline, every formula shown with numbers, side-by-side Mercator and gnomonic pictures, an honest sphere-error note. The page names no product.",
+    "oracle": "Exact identities on a sphere of radius 6371 km (stated on the page): quarter meridian = pi/2 times R = 10007.54 km; one equatorial degree of longitude = 111.195 km; antipodes = pi times R = 20015.09 km; a rhumb along a parallel = cos(latitude) times longitude difference times R; rhumb equals great circle along a meridian. Computed by script. Worked pair LAX to NRT: 8,754 km great circle (two sites), 9,236 km rhumb (one site, plus my computation).",
+    "oracleFactIndex": 1,
+    "inputs": "Two places (a bundled list of about 60 cities with coordinates rounded to 0.1 degree, or typed latitude and longitude in decimal degrees), waypoint spacing, radius fixed at 6371 km.",
+    "outputs": "Distances in km, miles and nautical miles; initial, final and rhumb bearings; percent penalty; midpoint; waypoint list as plain text rows; two small SVG maps.",
+    "limits": "Spherical Earth only, so distances can be off by up to about 0.3 percent; no land, airspace, weather or wind; not for navigation; antimeridian paths wrap longitude; the gnomonic view cannot show points more than 90 degrees from its centre; city coordinates are rounded centres, so airport pairs differ (city centres give 8,819 km for Los Angeles to Tokyo, not 8,754)."
+  },
+  "research": {
+    "summary": "The method is textbook: haversine for great-circle distance, the initial-bearing formula and the isometric-latitude formula for rhumb lines. The reference-script author's own page says a spherical model typically errs by up to about 0.3 percent. A rhumb line is straight on a Mercator chart and a great circle is straight on a gnomonic chart, which navigators use to plan routes. Free tools already compute both (a map-click calculator, spreadsheets, a free lite program), so no paywall is claimed. Los Angeles airport to Tokyo Narita is about 8,754 km by great circle per two sites; the 9,236 km rhumb figure is from one site and matches my own computation, as do other pairs I computed.",
+    "sources": [
+      {
+        "title": "Calculate distance, bearing and more between latitude/longitude points (Movable Type Scripts)",
+        "url": "https://movable-type.co.uk/scripts/latlong.html",
+        "date": "",
+        "snippet": "Reference page for haversine great-circle distance and related formulas on a sphere; says the Earth is slightly ellipsoidal so a spherical model typically errs by up to about 0.3 percent.",
+        "via": "search",
+        "note": "Re-found: the author's own page states the 0.3 percent figure and presents haversine as the standard method. I could not read the rhumb-line section in the result text.",
+        "verified": true
+      },
+      {
+        "title": "Great Circle Routes: Why Pacific Flights Curve North Past Alaska (migflug)",
+        "url": "https://migflug.com/afterburner/great-circle-routes-why-pacific-flights-curve-north-past-alaska/",
+        "date": "",
+        "snippet": "Gives Los Angeles to Tokyo Narita as about 8,754 km by great circle against 9,236 km by rhumb line, 483 km more, and Los Angeles to Sydney as 12,061 against 12,093.",
+        "via": "search",
+        "note": "Re-found (translated copies of the same article appeared, counted once). Great-circle figure is confirmed by a second site; the rhumb figure is single-source.",
+        "verified": true
+      },
+      {
+        "title": "NRT to LAX Route Guide (rotatepilot)",
+        "url": "https://rotatepilot.com/routes/rjaa-klax",
+        "date": "",
+        "snippet": "Route guide listing the Narita to Los Angeles great-circle distance as about 8,754 km (4,727 nautical miles).",
+        "via": "search",
+        "note": "Independent second site for the great-circle figure; it is an airport pair, so city-centre coordinates give a different number.",
+        "verified": true
+      },
+      {
+        "title": "Navigation paths notes (Naval Postgraduate School)",
+        "url": "https://www.oc.nps.edu/oc2902w/maps/navpaths.pdf",
+        "date": "",
+        "snippet": "Course notes on navigation paths: rhumb lines are straight on Mercator, great circles are straight on a gnomonic chart.",
+        "via": "search",
+        "note": "Appeared with Bodleian and others for the Mercator and gnomonic query; the summary credited the group, so treat as agreeing but not individually quoted.",
+        "verified": true
+      },
+      {
+        "title": "The shortest distance between two points (Bodleian Libraries Maps blog)",
+        "url": "https://blogs.bodleian.ox.ac.uk/maps/2018/05/16/the-shortest-distance-between-two-points/",
+        "date": "2018-05-16",
+        "snippet": "Library blog on why the shortest route looks curved on a Mercator map.",
+        "via": "search",
+        "note": "Independent library source for the Mercator versus great-circle picture; not individually quoted in the summary.",
+        "verified": true
+      },
+      {
+        "title": "Nautical distance calculator (Mapscaping)",
+        "url": "https://mapscaping.com/map-and-measure-nautical-miles/",
+        "date": "",
+        "snippet": "A browser map tool reporting great-circle and rhumb distances plus initial and final bearings per segment.",
+        "via": "search",
+        "note": "A free competitor, seen in a result.",
+        "verified": true
+      },
+      {
+        "title": "Great circle sailing calculator (nauticalalmanac.it)",
+        "url": "https://www.nauticalalmanac.it/en/navigation-astronomy/great-circle-sailing-calculator",
+        "date": "",
+        "snippet": "Free spreadsheets for great-circle sailing and rhumb lines with up to 60 waypoints.",
+        "via": "search",
+        "note": "A second free competitor, seen in a result.",
+        "verified": true
+      },
+      {
+        "title": "GreatCirc program (gunamoi.com.au)",
+        "url": "https://www.gunamoi.com.au/soft/greatcirc/features.html",
+        "date": "",
+        "snippet": "Downloadable program whose free Lite version offers great-circle distance, endpoint and rhumb-line calculations.",
+        "via": "search",
+        "note": "A third free competitor, seen in a result.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A spherical Earth model typically errs by up to about 0.3 percent in distance against the real ellipsoid, per the reference-script author's own page (an encyclopedia figure of 0.5 percent was not re-checked).",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Haversine is the standard great-circle distance on a sphere; the reference page also gives initial bearing, midpoint and rhumb-line formulas (rhumb section not read in the result). The page's exact-identity checks follow from these formulas and are computed by script on a 6371 km sphere.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "A rhumb line (constant compass heading) is a straight line on a Mercator chart, and a great circle is a straight line on a gnomonic chart, which navigators use to plan long routes before transferring them to Mercator charts.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Los Angeles airport (LAX) to Tokyo Narita (NRT) is about 8,754 km by great circle per two independent sites.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The 9,236 km rhumb-line distance for the same pair (5.5 percent longer) is published by one site; my haversine and rhumb computation with airport coordinates on a 6371 km sphere gives 8,754 and 9,236, so it is a regression check, not an oracle.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Computed here on a 6371 km sphere with airport-area coordinates: New York JFK to London LHR great circle about 5,540 km, rhumb about 5,759 km (3.9 percent longer); Los Angeles to Sydney 12,061 against 12,092 km (0.3 percent), close to the published 12,061 and 12,093. Los Angeles centre to Tokyo centre gives 8,819 and 9,317 km.",
+        "sourceIndex": 1,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Free tools already compute great-circle and rhumb distances: a map-click nautical calculator with bearings, free spreadsheets with up to 60 waypoints, and a free lite desktop program.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "Great Circle Mapper style route strings",
+      "Movable Type Scripts calculators",
+      "chartplotter route legs",
+      "gnomonic charts used by navigators"
+    ]
+  },
+  "design": {
+    "coreLoop": "Input, output, refine: choose two places, read the distances, bearings and penalty with the formula steps beside them, look at both maps, change spacing or ends, copy the waypoint list.",
+    "sophisticationHooks": [
+      "Bearing-along-the-way strip showing how the heading rotates over the great circle, versus the flat line of the rhumb bearing.",
+      "Self-test panel that runs the exact-identity checks in the browser and shows pass marks.",
+      "Gnomonic view that centres on the midpoint and warns when an end falls outside 90 degrees.",
+      "Show-your-working drawer with each formula substituted with the numbers."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: spherical haversine, bearing, midpoint, destination point, rhumb distance and bearing, waypoint generator, about 60 bundled cities with coordinates written by hand and checked by script (rounded to 0.1 degree and labelled as city centres), two SVG maps (Mercator and gnomonic) with a graticule and about a dozen coarse hand-made continent outlines, copy-as-text output, show-your-working drawer, self-test. Cut: ellipsoid mode, GPX export, wind or time estimates, multi-stop routes, a 150-city list.",
+    "risks": [
+      "Several free tools already do the core job (a map-click calculator, spreadsheets, a free lite program); the page wins only on private, offline, shows-its-working and the two-map picture. The pitch must not claim a free version of a paid product, and the page names no product.",
+      "City coordinates are hand-entered; a wrong one corrupts an answer, so the spec needs a table checked by script against known distances and labelled approximate. City centres differ from airports, so the sample must say LAX to NRT.",
+      "The 9,236 km rhumb figure rests on one site; the page shows it as 'computed here' and cites only the identities and formulas as its oracle.",
+      "The rhumb-line formula section of the reference page was not readable in the search result; the identities are mathematically exact but the builder must check the formula against a textbook before the page cites it.",
+      "The 0.5 percent encyclopedia figure was not re-checked and stays off the page.",
+      "A navigation-flavoured tool needs a clear 'not for navigation, no weather or airspace' notice.",
+      "Overlap with the map-projection lesson idea: if both reach the shortlist only one should win.",
+      "Hand-made coastlines look crude if rushed; keep them coarse and clearly schematic, or drop them for a graticule."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "The 0.3 percent sphere error and the Mercator versus gnomonic fact are supported, the LAX to NRT great-circle figure by two sites, and my own computation reproduces 8,754 and 9,236 km. Free competitors are plentiful, so the value is private, offline and shows-its-working; scope shrunk to about 60 cities and coarse outlines. Oracle is mathematical identities, not an external vector set."
+  }
+}

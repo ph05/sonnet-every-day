@@ -1,0 +1,289 @@
+{
+  "id": "architect-1",
+  "title": "Why Flat Maps Distort",
+  "plainSentence": "A lesson that lets you drag countries on a world map and watch their size change, to see why flat maps always distort something.",
+  "pitch": "Drag Greenland down a Mercator map and watch it shrink beside Africa, then switch to other projections with Tissot's circles drawn on them and plot a flight that is curved on one map and straight on another. A ladder of five small demos with check-yourself questions tests the assumption that one map is the true one and ends on the point that every map is an argument. Made for travellers and geography fans, no maths needed, all offline.",
+  "firstMinute": "The page opens on a Mercator world map where a ghost-ember copy of Greenland already slides toward Africa and shrinks, with the caption that it is the same country with the same true area. The visitor drags Greenland themself and sees a live 'drawn size vs true size' readout fall to 1x at the equator. No reading is needed for that first success.",
+  "conceptsToLearn": [
+    "A map is a flat picture of a ball, so some stretching is unavoidable",
+    "Drawn size versus true size is a ratio: 1x means the country is drawn at its real size"
+  ],
+  "whyNow": "Timeless: the Greenland-versus-Africa picture is a perennial geography topic and a hot spot for a classroom assumption about map sizes. Nothing on the page depends on the date.",
+  "origin": {
+    "agent": "architect",
+    "lens": "lesson-map-projections"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "canvas2d",
+      "pointer-events",
+      "dom-ui"
+    ],
+    "tags": [
+      "mercator",
+      "tissot-indicatrix",
+      "area-distortion",
+      "great-circle",
+      "equal-area",
+      "cartography",
+      "true-size",
+      "gnomonic"
+    ],
+    "keywords": [
+      "mercator",
+      "tissot",
+      "greenland-vs-africa",
+      "conformal",
+      "equal-area",
+      "great-circle-route",
+      "map-lesson",
+      "area-scale"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A sphere cannot be flattened without distorting something. A projection chooses what to keep: Mercator keeps angles (conformal) and so stretches lengths by sec(latitude) and areas by sec squared (4 times at 60 degrees, about 33 times at 80); equal-area maps keep area and bend shapes; no projection can be both conformal and equal-area; great circles are straight only on a gnomonic map.",
+    "whyNiche": "Usual explanations are either a static 'Mercator is bad' infographic or a true-size drag toy with no why: nobody shows the area-scale curve, the Tissot circles and the great-circle flight together, or says that Mercator is excellent at its actual job (straight compass courses).",
+    "audience": "Curious travellers, geography fans, students and anyone who has argued about Greenland on a world map.",
+    "prerequisites": [
+      "what latitude and longitude are, roughly",
+      "that Earth is a ball"
+    ],
+    "misconceptions": [
+      "The wall-map (Mercator) shows true country sizes.",
+      "There is one correct projection and the others are wrong.",
+      "The straight line drawn on a map is the shortest route."
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      5
+    ],
+    "ahaMoment": "Dragging the same Tissot circle from the equator to the Arctic: on Mercator it stays round but swells to many times its size, on the equal-area map it keeps its size but flattens into an ellipse, and you realise you can never keep both.",
+    "demos": [
+      "Rung 1: drag Greenland (and any country) across a Mercator map with a live drawn-size-over-true-size readout and a ghost showing home size.",
+      "Rung 2: the stretch dial: slide a latitude marker and see the sec-squared area multiplier (1x, 2x at 45 degrees, 4x at 60, about 33x at 80, computed) beside a row of identical true-size circles.",
+      "Rung 3: Tissot's circles on a gallery of five projections (Mercator, plain equirectangular, equal-area cylindrical, sinusoidal, azimuthal) with a shape-error and area-error meter showing that no map zeroes both.",
+      "Rung 4: pick two cities and fly the shortest route: curved on Mercator, straight on a gnomonic view, with the constant-compass-heading line (rhumb line) for contrast.",
+      "Rung 5: 'argue with a map': match jobs (sailing course, country sizes, polar flights) to the projection that serves them."
+    ],
+    "checkQuestions": [
+      "On a Mercator map, by about what factor is the area of a small shape at 60 degrees latitude exaggerated? (4)",
+      "Greenland is about what fraction of South America's real area? (about one eighth; Mercator draws it larger)",
+      "On an equal-area map, what happens to a Tissot circle near the edge? (same area, becomes an ellipse)",
+      "What does a great-circle flight look like on a gnomonic map? (a straight line)",
+      "Why can't a map be both equal-area and conformal? (a sphere cannot be flattened keeping both angles and areas true)"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search only. PROJ's own documentation says Mercator is conformal, draws rhumb lines straight, is poor for world maps, and shows Greenland larger than South America though it is about one eighth of its area. Several results agree great circles are straight only on a gnomonic map and that Mercator straight lines are rhumb lines. Four results agree on Tissot behaviour (circles stay round but change size on conformal maps, keep area but become ellipses on equal-area maps). A sphere cannot be mapped both conformally and equal-area; the sec-squared area multipliers are derived by the page. Africa about 14 times Greenland and the belief that wall maps show true sizes rest on weak or informal sources, so they stay flagged.",
+    "sources": [
+      {
+        "title": "Mercator (PROJ documentation)",
+        "url": "https://proj.org/en/stable/operations/projections/merc.html",
+        "date": "",
+        "snippet": "The PROJ project's own page describes Mercator as conformal, rhumb lines as straight, and as unsuited to world maps: Greenland is drawn larger than South America although it is about 1/8 of its area.",
+        "via": "search",
+        "note": "Primary documentation; found again in my search.",
+        "verified": true
+      },
+      {
+        "title": "Gnomonic (ArcGIS Pro documentation)",
+        "url": "https://doc.esri.com/en/arcgis-pro/latest/help/mapping/properties/gnomonic.html",
+        "date": "",
+        "snippet": "The vendor's page says gnomonic projects great circles as straight lines and is neither conformal nor equal-area.",
+        "via": "search",
+        "note": "Vendor documentation of its own projection list.",
+        "verified": true
+      },
+      {
+        "title": "Understanding great circles and rhumb lines (Mapscaping)",
+        "url": "https://mapscaping.com/understanding_great_circles_and_rhumb_lines/",
+        "date": "",
+        "snippet": "Great circles are shortest paths and appear curved on Mercator; rhumb lines are constant-bearing paths.",
+        "via": "search",
+        "note": "Re-found by my search; independent of the vendor page.",
+        "verified": true
+      },
+      {
+        "title": "Great Circle vs Rhumb Line (Kavas)",
+        "url": "https://www.kavas.com/blog/great-circle-and-rhumbline",
+        "date": "",
+        "snippet": "Explains that Mercator straight lines are rhumb lines and the great-circle route looks curved.",
+        "via": "search",
+        "note": "Re-found by my search.",
+        "verified": true
+      },
+      {
+        "title": "Map Distortion with Tissot's Indicatrix (GIS Geography)",
+        "url": "https://gisgeography.com/map-distortion-tissots-indicatrix/",
+        "date": "",
+        "snippet": "On a conformal map such as Web Mercator the indicatrices are all circles of different sizes.",
+        "via": "search",
+        "note": "Tissot behaviour for conformal maps.",
+        "verified": true
+      },
+      {
+        "title": "Tissot's indicatrix (encyclopedia article)",
+        "url": "https://en.wikipedia.org/wiki/Tissot%27s_indicatrix",
+        "date": "",
+        "snippet": "On equal-area maps the indicatrices have the same area while shapes and orientations vary.",
+        "via": "search",
+        "note": "Independent source for both classes.",
+        "verified": true
+      },
+      {
+        "title": "Visualize spatial error using Tissot indicatrices (MathWorks)",
+        "url": "https://www.mathworks.com/help/map/visualize-spatial-error-using-tissot-indicatrices.html",
+        "date": "",
+        "snippet": "Software documentation noting that equal-area projections produce ellipses of equal area.",
+        "via": "search",
+        "note": "Third independent result for Tissot behaviour.",
+        "verified": true
+      },
+      {
+        "title": "Map projection concept page (EPFL GraphSearch)",
+        "url": "https://graphsearch.epfl.ch/en/concept/15346132",
+        "date": "",
+        "snippet": "Says a conformal projection cannot be equal-area, attributed to Euler (1775) and a consequence of Gauss's 1827 theorem.",
+        "via": "search",
+        "note": "The Euler attribution is secondary; the site mirrors encyclopedia text.",
+        "verified": true
+      },
+      {
+        "title": "Map Distortion with Tissot's Indicatrix (University of Lyon course page)",
+        "url": "https://math.univ-lyon1.fr/~alachal/diaporamas/diaporama_cartographie3/Map_Distortion_Tissot_Indicatrix.htm",
+        "date": "",
+        "snippet": "Course page noting every projection distorts shape, distance, direction, scale or area and cannot preserve all at once.",
+        "via": "search",
+        "note": "Supports the trade-off in general terms, not the theorem itself.",
+        "verified": true
+      },
+      {
+        "title": "The True Size of Africa: immappancy (UCSB geography)",
+        "url": "https://legacy.geog.ucsb.edu/?p=13058",
+        "date": "",
+        "snippet": "Essay arguing Mercator's northern exaggeration persists in the popular imagination; cites an informal size-guessing survey.",
+        "via": "search",
+        "note": "Not found again in my searches; informal source for the misconception.",
+        "verified": false
+      },
+      {
+        "title": "Are you prone to 'immappancy'? (Development Education)",
+        "url": "https://developmenteducation.ie/?p=1293",
+        "date": "",
+        "snippet": "Education article on how people misjudge country sizes from Mercator maps.",
+        "via": "search",
+        "note": "Not found again in my searches; informal.",
+        "verified": false
+      },
+      {
+        "title": "Actual size of Greenland (Mental Floss)",
+        "url": "https://www.mentalfloss.com/geography/actual-size-greenland",
+        "date": "",
+        "snippet": "Popular article on Greenland's real size against its Mercator look; several results put Africa at roughly 14 times Greenland.",
+        "via": "search",
+        "note": "Search summary did not attribute the figures to single entries, so the ratio is unverified.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "PROJ's documentation says Mercator is conformal, draws rhumb lines (constant heading) as straight lines, and is poor for world maps because the projected area of Greenland looks larger than South America's although it is about one eighth of it.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Great circles are straight lines on a gnomonic projection, while on Mercator the straight lines are rhumb lines and most great circles are curved.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2,
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "On conformal maps (Mercator) Tissot circles stay circles but change size; on equal-area maps they keep their area but become ellipses of varying shape.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5,
+          6
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "No map projection can be both equal-area and conformal (a result tied to Gauss's Theorema Egregium; the Euler attribution is secondary).",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Derived, not quoted: Mercator's linear scale is sec(latitude) in every direction, so area scales by sec squared: 4.00 at 60 degrees, 8.55 at 70 and 33.16 at 80 (computed here). The page computes these; builders check the formulas against Snyder's USGS Working Manual.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The belief that wall maps show true country sizes is described in informal essays and an education article, not in a controlled study; unverified by my search and shown only as a commonly raised assumption.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "As of 2026-10-13, several search results put Africa at roughly 14 times Greenland's area (about 30.2 versus 2.17 million square km); the entries were not individually attributed, so the page shows 'about' and uses its own bundled outlines.",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "a drag-countries true-size web toy",
+      "Tissot's indicatrix figures in GIS manuals",
+      "Snyder's Map Projections: A Working Manual (USGS Professional Paper 1395)",
+      "Wolfram Demonstrations on projection distortion"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: each rung gives one manipulable map with a live readout, then one check question that must be answered before the next rung unlocks; the ladder ends on the trade-off slider and the 'argue with a map' matching exercise.",
+    "sophisticationHooks": [
+      "Live distortion meters: drawn-to-true area ratio per country computed by spherical polygon area against projected polygon area, not a canned number.",
+      "Tissot circles drawn exactly (analytic Jacobian per projection) and a morph slider between projections.",
+      "Great-circle flight drawn on Mercator and on a gnomonic view with the rhumb line, with an honest note that gnomonic shows under a hemisphere.",
+      "Ember ghost of each dragged country at its home size and a spin-the-pole azimuthal view whose meridians whirl like a vortex."
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: about 25 coarse hand-simplified country and continent outlines (original, a few dozen vertices each, labelled approximate), 12 cities, five projections as pure functions, five rungs with fixed presets, check questions, intro and explainer. Cut: the Mercator-to-equal-area morph slider, full-resolution coastlines, ellipsoid maths, more than five projections, user data, shareable states. Jargon (conformal, equal-area, Tissot circle, gnomonic, rhumb line) is defined at first use and capped at those five terms.",
+    "risks": [
+      "Country outlines must be hand-made because public-domain datasets cannot be downloaded into the repo; coarse shapes make drawn areas approximate, so the page shows ratios as 'about' and labels outlines approximate.",
+      "The Africa-to-Greenland ratio of about 14 is unverified (blended search summary); the page shows ratios computed from its own outlines and quotes only the PROJ statement (Greenland about one eighth of South America) as sourced.",
+      "The sec-squared multipliers are derived by the page (area is the product of two equal linear scales); builders check the scale formula against Snyder's USGS manual and label numbers as computed.",
+      "The misconception that wall maps show true sizes is documented only informally (sources not found again by me); the page says 'commonly raised assumption', never cites a study or a percentage.",
+      "A drag-countries toy already exists on the web; the differentiation is the area-scale dial, Tissot circles and gnomonic flight, so the first screen must not read as a clone, and no site is named on the page.",
+      "Jargon load: five technical terms across five rungs; QA's stranger test should confirm each is defined where it first appears.",
+      "Equal Earth, Gall-Peters and other named projections were not source-verified; the page names only the five bundled projections and no inventors or years."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Mercator facts, gnomonic and rhumb line facts, Tissot behaviour and the conformal versus equal-area limit each agreed across separate results or the PROJ docs; area ratio and the misconception stay flagged. Scope cut to five rungs and 25 coarse outlines is buildable in a morning."
+  }
+}

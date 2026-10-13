@@ -1,0 +1,271 @@
+{
+  "id": "pulse-2",
+  "title": "Sundial Versus Clock",
+  "plainSentence": "A lesson that lets you slide through the year and see why a sundial runs minutes ahead of or behind your clock.",
+  "pitch": "The page opens on today's date with a sundial and a clock side by side, then the visitor drags through the year and watches the gap rise and fall by up to about a quarter of an hour. Short demos separate the two causes (a tilted axis and an oval orbit), explain why the earliest sunset comes weeks before the shortest day, and show how longitude and time zones add a separate offset, with the 1883 railway time switch as the story. Check-yourself questions end each step.",
+  "firstMinute": "The page opens on today's date with a sundial reading and a clock reading shown together and the gap printed in minutes (computed on the page). Dragging the year slider moves both and draws the gap curve, so the visitor sees the sun run ahead of and behind the clock before reading a word.",
+  "conceptsToLearn": [
+    "A sundial shows the sun's own time, which is not the same as the time on a clock"
+  ],
+  "whyNow": "On 13 October 1884, per the Linda Hall Library and the published conference proceedings, delegates at the International Meridian Conference voted 22 to 1 for Greenwich as the world's zero line, a step toward worldwide standard time (the conference adopted its full resolutions on 22 October). On today's date the sundial runs about 14 minutes ahead of the clock by the page's own computation, and the year's earliest sunsets are still weeks away.",
+  "origin": {
+    "agent": "pulse",
+    "lens": "on-this-day"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "serene",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "canvas2d"
+    ],
+    "tags": [
+      "equation-of-time",
+      "solar-noon",
+      "sundial",
+      "time-zones",
+      "longitude",
+      "earliest-sunset",
+      "analemma",
+      "meridian-conference",
+      "standard-time"
+    ],
+    "keywords": [
+      "sun-time-vs-clock-time",
+      "greenwich-meridian",
+      "railway-time",
+      "local-mean-time",
+      "orbit-tilt",
+      "interactive-lesson",
+      "on-this-day"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "The equation of time: why solar time (what a sundial shows) and clock time (mean solar time) differ by up to about a quarter of an hour during the year, and how longitude and time zones add a second, separate offset.",
+    "whyNiche": "Most people learn that noon is when the sun is highest and the day is longest on the solstice. The idea that sunrise, noon and sunset drift against the clock all year is rarely taught, yet it explains everyday puzzles like the earliest sunset coming before the shortest day.",
+    "audience": "Curious adults and older students, hobby astronomers, sundial and photography fans, anyone who has wondered why sunset times keep changing after the solstice.",
+    "prerequisites": [],
+    "misconceptions": [
+      "The earliest sunset of the year falls on the shortest day (winter solstice).",
+      "Solar noon is always at 12:00 clock time at the middle of a time zone."
+    ],
+    "misconceptionFactIndexes": [
+      3,
+      4
+    ],
+    "ahaMoment": "Solar noon itself drifts against the clock through the year. In early December it drifts later fast enough that sunsets stop getting earlier about two weeks before the shortest day, even though days are still getting shorter, so the earliest sunset and the shortest day are different events.",
+    "demos": [
+      "Sundial and clock side by side with a day-of-year slider and a live gap curve, opening on today's date.",
+      "Two-cause split: switch on only the tilted axis, only the oval orbit, then both, and watch the two small curves add into the real one.",
+      "Longitude ladder: pick a town, see the 4-minutes-per-degree offset from its zone's central line, and replay the 18 November 1883 railway switch with the 'two noons' effect.",
+      "Sunset finder: choose a latitude and find the earliest sunset and the shortest day, then see the gap between them."
+    ],
+    "checkQuestions": [
+      "On 3 November is a sundial ahead of or behind the clock, and by about how much?",
+      "If a town is 2 degrees of longitude west of its zone's central line, how many minutes later does its sun reach the highest point?",
+      "Why does the earliest sunset not fall on the winter solstice in the northern hemisphere?",
+      "Which single cause gives a half-year rhythm and which gives a one-year rhythm?"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search only. The vote on Greenwich at the 1884 International Meridian Conference took place on 13 October with a 22 to 1 tally (San Domingo against, France and Brazil abstaining), while the conference adopted its full resolutions on 22 October; some pages give only the later date, so the page states both. Local mean time shifts 4 minutes per degree of longitude. The earliest sunset falls before the winter solstice because of the equation of time. Two results agree on the equation of time extremes: about +16.5 minutes in early November and about -14.2 minutes in mid February, varying a little by year. The split between tilt and orbit is not sourced, so the page computes it and labels it computed.",
+    "sources": [
+      {
+        "title": "Lewis Rutherfurd and Cleveland Abbe (Linda Hall Library)",
+        "url": "https://www.lindahall.org/lewis-rutherfurd-and-cleveland-abbe/",
+        "date": "",
+        "snippet": "Library history page: on 13 October 1884 delegates voted to set a prime meridian and Greenwich prevailed 22 to 1.",
+        "via": "search",
+        "note": "Vote date and tally; found again by two separate searches, lone dissenter not named in the text I saw.",
+        "verified": true
+      },
+      {
+        "title": "International Conference Held at Washington (conference proceedings, Project Gutenberg)",
+        "url": "https://www.gutenberg.org/files/17759/17759-h/17759-h.htm",
+        "date": "",
+        "snippet": "The published proceedings of the 1884 conference; search summary says they record the 13 October vote on a Greenwich resolution.",
+        "via": "search",
+        "note": "Primary record of the conference; I did not open it.",
+        "verified": true
+      },
+      {
+        "title": "Royal Observatory, Greenwich (encyclopedia article)",
+        "url": "https://en.wikipedia.org/wiki/Royal_Observatory_Greenwich",
+        "date": "",
+        "snippet": "Says the meridian was adopted at the Washington conference on 22 October 1884, with the voting on 13 October.",
+        "via": "search",
+        "note": "Separates the vote date from the formal adoption date.",
+        "verified": true
+      },
+      {
+        "title": "The International Meridian Conference (Postcard History)",
+        "url": "https://postcardhistory.net/2019/09/the-international-meridian-conference/",
+        "date": "",
+        "snippet": "History blog giving the 22 to 1 tally with France and Brazil abstaining.",
+        "via": "search",
+        "note": "Independent tally; delegate and nation counts differ between sources and are not quoted.",
+        "verified": true
+      },
+      {
+        "title": "The day that New York had two noons (Untapped Cities)",
+        "url": "https://untappedcities.com/2020/07/17/the-day-that-new-york-had-two-noons-a-century-after-losing-11-days/",
+        "date": "2020-07-17",
+        "snippet": "Describes 18 November 1883 when railroad standard time began; the official New York clock was paused for 3 minutes 58 seconds.",
+        "via": "search",
+        "note": "Day of Two Noons; its start time for the pause differs from the 1883 account, so the page omits that time.",
+        "verified": true
+      },
+      {
+        "title": "Standard time in New York, 1883 (History Matters, George Mason University)",
+        "url": "https://historymatters.gmu.edu/d/5748",
+        "date": "",
+        "snippet": "Reproduces a contemporary newspaper account of the clock at 195 Broadway being stopped for 3 minutes 58.38 seconds.",
+        "via": "search",
+        "note": "Independent second account of the New York pause.",
+        "verified": true
+      },
+      {
+        "title": "Earliest sunset (timeanddate)",
+        "url": "https://www.timeanddate.com/astronomy/earliest-sunset.html",
+        "date": "",
+        "snippet": "Explains the earliest sunset comes before the winter solstice because of the equation of time and latitude; New York's earliest sunset is 7 to 8 December in the 2025 table.",
+        "via": "search",
+        "note": "The timeanddate site publishes this table itself.",
+        "verified": true
+      },
+      {
+        "title": "Why are earliest sunsets upon us now despite being more than 2 weeks from winter solstice? (FOX Weather)",
+        "url": "https://foxweather.com/learn/earliest-sunsets-not-on-winter-solstice",
+        "date": "",
+        "snippet": "Weather outlet explainer that the earliest sunset arrives about two weeks before the solstice.",
+        "via": "search",
+        "note": "Independent explainer of the same effect.",
+        "verified": true
+      },
+      {
+        "title": "Equation of time: Why times vary for your high noon (EarthSky)",
+        "url": "https://earthsky.org/earth/equation-of-time-why-times-vary-for-your-high-noon/",
+        "date": "",
+        "snippet": "Explains why solar noon drifts from clock noon; a 2020 table lists about -14.2 minutes in February and +16.5 minutes in November.",
+        "via": "search",
+        "note": "Extremes; combination of tilt and orbit shape.",
+        "verified": true
+      },
+      {
+        "title": "The Equation of Time (sundials.co.uk)",
+        "url": "https://www.sundials.co.uk/eot",
+        "date": "",
+        "snippet": "Sundial maker's page placing the peaks at just over 14 minutes in mid February and just over 16 minutes at the start of November.",
+        "via": "search",
+        "note": "Independent agreement on the extremes.",
+        "verified": true
+      },
+      {
+        "title": "How many minutes for each degree of longitude does local time vary (Careers360)",
+        "url": "https://www.careers360.com/question-how-many-minutes-for-each-degree-of-longitude-does-the-local-time-of-any-place-vary-from-the-greenwich-time-lnq",
+        "date": "",
+        "snippet": "Local time varies 4 minutes per degree of longitude, while standard time steps hourly per 15 degrees.",
+        "via": "search",
+        "note": "Longitude rule; it is also simple arithmetic (360 degrees in 24 hours).",
+        "verified": true
+      },
+      {
+        "title": "Naked-eye astronomy notes (astronomynotes.com)",
+        "url": "https://astronomynotes.com/nakedeye/s8.htm",
+        "date": "",
+        "snippet": "Astronomy notes working out that a 15-degree time zone corresponds to one hour, so a degree is 4 minutes.",
+        "via": "search",
+        "note": "Second result for the longitude rule.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "On 13 October 1884 the International Meridian Conference in Washington voted for the Greenwich meridian, 22 for and 1 against (San Domingo), with France and Brazil abstaining; the conference adopted its full resolutions on 22 October.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2,
+          3
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "On 18 November 1883 North American railroads moved from many local sun times to standard zone time (the Day of Two Noons); in New York the official clock at 195 Broadway was paused for 3 minutes 58 seconds, per a modern article and a contemporary 1883 account.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "Local mean time shifts by 4 minutes per degree of longitude, while standard time steps by one hour per 15 degrees.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "In the northern hemisphere the earliest sunset comes before the winter solstice (New York 7 to 8 December in the 2025 table) because solar noon drifts later on the clock; the shortest day and the earliest sunset are different events.",
+        "sourceIndex": 6,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-13"
+      },
+      {
+        "claim": "The equation of time peaks near +16.5 minutes (sundial ahead of clock) in early November and dips to about -14.2 minutes in mid February, from the combination of the axial tilt and the orbit's shape; exact values and dates vary slightly by year.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-13"
+      }
+    ],
+    "inspirations": [
+      "analemma photographs",
+      "sundial equation-of-time correction plaques",
+      "NOAA-style solar calculators",
+      "explorable-explanation lessons"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: drag the year to see the gap, answer a prediction question before revealing the next demo, split the gap into its two causes, then use the sunset finder to confirm the earliest-sunset surprise; each step ends with a check question and a plain-language summary.",
+    "sophisticationHooks": [
+      "Equation of time computed from a published series in the browser and checked against the extremes on the page",
+      "Two-cause split showing tilt and orbit curves adding up",
+      "Sunset finder for any latitude showing earliest sunset versus shortest day",
+      "Longitude ladder with a replay of the 1883 railway switch"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: four demos, an intro paragraph, glossary, check questions and a bundled list of about 25 cities with longitudes; the equation of time is computed in the page from a standard series. Cut: 3-D analemma, daylight-saving rules, polar day edge cases, live fetching. If time runs short the 1883 railway replay shrinks to a before-and-after panel.",
+    "risks": [
+      "Some pages give only 22 October for the Greenwich decision. The page says the vote was taken on 13 October and the resolutions were adopted on 22 October, and quotes only the 22 to 1 tally; delegate and nation counts differ between sources and are left out.",
+      "The 1884 vote did not by itself end local sun times; the page calls it a step toward standard time and shows the 1883 railway switch separately.",
+      "The equation of time extremes rest on two agreeing results (EarthSky table, a sundial maker); the page prints its own computed values labelled computed and shows the sourced extremes as approximate.",
+      "The split of the curve between tilt and orbit shape (any percentage) is not sourced; the page shows the two components as computed curves and makes no percentage claim.",
+      "The oracle for the computed curve is not a published almanac table: builders check the computed extremes against the sourced values above and label the page's numbers as computed here; my own quick series check gave about 14 minutes ahead on 13 October (regression check, not an oracle).",
+      "The pause length of 3 minutes 58 seconds is from two accounts that disagree on the clock time the pause began, so the page omits that time of day.",
+      "Sunset times ignore refraction and elevation; the page says about a minute."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-13",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "Vote date and tally, 1883 railway day, longitude rule, earliest-sunset effect and equation-of-time extremes each found again in two or more separate results; tilt-versus-orbit split stays unsourced and is computed. Buildable in a morning if the railway replay stays small."
+  }
+}
