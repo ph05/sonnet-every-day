@@ -1,0 +1,7 @@
+{
+  "whatIsThis": "A tool where you type a date and a place and it tells you what that date is on the calendar we use today, and warns you when the date never actually existed there (the sample says 13 October 1582 in Rome was skipped).",
+  "whatWouldIDoFirst": "Read the red result card, then change the Day or Place, or pick something from the 'Try a famous date' dropdown to see what changes.",
+  "termsNotUnderstood": ["Julian", "Gregorian", "old calendar vs today's calendar (why they differ)", "Sample", "Never existed there", "10 days skipped", "The year is counted from 1 January", "More options", "Show the steps", "One switch day per place", "Day 4 · 2026-10-13", "Sonnet Every Day"],
+  "confidence": 3,
+  "screenshotsSeen": 2
+}

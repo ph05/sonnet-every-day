@@ -1,0 +1,133 @@
+{
+  "issues": [
+    {
+      "kind": "inconsistency",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "The self-test uses the browser's date tools once, as an independent check of the Gregorian side.",
+      "fix": "Replace with an accurate description. selftest.js row 24 calls Date.UTC for every day from 1 January 1500 to 31 December 2099, so e.g. \"The self-test uses the browser's date tools as an independent check of the Gregorian side, on every day from 1 January 1500 to 31 December 2099.\""
+    },
+    {
+      "kind": "inconsistency",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "25 October 1917 in Russia (the old calendar)",
+      "fix": "Change to \"25 October 1917 in Soviet Russia (the old calendar)\" so the picker uses the same name as the place row \"Soviet Russia (RSFSR)\"."
+    },
+    {
+      "kind": "source-mismatch",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "Also seen in search results list (lines 415-422): \"Wikipedia 1582\", \"Catholic Answers The day the Church altered time\", \"Wikipedia 1582 in France\", \"icalendars.net Gregorian reform: one day or another\", \"Debian tzdata calendars file\", \"Soviet History archive (Michigan State); prlib.ru\", \"National Records of Scotland; Wikipedia Dual dating\", \"Britannica entry on Gregory XIII\", \"Wikipedia Conversion between Julian and Gregorian calendars\", \"Newton Project, Oxford\", \"Cambridge University Library exhibition\", \"National Park Service article; Philadelphia Inquirer\"",
+      "fix": "None of these appears in the idea's research.sources. Add each one to research.sources with its true verified flag and keep it, or remove it from the page. Only verified:true sources may be listed without an as-of attribution."
+    },
+    {
+      "kind": "source-mismatch",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "basis strings of Spain, Portugal, France, Denmark-Norway, Scotland and Soviet Russia, e.g. \"As of 2026-10-13, per search results: Wikipedia, 1582; Catholic Answers, The day the Church altered time.\" and \"As of 2026-10-13, per search results: Wikipedia, Adoption of the Gregorian calendar; Debian tzdata calendars file.\"",
+      "fix": "These sources are not in research.sources. Add them to research.sources with their verified flags, or drop the named sources from the basis text. The Scotland basis cites National Records of Scotland and Wikipedia Dual dating, which are also missing."
+    },
+    {
+      "kind": "source-mismatch",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "Soviet Russia basis: \"As of 2026-10-13, per search results: Soviet History archive (Michigan State); prlib.ru. Other governments of the former Russian empire switched on other days.\"",
+      "fix": "The 31 January / 14 February 1918 switch is research.facts entry 5, which is verified:false and comes from Wikipedia, List of adoption dates of the Gregorian calendar by country (one table only). Attribute the row to that source, e.g. \"As of 2026-10-13, per Wikipedia, List of adoption dates of the Gregorian calendar by country (one table only).\""
+    },
+    {
+      "kind": "source-mismatch",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/selftest.js",
+      "text": "case names such as \"row 3 Gregorian 1 January 2000 is day 2451545 (J2000.0 epoch, astronomy references seen in search results)\" and \"row 8 Soviet Russia January to February 1918 (search-seen: Soviet History archive; prlib.ru)\"",
+      "fix": "These names cite sources that are not in research.sources (J2000.0 references, Soviet History archive, Newton Project, Cambridge University Library, icalendars.net and others). Shown only when a check fails, but align them with research.sources or remove the source wording."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "25 December 1642, the birth date of Isaac Newton ...; 11 February 1731 as then written, the birth date of George Washington ...; 25 October 1917, the date of the Russian October Revolution",
+      "fix": "No research.facts entry covers these birth or event dates. Add facts whose sources are verified:true, or attribute each as \"as of 2026-10-13, per <source>\" with a research source flagged verified:false. Otherwise remove the story claims. The conversions themselves are computed and are not in question."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "Scotland moved its new year to 1 January earlier, in 1600 (as of 2026-10-13, per search results from the National Records of Scotland and the Wikipedia article \"Dual dating\"), and the converter follows that. ... The 25 March year is applied only to England, Wales, Ireland, the colonies and Scotland.",
+      "fix": "No research.facts entry covers the Scotland 1600 change or the claim that no other place used 25 March. Add research facts with sources in research.sources, or soften the wording to what the sources show."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "France row: lastJulian ymd(1582, 12, 9), firstGregorian ymd(1582, 12, 20) (shown in the About table as \"Sunday 9 December 1582\" and \"Monday 20 December 1582\")",
+      "fix": "No research.facts entry covers the French switch. Add a research fact with a verified source, or label the row as search-only in research with an as-of attribution to a source in research.sources."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "Denmark-Norway row: lastJulian ymd(1700, 2, 18), firstGregorian ymd(1700, 3, 1); basis sentence \"Many Protestant German states made the same switch, but not all of them.\"",
+      "fix": "No research.facts entry covers the 1700 switch or the German-states sentence. Add research facts with sources in research.sources, or remove the German sentence."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/data/places.js",
+      "text": "Soviet Russia basis: \"Other governments of the former Russian empire switched on other days.\"",
+      "fix": "No research.facts entry covers this statement. Add a research fact with a verified source or remove the sentence."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "Wikipedia text is licensed CC BY-SA; this page links to articles and copies none of their wording.",
+      "fix": "A licence claim with no research.facts entry. Add a research fact with a verified source, or remove the sentence."
+    },
+    {
+      "kind": "unverified-claim",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "The date type that web pages normally use (JavaScript's Date) extends today's calendar backwards, so it reads 29 February 1700, a real day on the Julian calendar, as 1 March 1700.",
+      "fix": "A technical claim with no research.facts entry. Add a research fact with a verified source, or remove the sentence."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://en.wikipedia.org/wiki/Julian_day (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://www.historytoday.com/archive/gregorian-calendar-adopted-england (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://familytreemagazine.com/history/gregorian-calendar-adoption-map/ (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://aa.usno.navy.mil/faq/leap_years (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://tondering.dk/claus/cal/gregorian.php (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/ (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    },
+    {
+      "kind": "unreachable-link",
+      "file": "/home/user/sonnet-every-day/work/2026-10-13/build/site/index.html",
+      "text": "https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/ (HTTP 000)",
+      "fix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site."
+    }
+  ],
+  "linksChecked": 8,
+  "linksOk": 0,
+  "notes": "Network: all 8 About-panel URLs returned 000 with curl -m 12, one at a time, so the sandbox network looks restricted; none was retried and each is reported as unreachable-link. Leftovers: no data-sed-placeholder, TODO, FIXME, lorem, 'Project Title', example.com, 'Source title', 0000-00-00 or 'Day 0' in the page files; the only 'day 0' hit is a test input label in selftest.js line 378, not a leftover. Typos: no doubled words or common misspellings found in the visible strings. Sources: the eight links in the About Sources list all match research.sources with verified:true. Research record: research.sources[1] (IDL JULDAY) has a note saying its example gives 2299161 for 5 October 1582, while fact 2 says 15 October 1582; the page's statement matches the verified Julian day article, so the research note should be corrected. The winnerNotes call France, Denmark-Norway and Soviet Russia 'solid', but no research.facts entry records them. Calculations: every dated example on the page (weekdays, day numbers, the 1731/32 readings, the 1700 and 1900 leap-day cases, the 1642 and 1917 conversions) was recomputed independently and agrees. Visitor text at index.html line 413 says 'Named by the review step of this build', which exposes internal process wording; left for the owner, not reported as a finding. The header 'Day 4 · 2026-10-13' was not checked against draft metadata. PROJECT.json placeholder stats were not reported."
+}

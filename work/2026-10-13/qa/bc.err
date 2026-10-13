@@ -1,0 +1,8 @@
+[qa] desktop-light: 1006ms
+[qa] desktop-dark: 759ms
+[qa] mobile-light: 818ms
+[qa] mobile-dark: 790ms
+[qa] mobile-320: 784ms
+[qa] reduced-motion: 767ms
+[qa] monkey-desktop: 145 random actions in 6000ms (seed 932310606)
+[qa] monkey-mobile: 84 random actions in 4000ms (seed 2846267383)

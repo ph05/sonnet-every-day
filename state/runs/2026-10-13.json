@@ -4,7 +4,7 @@
   "status": "in_progress",
   "targetTier": 2,
   "tier": null,
-  "phase": "qa",
+  "phase": "revise",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -35,6 +35,12 @@
       "at": "2026-10-13T10:45:22.156Z",
       "by": "primary",
       "note": "build ok, trial validate ok"
+    },
+    {
+      "phase": "qa",
+      "at": "2026-10-13T10:55:40.798Z",
+      "by": "primary",
+      "note": "qa verdict revise S1=0 S2=12 opaque=true (run by hand: workflow script rejected)"
     }
   ],
   "attempts": {
@@ -51,13 +57,14 @@
     "select": "2026-10-13T08:39:38.933Z",
     "spec": "2026-10-13T09:02:43.414Z",
     "build": "2026-10-13T09:46:57.786Z",
-    "qa": "2026-10-13T10:45:28.284Z"
+    "qa": "2026-10-13T10:45:28.284Z",
+    "revise": "2026-10-13T10:55:40.798Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-13T07:57:14.350Z",
-    "heartbeatAt": "2026-10-13T10:45:38.565Z"
+    "heartbeatAt": "2026-10-13T10:55:39.405Z"
   },
   "directives": [
     {
@@ -75,8 +82,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 1759906,
-    "agentCalls": 54,
+    "outputTokens": 2231942,
+    "agentCalls": 57,
     "byPhase": {
       "ideate": {
         "outputTokens": 662150,
@@ -93,6 +100,10 @@
       "build": {
         "outputTokens": 505522,
         "agentCalls": 11
+      },
+      "qa": {
+        "outputTokens": 472036,
+        "agentCalls": 3
       }
     }
   },
@@ -171,6 +182,12 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: qa attempt 1, due 2026-10-13T11:50:28.900Z (65 min: budget 55 + 10 margin)"
+    },
+    {
+      "at": "2026-10-13T10:55:39.505Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "qa.js rejected by the Workflow runtime twice (import() not available, lines 802-803); qa run by hand per PLAYBOOK 7.5 (browser-check, critic, proofread, cold read as Agent calls); owner: fix ops/workflows/qa.js"
     }
   ],
   "watch": {
@@ -193,6 +210,7 @@
       "qa": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-13T10:45:38.565Z"
+    "boundAt": "2026-10-13T10:45:38.565Z",
+    "disarmedAt": "2026-10-13T10:55:39.405Z"
   }
 }

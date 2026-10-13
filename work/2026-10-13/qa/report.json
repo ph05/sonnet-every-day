@@ -1,0 +1,459 @@
+{
+  "schema": 1,
+  "date": "2026-10-13",
+  "revision": 0,
+  "tier": 2,
+  "verdict": "revise",
+  "counts": {
+    "S1": 0,
+    "S2": 12,
+    "S3": 4,
+    "S4": 12
+  },
+  "browser": {
+    "ok": true,
+    "error": null
+  },
+  "degraded": true,
+  "degradedWhy": [
+    "workflow-script-rejected-run-by-hand",
+    "no-expert-review"
+  ],
+  "unreviewed": false,
+  "summary": "Ship. No S1 or S2. The converter is correct on everything I recomputed (15 page outputs against independent code and known oracles, plus 43,200 day numbers and 14,400 weekdays and month lengths against Meeus and Date.UTC with no mismatch), the 33-case self-test passes in about 80 ms and its mutation guard really fails 4 of 4 checks, all 24 SPEC vectors are present with unchanged expected values and every case runs the page's own functions, three replayed input sequences match a fresh load, and the first frame is a result with the torn October 1582 grid. Layout scan found no overlap, clipping or horizontal scroll at 11 viewports from 320 to 1920 wide in five states; focus is visible, keyboard paths work, hostile and odd hashes degrade to the sample or a clamped date with no console output. Remaining items are polish: on a phone the result headline sits at the very bottom of the first scre",
+  "scores": [
+    {
+      "dimension": "core loop and depth",
+      "score": 8,
+      "note": "Date plus place gives both calendars, weekday, dropped-date detection with both readings, two-year readings for 25 March places, a custom switch day, days-between, steps with the real sums, month grid; minute ten still teaches (Denmark-Norway 29 Feb 1700, Scotland 1599 vs 1600)."
+    },
+    {
+      "dimension": "correctness and robustness",
+      "score": 9,
+      "note": "15 page outputs recomputed independently (JDN 2299160/2299161, 1752 skip, Julian 29 Feb 1700 = Thu 11 Mar 1700, 29 Feb 1900 = Tue 13 Mar 1900, Washington 22 Feb 1732, Newton 4 Jan 1643, Defenestration 23 May 1618 O.S. = 2 Jun, 7 Nov 1917) plus 43,200 range values with zero mismatch; empty, huge, negative, unicode, pasted-date and bad-hash inputs all handled; 40 rapid ArrowUp and 30 rapid toggles threw nothing."
+    },
+    {
+      "dimension": "visual design",
+      "score": 8,
+      "note": "Tear-off calendar leaf with sepia/teal/red inks and a drawn zig-zag gap is distinctive and reads in light and dark; hierarchy is clear; the error state leaves a big empty card at 1100px and up."
+    },
+    {
+      "dimension": "interaction and feel",
+      "score": 8,
+      "note": "Debounced typing, Enter and blur flush, ArrowUp/Down with Shift, tap a grid day, famous dates from the explainer scroll to the app, toast on copy, Escape returns focus to More; More reopening after a manual close (d02) is the one rough edge."
+    },
+    {
+      "dimension": "responsiveness and accessibility",
+      "score": 8,
+      "note": "No overflow or overlap from 320 to 1920 wide, 44px controls, labelled fields, abbr weekday titles, table aria-label, live region, reduced motion honoured; gaps: no aria-invalid on the bad field, two links under 44px, grid days pointer-only (documented, Day field is the keyboard path)."
+    },
+    {
+      "dimension": "copy, voice and honesty",
+      "score": 8,
+      "note": "Warm plain copy; intro (61 words) is accurate and glosses both calendars; unverified rows say 'as of 2026-10-13, per search results'; limits section names excluded places; explainer claims check out against the engine."
+    },
+    {
+      "dimension": "performance and offline integrity",
+      "score": 9,
+      "note": "152 KB total, first render under 100 ms, self-test 79 ms including a 1500-2099 round trip, no network, no storage, CSP intact, zero console output in my runs."
+    },
+    {
+      "dimension": "first impression and shareability",
+      "score": 8,
+      "note": "Desktop first frame is title, intro, 8 controls and a red card with the torn calendar; hash holds the state and reloads exactly; on a phone the headline is at the very bottom edge of the screen (d01) and the picture is below the fold."
+    }
+  ],
+  "highlights": [
+    "The first frame is the product: 13 October 1582 in Rome already answered, with weekdays running straight through a drawn torn gap and the ten dropped days as struck-through chips, the 13 filled red.",
+    "The steps panel prints the real sum (a, y, m and every term) and the page's own result matches independent Meeus and Date.UTC arithmetic across 1500-2099 in both calendars.",
+    "The self-test is honest: all 24 SPEC rows kept with unchanged expected values, labelled by source, an independent Date.UTC reference, and a mutation guard (every-fourth-year leap rule) that fails 4 of 4 targeted checks.",
+    "The year-start handling is rare and right: England 11 February 1731 shows 'as written' 1731/32 and 'counted from 1 January' side by side with the correct weekdays, and Scotland 1599 vs 1600 switches the rule correctly.",
+    "Errors are specific (April 1582 has only 30 days; February 1900 leap-year note) and the pasted-date message tells people to use three boxes.",
+    "State lives in a strictly parsed hash: a bookmark restores it, bad or hostile hashes fall back to the sample, and nothing is stored or sent."
+  ],
+  "exercisedInBrowser": true,
+  "defects": [
+    {
+      "source": "cold-read",
+      "kind": "opaque-first-screen",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "Opaque first screen (stranger cold read)",
+      "detail": "A stranger shown only the first screen said it is: \"A tool where you type a date and a place and it tells you what that date is on the calendar we use today, and warns you when the date never actually existed there (the sample says 13 October 1582 in Rome was skipped).\" (confidence 3 of 5) and would first: \"Read the red result card, then change the Day or Place, or pick something from the 'Try a famous date' dropdown to see what changes.\". Terms not understood: Julian, Gregorian, old calendar vs today's calendar (why they differ), Sample, Never existed there, 10 days skipped, The year is counted from 1 January, More options, Show the steps, One switch day per place, Day 4 · 2026-10-13, Sonne",
+      "evidence": "qa/report.json coldRead; qa/run/shots/desktop-light.png and mobile-light.png",
+      "suggestedFix": "Gloss Julian and Gregorian in the intro where first used; name the Sample tag and the More options and Show the steps controls in plain words.",
+      "id": "d01"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "source-mismatch: Also seen in search results list (lines 415-422): \"Wikipedia 1582\", \"Catholic Answe",
+      "detail": "source-mismatch: Also seen in search results list (lines 415-422): \"Wikipedia 1582\", \"Catholic Answers The day the Church altered time\", \"Wikipedia 1582 in France\", \"icalendars.net Gregorian reform: one day or another\", \"Debian tzdata calendars file\", \"Soviet History archive (Michigan State); prlib.ru\", \"National Records of Scotland; Wikipedia Dual dating\", \"Britannica entry on Gregory XIII\", \"Wikipedia Conversion between Julian and Gregorian calendars\", \"Newton Project, Oxford\", \"Cambridge Univ",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "None of these appears in the idea's research.sources. Add each one to research.sources with its true verified flag and keep it, or remove it from the page. Only verified:true sources may be listed without an as-of attribution.",
+      "id": "d02"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "source-mismatch: basis strings of Spain, Portugal, France, Denmark-Norway, Scotland and Soviet Russi",
+      "detail": "source-mismatch: basis strings of Spain, Portugal, France, Denmark-Norway, Scotland and Soviet Russia, e.g. \"As of 2026-10-13, per search results: Wikipedia, 1582; Catholic Answers, The day the Church altered time.\" and \"As of 2026-10-13, per search results: Wikipedia, Adoption of the Gregorian calendar; Debian tzdata calendars file.\"",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "These sources are not in research.sources. Add them to research.sources with their verified flags, or drop the named sources from the basis text. The Scotland basis cites National Records of Scotland and Wikipedia Dual dating, which are also missing.",
+      "id": "d03"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "source-mismatch: Soviet Russia basis: \"As of 2026-10-13, per search results: Soviet History archive ",
+      "detail": "source-mismatch: Soviet Russia basis: \"As of 2026-10-13, per search results: Soviet History archive (Michigan State); prlib.ru. Other governments of the former Russian empire switched on other days.\"",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "The 31 January / 14 February 1918 switch is research.facts entry 5, which is verified:false and comes from Wikipedia, List of adoption dates of the Gregorian calendar by country (one table only). Attribute the row to that source, e.g. \"As of 2026-10-13, per Wikipedia, List of adoption dates of the Gregorian calendar by country (one table only).\"",
+      "id": "d04"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "selftest.js",
+      "title": "source-mismatch: case names such as \"row 3 Gregorian 1 January 2000 is day 2451545 (J2000.0 epoch, a",
+      "detail": "source-mismatch: case names such as \"row 3 Gregorian 1 January 2000 is day 2451545 (J2000.0 epoch, astronomy references seen in search results)\" and \"row 8 Soviet Russia January to February 1918 (search-seen: Soviet History archive; prlib.ru)\"",
+      "evidence": "Search selftest.js for the text.",
+      "suggestedFix": "These names cite sources that are not in research.sources (J2000.0 references, Soviet History archive, Newton Project, Cambridge University Library, icalendars.net and others). Shown only when a check fails, but align them with research.sources or remove the source wording.",
+      "id": "d05"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: 25 December 1642, the birth date of Isaac Newton ...; 11 February 1731 as then wri",
+      "detail": "unverified-claim: 25 December 1642, the birth date of Isaac Newton ...; 11 February 1731 as then written, the birth date of George Washington ...; 25 October 1917, the date of the Russian October Revolution",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No research.facts entry covers these birth or event dates. Add facts whose sources are verified:true, or attribute each as \"as of 2026-10-13, per <source>\" with a research source flagged verified:false. Otherwise remove the story claims. The conversions themselves are computed and are not in question.",
+      "id": "d06"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: Scotland moved its new year to 1 January earlier, in 1600 (as of 2026-10-13, per s",
+      "detail": "unverified-claim: Scotland moved its new year to 1 January earlier, in 1600 (as of 2026-10-13, per search results from the National Records of Scotland and the Wikipedia article \"Dual dating\"), and the converter follows that. ... The 25 March year is applied only to England, Wales, Ireland, the colonies and Scotland.",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "No research.facts entry covers the Scotland 1600 change or the claim that no other place used 25 March. Add research facts with sources in research.sources, or soften the wording to what the sources show.",
+      "id": "d07"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "unverified-claim: France row: lastJulian ymd(1582, 12, 9), firstGregorian ymd(1582, 12, 20) (shown i",
+      "detail": "unverified-claim: France row: lastJulian ymd(1582, 12, 9), firstGregorian ymd(1582, 12, 20) (shown in the About table as \"Sunday 9 December 1582\" and \"Monday 20 December 1582\")",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "No research.facts entry covers the French switch. Add a research fact with a verified source, or label the row as search-only in research with an as-of attribution to a source in research.sources.",
+      "id": "d08"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "unverified-claim: Denmark-Norway row: lastJulian ymd(1700, 2, 18), firstGregorian ymd(1700, 3, 1); b",
+      "detail": "unverified-claim: Denmark-Norway row: lastJulian ymd(1700, 2, 18), firstGregorian ymd(1700, 3, 1); basis sentence \"Many Protestant German states made the same switch, but not all of them.\"",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "No research.facts entry covers the 1700 switch or the German-states sentence. Add research facts with sources in research.sources, or remove the German sentence.",
+      "id": "d09"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "unverified-claim: Soviet Russia basis: \"Other governments of the former Russian empire switched on o",
+      "detail": "unverified-claim: Soviet Russia basis: \"Other governments of the former Russian empire switched on other days.\"",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "No research.facts entry covers this statement. Add a research fact with a verified source or remove the sentence.",
+      "id": "d10"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: Wikipedia text is licensed CC BY-SA; this page links to articles and copies none o",
+      "detail": "unverified-claim: Wikipedia text is licensed CC BY-SA; this page links to articles and copies none of their wording.",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "A licence claim with no research.facts entry. Add a research fact with a verified source, or remove the sentence.",
+      "id": "d11"
+    },
+    {
+      "source": "proofread",
+      "severity": "S2",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unverified-claim: The date type that web pages normally use (JavaScript's Date) extends today's cale",
+      "detail": "unverified-claim: The date type that web pages normally use (JavaScript's Date) extends today's calendar backwards, so it reads 29 February 1700, a real day on the Julian calendar, as 1 March 1700.",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "A technical claim with no research.facts entry. Add a research fact with a verified source, or remove the sentence.",
+      "id": "d12"
+    },
+    {
+      "source": "critic",
+      "criticId": "d01",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "style.css",
+      "title": "Phone first screen pushes result to bottom edge",
+      "detail": "On 390px wide the intro and the form fill the screen; the result card starts at y=680 and its headline top is at y=790 of 844. On a real phone browser with toolbars (about 390x700) the headline is below the fold, so the first success (changing the day and seeing the answer change) happens off screen, and the torn calendar, the page's best picture, needs a scroll. It passes the SPEC numbers (card above 844) but only just.",
+      "evidence": "Playwright, 390x844 and 390x700, light, fresh load: #result top 680, #result-headline top 790 (below 700 at the shorter height), #grid below 1000. Editing #f-day at y=430 leaves only the badge and buttons visible at 700px.",
+      "suggestedFix": "Trim the phone stack by 100 to 150px: reduce .sed-intro line-height and font-size under 480px, drop the 'Jump to the explanation' row to share a line with the day label, tighten .hdc-card padding and gaps, or move the 'Try a famous date' select into the More panel on phones. Target headline top at or under 650px at 390 wide.",
+      "id": "d13"
+    },
+    {
+      "source": "critic",
+      "criticId": "d02",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "view.js",
+      "title": "More panel reopens after visitor closes it",
+      "detail": "renderForm calls setMore(true) on every render while vm.openMore is true (Read my date as is not auto, or a second date is set). A visitor who closes More with such a setting active sees it pop open again at the next edit, pushing the result down about 300px on a phone.",
+      "evidence": "390x844 touch: open More, set Read my date as to Julian, tap Fewer options (panel hides), type 14 in Day: after 500 ms #more-panel is visible again.",
+      "suggestedFix": "Remember the last openMore value in view.js and call setMore(true) only when openMore goes from false to true (or on the first render), so a manual close sticks until the setting is cleared and set again.",
+      "id": "d14"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "inconsistency: The self-test uses the browser's date tools once, as an independent check of the Greg",
+      "detail": "inconsistency: The self-test uses the browser's date tools once, as an independent check of the Gregorian side.",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Replace with an accurate description. selftest.js row 24 calls Date.UTC for every day from 1 January 1500 to 31 December 2099, so e.g. \"The self-test uses the browser's date tools as an independent check of the Gregorian side, on every day from 1 January 1500 to 31 December 2099.\"",
+      "id": "d15"
+    },
+    {
+      "source": "proofread",
+      "severity": "S3",
+      "owner": "engineer",
+      "file": "data/places.js",
+      "title": "inconsistency: 25 October 1917 in Russia (the old calendar)",
+      "detail": "inconsistency: 25 October 1917 in Russia (the old calendar)",
+      "evidence": "Search data/places.js for the text.",
+      "suggestedFix": "Change to \"25 October 1917 in Soviet Russia (the old calendar)\" so the picker uses the same name as the place row \"Soviet Russia (RSFSR)\".",
+      "id": "d16"
+    },
+    {
+      "source": "critic",
+      "criticId": "d03",
+      "severity": "S4",
+      "owner": "engineer",
+      "file": "app.js",
+      "title": "Copy link in error state copies stale link",
+      "detail": "With an invalid field (current.state is null) the Copy link button skips the hash rewrite and copies location.href, which still holds the last valid date, then says 'Link copied.' The link does not match what is on screen.",
+      "evidence": "1280x800: open #p=england&d=11&m=2&y=1731, clear Day, More options, Copy link to this date: status 'Link copied.', clipboard http://127.0.0.1:PORT/#p=england&d=11&m=2&y=1731 while the card shows the day error.",
+      "suggestedFix": "In the btn-link branch, when current.state is null call view.flashCopied(false, 'link') or disable btn-link while the result tone is error.",
+      "id": "d17"
+    },
+    {
+      "source": "critic",
+      "criticId": "d04",
+      "severity": "S4",
+      "owner": "engineer",
+      "file": "app.js",
+      "title": "Invalid field not marked for assistive tech",
+      "detail": "The error message appears in the result card and is announced through the live region, but the offending field gets no aria-invalid or visual mark, and the error card keeps a 28rem min-height that leaves a large blank card on desktop.",
+      "evidence": "1280x800: clear Day: #f-day has no aria-invalid, no highlight; card shows the red message and about 250px of empty paper (screenshot critic-tmp/d-error.png).",
+      "suggestedFix": "In render(), set aria-invalid=true on the control named by fields.error.field (day, month, year, place, custom group) and remove it otherwise; artisan can add a red border for [aria-invalid=true] and drop min-height for [data-tone=error].",
+      "id": "d18"
+    },
+    {
+      "source": "critic",
+      "criticId": "d05",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "style.css",
+      "title": "Header links under 44px tap height",
+      "detail": "The 'Jump to the explanation' link is 36px tall and the back pill 40px; every other control meets 44px.",
+      "evidence": "390x844 touch: getBoundingClientRect heights .sed-jump 36, .sed-back 40.",
+      "suggestedFix": "Give .sed-jump and .sed-back min-height 44px (padding-block on the jump link).",
+      "id": "d19"
+    },
+    {
+      "source": "critic",
+      "criticId": "d06",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "No-JavaScript note sits after the explainer",
+      "detail": "With JavaScript off the result card reads 'Loading the converter...' and the only explanation is the noscript paragraph at the very end of the page.",
+      "evidence": "Playwright context with javaScriptEnabled false at 390x700: #result-headline text 'Loading the converter...'; noscript text exists only after the footer.",
+      "suggestedFix": "Move the noscript paragraph to just under the intro so it shows beside the dead card.",
+      "id": "d20"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://en.wikipedia.org/wiki/Julian_day (HTTP 000)",
+      "detail": "unreachable-link: https://en.wikipedia.org/wiki/Julian_day (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d21"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.historytoday.com/archive/gregorian-calendar-adopted-england (HTTP 000)",
+      "detail": "unreachable-link: https://www.historytoday.com/archive/gregorian-calendar-adopted-england (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d22"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html (HTTP 000)",
+      "detail": "unreachable-link: https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d23"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://familytreemagazine.com/history/gregorian-calendar-adoption-map/ (HTTP 000)",
+      "detail": "unreachable-link: https://familytreemagazine.com/history/gregorian-calendar-adoption-map/ (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d24"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://aa.usno.navy.mil/faq/leap_years (HTTP 000)",
+      "detail": "unreachable-link: https://aa.usno.navy.mil/faq/leap_years (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d25"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://tondering.dk/claus/cal/gregorian.php (HTTP 000)",
+      "detail": "unreachable-link: https://tondering.dk/claus/cal/gregorian.php (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d26"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-re",
+      "detail": "unreachable-link: https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/ (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d27"
+    },
+    {
+      "source": "proofread",
+      "severity": "S4",
+      "owner": "artisan",
+      "file": "index.html",
+      "title": "unreachable-link: https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/ (H",
+      "detail": "unreachable-link: https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/ (HTTP 000)",
+      "evidence": "Search index.html for the text.",
+      "suggestedFix": "Re-check when the network is available. The sandbox network appears restricted, so this may be the environment, not the site.",
+      "id": "d28"
+    }
+  ],
+  "browserCheck": {
+    "ran": true,
+    "errors": [],
+    "warnings": [],
+    "shots": [
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/desktop-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/desktop-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-light.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-dark.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-320.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/reduced-motion.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/monkey-desktop-end.png",
+      "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/monkey-mobile-end.png"
+    ],
+    "reportPath": "work/2026-10-13/qa/run/report.json"
+  },
+  "validate": {
+    "ran": true,
+    "ok": true,
+    "errors": [],
+    "warnings": [],
+    "note": "trial stage during build"
+  },
+  "proofread": {
+    "linksChecked": 8,
+    "linksOk": 0,
+    "issues": 21,
+    "notes": "Network: all 8 About-panel URLs returned 000 with curl -m 12, one at a time, so the sandbox network looks restricted; none was retried and each is reported as unreachable-link. Leftovers: no data-sed-placeholder, TODO, FIXME, lorem, 'Project Title', example.com, 'Source title', 0000-00-00 or 'Day 0' in the page files; the only 'day 0' hit is a test input label in selftest.js line 378, not a leftov"
+  },
+  "coldRead": {
+    "whatIsThis": "A tool where you type a date and a place and it tells you what that date is on the calendar we use today, and warns you when the date never actually existed there (the sample says 13 October 1582 in Rome was skipped).",
+    "whatWouldIDoFirst": "Read the red result card, then change the Day or Place, or pick something from the 'Try a famous date' dropdown to see what changes.",
+    "termsNotUnderstood": [
+      "Julian",
+      "Gregorian",
+      "old calendar vs today's calendar (why they differ)",
+      "Sample",
+      "Never existed there",
+      "10 days skipped",
+      "The year is counted from 1 January",
+      "More options",
+      "Show the steps",
+      "One switch day per place",
+      "Day 4 · 2026-10-13",
+      "Sonnet Every Day"
+    ],
+    "confidence": 3,
+    "screenshotsSeen": 2,
+    "judged": true,
+    "judge": {
+      "matchesPlainSentence": true,
+      "specific": true,
+      "firstStepOk": true,
+      "reason": "operator comparison with plainSentence and firstMinute"
+    },
+    "opaque": true,
+    "reasons": [
+      "12 terms not understood"
+    ]
+  },
+  "expert": null,
+  "pageContract": {
+    "purpose": "tool",
+    "enforced": true,
+    "requiredFrom": "2026-10-13",
+    "introFound": true
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "ok": true,
+  "errors": [],
+  "warnings": [],
+  "metrics": {
+    "seed": 932310606,
+    "passes": {
+      "desktop-light": {
+        "domContentLoadedMs": 91,
+        "loadMs": 98,
+        "fcpMs": 92,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 44,
+          "skipped": 1,
+          "failing": 0,
+          "min": 5.18
+        },
+        "contract": {
+          "introBottomPx": 232,
+          "introLimitPx": 420,
+          "introRendered": true,
+          "explainerRendered": true
+        },
+        "keyboard": {
+          "tabStops": 16,
+          "missingIndicator": 0,
+          "trapped": false
+        },
+        "ms": 1006
+      },
+      "desktop-dark": {
+        "domContentLoadedMs": 63,
+        "loadMs": 68,
+        "fcpMs": 72,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 44,
+          "skipped": 1,
+          "failing": 0,
+          "min": 7.56
+        },
+        "ms": 759
+      },
+      "mobile-light": {
+        "domContentLoadedMs": 66,
+        "loadMs": 71,
+        "fcpMs": 56,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 44,
+          "skipped": 1,
+          "failing": 0,
+          "min": 5.18
+        },
+        "contract": {
+          "introBottomPx": 380,
+          "introLimitPx": 560,
+          "introRendered": true,
+          "explainerRendered": true
+        },
+        "ms": 818
+      },
+      "mobile-dark": {
+        "domContentLoadedMs": 44,
+        "loadMs": 66,
+        "fcpMs": 80,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "contrast": {
+          "sampled": 44,
+          "skipped": 1,
+          "failing": 0,
+          "min": 7.56
+        },
+        "ms": 790
+      },
+      "mobile-320": {
+        "domContentLoadedMs": 67,
+        "loadMs": 73,
+        "fcpMs": 68,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "ms": 784
+      },
+      "reduced-motion": {
+        "domContentLoadedMs": 64,
+        "loadMs": 71,
+        "fcpMs": 72,
+        "longTasks": {
+          "count": 0,
+          "totalMs": 0,
+          "maxMs": 0
+        },
+        "heapMB": 10,
+        "resources": 8,
+        "domNodes": 409,
+        "focusable": 24,
+        "headings": {
+          "total": 9,
+          "h1": 1
+        },
+        "overflowPx": 0,
+        "reducedMotion": {
+          "matches": true,
+          "infinite": 0,
+          "names": []
+        },
+        "ms": 767
+      }
+    },
+    "server": {
+      "requests": 72,
+      "bytes": 1214840,
+      "notFound": []
+    },
+    "nonLocalRequests": [],
+    "cspViolations": [],
+    "consoleErrors": 0,
+    "pageErrors": 0,
+    "contract": {
+      "purpose": "tool",
+      "gate": true,
+      "tier": 2,
+      "requiredFrom": "2026-10-13",
+      "forced": false
+    },
+    "browser": "141.0.7390.37",
+    "firstScreenControls": 8,
+    "firstFrame": {
+      "purpose": "tool",
+      "marked": true,
+      "desktop": {
+        "resultTopPx": 248,
+        "maxTopPx": 560,
+        "rendered": true
+      },
+      "mobile": {
+        "resultTopPx": 680,
+        "maxTopPx": 844,
+        "rendered": true
+      }
+    },
+    "selfTest": {
+      "present": true,
+      "ms": 93,
+      "total": 33,
+      "passed": 33,
+      "ok": true
+    },
+    "monkey": {
+      "monkey-desktop": {
+        "seed": 932310606,
+        "durationMs": 6000,
+        "actions": 145,
+        "byKind": {
+          "drag": 13,
+          "key": 34,
+          "hover": 9,
+          "wheel": 17,
+          "type": 4,
+          "click": 43,
+          "dblclick": 11,
+          "resize": 8,
+          "rightclick": 6
+        },
+        "timeouts": 0,
+        "navigatedAway": 0,
+        "resizes": 8,
+        "log": [
+          "wheel 315,167 -138,-500",
+          "click 648,226",
+          "drag 185,393->848,121",
+          "hover 504,128",
+          "hover 81,748",
+          "wheel 213,699 39,-34",
+          "hover 1258,647",
+          "hover 318,611",
+          "click 282,412",
+          "wheel 163,41 -88,597",
+          "click 617,472",
+          "key PageDown"
+        ],
+        "domNodes": {
+          "start": 409,
+          "end": 331
+        },
+        "heapMB": {
+          "start": 10,
+          "end": 10
+        }
+      },
+      "monkey-mobile": {
+        "seed": 2846267383,
+        "durationMs": 4000,
+        "actions": 84,
+        "byKind": {
+          "drag": 18,
+          "key": 18,
+          "click": 4,
+          "tap": 26,
+          "hover": 4,
+          "wheel": 11,
+          "type": 1,
+          "resize": 2
+        },
+        "timeouts": 0,
+        "navigatedAway": 0,
+        "resizes": 2,
+        "log": [
+          "wheel 108,477 43,-15",
+          "tap 168,571",
+          "tap 203,246",
+          "click 153,160",
+          "drag 80,1->50,692",
+          "click 146,35",
+          "tap 191,533",
+          "resize 390x844",
+          "tap 308,240",
+          "tap 333,734",
+          "key n",
+          "resize 643x543"
+        ],
+        "domNodes": {
+          "start": 409,
+          "end": 412
+        },
+        "heapMB": {
+          "start": 10,
+          "end": 10
+        }
+      }
+    },
+    "durationMs": 17319
+  },
+  "shots": [
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/desktop-light.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/desktop-dark.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-light.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-dark.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/mobile-320.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/reduced-motion.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/monkey-desktop-end.png",
+    "/home/user/sonnet-every-day/work/2026-10-13/qa/run/shots/monkey-mobile-end.png"
+  ],
+  "timedOut": false
+}
