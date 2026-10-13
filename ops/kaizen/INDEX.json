@@ -341,6 +341,22 @@
       "linesChanged": 7,
       "question": "What else does the Workflow runtime refuse that a vm compile cannot show (top-level require, fs, process outside clerk programs)? A regex cannot tell a clerk function body from script code.",
       "reason": null
+    },
+    {
+      "id": "2026-10-13-engineer",
+      "date": "2026-10-13",
+      "agent": "engineer",
+      "title": "Engineer role points builders at the headless page probe template",
+      "observation": "Friction note 2026-10-13: builders can drive the real page headless but no builder-facing file says how, and npm is off limits, so a search was lost finding it. ops/templates/qa-probe.example.mjs already resolves Playwright and Chromium and is named only in critic.md. A day whose QA ran by hand needs builders to catch state bugs before QA. One pointer line in ops/roles/engineer.md.",
+      "category": "tooling",
+      "files": [
+        "ops/roles/engineer.md"
+      ],
+      "sha": null,
+      "status": "applied",
+      "linesChanged": 2,
+      "question": "Should the QA probe template also be named in the spec or build prompts so every builder sees it? Those are protected, so it would be a proposal.",
+      "reason": null
     }
   ]
 }

@@ -2,6 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
+## 2026-10-13 · engineer · applied · Engineer role points builders at the headless page probe template
+
+- observation: Friction note 2026-10-13: builders can drive the real page headless but no builder-facing file says how, and npm is off limits, so a search was lost finding it. ops/templates/qa-probe.example.mjs already resolves Playwright and Chromium and is named only in critic.md. A day whose QA ran by hand needs builders to catch state bugs before QA. One pointer line in ops/roles/engineer.md.
+- category: tooling · lines changed: 2 · files: ops/roles/engineer.md
+- question: Should the QA probe template also be named in the spec or build prompts so every builder sees it? Those are protected, so it would be a proposal.
+
 ## 2026-10-13 · artisan · applied · Test: workflow scripts must not call Date.now, Math.random or an argless new Date
 
 - observation: 2026-10-13 qa.js was rejected by the Workflow runtime for import(), a rule the selfcheck cannot see because it compiles scripts in vm and never runs them. The architect guarded import() today; the workflow-authoring reference names three more constructs that throw at run time (Date.now(), Math.random(), argless new Date()). grep shows none in ops/workflows today, so the new test in tests/playbook.test.mjs passes now and fails the day one is added. 7 lines.
