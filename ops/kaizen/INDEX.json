@@ -368,7 +368,7 @@
       "files": [
         "ops/FAILURE_MODES.md"
       ],
-      "sha": null,
+      "sha": "de5447c0127c7ee7fd61e1e78f73347f1ec56f8c",
       "status": "applied",
       "linesChanged": 2,
       "question": "Should PLAYBOOK 6.7 and the line 402 table row say the same, so the retry-once advice cannot be read as applying to a named-construct refusal?",

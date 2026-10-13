@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-13 report: qa.js was rejected twice (import() is not available in workflow scripts) and FM-34 said retry once with no mention of this cause, which the selfcheck compiles but never runs. FM-34 now names the four refused constructs, says a refusal that names a construct is deterministic so go straight to no-Workflow mode, and points at the tests that guard them (added today by architect and artisan). One row, 2 lines.
 - category: prevention · lines changed: 2 · files: ops/FAILURE_MODES.md
+- commit: de5447c012
 - question: Should PLAYBOOK 6.7 and the line 402 table row say the same, so the retry-once advice cannot be read as applying to a named-construct refusal?
 
 ## 2026-10-13 · engineer · applied · Engineer role points builders at the headless page probe template
