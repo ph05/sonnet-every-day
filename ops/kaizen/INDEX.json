@@ -400,7 +400,7 @@
       "files": [
         "ops/PLAYBOOK.md"
       ],
-      "sha": null,
+      "sha": "4358d09c62ad9adbd5d3f33a6505829e6ecc95d4",
       "status": "applied",
       "linesChanged": 2,
       "question": "Which other PLAYBOOK tables repeat a retry-once rule that FM-34 now contradicts for deterministic refusals?",

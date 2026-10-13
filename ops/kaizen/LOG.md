@@ -6,6 +6,7 @@ Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs`
 
 - observation: 2026-10-13 run events: qa.js was rejected twice by the runtime for import(). PLAYBOOK 6.7 row (line 402) still said do not retry a script bug more than once, while the critic FM-34 kaizen today says a named-construct refusal is deterministic. A reader of 6.7 alone would retry again. The row now names the four refused constructs and sends the phase straight to no-Workflow mode 7.5. One line, answers the critic question.
 - category: prevention · lines changed: 2 · files: ops/PLAYBOOK.md
+- commit: 4358d09c62
 - question: Which other PLAYBOOK tables repeat a retry-once rule that FM-34 now contradicts for deterministic refusals?
 
 ## 2026-10-13 · clerk · applied · gallery.css: masthead-bar padding written once, not overridden by padding-top
