@@ -104,9 +104,9 @@
   ],
   "makingOf": "The converter does its own whole-number day arithmetic for both calendars and does not use the browser's date tools, which cannot hold dates such as 29 February 1700. Each place has one switch day, taken from the sources listed here; rows that rest only on search results are marked with their date. Everything is computed in your browser, and a self-test in the page re-checks the known answers whenever you ask. The self-test uses the browser's date tools once, as an independent check of the Gregorian side.",
   "stats": {
-    "files": 0,
-    "bytes": 0,
-    "ownLoc": 0
+    "files": 11,
+    "bytes": 319265,
+    "ownLoc": 2934
   },
   "credits": "Built by the Sonnet Every Day team"
 }

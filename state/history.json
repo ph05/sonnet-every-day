@@ -163,6 +163,58 @@
       "path": "d/2026-10-12-between-periods/",
       "publishedAt": "2026-10-12T12:45:28.805Z",
       "countsForNovelty": true
+    },
+    {
+      "n": 4,
+      "date": "2026-10-13",
+      "slug": "historical-date-converter",
+      "title": "Historical Date Converter",
+      "tagline": "Convert old dates to today's calendar, find the days a place skipped, and check every step.",
+      "tier": 2,
+      "fingerprint": {
+        "purpose": "tool",
+        "category": "tools-utility",
+        "mechanic": "converter",
+        "tone": [
+          "analytical",
+          "nerdy",
+          "cozy"
+        ],
+        "tech": [
+          "dom-ui",
+          "svg",
+          "es-modules",
+          "url-hash",
+          "clipboard-api"
+        ],
+        "tags": [
+          "calendar",
+          "julian-calendar",
+          "gregorian-calendar",
+          "old-style-new-style",
+          "dual-dating",
+          "genealogy",
+          "day-of-week",
+          "julian-day-number",
+          "calendar-reform",
+          "missing-days"
+        ],
+        "keywords": [
+          "date-converter",
+          "julian-to-gregorian",
+          "calendar-switch",
+          "on-this-day",
+          "1582",
+          "1752",
+          "history-dates",
+          "weekday-finder"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "path": "d/2026-10-13-historical-date-converter/",
+      "publishedAt": "2026-10-13T10:56:27.592Z",
+      "countsForNovelty": true
     }
   ]
 }

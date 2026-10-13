@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "date": "2026-10-13",
+  "slug": "historical-date-converter",
+  "title": "Historical Date Converter",
+  "tagline": "Convert old dates to today's calendar, find the days a place skipped, and check every step.",
+  "description": "Converts a date between the Julian and Gregorian calendars using the switch day of the place you choose, and flags dates that never existed there. It shows the weekday and every step of the working, and runs entirely in your browser.",
+  "intro": "A converter that turns a Julian date (from the old calendar) into a Gregorian date (today's calendar), and back, for the place you pick. It flags dates that never existed there, like 13 October 1582 in Rome. Made for family historians and anyone reading old letters: a sample is loaded, so change the day or place, or try a famous date.",
+  "concepts": [
+    "Julian calendar",
+    "Gregorian calendar",
+    "Calendar switch day",
+    "Old Style and New Style",
+    "Dual dating",
+    "Julian day number"
+  ],
+  "tier": 2,
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "tools-utility",
+    "mechanic": "converter",
+    "tone": [
+      "analytical",
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "es-modules",
+      "url-hash",
+      "clipboard-api"
+    ],
+    "tags": [
+      "calendar",
+      "julian-calendar",
+      "gregorian-calendar",
+      "old-style-new-style",
+      "dual-dating",
+      "genealogy",
+      "day-of-week",
+      "julian-day-number",
+      "calendar-reform",
+      "missing-days"
+    ],
+    "keywords": [
+      "date-converter",
+      "julian-to-gregorian",
+      "calendar-switch",
+      "on-this-day",
+      "1582",
+      "1752",
+      "history-dates",
+      "weekday-finder"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#f4eee1",
+    "#0c6b66",
+    "#8f4f0f",
+    "#b3261e",
+    "#211c15",
+    "#fffcf5",
+    "#15120d"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Julian day",
+      "url": "https://en.wikipedia.org/wiki/Julian_day"
+    },
+    {
+      "title": "The Gregorian Calendar Adopted in England",
+      "url": "https://www.historytoday.com/archive/gregorian-calendar-adopted-england"
+    },
+    {
+      "title": "Calendar (New Style) Act 1750 (Irish Statute Book)",
+      "url": "https://www.irishstatutebook.ie/1750/en/act/pub/0023/print.html"
+    },
+    {
+      "title": "When Did the Gregorian Calendar Start in Each Country? (Family Tree Magazine)",
+      "url": "https://familytreemagazine.com/history/gregorian-calendar-adoption-map/"
+    },
+    {
+      "title": "Leap years (US Naval Observatory FAQ)",
+      "url": "https://aa.usno.navy.mil/faq/leap_years"
+    },
+    {
+      "title": "Gregorian calendar (Claus Tondering, Calendar FAQ)",
+      "url": "https://tondering.dk/claus/cal/gregorian.php"
+    },
+    {
+      "title": "Give us our eleven days!: calendar reform in eighteenth century England",
+      "url": "https://research.cumbria.ac.uk/en/publications/give-us-our-eleven-days-calendar-reform-in-eighteenth-century-eng/"
+    },
+    {
+      "title": "Give Us Our Eleven Days",
+      "url": "https://www.historic-uk.com/HistoryUK/HistoryofBritain/Give-us-our-eleven-days/"
+    }
+  ],
+  "makingOf": "The converter does its own whole-number day arithmetic for both calendars and does not use the browser's date tools, which cannot hold dates such as 29 February 1700. Each place has one switch day, taken from the sources listed here; rows that rest only on search results are marked with their date. Everything is computed in your browser, and a self-test in the page re-checks the known answers whenever you ask. The self-test uses the browser's date tools once, as an independent check of the Gregorian side.",
+  "stats": {
+    "files": 11,
+    "bytes": 319265,
+    "ownLoc": 2934
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

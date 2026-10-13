@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-12T21:27:51.464Z",
+  "generatedAt": "2026-10-13T10:56:27.641Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.",
@@ -8,22 +8,24 @@
     "startDate": "2026-10-10"
   },
   "stats": {
-    "days": 3,
-    "projects": 3,
-    "streak": 3,
+    "days": 4,
+    "projects": 4,
+    "streak": 4,
     "categories": {
       "hockey-sports": 1,
       "modding-games": 1,
-      "science-sim": 1
+      "science-sim": 1,
+      "tools-utility": 1
     },
     "purposes": {
+      "tool": 1,
       "play": 3
     },
     "tiers": {
-      "2": 3
+      "2": 4
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-12",
+    "lastDate": "2026-10-13",
     "missingDates": []
   },
   "kaizen": {
@@ -35,6 +37,62 @@
     "count": 18
   },
   "days": [
+    {
+      "n": 4,
+      "date": "2026-10-13",
+      "slug": "historical-date-converter",
+      "path": "d/2026-10-13-historical-date-converter/",
+      "title": "Historical Date Converter",
+      "tagline": "Convert old dates to today's calendar, find the days a place skipped, and check every step.",
+      "description": "Converts a date between the Julian and Gregorian calendars using the switch day of the place you choose, and flags dates that never existed there. It shows the weekday and every step of the working, and runs entirely in your browser.",
+      "tier": 2,
+      "category": "tools-utility",
+      "mechanic": "converter",
+      "tone": [
+        "analytical",
+        "nerdy",
+        "cozy"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "es-modules",
+        "url-hash",
+        "clipboard-api"
+      ],
+      "tags": [
+        "calendar",
+        "julian-calendar",
+        "gregorian-calendar",
+        "old-style-new-style",
+        "dual-dating",
+        "genealogy",
+        "day-of-week",
+        "julian-day-number",
+        "calendar-reform",
+        "missing-days"
+      ],
+      "palette": [
+        "#f4eee1",
+        "#0c6b66",
+        "#8f4f0f",
+        "#b3261e",
+        "#211c15",
+        "#fffcf5",
+        "#15120d"
+      ],
+      "thumb": "d/2026-10-13-historical-date-converter/thumb.png",
+      "purpose": "tool",
+      "intro": "A converter that turns a Julian date (from the old calendar) into a Gregorian date (today's calendar), and back, for the place you pick. It flags dates that never existed there, like 13 October 1582 in Rome. Made for family historians and anyone reading old letters: a sample is loaded, so change the day or place, or try a famous date.",
+      "concepts": [
+        "Julian calendar",
+        "Gregorian calendar",
+        "Calendar switch day",
+        "Old Style and New Style",
+        "Dual dating",
+        "Julian day number"
+      ]
+    },
     {
       "n": 3,
       "date": "2026-10-12",
