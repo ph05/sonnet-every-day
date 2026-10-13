@@ -64,7 +64,8 @@
     "qa": 1,
     "revise": 1,
     "package": 1,
-    "publish": 1
+    "publish": 1,
+    "kaizen": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-13T07:57:30.246Z",
@@ -76,13 +77,14 @@
     "revise": "2026-10-13T10:55:53.975Z",
     "package": "2026-10-13T10:56:03.234Z",
     "publish": "2026-10-13T10:57:22.176Z",
-    "kaizen": "2026-10-13T10:57:23.073Z"
+    "kaizen": "2026-10-13T10:57:45.495Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-13T07:57:14.350Z",
-    "heartbeatAt": "2026-10-13T10:57:22.176Z"
+    "heartbeatAt": "2026-10-13T10:57:55.009Z",
+    "phase": "kaizen"
   },
   "directives": [
     {
@@ -218,29 +220,36 @@
       "by": "primary",
       "kind": "note",
       "msg": "published at tier 2"
+    },
+    {
+      "at": "2026-10-13T10:57:46.032Z",
+      "by": "primary",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: kaizen attempt 1, due 2026-10-13T12:37:46.032Z (100 min: budget 75 + 25 margin)"
     }
   ],
   "watch": {
-    "phase": "qa",
+    "phase": "kaizen",
     "attempt": 1,
-    "armedAt": "2026-10-13T10:45:28.900Z",
-    "dueAt": "2026-10-13T11:50:28.900Z",
+    "armedAt": "2026-10-13T10:57:46.032Z",
+    "dueAt": "2026-10-13T12:37:46.032Z",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_01XHEdxE5TpNsY51ECLN9uAK",
+    "triggerId": "trig_019z13NBK9KGKmzyf1p4Zbxh",
     "workflowTask": null,
     "role": "primary",
-    "budgetMinutes": 55,
-    "delayMinutes": 65,
+    "budgetMinutes": 75,
+    "delayMinutes": 100,
     "clamped": null,
     "arms": {
       "ideate": 1,
       "select": 1,
       "spec": 1,
       "build": 1,
-      "qa": 1
+      "qa": 1,
+      "kaizen": 1
     },
     "attemptsAtArm": 1,
-    "boundAt": "2026-10-13T10:45:38.565Z",
-    "disarmedAt": "2026-10-13T10:55:39.405Z"
+    "boundAt": "2026-10-13T10:57:55.009Z"
   }
 }
