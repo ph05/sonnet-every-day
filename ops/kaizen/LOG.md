@@ -2,12 +2,12 @@
 
 Newest first. One entry per member per day. Written only by `scripts/kaizen.mjs` (direct edits are rejected); the machine-readable twin is `INDEX.json`.
 
-## 2026-10-13 · architect · rejected · qa.js: no dynamic import in the workflow script (runtime rejected it); test guards every workflow
+## 2026-10-13 · architect · applied · qa.js: no dynamic import in the workflow script (runtime rejected it); test guards every workflow
 
-- observation: 2026-10-13 report: ops/workflows/qa.js was rejected twice by the Workflow runtime (dynamic import in pageTexts, old lines 802-803), so QA ran by hand and the expert review was skipped. The selfcheck compiles scripts in vm and never runs that code, so it passed. pageTexts now takes the validator module from a static import line the gate program is given, with the pattern reading as fallback for a relative repoDir. New test in tests/qa.test.mjs fails if any ops/workflows script holds a dynamic import.
-- category: prevention · lines changed: 25
-- question: Should the selfcheck emulate the other runtime rules it cannot see (what else besides dynamic import does the Workflow runtime refuse)? _selfcheck.mjs is over the 256 KB kaizen file cap, so it cannot be edited by a kaizen: split it?
-- rejected because: tests failed (exit 1), and failed again on the automatic re-run [tests/kaizen.test.mjs > the selective gate: which suites a diff runs > the gate map lists every suite that reads a live ]: # pass 148 | # fail 1 | # cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 98940.165543
+- observation: 2026-10-13 report: ops/workflows/qa.js was rejected twice by the Workflow runtime (dynamic import in pageTexts, old lines 802-803), so QA ran by hand and the expert review was skipped. The selfcheck compiles scripts in vm and never runs that code, so it passed. pageTexts now takes the validator module from a static import line the gate program is given, with the pattern reading as fallback for a relative repoDir. New test in tests/playbook.test.mjs fails if any ops/workflows script holds a dynamic import.
+- category: prevention · lines changed: 22 · files: ops/workflows/qa.js, tests/playbook.test.mjs
+- question: Should the selfcheck emulate the other runtime rules it cannot see (what else besides dynamic import does the Workflow runtime refuse)? _selfcheck.mjs is over the 256 KB kaizen file cap, so a kaizen cannot edit it: split it?
+- note: earlier attempt rejected: tests failed (exit 1), and failed again on the automatic re-run [tests/kaizen.test.mjs > the selective gate: which suites a diff runs > the gate map lists every suite that reads a live ]: # pass 148 | # fail 1 | # cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 98940.165543
 
 ## 2026-10-12 · lab · applied · FM-47: budget-exhausted with 0 spend at launch is a findable symptom with a one-step recovery
 

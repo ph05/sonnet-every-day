@@ -1974,3 +1974,9 @@ test('timetable: every stated live window of a compact day is the narrow planner
   assert.ok(lates.length >= 4, JSON.stringify(lates));
   for (const [file, t] of lates) assert.equal(t, to, `${file}: "late" after ${t}, but the plan goes live by ${to}`);
 });
+
+test('no workflow script contains a dynamic import: the runtime rejects the whole file (qa.js, 2026-10-13)', () => {
+  const files = fs.readdirSync(path.join(REPO_ROOT, 'ops', 'workflows')).filter((f) => f.endsWith('.js'));
+  assert.ok(files.includes('qa.js'), 'qa.js is among the scripts scanned');
+  for (const f of files) assert.doesNotMatch(fs.readFileSync(path.join(REPO_ROOT, 'ops', 'workflows', f), 'utf8'), /\bimport\s*\(/, `${f}: a clerk program gets a static import line instead`);
+});

@@ -779,9 +779,10 @@ const EXPERT_SCHEMA = {
   required: ['recomputed', 'claimsChecked', 'defects'],
 };
 
-// The page's own title, tagline and intro from its static HTML. The intro is read exactly as validate.mjs reads it (its exports) when
-// that module loads, else by a plain pattern; closes over nothing (a helper of gateProgram, shipped with it).
-async function pageTexts(src, repo, path) {
+// The page's own title, tagline and intro from its static HTML. The intro is read exactly as validate.mjs reads it (v, its module
+// namespace, when the program could import it), else by a plain pattern; closes over nothing (a helper of gateProgram, shipped with it).
+// No dynamic import in this script: the Workflow runtime rejects the whole file for one (2026-10-13 QA), so the program gets a static import line.
+function pageTexts(src, v) {
   const out = { title: '', tagline: '', intro: '', introFound: false, exact: false };
   if (!src) return out;
   const named = { amp: 38, lt: 60, gt: 62, quot: 34, apos: 39, nbsp: 160, middot: 183, ndash: 8211, mdash: 8212, lsquo: 8216, rsquo: 8217, ldquo: 8220, rdquo: 8221, hellip: 8230, larr: 8592, rarr: 8594 };
@@ -798,9 +799,8 @@ async function pageTexts(src, repo, path) {
   out.tagline = tag ? text(tag[1]).slice(0, 300) : '';
   const intro = /<p\b[^>]*\bdata-sed-intro\b[^>]*>([\s\S]*?)<\/p>/i.exec(src);
   if (intro) { out.introFound = true; out.intro = text(intro[1]); }
+  if (!v) return out;
   try {
-    const { pathToFileURL } = await import('node:url');
-    const v = await import(pathToFileURL(path.join(repo, 'scripts', 'validate.mjs')).href);
     const scan = v.analyzeContract(src);
     const good = scan.intros.filter((x) => x.inMain && !x.inDetails && !x.hidden && !x.template);
     const el = good[0] || scan.intros[0] || null;
@@ -841,7 +841,7 @@ async function gateProgram({ fs, path, cp, argv }) {
   const armed = requiredFrom !== null && date >= requiredFrom && tier !== '3' && tier !== '4';
   let entrySrc = '';
   try { entrySrc = fs.readFileSync(path.join(site, 'index.html'), 'utf8'); } catch { /* no page: the validator says so */ }
-  const page = await pageTexts(entrySrc, repo, path);
+  const page = pageTexts(entrySrc, validatorMod);
   const slug = wantSlug || meta.slug || 'site';
   const pkg = path.join(work, 'tmp', 'qa-pkg');
   const dir = path.join(pkg, `${date}-${slug}`);
@@ -880,7 +880,9 @@ async function runGate() {
   // falls back to its own default otherwise), so nothing a scout wrote can run here (PLAYBOOK 1 rule 11).
   const safeSlug = /^[a-z0-9]+(-[a-z0-9]+)*$/.test(str(A.slug)) && str(A.slug).length <= 40 ? str(A.slug) : '';
   if (str(A.slug) && !safeSlug) log(`validate dry run: args.slug ${JSON.stringify(clip(A.slug, 60))} is not a plain kebab-case slug; the dry run uses its default name`);
-  const r = await runFiles('validate dry run', [{ path: prog, content: makeProgram(gateProgram, pageTexts) }], `node ${prog} ${REPO} ${DATE} ${COMPACT ? 2 : 1} ${SITE} ${safeSlug}`.trim(), { phase: 'Checks' });
+  // The validator module comes in by a static import line (an absolute repoDir only; else the pattern reading stands).
+  const vImport = REPO.startsWith('/') ? `import * as validatorMod from ${JSON.stringify(encodeURI(`file://${REPO}/scripts/validate.mjs`))};` : 'const validatorMod = null;';
+  const r = await runFiles('validate dry run', [{ path: prog, content: `${vImport}\n${makeProgram(gateProgram, pageTexts)}` }], `node ${prog} ${REPO} ${DATE} ${COMPACT ? 2 : 1} ${SITE} ${safeSlug}`.trim(), { phase: 'Checks' });
   const out = r.ok ? parseJsonOut(r.stdout) : null;
   // What the program read besides the validator: the purpose, the page-contract gate and the first-screen texts (builder-written page
   // text: it reaches a prompt only fenced as untrusted).
