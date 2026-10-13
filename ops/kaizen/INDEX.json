@@ -336,7 +336,7 @@
       "files": [
         "tests/playbook.test.mjs"
       ],
-      "sha": null,
+      "sha": "2ae5e342e5e1063d37bb8811515346ed45be5261",
       "status": "applied",
       "linesChanged": 7,
       "question": "What else does the Workflow runtime refuse that a vm compile cannot show (top-level require, fs, process outside clerk programs)? A regex cannot tell a clerk function body from script code.",
