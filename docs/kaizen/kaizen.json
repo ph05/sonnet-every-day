@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-13T10:56:27.641Z",
+  "generatedAt": "2026-10-13T12:45:29.766Z",
   "site": {
     "name": "Sonnet Every Day",
     "url": "https://ph05.github.io/sonnet-every-day/"
@@ -8,34 +8,157 @@
   "repo": "ph05/sonnet-every-day",
   "branch": "claude/sonnet-every-day",
   "stats": {
-    "entries": 19,
-    "applied": 18,
+    "entries": 25,
+    "applied": 24,
     "rejected": 0,
     "reverted": 0,
     "proposed": 1,
-    "linesChanged": 90,
+    "linesChanged": 129,
     "members": 9,
     "roster": 9,
     "agents": {
-      "architect": 2,
-      "artisan": 2,
+      "architect": 3,
+      "artisan": 3,
       "cards": 2,
-      "clerk": 2,
-      "critic": 2,
-      "engineer": 2,
+      "clerk": 3,
+      "critic": 3,
+      "engineer": 3,
       "jester": 2,
       "lab": 3,
-      "pulse": 2
+      "pulse": 3
     },
     "categories": {
-      "prevention": 17,
+      "prevention": 21,
       "proposal": 1,
-      "tests": 1
+      "simplification": 1,
+      "tests": 1,
+      "tooling": 1
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-12"
+    "lastDate": "2026-10-13"
   },
   "entries": [
+    {
+      "id": "2026-10-13-pulse",
+      "date": "2026-10-13",
+      "agent": "pulse",
+      "persona": "Pulse",
+      "role": "the current-events and culture scout",
+      "title": "PLAYBOOK 6.7: a refused-construct Workflow error skips the retry, matching FM-34",
+      "observation": "2026-10-13 run events: qa.js was rejected twice by the runtime for import(). PLAYBOOK 6.7 row (line 402) still said do not retry a script bug more than once, while the critic FM-34 kaizen today says a named-construct refusal is deterministic. A reader of 6.7 alone would retry again. The row now names the four refused constructs and sends the phase straight to no-Workflow mode 7.5. One line, answers the critic question.",
+      "category": "prevention",
+      "files": [
+        "ops/PLAYBOOK.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "4358d09c62ad9adbd5d3f33a6505829e6ecc95d4",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/4358d09c62ad9adbd5d3f33a6505829e6ecc95d4",
+      "proposalUrl": null,
+      "question": "Which other PLAYBOOK tables repeat a retry-once rule that FM-34 now contradicts for deterministic refusals?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-13-clerk",
+      "date": "2026-10-13",
+      "agent": "clerk",
+      "persona": "Clerk",
+      "role": "exact, mechanical, unflappable",
+      "title": "gallery.css: masthead-bar padding written once, not overridden by padding-top",
+      "observation": "Scan of site-src/gallery.css lines 168-169: .masthead-bar set padding 6px 0 10px and then padding-top 10px further down, so the top edge read two ways and the shorthand was partly dead. Rewrote it as padding 10px 0 with the second declaration removed. Computed padding is unchanged (top 10px, bottom 10px, sides 0), so no visual change. Today's prevention theme (QA rejected by the Workflow runtime) is not reachable from this stylesheet, so this is the normal kaizen.",
+      "category": "simplification",
+      "files": [
+        "site-src/gallery.css"
+      ],
+      "linesChanged": 4,
+      "status": "applied",
+      "sha": "6d6e18610512f2090f52f0035e9a1833edce1def",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/6d6e18610512f2090f52f0035e9a1833edce1def",
+      "proposalUrl": null,
+      "question": "Should browser-check.mjs record computed padding of the masthead so a later duplicate declaration shows up as a diff?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-13-critic",
+      "date": "2026-10-13",
+      "agent": "critic",
+      "persona": "Critic",
+      "role": "quality, honesty and adversarial review",
+      "title": "FM-34: a runtime refusal of a script construct is deterministic, so skip the retry",
+      "observation": "2026-10-13 report: qa.js was rejected twice (import() is not available in workflow scripts) and FM-34 said retry once with no mention of this cause, which the selfcheck compiles but never runs. FM-34 now names the four refused constructs, says a refusal that names a construct is deterministic so go straight to no-Workflow mode, and points at the tests that guard them (added today by architect and artisan). One row, 2 lines.",
+      "category": "prevention",
+      "files": [
+        "ops/FAILURE_MODES.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "de5447c0127c7ee7fd61e1e78f73347f1ec56f8c",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/de5447c0127c7ee7fd61e1e78f73347f1ec56f8c",
+      "proposalUrl": null,
+      "question": "Should PLAYBOOK 6.7 and the line 402 table row say the same, so the retry-once advice cannot be read as applying to a named-construct refusal?",
+      "reason": null
+    },
+    {
+      "id": "2026-10-13-engineer",
+      "date": "2026-10-13",
+      "agent": "engineer",
+      "persona": "Engineer",
+      "role": "logic, performance and correctness",
+      "title": "Engineer role points builders at the headless page probe template",
+      "observation": "Friction note 2026-10-13: builders can drive the real page headless but no builder-facing file says how, and npm is off limits, so a search was lost finding it. ops/templates/qa-probe.example.mjs already resolves Playwright and Chromium and is named only in critic.md. A day whose QA ran by hand needs builders to catch state bugs before QA. One pointer line in ops/roles/engineer.md.",
+      "category": "tooling",
+      "files": [
+        "ops/roles/engineer.md"
+      ],
+      "linesChanged": 2,
+      "status": "applied",
+      "sha": "d9ab90f3b3e6ea587d3e35f7f7e28e0c2f285bb8",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/d9ab90f3b3e6ea587d3e35f7f7e28e0c2f285bb8",
+      "proposalUrl": null,
+      "question": "Should the QA probe template also be named in the spec or build prompts so every builder sees it? Those are protected, so it would be a proposal.",
+      "reason": null
+    },
+    {
+      "id": "2026-10-13-artisan",
+      "date": "2026-10-13",
+      "agent": "artisan",
+      "persona": "Artisan",
+      "role": "look, feel and motion",
+      "title": "Test: workflow scripts must not call Date.now, Math.random or an argless new Date",
+      "observation": "2026-10-13 qa.js was rejected by the Workflow runtime for import(), a rule the selfcheck cannot see because it compiles scripts in vm and never runs them. The architect guarded import() today; the workflow-authoring reference names three more constructs that throw at run time (Date.now(), Math.random(), argless new Date()). grep shows none in ops/workflows today, so the new test in tests/playbook.test.mjs passes now and fails the day one is added. 7 lines.",
+      "category": "prevention",
+      "files": [
+        "tests/playbook.test.mjs"
+      ],
+      "linesChanged": 7,
+      "status": "applied",
+      "sha": "2ae5e342e5e1063d37bb8811515346ed45be5261",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/2ae5e342e5e1063d37bb8811515346ed45be5261",
+      "proposalUrl": null,
+      "question": "What else does the Workflow runtime refuse that a vm compile cannot show (top-level require, fs, process outside clerk programs)? A regex cannot tell a clerk function body from script code.",
+      "reason": null
+    },
+    {
+      "id": "2026-10-13-architect",
+      "date": "2026-10-13",
+      "agent": "architect",
+      "persona": "Architect",
+      "role": "structure and integration",
+      "title": "qa.js: no dynamic import in the workflow script (runtime rejected it); test guards every workflow",
+      "observation": "2026-10-13 report: ops/workflows/qa.js was rejected twice by the Workflow runtime (dynamic import in pageTexts, old lines 802-803), so QA ran by hand and the expert review was skipped. The selfcheck compiles scripts in vm and never runs that code, so it passed. pageTexts now takes the validator module from a static import line the gate program is given, with the pattern reading as fallback for a relative repoDir. New test in tests/playbook.test.mjs fails if any ops/workflows script holds a dynamic import.",
+      "category": "prevention",
+      "files": [
+        "ops/workflows/qa.js",
+        "tests/playbook.test.mjs"
+      ],
+      "linesChanged": 22,
+      "status": "applied",
+      "sha": "2d798c2efaef65ce6ca9b38471fc87303673176b",
+      "commitUrl": "https://github.com/ph05/sonnet-every-day/commit/2d798c2efaef65ce6ca9b38471fc87303673176b",
+      "proposalUrl": null,
+      "question": "Should the selfcheck emulate the other runtime rules it cannot see (what else besides dynamic import does the Workflow runtime refuse)? _selfcheck.mjs is over the 256 KB kaizen file cap, so a kaizen cannot edit it: split it?",
+      "reason": "earlier attempt rejected: tests failed (exit 1), and failed again on the automatic re-run [tests/kaizen.test.mjs > the selective gate: which suites a diff runs > the gate map lists every suite that reads a live ]: # pass 148 | # fail 1 | # cancelled 0 | # skipped 0 | # todo 0 | # duration_ms 98940.165543"
+    },
     {
       "id": "2026-10-12-lab",
       "date": "2026-10-12",

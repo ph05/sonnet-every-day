@@ -165,8 +165,8 @@ select { appearance: none; padding-right: 2.2em;
 .masthead .wrap { border-bottom: 0; }
 .masthead-bar {
   display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between;
-  padding: 6px 0 10px; border-top: 5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
-  padding-top: 10px; font-size: 0.8rem; text-transform: uppercase;
+  padding: 10px 0; border-top: 5px solid var(--ink); border-bottom: 1.5px solid var(--ink);
+  font-size: 0.8rem; text-transform: uppercase;
 }
 .dateline { color: var(--muted); font-weight: 600; }
 .tools { display: flex; gap: 8px; }
