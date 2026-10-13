@@ -4,7 +4,7 @@
   "status": "published",
   "targetTier": 2,
   "tier": 2,
-  "phase": "kaizen",
+  "phase": "done",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -53,6 +53,18 @@
       "at": "2026-10-13T10:56:54.776Z",
       "by": "primary",
       "note": "packaged historical-date-converter (tier 2)"
+    },
+    {
+      "phase": "kaizen",
+      "at": "2026-10-13T12:05:11.872Z",
+      "by": "primary",
+      "note": "6 applied, 0 rejected, 0 proposed, 3 skipped (phase-time)"
+    },
+    {
+      "phase": "done",
+      "at": "2026-10-13T12:05:11.872Z",
+      "by": "primary",
+      "note": "kaizen closed the day"
     }
   ],
   "attempts": {
@@ -77,13 +89,14 @@
     "revise": "2026-10-13T10:55:53.975Z",
     "package": "2026-10-13T10:56:03.234Z",
     "publish": "2026-10-13T10:57:22.176Z",
-    "kaizen": "2026-10-13T10:57:45.495Z"
+    "kaizen": "2026-10-13T10:57:45.495Z",
+    "done": "2026-10-13T12:05:11.872Z"
   },
   "lease": {
     "holder": "primary",
     "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
     "acquiredAt": "2026-10-13T07:57:14.350Z",
-    "heartbeatAt": "2026-10-13T10:57:55.009Z",
+    "heartbeatAt": "2026-10-13T12:05:11.872Z",
     "phase": "kaizen"
   },
   "directives": [
@@ -102,8 +115,8 @@
   },
   "throttle": "balanced",
   "spend": {
-    "outputTokens": 2231942,
-    "agentCalls": 57,
+    "outputTokens": 2283090,
+    "agentCalls": 68,
     "byPhase": {
       "ideate": {
         "outputTokens": 662150,
@@ -124,6 +137,10 @@
       "qa": {
         "outputTokens": 472036,
         "agentCalls": 3
+      },
+      "kaizen": {
+        "outputTokens": 51148,
+        "agentCalls": 11
       }
     }
   },

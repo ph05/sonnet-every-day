@@ -1,4 +1,8 @@
 {
   "schema": 1,
-  "skipped": []
+  "skipped": [
+    "cards",
+    "lab",
+    "jester"
+  ]
 }
