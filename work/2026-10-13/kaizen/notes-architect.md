@@ -1,1 +1,2 @@
 Search snippets rarely show exact worked numbers from reference pages, so a scout should compute oracle values with node and label them regression checks; a shared note on which numbers are only computed would save the verifier time.
+Judging two criteria meant reading a 190 KB shortlist.json twice over; a printed one-page digest per idea (plain sentence, oracle, scope, risks) from the select step would let a two-criterion judge read once.

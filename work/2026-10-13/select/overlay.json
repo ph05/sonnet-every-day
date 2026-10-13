@@ -1,0 +1,325 @@
+{
+  "writeCarryover": false,
+  "scores": {
+    "i01": {
+      "sophistication": 5.5,
+      "delight": 6.9,
+      "distinctness": 8.4,
+      "feasibility": 8.6,
+      "timeliness": 8.5,
+      "interestFit": 5.8,
+      "polishPotential": 4.2,
+      "safety": 7.4,
+      "clarity": 7.5
+    },
+    "i08": {
+      "sophistication": 8.8,
+      "delight": 7.8,
+      "distinctness": 7.6,
+      "feasibility": 6.3,
+      "timeliness": 5.8,
+      "interestFit": 7.5,
+      "polishPotential": 8,
+      "safety": 7.8,
+      "clarity": 6.2
+    },
+    "i05": {
+      "sophistication": 7,
+      "delight": 8.8,
+      "distinctness": 3.8,
+      "feasibility": 5,
+      "timeliness": 6.1,
+      "interestFit": 5.2,
+      "polishPotential": 8.8,
+      "safety": 7.6,
+      "clarity": 8.8
+    },
+    "i09": {
+      "sophistication": 6.6,
+      "delight": 7,
+      "distinctness": 7.4,
+      "feasibility": 8.8,
+      "timeliness": 7,
+      "interestFit": 9.5,
+      "polishPotential": 6.1,
+      "safety": 6,
+      "clarity": 6.4
+    },
+    "i03": {
+      "sophistication": 7.4,
+      "delight": 6.3,
+      "distinctness": 9,
+      "feasibility": 6.5,
+      "timeliness": 9,
+      "interestFit": 6.5,
+      "polishPotential": 5.4,
+      "safety": 6.8,
+      "clarity": 5.4
+    },
+    "i04": {
+      "sophistication": 8.3,
+      "delight": 8,
+      "distinctness": 6.2,
+      "feasibility": 6,
+      "timeliness": 6.4,
+      "interestFit": 6.6,
+      "polishPotential": 8.6,
+      "safety": 8.2,
+      "clarity": 5
+    },
+    "i02": {
+      "sophistication": 7.5,
+      "delight": 5.7,
+      "distinctness": 5.4,
+      "feasibility": 7.2,
+      "timeliness": 6.8,
+      "interestFit": 6,
+      "polishPotential": 6.3,
+      "safety": 8.4,
+      "clarity": 6
+    },
+    "i10": {
+      "sophistication": 3.5,
+      "delight": 4,
+      "distinctness": 4.6,
+      "feasibility": 9.2,
+      "timeliness": 4.5,
+      "interestFit": 4.2,
+      "polishPotential": 6.6,
+      "safety": 7,
+      "clarity": 7.2
+    },
+    "i07": {
+      "sophistication": 4.5,
+      "delight": 5.2,
+      "distinctness": 2.8,
+      "feasibility": 7.8,
+      "timeliness": 5,
+      "interestFit": 4.4,
+      "polishPotential": 6.9,
+      "safety": 6.6,
+      "clarity": 6.6
+    },
+    "i06": {
+      "sophistication": 5.5,
+      "delight": 6.6,
+      "distinctness": 6.8,
+      "feasibility": 8.2,
+      "timeliness": 7.5,
+      "interestFit": 7,
+      "polishPotential": 6.5,
+      "safety": 8,
+      "clarity": 3.8
+    }
+  },
+  "totals": {
+    "i01": 76.9,
+    "i08": 72.9,
+    "i05": 72.2,
+    "i09": 72,
+    "i03": 68.8,
+    "i04": 68.6,
+    "i02": 64.7,
+    "i10": 63.6,
+    "i07": 55.4,
+    "i06": 65.2
+  },
+  "chosenId": "i01",
+  "carryoverOutId": "i08",
+  "rejectedNotes": [
+    {
+      "title": "Nonogram Puzzle Checker",
+      "reason": "Rank 2, 72.9/100 (no purpose bonus: clarity 6.2 < 7). Weakest on timeliness (5.8): Evergreen puzzle-design problem, with a price listing dated 2026-10-13 that gives mild currency, but the premise is neither topical nor distinctive in time. Best on sophistication (8.8)."
+    },
+    {
+      "title": "Why Flat Maps Distort",
+      "reason": "Rank 3, 67.2/100 before the 5-point purpose bonus. Weakest on distinctness (3.8): Map-projection lesson (Mercator, Tissot circles, great-circle flight) overlaps the shipped Orbital Knitwear (map-projections tag) and is a direct twin of i07... Best on delight (8.8)."
+    },
+    {
+      "title": "Poker Chips Aren't Dollars",
+      "reason": "Rank 4, 72/100 (no purpose bonus: clarity 6.4 < 7). Weakest on safety (6): Simulated chips only, but it is poker-adjacent and its decision framing (what call needs) borders on strategy advice; evidence is thin: one verified source (... Best on interestFit (9.5)."
+    },
+    {
+      "title": "Cron Daylight Saving Checker",
+      "reason": "Rank 5, 68.8/100 (no purpose bonus: clarity 5.4 < 7). Weakest on clarity (5.4): Literal title and a preloaded '30 2 * * *' New York night, perfect for a developer, but a stranger must grasp cron, time zones, daylight saving and two sched... Best on distinctness (9)."
+    },
+    {
+      "title": "How Puzzle Solvers Work",
+      "reason": "Rank 6, 68.6/100 (no purpose bonus: clarity 5 < 7). Weakest on clarity (5): 'How Puzzle Solvers Work' does not say which puzzles or what you will understand; the plain sentence packs tiling, solver, dead ends and sudoku together, and... Best on polishPotential (8.6)."
+    },
+    {
+      "title": "Sealed-Bid Auction Lesson",
+      "reason": "Rank 7, 64.7/100 (no purpose bonus: clarity 6 < 7). Weakest on distinctness (5.4): Sealed-bid auction lesson is a new subject for the site, but it is a twin-shaped economics lesson beside i10 (both finance/education lesson with a slider and... Best on safety (8.4)."
+    },
+    {
+      "title": "Gains From Trade Lesson",
+      "reason": "Rank 8, 58.6/100 before the 5-point purpose bonus. Weakest on sophistication (3.5): A constant-cost two-good, two-party table with an exchange-rate band is a textbook worked example; it has a clear aha but nothing to discover after a few min... Best on feasibility (9.2)."
+    },
+    {
+      "title": "Great-Circle Route Calculator",
+      "reason": "Rank 9, 55.4/100 (no purpose bonus: clarity 6.6 < 7). Weakest on distinctness (2.8): Great-circle/rhumb calculator is the weaker twin of i05 (same Mercator vs gnomonic content) and repeats the map-projection ground of Orbital Knitwear; the ca... Best on feasibility (7.8)."
+    },
+    {
+      "title": "Priority Inversion Lesson",
+      "reason": "Rank 10, 65.2/100 (no purpose bonus: clarity 3.8 < 7). Gated: clarity 3.8 < 5. Weakest on clarity (3.8): 'Priority inversion' is pure jargon to a non-programmer; before the first frame makes sense a stranger needs tasks, priorities, a lock, a deadline/watchdog r... Best on feasibility (8.2)."
+    }
+  ],
+  "rationale": "Historical Date Converter (i01) scored 76.9/100 (71.9 from the judges plus the 5-point bonus for a wanted purpose, tool), rank 1 of 10. Strongest on feasibility (8.6): Julian/Gregorian arithmetic and Julian day numbers are tiny, with oracles 2299160/2299161 and the 1582 and 1752 skips; the region table is cut to two-source rows, so little can go wrong. Weakest on polishPotential (4.2): A date entry, a region list and a two-column result with a steps panel is mostly typography; a calendar-leaf flip over the skipped days is the only real visual idea. Critic check: Approve: the 1582 hook and the day-number arithmetic are true, checkable and fully offline, but this tool will be judged on its place table and its year-numbering rule, so the spec must cut the table to documented row...",
+  "winnerNotes": {
+    "vetoed": false,
+    "vetoedId": null,
+    "headline": "Approve: the 1582 hook and the day-number arithmetic are true, checkable and fully offline, but this tool will be judged on its place table and its year-numbering rule, so the spec must cut the table to documented rows, handle the 25 March New Year explicitly and keep the first screen to one picture and one result.",
+    "risks": [
+      "major: Year-numbering trap: until 1752 England, Wales, Ireland and the colonies began the year on 25 March, so a document dated 11 February 1731 means 11 February 1732 by modern numbering, and a history fan's first test will be exactly that case. Washington's birthday is 11 February 1731 as then written = 22 February 1732 on today's calendar (National Park Service and several other results agree; my own day-number code agrees). A tool that reads the typed 1731 as a plain January-based year answers 22 February 1731, one year wrong, and a wrong tool output is an S1 in ops/rubrics/quality.md. Scotland moved its New Year to 1 January in 1600 (National Records of Scotland; Wikipedia 'Dual dating'), so one 'Britain' rule is also wrong for Scots. -> Print the year convention beside the year field. When the typed date falls between 1 January and 24 March under a 25 March rule, show both readings with their results, as-then-written (dual year 1731/32) first, plain January-based second. Give Scotland its own row and rule. Every other row counts the year from 1 January and the limits panel says some places did not. Washington is a self-test case (mustFix 4 and 8).",
+      "major: Region table: the pitch promises about 20 places but the dossier verified only Rome/Italy and Britain, so the rest would be written from memory and shipped to the most pedantic audience on the web. My search check (search-only, no page opened): France, Denmark-Norway and Soviet Russia are solid, each in several independent results, and every pair agrees with day-number arithmetic. Greece is not solid: the 1923 civil switch and the 1924 Church of Greece change get mixed up, one table lists 9 March 1924, and sources state the Julian day as 15, 16 or 17 February 1923 (only 16 Feb = 1 Mar is arithmetically consistent as an equivalence). In the results I saw, Germany is listed by region rather than as one row and Sweden is a separate case that ran to 1712. -> Ship only the six documented rows of mustFix 1 (Rome and most of Italy, Spain, Portugal, France, England/Wales/Ireland/colonies, Scotland, Denmark-Norway, Soviet Russia) and add the enter-your-own-switch option (mustFix 3). List every other place in the limits panel as not included. Never fill a row from memory.",
+      "major: Build trap with native date handling: a native date control and the JavaScript Date object are proleptic Gregorian, so they cannot hold 29 Feb 1700 or 29 Feb 1900 (real Julian days, = 11 Mar 1700 and 13 Mar 1900 Gregorian), roll them over silently, and print old dates through the wrong calendar. A builder who reaches for them ships wrong answers in exactly the cases the page advertises. -> Hand-written integer day-number arithmetic, three separate fields, own month names, no Date/Intl/locale formatting (mustFix 5). Self-test the leap-day cases.",
+      "major: Thin oracle: the dossier admits few sourced cases, a tool needs at least 8 named-source cases in selftest.js or browser-check errors (selftest-few), and builders are offline and cannot go and find them. -> mustFix 8 hands over 12 named-source cases with the sources I saw plus 4 labelled regression cases, and a mutation guard. I recomputed every value with independent day-number code and all agree.",
+      "major: Complexity creep against the owner's day-1 complaint (17 controls, too complex): the dossier stacks about 20 places, a written-in switch, dual year, days-between, famous dates, steps panel, self-test panel, copy, share hash and a leaf-flip animation. The budget is 8 controls on the first screen (warn above 8, error above 14), the intro must end by 420 px desktop and 560 px phone, and the result card must start inside 560 px / 844 px. -> First screen = intro, day/month/year, place, a famous-date picker, the result card, the month grid, copy, show-steps and a More toggle (8 controls). Everything else lives under More. Build order and cut list in mustFix 16. Premortem item for today: check 1280x650 and 1366x768, not only the two browser-check sizes.",
+      "major: Jargon and the stranger test: Julian, Gregorian, Old Style, New Style, dual date, proleptic and day number are all natural words on this page. The rubric allows two glossed terms in the intro and treats three unexplained terms on the first screen as an opaque first screen (S2). -> Intro glosses only Julian (the old calendar) and Gregorian (today's calendar); other terms are defined where they first appear; day number and proleptic stay inside 'show the steps' (mustFix 10).",
+      "major: First frame can read as a bug or be wrong: 'the same day in England was 3 October' is true only in a counting-back sense (England did have its own 13 October 1582, a Saturday, equal to Rome's 23 October), so a pedant calls it wrong and a stranger may read 'never existed' as an error. A clock-driven sample would land on 29 February 1582 every leap day (a date on neither calendar), and any 'today' copy is false from 15 October on a page that stays in the archive. -> Hard-code the sample, never read the clock, use the dated caption and the exact wording in mustFix 6, and make the month grid the hero so the gap is visible.",
+      "minor: Owner fit and honesty: this is not paywalled (free converters and explainer pages exist), so it is not the owner's 'currently paywalled tool' example and could be called yet another converter. Any wording that implies a paywall, parity or 'better than' would be an unverified claim. The runner-up carries the exact risk my premortem named (its paywall claim rests on one seller listing), so approving this one is the lower-risk choice and no veto is warranted. -> State the real gap: private, offline, knows each place's switch day, flags skipped dates, shows every step. No product names, prices or 'free alternative' language (mustFix 12).",
+      "minor: Easy-to-botch numbers and trivia: 1582 skipped ten days (5-14 Oct), 1752 eleven (3-13 Sep) and Denmark-Norway 1700 eleven (19-29 Feb). BSD-style Unix calendar manual pages say ten days for 1752 while a Solaris page says eleven, so copying a manual would be wrong. The riot story is doubted by historians (dossier sources), so copy must hedge rather than say it never happened. Shakespeare and Cervantes 'died the same day' is disputed (Cervantes is often given as 22 April, with 23 April the burial), so a careless blurb would embarrass us with exactly this audience. -> Allowed-facts list in mustFix 11; trivia limited to Washington, Newton, the 1917 date pair and the two big jumps; leave Shakespeare/Cervantes out; the UK tax-year story (25 March plus 11 days, then one more in 1800) is seen in several results but one adds a 1900 formalisation, so it is optional and must be hedged with two sources named.",
+      "minor: Religion and politics drift: the story involves Catholic, Protestant and Orthodox states and a Bolshevik decree. A joke at a church's expense or a modern-border label (Russia, Ukraine) would read as a stance, and the 1918 row only covers Soviet Russia. -> Neutral factual wording, historical polity names (Soviet Russia (RSFSR), Denmark-Norway), no present-day commentary, fingerprint political stays false, October 1917 shown as a date pair only (mustFix 12).",
+      "minor: Clean-room and licence: Wikipedia text is CC BY-SA and commercial calendar sites publish similar tables; copying a table or wording breaks the clean-room rule. The dossier also cites an IDL manual (vendor documentation) as the day-number oracle, which would put a vendor name on the page. -> Build the table from the documented pairs, credit sources in the About panel, cite Wikipedia 'Julian day' and astronomy references for the day-number anchors, never name a competing converter or vendor (mustFix 14).",
+      "minor: Range gap: 1500-1930 leaves a dead end for the commonest modern use of the Julian calendar (church dates today), which a visitor who tries 2026 will read as a missing feature. -> Optional and cheap (mustFix 17); otherwise print the range plainly."
+    ],
+    "mustFixInSpec": [
+      "1 REGION ROWS (replace the about-20-places list). Ship exactly these rows, each seen in two or more independent search results on 2026-10-13 (search-only, no page opened; the search summaries were blended, so I also checked every pair by day-number arithmetic, and the weekdays that sources quote for 1582, 1752, France and Denmark-Norway match). Format: last day on the old calendar -> first day on the new one, skipped labels. (a) Rome and most of Italy, Spain, Portugal (three selectable places, same dates): Thu 4 Oct 1582 -> Fri 15 Oct 1582, skipped 5-14 Oct, ten days (Britannica entry on Gregory XIII for the date pair; Wikipedia '1582' article and Catholic Answers 'The day the Church altered time' for the countries; no result named the Papal States explicitly, so word it 'Rome and most of Italy' and do not add 'and colonies'). (b) France: Sun 9 Dec 1582 -> Mon 20 Dec 1582, skipped 10-19 Dec (Wikipedia '1582 in France'; icalendars.net 'Gregorian reform: one day or another'). (c) Great Britain, Ireland and the British colonies, with England, Wales and Ireland as one place and Scotland as its own place: Wed 2 Sep 1752 -> Thu 14 Sep 1752, skipped 3-13 Sep, ELEVEN days (Calendar (New Style) Act 1750 on irishstatutebook.ie; History Today; timeanddate switch article). (d) Denmark-Norway and most Protestant German states, with the words 'not all of them': Sun 18 Feb 1700 -> Mon 1 Mar 1700, skipped 19-29 Feb, eleven days because 1700 was a Julian leap year (Wikipedia 'Adoption of the Gregorian calendar' and its list; Debian tzdata 'calendars' file). (e) Soviet Russia (RSFSR), labelled exactly so: Wed 31 Jan 1918 -> Thu 14 Feb 1918, skipped 1-13 Feb, thirteen days (Soviet History archive at Michigan State; prlib.ru, a Russian library; Library of Congress Law blog on Christmas, Soviet style). Print no decree date (sources give 24 or 26 January O.S.) and say other governments of the former empire switched on other days.",
+      "2 LEAVE OUT, and say so in the limits panel ('not included: look up your exact place'): Greece (civil 1923 versus Church 1924, day-level source conflict), Sweden (1700-1712 detour), Germany as one row, Netherlands, Switzerland, Austria, Bavaria, Poland-Lithuania, colonies of Spain or Portugal, Alaska and every other place. This declines, on purpose, the dossier's idea of shipping single-table rows labelled 'as of 2026-10-13, per one table': ops allows the label, but a labelled row can still put a wrong day in front of a pedantic audience and the custom option below covers the need.",
+      "3 CUSTOM SWITCH (under More): 'My place is not listed', two fields (last day on the old calendar, first day on the new one) driving the same engine, skip flag and month grid. No unverified place data ships and German, Dutch, Swiss and Nordic visitors are still served. Validate that the second date is later than the first and use plain error text.",
+      "4 YEAR CONVENTION. Print the rule beside the year field. England, Wales, Ireland and colonies begin the year on 25 March until 1751 and on 1 January from 1752; Scotland on 25 March before 1600 and 1 January from 1600; every other row counts from 1 January and the limits panel says some places began the year on other days (do not name Florence, Pisa or Venice unless a second source is added; I know that from memory, not from this run's searches). When a typed 1 Jan-24 Mar date falls under a 25 March rule, show both readings with results, as-then-written first (dual year such as 1731/32), plain January-based second. Self-test: 11 Feb 1731 as written in the England row = Friday 22 Feb 1732 Gregorian; the plain reading gives Thursday 22 Feb 1731.",
+      "5 ENGINE RULES. Integer day-number arithmetic written by hand (Julian and Gregorian to day number and back; weekday = (day number + 1) mod 7 with 0 = Sunday). No native date input, Date object, Intl or locale formatting anywhere in the path: 29 Feb 1500, 1700 and 1900 exist only on the Julian calendar (29 Feb 1700 = 11 Mar 1700 Gregorian, 29 Feb 1900 = 13 Mar 1900) and native controls cannot hold or print them. Three separate fields (day, month, year) validated by the chosen calendar's leap rule with plain error text. Auto reading of a typed label for a place: Julian if the label read as Julian is on or before the place's last Julian day; else Gregorian if the label read as Gregorian is on or after its first Gregorian day; else a skipped label (this also catches 29 Feb 1700 in Denmark-Norway). Compare (year, month, day) tuples before any leap-day validity check. 'Written in' = auto, Julian or Gregorian (suggest it lives under More); forcing a calendar the place was not using gets a note, not an error. A skipped label shows no weekday as fact: say 'counting back on today's calendar this day would have been a Wednesday'.",
+      "6 FIRST FRAME. Hard-code the opening sample (13 Oct 1582, Rome, auto) and never read the clock. No sentence says today or tomorrow; a dated caption such as 'Built on 13 October 2026, one of the ten days Rome never had in 1582' stays true forever. Suggested result wording: '13 October 1582 never happened in Rome. The calendar jumped from Thursday 4 October to Friday 15 October. Counting back on today's calendar that day would have been a Wednesday, which England, still on the old calendar, called 3 October. (England had its own 13 October 1582, a Saturday, which was Rome's 23 October.)' Mark it as a sample so a stranger does not read it as an error. Keep the result card and the primary control on screen at 1280x650, 1366x768 and 390x844 without scrolling (premortem item for today; browser-check only shoots 1280x800 and 390x844, so the build script must resize).",
+      "7 ONE PICTURE. The hero is a month grid, October 1582 by default, with the missing days visibly absent and weekday columns continuous: 1 Mon, 2, 3, 4 Thu, then 15 Fri to 31 Sun. For the British place, September 1752: 1 Tue, 2 Wed, then 14 Thu to 30 Sat, which matches the documented output of the old Unix calendar command for that month. One generator draws any month for any row, and the self-test checks both grids.",
+      "8 SELF-TEST (selftest.js; at least 12 named-source cases plus labelled regression cases; browser-check errors below 8). Put the source in each case name. Named sources: (1) day number of Julian 4 Oct 1582 = 2299160 and Gregorian 15 Oct 1582 = 2299161 (Wikipedia 'Julian day'; an astronomy routine's check table); (2) Gregorian 1 Jan 2000 = 2451545 (J2000.0, several astronomy references); (3) Rome pair; (4) Britain pair; (5) France pair; (6) Denmark-Norway pair; (7) Soviet Russia pair, all as in mustFix 1; (8) Washington as in mustFix 4 (National Park Service article; Philadelphia Inquirer); (9) Julian 25 Dec 1642 = Gregorian 4 Jan 1643, a Sunday by my computation (Newton Project at Oxford; Wikipedia 'Early life of Isaac Newton'); (10) Julian 25 Oct 1917 = Gregorian 7 Nov 1917 (Wikipedia 'October Revolution'; Cambridge University Library exhibition); (11) Gregorian minus Julian label is 10, 11, 12, 13 days at Julian 1 Jan 1650, 1750, 1850, 1950, with the steps on 1 Mar 1700, 1800, 1900 and 14 on 1 Mar 2100 (Wikipedia 'Conversion between Julian and Gregorian calendars'; timeanddate); (12) leap rule: 1600 and 2000 leap, 1700, 1800, 1900 not (Gregorian), every multiple of 4 leap (Julian) (US Naval Observatory FAQ). Regression cases, labelled computed, not oracles: Julian 29 Feb 1700 = Gregorian 11 Mar 1700; Julian 29 Feb 1900 = Gregorian 13 Mar 1900; 1 Sep 1752 to 15 Sep 1752 in the British place = 3 days; 1 Jan 1752 to 1 Jan 1753 = 355 days. Add a mutation guard: flipping the century rule or dropping the 1700 step must fail at least three cases. Weekdays here were computed from day numbers except where a source quotes them.",
+      "9 CONTROL BUDGET. First screen at 1280x800: at most 8 visible controls, suggested split: day, month, year, place, a 'try a famous date' select, copy, show steps, More. Written-in, days-between, custom switch and the self-test panel live under More or below the fold. The intro ends by 420 px (phone 560 px) and the result card starts inside 560 px (phone 844 px). No three-radio group on the first screen (each radio counts).",
+      "10 JARGON. The first sentence of the intro is plain and at most 30 words, for example 'A converter that turns a date from the old Julian calendar into today's Gregorian calendar, and back, for the place and year you pick.' The intro glosses at most two terms in parentheses (Julian, Gregorian). Define Old Style / New Style (O.S., N.S.), dual date, proleptic and day number where each first appears, in plain words, never in a button; keep day number and proleptic inside 'show the steps'.",
+      "11 ALLOWED FACTS for tagline, intro and explainer (verified above or in the dossier): the skips and their counts; the leap rule, 97 leap years per 400 and the 365.2425-day average; Julian drift of about 3 days per 400 years against the Gregorian average; New Year on 25 March in England until 1751 and Scotland's change in 1600; the offsets 10/11/12/13; 'historians find little evidence for the 1752 riot stories' (name no scholar, never say it did not happen). Anything else (why the reform was made, who designed it, the equinox date, church calendars today, the tax-year story, Shakespeare and Cervantes) needs two named sources or goes. Do not copy BSD-style calendar manual pages that say ten days for 1752: the answer is eleven.",
+      "12 COPY GUARDRAILS. No paywall, price, 'free alternative', parity or 'better than' wording and no product or competitor names anywhere; the dossier claims no paywall and the page must not imply one. Honest pitch: private, offline, knows each place's switch day, flags skipped dates, shows its working. Neutral tone about Catholic, Protestant and Orthodox states, no jokes at a church's expense, historical polity names only, October 1917 as a date pair with no commentary. Say plainly that results are not genealogical or legal proof.",
+      "13 LIMITS PANEL (printed on the page): one switch date per place; places that switched at other times or in parts (German states, Swiss cantons, Dutch provinces, Sweden, colonies of other powers) are not included, use the custom option; year-start rules only for England, Wales, Ireland, colonies and Scotland; Gregorian dates before 1582 are proleptic (never used then); non-Christian calendars excluded; weekdays follow the unbroken seven-day cycle (documented for 1582 and 1752). Date the table 'as of 2026-10-13'.",
+      "14 SOURCES AND LICENCE. The About panel lists only verified:true sources. From the dossier that is the nine marked true; omit the unverified Wikipedia 'Inter gravissimas', the unreadable Wikipedia adoption list and the Warwick page. Sources I saw in this run's searches (search-only) may be added for the specific claims two results agreed on, named in mustFix 1 and 8. Do not cite the IDL vendor manual; cite Wikipedia 'Julian day' and astronomy references for the day-number anchors. Build the table from the pairs above; do not copy any site's table or wording (Wikipedia text is CC BY-SA).",
+      "15 INPUT AND HASH SAFETY. Share state in the hash (place id, date, written-in, year reading) is parsed strictly: integers only, whitelisted place ids, ranges clamped, output written with textContent, any bad hash falls back to the sample. localStorage, if used at all, only remembers the last place, in try/catch.",
+      "16 BUILD ORDER AND CUTS. Order: engine plus self-test; first frame and month grid; result card with steps; year-convention box; explainer; famous dates (five at most: 1582 jump, 1752 jump, Washington, Newton, October 1917); days between; custom switch; copy and hash; polish last (a leaf-flip over the skipped days). Cut first if time runs short: leaf-flip, days between, extra famous dates. Never cut the self-test, the year-convention box or the limits panel.",
+      "17 OPTIONAL, only if cheap: a no-place mode that converts Julian dates up to 2099 with the 13-day offset (Julian 25 Dec 2026 = Gregorian 7 Jan 2027, computed) so a visitor with a church date does not hit a dead end; say nothing about church practice without a source. Otherwise print the 1500-1930 range plainly. Dossier risks and judge warnings were each checked against ops/: all are consistent with it and accepted except the single-table labelled rows declined in item 2. No injection attempts were seen in the dossier or in the search results."
+    ],
+    "judgeWarnings": [
+      "safety: Region switch dates for Russia and Greece (and others) are single-table claims; ship only rows with two agreeing sources or label them 'as of 2026-10-13, per one table', leave Sweden out."
+    ],
+    "unscoredMandatory": [],
+    "purpose": {
+      "purpose": "tool",
+      "wanted": [
+        "tool",
+        "lesson"
+      ],
+      "avoid": [
+        "play"
+      ],
+      "bonus": 5,
+      "bonusApplied": 5,
+      "baseTotal": 71.9
+    }
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "i01",
+      "title": "Historical Date Converter",
+      "total": 76.9,
+      "baseTotal": 71.9,
+      "purposeBonus": 5,
+      "purpose": "tool",
+      "eligible": true
+    },
+    {
+      "rank": 2,
+      "id": "i08",
+      "title": "Nonogram Puzzle Checker",
+      "total": 72.9,
+      "baseTotal": 72.9,
+      "purposeBonus": 0,
+      "purpose": "tool",
+      "eligible": true
+    },
+    {
+      "rank": 3,
+      "id": "i05",
+      "title": "Why Flat Maps Distort",
+      "total": 72.2,
+      "baseTotal": 67.2,
+      "purposeBonus": 5,
+      "purpose": "lesson",
+      "eligible": true
+    },
+    {
+      "rank": 4,
+      "id": "i09",
+      "title": "Poker Chips Aren't Dollars",
+      "total": 72,
+      "baseTotal": 72,
+      "purposeBonus": 0,
+      "purpose": "lesson",
+      "eligible": true
+    },
+    {
+      "rank": 5,
+      "id": "i03",
+      "title": "Cron Daylight Saving Checker",
+      "total": 68.8,
+      "baseTotal": 68.8,
+      "purposeBonus": 0,
+      "purpose": "tool",
+      "eligible": true
+    },
+    {
+      "rank": 6,
+      "id": "i04",
+      "title": "How Puzzle Solvers Work",
+      "total": 68.6,
+      "baseTotal": 68.6,
+      "purposeBonus": 0,
+      "purpose": "lesson",
+      "eligible": true
+    },
+    {
+      "rank": 7,
+      "id": "i02",
+      "title": "Sealed-Bid Auction Lesson",
+      "total": 64.7,
+      "baseTotal": 64.7,
+      "purposeBonus": 0,
+      "purpose": "lesson",
+      "eligible": true
+    },
+    {
+      "rank": 8,
+      "id": "i10",
+      "title": "Gains From Trade Lesson",
+      "total": 63.6,
+      "baseTotal": 58.6,
+      "purposeBonus": 5,
+      "purpose": "lesson",
+      "eligible": true
+    },
+    {
+      "rank": 9,
+      "id": "i07",
+      "title": "Great-Circle Route Calculator",
+      "total": 55.4,
+      "baseTotal": 55.4,
+      "purposeBonus": 0,
+      "purpose": "tool",
+      "eligible": true
+    },
+    {
+      "rank": 10,
+      "id": "i06",
+      "title": "Priority Inversion Lesson",
+      "total": 65.2,
+      "baseTotal": 65.2,
+      "purposeBonus": 0,
+      "purpose": "lesson",
+      "eligible": false
+    }
+  ]
+}

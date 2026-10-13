@@ -1,1 +1,2 @@
 Scout: all web hosts for Lab failed WebFetch again (DNS), so the two probes cost nothing but also gave nothing; a per-lens shortlist of primary-source search queries in the prompt would save the first 3 searches.
+Dossiers carry long note fields that repeat the summary; a one-line 'twin-of' pointer per idea (shared tags with history) in the shortlist header would let judges score distinctness without cross-reading all ten.

@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "phase": "select",
+  "date": "2026-10-13",
+  "chosenId": "i01",
+  "title": "Historical Date Converter",
+  "slug": "historical-date-converter",
+  "carryoverOutId": "i08"
+}
