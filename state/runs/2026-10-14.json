@@ -25,7 +25,7 @@
     "holder": "wdA",
     "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
     "acquiredAt": "2026-10-14T09:32:30.315Z",
-    "heartbeatAt": "2026-10-14T09:33:49.695Z"
+    "heartbeatAt": "2026-10-14T09:35:05.943Z"
   },
   "directives": [
     {
@@ -157,7 +157,7 @@
     "dueAt": "2026-10-14T11:33:38.960Z",
     "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
     "triggerId": "trig_01ADyuPwooWJGmvXaXsTbG3v",
-    "workflowTask": null,
+    "workflowTask": "wlwipv5nc",
     "role": "wdA",
     "budgetMinutes": 110,
     "delayMinutes": 120,
@@ -166,6 +166,6 @@
       "ideate": 2
     },
     "attemptsAtArm": 2,
-    "boundAt": "2026-10-14T09:33:49.695Z"
+    "boundAt": "2026-10-14T09:35:05.943Z"
   }
 }
