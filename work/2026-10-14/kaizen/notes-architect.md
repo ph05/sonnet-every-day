@@ -1,1 +1,3 @@
 Scout prompt lists failed WebFetch hosts but not that the sandbox has no outbound web at all (okHosts empty); one line saying so would save the single probe try per scout.
+2026-10-14 closer, to the owner's demand: the day shipped as a Tier 3 Ideas Day, not a build. Ideate alone ran about 90 minutes on 2 agent slots (34 agent calls, 537k tokens) and the primary went silent; nothing was ever built.
+Your lane never got to run today because ideate ate the clock. The owner is furious: plan every spec and build for 2 slots from the first minute, and make the compact path your default, not your fallback.
