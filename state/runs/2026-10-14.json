@@ -2,7 +2,7 @@
   "schema": 1,
   "date": "2026-10-14",
   "status": "in_progress",
-  "targetTier": 2,
+  "targetTier": 3,
   "tier": null,
   "phase": "ideate",
   "phasesDone": [
@@ -15,17 +15,17 @@
   ],
   "attempts": {
     "preflight": 1,
-    "ideate": 1
+    "ideate": 2
   },
   "phaseStartedAt": {
     "preflight": "2026-10-14T07:57:02.405Z",
-    "ideate": "2026-10-14T09:32:30.315Z"
+    "ideate": "2026-10-14T09:33:21.493Z"
   },
   "lease": {
     "holder": "wdA",
     "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
     "acquiredAt": "2026-10-14T09:32:30.315Z",
-    "heartbeatAt": "2026-10-14T09:32:30.315Z"
+    "heartbeatAt": "2026-10-14T09:33:49.695Z"
   },
   "directives": [
     {
@@ -33,6 +33,13 @@
       "tier": 2,
       "by": "primary",
       "at": "2026-10-14T07:58:27.214Z",
+      "ack": true
+    },
+    {
+      "kind": "ship-now",
+      "tier": 3,
+      "by": "wdA",
+      "at": "2026-10-14T09:33:19.703Z",
       "ack": true
     }
   ],
@@ -115,24 +122,50 @@
       "by": "wdA",
       "kind": "takeover",
       "msg": "primary lease stale (88.9 min); wdA took over at ideate, tier 2"
+    },
+    {
+      "at": "2026-10-14T09:33:04.926Z",
+      "by": "usage",
+      "kind": "note",
+      "code": "usage-warn",
+      "msg": "usage warning: status allowed_warning (seven_day): a long window filling up is normal after heavy use and can last for days, so it is only logged; a rejected window still stops the run"
+    },
+    {
+      "at": "2026-10-14T09:33:19.703Z",
+      "by": "wdA",
+      "kind": "note",
+      "msg": "ship-now directive (tier 3) issued by wdA"
+    },
+    {
+      "at": "2026-10-14T09:33:20.921Z",
+      "by": "wdA",
+      "kind": "degrade",
+      "msg": "planner: tier 2 needs 285 min, 222 available on 2 slots; dropped to tier 3 (Ideas Day) at ideate"
+    },
+    {
+      "at": "2026-10-14T09:33:38.960Z",
+      "by": "wdA",
+      "kind": "note",
+      "code": "watch-armed",
+      "msg": "phase watch armed: ideate attempt 2, due 2026-10-14T11:33:38.960Z (120 min: budget 110 + 10 margin)"
     }
   ],
   "watch": {
     "phase": "ideate",
-    "attempt": 1,
-    "armedAt": "2026-10-14T07:58:51.094Z",
-    "dueAt": "2026-10-14T09:50:51.094Z",
-    "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "triggerId": "trig_015Han2jQRxgbFgx6pxmSWoR",
+    "attempt": 2,
+    "armedAt": "2026-10-14T09:33:38.960Z",
+    "dueAt": "2026-10-14T11:33:38.960Z",
+    "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
+    "triggerId": "trig_01ADyuPwooWJGmvXaXsTbG3v",
     "workflowTask": null,
-    "role": "primary",
-    "budgetMinutes": 102,
-    "delayMinutes": 112,
+    "role": "wdA",
+    "budgetMinutes": 110,
+    "delayMinutes": 120,
     "clamped": null,
     "arms": {
-      "ideate": 1
+      "ideate": 2
     },
-    "attemptsAtArm": 1,
-    "boundAt": "2026-10-14T07:59:04.847Z"
+    "attemptsAtArm": 2,
+    "boundAt": "2026-10-14T09:33:49.695Z"
   }
 }
