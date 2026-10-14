@@ -1,0 +1,198 @@
+{
+  "ok": true,
+  "date": "2026-10-14",
+  "agents": [
+    {
+      "agent": "pulse",
+      "lens": {
+        "id": "hn-front-page",
+        "name": "Hacker News Hot",
+        "kind": "current",
+        "brief": "The front page is a weather report for tech curiosity: a new compression trick, a terrifying postmortem, an old essay resurrected, a clever Show HN. Take one idea from it and make a more playable, more visual or more honest version, built from scratch in a day.",
+        "sourceHints": [
+          "Hacker News front page, Show HN and Ask HN",
+          "Hacker News 'best' list for the past week",
+          "Lobsters and Simon Willison-style weblog roundups",
+          "arXiv listings that HN is discussing"
+        ]
+      },
+      "provocation": [
+        "spindle",
+        "apogee",
+        "booster"
+      ]
+    },
+    {
+      "agent": "cards",
+      "lens": {
+        "id": "sports-anywhere",
+        "name": "The Other Rinks",
+        "kind": "interest",
+        "brief": "Hockey is the home team, but every sport has stats that want to be a toy: cricket run rates, curling hammer odds, a racing pit-stop dilemma, a one-over-par putting model. Build a sport sim or stats explorer in the same spirit as the hockey tools, with a clear idea about what the numbers mean.",
+        "sourceHints": [
+          "r/sports, r/soccer, r/formula1, r/curling and r/baseball stat threads",
+          "Wikipedia: Sabermetrics, Duckworth-Lewis-Stern, Elo rating system",
+          "r/dataisbeautiful sports posts",
+          "Public open-data sports stats pages"
+        ]
+      },
+      "provocation": [
+        "pigment",
+        "tollbooth",
+        "ledger"
+      ]
+    },
+    {
+      "agent": "lab",
+      "lens": {
+        "id": "anti-lens-constraint-roulette",
+        "name": "Anti-Lens: Constraint Roulette",
+        "kind": "wildcard",
+        "brief": "Draw a ridiculous constraint and let it dictate the design: one button, no text, a single color, only vertical motion, a hundred-year timeline, no randomness. The constraint must be felt in the first ten seconds and respected for the whole experience.",
+        "sourceHints": [
+          "Wikipedia: Oulipo, Dogme 95, Constrained writing, Oblique Strategies",
+          "itch.io 'one button' and 'one color' jam entries",
+          "r/gamedev constraint-jam threads",
+          "Are.na channels on constraints"
+        ]
+      },
+      "provocation": [
+        "perihelion",
+        "anagram",
+        "kaleidoscope"
+      ]
+    },
+    {
+      "agent": "jester",
+      "lens": {
+        "id": "math-visual",
+        "name": "Math Made Visible",
+        "kind": "wildcard",
+        "brief": "Pick one beautiful idea from number theory, geometry, topology or combinatorics and make it so tactile that the proof feels obvious. Tilings, primes spiraling, fractal dimension, knots, the shape of an infinite sum. Show the insight, not only the pretty picture.",
+        "sourceHints": [
+          "r/math, r/mathpics and r/numbertheory",
+          "Wikipedia: Penrose tiling, Ulam spiral, Collatz conjecture, Voronoi diagram",
+          "arXiv math.CO and math.HO",
+          "Hacker News math posts"
+        ]
+      },
+      "provocation": [
+        "quilt",
+        "brigade",
+        "flask"
+      ]
+    },
+    {
+      "agent": "architect",
+      "lens": {
+        "id": "lesson-strange-numbers",
+        "name": "Strange Number Systems",
+        "kind": "teach",
+        "brief": "In the 10-adic numbers the digits run forever to the left instead of the right, and the string ...999 equals -1, because adding 1 makes every digit carry into zero. Let the visitor type digits into a calculator that adds and multiplies such numbers and watch negative numbers appear with no minus sign. Then let them hunt the stranger one: a number ending in ...8212890625 whose square ends in the same digits, which only happens because 10-adic numbers can multiply two nonzero numbers to zero. Bust the misconception that infinitely many digits must mean infinitely large. The aha is that a different idea of closeness (numbers are close when their last digits agree) builds a different number world, for math fans and anyone who likes odd ideas.",
+        "sourceHints": [
+          "Wikipedia: p-adic number, Automorphic number",
+          "Mathigon, Exploding Dots: unusual numbers",
+          "University of Waterloo math circle handout on p-adic numbers",
+          "Berkeley Math Circle advanced notes on p-adic numbers"
+        ]
+      },
+      "provocation": [
+        "weathervane",
+        "kettle",
+        "meteor"
+      ]
+    },
+    {
+      "agent": "artisan",
+      "lens": {
+        "id": "lesson-storage-engines",
+        "name": "How Databases Keep Things",
+        "kind": "teach",
+        "brief": "Under a database sits a storage engine. A B-tree finds the page a key belongs to and rewrites that whole page in place, while an LSM tree buffers writes in memory, flushes them as sorted runs and merges the runs later in a step called compaction. Most explanations show finished diagrams, so the costs stay invisible: one small write can rewrite many bytes (write amplification), and a read may have to check several runs (read amplification). Let the visitor stream keys into both engines side by side, count every page written and read, and trigger compaction to watch levels merge. Bust the misconception that a write happens once, at its final place. The aha is that every engine pays somewhere, for programmers who have to pick a database.",
+        "sourceHints": [
+          "O'Neil, Cheng, Gawlick and O'Neil, The Log-Structured Merge-Tree (1996)",
+          "TiKV deep dive: B-Tree vs LSM-Tree",
+          "Kleppmann, Designing Data-Intensive Applications (storage and retrieval chapter)",
+          "Wikipedia: Log-structured merge-tree, B-tree"
+        ]
+      },
+      "provocation": [
+        "vestibule",
+        "beacon",
+        "voucher"
+      ]
+    },
+    {
+      "agent": "engineer",
+      "lens": {
+        "id": "tool-exif-stripper",
+        "name": "Photo Metadata Stripper",
+        "kind": "useful",
+        "brief": "Photos carry hidden location, camera and time fields, and removing them is a chore that free web tools handle with batch caps or by re-encoding the picture, which can lower its quality. Build a lossless metadata stripper: drop a batch of JPEG files, see every field found (GPS, camera, date, software), choose what to remove, and download cleaned copies made by deleting the metadata segments only, with no re-compression. Prove it: show the SHA-256 of the image data before and after, which must match, checked against NIST FIPS 180-4 example values. Print the limits: only JPEG is handled, thumbnails and maker notes need care, nothing is uploaded, and removing metadata does not hide who you are in the picture itself.",
+        "sourceHints": [
+          "Exif specification tag tables and JPEG segment structure (APP1)",
+          "NIST FIPS 180-4 and the CSRC example values for SHA-2",
+          "EFF dice-generated passphrase word lists (CC BY) for the optional entropy panel",
+          "\"remove exif without recompressing\" searches; r/privacy threads"
+        ]
+      },
+      "provocation": [
+        "dovetail",
+        "harvest",
+        "tell"
+      ]
+    },
+    {
+      "agent": "critic",
+      "lens": {
+        "id": "craft-one-more-turn",
+        "name": "One More Turn",
+        "kind": "craft",
+        "brief": "Design the loop before anything else: the small decision, the quick payoff, the escalating stakes, the reason to say just once more. Sketch the first five minutes and the fifth hour, and make sure a visitor can feel both. Include a way to end well.",
+        "sourceHints": [
+          "r/incremental_games, r/roguelikes and r/gamedesign",
+          "Wikipedia: Compulsion loop, Skinner box (as a warning), Variable ratio schedule",
+          "GDC-style talks on retention (summarize in your own words)",
+          "Hacker News game-loop threads"
+        ]
+      },
+      "provocation": [
+        "pivot",
+        "fallout",
+        "vending"
+      ]
+    }
+  ],
+  "owedKinds": [],
+  "relaxedDays": 0,
+  "purposes": {
+    "windowDays": 7,
+    "counts": {
+      "tool": 1,
+      "lesson": 0,
+      "explorer": 0,
+      "studio": 0,
+      "play": 3
+    },
+    "lastShipped": {
+      "tool": "2026-10-13",
+      "lesson": null,
+      "explorer": null,
+      "studio": null,
+      "play": "2026-10-12"
+    },
+    "wanted": [
+      "lesson",
+      "explorer"
+    ],
+    "avoid": [
+      "tool",
+      "play"
+    ],
+    "playAllowed": false,
+    "playBlockedUntil": "2026-10-18",
+    "bonus": 5,
+    "override": null,
+    "legacyAssumed": []
+  }
+}

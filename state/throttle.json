@@ -1,7 +1,18 @@
 {
   "schema": 1,
-  "level": "balanced",
+  "level": "lean",
   "cleanDays": 0,
-  "lastChange": null,
-  "log": []
+  "lastChange": "2026-10-14T07:59:04.751Z",
+  "lastCleanDate": null,
+  "lastDownDate": "2026-10-14",
+  "log": [
+    {
+      "at": "2026-10-14T07:59:04.751Z",
+      "action": "down",
+      "from": "balanced",
+      "to": "lean",
+      "reason": "rate-limit",
+      "date": "2026-10-14"
+    }
+  ]
 }

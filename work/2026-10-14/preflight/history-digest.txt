@@ -1,0 +1,4 @@
+2026-10-10 | Jokers In Phase | modding-games | toy | balatro,joker-mod,mod-concept,scoring-engine,synchronization,oscillators,deckbuilder,sandbox | play
+2026-10-11 | Orbital Knitwear | science-sim | simulator | orbits,ground-track,satellites,knitting,map-projections,sun-synchronous,coverage,polar-view,earth-observation,j2-precession | play
+2026-10-12 | Between Periods | hockey-sports | game | hockey,ice-resurfacing,intermission,daily-rink,coverage-path,share-postcard,url-hash-seed,challenge-link,turning-radius,emoji-grid | play
+2026-10-13 | Historical Date Converter | tools-utility | converter | calendar,julian-calendar,gregorian-calendar,old-style-new-style,dual-dating,genealogy,day-of-week,julian-day-number,calendar-reform,missing-days | tool

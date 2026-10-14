@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "window": {
+    "days": 14,
+    "from": "2026-09-30",
+    "to": "2026-10-13",
+    "builds": 4
+  },
+  "categoryCounts": {
+    "modding-games": 1,
+    "science-sim": 1,
+    "hockey-sports": 1,
+    "tools-utility": 1
+  },
+  "slotCounts": {
+    "interest": 1,
+    "currentEvents": 1,
+    "humor": 0,
+    "wildcard": 2
+  },
+  "owed": [],
+  "owedDetail": [],
+  "avoidCategories": [
+    "tools-utility"
+  ],
+  "avoidMechanics": [
+    "converter",
+    "game",
+    "simulator",
+    "toy"
+  ],
+  "politicsAllowed": true,
+  "purposes": {
+    "windowDays": 7,
+    "counts": {
+      "tool": 1,
+      "lesson": 0,
+      "explorer": 0,
+      "studio": 0,
+      "play": 3
+    },
+    "lastShipped": {
+      "tool": "2026-10-13",
+      "lesson": null,
+      "explorer": null,
+      "studio": null,
+      "play": "2026-10-12"
+    },
+    "wanted": [
+      "lesson",
+      "explorer"
+    ],
+    "avoid": [
+      "tool",
+      "play"
+    ],
+    "playAllowed": false,
+    "playBlockedUntil": "2026-10-18",
+    "bonus": 5,
+    "override": null,
+    "legacyAssumed": []
+  },
+  "summary": "Purpose mix this week: tool 1, lesson 0, explorer 0, studio 0, play 3. Today we want a lesson or an explorer (lead with one); skip tool (shipped in the last 2 days); play is paused until 2026-10-18. In the last 14 days we shipped 4 builds: hockey-sports x1, modding-games x1, science-sim x1, tools-utility x1. Do not propose these categories today (cooldown or already used twice this week): tools-utility. Avoid these mechanics, used within the last 7 days: converter, game, simulator, toy. A political idea is permitted but rare: playful or satirical, never partisan."
+}
