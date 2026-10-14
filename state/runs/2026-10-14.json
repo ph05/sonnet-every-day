@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-10-14",
+  "status": "in_progress",
+  "targetTier": 1,
+  "tier": null,
+  "phase": "preflight",
+  "phasesDone": [],
+  "attempts": {},
+  "phaseStartedAt": {
+    "preflight": "2026-10-14T07:56:34.616Z"
+  },
+  "lease": {
+    "holder": "primary",
+    "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
+    "acquiredAt": "2026-10-14T07:56:34.616Z",
+    "heartbeatAt": "2026-10-14T07:56:34.616Z"
+  },
+  "directives": [],
+  "chosen": null,
+  "throttle": "balanced",
+  "spend": {
+    "outputTokens": 0,
+    "agentCalls": 0,
+    "byPhase": {}
+  },
+  "publishedAt": null,
+  "publishedUrl": null,
+  "createdAt": "2026-10-14T07:56:34.616Z",
+  "events": [
+    {
+      "at": "2026-10-14T07:56:34.616Z",
+      "by": "primary",
+      "kind": "note",
+      "msg": "run created by primary (cse_011MmHKF9EADvVeN8KnZuFsm) targeting tier 1"
+    }
+  ]
+}
