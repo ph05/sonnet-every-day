@@ -1,10 +1,10 @@
 {
   "schema": 1,
   "date": "2026-10-14",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 3,
-  "tier": null,
-  "phase": "publish",
+  "tier": 3,
+  "phase": "done",
   "phasesDone": [
     {
       "phase": "preflight",
@@ -23,24 +23,41 @@
       "at": "2026-10-14T10:11:52.468Z",
       "by": "wdA",
       "note": "Ideas Day (tier 3) from 10 researched ideas"
+    },
+    {
+      "phase": "kaizen",
+      "at": "2026-10-14T10:12:35.063Z",
+      "by": "wdA",
+      "note": "skipped: limit day: throttle stepped down to lean on a five-hour plan warning, and the day degraded to Tier 3",
+      "skipped": true
+    },
+    {
+      "phase": "done",
+      "at": "2026-10-14T10:12:35.063Z",
+      "by": "wdA",
+      "note": "kaizen closed the day"
     }
   ],
   "attempts": {
     "preflight": 1,
     "ideate": 2,
-    "package": 1
+    "package": 1,
+    "publish": 1,
+    "kaizen": 1
   },
   "phaseStartedAt": {
     "preflight": "2026-10-14T07:57:02.405Z",
     "ideate": "2026-10-14T09:33:21.493Z",
     "package": "2026-10-14T10:11:08.883Z",
-    "publish": "2026-10-14T10:11:52.468Z"
+    "publish": "2026-10-14T10:12:20.522Z",
+    "kaizen": "2026-10-14T10:12:21.274Z",
+    "done": "2026-10-14T10:12:35.063Z"
   },
   "lease": {
     "holder": "wdA",
     "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
     "acquiredAt": "2026-10-14T09:32:30.315Z",
-    "heartbeatAt": "2026-10-14T10:11:52.468Z"
+    "heartbeatAt": "2026-10-14T10:12:35.063Z"
   },
   "directives": [
     {
@@ -70,8 +87,8 @@
       }
     }
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-14T10:12:21.274Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-14-ideas-day/",
   "createdAt": "2026-10-14T07:56:34.616Z",
   "events": [
     {
@@ -168,6 +185,18 @@
       "kind": "note",
       "code": "watch-armed",
       "msg": "phase watch armed: ideate attempt 2, due 2026-10-14T11:33:38.960Z (120 min: budget 110 + 10 margin)"
+    },
+    {
+      "at": "2026-10-14T10:12:21.274Z",
+      "by": "wdA",
+      "kind": "note",
+      "msg": "published at tier 3"
+    },
+    {
+      "at": "2026-10-14T10:12:35.063Z",
+      "by": "wdA",
+      "kind": "note",
+      "msg": "phase kaizen skipped: limit day: throttle stepped down to lean on a five-hour plan warning, and the day degraded to Tier 3"
     }
   ],
   "watch": {

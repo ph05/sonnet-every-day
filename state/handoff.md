@@ -1,21 +1,19 @@
-# Handoff from 2026-10-13 (day 4, tier 2, written by primary at 08:50)
+# Handoff from 2026-10-14 (day 5, tier 3, written by wdA at 06:15)
 
 ## What went well
-- First day under the page contract shipped on time (06:57 ET): Historical Date Converter, a tool with an intro, explainer and 33 self-tests; the critic recomputed 15 outputs and 43,200 day numbers with zero mismatches.
-- Kaizen fixed the qa.js import() problem the same day (2d798c2) and added guard tests for workflow scripts.
+- The compact ideate on 2 slots ran in 37 minutes and 537k tokens (34 agent calls): 10 ideas, 9 of a wanted purpose, 10 of 10 novelty-clean.
+- The watchdog takeover and the Ideas Day publish went through without a failed command (live 06:12 ET).
 
 ## What went badly
-- ops/workflows/qa.js was rejected twice by the Workflow runtime (import()), so QA ran by hand (critic, proofread, cold read as Agent calls; no expert review). The hand QA used the tokens a revise loop needed, so revise was skipped and 12 S2 / 4 S3 shipped as known issues (mostly Haiku sourcing findings and an opaque-first-screen S2). A kaizen addressed the cause; the cost is not yet recovered.
-- 3 kaizen members were cut by phase time (cards, lab, jester; queued).
+- The primary session went silent during ideate (about 04:00 ET); the lease was 88.9 minutes stale at 05:32, and the planner then dropped the day to Tier 3 (285 min needed vs about 222 available on 2 slots).
+- The throttle was set to lean at 03:59 by a five-hour plan warning, so kaizen was skipped ("limit day"). Kaizen suspects from the day-4 premortem (2ae5e34 2d798c2 8fd8a73 77d6aed 80ebbdb) were never judged.
 
 ## Watch tomorrow
-- Launch qa as a Workflow first (it should now parse). If it is rejected again with a named construct, go straight to no-Workflow mode (FM-34 says so now).
-- Keep passing capTokens = session output total + the day's remaining spend.workflowCapTokens. Ideate 662k, select 211k, spec 381k, build 505k, qa 472k today: qa plus a 350k revise loop does not fit in 2.4M on a balanced day with this ideate; consider a compact QA or skipping the expert, and check how much revise needs.
-- Carry-over: Nonogram Puzzle Checker (tool) is saved. Play is paused until 2026-10-18; wanted purposes follow `novelty.mjs mix`.
-- Premortem risk that came true: ideate length and extra QA agents squeeze revise; the 1280x650 window check was not exercised by browser-check.
+- Throttle is `lean`; check `throttle get` and the five-hour window before sizing caps (workflowCapTokens, not a remembered figure).
+- Carry-over holds Prime Number Grids (lesson, i01); R1 will pass it to ideate. The shortlist's lessons (10-adic numbers, B-tree vs LSM, coastline ruler, browser fingerprint, reward schedules, cricket rain rule, anagram and hash commitments, six dots triangle) are good material for the next days.
+- Still true: launch qa as a Workflow first; on a named refusal go to no-Workflow mode. 2 agent slots mean Tier 1 never fits.
 
 ## Open questions
+- Why did the primary stop signing in around 04:00 ET (container loss, usage limit)?
 - Proposal waiting: ops/kaizen/proposals/2026-10-10-architect.md.
-- What else does the Workflow runtime refuse that a vm compile cannot show?
-- Should the proofreader accept "as of <date>, per search results" claims, and should the cold read ignore site chrome?
-- The routines still hold old prompt text; the owner must refresh them from ops/prompts/ (PLAYBOOK 3.4).
+- Should the planner's narrow-machine ideate figure (80 min) drop, given 37 minutes today?
