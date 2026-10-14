@@ -19,13 +19,13 @@
   },
   "phaseStartedAt": {
     "preflight": "2026-10-14T07:57:02.405Z",
-    "ideate": "2026-10-14T07:58:48.165Z"
+    "ideate": "2026-10-14T09:32:30.315Z"
   },
   "lease": {
-    "holder": "primary",
-    "session": "cse_011MmHKF9EADvVeN8KnZuFsm",
-    "acquiredAt": "2026-10-14T07:56:34.616Z",
-    "heartbeatAt": "2026-10-14T07:59:04.847Z"
+    "holder": "wdA",
+    "session": "cse_019zrNGaaf1cHjakm1zrmPfj",
+    "acquiredAt": "2026-10-14T09:32:30.315Z",
+    "heartbeatAt": "2026-10-14T09:32:30.315Z"
   },
   "directives": [
     {
@@ -103,6 +103,18 @@
       "by": "throttle",
       "kind": "rate-limit",
       "msg": "throttle -> lean: rate-limit: status allowed_warning (five_hour): the plan window is nearly full"
+    },
+    {
+      "at": "2026-10-14T09:32:30.315Z",
+      "by": "wdA",
+      "kind": "takeover",
+      "msg": "wdA (cse_019zrNGaaf1cHjakm1zrmPfj) took over from primary/cse_011MmHKF9EADvVeN8KnZuFsm: lease of primary/cse_011MmHKF9EADvVeN8KnZuFsm is stale (88.9 min > 35); continuing at ideate, tier 2"
+    },
+    {
+      "at": "2026-10-14T09:32:41.771Z",
+      "by": "wdA",
+      "kind": "takeover",
+      "msg": "primary lease stale (88.9 min); wdA took over at ideate, tier 2"
     }
   ],
   "watch": {
