@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "agent": "cards",
+  "lens": "sports-anywhere",
+  "candidates": [
+    {
+      "id": "cards-1",
+      "title": "Cricket Rain Rule",
+      "plainSentence": "A lesson that lets you interrupt a cricket innings with rain and see how overs and wickets set the revised target.",
+      "pitch": "A lesson on why cricket's rain rule does not simply scale the target by overs lost. The visitor interrupts a sample chase with a rain delay, watches the naive run-rate target and a resource-ledger target pull apart, then replays the 1992 semi-final to see the older rule fail. They leave able to explain why wickets in hand are a second budget, and able to predict which way a revised target will move.",
+      "firstMinute": "The first frame already shows a sample chase (first side 280 from 50 overs, chasing side 120 for 2 after 20 overs) with rain at over 20, two bars labelled simple scaling and resource ledger, and a worked revised target for each. A single slider for overs lost moves both bars at once; the first success is seeing the two targets disagree as the slider moves, with no reading needed.",
+      "conceptsToLearn": ["In limited-overs cricket a batting side has two things to spend: 50 overs and 10 wickets"],
+      "whyNow": "Timeless: rain interrupts matches every season and the revised target is the most argued-about number in the sport; the idea is a stable piece of statistics, not news.",
+      "origin": { "agent": "cards", "lens": "sports-anywhere" },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "hockey-sports",
+        "mechanic": "lesson",
+        "tone": ["analytical", "nerdy", "cozy"],
+        "tech": ["svg", "dom-ui", "canvas2d"],
+        "tags": ["cricket", "rain-delay", "revised-target", "resources", "overs-and-wickets", "par-score", "run-rate", "sports-statistics", "ledger", "interruptions"],
+        "keywords": ["duckworth-lewis-stern", "dls", "cricket-rain-rule", "resource-table", "target-score", "average-run-rate", "most-productive-overs", "wickets-in-hand"],
+        "slot": "interest",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A limited-overs innings is a budget of two resources, overs remaining and wickets in hand. A rain delay removes part of that budget, and the revised target is the first side's score scaled by the ratio of the two sides' remaining resource percentages, not by overs alone.",
+        "whyNiche": "Broadcast explainers state the rule in one sentence (wickets and overs both count) and then show a number nobody can reproduce. The official resource values are not published in full, so almost nobody has seen the ledger that sits underneath; calculators hide it too.",
+        "audience": "Cricket fans and curious non-fans who have heard 'DLS' on a rain-hit broadcast and want to know why the target is the number it is.",
+        "prerequisites": ["Know that in a one-day match each side bats once and the second side chases the first side's total", "No statistics needed"],
+        "misconceptions": [
+          "A shortened match just scales the target by the fraction of overs lost, like cutting a recipe in half",
+          "Wickets in hand matter little; only the overs left decide how many runs a side can still make",
+          "An interruption costs both situations the same, whenever it happens and however many wickets are down"
+        ],
+        "misconceptionFactIndexes": [1, 2],
+        "ahaMoment": "Two chasing sides with the same number of overs left are worth very different amounts when one has all ten wickets and the other has three: the ledger shows resources, not time, and a rain delay costs more when you have more wickets to lose.",
+        "demos": [
+          "Simple scaling: a slider for overs lost, and the naive target that cuts the chase in proportion to overs",
+          "Two budgets: a two-axis ledger of overs left against wickets lost, a percentage in each cell, and the visitor picks cells to compare",
+          "Same overs, different wickets: two chasers with equal overs left and different wickets down, and the runs each is expected to add",
+          "The interruption: choose when rain arrives and how many overs it takes, and see resources lost, the ratio, and the revised target next to the naive one",
+          "The older rules: the average run rate rule and the discard-the-weakest-overs rule applied to the same innings, with the 1992 semi-final replay shown as reported"
+        ],
+        "checkQuestions": [
+          "Rain removes 10 overs. Is the revised target cut more when the chasing side is 2 down or 7 down at that moment, and why?",
+          "Two sides each have 25 overs left. Which has more resources: the one with 0 wickets lost or 5 wickets lost?",
+          "If the first side's resources are 100 percent and the chasing side's are 80 percent, what is the target for a first score of 250?",
+          "Why does discarding the first side's least productive overs punish a bowling side that bowled well?"
+        ]
+      },
+      "research": {
+        "summary": "Search results agree on the core: the Duckworth-Lewis-Stern method treats overs and wickets as two resources, 100 percent at the start of a 50-over innings, and adjusts the chasing side's target in proportion to the two sides' resources; the official ICC page documents the method. The older rules are documented too: an average run rate rule that ignored wickets, and the 1992 rule that dropped the first side's least productive overs, which left South Africa needing about 21 or 22 off one ball in the semi-final (sources differ). Critically, the official resource values and fitted parameters were reported as never published in full, so the page must build and label its own illustrative resource model, anchored to a handful of reported example values, rather than claim to reproduce the official one. Stern's 2016 paper on extending the method to high scoring rates exists and is indexed in two repositories.",
+        "sources": [
+          { "title": "Duckworth-Lewis-Stern method (encyclopedia article)", "url": "https://wikipedia.com/wiki/D/L_method", "date": "", "snippet": "Describes the method as resources of overs and wickets, with the chasing side's target adjusted by the ratio of resources; notes a plain proportional cut fails because a side with wickets in hand and fewer overs bats harder.", "via": "search", "note": "Establishes the concept and the proportional-cut misconception; encyclopedia, background only", "verified": true },
+          { "title": "ICC: Duckworth-Lewis-Stern (rules and regulations)", "url": "https://www.icc-cricket.com/about/cricket/rules-and-regulations/duckworth-lewis-stern", "date": "", "snippet": "The governing body's own page on the method; it links the methodology document, a resource table and an FAQ, and describes DLS as the way to decide a fair result when weather interrupts a match.", "via": "search", "note": "Primary source for the method existing and being the official rule; table contents not seen", "verified": true },
+          { "title": "How the Duckworth-Lewis-Stern method works (ESPN)", "url": "https://www.espn.com/cricket/story/_/id/19577040", "date": "", "snippet": "Explains that resources lost to an interruption depend on overs lost, the stage of the innings and wickets in hand; a side six down loses less from the same break than one two down. Notes it ignores which batters remain.", "via": "search", "note": "Independent explainer agreeing with the resource idea; source for the stage and wickets example", "verified": true },
+          { "title": "South Africa stopped by a strange rain rule - World Cup 1992", "url": "https://cricmash.com/tournaments/2015/1/24/south-africa-stopped-by-a-strange-rain-rule-world-cup-1992", "date": "2015-01-24", "snippet": "Recounts the 1992 semi-final: the rule removed the first side's least productive overs, including maidens, so the target barely fell while balls were removed, leaving about 22 off 1 ball.", "via": "search", "note": "Describes the 1992 rule and outcome; the exact figure differs between sources (21 versus 22)", "verified": true },
+          { "title": "When South Africa were robbed by a cruel rain rule", "url": "https://www.cricket.com/news/When-South-Africa-were-robbed-by-a-cruel-rain-rule-1584734855305", "date": "", "snippet": "Another account of the 1992 semi-final and the most-productive-overs rule; also describes the earlier average run rate rule as ignoring wickets lost.", "via": "search", "note": "Second site for the 1992 rule; single source for the average run rate rule detail", "verified": true },
+          { "title": "The Duckworth-Lewis-Stern method: extending the Duckworth-Lewis methodology to deal with modern scoring rates (Bond University)", "url": "https://research.bond.edu.au/en/publications/the-duckworth-lewis-stern-method-extending-the-duckworth-lewis-me/", "date": "2016", "snippet": "Repository entry for Stern's paper introducing the extension for modern high scoring rates, particularly Twenty20.", "via": "search", "note": "Confirms the paper and its aim", "verified": true },
+          { "title": "IDEAS/RePEc entry, Journal of the Operational Research Society 67(12)", "url": "https://ideas.repec.org/a/pal/jorsoc/v67y2016i12d10.1057_jors.2016.30.html", "date": "2016", "snippet": "Bibliographic record of the same Stern paper, volume 67 issue 12, 2016.", "via": "search", "note": "Independent index agreeing with the Bond entry on the paper's existence", "verified": true },
+          { "title": "A Statistical Exploration of Duckworth-Lewis Method Using Bayesian Inference (arXiv)", "url": "https://arxiv.org/pdf/1810.00908", "date": "", "snippet": "Says the original authors did not disclose the functional forms or fitted values, citing commercial confidentiality, and that the published 50-over table is not monotone in overs and wickets.", "via": "search", "note": "Basis for building an own labelled model; claims blended in the search summary, so kept unverified", "verified": false },
+          { "title": "DUCKWORTH LEWIS (reference page with table extract)", "url": "https://i.imgci.com/db/ABOUT_CRICKET/RAIN_RULES/DUCKWORTH_LEWIS.html", "date": "", "snippet": "Shows an extract of the resource-percentage table; reported cells include 100.0 at 50 overs and 0 wickets lost, 77.1 at 30 overs left and 0 lost, 54.0 at 20 left and 2 lost, 7.0 at 5 left and 9 lost.", "via": "search", "note": "Possible calibration anchors for the model; single result, so unverified", "verified": false },
+          { "title": "Duckworth-Lewis and Stern method (Substack analysis)", "url": "https://faugystrategy.substack.com/p/duckworth-lewis-and-stern-method", "date": "", "snippet": "Argues the overs-wickets relation is not linear, so five down at the halfway point is not half the resources.", "via": "search", "note": "Supports the non-linear aha; single blog source, unverified", "verified": false }
+        ],
+        "facts": [
+          { "claim": "Each side starts a 50-over innings with 50 overs and 10 wickets, treated as 100 percent of its resources, and in the Professional Edition the chasing side's target is the first side's score adjusted in proportion to the two sides' resources (as of 2026-10-14).", "sourceIndex": 0, "alsoIn": [1, 2], "asOf": "2026-10-14" },
+          { "claim": "A plain proportional cut of the target for overs lost is wrong because a side with wickets in hand and fewer overs can bat more aggressively, so the method weighs wickets as well as overs.", "sourceIndex": 0, "alsoIn": [2], "asOf": "2026-10-14" },
+          { "claim": "How many resources an interruption removes depends on overs lost, the stage of the innings and wickets in hand; per ESPN, a side six down after 20 overs loses less from a 10-over break than a side two down.", "sourceIndex": 2, "alsoIn": [0], "asOf": "2026-10-14" },
+          { "claim": "At the 22 March 1992 World Cup semi-final the rain rule discarded the first side's least productive overs, maidens included, leaving South Africa needing about 22 off 1 ball by one account and 21 off 1 by Cricinfo's scorecard note; the figure is disputed.", "sourceIndex": 3, "alsoIn": [4], "asOf": "2026-10-14" },
+          { "claim": "Per cricket.com, the earlier average run rate rule multiplied the first side's run rate by the overs available to the chasing side and took no account of wickets lost.", "sourceIndex": 4, "alsoIn": [], "asOf": "2026-10-14" },
+          { "claim": "Steven Stern's paper extending the Duckworth-Lewis method to modern scoring rates appeared in the Journal of the Operational Research Society, volume 67 issue 12, 2016.", "sourceIndex": 5, "alsoIn": [6], "asOf": "2026-10-14" },
+          { "claim": "As of 2026-10-14, per an arXiv paper, the method's fitted parameters and functional forms were never published (commercial confidentiality), so no public source gives the official resource table in full.", "sourceIndex": 7, "alsoIn": [], "asOf": "2026-10-14" },
+          { "claim": "As of 2026-10-14, per one reference page, example resource cells include 100.0 percent (50 left, 0 lost), 77.1 (30 left, 0 lost), 54.0 (20 left, 2 lost) and 7.0 (5 left, 9 lost).", "sourceIndex": 8, "alsoIn": [], "asOf": "2026-10-14" },
+          { "claim": "As of 2026-10-14, per a Substack analysis, five wickets down at 25 overs is not half the resources because the overs-wickets relation is non-linear.", "sourceIndex": 9, "alsoIn": [], "asOf": "2026-10-14" }
+        ],
+        "inspirations": ["Win-probability explainers in baseball and hockey", "Expected goals primers", "Explorable explanations in the style of Nicky Case", "Broadcast target graphics in cricket"]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: the visitor changes when rain arrives and how long it lasts, sees the ledger of overs and wickets, the resource ratio and two revised targets, then answers a prediction question (which way will the target move?) before the page reveals the answer, and moves up the ladder to the 1992 replay.",
+        "sophisticationHooks": [
+          "A heat-map ledger of resources by overs left and wickets lost that the visitor can read like a table and probe by clicking cells",
+          "Three rules applied to the same invented over-by-over innings side by side: simple scaling, discard-the-weakest-overs, and the resource ratio",
+          "A predict-then-reveal question after each demo, with the page showing the reasoning",
+          "A transparent model panel: the formula, the five reported anchor cells, and how far the page's own table sits from them"
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "One page: an own illustrative resource model (exponential saturation in overs per wicket-count, fitted by a small node script to the reported anchor cells and checked for monotonicity in both overs and wickets), five demos, four check questions, a 1992 replay with figures labelled as reported and disputed. Cut: Twenty20 and per-ball tables, the Professional Edition's score-dependent resources, live data, saving state, any official calculator claim.",
+        "risks": [
+          "The official resource table and parameters are not public in full (reported, unverified), so the page's table is its own illustrative model; it must say this plainly and never present revised targets as the official numbers",
+          "The anchor cells come from a single reference page and are unverified; show them as 'as of 2026-10-14, per that page' and make clear the model is a teaching approximation with a stated error against them",
+          "The 1992 final figure is disputed (21 versus 22 off one ball); show the range and what the sources agree on, namely that the rule discarded maidens",
+          "The average run rate rule detail rests on one source; label it 'per cricket.com'",
+          "The brief's claim about run rates and the other sports in the lens was a lead only: this candidate chose one sport and checked its claims by search",
+          "Cricket is unfamiliar to many visitors; the first frame must teach 'a side has overs and wickets to spend' with a sample chase and no jargon",
+          "The no-real-names rule: describe the method by its initials DLS in body copy and avoid person names in the title; credit the authors only in the sources list"
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

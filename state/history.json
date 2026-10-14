@@ -215,6 +215,41 @@
       "path": "d/2026-10-13-historical-date-converter/",
       "publishedAt": "2026-10-13T10:56:27.592Z",
       "countsForNovelty": true
+    },
+    {
+      "n": 5,
+      "date": "2026-10-14",
+      "slug": "ideas-day",
+      "title": "Ideas Day",
+      "tagline": "Today's build didn't finish. Here are the 10 researched ideas the team was weighing, with sources.",
+      "tier": 3,
+      "fingerprint": {
+        "category": "data-viz",
+        "mechanic": "explorer",
+        "tone": [
+          "analytical",
+          "playful"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui"
+        ],
+        "tags": [
+          "ideas-day",
+          "fallback-day",
+          "research-shortlist"
+        ],
+        "keywords": [
+          "dossiers",
+          "score-radar",
+          "sortable-list"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "path": "d/2026-10-14-ideas-day/",
+      "publishedAt": "2026-10-14T10:11:09.472Z",
+      "countsForNovelty": false
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-13T12:45:29.766Z",
+  "generatedAt": "2026-10-14T10:11:15.618Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.",
@@ -8,10 +8,11 @@
     "startDate": "2026-10-10"
   },
   "stats": {
-    "days": 4,
-    "projects": 4,
-    "streak": 4,
+    "days": 5,
+    "projects": 5,
+    "streak": 5,
     "categories": {
+      "data-viz": 1,
       "hockey-sports": 1,
       "modding-games": 1,
       "science-sim": 1,
@@ -22,10 +23,11 @@
       "play": 3
     },
     "tiers": {
-      "2": 4
+      "2": 4,
+      "3": 1
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-13",
+    "lastDate": "2026-10-14",
     "missingDates": []
   },
   "kaizen": {
@@ -37,6 +39,40 @@
     "count": 24
   },
   "days": [
+    {
+      "n": 5,
+      "date": "2026-10-14",
+      "slug": "ideas-day",
+      "path": "d/2026-10-14-ideas-day/",
+      "title": "Ideas Day",
+      "tagline": "Today's build didn't finish. Here are the 10 researched ideas the team was weighing, with sources.",
+      "description": "Today's full build did not finish, so this page shows what the team was weighing: 10 researched ideas with their sources and dossiers. The ideas had not been scored when the day ended, so none is singled out as a pick.",
+      "tier": 3,
+      "category": "data-viz",
+      "mechanic": "explorer",
+      "tone": [
+        "analytical",
+        "playful"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui"
+      ],
+      "tags": [
+        "ideas-day",
+        "fallback-day",
+        "research-shortlist"
+      ],
+      "palette": [
+        "#24120f",
+        "#dd513c",
+        "#f2b632"
+      ],
+      "thumb": "d/2026-10-14-ideas-day/thumb.png",
+      "purpose": "",
+      "intro": "",
+      "concepts": []
+    },
     {
       "n": 4,
       "date": "2026-10-13",

@@ -1,0 +1,277 @@
+{
+  "id": "lab-r1-1",
+  "title": "Six Dots Triangle Lesson",
+  "plainSentence": "A lesson that lets you colour the lines between six dots red or blue and discover why a one-colour triangle can never be avoided.",
+  "pitch": "Six dots, fifteen lines, two colours: you try to colour every line so that no triangle is all one colour, first on five dots (it works) and then on six (it never does). A guided ladder turns your failed attempts into the proof, so the pigeonhole argument feels obvious rather than memorised, and the top rung shows how much bigger the same question gets with four-dot groups.",
+  "firstMinute": "The first frame shows five dots in a ring with a red pentagon and a blue star already drawn and the words 'no one-colour triangle here'. A button adds a sixth dot; its new lines appear grey, and as the visitor taps lines to colour them, a glowing triangle flashes the moment one colour closes a triangle. First success: the visitor makes a triangle appear on six dots within seconds and cannot make it go away.",
+  "conceptsToLearn": [
+    "A line between two dots is red (the two people know each other) or blue (they are strangers); a one-colour triangle has all three of its lines the same colour"
+  ],
+  "whyNow": "Timeless: a short, complete proof with a surprising edge (five is not enough, six is), and nothing like it in the build history. It also gives the pool a combinatorics lesson that is not about primes or number systems.",
+  "origin": {
+    "agent": "lab",
+    "lens": "math-visual"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "pointer-events",
+      "localstorage"
+    ],
+    "tags": [
+      "ramsey-theory",
+      "party-problem",
+      "pigeonhole-principle",
+      "graph-coloring",
+      "combinatorics",
+      "proof",
+      "complete-graph",
+      "friends-and-strangers"
+    ],
+    "keywords": [
+      "ramsey",
+      "six-people",
+      "monochromatic-triangle",
+      "pigeonhole",
+      "pentagon-pentagram",
+      "quilt-view",
+      "proof-by-cases",
+      "paley-graph"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "Ramsey's party problem: in any group of six people, either three of them all know each other or three of them are all strangers. Colouring the 15 pairs of a complete graph on six dots with two colours always leaves a one-colour triangle (R(3,3) = 6), while five dots can be coloured with none (a red pentagon and a blue pentagram).",
+    "whyNiche": "Most explanations state the pigeonhole step in one sentence and move on, so learners accept the result without feeling why a fifth dot's colouring escapes but the sixth's cannot. Being allowed to try, fail and see exactly which line closes the trap is what the page adds.",
+    "audience": "Curious teenagers and adults with no maths beyond school; teachers looking for a ten-minute proof activity.",
+    "prerequisites": [
+      "Counting lines between dots",
+      "Knowing what a triangle is"
+    ],
+    "misconceptions": [
+      "Checking a few colourings and finding a triangle each time counts as a proof (it does not; the page contrasts a few tries with the case argument that covers every colouring)",
+      "Showing six is enough also shows five is not (the lower bound needs its own example: the pentagon and pentagram colouring)",
+      "Red and blue mean friends versus enemies (they only mean know each other versus do not)"
+    ],
+    "misconceptionFactIndexes": [
+      3
+    ],
+    "ahaMoment": "Pick one dot. It has five lines, and two colours cannot share five lines without one colour getting three. Look at the three dots at the far ends: any line among them in that colour makes a triangle with your dot, and if none is, they form a triangle in the other colour. Every escape route is closed.",
+    "demos": [
+      "Rung 1: five dots with the pentagon and pentagram colouring already drawn; tap lines to try to break it and see that you cannot make a triangle without redrawing",
+      "Rung 2: add a sixth dot and try to colour its five new lines without making a triangle; a live hint highlights the line that always loses",
+      "Rung 3: pick any dot; its five lines fall into two colour bins and the bins visibly overflow at three (the pigeonhole step)",
+      "Rung 4: the three far-end dots light up and the visitor checks the three lines among them, ending in a red or a blue triangle in every case",
+      "Rung 5: a quilt view lays the 15 line colours out as a strip of 15 patches; a shuffle button tries thousands of random colourings and shows the fewest one-colour triangles found, which never reaches zero (the page counts it itself, labelled as checked here)",
+      "Rung 6: the same question with four-dot groups on 17 dots, shown as a pre-drawn colouring (differences that are squares mod 17 in one colour), with a button that checks all 2,380 four-dot groups and finds none in one colour, to feel why the next case is out of reach by hand"
+    ],
+    "checkQuestions": [
+      "Pick a dot on a seven-person party. How many lines leave it, and what is the least number that must share a colour?",
+      "On five people, colour the lines so that no one-colour triangle exists. Which two shapes do the colours draw?",
+      "Why does a single colouring of six dots that happens to contain a red triangle not prove the general statement?",
+      "If the lines among the three far-end dots are all blue, what triangle have you found?"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search in this pass: the pigeonhole proof that six people force a one-colour triangle and the pentagon-pentagram colouring of five dots appear in several independent write-ups (an encyclopedia article, lecture notes, a problem-solving wiki, a combinatorics wikibook). The 17-dot colouring from square differences mod 17, which has no one-colour four-group so that R(4,4)=18, appears in a maths magazine, a course problem sheet and a research paper. The minimum of two one-colour triangles in any six-dot colouring (Goodman's case of six) appears in two documents from one research group; the page also counts it itself. The claim that learners commonly skip the lower bound was not documented and is removed; only the documented point stays: five is not enough is a separate claim needing its own colouring.",
+    "sources": [
+      {
+        "title": "Ramsey's theorem (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Ramsey%27s_theorem",
+        "date": "",
+        "snippet": "Encyclopedia article giving the six-vertex case analysis: pick a vertex, three of its five edges share a colour, then check the edges among their far ends.",
+        "via": "search",
+        "note": "Upper-bound proof for six people; found again by the verifier's own search.",
+        "verified": true
+      },
+      {
+        "title": "Art of Problem Solving wiki: Ramsey's Theorem",
+        "url": "https://artofproblemsolving.com/wiki/index.php/Ramsey%27s_Theorem",
+        "date": "",
+        "snippet": "Wiki article on Ramsey's theorem with the six-vertex triangle example and the pentagon counterexample for five.",
+        "via": "search",
+        "note": "Second independent write-up of both halves of R(3,3)=6; found again by the verifier.",
+        "verified": true
+      },
+      {
+        "title": "Ramsey theory talk notes (Denison)",
+        "url": "https://personal.denison.edu/~whiteda/files/Lecture%20Notes/Ramsey%20GSS%20Talk.pdf",
+        "date": "",
+        "snippet": "Lecture notes presenting the same pigeonhole argument for six people.",
+        "via": "search",
+        "note": "Third independent presentation of the upper bound.",
+        "verified": true
+      },
+      {
+        "title": "Combinatorics/Ramsey's Theorem (Wikibooks)",
+        "url": "https://en.wikibooks.org/wiki/Combinatorics/Ramsey%27s_Theorem",
+        "date": "",
+        "snippet": "Wikibook noting that K5 can be two-coloured with no one-colour triangle.",
+        "via": "search",
+        "note": "Lower bound: five dots can avoid a triangle.",
+        "verified": true
+      },
+      {
+        "title": "Proving that R(4,4) > 17 (Plus Magazine)",
+        "url": "https://plus.maths.org/proving-r4417",
+        "date": "",
+        "snippet": "Magazine article on the 17-point colouring built from differences that are squares mod 17, with no one-colour set of four.",
+        "via": "search",
+        "note": "Source for the top rung; found again by the verifier.",
+        "verified": true
+      },
+      {
+        "title": "Discrete mathematics problem sheet 10 (UPC)",
+        "url": "https://web.mat.upc.edu/juan.jose.rue/dmII-FU/Problems/Sheet10.pdf",
+        "date": "",
+        "snippet": "Problem sheet asking students to show the Paley graph on 17 vertices has no K4 and conclude R(4,4) > 17.",
+        "via": "search",
+        "note": "Independent course source for the 17-dot colouring.",
+        "verified": true
+      },
+      {
+        "title": "Generalized Paley graphs and their complete subgraphs of orders three and four (arXiv)",
+        "url": "https://arxiv.org/pdf/2006.14716",
+        "date": "2020",
+        "snippet": "Research paper whose introduction recalls that the Paley graph on 17 vertices has no complete subgraph of order four (Greenwood and Gleason), giving R(4,4) = 18 with the upper bound.",
+        "via": "search",
+        "note": "Independent research-paper statement of the 17-point fact.",
+        "verified": true
+      },
+      {
+        "title": "Dinner Party Problem (Harvey Mudd Math Fun Facts)",
+        "url": "https://math.hmc.edu/funfacts/?p=545",
+        "date": "",
+        "snippet": "Fun fact asking whether a red-blue complete graph on 5 vertices with no one-colour triangle exists, as the companion to the six-person result.",
+        "via": "search",
+        "note": "Documents that the five-person lower bound is its own task.",
+        "verified": true
+      },
+      {
+        "title": "Party problem handout (Palomar College)",
+        "url": "https://www.palomar.edu/math/wp-content/uploads/sites/134/2018/03/party-problem-1.pdf",
+        "date": "2018",
+        "snippet": "Handout giving the pin-one-person proof and stating that five people are not enough.",
+        "via": "search",
+        "note": "Treats 'five is not enough' as a separate statement; the 'learners skip it' remark is not confirmed.",
+        "verified": true
+      },
+      {
+        "title": "Ramsey multiplicity notes (UMD, Brady)",
+        "url": "https://www.cs.umd.edu/~gasarch/RAMSEYREU/brady.pdf",
+        "date": "",
+        "snippet": "Student paper stating that every two-colouring of K6 has at least two one-colour triangles.",
+        "via": "search",
+        "note": "Goodman's case of six; one of two documents from the same research group.",
+        "verified": true
+      },
+      {
+        "title": "Ramsey multiplicity (UMD, Gasarch group)",
+        "url": "https://www.cs.umd.edu/users/gasarch/RAMSEYMULT/main.pdf",
+        "date": "",
+        "snippet": "Paper stating at least two one-colour triangles in K6 and describing Goodman's 1959 result on the minimum for complete graphs.",
+        "via": "search",
+        "note": "Second document for the minimum-two fact, from the same research group, so only partly independent.",
+        "verified": true
+      },
+      {
+        "title": "Stanford CS103 lecture notes (Small Ramsey)",
+        "url": "https://web.stanford.edu/class/archive/cs/cs103/cs103.1222/lectures/11/Small.pdf",
+        "date": "",
+        "snippet": "Lecture on small Ramsey numbers: any red/blue colouring of the edges of a 6-clique contains a one-colour triangle.",
+        "via": "search",
+        "note": "Scout's source; the verifier could not find it again, so it is unconfirmed (the claim itself is confirmed by other sources).",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Any red/blue colouring of the 15 lines between six dots contains a one-colour triangle (R(3,3)=6); the proof picks one dot, notes that three of its five lines share a colour, and checks the lines among their far ends.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Five dots can be coloured with no one-colour triangle: the sides of a pentagon in one colour and its diagonals (the pentagram) in the other, so six is the smallest number that forces a triangle. Each colour class is a five-cycle, which holds no triangle.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          1,
+          0
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "R(4,4)=18: the colouring of 17 points in which two points are joined in one colour when their difference is a square mod 17 has no one-colour group of four, and 18 points always force one.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5,
+          6
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Handouts and fun-fact pages treat 'five people are not enough' as a separate claim that needs its own explicit colouring, distinct from the six-person proof.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Every red/blue colouring of the lines between six dots has at least two one-colour triangles (Goodman's case of six). Two documents from one research group state it; the page shows a count it computes itself.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Ramsey's party problem as taught in discrete maths courses",
+      "Plus Magazine puzzles",
+      "Complete graph colouring puzzles",
+      "Patchwork quilt pattern boards"
+    ]
+  },
+  "design": {
+    "coreLoop": "Colour lines, watch the trap close, ask 'where is the escape', get the hint that names the dot with three same-coloured lines, then answer a check question. Each rung changes one thing (5 dots, 6 dots, the pigeonhole bins, the far-end triangle, a bulk shuffle), so the ladder keeps feeling like one idea getting clearer.",
+    "sophisticationHooks": [
+      "A live pigeonhole view that groups the chosen dot's five lines into red and blue bins and flags the overfull bin",
+      "An exhaustive checker over all 32,768 colourings of six dots, run in a worker, which proves the claim in front of the visitor and lists the minimum number of triangles found",
+      "A quilt view that lays all 15 line colours out as a patch strip, so symmetry and the pentagon-pentagram pattern show as a repeat",
+      "A top rung that loads the 17-dot colouring and lets the visitor verify no one-colour four-group by a guided search"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one SVG board with 5 to 6 dots, tap-to-colour lines, triangle highlighter, pigeonhole bins view, an in-browser check of all 32,768 colourings (fast enough for the main thread), 6 guided rungs with 4 check questions, a short written explainer. Cut if short: the quilt strip and the guided 17-dot search (keep a pre-drawn 17-dot display with a one-button check). Not built: seven or more dots beyond the 17-dot display, user-entered graphs, accounts, sharing.",
+    "risks": [
+      "The remark that learners commonly skip the lower bound is not documented; the page says only that five is not enough is a separate claim, not a measured habit.",
+      "The minimum-two-triangles result rests on two documents from one research group; the page shows the count computed in the browser, labelled as checked here.",
+      "The exact value of R(5,5) was not confirmed in the results seen; the page leaves it out or says only that it is not known, with a dated source.",
+      "Engineering: the 17-dot colouring must be checked by a script before shipping so the displayed colouring has no one-colour four-group (2,380 groups to test).",
+      "Risk of looking like a puzzle game: keep the framing as a guided proof with questions, not a score.",
+      "Scope: the quilt view and the 17-dot rung are the first things to cut if time runs short; rungs 1 to 4 plus the exhaustive check are the core."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 8,
+    "feasibleInOneDay": true,
+    "notes": "The page could not be opened (WebFetch failed on blogs.ams.org); my own searches found R(3,3)=6, the pentagon colouring and the 17-point colouring each in several independent results, and the Goodman case in two related documents. The undocumented learners-skip-the-lower-bound claim was removed."
+  }
+}

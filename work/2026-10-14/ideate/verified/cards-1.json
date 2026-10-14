@@ -1,0 +1,273 @@
+{
+ "id": "cards-1",
+ "title": "Cricket Rain Rule",
+ "plainSentence": "A lesson that lets you interrupt a cricket innings with rain and see how overs and wickets set the revised target.",
+ "pitch": "A lesson on why cricket's rain rule does not simply scale the target by overs lost. The visitor interrupts a sample chase with a rain delay, watches a naive overs-only target and a resource-ledger target pull apart, then sees how the older average-run-rate and 1992 rules behaved on the same innings. They leave able to explain why wickets in hand are a second budget and to predict which way a revised target will move, using a labelled teaching model rather than the official table.",
+ "firstMinute": "The first frame already shows a sample chase (first side 280 from 50 overs, chasing side 120 for 2 after 20 overs) with rain at over 20, two bars labelled simple scaling and resource ledger, and a worked revised target for each. A single slider for overs lost moves both bars at once; the first success is seeing the two targets disagree as the slider moves, with no reading needed.",
+ "conceptsToLearn": [
+  "In a one-day match each side bats once, and the second side chases the first side's total",
+  "A batting side spends two things: its overs and its ten wickets"
+ ],
+ "whyNow": "Timeless: rain interrupts matches every season and the revised target is the most argued-about number in the sport; the idea is a stable piece of statistics, not news.",
+ "origin": {
+  "agent": "cards",
+  "lens": "sports-anywhere"
+ },
+ "fingerprint": {
+  "purpose": "lesson",
+  "category": "hockey-sports",
+  "mechanic": "lesson",
+  "tone": [
+   "analytical",
+   "nerdy",
+   "cozy"
+  ],
+  "tech": [
+   "svg",
+   "dom-ui",
+   "canvas2d"
+  ],
+  "tags": [
+   "cricket",
+   "rain-delay",
+   "revised-target",
+   "resources",
+   "overs-and-wickets",
+   "par-score",
+   "run-rate",
+   "sports-statistics",
+   "ledger",
+   "interruptions"
+  ],
+  "keywords": [
+   "duckworth-lewis-stern",
+   "dls",
+   "cricket-rain-rule",
+   "resource-table",
+   "target-score",
+   "average-run-rate",
+   "most-productive-overs",
+   "wickets-in-hand"
+  ],
+  "slot": "interest",
+  "political": false
+ },
+ "purposeDetail": {
+  "concept": "A limited-overs innings is a budget of two resources, overs remaining and wickets in hand. A rain delay removes part of that budget, and the revised target is the first side's score scaled by the ratio of the two sides' remaining resource percentages, not by overs alone.",
+  "whyNiche": "Broadcast explainers state the rule in one sentence (wickets and overs both count) and then show a number nobody can reproduce. The ICC publishes the formula and a resource table for the Standard Edition, but few people see how the table is built or why it is not proportional to overs.",
+  "audience": "Cricket fans and curious non-fans who have heard 'DLS' on a rain-hit broadcast and want to know why the target is the number it is.",
+  "prerequisites": [
+   "Know that in a one-day match each side bats once and the second side chases the first side's total",
+   "No statistics needed"
+  ],
+  "misconceptions": [
+   "A shortened match just scales the target by the fraction of overs lost, like cutting a recipe in half",
+   "Wickets in hand matter little; only the overs left decide how many runs a side can still make",
+   "An interruption costs both situations the same, whenever it happens and however many wickets are down"
+  ],
+  "misconceptionFactIndexes": [
+   1,
+   0
+  ],
+  "ahaMoment": "Two chasing sides with the same number of overs left are worth very different amounts when one has all ten wickets and the other has three: the ledger shows resources, not time, and a rain delay costs more when you have more wickets to lose.",
+  "demos": [
+   "Simple scaling: a slider for overs lost, and the naive target that cuts the chase in proportion to overs",
+   "Two budgets: a two-axis ledger of overs left against wickets lost, a percentage in each cell, and the visitor picks cells to compare",
+   "Same overs, different wickets: two chasers with equal overs left and different wickets down, and the runs each is expected to add",
+   "The interruption: choose when rain arrives and how many overs it takes, and see resources lost, the ratio, and the revised target next to the naive one",
+   "The older rules: the average run rate rule and the discard-the-weakest-overs rule applied to the same innings, with the 1992 semi-final replay shown as reported"
+  ],
+  "checkQuestions": [
+   "Rain removes 10 overs. In the page's teaching model, is the revised target cut more when the chasing side is 2 down or 7 down at that moment, and why?",
+   "Two sides each have 25 overs left. Which has more resources: the one with 0 wickets lost or 5 wickets lost?",
+   "If the first side's resources are 100 percent, the chasing side's are 80 percent and the first side scored 250, what is the revised target (the formula adds 1 to the scaled score)?",
+   "Why does discarding the first side's least productive overs punish a bowling side that bowled well?"
+  ]
+ },
+ "research": {
+  "summary": "Re-checked by search on 2026-10-14; no page opened. The ICC's own documents (methodology paper, media explainer, a D/L adjustment paper, all on icc-cricket.com domains) state the core: revised targets follow the two sides' run-scoring resources, which depend on overs to go and wickets down and are not in proportion to overs; a single table gives resource percentages; for the Standard Edition the revised target is the first score times R2 over R1, plus 1, rounded down. The older average-run-rate method is described there as proportional to overs. Two scorecard sites confirm the 22 March 1992 Sydney semi-final; the 22 versus 21 runs off one ball figure is disputed between accounts. Correction to the scout: the table is published for the Standard Edition, so the page's own model is a teaching approximation, not a stand-in for secret data. The fitted parameters of the Professional Edition are reported undisclosed by an arXiv paper (blended summary, unverified). Table cells from an older reference page differ from a later edition (77.1 versus 75.1 percent for 30 overs left, none lost), so cells are shown as edition-specific.",
+  "sources": [
+   {
+    "title": "Duckworth-Lewis methodology for re-setting targets (ICC document)",
+    "url": "https://images.icc-cricket.com/image/upload/prd/orlbya4cqyhqaceje3b2.pdf",
+    "date": "",
+    "snippet": "ICC methodology notes: revision follows resources, not direct proportion to overs as in the average run rate method; one table gives resource percentages; target formula T = S x R2/R1 + 1 when R2 is lower.",
+    "via": "search",
+    "note": "Primary source on an official ICC domain; wording seen in a claim-based search result 2026-10-14, page not opened.",
+    "verified": true
+   },
+   {
+    "title": "ICC Media Information: Duckworth/Lewis calculations explained",
+    "url": "https://www.icc-cricket.com/news/icc-media-information-duckworthlewis-calculations-explained",
+    "date": "",
+    "snippet": "ICC explainer: the revision is not in proportion to the overs the two sides receive but follows the run-scoring resources each side has; uses an older average total of 235.",
+    "via": "search",
+    "note": "Primary source on the ICC domain; older than the methodology document.",
+    "verified": true
+   },
+   {
+    "title": "The D/L method of adjusting target scores (ICC document)",
+    "url": "https://images.icc-cricket.com/image/upload/prd/g9vlypi15msmrfnhucyx.pdf",
+    "date": "",
+    "snippet": "ICC paper on the D/L method of adjusting targets, returned beside the methodology notes.",
+    "via": "search",
+    "note": "Third ICC-domain result for the resource idea; contents not seen beyond the title, so unverified and not used as support.",
+    "verified": false
+   },
+   {
+    "title": "England vs South Africa, 2nd Semi-Final at Sydney, Mar 22 1992 (ESPNcricinfo scorecard)",
+    "url": "https://espncricinfo.com/ci/engine/match/65155.html",
+    "date": "",
+    "snippet": "Scorecard page titled with the match, venue and date 22 March 1992.",
+    "via": "search",
+    "note": "Establishes the match and date; second scorecard site agrees.",
+    "verified": true
+   },
+   {
+    "title": "England vs South Africa 1992 semi-final scorecard (ACS archive)",
+    "url": "https://stats.acscricket.com/Archive/Scorecards/55/55605.html",
+    "date": "",
+    "snippet": "Independent statistics archive scorecard for the same match.",
+    "via": "search",
+    "note": "Independent of ESPNcricinfo; agrees on the match.",
+    "verified": true
+   },
+   {
+    "title": "1992 Cricket World Cup (encyclopedia article)",
+    "url": "https://en.wikipedia.org/wiki/1992_Cricket_World_Cup",
+    "date": "",
+    "snippet": "Result summary describes the rain rule ending as 22 off 1 ball; another account says 21 off 1.",
+    "via": "search",
+    "note": "Single named source for 22 off 1; the search summary was blended, so this stays unverified.",
+    "verified": false
+   },
+   {
+    "title": "Here's a classical case of the scoreboard not telling you the whole story (cricket.com)",
+    "url": "https://www.cricket.com/news/breaking-myth-south-africas-role-in-their-own-misfortune-3222023-1679473145308",
+    "date": "",
+    "snippet": "Cricket news article that appeared for the 1992 query; a summary attributes the 21 off 1 version to an account of this kind.",
+    "via": "search",
+    "note": "Not read; blended summary; unverified.",
+    "verified": false
+   },
+   {
+    "title": "DUCKWORTH LEWIS 2001 (reference page with table extract)",
+    "url": "https://i.imgci.com/db/ABOUT_CRICKET/RAIN_RULES/DUCKWORTH_LEWIS_2001.html",
+    "date": "",
+    "snippet": "Table extract: 100.0 at 50 overs left and none lost, 77.1 at 30 left and none lost, 58.9 at 20 left and none lost, 54.0 at 20 left and two lost.",
+    "via": "search",
+    "note": "Single result, older edition; possible calibration anchors only. The scout's 7.0 cell (5 left, 9 lost) was not seen and is dropped.",
+    "verified": false
+   },
+   {
+    "title": "Twenty20 cricket paper (Simon Fraser University)",
+    "url": "https://www.sfu.ca/~tswartz/papers/twenty20.pdf",
+    "date": "",
+    "snippet": "Paper using a 2002-update table that gives 75.1 percent for 30 overs left and none lost, differing from the older 77.1.",
+    "via": "search",
+    "note": "Shows table values depend on the edition; single result, unverified.",
+    "verified": false
+   },
+   {
+    "title": "A Statistical Exploration of Duckworth-Lewis Method Using Bayesian Inference (arXiv 1810.00908)",
+    "url": "https://arxiv.org/pdf/1810.00908",
+    "date": "",
+    "snippet": "Says the original authors did not disclose functional forms or fitted values, citing commercial confidentiality; writes the form Z(u,w) = Z0(w)[1 - exp(-b(w)u)].",
+    "via": "search",
+    "note": "Basis for building an own labelled model; claims blended in the search summary, so unverified.",
+    "verified": false
+   }
+  ],
+  "facts": [
+   {
+    "claim": "Per ICC documents (Standard Edition): every full innings starts at 100 percent of resources; one table gives the percentage left for any overs-to-go and wickets-lost; resources lost in a stoppage equal the table value at the stoppage minus the value at resumption.",
+    "sourceIndex": 0,
+    "alsoIn": [
+     1
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "Per the ICC methodology notes: the revised target is not in proportion to the overs each side receives but follows the run-scoring resources each side has, which depend on overs to go and wickets down; the older average run rate method corrects in direct proportion to overs.",
+    "sourceIndex": 0,
+    "alsoIn": [
+     1
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "Per the ICC methodology notes, when the chasing side's resources R2 are lower than the first side's R1, the revised target is the first side's score S times R2 over R1, plus 1, rounded down; when R2 is higher the extra resources are valued at an average score G50 (245 in the current document, 235 in an older explainer).",
+    "sourceIndex": 0,
+    "alsoIn": [
+     1
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "England played South Africa in the second semi-final of the 1992 World Cup at Sydney on 22 March 1992 (two independent scorecard sites).",
+    "sourceIndex": 3,
+    "alsoIn": [
+     4
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "Reported, disputed: the rain rule used at the 1992 semi-final removed the first side's least productive overs (maidens included), leaving South Africa needing 22 off 1 ball by one account and 21 off 1 by another. The page shows the range.",
+    "sourceIndex": 5,
+    "alsoIn": [
+     6
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "As of 2026-10-14, per an older reference page, resource cells include 100.0 percent (50 overs left, none lost), 77.1 (30 left, none lost), 58.9 (20 left, none lost) and 54.0 (20 left, two lost); a later-edition table gives 75.1 for 30 left, none lost, so values depend on the edition.",
+    "sourceIndex": 7,
+    "alsoIn": [
+     8
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "As of 2026-10-14, per an arXiv paper, the Professional Edition's fitted parameters were not disclosed (commercial confidentiality), and the published model has the form of an exponential saturation in overs for each number of wickets lost.",
+    "sourceIndex": 9,
+    "alsoIn": [],
+    "asOf": "2026-10-14"
+   }
+  ],
+  "inspirations": [
+   "Win-probability explainers",
+   "Expected goals primers",
+   "Explorable explanations",
+   "Broadcast target graphics in cricket"
+  ]
+ },
+ "design": {
+  "coreLoop": "Demo, question, aha: the visitor changes when rain arrives and how long it lasts, sees the ledger of overs and wickets, the resource ratio and two revised targets, then answers a prediction question (which way will the target move?) before the page reveals the answer, and moves up the ladder to the 1992 replay.",
+  "sophisticationHooks": [
+   "A heat-map ledger of resources by overs left and wickets lost that the visitor can read like a table and probe by clicking cells",
+   "Three rules applied to the same invented over-by-over innings side by side: simple scaling, discard-the-weakest-overs, and the resource ratio",
+   "A predict-then-reveal question after each demo, with the page showing the reasoning",
+   "A transparent model panel: the formula, the five reported anchor cells, and how far the page's own table sits from them"
+  ],
+  "dataNeeds": "bundled",
+  "scopeForOneDay": "One page: an own illustrative resource model fitted by a small build-time script to the reported anchor cells and checked for monotonicity in overs and wickets; five demos (simple scaling, two budgets ledger, same overs different wickets, the interruption, older rules with a 1992 replay shown as reported); four check questions with page-computed answers; the ICC formula with +1 for the revised target. Cut: Twenty20 and per-ball tables, the Professional Edition's score-dependent resources, live data, saved state, any claim of being an official calculator.",
+  "risks": [
+   "The page's resource table is its own teaching model (a saturating exponential per wicket count, checked for monotonicity), not the ICC table: it says so plainly, never presents its targets as official, and points to the ICC's published table and formula.",
+   "The anchor cells come from one old reference page and differ from a later edition: they are shown as 'as of 2026-10-14, per that page' with the model's error against them; the 7.0 anchor from the scout is not used.",
+   "The 1992 final figure is disputed (22 versus 21 off one ball): the page shows the range and states only what the sources agree on, that the rule discarded the first side's least productive overs and maidens.",
+   "The formula's second branch (when the chasing side has more resources) needs an average score that differs between ICC documents (245 versus 235): the lesson keeps to the lower-resource case or labels the value as an assumption.",
+   "Check question 3 now matches the ICC formula: 250 times 0.8 equals 200, plus 1 gives a revised target of 201; the earlier wording left out the +1.",
+   "The Professional Edition parameter claim is unverified (blended summary): the page does not state it as fact, or shows it as 'as of 2026-10-14, per an arXiv paper'.",
+   "Cricket is unfamiliar to many visitors; the first frame teaches 'a side has overs and wickets to spend' with a sample chase and no jargon. The ICC is cited by name as a source only, with no logo or branding, and no person names are in the title."
+  ]
+ },
+ "durable": true,
+ "verification": {
+  "by": "verifier",
+  "at": "2026-10-14",
+  "evidence": "search-only",
+  "confidence": 7,
+  "feasibleInOneDay": true,
+  "notes": "The resource concept and the target formula are stated by ICC documents on the official domain and by independent results; model anchors and the 1992 figure stay flagged, and the scout's claim that no table is public was corrected. Buildable in a morning since the model is the page's own and labelled."
+ }
+}

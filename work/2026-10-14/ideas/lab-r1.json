@@ -1,0 +1,480 @@
+{
+  "schema": 1,
+  "agent": "lab",
+  "lens": "math-visual",
+  "candidates": [
+    {
+      "id": "lab-r1-1",
+      "title": "Ramsey Party Lesson",
+      "plainSentence": "A lesson that lets you colour the lines between six dots red or blue and discover why a one-colour triangle can never be avoided.",
+      "pitch": "Six dots, fifteen lines, two colours: you try to colour every line so that no triangle is all one colour, first on five dots (it works) and then on six (it never does). A guided ladder turns your failed attempts into the proof, so the pigeonhole argument feels obvious rather than memorised, and a final rung shows how fast the same question becomes impossible to settle by hand.",
+      "firstMinute": "The first frame shows five dots in a ring with a red pentagon and a blue star already drawn and the words 'no one-colour triangle here'. A button adds a sixth dot; its new lines appear grey, and as the visitor taps lines to colour them, a glowing triangle flashes the moment one colour closes a triangle. First success: the visitor makes a triangle appear on six dots within seconds and cannot make it go away.",
+      "conceptsToLearn": [
+        "A line between two dots can be red (the two people know each other) or blue (they are strangers)"
+      ],
+      "whyNow": "Timeless: a short, complete proof with a surprising edge (five is not enough, six is), and nothing like it in the build history. It also gives the pool a combinatorics lesson that is not about primes or number systems.",
+      "origin": {
+        "agent": "lab",
+        "lens": "math-visual"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "education-explainer",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "playful",
+          "nerdy"
+        ],
+        "tech": [
+          "svg",
+          "dom-ui",
+          "pointer-events",
+          "localstorage"
+        ],
+        "tags": [
+          "ramsey-theory",
+          "party-problem",
+          "pigeonhole-principle",
+          "graph-coloring",
+          "combinatorics",
+          "proof",
+          "complete-graph",
+          "friends-and-strangers"
+        ],
+        "keywords": [
+          "ramsey",
+          "six-people",
+          "monochromatic-triangle",
+          "pigeonhole",
+          "pentagon-pentagram",
+          "quilt-view",
+          "proof-by-cases",
+          "paley-graph"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "Ramsey's party problem: in any group of six people, either three of them all know each other or three of them are all strangers. Colouring the 15 pairs of a complete graph on six dots with two colours always leaves a one-colour triangle (R(3,3) = 6), while five dots can be coloured with none (a red pentagon and a blue pentagram).",
+        "whyNiche": "Most explanations state the pigeonhole step in one sentence and move on, so learners accept the result without feeling why a fifth dot's colouring escapes but the sixth's cannot. Being allowed to try, fail and see exactly which line closes the trap is what the page adds.",
+        "audience": "Curious teenagers and adults with no maths beyond school; teachers looking for a ten-minute proof activity.",
+        "prerequisites": [
+          "Counting lines between dots",
+          "Knowing what a triangle is"
+        ],
+        "misconceptions": [
+          "Checking a few colourings and finding a triangle each time counts as a proof (it does not; the page contrasts a few tries with the exhaustive argument)",
+          "Showing six is enough also shows five is not (the lower bound needs its own example: the pentagon and pentagram colouring)",
+          "Red and blue mean friends versus enemies (they only mean know each other versus do not)"
+        ],
+        "misconceptionFactIndexes": [
+          4
+        ],
+        "ahaMoment": "Pick one dot. It has five lines, and two colours cannot share five lines without one colour getting three. Look at the three dots at the far ends: any line among them in that colour makes a triangle with your dot, and if none is, they form a triangle in the other colour. Every escape route is closed.",
+        "demos": [
+          "Rung 1: five dots with the pentagon and pentagram colouring already drawn; tap lines to try to break it and see that you cannot make a triangle without redrawing",
+          "Rung 2: add a sixth dot and try to colour its five new lines without making a triangle; a live hint highlights the line that always loses",
+          "Rung 3: pick any dot; its five lines fall into two colour bins and the bins visibly overflow at three (the pigeonhole step)",
+          "Rung 4: the three far-end dots light up and the visitor checks the three lines among them, ending in a red or a blue triangle in every case",
+          "Rung 5: a quilt view lays the 15 line colours out as a strip of 15 patches; a shuffle button tries thousands of random colourings and counts how many triangles each has, and the count never reaches zero",
+          "Rung 6: the same question with four-dot groups on 17 dots, shown as a pre-drawn colouring where no one-colour four-group exists, to feel why the next case is out of reach by hand"
+        ],
+        "checkQuestions": [
+          "Pick a dot on a seven-person party. How many lines leave it, and what is the least number that must share a colour?",
+          "On five people, colour the lines so that no one-colour triangle exists. Which two shapes do the colours draw?",
+          "Why does a single colouring of six dots that happens to contain a red triangle not prove the general statement?",
+          "If the lines among the three far-end dots are all blue, what triangle have you found?"
+        ]
+      },
+      "research": {
+        "summary": "The statement, the pigeonhole proof and the pentagon-pentagram counterexample for five points appear in lecture notes, a maths-society blog and a problem-solving wiki, so the core is textbook-solid. The extension to four-person groups is also documented: a self-complementary colouring of 17 points with no one-colour four-group is the standard witness that 18 is needed. The whole claim for six dots is small enough (2 to the 15th = 32,768 colourings) that the page can ship a script-checked exhaustive count, so the lesson does not rest on search snippets alone. The idea of the minimum number of one-colour triangles in a six-dot colouring is attributed to Goodman in one search result only and is kept as optional.",
+        "sources": [
+          {
+            "title": "Party At Ramsey's (AMS Graduate Student Blog)",
+            "url": "https://blogs.ams.org/mathgradblog/2013/05/11/mathematics/",
+            "date": "2013-05-11",
+            "snippet": "Blog post presenting the six-person party problem as an accessible entry to Ramsey theory, with the friends/strangers colouring of a complete graph.",
+            "via": "search",
+            "note": "Framing of the party problem for a general audience; agrees with the pigeonhole argument.",
+            "verified": true
+          },
+          {
+            "title": "Stanford CS103 lecture notes (Small Ramsey)",
+            "url": "https://web.stanford.edu/class/archive/cs/cs103/cs103.1222/lectures/11/Small.pdf",
+            "date": "",
+            "snippet": "Lecture on small Ramsey numbers: any red/blue colouring of the edges of a 6-clique contains a one-colour triangle.",
+            "via": "search",
+            "note": "University course statement of R(3,3)=6 and its proof.",
+            "verified": true
+          },
+          {
+            "title": "Stanford SUMO power-Ramsey solutions",
+            "url": "https://stanford.edu/group/sumo/old/smt/2010/Solutions/power-ramsey-solutions.pdf",
+            "date": "2010",
+            "snippet": "Competition solutions describing the pentagon with one colour on its sides and the other on its diagonals, showing K5 has a colouring with no one-colour triangle.",
+            "via": "search",
+            "note": "The lower-bound construction for five points.",
+            "verified": true
+          },
+          {
+            "title": "MIT 18.204 notes on Ramsey numbers",
+            "url": "https://math.mit.edu/~apost/courses/18.204_2018/ramsey-numbers.pdf",
+            "date": "2018",
+            "snippet": "Course notes covering R(3,3)=6: a five-point colouring avoids one-colour triangles and any six-point colouring has one.",
+            "via": "search",
+            "note": "Independent university source agreeing on both halves of R(3,3)=6.",
+            "verified": true
+          },
+          {
+            "title": "Art of Problem Solving wiki: Ramsey's Theorem",
+            "url": "https://artofproblemsolving.com/wiki/index.php/Ramsey%27s_Theorem",
+            "date": "",
+            "snippet": "Wiki article stating Ramsey's theorem and the six-vertex triangle example with the pentagon counterexample.",
+            "via": "search",
+            "note": "Third independent write-up of the same result.",
+            "verified": true
+          },
+          {
+            "title": "Proving that R(4,4) > 17 (Plus Magazine)",
+            "url": "https://plus.maths.org/proving-r4417",
+            "date": "",
+            "snippet": "Article on the colouring of 17 points built from differences that are squares mod 17, which has no one-colour set of four.",
+            "via": "search",
+            "note": "Source for the optional top rung with 17 dots.",
+            "verified": true
+          },
+          {
+            "title": "ENS Lyon Ramsey exercise sheet with solutions",
+            "url": "https://perso.ens-lyon.fr/thomas.budzinski/enseignement/td1_Ramsey_corrige.pdf",
+            "date": "",
+            "snippet": "French exercise solutions noting the 17-point two-colouring without a one-colour four-group is unique up to relabelling.",
+            "via": "search",
+            "note": "Second independent source for the 17-point colouring.",
+            "verified": true
+          },
+          {
+            "title": "Applied Combinatorics, Small Ramsey Numbers (Runestone)",
+            "url": "https://runestone.academy/ns/books/published/appcomb/s_ramsey_small.html",
+            "date": "",
+            "snippet": "Open textbook section with a table of small Ramsey numbers: R(3,3)=6 and R(4,4)=18, with bounds only for larger entries.",
+            "via": "search",
+            "note": "Textbook agreement that R(4,4)=18; exact larger values are open.",
+            "verified": true
+          },
+          {
+            "title": "Ramsey multiplicity notes (UMD, Brady)",
+            "url": "https://www.cs.umd.edu/~gasarch/RAMSEYREU/brady.pdf",
+            "date": "",
+            "snippet": "Student paper whose theorem 3.1 says every two-colouring of K6 has at least two one-colour triangles.",
+            "via": "search",
+            "note": "Single result for the minimum-two-triangles fact; the search summary blended several sources, so this stays unconfirmed.",
+            "verified": false
+          },
+          {
+            "title": "Party problem handout (Palomar College)",
+            "url": "https://www.palomar.edu/math/wp-content/uploads/sites/134/2018/03/party-problem-1.pdf",
+            "date": "2018",
+            "snippet": "Handout giving the pin-one-person proof and stating that four invitees are not enough.",
+            "via": "search",
+            "note": "The remark that learners often skip the lower bound came from the search summary, not clearly from the page: unconfirmed.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Any red/blue colouring of the 15 lines between six dots contains a triangle of one colour (R(3,3)=6); the proof picks one dot, notes three of its five lines share a colour, and checks the lines among their far ends.",
+            "sourceIndex": 1,
+            "alsoIn": [
+              0,
+              3,
+              4
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Five dots can be coloured with no one-colour triangle: sides of a pentagon in one colour and its diagonals (the pentagram) in the other, so six is the smallest number that forces a triangle.",
+            "sourceIndex": 2,
+            "alsoIn": [
+              3,
+              4
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "R(4,4)=18: a two-colouring of 17 points exists (differences that are squares modulo 17 in one colour) with no one-colour group of four, and 18 points always force one.",
+            "sourceIndex": 5,
+            "alsoIn": [
+              6,
+              7
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Every red/blue colouring of the lines between six dots has at least two one-colour triangles (Goodman, case of six). Single search result; the page can instead show a count computed by the page's own exhaustive check.",
+            "sourceIndex": 8,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Learners commonly check only the upper bound (six is enough) and skip the lower bound (five is not). Reported by a search summary of a college handout, not confirmed on the page.",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          }
+        ],
+        "inspirations": [
+          "Ramsey's party problem as taught in discrete maths courses",
+          "Plus Magazine puzzles",
+          "Complete graph colouring puzzles",
+          "Patchwork quilt pattern boards"
+        ]
+      },
+      "design": {
+        "coreLoop": "Colour lines, watch the trap close, ask 'where is the escape', get the hint that names the dot with three same-coloured lines, then answer a check question. Each rung changes one thing (5 dots, 6 dots, the pigeonhole bins, the far-end triangle, a bulk shuffle), so the ladder keeps feeling like one idea getting clearer.",
+        "sophisticationHooks": [
+          "A live pigeonhole view that groups the chosen dot's five lines into red and blue bins and flags the overfull bin",
+          "An exhaustive checker over all 32,768 colourings of six dots, run in a worker, which proves the claim in front of the visitor and lists the minimum number of triangles found",
+          "A quilt view that lays all 15 line colours out as a patch strip, so symmetry and the pentagon-pentagram pattern show as a repeat",
+          "A top rung that loads the 17-dot colouring and lets the visitor verify no one-colour four-group by a guided search"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: one SVG board with 5 to 6 dots, tap-to-colour lines, triangle highlighter, pigeonhole bins view, quilt strip, exhaustive checker, 6 guided rungs with 4 check questions, a short written explainer. Cut: seven or more dots beyond the single 17-dot display, user-entered graphs, accounts, sharing.",
+        "risks": [
+          "The 'learners skip the lower bound' misconception comes from one search summary (verified:false); the page should phrase it as a general caution rather than a measured fact, or leave it out.",
+          "The minimum-two-triangles result is in one search result only (verified:false); the page should show the count computed in the browser, labelled as checked here.",
+          "The exact value of R(5,5) was not confirmed to a specific bound in the results seen (older bounds were quoted), so the page says only 'not known' with a dated source, or leaves it out.",
+          "Engineering: the 17-dot rung must be hand-checked by a script before shipping so the displayed colouring is truly free of one-colour four-groups.",
+          "Risk of looking like a puzzle game: keep the framing as a guided proof with questions, not a score."
+        ]
+      },
+      "durable": true
+    },
+    {
+      "id": "lab-r1-2",
+      "title": "Coastline Ruler Lesson",
+      "plainSentence": "A lesson that lets you measure a coastline with shorter and shorter rulers, watch its length keep growing, then read off how wiggly it is.",
+      "pitch": "You walk a ruler along a wiggly coast, shrink it, and see the length climb instead of settling, while a circle quietly settles to a fixed answer. A live chart of ruler size against measured length turns the climb into a straight line whose steepness is the coast's roughness (its fractal dimension), and you finish by ranking mystery coasts by eye and checking yourself.",
+      "firstMinute": "The first frame shows a jagged coast with a ruler already walking along it in steps, a length readout, and a slider labelled 'ruler size'. Dragging the slider down makes the ruler re-walk the coast and the length number climb, with a second panel beside it where a smooth circle barely changes. First success: the visitor sees the same coast give 2,800 then 3,400 style jumps just by changing the ruler.",
+      "conceptsToLearn": [
+        "Length can be estimated by counting how many equal ruler steps it takes to walk along a curve"
+      ],
+      "whyNow": "Timeless and very visual: it makes the coastline paradox a thing you do rather than a fact you read, and ends on a number (roughness) the visitor can measure themselves. It is a geometry lesson, not number theory, so it sits apart from the other maths candidates this round.",
+      "origin": {
+        "agent": "lab",
+        "lens": "math-visual"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "science-sim",
+        "mechanic": "visualizer",
+        "tone": [
+          "analytical",
+          "serene",
+          "nerdy"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg",
+          "pointer-events",
+          "dom-ui"
+        ],
+        "tags": [
+          "coastline-paradox",
+          "fractal-dimension",
+          "koch-curve",
+          "divider-method",
+          "log-log-plot",
+          "scaling",
+          "self-similarity",
+          "measurement"
+        ],
+        "keywords": [
+          "coastline",
+          "ruler-walk",
+          "fractal",
+          "roughness",
+          "mandelbrot",
+          "richardson",
+          "log-log",
+          "self-similar"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A wiggly curve such as a coastline has no single length: the measured length depends on the ruler. For a curve with fractal dimension D between 1 and 2, the measured length grows roughly like (ruler size) raised to the power (1 minus D) as the ruler shrinks, so a log-log plot of length against ruler size is close to a straight line with slope 1 minus D. A smooth curve has D = 1 and its length settles; the Koch curve has D = ln 4 / ln 3, about 1.26.",
+        "whyNiche": "The coastline paradox is usually quoted as a fun fact and stops there. Few explanations let the learner do the measuring, see why the line on the log-log plot appears, and use its slope to get a number.",
+        "audience": "Curious adults and students aged about 14 and up, teachers, and anyone who has met 'fractals' as pretty pictures only.",
+        "prerequisites": [
+          "What a ruler measures",
+          "Reading a simple chart"
+        ],
+        "misconceptions": [
+          "A coastline has one true length that a good enough measurement would find",
+          "Smaller rulers just give a more accurate number of the same quantity, so the length must level off for every curve",
+          "Dimension has to be a whole number"
+        ],
+        "misconceptionFactIndexes": [
+          3
+        ],
+        "ahaMoment": "On the log-log chart the points for the Koch coast fall on a straight line while the circle's line is flat, and the steepness of the coast's line is exactly the extra wiggliness the ruler keeps discovering.",
+        "demos": [
+          "Rung 1: walk a ruler along a gentle curve and a circle; the length settles as the ruler shrinks",
+          "Rung 2: the same ruler on a jagged coast; the length keeps climbing and the visitor predicts the next value before it appears",
+          "Rung 3: build a Koch coast step by step and watch each stage multiply the length by four thirds while the ruler shrinks by a third",
+          "Rung 4: the live log-log chart appears and the visitor drags a fitted line through the points to read the slope",
+          "Rung 5: turn the slope into a dimension and compare the circle (1), the Koch coast (about 1.26), and a seeded random coast whose roughness the visitor guesses first",
+          "Rung 6: a 'zoom out, zoom in' toggle shows a real quoted example (Great Britain at two ruler sizes) with the figures labelled as quoted, not measured here"
+        ],
+        "checkQuestions": [
+          "If shrinking the ruler by half makes a coast's length grow by about 20 percent, is the coast smoother or rougher than the Koch coast?",
+          "Why does a circle's measured length stop changing while a jagged coast's does not?",
+          "Why is a log-log chart, not an ordinary chart, the right one here?",
+          "Can a curve have dimension 1.5? What would that say about it?"
+        ]
+      },
+      "research": {
+        "summary": "The coastline paradox is documented in an encyclopedia article and several explainers: Great Britain measured with 100 km units is about 2,800 km and with 50 km units about 3,400 km. The ruler-length versus measured-length chart on log-log axes is described as a straight line whose slope gives the fractal dimension, which is between 1 and 2 for coastlines, and the Koch curve has dimension ln 4 / ln 3 (about 1.2619) with length growing by 4/3 at each stage. Richardson and Mandelbrot are the origin; one source quotes Mandelbrot's figure of about 1.25 for the west coast of Britain, which the page would only show as quoted. The model is exact for self-similar curves and only an approximation for real coasts, which the page must say.",
+        "sources": [
+          {
+            "title": "Coastline paradox (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Coastline_paradox",
+            "date": "",
+            "snippet": "Coastlines have no well-defined length; for Great Britain about 2,800 km with 100 km units and about 3,400 km with 50 km units; Richardson found shorter units give longer borders.",
+            "via": "search",
+            "note": "Encyclopedia statement of the paradox and the two Britain figures.",
+            "verified": true
+          },
+          {
+            "title": "How long is the coastline of Britain? (Skeptophilia)",
+            "url": "https://www.skeptophilia.com/2024/02/all-set.html",
+            "date": "2024-02-17",
+            "snippet": "Blog post repeating the 100 km and 50 km Britain figures and noting the finer ruler adds a meaningful amount to the total.",
+            "via": "search",
+            "note": "Independent second result for the Britain figures. Another site quoted about 3,500 km for the 50 km step, so the page says 'about'.",
+            "verified": true
+          },
+          {
+            "title": "Coastline paradox (MathWorld)",
+            "url": "https://mathworld.wolfram.com/CoastlineParadox.html",
+            "date": "",
+            "snippet": "Finer rulers capture more inlets so the total keeps rising; a log-log plot of ruler size against measured length gives a line related to the fractal dimension, between 1 and 2 for coastlines.",
+            "via": "search",
+            "note": "Straight-line log-log relation and the 1 to 2 range for coasts. Single result for the log-log claim, so it stays unconfirmed.",
+            "verified": false
+          },
+          {
+            "title": "Fractals (New England Complex Systems Institute)",
+            "url": "https://necsi.edu/fractals",
+            "date": "",
+            "snippet": "The Koch curve has infinite length, no area, and dimension ln 4 / ln 3, about 1.2619.",
+            "via": "search",
+            "note": "Koch dimension. A course page quoting 1.231 disagreed with the formula and is not used.",
+            "verified": true
+          },
+          {
+            "title": "Dimension Between Integers: Can We Measure the Length of a Coastline? (HKUST Science Focus)",
+            "url": "https://sciencefocus.hkust.edu.hk/node/277",
+            "date": "",
+            "snippet": "Explains the Koch construction in which the length grows by a factor of 4/3 at each stage, giving unbounded length.",
+            "via": "search",
+            "note": "Second independent source for the Koch length growth.",
+            "verified": true
+          },
+          {
+            "title": "What is the coastline paradox? (Live Science)",
+            "url": "https://livescience.com/planet-earth/whats-the-coastline-paradox",
+            "date": "",
+            "snippet": "Explainer: Mandelbrot's Science paper 'How long is the coast of Britain?' built on Richardson's data and tied the effect to fractal geometry.",
+            "via": "search",
+            "note": "Origin story for the Mandelbrot paper title.",
+            "verified": true
+          },
+          {
+            "title": "The length of a coastline (rspatial.org case study)",
+            "url": "https://rspatial.org/cases/2-coastline.html",
+            "date": "",
+            "snippet": "A spatial-analysis tutorial reporting Mandelbrot's dimension of about 1.25 for the west coast of Britain and a student fit near 1.15 using modern data.",
+            "via": "search",
+            "note": "Source for the 1.25 figure; only this one result, so it is shown as quoted.",
+            "verified": false
+          },
+          {
+            "title": "How long is a coastline (blog post)",
+            "url": "https://whimsy-mudra-y8nj.here.now/blog/how-long-is-a-coastline/",
+            "date": "",
+            "snippet": "Blog listing dimensions for several coasts, such as Australia about 1.13 and Norway about 1.52, with a schematic chart.",
+            "via": "search",
+            "note": "Not cross-checked against Richardson or Mandelbrot tables; these per-country figures are not used.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Measuring the coast of Great Britain with 100 km units gives about 2,800 km and with 50 km units about 3,400 km; the coastline has no well-defined length.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "The Koch curve has dimension ln 4 / ln 3, about 1.2619, and its length grows by a factor of 4/3 at each stage so it is unbounded.",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "On log-log axes, measured length against ruler size lies near a straight line for a coastline, and the fractal dimension of a coast is between 1 and 2.",
+            "sourceIndex": 2,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "A coastline does not have a single well-defined length; the measured value depends on the ruler, and a smaller ruler gives a longer result (Richardson, then Mandelbrot's 1967 paper 'How long is the coast of Britain?').",
+            "sourceIndex": 0,
+            "alsoIn": [
+              5
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Mandelbrot reported a dimension of about 1.25 for the west coast of Britain. Single result; show as 'as of 2026-10-14, per a spatial-analysis tutorial' or omit.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          }
+        ],
+        "inspirations": [
+          "Mandelbrot's 'How long is the coast of Britain?'",
+          "Richardson's border-length study",
+          "Divider (compass-walk) method in cartography",
+          "Koch snowflake"
+        ]
+      },
+      "design": {
+        "coreLoop": "Shrink the ruler, predict the next length, see it, then watch a chart point appear. The next rung asks the visitor to fit the line and read the slope; a check question confirms the idea before the next curve.",
+        "sophisticationHooks": [
+          "A correct divider walk (compass steps along the curve, each step a circle-curve intersection) so the ruler really walks the coast rather than being faked",
+          "Live log-log chart with a draggable fit line and a printed slope and dimension, rounded to the precision the data supports",
+          "Seeded random coasts with hidden roughness for a guess-the-dimension round with the answer revealed by measurement",
+          "An honesty panel: real coasts are only roughly self-similar over a limited range of ruler sizes, and the model is exact only for the built curves"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: Koch, circle and seeded midpoint-displacement coasts generated in the browser, divider-walk length function with unit tests, ruler slider, log-log chart with fit, 6 rungs, 4 check questions, explainer, and quoted Britain figures. Cut: real map data, country comparisons, user-drawn coasts (maybe a draw-your-own rung if time allows).",
+        "risks": [
+          "Per-country dimensions (Australia, Norway, Portugal) came from one unreliable blog and are excluded; the Britain west-coast 1.25 figure is verified:false and must be shown as quoted or dropped.",
+          "Sketchplanations quoted about 3,500 km for the 50 km step against 3,400 km elsewhere, so the page says 'about' and cites the encyclopedia and one more source.",
+          "A course page gave the Koch dimension as 1.231; the formula ln4/ln3 = 1.2619 is used and the build should assert it in a test.",
+          "Looks like a fractal-pretty-picture page: the lesson must keep the chart and the slope reading central.",
+          "The coastline model is idealised; a real coast is not self-similar at every scale, and the page must say so.",
+          "The log-log straight-line claim rests on one search result (verified:false); the page demonstrates it with its own generated curves and labels the real-coast version as reported."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

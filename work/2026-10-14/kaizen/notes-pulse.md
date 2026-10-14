@@ -1,0 +1,1 @@
+WebFetch to primary hosts like coveryourtracks.eff.org and arxiv.org fails with DNS errors, so primary-source checks stay search-only; allowed_domains on WebSearch is a cheap way to get official-domain result entries.

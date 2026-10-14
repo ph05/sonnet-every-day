@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "date": "2026-10-14",
+  "note": "WebFetch is attempted at most once per host per day; hosts under failedHosts are skipped by every later agent. Use WebSearch results for them.",
+  "failedHosts": [
+    {
+      "host": "en.wikipedia.org",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND en.wikipedia.org"
+    },
+    {
+      "host": "www.reddit.com",
+      "by": "probe",
+      "error": "Claude Code is unable to fetch from www.reddit.com"
+    },
+    {
+      "host": "news.ycombinator.com",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND news.ycombinator.com"
+    },
+    {
+      "host": "itch.io",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND itch.io"
+    },
+    {
+      "host": "math.co",
+      "by": "probe",
+      "error": "getaddrinfo ENOTFOUND math.co"
+    },
+    {
+      "host": "coveryourtracks.eff.org",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND coveryourtracks.eff.org"
+    },
+    {
+      "host": "arxiv.org",
+      "by": "pulse",
+      "error": "getaddrinfo ENOTFOUND arxiv.org"
+    },
+    {
+      "host": "mathworld.wolfram.com",
+      "by": "jester",
+      "error": "getaddrinfo ENOTFOUND mathworld.wolfram.com"
+    },
+    {
+      "host": "gdaymath.com",
+      "by": "architect",
+      "error": "getaddrinfo ENOTFOUND gdaymath.com"
+    },
+    {
+      "host": "tikv.org",
+      "by": "artisan",
+      "error": "getaddrinfo ENOTFOUND tikv.org"
+    },
+    {
+      "host": "www.mathpages.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND www.mathpages.com"
+    },
+    {
+      "host": "courses.lumenlearning.com",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND courses.lumenlearning.com"
+    },
+    {
+      "host": "brewstersociety.com",
+      "by": "cards",
+      "error": "getaddrinfo ENOTFOUND brewstersociety.com"
+    },
+    {
+      "host": "blogs.ams.org",
+      "by": "verifier",
+      "error": "getaddrinfo ENOTFOUND blogs.ams.org"
+    }
+  ],
+  "okHosts": []
+}

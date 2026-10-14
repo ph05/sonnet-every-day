@@ -1,0 +1,286 @@
+{
+  "id": "lab-r1-2",
+  "title": "Coastline Ruler Lesson",
+  "plainSentence": "A lesson that lets you measure a coastline with shorter and shorter rulers, watch its length keep growing, then read off how wiggly it is.",
+  "pitch": "You walk a ruler along a wiggly coast, shrink it, and see the length climb instead of settling, while a circle quietly settles to a fixed answer. A live chart of ruler size against measured length turns the climb into a straight line whose steepness is the coast's roughness (its fractal dimension), and you finish by ranking mystery coasts by eye and checking yourself.",
+  "firstMinute": "The first frame shows a jagged generated coast with a ruler already walking along it in steps, a length readout, and a slider labelled 'ruler size'. Dragging the slider down makes the ruler re-walk the coast and the length number climb, with a second panel beside it where a smooth circle barely changes. First success: the visitor sees the same coast give a bigger length just by choosing a smaller ruler.",
+  "conceptsToLearn": [
+    "Length can be estimated by counting how many equal ruler steps it takes to walk along a curve"
+  ],
+  "whyNow": "Timeless and very visual: it makes the coastline paradox a thing you do rather than a fact you read, and ends on a number (roughness) the visitor can measure themselves. It is a geometry lesson, not number theory, so it sits apart from the other maths candidates this round.",
+  "origin": {
+    "agent": "lab",
+    "lens": "math-visual"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "science-sim",
+    "mechanic": "visualizer",
+    "tone": [
+      "analytical",
+      "serene",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "pointer-events",
+      "dom-ui"
+    ],
+    "tags": [
+      "coastline-paradox",
+      "fractal-dimension",
+      "koch-curve",
+      "divider-method",
+      "log-log-plot",
+      "scaling",
+      "self-similarity",
+      "measurement"
+    ],
+    "keywords": [
+      "coastline",
+      "ruler-walk",
+      "fractal",
+      "roughness",
+      "mandelbrot",
+      "richardson",
+      "log-log",
+      "self-similar"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A wiggly curve such as a coastline has no single length: the measured length depends on the ruler. For a curve with fractal dimension D between 1 and 2, the measured length grows roughly like (ruler size) raised to the power (1 minus D) as the ruler shrinks, so a log-log plot of length against ruler size is close to a straight line with slope 1 minus D (a plot of the step count instead has slope minus D, so the page says which one it draws). A smooth curve has D = 1 and its length settles; the Koch curve has D = ln 4 / ln 3, about 1.26.",
+    "whyNiche": "The coastline paradox is usually quoted as a fun fact and stops there. Few explanations let the learner do the measuring, see why the line on the log-log plot appears, and use its slope to get a number.",
+    "audience": "Curious adults and students aged about 14 and up, teachers, and anyone who has met 'fractals' as pretty pictures only.",
+    "prerequisites": [
+      "What a ruler measures",
+      "Reading a simple chart"
+    ],
+    "misconceptions": [
+      "A coastline has one true length that a good enough measurement would find",
+      "A smaller ruler just gives a more accurate number of the same quantity, so the length must level off for every curve"
+    ],
+    "misconceptionFactIndexes": [
+      0,
+      3
+    ],
+    "ahaMoment": "On the log-log chart the points for the Koch coast fall on a straight line while the circle's line is flat, and the steepness of the coast's line is exactly the extra wiggliness the ruler keeps discovering.",
+    "demos": [
+      "Rung 1: walk a ruler along a gentle curve and a circle; the length settles as the ruler shrinks",
+      "Rung 2: the same ruler on a jagged coast; the length keeps climbing and the visitor predicts the next value before it appears",
+      "Rung 3: build a Koch coast step by step and watch each stage multiply the length by four thirds while the ruler shrinks by a third",
+      "Rung 4: the live log-log chart appears and the visitor drags a fitted line through the points to read the slope",
+      "Rung 5: turn the slope into a dimension and compare the circle (1), the Koch coast (about 1.26), and a seeded random coast whose roughness the visitor guesses first",
+      "Rung 6: a 'zoom out, zoom in' toggle shows a real quoted example (Great Britain at two ruler sizes) with the figures labelled as quoted, not measured here"
+    ],
+    "checkQuestions": [
+      "If halving the ruler makes a coast's measured length grow by about 10 percent, is the coast smoother or rougher than the Koch coast (where halving grows it by about 20 percent)?",
+      "Why does a circle's measured length stop changing while a jagged coast's does not?",
+      "Why is a log-log chart, not an ordinary chart, the right one here?",
+      "Can a curve have dimension 1.5? What would that say about it?"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search: the Great Britain figures (about 2,800 km with 100 km units, about 3,400 km with 50 km units; one popular site says about 3,500) appear in an encyclopedia article and a blog; Richardson's relation, length proportional to step size to the power 1 minus D, and the straight line on log-log axes appear in a maths blog, a spatial-analysis tutorial and MathWorld; Koch curve length growth by 4/3 and dimension ln 4 / ln 3 (about 1.2619) appear in several explainers and follow from arithmetic. The figure D about 1.25 for the west coast of Britain comes from Richardson's divider data as listed on a university fractals page and repeated in two other results; modern re-fits give lower values (about 1.15 to 1.21 in one tutorial, depending on its version). Real coasts are straight on the plot only over a limited range of scales, and a 2006 paper reports numerical artefacts of the divider method even on the Koch island, so the page must say 'close to' and not 'equal to'.",
+    "sources": [
+      {
+        "title": "Coastline paradox (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Coastline_paradox",
+        "date": "",
+        "snippet": "Coastlines have no well-defined length; Great Britain about 2,800 km with 100 km units and about 3,400 km with 50 km units; shorter ruler gives longer result; Richardson, then Mandelbrot's 1967 paper.",
+        "via": "search",
+        "note": "Britain figures and the paradox; found again by the verifier.",
+        "verified": true
+      },
+      {
+        "title": "How long is the coastline of Britain? (Skeptophilia)",
+        "url": "https://www.skeptophilia.com/2024/02/all-set.html",
+        "date": "2024-02-17",
+        "snippet": "Blog post repeating the 100 km and 50 km Britain figures.",
+        "via": "search",
+        "note": "Independent second result for the Britain figures.",
+        "verified": true
+      },
+      {
+        "title": "The Coastline Paradox (Sketchplanations)",
+        "url": "https://sketchplanations.com/the-coastline-paradox",
+        "date": "",
+        "snippet": "Illustrated explainer that gives about 3,500 km for the finer ruler.",
+        "via": "search",
+        "note": "Shows the 50 km figure varies between sources (3,400 versus 3,500), so the page says 'about'.",
+        "verified": true
+      },
+      {
+        "title": "Ireland's Fractal Coastline (That's Maths)",
+        "url": "https://thatsmaths.com/2013/12/12/irelands-fractal-coastline/",
+        "date": "2013-12-12",
+        "snippet": "Gives Richardson's relation, measured length equal to a constant times the step to the power 1 minus D, and D = 1.25 for the west coast of Britain.",
+        "via": "search",
+        "note": "Source for the slope relation and the 1.25 figure.",
+        "verified": true
+      },
+      {
+        "title": "The length of a coastline (rspatial.org case study)",
+        "url": "https://rspatial.org/cases/2-coastline.html",
+        "date": "",
+        "snippet": "Spatial-analysis tutorial regressing log counts on log ruler length, taking the dimension as the magnitude of the slope, and comparing with Mandelbrot's 1.25.",
+        "via": "search",
+        "note": "Second independent source for the log-log slope and the 1.25 figure; its re-fits (about 1.15 to 1.21) differ by tutorial version.",
+        "verified": true
+      },
+      {
+        "title": "Coastlines and Mandelbrot (Yale, Frame)",
+        "url": "https://gauss.math.yale.edu/public_html/People/frame/Fractals/Panorama/Nature/Coastlines/CoastlinesMandelbrot.html",
+        "date": "",
+        "snippet": "University page listing Richardson's divider data with D = 1.25 for the west coast of Britain, among other coasts.",
+        "via": "search",
+        "note": "Third result for the 1.25 figure.",
+        "verified": true
+      },
+      {
+        "title": "Coastline paradox (MathWorld)",
+        "url": "https://mathworld.wolfram.com/CoastlineParadox.html",
+        "date": "",
+        "snippet": "Finer rulers capture more inlets so the total keeps rising; a log-log plot of ruler size against measured length gives a line related to the fractal dimension, between 1 and 2 for coastlines.",
+        "via": "search",
+        "note": "Straight-line relation and the 1 to 2 range; agrees with the two results above.",
+        "verified": true
+      },
+      {
+        "title": "Fractal Dimension (Fractal Foundation)",
+        "url": "https://fractalfoundation.org/OFC/OFC-10-2.html",
+        "date": "",
+        "snippet": "Educational page working out dimension as log of the number of copies over log of the scale factor.",
+        "via": "search",
+        "note": "Koch dimension method. The search summary blended several explainers, so attribution of each number to this page is approximate; the identity is also checked by arithmetic (ln 4 / ln 3 = 1.2619).",
+        "verified": true
+      },
+      {
+        "title": "Von Koch curve (tgmdev.be)",
+        "url": "https://www.tgmdev.be/applications/acheron/curves/curvevonkoch.php",
+        "date": "",
+        "snippet": "Page on the Koch curve: each iteration multiplies length by 4/3 and the limiting length is infinite.",
+        "via": "search",
+        "note": "Koch length growth. Attribution inside a blended search summary is approximate; the 4/3 factor is checkable by counting segments.",
+        "verified": true
+      },
+      {
+        "title": "Perimeter analysis of the Von Koch island (ENSAM)",
+        "url": "https://sam.ensam.eu/bitstream/10985/9794/1/Perimeter%20analysis%20of%20the%20Von%20Koch%20island.pdf",
+        "date": "2006",
+        "snippet": "Paper reporting numerical artefacts of Richardson's divider method when applied to the Von Koch island, whose dimension is known exactly.",
+        "via": "search",
+        "note": "Reason the fitted slope on a built Koch coast will wobble around the exact value.",
+        "verified": true
+      },
+      {
+        "title": "The Divider Dimensions of the Irish Coast (Irish Geography)",
+        "url": "https://irishgeography.ie/index.php/irishgeography/article/view/72",
+        "date": "",
+        "snippet": "Study building Richardson plots from map scales; dimension varies along the coast and the line is straight only over a limited range of scales.",
+        "via": "search",
+        "note": "Caveat source for the honesty panel.",
+        "verified": true
+      },
+      {
+        "title": "How long is the coast of Britain? (Mandelbrot 1967, course copy)",
+        "url": "https://gis.humboldt.edu/olm/courses/gsp_510/Articles/Mandelbrot1967.pdf",
+        "date": "1967",
+        "snippet": "University course copy of Mandelbrot's 1967 paper.",
+        "via": "search",
+        "note": "Title and existence of the 1967 paper; the verifier only saw the search entry, not the text.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Measuring the coast of Great Britain with 100 km units gives about 2,800 km and with 50 km units about 3,400 km (one popular site says about 3,500 km); a coastline has no well-defined length.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The Koch curve has dimension ln 4 / ln 3, about 1.2619, and its length grows by a factor of 4/3 at each stage so it is unbounded.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          7
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Richardson's relation: measured length is about a constant times (step size) to the power (1 minus D), so length against step size is a straight line on log-log axes with slope 1 minus D; the dimension of a coast lies between 1 and 2.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4,
+          6
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A coastline's measured length depends on the ruler, and a smaller ruler gives a longer result; the effect was studied by Richardson, then in Mandelbrot's 1967 paper 'How long is the coast of Britain?'.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          11
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Richardson's divider data give D of about 1.25 for the west coast of Britain, a figure Mandelbrot also quoted; a modern re-fit in one tutorial gave about 1.15 to 1.21 depending on the version, so the page shows 1.25 as a quoted historical value.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          3,
+          4
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The Richardson plot is straight only over a limited range of scales and the dimension varies along a coast; the divider method also shows numerical artefacts even on the Koch island, whose dimension is known exactly.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Mandelbrot's 'How long is the coast of Britain?'",
+      "Richardson's border-length study",
+      "Divider (compass-walk) method in cartography",
+      "Koch snowflake"
+    ]
+  },
+  "design": {
+    "coreLoop": "Shrink the ruler, predict the next length, see it, then watch a chart point appear. The next rung asks the visitor to fit the line and read the slope; a check question confirms the idea before the next curve.",
+    "sophisticationHooks": [
+      "A correct divider walk (compass steps along the curve, each step a circle-curve intersection) so the ruler really walks the coast rather than being faked",
+      "Live log-log chart with a draggable fit line and a printed slope and dimension, rounded to the precision the data supports",
+      "Seeded random coasts with hidden roughness for a guess-the-dimension round with the answer revealed by measurement",
+      "An honesty panel: real coasts are only roughly self-similar over a limited range of ruler sizes, and the model is exact only for the built curves"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: Koch, circle and seeded midpoint-displacement coasts generated in the browser, a divider-walk length function with unit tests, ruler slider, log-log chart with a draggable fit line, rungs 1 to 5, 4 check questions, explainer, and the quoted Britain figures as a static panel (rung 6). Cut: real map data, country comparisons, user-drawn coasts, any live data.",
+    "risks": [
+      "Per-country dimensions (Australia, Norway, Portugal) came from one unreliable blog and are excluded; only the west-coast Britain 1.25 is shown, labelled as a quoted historical value.",
+      "The 50 km Britain figure differs between sources (3,400 versus 3,500 km), so the page says 'about' and shows the 3,400 figure as quoted, not measured here.",
+      "A course page gave the Koch dimension as 1.231; the formula ln4/ln3 = 1.2619 is used and the build should assert it in a test.",
+      "A divider walk on the built Koch coast gives a fitted slope that wobbles around the exact value (reported artefacts of the method): the build tests that the fit lands within a stated tolerance of 1 minus 1.2619 and the page says 'close to', never 'equal to'.",
+      "Plot convention: sources differ between plotting length (slope 1 minus D) and plotting step count (slope minus D); the page uses length and states the convention beside the chart.",
+      "Looks like a fractal-pretty-picture page: the lesson must keep the chart and the slope reading central.",
+      "The model is idealised: a real coast is not self-similar at every scale, and the page says so in its honesty panel."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "No page could be opened (mathworld host already failed today); the Britain figures, Richardson's slope relation, the 1.25 value and the Koch numbers were each found in at least two separate results or follow from arithmetic. Biggest build risk is the divider-walk fit wobbling on the Koch coast, so tests need a tolerance."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "date": "2026-10-14",
+  "updatedAt": "2026-10-14T10:11:15.559Z",
+  "reasons": [
+    {
+      "at": "2026-10-14T10:11:15.559Z",
+      "reason": "Planner chose Tier 3: the primary's lease went stale and a compact build no longer fit before the grace window on this 2-slot machine, so the day ships the researched ideas."
+    }
+  ],
+  "ideasSource": "work/2026-10-14/ideas/shortlist.json",
+  "intendedWinner": null,
+  "tiersAvailable": {
+    "3": true,
+    "4": true
+  },
+  "published": {
+    "tier": 3,
+    "slug": "ideas-day",
+    "path": "d/2026-10-14-ideas-day/"
+  }
+}

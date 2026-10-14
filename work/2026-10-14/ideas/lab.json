@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "agent": "lab",
+  "lens": "anti-lens-constraint-roulette",
+  "candidates": [
+    {
+      "id": "lab-1",
+      "title": "Sealing Secrets With Anagrams",
+      "plainSentence": "A lesson that lets you seal a sentence as scrambled letters, then see why anagrams fail as proof and how a salted fingerprint works instead.",
+      "pitch": "In the 1600s, scientists such as Hooke and Huygens published their discoveries as scrambled letters so they could claim priority later without giving the idea away. The visitor seals a sentence the same way with one move, sorting its letters, then discovers the two ways this breaks: the same letters can be read as a different sentence (Kepler misread Galileo's Saturn anagram as a claim about Mars), and a short secret can be guessed. The lesson then swaps the sort for a salted fingerprint (a hash) and teaches the modern idea of a commitment: hide now, reveal later, and nobody can change their story.",
+      "firstMinute": "The first frame already shows Hooke's famous scrambled letters and the sentence they hide, with one big button that sorts the letters into a row of tiles. Tapping it seals a sample sentence in one move, and the visitor sees the tiles fly into alphabetical order, then taps Reveal and watches the check pass. First success: a sealed sentence that anyone can verify later, reached without reading anything.",
+      "conceptsToLearn": [],
+      "whyNow": "Timeless. The constraint of the day is one verb, sort: the first three rungs allow nothing else, so the visitor feels how far a single blunt move gets and exactly where it breaks. Commit-then-reveal is also the idea behind many everyday systems (sealed bids, fair coin flips over the internet, timestamped claims), and almost nobody meets it with a story attached.",
+      "origin": {
+        "agent": "lab",
+        "lens": "anti-lens-constraint-roulette"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "algorithms-cs",
+        "mechanic": "lesson",
+        "tone": ["nerdy", "playful", "analytical"],
+        "tech": ["dom-ui", "svg", "web-animations", "localstorage"],
+        "tags": ["anagram", "commitment-scheme", "hash", "salt", "cryptography", "priority-claims", "history-of-science", "hooke", "galileo", "huygens", "brute-force"],
+        "keywords": ["anagram", "commit-reveal", "hiding-and-binding", "salted-hash", "history-of-science", "sorted-letters", "priority", "ambiguity", "brute-force"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A commitment lets you lock in a statement now without revealing it, and open it later so that everyone can check it. A good commitment has two properties: hiding (the sealed form tells nothing about the statement) and binding (you cannot later open it as a different statement). A sorted-letters anagram is weak on both counts. A hash of the statement plus a secret random value (a salt, or nonce) is the standard modern construction, revealed by publishing both the statement and the value so anyone can recompute the fingerprint.",
+        "whyNiche": "Explanations of commitments usually start from hash functions and mathematical definitions, so learners meet the words hiding and binding with no felt example. Here the failures come first and are concrete: an anagram leaks letter counts, fits more than one sentence, and a short guessable secret is cracked by trying every candidate. The fix is only motivated after the visitor has been hurt by each failure.",
+        "audience": "Curious non-experts, students and developers who have heard of hashes or commit-reveal but never felt why a salt is needed or what binding means.",
+        "prerequisites": ["Reading a short English or Latin sentence", "No maths or programming needed"],
+        "misconceptions": [
+          "A scrambled message keeps its content secret, when sorted letters still leak the length and every letter count.",
+          "An anagram proves you wrote one particular sentence, when the same letters can usually be rearranged into other sentences, so it does not bind you to one meaning.",
+          "A fingerprint (hash) of a short or guessable secret is automatically secret, when an attacker can hash every candidate and compare; a long random salt is what defeats this."
+        ],
+        "misconceptionFactIndexes": [0, 3, 4],
+        "ahaMoment": "The visitor tries to open the same sealed letters as two different sentences (Galileo's reading and Kepler's reading) and both pass the check. Then the same two sentences get different salted fingerprints, so only one can ever be opened. The sort could not bind them, the fingerprint can.",
+        "demos": [
+          "Rung 1, seal: one button sorts the letters of a sample sentence into tiles (Hooke's 'ut tensio sic vis' is preloaded); Reveal checks that the letters match.",
+          "Rung 2, who did you mean: Galileo's and Kepler's Latin readings of the same 37 letters both pass the check (Latin u and v treated as one letter), plus a few English look-alike pairs, so binding fails.",
+          "Rung 3, what the sort leaks: a letter-count strip and a bundled list of about 40 famous science phrases that narrows as the visitor learns the length and counts, so hiding is weak.",
+          "Rung 4, a fingerprint instead: a SHA-256 fingerprint of the sentence; change one letter and watch the whole fingerprint change; the two readings now have different fingerprints.",
+          "Rung 5, crack it and fix it: unsalted fingerprints of one-word secrets are cracked live by trying a bundled word list; adding a typed salt makes the same attack fail, and the visitor sees why real salts are long and random."
+        ],
+        "checkQuestions": [
+          "Two people claim different sentences from the same sorted letters. Whose claim wins, and what does that tell you about binding?",
+          "Why does a fingerprint of the single word 'yes' or 'no' hide nothing, even though hashes are one-way?",
+          "What exactly must the committer publish at reveal time so a stranger can verify the fingerprint?",
+          "Which property fails if the secret is revealed too early, hiding or binding?"
+        ]
+      },
+      "research": {
+        "summary": "The history is documented from several directions. Galileo announced his Saturn finding in 1610 as scrambled Latin letters; Kepler decoded them as a sentence about Mars having two moons (wrong target, though Mars does have two moons), which is a ready-made demonstration of an anagram failing to bind. Hooke announced his spring law in 1676 as the letters of 'ut tensio sic vis' and gave the solution later (reported dates differ), and Huygens used an anagram in place of publication to secure priority on Saturn's ring. On the modern side, university lecture notes describe hash-and-nonce commitments, and say an unsalted commitment over a small message space can be brute-forced, so a large random nonce is needed. The lens brief (a ridiculous constraint felt in ten seconds) is not itself a factual claim; its Oulipo lineage (constrained writing such as lipograms) is background only. I checked with a script that Galileo's 37-letter string matches both the Altissimum planetam reading and Kepler's reading when Latin u and v are treated as one letter.",
+        "sources": [
+          {
+            "title": "Galileo's Anagrams and the Moons of Mars",
+            "url": "https://www.mathpages.com/home/kmath151/kmath151.htm",
+            "date": "",
+            "snippet": "Explains Galileo's 1610 scrambled announcement about Saturn, the Latin sentence he meant, and Kepler's different reading about Mars having two moons.",
+            "via": "search",
+            "note": "Both readings of Galileo's anagram, with the Mars coincidence; also notes the Latin u/v ambiguity.",
+            "verified": true
+          },
+          {
+            "title": "This American Life is narrowcasting at me (physics blog post on the anagram story)",
+            "url": "https://blog.richmond.edu/physicsbunn/?p=563",
+            "date": "",
+            "snippet": "A physics blog retells how Kepler read Galileo's jumbled letters as 'children of Mars' while Galileo meant Saturn is threefold.",
+            "via": "search",
+            "note": "Independent site that agrees on Galileo's meaning and Kepler's misreading.",
+            "verified": true
+          },
+          {
+            "title": "Hooke quotations (MacTutor, University of St Andrews)",
+            "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Hooke/quotations/",
+            "date": "",
+            "snippet": "Quotations page for Hooke that appeared for the query on his spring-law anagram; the search summary was blended with other results, so the exact letters were not seen on this page.",
+            "via": "search",
+            "note": "Context for Hooke's anagram; exact letter string and date not confirmed from this entry.",
+            "verified": false
+          },
+          {
+            "title": "The puzzle of Hooke's law (IOP Spark)",
+            "url": "https://spark.iop.org/puzzle-hookes-law",
+            "date": "",
+            "snippet": "Teaching-resource page on Hooke's law that appeared for the anagram query; dates and letter strings varied across results, so details are unconfirmed.",
+            "via": "search",
+            "note": "Context only; Hooke anagram dates (1676 versus 1678 or 1679 for the solution) differ between results.",
+            "verified": false
+          },
+          {
+            "title": "From ciphers to confidentiality: secrecy, openness and priority in science (British Journal for the History of Science)",
+            "url": "https://resolve.cambridge.org/core/journals/british-journal-for-the-history-of-science/article/from-ciphers-to-confidentiality-secrecy-openness-and-priority-in-science/6168FC1B2160EE91F047749D987A0743",
+            "date": "",
+            "snippet": "Journal article on priority and secrecy in science; its result gives Huygens's Saturn anagram solution as a thin flat ring nowhere touching, inclined to the ecliptic.",
+            "via": "search",
+            "note": "Scholarly source that Huygens used an anagram for priority on Saturn's ring.",
+            "verified": true
+          },
+          {
+            "title": "De Zeventiende Eeuw, Jaargang 12 (1996 article on Huygens and Saturn)",
+            "url": "https://dbnl.org/tekst/_zev001199601_01/_zev001199601_01_0011.php",
+            "date": "1996",
+            "snippet": "A journal article stating that Huygens tried to secure priority by substituting an anagram for publication while delaying his Saturn book.",
+            "via": "search",
+            "note": "Independent scholarly source agreeing that anagrams were used to hold priority.",
+            "verified": true
+          },
+          {
+            "title": "Lecture 14 slides, Purdue University CS 555 (Spring 2017)",
+            "url": "https://www.cs.purdue.edu/homes/jblocki/courses/555_Spring17/slides/Lecture14.pdf",
+            "date": "2017",
+            "snippet": "Course slides noting that a brute-force attack works when the message space is small, and that collision resistance alone is not enough for message commitment.",
+            "via": "search",
+            "note": "University source for the unsalted small-space weakness.",
+            "verified": true
+          },
+          {
+            "title": "[bitcoin-dev] Generalized Commitments",
+            "url": "https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-February/013593.html",
+            "date": "2017-02",
+            "snippet": "A developer mailing-list post arguing for an explicit nonce when a commitment must hide its message instead of relying on the data being hard to guess.",
+            "via": "search",
+            "note": "Independent practitioner source agreeing that a nonce is needed for hiding.",
+            "verified": true
+          },
+          {
+            "title": "MIT 6.5610 recitation 6 notes",
+            "url": "https://65610.csail.mit.edu/2023/rec/rec6.pdf",
+            "date": "2023",
+            "snippet": "Course notes modelling a hash commitment with a random value r, with hiding depending on that randomness.",
+            "via": "search",
+            "note": "University source for the hash-plus-random-value construction.",
+            "verified": true
+          },
+          {
+            "title": "[Cryptography] Komitments (mailing-list post)",
+            "url": "https://www.metzdowd.com/pipermail/cryptography/2018-December/034716.html",
+            "date": "2018-12",
+            "snippet": "A cryptography-list post proposing to hash the message together with a random value and noting a large enough nonce defeats brute force.",
+            "via": "search",
+            "note": "Independent source agreeing on commit by hash of message plus random value.",
+            "verified": true
+          },
+          {
+            "title": "Oulipo and Beyond: 6 Playful Constrained Writing Projects",
+            "url": "https://bookriot.com/2019/09/19/constrained-writing/",
+            "date": "2019-09-19",
+            "snippet": "Popular article on Oulipo-style constrained writing, including the lipogram novel written without the letter e.",
+            "via": "search",
+            "note": "Background for the constraint-as-design lens only; not used as a page fact.",
+            "verified": false
+          },
+          {
+            "title": "Constrained writing (Wikipedia)",
+            "url": "https://en.wikipedia.org/wiki/Constrained_writing",
+            "date": "",
+            "snippet": "Encyclopedia article on writing under self-imposed rules; appeared in a search result, not opened.",
+            "via": "search",
+            "note": "Background for the constraint-as-design lens only.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "Galileo's 1610 scrambled Latin announcement was meant as 'Altissimum planetam tergeminum observavi' (the highest planet, Saturn, seen as threefold); Kepler instead read the same letters as 'Salve umbistineum geminatum Martia proles' and took it to mean Mars has two moons. Both readings fit the same letters (checked by script on 2026-10-14, treating Latin u and v as one letter).",
+            "sourceIndex": 0,
+            "alsoIn": [1],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Huygens used an anagram in place of publication to secure priority for his Saturn findings while he delayed his full book; a journal article gives the solution as a thin flat ring, nowhere touching, inclined to the ecliptic.",
+            "sourceIndex": 4,
+            "alsoIn": [5],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Hooke announced his spring law as an anagram (printed as ceiiinosssttuu in his 1676 Helioscopes text per one result, solved as 'Ut tensio, sic vis'), with the solution published later; results disagree on whether that was 1678 or 1679, so the page must say 'reported' and not state a date as settled.",
+            "sourceIndex": 2,
+            "alsoIn": [3],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "A hash commitment over a small set of possible messages with no random value can be broken by hashing every candidate and comparing, so it does not hide the message (course slides, and a developer mailing-list post that recommends an explicit nonce).",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Standard commit-reveal construction: hash the message together with a secret random value to commit, then reveal both so the verifier can recompute the hash; hiding depends on the randomness (course notes and a cryptography mailing-list post agree).",
+            "sourceIndex": 8,
+            "alsoIn": [9],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Constrained writing under self-imposed rules (Oulipo, lipograms such as a novel without the letter e) is an established creative method; used as inspiration for the lens only, not shown as a page fact.",
+            "sourceIndex": 10,
+            "alsoIn": [11],
+            "asOf": "2026-10-14"
+          }
+        ],
+        "inspirations": ["Oulipo lipograms", "Galileo's Saturn anagram", "Hooke's spring-law anagram", "Huygens's Saturn ring anagram", "commit-reveal protocols", "one-button jam games"]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha. Each rung gives one thing to do (seal, open two ways, narrow the candidates, change a letter, crack then salt), then one check question whose answer the visitor can test on the page before moving up. The constraint of one verb (sort) governs rungs 1 to 3 and is lifted at rung 4 as the payoff: a new verb, fingerprint.",
+        "sophisticationHooks": [
+          "Rung 2 uses real history: the same 37 Latin letters genuinely open as two sentences, computed live from the text so the tiles can be dragged between the two readings.",
+          "A small hand-written SHA-256 (tested against published test vectors) so the fingerprint works offline even where the browser's own crypto is unavailable, with a one-letter-change avalanche view that highlights the differing bits.",
+          "A live attacker on rung 5 that tries a bundled word list, shows hashes per second and then fails against the salted version, with the salt typed by the visitor (no random numbers anywhere, so every result is repeatable).",
+          "A 'real life' panel that states honestly what real systems add (long random salts, stronger constructions) and what this toy skips."
+        ],
+        "dataNeeds": "bundled",
+        "scopeForOneDay": "Built: one page, five rungs, a tile-sorting animation, the pure functions (sort-seal, u/v folding, letter-count filter, SHA-256, crack loop) with tests, about 40 hand-written science phrases and a 300-word list, a short history strip with 'reported' dating, and an intro paragraph plus explainer. Cut: anything that fetches live data, other cryptographic schemes (Merkle trees, coin-flip protocols), saving progress to a server, sound.",
+        "risks": [
+          "The exact Galileo letter string was typed from memory into the search and matched both readings under u/v folding by script, but it was not read on an opened page; the page should show it as 'as commonly transcribed' or build it from the Latin reading and say so.",
+          "Hooke's anagram letters and the solution date vary between results (ceiiinosssttuu in one, other forms and 1678 or 1679 in others): show it as 'reported', do not state one date as fact, or drop the date.",
+          "Huygens's anagram letter counts vary between transcriptions, so the page does not reproduce his string; only the meaning is stated, attributed to the journal articles.",
+          "Search summaries were blended, so the Hooke sources stay verified:false; the Galileo, Huygens and commitment facts each rest on two separately listed results but no page was opened (all fetching was blocked or avoided).",
+          "Hash commitments are described in some sources as perfectly binding and in others as computationally binding; the page should say 'binding as long as the hash has no known collisions' and avoid the stronger wording.",
+          "Plain 'salted hash' demos can be mistaken for a password-storage guide: the page says it is not advice, never takes a real secret, and uses a prominent 'do not type a real secret' note with a plain text field.",
+          "Constraint theatre could hide the teaching if the one-button rule is too cute: the intro states the literal topic first, and the sort constraint is explained as a deliberate limit in one line."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

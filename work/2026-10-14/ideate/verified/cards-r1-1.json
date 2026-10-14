@@ -1,0 +1,240 @@
+{
+  "id": "cards-r1-1",
+  "title": "Two-Mirror Angle Lesson",
+  "plainSentence": "A lesson that lets you turn one mirror-angle dial and see how many images two mirrors make, and which angles give clean patterns.",
+  "pitch": "The whole first screen is one dial and one ink colour: two hinged mirrors, a lopsided hand-drawn mark between them and the ring of its reflections. Drag the dial and watch the ring grow, snap shut at 60 or 45 degrees, and tear open at 70. You leave knowing why a kaleidoscope uses certain angles, why the textbook count of 360 over the angle minus one is only part of the story, and why an odd number of slices leaves a seam.",
+  "firstMinute": "A page-sized picture already runs: the dial sweeps slowly from 90 to 45 degrees and the ring of reflections of a lopsided mark grows from 3 to 7 images while a row of pips counts them. The visitor grabs the dial and drags it; at 60 degrees the ring closes with no gap and the dial clicks, which is the first success. No reading is needed, and the explanations sit below the picture.",
+  "conceptsToLearn": [
+    "a mirror flips left and right"
+  ],
+  "whyNow": "Timeless; the constraint of one dial and a single ink colour is felt at once, and the page respects it for the whole lesson (extra controls live behind a More toggle).",
+  "origin": {
+    "agent": "cards",
+    "lens": "anti-lens-constraint-roulette"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "serene",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "svg",
+      "pointer-events",
+      "dom-ui"
+    ],
+    "tags": [
+      "kaleidoscope",
+      "mirrors",
+      "reflection",
+      "symmetry",
+      "dihedral-group",
+      "optics",
+      "angles",
+      "one-dial",
+      "single-colour"
+    ],
+    "keywords": [
+      "two-plane-mirrors",
+      "number-of-images",
+      "mirror-angle",
+      "reflection-symmetry",
+      "kaleidoscope-geometry",
+      "360-over-angle"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "Two plane mirrors hinged at angle theta make a ring of reflections. When theta is 180 divided by a whole number p (90, 60, 45, 36, 30 degrees), the object and its images make 2p copies that tile the full circle exactly, every copy alternately flipped; that is the dihedral symmetry of order 2p. The textbook count of images is 360 over theta minus 1 for these angles. Other angles leave overlaps or gaps; when 360 over theta is an odd whole number (120 or 72 degrees) the copies cannot alternate flipped and unflipped all the way round, so a seam appears unless the mark is mirror-symmetric. These edge cases are the page's own derivation by exact unfolding and are labelled that way.",
+    "whyNiche": "Most coverage is a single exam formula (360 over theta minus 1) with the edge cases glossed over or stated inconsistently, so learners never see why the angle matters or what goes wrong when it does not divide 360.",
+    "audience": "Curious teenagers and adults, physics and geometry students, and makers who build kaleidoscopes.",
+    "prerequisites": [
+      "knows what a mirror image is",
+      "can read an angle in degrees"
+    ],
+    "misconceptions": [
+      "Any mirror angle gives a pretty kaleidoscope pattern (a seamless ring needs the angle to be 180 over a whole number).",
+      "The formula 360 over theta minus 1 holds for every angle and every object position (for angles that do not divide 360, and for odd 360 over theta, the count depends on the angle and where the object sits)."
+    ],
+    "misconceptionFactIndexes": [
+      1,
+      2
+    ],
+    "ahaMoment": "Turning the dial from 60 to 70 degrees: the ring that closed perfectly tears open, because the angle no longer divides the full turn; then at 120 degrees the copies close up but an odd number of slices cannot alternate flipped and unflipped, so a seam appears where two same-handed copies meet. A seamless view needs the angle to divide a half turn.",
+    "demos": [
+      "Hinge and glyph: drag the dial, see images appear and count them with pips",
+      "Snap angles: click through 90, 60, 45, 36, 30 and compare the count with 360 over theta minus 1",
+      "Off-divisor angles: set 70 or 100 degrees and see overlaps or a gap",
+      "Odd versus even slices: 120 and 72 degrees show the seam, 90 and 60 close; try a mirror-symmetric mark to heal the seam",
+      "More: move the object, then fold into the round tube view that makes the classic wedge pattern"
+    ],
+    "checkQuestions": [
+      "How many images do mirrors at 40 degrees make with the object exactly on the middle line between them?",
+      "Which angle that divides 180 degrees gives exactly 11 images?",
+      "Why does 100 degrees not give a clean ring?",
+      "Why does a mirror-symmetric mark hide the seam at 120 degrees?"
+    ]
+  },
+  "research": {
+    "summary": "Re-checked by search: the exam-prep formula N = 360/theta minus 1 (90 degrees gives 3, 60 degrees gives 5, 45 degrees gives 7) is stated by one exam-prep site across several pages and by a discussion post, which is thin independent support; the 180/m rule for a seamless two-mirror kaleidoscope and its dihedral-group reading are stated in a Rutgers paper and an online dihedral-group page. For non-divisor angles and odd 360/theta, exam-prep sources give an integer-part rule and a rule that depends on whether the object sits on the middle line, but they are low-authority and partly garbled, so the lesson derives these cases by exact unfolding geometry and tests the code against the clean values, labelling edge cases as the page's own derivation. The patent, Brewster Society page, wallpaper-groups paper and slides listed by the scout could not be found again and stay unconfirmed.",
+    "sources": [
+      {
+        "title": "Number of Images Formed by Two Plane Mirrors (Vedantu)",
+        "url": "https://www.vedantu.com/jee-main/physics-number-of-images-formed-by-two-plane-mirrors",
+        "date": "",
+        "snippet": "Exam-prep explainer: N = 360/theta - 1, with examples of 90 degrees giving 3 and 60 degrees giving 5; overlapping images when the angle does not divide 360.",
+        "via": "search",
+        "note": "Formula and examples; several Vedantu pages are one site and count once.",
+        "verified": true
+      },
+      {
+        "title": "Discussion post on number of images (archived Q&A)",
+        "url": "https://bbb-old.lwn.net/abcd/1591722",
+        "date": "",
+        "snippet": "Post giving 360/theta - 1 and an odd-case rule that depends on whether the object is placed symmetrically.",
+        "via": "search",
+        "note": "Second site for the formula, low authority; also the odd-case rule.",
+        "verified": true
+      },
+      {
+        "title": "Formula for number of images formed by two plane mirrors (Vedantu)",
+        "url": "https://vedantu.com/jee-main/formula-for-number-of-images-formed-by-two-plane-physics-question-answer",
+        "date": "",
+        "snippet": "Another Vedantu page: for non-integer 360/theta only the integer part counts when the object is asymmetric; symmetric placement can change the count by one.",
+        "via": "search",
+        "note": "Edge-case rule; same site as the first source, and wording partly garbled, so unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "Rutgers monthly article on kaleidoscopes",
+        "url": "https://sites.math.rutgers.edu/~goodman/pub/monthly.pdf",
+        "date": "",
+        "snippet": "Paper on the mathematics of kaleidoscopes: two mirrors joined along an edge at angle 180/m degrees for a small integer m of at least 2, with the real chamber and its reflections filling the plane without overlap.",
+        "via": "search",
+        "note": "Seamless two-mirror kaleidoscope needs 180 over a whole number; the paper's own host page.",
+        "verified": true
+      },
+      {
+        "title": "Dihedral group (etudes.ru)",
+        "url": "https://en.etudes.ru/models/dihedral-group/",
+        "date": "",
+        "snippet": "Interactive page: a dihedral group is the symmetry group of a regular polygon, with rotations and axial reflections, generated by reflections.",
+        "via": "search",
+        "note": "Independent reading of two mirrors as a dihedral group.",
+        "verified": true
+      },
+      {
+        "title": "System for creating video generated decorative images (patent)",
+        "url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6062698",
+        "date": "",
+        "snippet": "Patent text saying the mirror angle should divide 360 evenly, and that an odd count closes only if the primary image is mirror-symmetric.",
+        "via": "search",
+        "note": "Scout's source for odd versus even slices; not found again, so unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "Wallpaper groups paper (Dunham, Bridges 2015)",
+        "url": "https://www.d.umn.edu/~ddunham/bridges15.pdf",
+        "date": "",
+        "snippet": "Paper listing the mirror-bounded planar groups p3m1, p4m and p6m.",
+        "via": "search",
+        "note": "Optional three-mirror extension; not found again, unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "Extended Analysis of the General Two-mirror Dihedral Angle Case (Brewster Society)",
+        "url": "https://brewstersociety.com/encyclopedia/angle-analysis-in-kaleidoscopes/",
+        "date": "",
+        "snippet": "Said to discuss ambiguity of far images for a general angle.",
+        "via": "search",
+        "note": "Scout's snippet only; not opened (host fails today) and not found again, unconfirmed.",
+        "verified": false
+      },
+      {
+        "title": "If two mirrors are kept at 60 degree to each other then no. of images (Careers360)",
+        "url": "https://www.careers360.com/question-if-two-mirrors-are-kept-at-60-degree-to-each-other-then-noof-images",
+        "date": "",
+        "snippet": "Q&A page giving N = 360/theta - 1 and 5 images at 60 degrees.",
+        "via": "search",
+        "note": "Scout's source; not found again by the verifier, so unconfirmed.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "For two plane mirrors inclined at an angle theta that divides 360 degrees, exam-prep pages and a discussion post give the number of images as 360/theta - 1; this gives 3 at 90 degrees, 5 at 60 degrees and 7 at 45 degrees.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A two-mirror kaleidoscope whose reflections fill the circle seamlessly has its mirrors at 180/m degrees for a whole number m of at least 2; the mirrors then generate the dihedral group of order 2m (the symmetries of a regular m-gon).",
+        "sourceIndex": 3,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Reported, low authority: when 360/theta is not a whole number only its integer part counts (object placed off the middle line), and when 360/theta is an odd whole number the count is 360/theta minus 1 for an object on the middle line and 360/theta otherwise. Sources are thin and partly garbled, so the page presents these as its own derivation by unfolding.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Reported, unconfirmed: a patent states that an odd segment count gives a clean ring only if the primary image is mirror-symmetric. The lesson derives this itself.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Reported, unconfirmed: mirror-bounded triangles correspond to the wallpaper groups p3m1, p4m and p6m. Optional extension only, not for the page.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Brewster's variable two-mirror kaleidoscope",
+      "Mirror books in maths museums",
+      "Dihedral group visualisers",
+      "One-button and one-colour jam entries"
+    ]
+  },
+  "design": {
+    "coreLoop": "Drag the dial, see the ring and the image count change at once, predict the next snap angle, then answer a check question and see the page confirm it with the picture; the surprise at off-divisor and odd angles keeps pulling the visitor back to test one more angle.",
+    "sophisticationHooks": [
+      "Exact unfolding geometry (not just the formula) so non-divisor and odd cases are drawn truthfully",
+      "Handed mark that shows reflections as flipped copies in one ink colour using a hatched versus solid fill",
+      "Seam detector that highlights where two same-handed copies meet",
+      "Round tube view that turns the ring into the classic kaleidoscope wedge pattern behind More"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: SVG ring of reflections with one dial, snap points, image pips, odd/even seam demo, four check questions, intro and explainer text, a pure geometry module with tests against the clean values above. Cut: three-mirror wallpaper groups, the round tube view if time is short, sound, sharing.",
+    "risks": [
+      "Core formula support is thin: one exam-prep site plus one discussion post. The page derives counts by exact unfolding geometry and the build tests it against clean values: 90 gives 3, 60 gives 5, 45 gives 7, 30 gives 11, and 40 degrees with the object on the middle line gives 8.",
+      "Edge-case rules (non-divisor counts, odd slice counts) are not consistently stated by sources; the page presents them as its own derivation, labelled so, and shows any unverified claim as 'as of 2026-10-14, per <source>' or omits it.",
+      "The Brewster Society page, the patent and the Dunham paper are unconfirmed and never go on the page as facts.",
+      "The check question about 11 images is limited to angles that divide 180, because non-divisor angles near 31 degrees would also give 11.",
+      "The single-colour constraint limits showing handedness; the hatched versus solid fill and a flip-marked glyph must be tested for legibility and contrast.",
+      "Control budget: only the dial is visible at first; object position and tube view stay behind More."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 5,
+    "feasibleInOneDay": true,
+    "notes": "The main formula and the 180/m rule are found, but the formula rests on one exam-prep site plus a discussion post (a thin second result, so confidence is capped at 5), and the edge cases are low-authority and partly inconsistent. Safe to build only because the page derives the counts by geometry and tests the clean values. A concept sentence that gave the wrong group order was corrected."
+  }
+}

@@ -1,0 +1,259 @@
+{
+ "id": "architect-1",
+ "title": "10-adic Numbers Lesson",
+ "plainSentence": "A lesson with a calculator that lets you add and multiply numbers whose digits run forever leftward, where negatives need no minus sign.",
+ "pitch": "Type a string of digits that never ends on the left, add 1 to ...999 and watch every digit carry into zero, so the string is minus one with no minus sign. Then hunt for a stranger number, one ending ...8212890625, by choosing one digit at a time so that its square keeps the same ending, and multiply two nonzero numbers to get zero. You leave knowing that infinitely many digits does not mean infinitely large, because closeness can mean 'the last digits agree'.",
+ "firstMinute": "The first frame shows a rolling odometer of nines with a plus-one button already pressed once: every digit rolls over to zero and the readout says 'this is -1'. The visitor taps plus one again to see the string become ...0000 and then types their own digits into the calculator, with the first success being a negative answer such as 5 + ...9995 = 0 reached without reading anything.",
+ "conceptsToLearn": [
+  "Carrying: when a digit passes 9 it becomes 0 and adds 1 to the digit on its left"
+ ],
+ "whyNow": "Timeless: a classic mathematical curiosity that is badly explained as a trick, and a good counterweight to a run of games and gadgets. Nothing in it depends on the date.",
+ "origin": {
+  "agent": "architect",
+  "lens": "lesson-strange-numbers"
+ },
+ "fingerprint": {
+  "purpose": "lesson",
+  "category": "math-concepts",
+  "mechanic": "lesson",
+  "tone": [
+   "nerdy",
+   "playful",
+   "analytical"
+  ],
+  "tech": [
+   "dom-ui",
+   "svg",
+   "web-animations"
+  ],
+  "tags": [
+   "p-adic",
+   "ten-adic",
+   "negative-numbers",
+   "number-systems",
+   "carrying",
+   "odometer",
+   "zero-divisors",
+   "idempotent",
+   "automorphic-numbers",
+   "closeness"
+  ],
+  "keywords": [
+   "10-adic",
+   "infinite-digits",
+   "minus-one",
+   "automorphic-number",
+   "hensel-lifting",
+   "modular-arithmetic",
+   "metric",
+   "calculator"
+  ],
+  "slot": "wildcard",
+  "political": false
+ },
+ "purposeDetail": {
+  "concept": "In the 10-adic numbers a number may have infinitely many digits to the left. Addition and multiplication use ordinary carrying, and what matters for a result's last k digits is only the last k digits of the inputs. The string ...999 plus 1 gives all zeros, so ...999 equals -1. Two numbers are close when many of their last digits agree. Because 10 = 2 x 5 is not a prime power, two nonzero 10-adic numbers can multiply to zero, which is why nontrivial solutions of x squared = x exist, such as th...",
+  "whyNiche": "Most explanations jump straight to the formal absolute value on a prime, or show ...999 = -1 as a magic trick with a one-line algebra step. Neither lets the learner try arithmetic on such numbers, feel why 'size' is the wrong idea, or meet the composite-base surprise of zero divisors.",
+  "audience": "Math fans, curious teenagers and adults who know how column addition carries, and anyone who likes odd ideas. No algebra background needed.",
+  "prerequisites": [
+   "Column addition and multiplication with carrying",
+   "What a negative number is"
+  ],
+  "misconceptions": [
+   "A number with infinitely many digits must be infinitely large, or cannot be a number at all, because numbers have finitely many digits",
+   "Two numbers that multiply to zero must include a zero (true for ordinary numbers, false in the 10-adics)"
+  ],
+  "misconceptionFactIndexes": [
+   4,
+   2
+  ],
+  "ahaMoment": "The visitor presses plus one on ...999 and watches the carry run off to the left forever, leaving zeros. 'Size' is replaced by 'how many last digits agree', and suddenly 9, 99, 999, 9999 are visibly closing in on -1.",
+  "demos": [
+   "Odometer: press plus one on a wheel of nines and watch the carries ripple left, ending in all zeros, so the string equals -1",
+   "Infinite-left calculator: type the tail of a number (the page shows the last 40 digits of a number that really continues forever), add, subtract and multiply, with negatives shown as ...9s and a note showing the matching ordinary integer",
+   "Negate it: the nines-complement-plus-one rule beside the 'subtract from zero' result, plus 1/3 as ...6667 checked by multiplying by 3",
+   "Closeness ruler: pick two numbers and see how many last digits agree; the sequence 9, 99, 999 shrinks toward -1 on a zoom ruler while the ordinary size grows",
+   "Idempotent hunt: choose the next digit to the left so the square keeps the same ending; the page shows exactly one digit works at each step, reaching 5, 25, 625, 0625, 90625, 890625, 2890625, 12890625, 212890625, 8212890625",
+   "Zero divisors: multiply ...8212890625 by ...1787109376 and get ...0000000000 with neither factor zero; a split view shows a 'divisible by powers of 2' part and a 'divisible by powers of 5' part, and why a prime base would not allow this"
+  ],
+  "checkQuestions": [
+   "What is ...9999 + 2, and what ordinary number is that?",
+   "Which is closer to 0 in the 10-adic sense: 1000 or 10? Why?",
+   "What are the last 4 digits of ...8212890625 squared?",
+   "Predict ...6667 times 3 before you press equals.",
+   "Why can't the same zero-divisor trick work with only 2-adic digits (base 2)?"
+  ]
+ },
+ "research": {
+  "summary": "Re-checked by search on 2026-10-14; no page opened (host lookups fail in this sandbox). Two independent course or paper results (Berkeley Math Circle notes, arXiv 1710.08835) give the core: 10-adic numbers have digits running infinitely to the left, ...99999 + 1 = 0 so ...999 = -1, negation is the nines complement plus 1, and 9, 99, 999 approach -1. A different arXiv paper and a mathematics blog give the idempotent pair ending ...8212890625 and ...1787109376 and explain why zero divisors exist (Z_10 splits as Z_2 and Z_5). I recomputed everything with exact integer arithmetic modulo 10^60: both numbers square to themselves, sum to 1 and multiply to 0; each digit of the hunt has exactly one valid choice for 10 steps; 1/3 ends ...6667; 5 + ...9995 = 0. A published dialogue (arXiv 2106.01408) shows the 'a number cannot have infinitely many digits' objection. No study measures how common the belief is; the page presents it as a natural intuition. OEIS and MathWorld were not found again and stay unverified.",
+  "sources": [
+   {
+    "title": "BMC Adv p-adic numbers notes (Berkeley Math Circle)",
+    "url": "https://mathcircle.berkeley.edu/sites/default/files/handouts/2020/BMC_Adv_p-adic_numbers_notes.pdf",
+    "date": "2020",
+    "snippet": "Math circle notes: 10-adic numbers are digit strings extending infinitely to the left; ...99999 + 1 = 0; negation is the nines complement of each digit plus 1.",
+    "via": "search",
+    "note": "Core account of ...999 = -1 and negation; found again by claim-based search 2026-10-14.",
+    "verified": true
+   },
+   {
+    "title": "Introduction to the p-adic Space (arXiv 1710.08835)",
+    "url": "https://arxiv.org/pdf/1710.08835",
+    "date": "2017",
+    "snippet": "Shows 9, 99, 999 approach -1 so ...999 = -1, distance via powers of 10 going to 0, and a worked case ...999942 + 58 = 0.",
+    "via": "search",
+    "note": "Independent agreement on ...999 = -1 and distance by last digits; found again 2026-10-14.",
+    "verified": true
+   },
+   {
+    "title": "Gauss and p-adic numbers (arXiv 2510.11559)",
+    "url": "https://arxiv.org/pdf/2510.11559",
+    "date": "",
+    "snippet": "Gives the idempotent pair a = ...392256259918212890625 and 1 - a = ...607743740081787109376, and Z_10 isomorphic to Z_2 plus Z_5, so zero divisors exist.",
+    "via": "search",
+    "note": "Source for the idempotents and why 10 gives zero divisors; found by the first claim search 2026-10-14.",
+    "verified": true
+   },
+   {
+    "title": "A 10-adic number that is a zero divisor (Division by Zero blog)",
+    "url": "https://divisbyzero.com/2008/12/29/a-10-adic-number-that-is-a-zero-divisor/",
+    "date": "2008-12-29",
+    "snippet": "Blog post showing an idempotent 10-adic number F with F(F-1) = 0, so F and F-1 are zero divisors.",
+    "via": "search",
+    "note": "Independent mathematics blog agreeing on zero divisors; found again 2026-10-14.",
+    "verified": true
+   },
+   {
+    "title": "What is worthy of investigation? Discovering 10-adic numbers (arXiv 2106.01408)",
+    "url": "https://arxiv.org/pdf/2106.01408",
+    "date": "2021",
+    "snippet": "Paper built on a dialogue in which a student extends ...999 and a teacher objects that a number cannot have infinitely many digits; the dialogue is modelled on a real exchange.",
+    "via": "search",
+    "note": "Documents the resistance to infinite-left strings; the paper's own text states it.",
+    "verified": true
+   },
+   {
+    "title": "p-adic Numbers, Grade 11/12 Lesson 1 (Waterloo CEMC math circle)",
+    "url": "https://cemc.math.uwaterloo.ca/events/mathcircles/2023-24/Fall/Week%204/Grade%2011:12%20-%20p-adic%20Numbers/Lesson1.pdf",
+    "date": "2023",
+    "snippet": "Math circle handout covering 10-adic arithmetic with carries moving left and an example of a number times 7 equal to 1.",
+    "via": "search",
+    "note": "Shows the topic is taught to ages 16 to 18; found again 2026-10-14.",
+    "verified": true
+   },
+   {
+    "title": "p-adics REU notes (vtpersonal)",
+    "url": "https://vtpersonal.nfshost.com/notes/reu24/padics.pdf",
+    "date": "",
+    "snippet": "Notes with an exercise on N-adic expansions writing 9999 = -1 for N = 10.",
+    "via": "search",
+    "note": "Another independent result with the same identity.",
+    "verified": true
+   },
+   {
+    "title": "...999 = -1 thread (Straight Dope message board)",
+    "url": "https://boards.straightdope.com/t/999-1/27517?page=69",
+    "date": "",
+    "snippet": "Forum thread about ...999 = -1 and zero divisors from a composite base.",
+    "via": "search",
+    "note": "Informal forum; re-found but kept unverified and not used for any fact.",
+    "verified": false
+   },
+   {
+    "title": "OEIS A018247 (5-ending automorphic limit)",
+    "url": "https://oeis.org/A018247",
+    "date": "",
+    "snippet": "Sequence entry for the number ending ...8212890625 given by 5 to the power 2^n modulo 10^n.",
+    "via": "search",
+    "note": "Not found again by search; the first terms were recomputed by script, so the page does not cite OEIS as verified.",
+    "verified": false
+   },
+   {
+    "title": "Automorphic Number (MathWorld)",
+    "url": "https://mathworld.wolfram.com/AutomorphicNumber.html",
+    "date": "",
+    "snippet": "Table of automorphic numbers listing 8212890625 and 1787109376.",
+    "via": "search",
+    "note": "Not found again by search and cannot be fetched; unverified.",
+    "verified": false
+   }
+  ],
+  "facts": [
+   {
+    "claim": "In the 10-adic numbers digits may run infinitely to the left; ...99999 + 1 gives all zeros so ...999 = -1; the negative of a number is the nines complement of each digit plus 1; a worked case is ...999942 + 58 = 0 so ...999942 = -58 (Berkeley Math Circle notes, arXiv 1710.08835, Waterloo handout, REU notes).",
+    "sourceIndex": 0,
+    "alsoIn": [
+     1,
+     5,
+     6
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "The numbers ending ...8212890625 and ...1787109376 are the two nontrivial 10-adic solutions of x squared = x: they sum to 1 and multiply to 0 (arXiv 2510.11559 lists longer tails of the same pair; the blog gives a longer idempotent F with F(F-1) = 0). Recomputed 2026-10-14 modulo 10^60 by exact arithmetic.",
+    "sourceIndex": 2,
+    "alsoIn": [
+     3
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "The 10-adic integers have zero divisors because 10 is not a prime power: Z_10 splits as Z_2 plus Z_5 by the Chinese Remainder Theorem, so a product of two nonzero numbers can be zero; a prime base gives none.",
+    "sourceIndex": 2,
+    "alsoIn": [
+     3
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "Closeness is measured by agreeing final digits: 9, 99, 999, 9999 differ from -1 by 10, 100, 1000 and so on, so they approach -1 in the 10-adic sense while growing in the ordinary sense (arXiv 1710.08835, Berkeley notes).",
+    "sourceIndex": 1,
+    "alsoIn": [
+     0
+    ],
+    "asOf": "2026-10-14"
+   },
+   {
+    "claim": "A published dialogue modelled on a real classroom exchange has a teacher object that a number cannot have infinitely many digits when ...999 is introduced (arXiv 2106.01408); no study measuring how common this belief is was found.",
+    "sourceIndex": 4,
+    "alsoIn": [],
+    "asOf": "2026-10-14"
+   }
+  ],
+  "inspirations": [
+   "Berkeley Math Circle p-adic notes",
+   "Waterloo CEMC math circle p-adic lesson",
+   "car odometer rolling over",
+   "Exploding Dots unusual numbers"
+  ]
+ },
+ "design": {
+  "coreLoop": "Demo, question, aha: each rung gives one manipulable demo (odometer, calculator, ruler, hunt, zero-divisor product), then a short predict-then-check question whose answer the page computes, with a visible 'what just happened' line. The hunt and the zero-divisor reveal build to the aha that closeness, not size, is what is being measured.",
+  "sophisticationHooks": [
+   "BigInt arithmetic modulo 10^60 shows the last 60 digits exactly, so every result on the page is real arithmetic, not a script of canned answers",
+   "Digit-by-digit idempotent hunt where the page proves only one next digit works at each step, showing x*x beside x live",
+   "Split view of a 10-adic number into its 'powers of 2' and 'powers of 5' parts to explain zero divisors",
+   "Predict-then-reveal check questions with checked values; ordinary-integer reading shown beside each ...9s result"
+  ],
+  "dataNeeds": "none",
+  "scopeForOneDay": "One page, one script of BigInt helpers (add, multiply, negate, compare, digit lift) and six small demo panels: odometer, infinite-left calculator, negate, closeness ruler, idempotent hunt, zero divisors (behind 'Go deeper'). About 8 controls in the first screen, an explainer with a glossary, and 4 to 5 check questions with page-computed answers. Cut: rational numbers beyond a few presets, other primes (a base toggle only if time allows), square roots, proofs beyond the visual argument.",
+  "risks": [
+   "The infinite-digit belief is shown as a natural intuition backed by one published dialogue, not as a measured statistic.",
+   "...999 = -1 holds only in the 10-adic system: the page says plainly it is a different number system and does not question real 0.999... equals 1.",
+   "Finite display of 'infinite' numbers: the page shows 40 to 60 digits and states that the rest follows the same rule, and that results are exact because the last k digits of a result depend only on the last k digits of the inputs.",
+   "OEIS and MathWorld were not found again (verified:false): the page cites the arXiv paper, the blog and the course notes, and treats the digit tails as exact arithmetic the page recomputes itself.",
+   "Zero-divisor rung is the hardest: it sits behind a 'Go deeper' toggle and the lesson works without it.",
+   "Provocation words stay out of titles; the odometer animation is plain.",
+   "BigInt arithmetic must be tested against the same recomputed values (idempotent pair, 1/3 ending 6667, nines complement) before QA."
+  ]
+ },
+ "durable": true,
+ "verification": {
+  "by": "verifier",
+  "at": "2026-10-14",
+  "evidence": "search-only",
+  "confidence": 8,
+  "feasibleInOneDay": true,
+  "notes": "Two or more independent results agree on each core claim and I recomputed all numbers with exact arithmetic modulo 10^60; only the 'how common is the belief' point rests on one paper and is framed as intuition. Small, deterministic and buildable in a morning."
+ }
+}

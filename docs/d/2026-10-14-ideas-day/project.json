@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "date": "2026-10-14",
+  "slug": "ideas-day",
+  "title": "Ideas Day",
+  "tagline": "Today's build didn't finish. Here are the 10 researched ideas the team was weighing, with sources.",
+  "description": "Today's full build did not finish, so this page shows what the team was weighing: 10 researched ideas with their sources and dossiers. The ideas had not been scored when the day ended, so none is singled out as a pick.",
+  "tier": 3,
+  "fingerprint": {
+    "category": "data-viz",
+    "mechanic": "explorer",
+    "tone": [
+      "analytical",
+      "playful"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui"
+    ],
+    "tags": [
+      "ideas-day",
+      "fallback-day",
+      "research-shortlist"
+    ],
+    "keywords": [
+      "dossiers",
+      "score-radar",
+      "sortable-list"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#24120f",
+    "#dd513c",
+    "#f2b632"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Ulam spiral",
+      "url": "https://en.wikipedia.org/wiki/Ulam_spiral"
+    },
+    {
+      "title": "Mathwords: prime spiral",
+      "url": "https://www.mathwords.com/p/prime_spiral.htm"
+    },
+    {
+      "title": "Dirichlet's theorem on arithmetic progressions",
+      "url": "https://en.wikipedia.org/wiki/Dirichlet%27s_theorem_on_arithmetic_progressions"
+    },
+    {
+      "title": "Ramsey's theorem (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Ramsey%27s_theorem"
+    },
+    {
+      "title": "Art of Problem Solving wiki: Ramsey's Theorem",
+      "url": "https://artofproblemsolving.com/wiki/index.php/Ramsey%27s_Theorem"
+    },
+    {
+      "title": "Ramsey theory talk notes (Denison)",
+      "url": "https://personal.denison.edu/~whiteda/files/Lecture%20Notes/Ramsey%20GSS%20Talk.pdf"
+    },
+    {
+      "title": "Combinatorics/Ramsey's Theorem (Wikibooks)",
+      "url": "https://en.wikibooks.org/wiki/Combinatorics/Ramsey%27s_Theorem"
+    },
+    {
+      "title": "Proving that R(4,4) > 17 (Plus Magazine)",
+      "url": "https://plus.maths.org/proving-r4417"
+    },
+    {
+      "title": "Discrete mathematics problem sheet 10 (UPC)",
+      "url": "https://web.mat.upc.edu/juan.jose.rue/dmII-FU/Problems/Sheet10.pdf"
+    },
+    {
+      "title": "Generalized Paley graphs and their complete subgraphs of orders three and four (arXiv)",
+      "url": "https://arxiv.org/pdf/2006.14716"
+    },
+    {
+      "title": "Dinner Party Problem (Harvey Mudd Math Fun Facts)",
+      "url": "https://math.hmc.edu/funfacts/?p=545"
+    },
+    {
+      "title": "Oulipo (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Oulipo"
+    }
+  ],
+  "makingOf": "A safety-net page. The day's build missed its deadline, so the researched shortlist (work/2026-10-14/ideas/shortlist.json) is published as it stood: every string was sanitized and is rendered as text, the ideas are shown unscored and unranked, in the order they were delivered, sources that were not verified are marked as such, and nothing is fetched at view time. The thumbnail is drawn by a small software rasterizer, no browser needed.",
+  "stats": {
+    "files": 6,
+    "bytes": 370377,
+    "ownLoc": 623
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}

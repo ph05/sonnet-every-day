@@ -1,0 +1,287 @@
+{
+  "id": "engineer-1",
+  "title": "Inside Photo Metadata",
+  "plainSentence": "A lesson that lets you open a sample photo, see its hidden location and camera data, and remove it without touching the picture.",
+  "pitch": "Open a built-in sample photo and see its file laid out as a strip of labelled byte segments, then click the Exif segment to read the hidden location, camera, date and software fields in plain words. Delete segments with a switch and watch a SHA-256 fingerprint of the compressed picture data stay identical while the file shrinks, with the hash routine checked live against NIST example values. Then meet the traps: a stale thumbnail that still shows the uncropped scene, a rotation tag whose removal turns a photo sideways, and what no stripping can hide.",
+  "firstMinute": "The page opens with a sample photo already parsed: a coloured strip of file segments, a card reading 'taken at these coordinates with this camera on this date', and a Remove hidden data switch. Flipping the switch shows the card empty, the file size drop, and two matching SHA-256 fingerprints labelled 'picture data before' and 'after'. No reading is needed for that first success.",
+  "conceptsToLearn": [
+    "A photo file holds the picture and, separately, a block of notes about it"
+  ],
+  "whyNow": "Timeless. Photos are shared every day, and almost nobody has seen what is inside the file; the lesson shows it with a real parser instead of a diagram.",
+  "origin": {
+    "agent": "engineer",
+    "lens": "tool-exif-stripper"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "privacy-security",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "dom-ui",
+      "svg",
+      "canvas2d",
+      "worker"
+    ],
+    "tags": [
+      "jpeg",
+      "exif",
+      "metadata",
+      "gps",
+      "sha-256",
+      "thumbnail",
+      "photo-privacy",
+      "file-format",
+      "byte-segments",
+      "lossless"
+    ],
+    "keywords": [
+      "exif",
+      "jpeg-segments",
+      "app1",
+      "gps-coordinates",
+      "sha-256",
+      "embedded-thumbnail",
+      "orientation-tag",
+      "metadata-removal",
+      "entropy-coded-data"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A JPEG file is a sequence of marker-delimited segments. The compressed picture data (the scan after the start-of-scan header, up to the end marker) is separate from the metadata segments, such as the Exif block in APP1 which holds a small TIFF-style directory of fields (camera, time, GPS sub-directory, thumbnail). Deleting metadata segments leaves the compressed picture bytes untouched, so it is lossless, and a hash of those bytes proves it.",
+    "whyNiche": "Most explanations either say 'photos contain EXIF, remove it' with no look inside, or dive into the raw specification. Free web tools hide the mechanism, and many re-save the picture, so people cannot tell whether quality was lost or what was actually removed.",
+    "audience": "Curious non-experts who share photos online, plus students and developers who have never opened a JPEG file's bytes.",
+    "prerequisites": [
+      "Know that a photo can be saved as a .jpg file",
+      "Know what a hash is only loosely: a short fingerprint of some bytes (the page defines it)"
+    ],
+    "misconceptions": [
+      "Cropping or blurring a photo also removes what was cut, because the file only holds the visible picture (an embedded thumbnail can still show the original)",
+      "Removing metadata is always harmless (dropping the orientation tag without rotating the pixels can make the photo display sideways)",
+      "Removing metadata means re-saving the picture, which must lower its quality (segment deletion leaves the compressed picture data byte-identical)"
+    ],
+    "misconceptionFactIndexes": [
+      4,
+      5,
+      6
+    ],
+    "ahaMoment": "The picture data hash is identical before and after, yet the location, camera and a hidden thumbnail are gone: the secrets and the picture were never the same bytes.",
+    "demos": [
+      "1. Byte strip: the sample file drawn as proportional coloured segments (start marker, JFIF header, Exif block, quantisation and Huffman tables, frame header, scan, end marker); click one to see its first bytes in hex and a plain-English label",
+      "2. Field reader: the Exif block decoded into a readable list (GPS, camera, date, software), with a worked example turning degrees-minutes-seconds and the N/S/E/W reference letters into decimal coordinates, and a pointer-following animation from the header to the GPS directory",
+      "3. Thumbnail trap: the sample photo is cropped but its embedded thumbnail still shows the uncropped scene; deleting the thumbnail makes it disappear",
+      "4. Strip and prove: switches per segment group (GPS only, camera and time, thumbnail, all Exif, comments), live byte count, SHA-256 of the whole file (changes) versus SHA-256 of the scan bytes (does not), plus a self-check panel that runs the SHA-256 routine on the NIST example messages",
+      "5. The rotation catch: a sample stored sideways with an orientation tag; removing the tag makes it appear turned, with the safe options explained",
+      "6. What stays: a picture whose street sign, shadow and window reflection give the place away without any metadata, so the visitor sees stripping is not anonymity",
+      "7. Try your own (behind a More toggle): drop JPEG files to read their fields and download cleaned copies made by deleting segments only; nothing leaves the browser"
+    ],
+    "checkQuestions": [
+      "You delete the GPS fields from a photo. Does the hash of the compressed picture data change, and why?",
+      "A friend crops a face out of a photo and posts the original file. What inside the file might still show the face?",
+      "Why can removing a rotation tag make a photo look sideways even though no pixel changed?",
+      "A cleaned photo still shows your house number on the door. Which part of the page's lesson does that illustrate?"
+    ]
+  },
+  "research": {
+    "summary": "The file layout is documented consistently: a JPEG is a chain of marker segments from the start marker to the end marker, with the compressed scan after the scan header, and Exif lives in an APP1 segment that holds a TIFF-style directory with a GPS sub-directory and a thumbnail directory. NIST publishes the SHA-256 example value for the three-letter message 'abc', and an independent test-vector page agrees, so the hash can be checked against a named oracle. Stale embedded thumbnails after cropping are documented by a security advisory and a Microsoft engineer's blog, and removing the orientation tag without rotating pixels is a documented cause of sideways images. Lossless metadata removal is what the jpegtran manual describes for metadata. Free web tools exist, so the page is a lesson that shows its working, not a competitor tool.",
+    "sources": [
+      {
+        "title": "The Metadata in JPEG files (Exiv2 wiki)",
+        "url": "https://dev.exiv2.org/projects/exiv2/wiki/The_Metadata_in_JPEG_files/12",
+        "date": "",
+        "snippet": "Describes the JPEG segment layout: start marker, header segments, baseline frame header, single scan, and where Exif sits; notes Exif is meant to come first but many files put a JFIF header first.",
+        "via": "search",
+        "note": "Segment structure and the Exif-after-JFIF ordering caveat",
+        "verified": true
+      },
+      {
+        "title": "Exif (Wikipedia)",
+        "url": "https://en.wikipedia.org/wiki/Exif",
+        "date": "",
+        "snippet": "Exif data sits in APP1 as a TIFF-like structure; the GPS directory is reached through tag 0x8825, the Exif sub-directory through 0x8769, and the thumbnail is in the second directory.",
+        "via": "search",
+        "note": "APP1 container, sub-directory pointer tags; agrees with the Exiv2 wiki on APP1",
+        "verified": true
+      },
+      {
+        "title": "NSRL test data (NIST)",
+        "url": "https://www.nist.gov/itl/ai/ai-standards-and-guidelines-group/nsrl-test-data",
+        "date": "",
+        "snippet": "NIST's own page lists the SHA-256 digest of the ASCII string abc as BA7816BF 8F01CFEA 414140DE 5DAE2223 B00361A3 96177A9C B410FF61 F20015AD, for informal checking; it notes the examples date from FIPS 180-2.",
+        "via": "search",
+        "note": "Primary-source SHA-256 example value (examples originate in the earlier FIPS 180-2)",
+        "verified": true
+      },
+      {
+        "title": "Test vectors for SHA-1, SHA-2 and SHA-3 (DI Management)",
+        "url": "https://di-mgt.com.au/sha_testvectors.html",
+        "date": "",
+        "snippet": "Independent page listing SHA-2 test vectors, including the digest for abc and the longer 448-bit message.",
+        "via": "search",
+        "note": "Independent agreement on the abc digest and source of further vectors",
+        "verified": true
+      },
+      {
+        "title": "FIPS 180-4: Secure Hash Standard (CSRC, NIST)",
+        "url": "https://csrc.nist.gov/pubs/fips/180-4/final",
+        "date": "2012-03",
+        "snippet": "NIST's official record of FIPS 180-4, which specifies SHA-1, SHA-224, SHA-256, SHA-384, SHA-512 and the truncated SHA-512 variants.",
+        "via": "search",
+        "note": "Names the standard that defines SHA-256; page lists March 2012, other copies show 2015",
+        "verified": true
+      },
+      {
+        "title": "Why does Explorer show a thumbnail for my image that's different from the image? (The Old New Thing)",
+        "url": "https://devblogs.microsoft.com/oldnewthing/20110517-00/?p=10653",
+        "date": "2011-05-17",
+        "snippet": "A Microsoft engineer explains that a preview stored inside an image can be left stale by editing software, so a cropped photo may still show the pre-crop content, which is an information-disclosure risk.",
+        "via": "search",
+        "note": "Documents the stale embedded thumbnail problem",
+        "verified": true
+      },
+      {
+        "title": "Editing JPEG photos, thumbnails and your privacy - edited out bits may still be visible",
+        "url": "https://consumingexperience.com/2007/06/editing-jpeg-photos-thumbnails-and-your.html",
+        "date": "2007-06",
+        "snippet": "Blog post warning that edited-out parts of a JPEG may remain visible in the embedded thumbnail.",
+        "via": "search",
+        "note": "Independent second source for the thumbnail trap (title and result summary only)",
+        "verified": true
+      },
+      {
+        "title": "RedTeam Pentesting advisory RT-SA-2005-008",
+        "url": "https://redteam-pentesting.de/en/advisories/rt-sa-2005-008",
+        "date": "2005",
+        "snippet": "Security advisory about image editors leaving the embedded thumbnail unchanged after cropping; a related CVE record treats it as a design flaw. The 20 percent and 2 percent figures in the result summary are not used.",
+        "via": "search",
+        "note": "Third source on the thumbnail trap; statistics left out because the summary was blended",
+        "verified": true
+      },
+      {
+        "title": "Drupal issue 3583882 (image orientation after sanitising)",
+        "url": "https://www.drupal.org/node/3583882",
+        "date": "",
+        "snippet": "A bug report where sanitising an image that had an orientation tag leaves it displayed in the wrong orientation; suggests rotating pixels first or keeping the tag.",
+        "via": "search",
+        "note": "Orientation tag removal causes sideways display",
+        "verified": true
+      },
+      {
+        "title": "image orientation wrong (CocoConvert blog)",
+        "url": "https://cococonvert.com/blog/image-orientation-wrong",
+        "date": "",
+        "snippet": "Explains that software ignoring the orientation tag shows raw unrotated pixel data, so photos appear turned.",
+        "via": "search",
+        "note": "Independent agreement on the orientation tag effect",
+        "verified": true
+      },
+      {
+        "title": "GPS Tags (ExifTool documentation)",
+        "url": "https://exiftool.org/TagNames/GPS.html",
+        "date": "",
+        "snippet": "Lists the GPS tags stored in a separate directory in Exif, such as latitude as three rational numbers with a N or S reference letter, and the longitude and altitude equivalents.",
+        "via": "search",
+        "note": "Field layout for the degrees-minutes-seconds worked example",
+        "verified": true
+      },
+      {
+        "title": "JPEGTRAN(1) manual page",
+        "url": "https://manpath.be/c8/1/jpegtran",
+        "date": "",
+        "snippet": "States that the tool cannot do lossy changes, yet while transforming image data losslessly it can drop metadata; a copy option controls what metadata is kept.",
+        "via": "search",
+        "note": "Documents that metadata can be removed without re-encoding the picture",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A JPEG file runs from a start marker (0xFFD8) to an end marker (0xFFD9); header segments start with a marker and a length, the scan header is followed directly by the compressed picture data, and Exif is stored in an APP1 segment (marker 0xFFE1) that contains a TIFF-style structure. Seen 2026-10-14.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "In Exif, the GPS data is in its own sub-directory pointed to by tag 0x8825, the Exif sub-directory by tag 0x8769, and latitude is stored as three rational numbers plus an N or S reference letter. Seen 2026-10-14.",
+        "sourceIndex": 10,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The SHA-256 digest of the ASCII text abc is ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61 f20015ad, per NIST's NSRL test data page (examples carried over from FIPS 180-2) and an independent test-vector page. Seen 2026-10-14.",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "FIPS 180-4 is the NIST standard that specifies SHA-256 among the secure hash algorithms. Seen 2026-10-14 on NIST's CSRC page.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Editing software can leave the embedded Exif thumbnail unchanged after a crop, so the thumbnail may still show the original, uncropped scene (documented in a 2011 Microsoft engineer's blog post, a 2007 blog post and a 2005 security advisory).",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6,
+          7
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Removing the Exif orientation tag without first rotating the pixels can leave a photo displayed sideways, because the stored pixels are unrotated and only the tag tells viewers to turn them. Seen 2026-10-14.",
+        "sourceIndex": 8,
+        "alsoIn": [
+          9
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Metadata can be removed from a JPEG while the compressed picture data is passed through losslessly, according to the jpegtran manual page; no re-encoding of the picture is needed. Seen 2026-10-14.",
+        "sourceIndex": 11,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Hex-dump file format explainers",
+      "Kaitai Struct format visualisers",
+      "Exiv2 and ExifTool tag listings",
+      "NIST example algorithm walk-throughs"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, question, aha: the visitor flips a switch on a parsed sample, sees the fields and the matching picture-data hash, answers a check question, then moves to the next rung (thumbnail trap, orientation catch, what stays). The optional drop-your-own step turns the same parser on their files, read-only unless they choose to download.",
+    "sophisticationHooks": [
+      "A real, hand-written JPEG segment parser and writer in plain JavaScript that copies picture bytes untouched, with a lossless-ness check: the scan bytes before and after are compared byte by byte and by SHA-256",
+      "A from-scratch SHA-256 implementation verified in-page against NIST example vectors (abc, the empty message, the 448-bit message) with a visible pass badge",
+      "A TIFF directory walker handling both byte orders, pointer-following into the GPS, Exif and thumbnail directories, with bounds checks and a refusal path for malformed files",
+      "A decoded-field view with the degrees-minutes-seconds to decimal worked example, drawn on a plain coordinate grid with no map tiles or network"
+    ],
+    "dataNeeds": "bundled",
+    "scopeForOneDay": "Built: the segment-strip view, Exif field reader (GPS, camera, date, software), thumbnail and orientation demos on one bundled hand-made sample JPEG (a tiny picture with an invented place, an imaginary camera name and a fake date, base64-embedded), segment switches, SHA-256 proof panel with self-check, four check questions, intro and explainer text, and the More-toggled drop-your-own with cleaned downloads for JPEG only. Cut: formats other than JPEG, XMP/IPTC field decoding (shown as raw segments only), maker-note decoding, editing field values, map display, and any pixel re-encoding.",
+    "risks": [
+      "Tag numbers 0x8825 and 0x8769 are seen only in search summaries of Wikipedia and ExifTool pages; the thumbnail tag numbers (0x0201, 0x0202) and compression value come from a page not recorded as a source, so the builder must check them against the Exif specification (CIPA DC-008) before coding.",
+      "Not confirmed by any opened page: no page was opened this run (WebFetch not attempted because the sandbox listed no working hosts); every source is search-only, so verified flags rest on two independent search results or on the standards body's own page.",
+      "NIST's page for the abc digest says its examples come from FIPS 180-2; the page will say 'NIST example value' and not claim they are printed in FIPS 180-4, and will list the other vectors as checked against the independent test-vector page.",
+      "The brief's claims that free web tools use batch caps or re-encode the picture were not checked; the page makes no claim about other tools or about paid products.",
+      "Maker notes are vendor-specific and may hold absolute offsets, so deleting or moving them is risky; the page deletes whole segments only and never rewrites inside the Exif block unless a rewrite path is built and tested, otherwise partial removal (GPS only) is shown as a rebuilt directory with a stated limit.",
+      "Partial removal (only GPS) requires rewriting the Exif block with fixed-up offsets; if that proves too risky in one morning, offer segment-level choices only (keep or drop all Exif, keep or drop comments) and keep the GPS-only view as a read-only highlight.",
+      "Canvas-made or user JPEGs vary: progressive files, multiple APP1 segments (XMP shares APP1), and files with trailing bytes must be handled by the parser or refused with a plain message.",
+      "Stripping the colour profile changes colour rendering and the orientation tag changes display; the page keeps both by default and explains why."
+    ]
+  },
+  "durable": true
+}

@@ -1,0 +1,263 @@
+{
+  "id": "critic-1",
+  "title": "How Reward Schedules Work",
+  "plainSentence": "A lesson that lets you run a simulated learner on four reward schedules and watch which ones keep it pressing after rewards stop.",
+  "pitch": "Four vending machines pay out by different rules: every fifth press, randomly about every fifth press, after a fixed wait, after a random wait. You watch a simulated learner press each one, read its cumulative record line, then cut the payouts mid-run and see which learner gives up first. The same engine then runs a 3-minute turn for you on a hidden machine, ends with a clean stopping point, and shows why 'it must be due' is wrong.",
+  "firstMinute": "The page opens with a drawn vending machine and a simulated learner already pressing its button, a line climbing in steps beside it with a pause after each snack. One tap on 'Pay randomly instead' turns the stepped line into a steady climb with no pauses, and the caption says what changed. No reading needed for that first success.",
+  "conceptsToLearn": [
+    "A reward schedule is the rule that decides which button presses pay out."
+  ],
+  "whyNow": "Timeless: the one-more-turn pull in games, apps and vending machines runs on these rules, and a visitor who sees the rules at work can recognize them anywhere. Not news-bound.",
+  "origin": {
+    "agent": "critic",
+    "lens": "craft-one-more-turn"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "learning-memory",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "dom-ui",
+      "localstorage"
+    ],
+    "tags": [
+      "reinforcement-schedules",
+      "variable-ratio",
+      "operant-conditioning",
+      "extinction",
+      "vending-machine",
+      "cumulative-record",
+      "compulsion-loop",
+      "gambler-fallacy",
+      "habit-formation",
+      "game-design"
+    ],
+    "keywords": [
+      "reward-schedule",
+      "variable-ratio",
+      "fixed-ratio",
+      "extinction",
+      "cumulative-record",
+      "one-more-turn",
+      "habit",
+      "vending-machine",
+      "compulsion-loop",
+      "stopping-cue"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A reward schedule is the rule that links behavior to payouts. Ratio schedules pay after a count of responses and interval schedules pay for the first response after a time; each can be fixed or variable. Fixed ratio gives a high rate with a pause after each payout, variable ratio gives a high steady rate with little pause, fixed interval gives a scalloped pattern of speeding up before the payout is due. Behavior kept up by occasional payouts usually lasts longer after payouts stop than behavi...",
+    "whyNiche": "Most pieces on this topic either name the schedules in a textbook table or wave at slot machines and call it addiction. Neither lets you see the four response shapes appear, or see what stopping the payouts does to each. Game design talks use the vocabulary without ever showing the mechanism.",
+    "audience": "Curious adults, game players and designers, students meeting operant conditioning for the first time, anyone who wonders why some loops are hard to put down.",
+    "prerequisites": [
+      "None beyond pressing a button and getting a snack."
+    ],
+    "misconceptions": [
+      "A payout is due after a long dry run, so one more press must be closer to winning.",
+      "Paying every single time builds the most durable habit, so occasional payouts must be weaker."
+    ],
+    "misconceptionFactIndexes": [
+      2,
+      1
+    ],
+    "ahaMoment": "After the payouts are switched off, the learner that was paid every time quits within a few presses while the learner paid randomly keeps going, because for it a long dry spell was already normal. The page then shows that chance of a payout after a long dry run is exactly the same as after a short one, which is why the pull to press once more feels like information but is not.",
+    "demos": [
+      "Rung 1, one machine: a fixed-ratio vending machine pays every fifth press; the learner's cumulative record shows steps and pauses.",
+      "Rung 2, same average, different rule: put a random-ratio machine (about every fifth press) beside it and compare the two lines.",
+      "Rung 3, rules based on time: fixed-interval and variable-interval machines; see the scallop and the steady line.",
+      "Rung 4, the pivot and the fallout: switch payouts off for every learner at once and race how long each keeps pressing; a note says this is a lab pattern and is less reliable in people.",
+      "Rung 5, dry-run check: run thousands of random presses and chart the chance of a payout after k misses in a row, which stays flat.",
+      "Rung 6, your turn: three minutes on a hidden machine, then guess its schedule from your own record, then a summary card that closes the session."
+    ],
+    "checkQuestions": [
+      "A machine pays about once every 10 presses at random. You have pressed 30 times with no payout. Is the next press more likely to pay than the first press was?",
+      "Which of two learners, one trained on payout every press and one on payout about every 5th press, keeps pressing longer when payouts stop, according to the textbook pattern?",
+      "Look at a cumulative record with long flat stretches after each step. Fixed ratio or variable ratio?",
+      "Name one natural stopping point you could add to a loop that otherwise runs on and on."
+    ]
+  },
+  "research": {
+    "summary": "Introductory psychology textbooks (several copies of one openly licensed chapter, plus course handouts) agree on the four schedules and their response shapes: variable ratio is high and steady and the most resistant to stopping, fixed ratio shows a pause after payout, fixed interval is scalloped. The partial-reinforcement extinction effect is a named, studied finding but is contested outside the lab and reverses under some conditions, so the page presents it as a lab pattern. Game-design writing on compulsion loops and behavioral design uses the same vocabulary, and one prominent design practitioner argues schedules are a useful tool whose ethics depend on intent, which shapes the 'way to end well' section. Independence of random trials is standard probability and documented by a university math page and a second site.",
+    "sources": [
+      {
+        "title": "Reinforcement Schedules (introductory psychology chapter)",
+        "url": "https://courses.lumenlearning.com/suny-fmcc-intropsych/chapter/reading-reinforcement-schedules/",
+        "date": "",
+        "snippet": "Textbook chapter: variable ratio gives very steady, high responding with no predictable pauses and is the most resistant to extinction; fixed ratio shows a pause after payout; fixed interval is scalloped and easiest to extinguish.",
+        "via": "search",
+        "note": "Names the four schedules and their response shapes. Several search hits are copies of one text, so it counts once.",
+        "verified": false
+      },
+      {
+        "title": "Reinforcement schedules handout (University of New Mexico)",
+        "url": "https://www.unm.edu/~susanrc/Site/SPC_ED_519_files/Hndouts_ReinforSchedules_10,pdf.pdf",
+        "date": "",
+        "snippet": "Course handout on reinforcement schedules; seen as a search hit about resistance to extinction on variable schedules. The search summary was blended, so the exact wording is not confirmed.",
+        "via": "search",
+        "note": "Possible second independent source for the schedule patterns; unconfirmed because the summary blended several hits.",
+        "verified": false
+      },
+      {
+        "title": "The partial-reinforcement extinction effect and the contingent-sampling hypothesis",
+        "url": "https://paperity.org/p/10305665/the-partial-reinforcement-extinction-effect-and-the-contingent-sampling-hypothesis",
+        "date": "2013",
+        "snippet": "Journal article (Hochman and Erev, 2013) on why behavior learned under partial reward lasts longer once rewards stop; reports the effect can reverse depending on how attractive the alternative is.",
+        "via": "search",
+        "note": "Names the effect and shows it is not uniform. Year taken from the citation text in the summary, page not opened.",
+        "verified": false
+      },
+      {
+        "title": "Compulsion loop (encyclopedia article)",
+        "url": "https://en.wikipedia.org/wiki/Compulsion_loop",
+        "date": "",
+        "snippet": "Defines a compulsion loop as a habitual chain of activities a user may feel compelled to repeat, distinguishes it from a core loop, and notes a variable ratio schedule can strengthen it.",
+        "via": "search",
+        "note": "Background definition and the link between loops and schedules; single search hit.",
+        "verified": false
+      },
+      {
+        "title": "Behavioral Game Design (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/behavioral-game-design",
+        "date": "2001",
+        "snippet": "Early design article treating the rules that decide when rewards are given as contingencies, the same thing as schedules of reinforcement. The full ratio and interval section was cut off in the search excerpt.",
+        "via": "search",
+        "note": "Shows game designers use the schedule vocabulary. Year is from the summary's attribution of the original article, not confirmed on the page.",
+        "verified": false
+      },
+      {
+        "title": "There is no Skinner box, says Bungie user research lead (Game Developer)",
+        "url": "https://gamedeveloper.com/design/there-is-no-skinner-box-says-bungie-user-research-lead",
+        "date": "",
+        "snippet": "Interview-style piece in which a design researcher argues the Skinner box is a lab tool, schedules are useful but not all of human psychology, and reward structures are fine when they make the game more fun rather than manipulate. The result's metadata title was mismatched.",
+        "via": "search",
+        "note": "Balancing view for the ethics section; speaker's name was inconsistent across the search summary so the page should not name anyone.",
+        "verified": false
+      },
+      {
+        "title": "Professor comments on differences between television and modern video games (NYU Stern)",
+        "url": "https://www.stern.nyu.edu/experience-stern/news/professor-adam-alter-comments-differences-between-television-and-modern-video-games",
+        "date": "",
+        "snippet": "Faculty news item quoting a researcher on digital addiction who says most entertainment has some stopping cue, while many video games do not.",
+        "via": "search",
+        "note": "Supports the idea of designing a stopping cue; a quoted opinion, not a controlled study. Do not quote or name anyone on the page.",
+        "verified": false
+      },
+      {
+        "title": "Gambler's Fallacy (Duke University math education)",
+        "url": "https://sites.math.duke.edu/education/postcalc/probability/fallacy.html",
+        "date": "",
+        "snippet": "University teaching page: a slot machine's last jackpot does not change the next one's probability; after five blacks on a roulette wheel the chance of black next is still 18/38.",
+        "via": "search",
+        "note": "Independence of random trials, with the 'due' belief named as a fallacy.",
+        "verified": true
+      },
+      {
+        "title": "The Gambler's Fallacy Explained: Why People Believe a Win Is Due",
+        "url": "https://casino.org/blog/gamblers-fallacy-explained",
+        "date": "",
+        "snippet": "Explainer saying each spin, hand or roll is independent, so a result that has not appeared recently does not become more likely.",
+        "via": "search",
+        "note": "Independent second site agreeing on independence and the widespread 'due' belief.",
+        "verified": true
+      },
+      {
+        "title": "Reward preference research report (Kao, 2012)",
+        "url": "https://people.csail.mit.edu/dkao/pdf/kao2012rewardpreference.pdf",
+        "date": "2012",
+        "snippet": "Report finding variable reward schedules preferred over fixed ones with the same mean, except when the variable schedule's range was extended.",
+        "via": "search",
+        "note": "Optional extra context; seen only through a summary.",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Per introductory psychology textbook chapters, variable ratio gives a high, steady response rate with little pause and is the most resistant to extinction; fixed ratio shows a pause after payout; fixed interval is scalloped and the easiest to extinguish.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The partial-reinforcement extinction effect is the finding that behavior rewarded only some of the time often lasts longer once rewards stop than behavior rewarded every time; it is contested in field settings and can reverse under some conditions (Hochman and Erev, 2013, per the search summary).",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Independent random trials have no memory: after a long dry run the chance of a payout on the next press is unchanged (for example, after five blacks on a roulette wheel the chance of black next is still 18/38).",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A compulsion loop is distinct from a core loop; designers can strengthen a loop with a variable ratio schedule, per the encyclopedia article.",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Game design writing equates the rules that decide when rewards are given with schedules of reinforcement; one design practitioner argues such structures are acceptable when they serve player fun rather than manipulation.",
+        "sourceIndex": 4,
+        "alsoIn": [
+          5
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "One researcher on digital addiction is quoted saying many video games lack the stopping cues that other entertainment has; this is an opinion, not a controlled study.",
+        "sourceIndex": 6,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A report finds variable reward schedules are preferred over fixed ones with the same mean, unless the variable range is extended (Kao, 2012, per the search summary).",
+        "sourceIndex": 9,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "cumulative recorder charts from operant-conditioning labs",
+      "incremental and roguelike games with run-based endings",
+      "vending machines",
+      "slot-machine dry-streak folklore",
+      "daily puzzle games with a single finishing point"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, predict, reveal, question. Each rung shows a machine and a learner, asks the visitor to guess what the line will do or which learner quits first, then plays it and explains the shape, ending on a check question. The final rung turns the visitor into the learner for a timed turn and closes with a summary card.",
+    "sophisticationHooks": [
+      "One seeded engine drives every demo, so any run can be replayed exactly and the dry-run chart in rung 5 is computed from thousands of real simulated presses rather than drawn.",
+      "Side-by-side machines with equal average payout isolate the rule as the only difference, which is the whole lesson.",
+      "A pivot control switches payouts off mid-run for all learners at once, showing the fallout of each schedule in real time.",
+      "A designed ending: the visitor's own turn is capped at three minutes, a summary card shows their record and what they guessed, and the page names three stopping cues it itself uses (a fixed session length, no streak counter, nothing saved to bring them back)."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one simulation engine with four schedule types and a small learner model, a canvas cumulative-record chart, six rungs of demos with predict-then-reveal prompts, four check questions, the timed 'your turn' mode with a summary card, an intro paragraph and an explainer section. Cut: real animal data, accounts, sharing, saved history beyond a remembered tab, sound, a schedule-design sandbox.",
+    "risks": [
+      "The learner is an authored toy model whose rules are written to reproduce the textbook patterns, not recorded behavior. The page must say so plainly and never present its lines as experimental data.",
+      "Most key claims are verified:false (the schedule patterns come from textbook copies counted once, the extinction effect and design-article claims from single search hits). The page should show them as 'as of 2026-10-14, per introductory psychology textbooks' and the verifier should look for an independent second source.",
+      "The extinction effect is contested outside the lab and can reverse, so rung 4 must carry that caveat and not promise it will happen to a person.",
+      "The lens brief's 'Skinner box as a warning' framing is only partly supported: one design practitioner argues schedules are neutral tools, so the lesson teaches the mechanism and leaves the verdict to the visitor, with no claims about addiction or health.",
+      "Gambling adjacency: payouts are play-money snacks only, labelled simulated, no wagering, no real-money framing, and the page offers no advice.",
+      "Rung 6 could drift into a game; keep it three minutes, no scores, no leaderboard, no streaks, and make the summary card the finish.",
+      "A researcher is quoted in one source about stopping cues; the page does not name or quote anyone."
+    ]
+  },
+  "durable": true,
+  "sanitizer": {
+    "redacted": [],
+    "trimmed": 1
+  }
+}

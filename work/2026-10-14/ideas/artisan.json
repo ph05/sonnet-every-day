@@ -1,0 +1,218 @@
+{
+  "schema": 1,
+  "agent": "artisan",
+  "lens": "lesson-storage-engines",
+  "candidates": [
+    {
+      "id": "artisan-1",
+      "title": "B-Tree vs LSM Tree",
+      "plainSentence": "A lesson with two small database engines side by side that lets you stream in keys and count every page each engine writes and reads.",
+      "pitch": "Press Play and keys stream into two tiny storage engines at once. A B-tree finds the page a key belongs to and rewrites that whole page, while an LSM tree holds writes in a memory waiting room, flushes them as sorted runs and merges runs later. Live counters for pages written and pages read show who pays where, and a Compact button lets you watch levels merge, so you leave knowing why no engine is free.",
+      "firstMinute": "The page opens with both engines already ingesting a sample stream of 20 keys, and two running tallies of pages written and pages read side by side. In the first 30 seconds the visitor sees one key light up the page it rewrites in the B-tree, and the same key sit in memory in the LSM tree. The first success is watching the write counters diverge, with no reading needed.",
+      "conceptsToLearn": [
+        "A key-value store keeps values you look up by key, and its data lives on disk in fixed-size pages."
+      ],
+      "whyNow": "Timeless: engineers choose between B-tree and LSM-based databases every week, and most explanations show only finished diagrams where the costs stay invisible.",
+      "origin": {
+        "agent": "artisan",
+        "lens": "lesson-storage-engines"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "algorithms-cs",
+        "mechanic": "lesson",
+        "tone": ["nerdy", "analytical", "playful"],
+        "tech": ["svg", "dom-ui", "web-animations", "canvas2d"],
+        "tags": ["storage-engine", "b-tree", "lsm-tree", "write-amplification", "read-amplification", "compaction", "database-internals", "sorted-runs", "memtable", "key-value-store"],
+        "keywords": ["database", "storage", "b-tree", "lsm", "compaction", "write-amplification", "read-amplification", "pages", "memtable", "sstable"],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A B-tree storage engine finds the leaf page a key belongs to and rewrites that whole fixed-size page in place, splitting pages when they fill. An LSM tree buffers writes in a memory table, flushes it as an immutable sorted run, and later merges runs into larger levels in a step called compaction. Both engines pay: the B-tree in whole-page rewrites per small write, the LSM tree in repeated rewrites during compaction (write amplification) and in checking several runs on reads (read amplification).",
+        "whyNiche": "Most explanations show a finished tree diagram or a table of pros and cons, so the costs stay invisible: nobody sees one small write turn into many bytes rewritten, or a read fan out across several runs.",
+        "audience": "Programmers who must pick or tune a database and have heard 'LSM is for writes, B-tree is for reads' without seeing why.",
+        "prerequisites": ["What a key and a value are", "That disks and SSDs read and write in blocks called pages"],
+        "misconceptions": [
+          "A write happens once, at its final place on disk.",
+          "An in-place B-tree update is cheap because it touches only the changed record.",
+          "LSM writes are cheap because they are sequential, so there is no hidden cost."
+        ],
+        "misconceptionFactIndexes": [1, 2, 3],
+        "ahaMoment": "The visitor bursts a second wave of keys into both engines and watches the counters cross: the LSM tree wrote little at first, then compaction rewrites the same keys again and again, while the B-tree rewrote a whole page per tiny update. Every engine pays somewhere, and the choice is only about where.",
+        "demos": [
+          "Rung 1, the familiar: a sorted shelf of index cards. Insert one key and see why sorted order helps lookups.",
+          "Rung 2, B-tree: stream keys in; each one finds its leaf page and the whole page lights up as rewritten; watch a page split when full and count pages written.",
+          "Rung 3, LSM tree: the same keys enter a memory waiting room (the memtable); when it fills it flushes as one sorted run; counters show far fewer page writes so far.",
+          "Rung 4, the read side: look up a key and count pages checked in each engine; the LSM tree may check several runs, with a Bloom-filter switch that skips runs.",
+          "Rung 5, compaction: press Compact and watch runs merge into the next level, rewriting keys that were already written; the amplification ratio counter climbs.",
+          "Rung 6, the dials: choose workload (random keys, sequential keys, overwrites of hot keys), page size and size ratio, and see who wins each workload."
+        ],
+        "checkQuestions": [
+          "You overwrite the same key 100 times. Roughly how many times is that key's data written in each engine, and where?",
+          "Why can a read in the LSM tree touch more pages than a read in the B-tree?",
+          "What does compaction buy, and what does it cost?",
+          "Which workload would make you pick each engine?"
+        ]
+      },
+      "research": {
+        "summary": "The 1996 LSM-tree paper by O'Neil, Cheng, Gawlick and O'Neil is confirmed by the publisher's listing, and secondary material agrees on the core mechanics: memtable flush, immutable sorted runs, compaction, Bloom filters. RocksDB's own blog gives a typical leveled-compaction write amplification of 20 to 30 times user data, which shapes the demo's headline counters. The B-tree full-page-rewrite cost and the 'pick two of three amplifications' framing came only from search snippets or secondary writers, so the page labels its own counters as a simplified model and shows reported figures with an 'as of' attribution. The TiKV page could not be opened (host lookup failed).",
+        "sources": [
+          {
+            "title": "B-Tree vs LSM-Tree (TiKV deep dive)",
+            "url": "https://tikv.org/deep-dive/key-value-engine/b-tree-vs-lsm/",
+            "date": "",
+            "snippet": "Result carried only navigation text; the points attributed to it came from a blended search summary and secondary writers, so its own wording was not seen.",
+            "via": "search",
+            "note": "Names the read/write/space amplification framing and a formal comparison; contents not seen.",
+            "verified": false
+          },
+          {
+            "title": "The Log-Structured Merge-Tree (LSM-Tree), Acta Informatica (Springer listing)",
+            "url": "https://link.springer.com/article/10.1007/s002360050048",
+            "date": "1996",
+            "snippet": "Publisher listing for the paper by Patrick O'Neil, Edward Cheng, Dieter Gawlick and Elizabeth O'Neil, volume 33, pages 351 to 385, DOI 10.1007/s002360050048.",
+            "via": "search",
+            "note": "Establishes who wrote the original LSM paper, where and when it appeared.",
+            "verified": true
+          },
+          {
+            "title": "lsm-acta1996 (Berkeley-hosted copy of the paper)",
+            "url": "https://dsf.berkeley.edu/cs286/papers/lsm-acta1996.pdf",
+            "date": "",
+            "snippet": "Hosted copy whose abstract describes batching index changes in memory and cascading them to disk components, reducing disk arm movement versus B-trees.",
+            "via": "search",
+            "note": "Abstract-level description of the LSM idea; second host for the same paper.",
+            "verified": false
+          },
+          {
+            "title": "Align compaction output file (RocksDB blog)",
+            "url": "https://rocksdb.org/blog/2022/10/31/align-compaction-output-file.html",
+            "date": "2022-10-31",
+            "snippet": "RocksDB's own blog says leveled compaction has larger write amplification, typically 20 to 30 times user data, and reports a change cutting it by over 10 percent.",
+            "via": "search",
+            "note": "Primary-source figure for leveled compaction write amplification.",
+            "verified": true
+          },
+          {
+            "title": "LSM Compaction Strategies: Size-Tiered, Leveled, and the Workload That Picks for You",
+            "url": "https://codemia.io/archive/lsm-compaction-strategies",
+            "date": "",
+            "snippet": "Overview saying leveled compaction keeps space amplification near 1.1x with predictable reads, but write amplification can reach 20x or more as one key is rewritten down the levels.",
+            "via": "search",
+            "note": "Independent secondary source agreeing with the RocksDB figure; also explains the leveled versus tiered trade-off.",
+            "verified": true
+          },
+          {
+            "title": "Storage Engine (Cassandra documentation)",
+            "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/storage-engine.html",
+            "date": "",
+            "snippet": "Official docs for a widely used LSM-style database; compaction reads several small sorted tables, merges them and rewrites a new table, which creates write amplification. Reads use Bloom filters over tables.",
+            "via": "search",
+            "note": "Primary source for compaction cost and Bloom filters in a real engine.",
+            "verified": true
+          },
+          {
+            "title": "Bf-Tree: A Modern Read-Write-Optimized Concurrent Larger-Than-Memory Range Index (VLDB)",
+            "url": "https://mail.vldb.org/pvldb/volumes/17/paper/Bf-Tree%3A%20A%20Modern%20Read-Write-Optimized%20Concurrent%20Larger-Than-Memory%20Range%20Index",
+            "date": "",
+            "snippet": "Paper states B-trees show high write amplification because a whole page must be written even for a single record update.",
+            "via": "search",
+            "note": "Supports the B-tree whole-page rewrite cost; seen in a snippet only.",
+            "verified": false
+          },
+          {
+            "title": "Data storage and retrieval (reader notes on Designing Data-Intensive Applications)",
+            "url": "https://candost.blog/books/data-storage-and-retrieval/",
+            "date": "",
+            "snippet": "Reader notes: B-trees use fixed-size pages, traditionally 4 KB; write amplification is one write to the database causing several disk writes over its lifetime; memtable then older tables on reads.",
+            "via": "search",
+            "note": "Secondary notes on the textbook chapter; book text not seen.",
+            "verified": false
+          },
+          {
+            "title": "Log-structured merge tree explained (Aerospike blog)",
+            "url": "https://aerospike.com/blog/log-structured-merge-tree-explained/",
+            "date": "",
+            "snippet": "Vendor blog: in size-tiered schemes a record can be rewritten three to ten times before reaching the coldest level; tiered compaction trades more overlapping runs on reads for fewer rewrites.",
+            "via": "search",
+            "note": "Vendor with a commercial stake; illustrative only.",
+            "verified": false
+          },
+          {
+            "title": "LSM tree write amplification, key-value separation and compaction (blog)",
+            "url": "https://mohakchugh.is-a.dev/blog/lsm-tree-write-amplification-key-value-separation-compaction",
+            "date": "",
+            "snippet": "Blog gives a rough model for leveled write amplification as size ratio times (levels minus one), about 30 for ratio 10 and four levels.",
+            "via": "search",
+            "note": "A rough model, not a measurement; good for the dial but labelled as such.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "The LSM-tree paper by O'Neil, Cheng, Gawlick and O'Neil appeared in Acta Informatica, volume 33, pages 351 to 385, in 1996 (an earlier technical report of the same title dates from 1991).",
+            "sourceIndex": 1,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Per Cassandra's documentation, compaction reads several small sorted tables, merges them, processes updates and deletes, and writes a new table, which is a source of write amplification; reads use Bloom filters to avoid tables that cannot hold the key.",
+            "sourceIndex": 5,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "RocksDB's blog states leveled compaction typically has write amplification of 20 to 30 times user data; a second overview says 20x or more.",
+            "sourceIndex": 3,
+            "alsoIn": [4],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "In a B-tree, a single small record update rewrites the entire page holding it (typical page sizes 4, 8 or 16 KB), and a full page splits, writing several pages for one insert. Reported by a VLDB paper and secondary notes; not independently confirmed.",
+            "sourceIndex": 6,
+            "alsoIn": [7],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Reported framing: an engine can optimise at most two of read, write and space amplification; B-trees favour reads and space, level-based LSM trees favour writes and space at a cost to reads that Bloom filters and caches soften. Seen only through secondary summaries of the TiKV page.",
+            "sourceIndex": 0,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "A rough model for leveled compaction puts write amplification near size ratio times (levels minus one); a blog's example gives about 30 for ratio 10 and four levels. A model, not a measurement.",
+            "sourceIndex": 9,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          }
+        ],
+        "inspirations": [
+          "Kleppmann's storage and retrieval chapter",
+          "Interactive B-tree and LSM visualizers",
+          "RocksDB and Cassandra compaction documentation",
+          "Explorable explanations"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: pick a workload, stream keys into both engines, watch the page-written and page-read counters, then predict the next number before pressing Compact or Look up. The loop stays interesting because each workload (random, sequential, hot overwrites) shifts which engine pays and where, and the visitor's guess is scored against the simulation.",
+        "sophisticationHooks": [
+          "Both engines are simulated in plain code with a fixed small page size (say 4 keys per page), so every count is exact and checkable by a script against hand-worked examples.",
+          "Animated pages: a rewritten page flashes, a split pulls apart, runs slide down levels and merge, with a reduced-motion twin that steps instead of animating.",
+          "A running 'write amplification' and 'read amplification' dial for each engine, plus a ledger chart over time that makes the compaction spikes visible.",
+          "Predict-then-reveal check questions and three workload presets that end in the aha: the counters cross."
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Build: a deterministic B-tree simulator (insert, split, lookup) and a leveled LSM simulator (memtable, flush, level merge, optional Bloom filter) with page counters; SVG rendering of both side by side; workload presets, play, step and compact buttons; intro paragraph, explainer and four check questions. Cut: deletes and tombstones, tiered compaction, concurrency, crash recovery, real timing or hardware claims, persistence.",
+        "risks": [
+          "The B-tree whole-page rewrite figure and the 'at most two of three amplifications' framing are unverified (search snippets only); the page defines its own simplified model and shows reported figures as 'as of 2026-10-14, per' their source, or drops them.",
+          "The TiKV page could not be opened (host lookup failed) and the Kleppmann text was not seen; only secondary notes were read.",
+          "The misconception 'a write happens once' is not documented as a widely held belief by any source I saw; the sources document the amplification facts that contradict it, so the page frames it as a common assumption to test, not as a survey finding.",
+          "Simulated counts depend on the chosen page size and size ratio and are not benchmark results; the page must say so plainly and never claim real database speeds.",
+          "Scope: two engines plus animation in one morning is tight; mitigate by cutting deletes and tiered compaction and by building the simulators first with scripted tests."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

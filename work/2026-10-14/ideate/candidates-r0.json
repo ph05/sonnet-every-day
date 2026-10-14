@@ -1,0 +1,2424 @@
+[
+  {
+    "id": "pulse-1",
+    "title": "Browser Fingerprint Lesson",
+    "plainSentence": "A lesson that lets you narrow a simulated crowd of 1,000 browsers to one, showing how everyday settings add up to a fingerprint.",
+    "pitch": "A crowd of 1,000 simulated browsers sits on screen. You switch on one ordinary setting at a time (language, time zone, screen size, installed fonts, graphics card) and watch the group that looks like you shrink, while a meter counts the bits of identifying information gained. Then the lesson springs the twist that settings are correlated, so naive bit-adding overshoots, and shows why clearing cookies does not touch any of this.",
+    "firstMinute": "The first frame already shows 1,000 dots, one highlighted sample visitor, and a banner reading '1,000 people look like you'. One tap on a setting chip and the dots fade until a small group remains, with the bit meter ticking up. First success: the visitor sees a handful of dull settings narrow a crowd to a few dozen without reading anything.",
+    "conceptsToLearn": [
+      "Websites can see basic facts about your browser, such as its language and screen size"
+    ],
+    "whyNow": "A browser-fingerprinting demo titled 'Fingerprints are the new cookies' was discussed on Hacker News and Lobsters in October 2026, so many readers are asking how it works; the underlying maths (surprisal, anonymity sets) is timeless.",
+    "origin": {
+      "agent": "pulse",
+      "lens": "hn-front-page"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "privacy-security",
+      "mechanic": "lesson",
+      "tone": [
+        "analytical",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "svg",
+        "dom-ui"
+      ],
+      "tags": [
+        "browser-fingerprinting",
+        "anonymity-set",
+        "entropy",
+        "surprisal",
+        "bits-of-information",
+        "cookies",
+        "tracking",
+        "correlated-attributes",
+        "crowd-simulation"
+      ],
+      "keywords": [
+        "fingerprint",
+        "bits",
+        "entropy",
+        "anonymity",
+        "tracking",
+        "privacy",
+        "cookies",
+        "uniqueness"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A browser fingerprint is a bundle of ordinary settings; each value is shared by many people, but the combination can be rare. The rarity of a value is measured in bits (surprisal: minus the base-2 logarithm of the share of people who have it), and the bits of independent attributes add up, so a handful of common settings can narrow a crowd to a single browser. An anonymity set is the group of people who look identical to a tracker.",
+      "whyNiche": "Most explainers just say 'trackers can identify you' or show a scary single score. They skip the arithmetic that makes it understandable (rarity as bits, crowd size as anonymity set) and the subtlety that attributes are correlated, so bits cannot be simply added.",
+      "audience": "Curious web users and junior developers who have heard that clearing cookies or using private windows protects them, and want to see why fingerprinting is different.",
+      "prerequisites": [
+        "Knowing that a website can see some browser settings",
+        "Comfort with simple percentages"
+      ],
+      "misconceptions": [
+        "Clearing cookies or using a private window makes me untrackable",
+        "Each setting I have is unique, so that is what identifies me (in fact each is shared by many; the combination is what is rare)",
+        "Bits from every setting can be added up to a total (only true if the settings are independent; correlated ones overlap)"
+      ],
+      "misconceptionFactIndexes": [
+        4,
+        5
+      ],
+      "ahaMoment": "Four boring settings that each match a third of the crowd leave only a few people; then the visitor sees that two correlated settings (operating system and font list) shrink the crowd far less than their separate bits promise.",
+      "demos": [
+        "Crowd narrower: toggle one setting at a time and watch 1,000 dots shrink to an anonymity set, with a live count of people who look like you",
+        "Rarity as bits: drag the share of people having a value and see its bits (half the crowd is 1 bit, one in 1,024 is 10 bits)",
+        "Add the bits: stack independent settings and see that bits add while crowd size multiplies down",
+        "Correlation trap: switch on two linked settings and compare the naive bit total to the true joint bits from the actual crowd",
+        "Cookie versus fingerprint: clear a cookie and see the fingerprint unchanged, because it is derived each visit rather than stored",
+        "Defence trade-off: make everyone report the same values and watch the crowd merge, then see what breaks (a screen size no longer fits the window)"
+      ],
+      "checkQuestions": [
+        "A language setting is shared by 1 in 8 people. How many bits is that, and how many people in a crowd of 1,024 share it?",
+        "You stack time zone (3 bits) and screen size (2 bits), assumed independent. Roughly what share of the crowd remains?",
+        "Why is 'operating system plus font list' worth fewer bits than the two added separately?",
+        "You clear all cookies. Which of the settings on the screen changed?"
+      ]
+    },
+    "research": {
+      "summary": "Hook (as of 2026-10-14): search results show a demo titled 'Fingerprints are the new cookies' on royfish.dev (post dated 2026-10-06 in one snapshot) discussed on Hacker News and Lobsters, where it reached the front page around 2026-10-12; point counts differ between snapshots, so none is used. The science is old and solid: Eckersley's 2010 study (hosted by the EFF) found 83.6 percent of 470,161 fingerprints unique and at least 18.1 bits of entropy, from a self-selected, privacy-conscious sample. Surprisal (minus log2 of probability, additive for independent events) is the textbook measure; a 2020 study of fingerprint properties measures dependence between attributes with conditional entropy, which is why simply adding bits overstates identifiability. The lesson uses a seeded simulated crowd with hand-made, labelled attribute shares, never real measurements or a read of the visitor's browser.",
+      "sources": [
+        {
+          "title": "Fingerprints are the new cookies",
+          "url": "https://royfish.dev/fingerprints-are-the-new-cookies",
+          "date": "2026-10-06",
+          "snippet": "A demo page that gives each device a stable nickname derived from browser and network signals, said (in a search summary) to persist after clearing cookies, in private windows and over a VPN.",
+          "via": "search",
+          "note": "The October 2026 hook; the author's own page for the demo. Persistence claims come from a search summary only.",
+          "verified": true
+        },
+        {
+          "title": "Fingerprints are the new cookies (Hacker News item)",
+          "url": "https://news.ycombinator.com/item?id=50048642",
+          "date": "",
+          "snippet": "The discussion thread for the demo; commenters debated extensions that scramble fingerprint data and whether EU consent rules cover fingerprinting.",
+          "via": "search",
+          "note": "Shows the demo was discussed on Hacker News; exact date and point counts vary by snapshot, not opened.",
+          "verified": true
+        },
+        {
+          "title": "Fingerprints are the new cookies (Lobsters)",
+          "url": "https://lobste.rs/s/ml9xrb/fingerprints_are_new_cookies",
+          "date": "",
+          "snippet": "A Lobsters story page for the same demo, an independent community discussion of it.",
+          "via": "search",
+          "note": "Second independent community listing of the hook.",
+          "verified": true
+        },
+        {
+          "title": "How Unique Is Your Web Browser? (Eckersley, hosted by EFF)",
+          "url": "https://coveryourtracks.eff.org/static/browser-uniqueness.pdf",
+          "date": "2010",
+          "snippet": "The original study: of 470,161 fingerprints, 83.6 percent were unique; entropy at least 18.1 bits; sample self-selected from visitors to a publicised test site.",
+          "via": "search",
+          "note": "Primary source on the EFF domain for the 2010 figures and the sample caveat.",
+          "verified": true
+        },
+        {
+          "title": "How Unique Is Your Web Browser? (Springer, PETS 2010)",
+          "url": "https://link.springer.com/chapter/10.1007/978-3-642-14527-8_1",
+          "date": "2010",
+          "snippet": "The conference publication of the same study, listed as a chapter in the PETS 2010 proceedings.",
+          "via": "search",
+          "note": "Independent publisher listing of the same paper.",
+          "verified": true
+        },
+        {
+          "title": "Web Browsers Leave 'Fingerprints' Behind as You Surf the Net (EFF press release)",
+          "url": "https://www.eff.org/press/archives/2010/05/13",
+          "date": "2010-05-13",
+          "snippet": "EFF's own announcement of the results, with rounded figures of about 84 percent unique and about 94 percent for browsers with Flash or Java.",
+          "via": "search",
+          "note": "Primary source on the vendor's own domain; rounded figures agree with the paper.",
+          "verified": true
+        },
+        {
+          "title": "A Large-scale Empirical Analysis of Browser Fingerprints Properties for Web Authentication",
+          "url": "https://arxiv.org/pdf/2006.09511",
+          "date": "2020",
+          "snippet": "Measures how much one fingerprint attribute reveals about another using normalized conditional entropy, from zero (fully inferable) up to independence.",
+          "via": "search",
+          "note": "Supports the correlation trap: dependent attributes carry less joint information than their separate entropies suggest. Quoted definition came via a search summary.",
+          "verified": true
+        },
+        {
+          "title": "SimBins: An information-theoretic approach to link prediction (arXiv 1908.10053)",
+          "url": "https://arxiv.org/pdf/1908.10053",
+          "date": "2019",
+          "snippet": "Describes self-information (surprisal) of an event as minus log of its probability, a measure of surprise.",
+          "via": "search",
+          "note": "One of two independent papers agreeing on the surprisal definition.",
+          "verified": true
+        },
+        {
+          "title": "Eclectic Notes on Uncertainty, Information, and Classical Dynamics (arXiv 2404.13511)",
+          "url": "https://arxiv.org/pdf/2404.13511",
+          "date": "2024",
+          "snippet": "States base-2 gives bits and that for independent events the information values add, among the axioms for self-information.",
+          "via": "search",
+          "note": "Second independent source for surprisal and additivity.",
+          "verified": true
+        },
+        {
+          "title": "Why Incognito Mode Does Not Protect You From Fingerprinting (CyberInsider report)",
+          "url": "https://cyberinsider.com/?p=146132",
+          "date": "",
+          "snippet": "A report on one researcher who got the same visitor ID from a commercial demo after clearing data and in a private window; Tor produced a new ID each visit.",
+          "via": "search",
+          "note": "Documents the clear-cookies misconception, but a single researcher's experiment and a summary blended several results.",
+          "verified": false
+        },
+        {
+          "title": "Fingerprints Are the New Cookies (daily.dev summary)",
+          "url": "https://daily.dev/posts/fingerprints-are-the-new-cookies-fxtqozs0a",
+          "date": "",
+          "snippet": "A summary listing the signals used (IP, headers, canvas, WebGL, audio, time zone, CPU cores) and claiming per-browser defence levels.",
+          "via": "search",
+          "note": "Secondary summary; the per-browser defence ranking is unconfirmed and must not be presented as fact.",
+          "verified": false
+        },
+        {
+          "title": "An Improved Entropy Measure for Web Browser Fingerprinting Risk (PoPETs 2026)",
+          "url": "https://www.petsymposium.org/popets/2026/popets-2026-0102.php",
+          "date": "2026",
+          "snippet": "Argues that normalized entropy is a flawed way to compare datasets of different sizes and proposes another measure.",
+          "via": "search",
+          "note": "Context for the limits of entropy numbers; known only from a blended search summary.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-14, a demo titled 'Fingerprints are the new cookies' (royfish.dev) appears in search results as a Hacker News item and a Lobsters story; its post date is 2026-10-06 in one snapshot and HN point counts differ between snapshots, so no count is claimed.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Eckersley's 2010 study found 83.6 percent of 470,161 browser fingerprints were unique, with an entropy lower bound of 18.1 bits, from a self-selected sample of visitors to a publicised test site (so not representative of all browsers).",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4,
+            5
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Self-information (surprisal) of an outcome with probability p is minus log2 of p in bits: a certain event carries zero bits, rarer events carry more, and the bits of independent events add.",
+          "sourceIndex": 7,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A 2020 study of browser fingerprint properties measures dependence between attributes with normalized conditional entropy, so correlated attributes carry less joint information than their separate entropies added together suggest.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Documented misconception (the third on the list): adding up per-attribute entropies overstates how identifying a fingerprint is when the attributes are correlated (same source as the previous fact).",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Reported but unconfirmed as of 2026-10-14, per CyberInsider: one researcher got the same visitor ID from a commercial fingerprinting demo after clearing data and in a private window (Tor gave a new ID each visit). Clearing cookies and private windows therefore do not remove a fingerprint.",
+          "sourceIndex": 9,
+          "alsoIn": [
+            10
+          ],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Cover Your Tracks",
+        "AmIUnique",
+        "Panopticlick",
+        "Explorable Explanations",
+        "Fingerprints are the new cookies"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha: toggle a setting and see the crowd shrink, answer a prediction question (how many people will remain?), then reveal the exact count from the seeded crowd; each rung adds one idea (bits, adding, correlation, cookies versus fingerprints, defences).",
+      "sophisticationHooks": [
+        "A seeded simulated population of 1,000 with hand-made, labelled attribute shares and deliberate correlations (operating system with fonts and screen size), so every worked example is exact and checkable by a script",
+        "A live meter comparing naive summed bits with true joint bits from the actual crowd, which exposes the correlation trap",
+        "A predict-then-reveal question at each rung with an instant result",
+        "A defence toggle that standardises values and shows the crowd merging, with the honest trade-off"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: one scrolling page with a canvas crowd of 1,000 dots, six setting chips (five on the first screen, the rest behind More), a bits meter, five short demo sections, check questions and a plain intro paragraph. The population is generated in code from a fixed seed. Cut: reading the visitor's real browser, any network request, canvas or audio probes, per-browser defence rankings.",
+      "risks": [
+        "Hook freshness: exact HN date and points differ across snapshots and the HN and Lobsters pages could not be opened; the page should cite only that the demo was discussed in October 2026, never a score.",
+        "The incognito and clear-cookies persistence claim rests on one researcher's report and a blended summary (unverified); the page must show it as 'as of 2026-10-14, per CyberInsider' or explain the mechanism by logic only.",
+        "Uniqueness figures vary a lot by study and sample (the 2010 sample was self-selected); the page must call 83.6 percent a 2010 figure from a self-selected sample and the simulated crowd must be labelled as made-up, not a measurement.",
+        "Safety red line 7 (no fingerprinting): the page deliberately does not read the visitor's own browser; any later 'show my browser' extra would need a spec decision and must stay local, unstored and unsent.",
+        "The brief's claim of front-page placement is only supported by a third-party mirror listing for 2026-10-12 (rank 12); not confirmed on the HN site itself.",
+        "Entropy numbers can mislead (a 2026 paper argues normalized entropy is flawed); keep to plain surprisal and crowd counts and avoid false precision."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "cards-1",
+    "title": "Cricket Rain Rule",
+    "plainSentence": "A lesson that lets you interrupt a cricket innings with rain and see how overs and wickets set the revised target.",
+    "pitch": "A lesson on why cricket's rain rule does not simply scale the target by overs lost. The visitor interrupts a sample chase with a rain delay, watches the naive run-rate target and a resource-ledger target pull apart, then replays the 1992 semi-final to see the older rule fail. They leave able to explain why wickets in hand are a second budget, and able to predict which way a revised target will move.",
+    "firstMinute": "The first frame already shows a sample chase (first side 280 from 50 overs, chasing side 120 for 2 after 20 overs) with rain at over 20, two bars labelled simple scaling and resource ledger, and a worked revised target for each. A single slider for overs lost moves both bars at once; the first success is seeing the two targets disagree as the slider moves, with no reading needed.",
+    "conceptsToLearn": [
+      "In limited-overs cricket a batting side has two things to spend: 50 overs and 10 wickets"
+    ],
+    "whyNow": "Timeless: rain interrupts matches every season and the revised target is the most argued-about number in the sport; the idea is a stable piece of statistics, not news.",
+    "origin": {
+      "agent": "cards",
+      "lens": "sports-anywhere"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "hockey-sports",
+      "mechanic": "lesson",
+      "tone": [
+        "analytical",
+        "nerdy",
+        "cozy"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "canvas2d"
+      ],
+      "tags": [
+        "cricket",
+        "rain-delay",
+        "revised-target",
+        "resources",
+        "overs-and-wickets",
+        "par-score",
+        "run-rate",
+        "sports-statistics",
+        "ledger",
+        "interruptions"
+      ],
+      "keywords": [
+        "duckworth-lewis-stern",
+        "dls",
+        "cricket-rain-rule",
+        "resource-table",
+        "target-score",
+        "average-run-rate",
+        "most-productive-overs",
+        "wickets-in-hand"
+      ],
+      "slot": "interest",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A limited-overs innings is a budget of two resources, overs remaining and wickets in hand. A rain delay removes part of that budget, and the revised target is the first side's score scaled by the ratio of the two sides' remaining resource percentages, not by overs alone.",
+      "whyNiche": "Broadcast explainers state the rule in one sentence (wickets and overs both count) and then show a number nobody can reproduce. The official resource values are not published in full, so almost nobody has seen the ledger that sits underneath; calculators hide it too.",
+      "audience": "Cricket fans and curious non-fans who have heard 'DLS' on a rain-hit broadcast and want to know why the target is the number it is.",
+      "prerequisites": [
+        "Know that in a one-day match each side bats once and the second side chases the first side's total",
+        "No statistics needed"
+      ],
+      "misconceptions": [
+        "A shortened match just scales the target by the fraction of overs lost, like cutting a recipe in half",
+        "Wickets in hand matter little; only the overs left decide how many runs a side can still make",
+        "An interruption costs both situations the same, whenever it happens and however many wickets are down"
+      ],
+      "misconceptionFactIndexes": [
+        1,
+        2
+      ],
+      "ahaMoment": "Two chasing sides with the same number of overs left are worth very different amounts when one has all ten wickets and the other has three: the ledger shows resources, not time, and a rain delay costs more when you have more wickets to lose.",
+      "demos": [
+        "Simple scaling: a slider for overs lost, and the naive target that cuts the chase in proportion to overs",
+        "Two budgets: a two-axis ledger of overs left against wickets lost, a percentage in each cell, and the visitor picks cells to compare",
+        "Same overs, different wickets: two chasers with equal overs left and different wickets down, and the runs each is expected to add",
+        "The interruption: choose when rain arrives and how many overs it takes, and see resources lost, the ratio, and the revised target next to the naive one",
+        "The older rules: the average run rate rule and the discard-the-weakest-overs rule applied to the same innings, with the 1992 semi-final replay shown as reported"
+      ],
+      "checkQuestions": [
+        "Rain removes 10 overs. Is the revised target cut more when the chasing side is 2 down or 7 down at that moment, and why?",
+        "Two sides each have 25 overs left. Which has more resources: the one with 0 wickets lost or 5 wickets lost?",
+        "If the first side's resources are 100 percent and the chasing side's are 80 percent, what is the target for a first score of 250?",
+        "Why does discarding the first side's least productive overs punish a bowling side that bowled well?"
+      ]
+    },
+    "research": {
+      "summary": "Search results agree on the core: the Duckworth-Lewis-Stern method treats overs and wickets as two resources, 100 percent at the start of a 50-over innings, and adjusts the chasing side's target in proportion to the two sides' resources; the official ICC page documents the method. The older rules are documented too: an average run rate rule that ignored wickets, and the 1992 rule that dropped the first side's least productive overs, which left South Africa needing about 21 or 22 off one ball in the semi-final (sources differ). Critically, the official resource values and fitted parameters were reported as never published in full, so the page must build and label its own illustrative resource model, anchored to a handful of reported example values, rather than claim to reproduce the official one. Stern's 2016 paper on extending the method to high scoring rates exists and is indexed in two repositories.",
+      "sources": [
+        {
+          "title": "Duckworth-Lewis-Stern method (encyclopedia article)",
+          "url": "https://wikipedia.com/wiki/D/L_method",
+          "date": "",
+          "snippet": "Describes the method as resources of overs and wickets, with the chasing side's target adjusted by the ratio of resources; notes a plain proportional cut fails because a side with wickets in hand and fewer overs bats harder.",
+          "via": "search",
+          "note": "Establishes the concept and the proportional-cut misconception; encyclopedia, background only",
+          "verified": true
+        },
+        {
+          "title": "ICC: Duckworth-Lewis-Stern (rules and regulations)",
+          "url": "https://www.icc-cricket.com/about/cricket/rules-and-regulations/duckworth-lewis-stern",
+          "date": "",
+          "snippet": "The governing body's own page on the method; it links the methodology document, a resource table and an FAQ, and describes DLS as the way to decide a fair result when weather interrupts a match.",
+          "via": "search",
+          "note": "Primary source for the method existing and being the official rule; table contents not seen",
+          "verified": true
+        },
+        {
+          "title": "How the Duckworth-Lewis-Stern method works (ESPN)",
+          "url": "https://www.espn.com/cricket/story/_/id/19577040",
+          "date": "",
+          "snippet": "Explains that resources lost to an interruption depend on overs lost, the stage of the innings and wickets in hand; a side six down loses less from the same break than one two down. Notes it ignores which batters remain.",
+          "via": "search",
+          "note": "Independent explainer agreeing with the resource idea; source for the stage and wickets example",
+          "verified": true
+        },
+        {
+          "title": "South Africa stopped by a strange rain rule - World Cup 1992",
+          "url": "https://cricmash.com/tournaments/2015/1/24/south-africa-stopped-by-a-strange-rain-rule-world-cup-1992",
+          "date": "2015-01-24",
+          "snippet": "Recounts the 1992 semi-final: the rule removed the first side's least productive overs, including maidens, so the target barely fell while balls were removed, leaving about 22 off 1 ball.",
+          "via": "search",
+          "note": "Describes the 1992 rule and outcome; the exact figure differs between sources (21 versus 22)",
+          "verified": true
+        },
+        {
+          "title": "When South Africa were robbed by a cruel rain rule",
+          "url": "https://www.cricket.com/news/When-South-Africa-were-robbed-by-a-cruel-rain-rule-1584734855305",
+          "date": "",
+          "snippet": "Another account of the 1992 semi-final and the most-productive-overs rule; also describes the earlier average run rate rule as ignoring wickets lost.",
+          "via": "search",
+          "note": "Second site for the 1992 rule; single source for the average run rate rule detail",
+          "verified": true
+        },
+        {
+          "title": "The Duckworth-Lewis-Stern method: extending the Duckworth-Lewis methodology to deal with modern scoring rates (Bond University)",
+          "url": "https://research.bond.edu.au/en/publications/the-duckworth-lewis-stern-method-extending-the-duckworth-lewis-me/",
+          "date": "2016",
+          "snippet": "Repository entry for Stern's paper introducing the extension for modern high scoring rates, particularly Twenty20.",
+          "via": "search",
+          "note": "Confirms the paper and its aim",
+          "verified": true
+        },
+        {
+          "title": "IDEAS/RePEc entry, Journal of the Operational Research Society 67(12)",
+          "url": "https://ideas.repec.org/a/pal/jorsoc/v67y2016i12d10.1057_jors.2016.30.html",
+          "date": "2016",
+          "snippet": "Bibliographic record of the same Stern paper, volume 67 issue 12, 2016.",
+          "via": "search",
+          "note": "Independent index agreeing with the Bond entry on the paper's existence",
+          "verified": true
+        },
+        {
+          "title": "A Statistical Exploration of Duckworth-Lewis Method Using Bayesian Inference (arXiv)",
+          "url": "https://arxiv.org/pdf/1810.00908",
+          "date": "",
+          "snippet": "Says the original authors did not disclose the functional forms or fitted values, citing commercial confidentiality, and that the published 50-over table is not monotone in overs and wickets.",
+          "via": "search",
+          "note": "Basis for building an own labelled model; claims blended in the search summary, so kept unverified",
+          "verified": false
+        },
+        {
+          "title": "DUCKWORTH LEWIS (reference page with table extract)",
+          "url": "https://i.imgci.com/db/ABOUT_CRICKET/RAIN_RULES/DUCKWORTH_LEWIS.html",
+          "date": "",
+          "snippet": "Shows an extract of the resource-percentage table; reported cells include 100.0 at 50 overs and 0 wickets lost, 77.1 at 30 overs left and 0 lost, 54.0 at 20 left and 2 lost, 7.0 at 5 left and 9 lost.",
+          "via": "search",
+          "note": "Possible calibration anchors for the model; single result, so unverified",
+          "verified": false
+        },
+        {
+          "title": "Duckworth-Lewis and Stern method (Substack analysis)",
+          "url": "https://faugystrategy.substack.com/p/duckworth-lewis-and-stern-method",
+          "date": "",
+          "snippet": "Argues the overs-wickets relation is not linear, so five down at the halfway point is not half the resources.",
+          "via": "search",
+          "note": "Supports the non-linear aha; single blog source, unverified",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Each side starts a 50-over innings with 50 overs and 10 wickets, treated as 100 percent of its resources, and in the Professional Edition the chasing side's target is the first side's score adjusted in proportion to the two sides' resources (as of 2026-10-14).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A plain proportional cut of the target for overs lost is wrong because a side with wickets in hand and fewer overs can bat more aggressively, so the method weighs wickets as well as overs.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            2
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "How many resources an interruption removes depends on overs lost, the stage of the innings and wickets in hand; per ESPN, a side six down after 20 overs loses less from a 10-over break than a side two down.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            0
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "At the 22 March 1992 World Cup semi-final the rain rule discarded the first side's least productive overs, maidens included, leaving South Africa needing about 22 off 1 ball by one account and 21 off 1 by Cricinfo's scorecard note; the figure is disputed.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Per cricket.com, the earlier average run rate rule multiplied the first side's run rate by the overs available to the chasing side and took no account of wickets lost.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Steven Stern's paper extending the Duckworth-Lewis method to modern scoring rates appeared in the Journal of the Operational Research Society, volume 67 issue 12, 2016.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "As of 2026-10-14, per an arXiv paper, the method's fitted parameters and functional forms were never published (commercial confidentiality), so no public source gives the official resource table in full.",
+          "sourceIndex": 7,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "As of 2026-10-14, per one reference page, example resource cells include 100.0 percent (50 left, 0 lost), 77.1 (30 left, 0 lost), 54.0 (20 left, 2 lost) and 7.0 (5 left, 9 lost).",
+          "sourceIndex": 8,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "As of 2026-10-14, per a Substack analysis, five wickets down at 25 overs is not half the resources because the overs-wickets relation is non-linear.",
+          "sourceIndex": 9,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Win-probability explainers in baseball and hockey",
+        "Expected goals primers",
+        "Explorable explanations in the style of Nicky Case",
+        "Broadcast target graphics in cricket"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha: the visitor changes when rain arrives and how long it lasts, sees the ledger of overs and wickets, the resource ratio and two revised targets, then answers a prediction question (which way will the target move?) before the page reveals the answer, and moves up the ladder to the 1992 replay.",
+      "sophisticationHooks": [
+        "A heat-map ledger of resources by overs left and wickets lost that the visitor can read like a table and probe by clicking cells",
+        "Three rules applied to the same invented over-by-over innings side by side: simple scaling, discard-the-weakest-overs, and the resource ratio",
+        "A predict-then-reveal question after each demo, with the page showing the reasoning",
+        "A transparent model panel: the formula, the five reported anchor cells, and how far the page's own table sits from them"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "One page: an own illustrative resource model (exponential saturation in overs per wicket-count, fitted by a small node script to the reported anchor cells and checked for monotonicity in both overs and wickets), five demos, four check questions, a 1992 replay with figures labelled as reported and disputed. Cut: Twenty20 and per-ball tables, the Professional Edition's score-dependent resources, live data, saving state, any official calculator claim.",
+      "risks": [
+        "The official resource table and parameters are not public in full (reported, unverified), so the page's table is its own illustrative model; it must say this plainly and never present revised targets as the official numbers",
+        "The anchor cells come from a single reference page and are unverified; show them as 'as of 2026-10-14, per that page' and make clear the model is a teaching approximation with a stated error against them",
+        "The 1992 final figure is disputed (21 versus 22 off one ball); show the range and what the sources agree on, namely that the rule discarded maidens",
+        "The average run rate rule detail rests on one source; label it 'per cricket.com'",
+        "The brief's claim about run rates and the other sports in the lens was a lead only: this candidate chose one sport and checked its claims by search",
+        "Cricket is unfamiliar to many visitors; the first frame must teach 'a side has overs and wickets to spend' with a sample chase and no jargon",
+        "The no-real-names rule: describe the method by its initials DLS in body copy and avoid person names in the title; credit the authors only in the sources list"
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "lab-1",
+    "title": "Sealing Secrets With Anagrams",
+    "plainSentence": "A lesson that lets you seal a sentence as scrambled letters, then see why anagrams fail as proof and how a salted fingerprint works instead.",
+    "pitch": "In the 1600s, scientists such as Hooke and Huygens published their discoveries as scrambled letters so they could claim priority later without giving the idea away. The visitor seals a sentence the same way with one move, sorting its letters, then discovers the two ways this breaks: the same letters can be read as a different sentence (Kepler misread Galileo's Saturn anagram as a claim about Mars), and a short secret can be guessed. The lesson then swaps the sort for a salted fingerprint (a hash) and teaches the modern idea of a commitment: hide now, reveal later, and nobody can change their story.",
+    "firstMinute": "The first frame already shows Hooke's famous scrambled letters and the sentence they hide, with one big button that sorts the letters into a row of tiles. Tapping it seals a sample sentence in one move, and the visitor sees the tiles fly into alphabetical order, then taps Reveal and watches the check pass. First success: a sealed sentence that anyone can verify later, reached without reading anything.",
+    "conceptsToLearn": [],
+    "whyNow": "Timeless. The constraint of the day is one verb, sort: the first three rungs allow nothing else, so the visitor feels how far a single blunt move gets and exactly where it breaks. Commit-then-reveal is also the idea behind many everyday systems (sealed bids, fair coin flips over the internet, timestamped claims), and almost nobody meets it with a story attached.",
+    "origin": {
+      "agent": "lab",
+      "lens": "anti-lens-constraint-roulette"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "algorithms-cs",
+      "mechanic": "lesson",
+      "tone": [
+        "nerdy",
+        "playful",
+        "analytical"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations",
+        "localstorage"
+      ],
+      "tags": [
+        "anagram",
+        "commitment-scheme",
+        "hash",
+        "salt",
+        "cryptography",
+        "priority-claims",
+        "history-of-science",
+        "hooke",
+        "galileo",
+        "huygens",
+        "brute-force"
+      ],
+      "keywords": [
+        "anagram",
+        "commit-reveal",
+        "hiding-and-binding",
+        "salted-hash",
+        "history-of-science",
+        "sorted-letters",
+        "priority",
+        "ambiguity",
+        "brute-force"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A commitment lets you lock in a statement now without revealing it, and open it later so that everyone can check it. A good commitment has two properties: hiding (the sealed form tells nothing about the statement) and binding (you cannot later open it as a different statement). A sorted-letters anagram is weak on both counts. A hash of the statement plus a secret random value (a salt, or nonce) is the standard modern construction, revealed by publishing both the statement and the value so any...",
+      "whyNiche": "Explanations of commitments usually start from hash functions and mathematical definitions, so learners meet the words hiding and binding with no felt example. Here the failures come first and are concrete: an anagram leaks letter counts, fits more than one sentence, and a short guessable secret is cracked by trying every candidate. The fix is only motivated after the visitor has been hurt by each failure.",
+      "audience": "Curious non-experts, students and developers who have heard of hashes or commit-reveal but never felt why a salt is needed or what binding means.",
+      "prerequisites": [
+        "Reading a short English or Latin sentence",
+        "No maths or programming needed"
+      ],
+      "misconceptions": [
+        "A scrambled message keeps its content secret, when sorted letters still leak the length and every letter count.",
+        "An anagram proves you wrote one particular sentence, when the same letters can usually be rearranged into other sentences, so it does not bind you to one meaning.",
+        "A fingerprint (hash) of a short or guessable secret is automatically secret, when an attacker can hash every candidate and compare; a long random salt is what defeats this."
+      ],
+      "misconceptionFactIndexes": [
+        0,
+        3,
+        4
+      ],
+      "ahaMoment": "The visitor tries to open the same sealed letters as two different sentences (Galileo's reading and Kepler's reading) and both pass the check. Then the same two sentences get different salted fingerprints, so only one can ever be opened. The sort could not bind them, the fingerprint can.",
+      "demos": [
+        "Rung 1, seal: one button sorts the letters of a sample sentence into tiles (Hooke's 'ut tensio sic vis' is preloaded); Reveal checks that the letters match.",
+        "Rung 2, who did you mean: Galileo's and Kepler's Latin readings of the same 37 letters both pass the check (Latin u and v treated as one letter), plus a few English look-alike pairs, so binding fails.",
+        "Rung 3, what the sort leaks: a letter-count strip and a bundled list of about 40 famous science phrases that narrows as the visitor learns the length and counts, so hiding is weak.",
+        "Rung 4, a fingerprint instead: a SHA-256 fingerprint of the sentence; change one letter and watch the whole fingerprint change; the two readings now have different fingerprints.",
+        "Rung 5, crack it and fix it: unsalted fingerprints of one-word secrets are cracked live by trying a bundled word list; adding a typed salt makes the same attack fail, and the visitor sees why real salts are long and random."
+      ],
+      "checkQuestions": [
+        "Two people claim different sentences from the same sorted letters. Whose claim wins, and what does that tell you about binding?",
+        "Why does a fingerprint of the single word 'yes' or 'no' hide nothing, even though hashes are one-way?",
+        "What exactly must the committer publish at reveal time so a stranger can verify the fingerprint?",
+        "Which property fails if the secret is revealed too early, hiding or binding?"
+      ]
+    },
+    "research": {
+      "summary": "The history is documented from several directions. Galileo announced his Saturn finding in 1610 as scrambled Latin letters; Kepler decoded them as a sentence about Mars having two moons (wrong target, though Mars does have two moons), which is a ready-made demonstration of an anagram failing to bind. Hooke announced his spring law in 1676 as the letters of 'ut tensio sic vis' and gave the solution later (reported dates differ), and Huygens used an anagram in place of publication to secure priority on Saturn's ring. On the modern side, university lecture notes describe hash-and-nonce commitments, and say an unsalted commitment over a small message space can be brute-forced, so a large random nonce is needed. The lens brief (a ridiculous constraint felt in ten seconds) is not itself a factual claim; its Oulipo lineage (constrained writing such as lipograms) is background only. I checked with a script that Galileo's 37-letter string matches both the Altissimum planetam reading and Kepler's reading when Latin u and v are treated as one letter.",
+      "sources": [
+        {
+          "title": "Galileo's Anagrams and the Moons of Mars",
+          "url": "https://www.mathpages.com/home/kmath151/kmath151.htm",
+          "date": "",
+          "snippet": "Explains Galileo's 1610 scrambled announcement about Saturn, the Latin sentence he meant, and Kepler's different reading about Mars having two moons.",
+          "via": "search",
+          "note": "Both readings of Galileo's anagram, with the Mars coincidence; also notes the Latin u/v ambiguity.",
+          "verified": true
+        },
+        {
+          "title": "This American Life is narrowcasting at me (physics blog post on the anagram story)",
+          "url": "https://blog.richmond.edu/physicsbunn/?p=563",
+          "date": "",
+          "snippet": "A physics blog retells how Kepler read Galileo's jumbled letters as 'children of Mars' while Galileo meant Saturn is threefold.",
+          "via": "search",
+          "note": "Independent site that agrees on Galileo's meaning and Kepler's misreading.",
+          "verified": true
+        },
+        {
+          "title": "Hooke quotations (MacTutor, University of St Andrews)",
+          "url": "https://mathshistory.st-andrews.ac.uk/Biographies/Hooke/quotations/",
+          "date": "",
+          "snippet": "Quotations page for Hooke that appeared for the query on his spring-law anagram; the search summary was blended with other results, so the exact letters were not seen on this page.",
+          "via": "search",
+          "note": "Context for Hooke's anagram; exact letter string and date not confirmed from this entry.",
+          "verified": false
+        },
+        {
+          "title": "The puzzle of Hooke's law (IOP Spark)",
+          "url": "https://spark.iop.org/puzzle-hookes-law",
+          "date": "",
+          "snippet": "Teaching-resource page on Hooke's law that appeared for the anagram query; dates and letter strings varied across results, so details are unconfirmed.",
+          "via": "search",
+          "note": "Context only; Hooke anagram dates (1676 versus 1678 or 1679 for the solution) differ between results.",
+          "verified": false
+        },
+        {
+          "title": "From ciphers to confidentiality: secrecy, openness and priority in science (British Journal for the History of Science)",
+          "url": "https://resolve.cambridge.org/core/journals/british-journal-for-the-history-of-science/article/from-ciphers-to-confidentiality-secrecy-openness-and-priority-in-science/6168FC1B2160EE91F047749D987A0743",
+          "date": "",
+          "snippet": "Journal article on priority and secrecy in science; its result gives Huygens's Saturn anagram solution as a thin flat ring nowhere touching, inclined to the ecliptic.",
+          "via": "search",
+          "note": "Scholarly source that Huygens used an anagram for priority on Saturn's ring.",
+          "verified": true
+        },
+        {
+          "title": "De Zeventiende Eeuw, Jaargang 12 (1996 article on Huygens and Saturn)",
+          "url": "https://dbnl.org/tekst/_zev001199601_01/_zev001199601_01_0011.php",
+          "date": "1996",
+          "snippet": "A journal article stating that Huygens tried to secure priority by substituting an anagram for publication while delaying his Saturn book.",
+          "via": "search",
+          "note": "Independent scholarly source agreeing that anagrams were used to hold priority.",
+          "verified": true
+        },
+        {
+          "title": "Lecture 14 slides, Purdue University CS 555 (Spring 2017)",
+          "url": "https://www.cs.purdue.edu/homes/jblocki/courses/555_Spring17/slides/Lecture14.pdf",
+          "date": "2017",
+          "snippet": "Course slides noting that a brute-force attack works when the message space is small, and that collision resistance alone is not enough for message commitment.",
+          "via": "search",
+          "note": "University source for the unsalted small-space weakness.",
+          "verified": true
+        },
+        {
+          "title": "[bitcoin-dev] Generalized Commitments",
+          "url": "https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2017-February/013593.html",
+          "date": "2017-02",
+          "snippet": "A developer mailing-list post arguing for an explicit nonce when a commitment must hide its message instead of relying on the data being hard to guess.",
+          "via": "search",
+          "note": "Independent practitioner source agreeing that a nonce is needed for hiding.",
+          "verified": true
+        },
+        {
+          "title": "MIT 6.5610 recitation 6 notes",
+          "url": "https://65610.csail.mit.edu/2023/rec/rec6.pdf",
+          "date": "2023",
+          "snippet": "Course notes modelling a hash commitment with a random value r, with hiding depending on that randomness.",
+          "via": "search",
+          "note": "University source for the hash-plus-random-value construction.",
+          "verified": true
+        },
+        {
+          "title": "[Cryptography] Komitments (mailing-list post)",
+          "url": "https://www.metzdowd.com/pipermail/cryptography/2018-December/034716.html",
+          "date": "2018-12",
+          "snippet": "A cryptography-list post proposing to hash the message together with a random value and noting a large enough nonce defeats brute force.",
+          "via": "search",
+          "note": "Independent source agreeing on commit by hash of message plus random value.",
+          "verified": true
+        },
+        {
+          "title": "Oulipo and Beyond: 6 Playful Constrained Writing Projects",
+          "url": "https://bookriot.com/2019/09/19/constrained-writing/",
+          "date": "2019-09-19",
+          "snippet": "Popular article on Oulipo-style constrained writing, including the lipogram novel written without the letter e.",
+          "via": "search",
+          "note": "Background for the constraint-as-design lens only; not used as a page fact.",
+          "verified": false
+        },
+        {
+          "title": "Constrained writing (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Constrained_writing",
+          "date": "",
+          "snippet": "Encyclopedia article on writing under self-imposed rules; appeared in a search result, not opened.",
+          "via": "search",
+          "note": "Background for the constraint-as-design lens only.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Galileo's 1610 scrambled Latin announcement was meant as 'Altissimum planetam tergeminum observavi' (the highest planet, Saturn, seen as threefold); Kepler instead read the same letters as 'Salve umbistineum geminatum Martia proles' and took it to mean Mars has two moons. Both readings fit the same letters (checked by script on 2026-10-14, treating Latin u and v as one letter).",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Huygens used an anagram in place of publication to secure priority for his Saturn findings while he delayed his full book; a journal article gives the solution as a thin flat ring, nowhere touching, inclined to the ecliptic.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Hooke announced his spring law as an anagram (printed as ceiiinosssttuu in his 1676 Helioscopes text per one result, solved as 'Ut tensio, sic vis'), with the solution published later; results disagree on whether that was 1678 or 1679, so the page must say 'reported' and not state a date as settled.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A hash commitment over a small set of possible messages with no random value can be broken by hashing every candidate and comparing, so it does not hide the message (course slides, and a developer mailing-list post that recommends an explicit nonce).",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Standard commit-reveal construction: hash the message together with a secret random value to commit, then reveal both so the verifier can recompute the hash; hiding depends on the randomness (course notes and a cryptography mailing-list post agree).",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Constrained writing under self-imposed rules (Oulipo, lipograms such as a novel without the letter e) is an established creative method; used as inspiration for the lens only, not shown as a page fact.",
+          "sourceIndex": 10,
+          "alsoIn": [
+            11
+          ],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Oulipo lipograms",
+        "Galileo's Saturn anagram",
+        "Hooke's spring-law anagram",
+        "Huygens's Saturn ring anagram",
+        "commit-reveal protocols",
+        "one-button jam games"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha. Each rung gives one thing to do (seal, open two ways, narrow the candidates, change a letter, crack then salt), then one check question whose answer the visitor can test on the page before moving up. The constraint of one verb (sort) governs rungs 1 to 3 and is lifted at rung 4 as the payoff: a new verb, fingerprint.",
+      "sophisticationHooks": [
+        "Rung 2 uses real history: the same 37 Latin letters genuinely open as two sentences, computed live from the text so the tiles can be dragged between the two readings.",
+        "A small hand-written SHA-256 (tested against published test vectors) so the fingerprint works offline even where the browser's own crypto is unavailable, with a one-letter-change avalanche view that highlights the differing bits.",
+        "A live attacker on rung 5 that tries a bundled word list, shows hashes per second and then fails against the salted version, with the salt typed by the visitor (no random numbers anywhere, so every result is repeatable).",
+        "A 'real life' panel that states honestly what real systems add (long random salts, stronger constructions) and what this toy skips."
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: one page, five rungs, a tile-sorting animation, the pure functions (sort-seal, u/v folding, letter-count filter, SHA-256, crack loop) with tests, about 40 hand-written science phrases and a 300-word list, a short history strip with 'reported' dating, and an intro paragraph plus explainer. Cut: anything that fetches live data, other cryptographic schemes (Merkle trees, coin-flip protocols), saving progress to a server, sound.",
+      "risks": [
+        "The exact Galileo letter string was typed from memory into the search and matched both readings under u/v folding by script, but it was not read on an opened page; the page should show it as 'as commonly transcribed' or build it from the Latin reading and say so.",
+        "Hooke's anagram letters and the solution date vary between results (ceiiinosssttuu in one, other forms and 1678 or 1679 in others): show it as 'reported', do not state one date as fact, or drop the date.",
+        "Huygens's anagram letter counts vary between transcriptions, so the page does not reproduce his string; only the meaning is stated, attributed to the journal articles.",
+        "Search summaries were blended, so the Hooke sources stay verified:false; the Galileo, Huygens and commitment facts each rest on two separately listed results but no page was opened (all fetching was blocked or avoided).",
+        "Hash commitments are described in some sources as perfectly binding and in others as computationally binding; the page should say 'binding as long as the hash has no known collisions' and avoid the stronger wording.",
+        "Plain 'salted hash' demos can be mistaken for a password-storage guide: the page says it is not advice, never takes a real secret, and uses a prominent 'do not type a real secret' note with a plain text field.",
+        "Constraint theatre could hide the teaching if the one-button rule is too cute: the intro states the literal topic first, and the sort constraint is explained as a deliberate limit in one line."
+      ]
+    },
+    "durable": true,
+    "sanitizer": {
+      "redacted": [],
+      "trimmed": 1
+    }
+  },
+  {
+    "id": "jester-1",
+    "title": "Why Primes Line Up",
+    "plainSentence": "A lesson that lets you rearrange whole numbers into grids of any width and see why prime numbers fall into lines.",
+    "pitch": "Drag one slider to change how wide a grid of whole numbers is, and watch the primes snap into a few straight columns. Then wind the same numbers into a square spiral and see why the primes pile onto diagonal lines, with every line explained by a small formula you can edit. You leave knowing why the pattern exists, what it does and does not say about primes, and why a formula that is prime 40 times in a row still fails on the 41st try.",
+    "firstMinute": "The first frame already shows numbers 1 to 300 laid out in rows of 6 with the primes lit up, and almost all of them sit in two columns. Dragging the width slider to 30 or 7 reshuffles the grid instantly and the lit columns move with it, so the first success (seeing the primes pick columns) needs no reading.",
+    "conceptsToLearn": [
+      "A prime is a whole number above 1 that only divides evenly by 1 and itself"
+    ],
+    "whyNow": "Timeless: it needs no news hook, and a fresh visual proof of a classic fact is as good in a month as today.",
+    "origin": {
+      "agent": "jester",
+      "lens": "math-visual"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "math-concepts",
+      "mechanic": "lesson",
+      "tone": [
+        "analytical",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "dom-ui",
+        "svg",
+        "pointer-events"
+      ],
+      "tags": [
+        "prime-numbers",
+        "ulam-spiral",
+        "number-theory",
+        "modular-arithmetic",
+        "residues",
+        "quadratic-polynomials",
+        "visual-proof",
+        "euler-polynomial"
+      ],
+      "keywords": [
+        "primes",
+        "grid-width",
+        "columns",
+        "diagonals",
+        "spiral",
+        "mod-6",
+        "coprime",
+        "patchwork"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "When the whole numbers are written in rows of width w, each column holds one residue class mod w. A prime larger than w can only live in a column whose residue shares no factor with w, so the primes are confined to those columns. In the square Ulam spiral, every straight diagonal carries the values of one quadratic polynomial, and that polynomial decides which diagonals are barren (always even, or factorable) and which are rich in primes.",
+      "whyNiche": "The Ulam spiral is shown everywhere as a pretty picture or a mystery, so people think the diagonals are magic or that they predict primes. The simple reason (columns and diagonals are residue classes and quadratics, and some of them are ruled out by divisibility) is rarely shown with a control the visitor can move.",
+      "audience": "Curious adults and students aged 14 and up who know what a prime number is and want to see why a famous picture looks the way it does.",
+      "prerequisites": [
+        "Knowing what a prime number is",
+        "Dividing whole numbers with a remainder"
+      ],
+      "misconceptions": [
+        "If a number is of the form 6k plus or minus 1 it must be prime (it only can be: the form is necessary, not sufficient)",
+        "The diagonal lines in the Ulam spiral mean primes follow a simple formula that predicts them",
+        "A polynomial that gives primes many times in a row, such as n squared minus n plus 41, must give primes forever"
+      ],
+      "misconceptionFactIndexes": [
+        2,
+        3,
+        7
+      ],
+      "ahaMoment": "At width 6 the visitor sees only two columns can hold primes and realises it is just 'not even, not a multiple of 3'. Then they change the width to 30 and 8 columns survive, then wind the grid into a spiral and watch the columns bend into diagonals: the same rule, in a new shape.",
+      "demos": [
+        "Rows of 6: a width slider over numbers 1 to 300 with primes lit; click a column to see why its numbers are never prime",
+        "Any width: the surviving columns are highlighted, with a live count of how many columns are 'open' for primes at that width (7 gives 6, 10 gives 4, 30 gives 8)",
+        "Sieve by hand: strike multiples of 2 and 3 on the width-6 grid and watch only columns 1 and 5 remain",
+        "Wind it up: morph the same numbers from rows into a square spiral, then pick a diagonal to reveal its quadratic formula",
+        "Why some diagonals are empty: toggle parity colouring and a factoring check on each diagonal",
+        "Start anywhere: choose the number at the centre (include 41) and see a long rich diagonal appear, then step beyond 40 to find where the formula breaks"
+      ],
+      "checkQuestions": [
+        "At width 10, which columns can ever hold primes larger than 10, and how do you know?",
+        "A friend says 91 is prime because it is 6 times 15 plus 1. What is wrong with that argument?",
+        "On the spiral, why is every other diagonal empty of primes (apart from 2)?",
+        "The polynomial n squared minus n plus 41 gives primes for n from 1 to 40. What is n squared minus n plus 41 when n is 41, and why?"
+      ]
+    },
+    "research": {
+      "summary": "The Ulam spiral is well documented: Ulam drew it in 1963 while bored in a talk, and its diagonals follow quadratic polynomials, with Euler's 41-polynomial the famous example. The 6k plus or minus 1 fact is a standard residue argument, and Dirichlet's theorem generalises it: for any width, primes spread across exactly the columns that share no factor with the width. Several interactive prime-spiral pages exist already, but the ones seen in search results show the picture, not the width-to-spiral link; the angle here is a ladder from grid width to residue columns to spiral diagonals, each step with a handle to move. Searches surfaced a few details that differ by source (the polynomial is written both as n squared plus n plus 41 and n squared minus n plus 41, differing by an index shift), so the lesson states both forms and checks them by script.",
+      "sources": [
+        {
+          "title": "Ulam spiral",
+          "url": "https://en.wikipedia.org/wiki/Ulam_spiral",
+          "date": "",
+          "snippet": "Describes the spiral built by writing integers outward on a square lattice and marking primes; says lines in the spiral correspond to quadratic polynomials and credits Ulam (1963) and Gardner's popularisation.",
+          "via": "search",
+          "note": "Construction, diagonals as quadratics, history, Hardy-Littlewood Conjecture F, open status",
+          "verified": true
+        },
+        {
+          "title": "Mathwords: prime spiral",
+          "url": "https://www.mathwords.com/p/prime_spiral.htm",
+          "date": "",
+          "snippet": "Short reference page on the prime spiral that notes the diagonal lines and links them to prime-rich quadratic polynomials such as Euler's.",
+          "via": "search",
+          "note": "Second independent description of the diagonal-quadratic link",
+          "verified": true
+        },
+        {
+          "title": "Dictionary of Mathematical Eponymy: The Ulam Spiral",
+          "url": "https://blog.flyingcoloursmaths.co.uk/dictionary-of-mathematical-eponymy-the-ulam-spiral/",
+          "date": "",
+          "snippet": "Blog entry on the Ulam spiral; the search summary relayed text on parity (primes sit on alternate diagonals) and on factorable quadratics leaving diagonals nearly empty, but its wording resembled the Wikipedia article.",
+          "via": "search",
+          "note": "Parity and factorable-diagonal explanation; may be a copy of Wikipedia text, so counted as not independent",
+          "verified": false
+        },
+        {
+          "title": "Lucky numbers of Euler",
+          "url": "https://en.wikipedia.org/wiki/Lucky_numbers_of_Euler",
+          "date": "",
+          "snippet": "Explains that when the input equals 41 the polynomial gives 41 squared, which is not prime, so the run of primes stops after 40 steps; only six Euler lucky numbers exist.",
+          "via": "search",
+          "note": "Why the 41 polynomial fails at 41",
+          "verified": true
+        },
+        {
+          "title": "Prime-Generating Polynomial (MathWorld)",
+          "url": "https://mathworld.wolfram.com/Prime-GeneratingPolynomial.html",
+          "date": "",
+          "snippet": "Reference entry that attributes n squared minus n plus 41 to Legendre (1798) and says it gives the same 40 primes as Euler's n squared plus n plus 41 for n from 1 to 40.",
+          "via": "search",
+          "note": "Both forms of the 41 polynomial and their 40-prime run",
+          "verified": true
+        },
+        {
+          "title": "An algorithmic implementation of the Pi function based on a new sieve (arXiv 0802.3770)",
+          "url": "https://arxiv.org/pdf/0802.3770",
+          "date": "",
+          "snippet": "Works through the residues mod 6: a prime above 3 cannot be 0, 2, 3 or 4 mod 6, so it is 6n plus or minus 1; also notes that being of that form does not make a number prime.",
+          "via": "search",
+          "note": "Residue argument for 6k plus or minus 1, necessary not sufficient",
+          "verified": true
+        },
+        {
+          "title": "Purdue Problem of the Week, Fall 2017, problem 50",
+          "url": "https://math.purdue.edu/pow2/discussion/2017/fall/50.html",
+          "date": "2017",
+          "snippet": "Discussion of the same fact: numbers outside 6k plus or minus 1 have the form 6k, 6k plus or minus 2 or 6k plus 3, each divisible by 2 or 3, so they are composite.",
+          "via": "search",
+          "note": "Independent university source for the 6k plus or minus 1 argument",
+          "verified": true
+        },
+        {
+          "title": "Dirichlet's theorem on arithmetic progressions",
+          "url": "https://en.wikipedia.org/wiki/Dirichlet%27s_theorem_on_arithmetic_progressions",
+          "date": "",
+          "snippet": "States that every progression a plus nd with a and d coprime holds infinitely many primes and that primes are asymptotically evenly spread over the residue classes coprime to d; Dirichlet, 1837.",
+          "via": "search",
+          "note": "Generalises the width-6 picture to any width",
+          "verified": true
+        },
+        {
+          "title": "MIT 18.785 lecture notes 18 (analytic number theory)",
+          "url": "https://math.mit.edu/classes/18.785/2018fa/LectureNotes18.pdf",
+          "date": "2018",
+          "snippet": "University lecture notes stating that for each fixed modulus the primes are equidistributed among the invertible residue classes (Dirichlet's theorem).",
+          "via": "search",
+          "note": "Independent confirmation of equidistribution among coprime classes",
+          "verified": true
+        },
+        {
+          "title": "Primes around six (Trotter math: sexy primes page)",
+          "url": "https://www.trottermath.net/numthry/sexyprim.html",
+          "date": "",
+          "snippet": "Teaching page on the rows-of-six layout: beyond 2 and 3, primes sit only in the first and fifth columns, and being in those columns does not make a number prime.",
+          "via": "search",
+          "note": "Classroom precedent for the width-6 grid; single source",
+          "verified": false
+        },
+        {
+          "title": "Ulam's spiral (MacTutor, St Andrews)",
+          "url": "https://mathshistory.st-andrews.ac.uk/Extras/Ulam_spiral",
+          "date": "",
+          "snippet": "History page that places the discovery in a lecture where Ulam doodled on squared paper and describes how the spiral became widely known.",
+          "via": "search",
+          "note": "Independent history source for the doodling story",
+          "verified": true
+        },
+        {
+          "title": "Sacks spiral (numberspiral.com)",
+          "url": "https://numberspiral.com/p/p004",
+          "date": "",
+          "snippet": "Describes winding the number line into an Archimedean spiral with squares on one ray, where Euler's polynomial primes form a dense curve; an existing interactive take on prime spirals.",
+          "via": "search",
+          "note": "Shows existing prime-spiral pages and an optional bonus layout; not used for any claim",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-14: in the Ulam spiral (integers written outward on a square lattice, primes marked), straight lines of cells correspond to quadratic polynomials, which is why prime-rich quadratics such as Euler's show up as diagonals.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Primes other than 2 sit on alternate diagonals of the Ulam spiral because the values along one diagonal family are all odd or all even, and some quadratics factor, leaving their diagonals nearly empty of primes. The page will verify each such diagonal by script, not rely on this source alone.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            0
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Legendre's form n squared minus n plus 41 gives 40 primes for n from 1 to 40 (the same primes as Euler's n squared plus n plus 41 over its range), and it fails at n equal to 41 because the value is 41 squared.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Every prime above 3 is congruent to 1 or 5 mod 6 (that is, 6k minus 1 or 6k plus 1) because other residues are divisible by 2 or 3; the converse fails, since a number of that form need not be prime.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Dirichlet's theorem (1837): for coprime a and d the progression a plus nd contains infinitely many primes, and primes are asymptotically equally spread among the residue classes mod d that are coprime to d.",
+          "sourceIndex": 7,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Ulam devised the spiral in 1963, reportedly while doodling during a dull talk, and it was popularised soon after in a Martin Gardner column in a popular-science magazine.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            10
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "As of 2026-10-14, per Wikipedia (single source): no quadratic polynomial has been proved to produce infinitely many primes, and Hardy and Littlewood's 1923 Conjecture F is the well-supported guess for how often a non-factoring quadratic should yield primes. Shown on the page only with that attribution.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Ulam spiral",
+        "Sacks spiral",
+        "Gardner's prime-number column",
+        "rows-of-six prime classroom grid",
+        "Euler's lucky-number polynomial",
+        "patchwork quilts (several grids side by side)"
+      ]
+    },
+    "design": {
+      "coreLoop": "Move the width slider (or pick a start number), watch the primes regroup, answer a one-line prediction ('which columns survive at width 10?') and see the grid confirm it; each rung adds one idea, ending with the spiral and a diagonal's formula.",
+      "sophisticationHooks": [
+        "Prediction before reveal: the page asks which columns can hold primes, then lights them, so the visitor builds the rule themselves",
+        "Rows-to-spiral morph animation, so columns visibly bend into diagonals",
+        "Click any column or diagonal to see its formula and the divisor that kills it (a script-checked explanation, not a guess)",
+        "Patchwork view: up to four grids of different widths side by side on one screen, like a quilt, to compare at a glance"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: one canvas grid (numbers up to a few thousand, primes by a sieve in the page), width slider, column highlighting, spiral layout with morph, diagonal formula inspector, start-number picker, a prediction prompt per rung and 4 check questions with explanations, intro paragraph and glossary, keyboard-operable controls. Cut: Sacks spiral and zoom to millions, prime-gap or distribution-theory side lessons, saving progress, sound.",
+      "risks": [
+        "Search results arrived as blended summaries, so per-source attribution is weak. Only claims with two clearly separate results are marked verified; the parity and factorable-diagonal claim and the Conjecture F and open-problem claim are NOT confirmed by independent sources. The page should compute parity and factoring facts by script and show Conjecture F status only as 'as of 2026-10-14, per Wikipedia', or drop it.",
+        "WebFetch to mathworld.wolfram.com failed (DNS), so no page was opened; every source is search-only.",
+        "The 41 polynomial is written two ways in sources, and one search summary said a MathWorks blog notes Euler primes do not appear in the Ulam spiral when it starts at 1. The build must check by script where the polynomial's values land for each start number and state the start number used.",
+        "The 'diagonals predict primes' misconception is documented only by a single educational source (Mathwords) plus Wikipedia's note that no simple formula yields only primes; the lesson should frame it as a common over-reading, not a measured belief.",
+        "Existing prime-spiral pages exist; the page must win on the width-to-spiral ladder and the predict-then-reveal teaching, not on the picture alone.",
+        "The brief's claim that tilings and knots make a good lens was a lead only and was not tested; this idea uses number theory instead."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "architect-1",
+    "title": "10-adic Numbers Lesson",
+    "plainSentence": "A lesson with a calculator that lets you add and multiply numbers whose digits run forever leftward, where negatives need no minus sign.",
+    "pitch": "Type a string of digits that never ends on the left, add 1 to ...999 and watch every digit carry into zero, so the string is minus one with no minus sign. Then hunt for a stranger number, one ending ...8212890625, by choosing one digit at a time so that its square keeps the same ending, and multiply two nonzero numbers to get zero. You leave knowing that infinitely many digits does not mean infinitely large, because closeness can mean 'the last digits agree'.",
+    "firstMinute": "The first frame shows a rolling odometer of nines with a plus-one button already pressed once: every digit rolls over to zero and the readout says 'this is -1'. The visitor taps plus one again to see the string become ...0000 and then types their own digits into the calculator, with the first success being a negative answer such as 5 + ...9995 = 0 reached without reading anything.",
+    "conceptsToLearn": [
+      "Carrying: when a digit passes 9 it becomes 0 and adds 1 to the digit on its left"
+    ],
+    "whyNow": "Timeless: a classic mathematical curiosity that is badly explained as a trick, and a good counterweight to a run of games and gadgets. Nothing in it depends on the date.",
+    "origin": {
+      "agent": "architect",
+      "lens": "lesson-strange-numbers"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "math-concepts",
+      "mechanic": "lesson",
+      "tone": [
+        "nerdy",
+        "playful",
+        "analytical"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "web-animations"
+      ],
+      "tags": [
+        "p-adic",
+        "ten-adic",
+        "negative-numbers",
+        "number-systems",
+        "carrying",
+        "odometer",
+        "zero-divisors",
+        "idempotent",
+        "automorphic-numbers",
+        "closeness"
+      ],
+      "keywords": [
+        "10-adic",
+        "infinite-digits",
+        "minus-one",
+        "automorphic-number",
+        "hensel-lifting",
+        "modular-arithmetic",
+        "metric",
+        "calculator"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "In the 10-adic numbers a number may have infinitely many digits to the left. Addition and multiplication use ordinary carrying, and what matters for a result's last k digits is only the last k digits of the inputs. The string ...999 plus 1 gives all zeros, so ...999 equals -1. Two numbers are close when many of their last digits agree. Because 10 = 2 x 5 is not a prime power, two nonzero 10-adic numbers can multiply to zero, which is why nontrivial solutions of x squared = x exist, such as th...",
+      "whyNiche": "Most explanations jump straight to the formal absolute value on a prime, or show ...999 = -1 as a magic trick with a one-line algebra step. Neither lets the learner try arithmetic on such numbers, feel why 'size' is the wrong idea, or meet the composite-base surprise of zero divisors.",
+      "audience": "Math fans, curious teenagers and adults who know how column addition carries, and anyone who likes odd ideas. No algebra background needed.",
+      "prerequisites": [
+        "Column addition and multiplication with carrying",
+        "What a negative number is"
+      ],
+      "misconceptions": [
+        "A number with infinitely many digits must be infinitely large",
+        "...999 cannot be a number, or 'is just' infinity",
+        "Two numbers that multiply to zero must include a zero (true for ordinary numbers, false in the 10-adics)"
+      ],
+      "misconceptionFactIndexes": [
+        4,
+        2
+      ],
+      "ahaMoment": "The visitor presses plus one on ...999 and watches the carry run off to the left forever, leaving zeros. 'Size' is replaced by 'how many last digits agree', and suddenly 9, 99, 999, 9999 are visibly closing in on -1.",
+      "demos": [
+        "Odometer: press plus one on a wheel of nines and watch the carries ripple left, ending in all zeros, so the string equals -1",
+        "Infinite-left calculator: type the tail of a number (the page shows the last 40 digits of a number that really continues forever), add, subtract and multiply, with negatives shown as ...9s and a note showing the matching ordinary integer",
+        "Negate it: the nines-complement-plus-one rule beside the 'subtract from zero' result, plus 1/3 as ...6667 checked by multiplying by 3",
+        "Closeness ruler: pick two numbers and see how many last digits agree; the sequence 9, 99, 999 shrinks toward -1 on a zoom ruler while the ordinary size grows",
+        "Idempotent hunt: choose the next digit to the left so the square keeps the same ending; the page shows exactly one digit works at each step, reaching 5, 25, 625, 0625, 90625, 890625, 2890625, 12890625, 212890625, 8212890625",
+        "Zero divisors: multiply ...8212890625 by ...1787109376 and get ...0000000000 with neither factor zero; a split view shows a 'divisible by powers of 2' part and a 'divisible by powers of 5' part, and why a prime base would not allow this"
+      ],
+      "checkQuestions": [
+        "What is ...9999 + 2, and what ordinary number is that?",
+        "Which is closer to 0 in the 10-adic sense: 1000 or 10? Why?",
+        "What are the last 4 digits of ...8212890625 squared?",
+        "Predict ...6667 times 3 before you press equals.",
+        "Why can't the same zero-divisor trick work with only 2-adic digits (base 2)?"
+      ]
+    },
+    "research": {
+      "summary": "Searches found a consistent textbook-level account in teaching notes. The 10-adic integers allow infinite strings of digits to the left; ...99999 + 1 = 0, so ...999 = -1; negation is the nines complement plus 1; distance is measured by the last digits agreeing. The automorphic numbers ...8212890625 and ...1787109376 are the two nontrivial idempotents of the 10-adics (square equals itself, sum is 1, product is 0), which is why 10-adics are not a field. The scout also checked the arithmetic with a script on 2026-10-14: both numbers square to themselves modulo 10^60, their product is zero modulo 10^60, their sum is 1, and each next digit in the hunt has exactly one valid choice (script check, not a cited source). Gap: I found no education study that measures how often learners hold the 'infinite digits means infinitely large' belief; the page frames it as a natural intuition, not a measured statistic.",
+      "sources": [
+        {
+          "title": "Automorphic number",
+          "url": "https://en.wikipedia.org/wiki/Automorphic_number",
+          "date": "",
+          "snippet": "Encyclopedia article on numbers whose square ends in themselves, including the 10-adic limits ending in 5 and 6 and why nontrivial ones need a base with two prime factors.",
+          "via": "search",
+          "note": "Background on automorphic numbers and 10-adic idempotents; search-only (host cannot be opened)",
+          "verified": false
+        },
+        {
+          "title": "OEIS A018247 (5-ending automorphic limit)",
+          "url": "https://oeis.org/A018247",
+          "date": "",
+          "snippet": "Sequence entry for the 10-adic number ending ...8212890625, given by a(n) = 5^(2^n) mod 10^n, whose squares match the number in the last n digits.",
+          "via": "search",
+          "note": "Names the digits and the construction; reference database",
+          "verified": true
+        },
+        {
+          "title": "Automorphic Number (MathWorld)",
+          "url": "https://mathworld.wolfram.com/AutomorphicNumber.html",
+          "date": "",
+          "snippet": "Table of automorphic numbers by digit count listing 8212890625 and 1787109376 at 10 digits, and the infinite limits ending in 5 and 6.",
+          "via": "search",
+          "note": "Independent second source for the pair of idempotents",
+          "verified": true
+        },
+        {
+          "title": "BMC Adv p adic numbers notes (Berkeley Math Circle)",
+          "url": "https://mathcircle.berkeley.edu/sites/default/files/handouts/2020/BMC_Adv_p-adic_numbers_notes.pdf",
+          "date": "2020",
+          "snippet": "Math circle notes: a 10-adic number is like an integer with an infinite string of digits going left; ...99999 + 1 = 0; negation is the 9s complement of each digit plus 1.",
+          "via": "search",
+          "note": "Core account of ...999 = -1 and negation",
+          "verified": true
+        },
+        {
+          "title": "Introduction to the p-adic Space (arXiv 1710.08835)",
+          "url": "https://arxiv.org/pdf/1710.08835",
+          "date": "2017",
+          "snippet": "Paper stating p-adic arithmetic works like ordinary arithmetic but digits can extend infinitely left, and showing 9, 99, 999 approach -1 so ...999 = -1.",
+          "via": "search",
+          "note": "Independent agreement on ...999 = -1 and on distance by last digits",
+          "verified": true
+        },
+        {
+          "title": "p-adic Numbers, Grade 11/12 Lesson 1 (Waterloo CEMC math circle)",
+          "url": "https://cemc.math.uwaterloo.ca/events/mathcircles/2023-24/Fall/Week%204/Grade%2011:12%20-%20p-adic%20Numbers/Lesson1.pdf",
+          "date": "2023",
+          "snippet": "Math circle handout in which powers of p grow right to left and arithmetic carries digits leftward.",
+          "via": "search",
+          "note": "Shows the topic is taught to ages 16-18; confirms the carry-left convention",
+          "verified": false
+        },
+        {
+          "title": "A 10-adic number that is a zero divisor (Division by Zero blog)",
+          "url": "https://divisbyzero.com/2008/12/29/a-10-adic-number-that-is-a-zero-divisor/",
+          "date": "2008-12-29",
+          "snippet": "Blog post showing an idempotent 10-adic number F, so that F and F-1 are both zero divisors.",
+          "via": "search",
+          "note": "Zero divisors from the idempotent",
+          "verified": true
+        },
+        {
+          "title": "...999 = -1 thread (Straight Dope message board)",
+          "url": "https://boards.straightdope.com/t/999-1/27517?page=69",
+          "date": "",
+          "snippet": "Forum thread explaining that 10 is composite, so ...87109376 times ...87109375 is zero, and that a prime base avoids zero divisors.",
+          "via": "search",
+          "note": "Independent example of the zero-divisor product; forum, so used only alongside the blog",
+          "verified": true
+        },
+        {
+          "title": "Exploding Dots, unusual numbers (Mathigon and G'Day Math lessons)",
+          "url": "https://mathigon.org/course/exploding-dots/unusual",
+          "date": "",
+          "snippet": "Lessons showing A minus 10A equals 9 gives A = -1, with the careful caveat that this holds only if the infinite string is accepted as a meaningful number.",
+          "via": "search",
+          "note": "Existing lesson that frames the acceptance question; supports the misconception",
+          "verified": true
+        },
+        {
+          "title": "What is worthy of investigation? Discovering 10-adic numbers (arXiv 2106.01408)",
+          "url": "https://arxiv.org/pdf/2106.01408",
+          "date": "2021",
+          "snippet": "Paper on how attitudes shape mathematical development, with a classroom dialogue in which a student extends ...999 + 1 and a teacher objects that such a number cannot exist.",
+          "via": "search",
+          "note": "Documents resistance to infinite-left strings as numbers",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "In the 10-adic numbers digits may extend infinitely to the left, ...99999 + 1 gives all zeros so ...999 = -1, and the negative of a number is the nines complement of each digit plus 1 (per Berkeley Math Circle notes).",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4,
+            8
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "The numbers ending ...8212890625 and ...1787109376 are the two nontrivial 10-adic solutions of x squared = x; they sum to 1 and multiply to 0 (OEIS and MathWorld list both, and the ten-digit values are 8212890625 and 1787109376). Script-checked by the scout modulo 10^60.",
+          "sourceIndex": 1,
+          "alsoIn": [
+            2
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "The 10-adic integers are not a field because 10 is composite and not a prime power: the product of ...87109376 and ...87109375 is zero although neither factor is zero; a prime base gives no such zero divisors.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Distance is measured by agreeing final digits: 9, 99, 999, 9999 differ from -1 by powers of ten, so they approach -1 in the 10-adic sense (arXiv 1710.08835 and Exploding Dots lessons).",
+          "sourceIndex": 4,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Teaching sources flag the acceptance hurdle: Exploding Dots states the result holds only if the infinite string is accepted as a meaningful number, and a published classroom dialogue has a teacher objecting that an infinite-left string cannot be a number.",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "The 5-ending automorphic sequence is a(n) = 5^(2^n) mod 10^n, and nontrivial automorphic numbers need a base with at least two distinct prime factors (OEIS A018247 summary, search-only for the second part).",
+          "sourceIndex": 1,
+          "alsoIn": [
+            0
+          ],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Exploding Dots unusual numbers",
+        "Berkeley Math Circle p-adic notes",
+        "Waterloo CEMC math circle p-adic lesson",
+        "car odometer rolling over",
+        "OEIS automorphic number entries"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha: each rung gives one manipulable demo (odometer, calculator, ruler, hunt, zero-divisor product), then a short predict-then-check question whose answer the page computes, with a visible 'what just happened' line. The hunt and the zero-divisor reveal build to the aha that closeness, not size, is what is being measured.",
+      "sophisticationHooks": [
+        "BigInt arithmetic modulo 10^60 shows the last 60 digits exactly, so every result on the page is real arithmetic, not a script of canned answers",
+        "Digit-by-digit idempotent hunt where the page proves only one next digit works at each step, showing x*x beside x live",
+        "Split view of a 10-adic number into its 'powers of 2' and 'powers of 5' parts to explain zero divisors",
+        "Predict-then-reveal check questions with checked values; ordinary-integer reading shown beside each ...9s result"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "One page, one script of BigInt helpers (add, multiply, negate, compare, lift) plus six small demo panels, about 8 controls on the first screen (digits field, plus, times, negate, a preset menu), and a written explainer with a glossary. Cut: rational numbers beyond a few presets, other primes (a single 'try base 7' toggle only if time allows), square roots, any proofs beyond the visual argument.",
+      "risks": [
+        "Wikipedia article was surfaced only by a search result and could not be opened (WebFetch of that host failed today, as did gdaymath.com); the page shows it as 'as of 2026-10-14, per search result'",
+        "No education study measuring the 'infinite digits means infinite size' belief was found; the page presents it as a common natural intuition, not a statistic",
+        "Sources describe ...999 = -1 as true inside the 10-adic system only; the page must say clearly it is a different number system, not a claim about decimals (and must not call real 0.999... into question)",
+        "Finite display of 'infinite' numbers: the page shows 40-60 digits; the explainer must say honestly that the rest is defined by the same rule, and that results are exact because the last k digits depend only on the last k digits of the inputs",
+        "Provocation words used lightly: the carry as a falling meteor shower in the odometer animation; no title uses them",
+        "Math density: one idea per rung and wording for a non-expert keep it clear; zero-divisor rung is the hardest and can sit behind a 'Go deeper' toggle"
+      ]
+    },
+    "durable": true,
+    "sanitizer": {
+      "redacted": [],
+      "trimmed": 1
+    }
+  },
+  {
+    "id": "artisan-1",
+    "title": "B-Tree vs LSM Tree",
+    "plainSentence": "A lesson with two small database engines side by side that lets you stream in keys and count every page each engine writes and reads.",
+    "pitch": "Press Play and keys stream into two tiny storage engines at once. A B-tree finds the page a key belongs to and rewrites that whole page, while an LSM tree holds writes in a memory waiting room, flushes them as sorted runs and merges runs later. Live counters for pages written and pages read show who pays where, and a Compact button lets you watch levels merge, so you leave knowing why no engine is free.",
+    "firstMinute": "The page opens with both engines already ingesting a sample stream of 20 keys, and two running tallies of pages written and pages read side by side. In the first 30 seconds the visitor sees one key light up the page it rewrites in the B-tree, and the same key sit in memory in the LSM tree. The first success is watching the write counters diverge, with no reading needed.",
+    "conceptsToLearn": [
+      "A key-value store keeps values you look up by key, and its data lives on disk in fixed-size pages."
+    ],
+    "whyNow": "Timeless: engineers choose between B-tree and LSM-based databases every week, and most explanations show only finished diagrams where the costs stay invisible.",
+    "origin": {
+      "agent": "artisan",
+      "lens": "lesson-storage-engines"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "algorithms-cs",
+      "mechanic": "lesson",
+      "tone": [
+        "nerdy",
+        "analytical",
+        "playful"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "web-animations",
+        "canvas2d"
+      ],
+      "tags": [
+        "storage-engine",
+        "b-tree",
+        "lsm-tree",
+        "write-amplification",
+        "read-amplification",
+        "compaction",
+        "database-internals",
+        "sorted-runs",
+        "memtable",
+        "key-value-store"
+      ],
+      "keywords": [
+        "database",
+        "storage",
+        "b-tree",
+        "lsm",
+        "compaction",
+        "write-amplification",
+        "read-amplification",
+        "pages",
+        "memtable",
+        "sstable"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A B-tree storage engine finds the leaf page a key belongs to and rewrites that whole fixed-size page in place, splitting pages when they fill. An LSM tree buffers writes in a memory table, flushes it as an immutable sorted run, and later merges runs into larger levels in a step called compaction. Both engines pay: the B-tree in whole-page rewrites per small write, the LSM tree in repeated rewrites during compaction (write amplification) and in checking several runs on reads (read amplification).",
+      "whyNiche": "Most explanations show a finished tree diagram or a table of pros and cons, so the costs stay invisible: nobody sees one small write turn into many bytes rewritten, or a read fan out across several runs.",
+      "audience": "Programmers who must pick or tune a database and have heard 'LSM is for writes, B-tree is for reads' without seeing why.",
+      "prerequisites": [
+        "What a key and a value are",
+        "That disks and SSDs read and write in blocks called pages"
+      ],
+      "misconceptions": [
+        "A write happens once, at its final place on disk.",
+        "An in-place B-tree update is cheap because it touches only the changed record.",
+        "LSM writes are cheap because they are sequential, so there is no hidden cost."
+      ],
+      "misconceptionFactIndexes": [
+        1,
+        2,
+        3
+      ],
+      "ahaMoment": "The visitor bursts a second wave of keys into both engines and watches the counters cross: the LSM tree wrote little at first, then compaction rewrites the same keys again and again, while the B-tree rewrote a whole page per tiny update. Every engine pays somewhere, and the choice is only about where.",
+      "demos": [
+        "Rung 1, the familiar: a sorted shelf of index cards. Insert one key and see why sorted order helps lookups.",
+        "Rung 2, B-tree: stream keys in; each one finds its leaf page and the whole page lights up as rewritten; watch a page split when full and count pages written.",
+        "Rung 3, LSM tree: the same keys enter a memory waiting room (the memtable); when it fills it flushes as one sorted run; counters show far fewer page writes so far.",
+        "Rung 4, the read side: look up a key and count pages checked in each engine; the LSM tree may check several runs, with a Bloom-filter switch that skips runs.",
+        "Rung 5, compaction: press Compact and watch runs merge into the next level, rewriting keys that were already written; the amplification ratio counter climbs.",
+        "Rung 6, the dials: choose workload (random keys, sequential keys, overwrites of hot keys), page size and size ratio, and see who wins each workload."
+      ],
+      "checkQuestions": [
+        "You overwrite the same key 100 times. Roughly how many times is that key's data written in each engine, and where?",
+        "Why can a read in the LSM tree touch more pages than a read in the B-tree?",
+        "What does compaction buy, and what does it cost?",
+        "Which workload would make you pick each engine?"
+      ]
+    },
+    "research": {
+      "summary": "The 1996 LSM-tree paper by O'Neil, Cheng, Gawlick and O'Neil is confirmed by the publisher's listing, and secondary material agrees on the core mechanics: memtable flush, immutable sorted runs, compaction, Bloom filters. RocksDB's own blog gives a typical leveled-compaction write amplification of 20 to 30 times user data, which shapes the demo's headline counters. The B-tree full-page-rewrite cost and the 'pick two of three amplifications' framing came only from search snippets or secondary writers, so the page labels its own counters as a simplified model and shows reported figures with an 'as of' attribution. The TiKV page could not be opened (host lookup failed).",
+      "sources": [
+        {
+          "title": "B-Tree vs LSM-Tree (TiKV deep dive)",
+          "url": "https://tikv.org/deep-dive/key-value-engine/b-tree-vs-lsm/",
+          "date": "",
+          "snippet": "Result carried only navigation text; the points attributed to it came from a blended search summary and secondary writers, so its own wording was not seen.",
+          "via": "search",
+          "note": "Names the read/write/space amplification framing and a formal comparison; contents not seen.",
+          "verified": false
+        },
+        {
+          "title": "The Log-Structured Merge-Tree (LSM-Tree), Acta Informatica (Springer listing)",
+          "url": "https://link.springer.com/article/10.1007/s002360050048",
+          "date": "1996",
+          "snippet": "Publisher listing for the paper by Patrick O'Neil, Edward Cheng, Dieter Gawlick and Elizabeth O'Neil, volume 33, pages 351 to 385, DOI 10.1007/s002360050048.",
+          "via": "search",
+          "note": "Establishes who wrote the original LSM paper, where and when it appeared.",
+          "verified": true
+        },
+        {
+          "title": "lsm-acta1996 (Berkeley-hosted copy of the paper)",
+          "url": "https://dsf.berkeley.edu/cs286/papers/lsm-acta1996.pdf",
+          "date": "",
+          "snippet": "Hosted copy whose abstract describes batching index changes in memory and cascading them to disk components, reducing disk arm movement versus B-trees.",
+          "via": "search",
+          "note": "Abstract-level description of the LSM idea; second host for the same paper.",
+          "verified": false
+        },
+        {
+          "title": "Align compaction output file (RocksDB blog)",
+          "url": "https://rocksdb.org/blog/2022/10/31/align-compaction-output-file.html",
+          "date": "2022-10-31",
+          "snippet": "RocksDB's own blog says leveled compaction has larger write amplification, typically 20 to 30 times user data, and reports a change cutting it by over 10 percent.",
+          "via": "search",
+          "note": "Primary-source figure for leveled compaction write amplification.",
+          "verified": true
+        },
+        {
+          "title": "LSM Compaction Strategies: Size-Tiered, Leveled, and the Workload That Picks for You",
+          "url": "https://codemia.io/archive/lsm-compaction-strategies",
+          "date": "",
+          "snippet": "Overview saying leveled compaction keeps space amplification near 1.1x with predictable reads, but write amplification can reach 20x or more as one key is rewritten down the levels.",
+          "via": "search",
+          "note": "Independent secondary source agreeing with the RocksDB figure; also explains the leveled versus tiered trade-off.",
+          "verified": true
+        },
+        {
+          "title": "Storage Engine (Cassandra documentation)",
+          "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/storage-engine.html",
+          "date": "",
+          "snippet": "Official docs for a widely used LSM-style database; compaction reads several small sorted tables, merges them and rewrites a new table, which creates write amplification. Reads use Bloom filters over tables.",
+          "via": "search",
+          "note": "Primary source for compaction cost and Bloom filters in a real engine.",
+          "verified": true
+        },
+        {
+          "title": "Bf-Tree: A Modern Read-Write-Optimized Concurrent Larger-Than-Memory Range Index (VLDB)",
+          "url": "https://mail.vldb.org/pvldb/volumes/17/paper/Bf-Tree%3A%20A%20Modern%20Read-Write-Optimized%20Concurrent%20Larger-Than-Memory%20Range%20Index",
+          "date": "",
+          "snippet": "Paper states B-trees show high write amplification because a whole page must be written even for a single record update.",
+          "via": "search",
+          "note": "Supports the B-tree whole-page rewrite cost; seen in a snippet only.",
+          "verified": false
+        },
+        {
+          "title": "Data storage and retrieval (reader notes on Designing Data-Intensive Applications)",
+          "url": "https://candost.blog/books/data-storage-and-retrieval/",
+          "date": "",
+          "snippet": "Reader notes: B-trees use fixed-size pages, traditionally 4 KB; write amplification is one write to the database causing several disk writes over its lifetime; memtable then older tables on reads.",
+          "via": "search",
+          "note": "Secondary notes on the textbook chapter; book text not seen.",
+          "verified": false
+        },
+        {
+          "title": "Log-structured merge tree explained (Aerospike blog)",
+          "url": "https://aerospike.com/blog/log-structured-merge-tree-explained/",
+          "date": "",
+          "snippet": "Vendor blog: in size-tiered schemes a record can be rewritten three to ten times before reaching the coldest level; tiered compaction trades more overlapping runs on reads for fewer rewrites.",
+          "via": "search",
+          "note": "Vendor with a commercial stake; illustrative only.",
+          "verified": false
+        },
+        {
+          "title": "LSM tree write amplification, key-value separation and compaction (blog)",
+          "url": "https://mohakchugh.is-a.dev/blog/lsm-tree-write-amplification-key-value-separation-compaction",
+          "date": "",
+          "snippet": "Blog gives a rough model for leveled write amplification as size ratio times (levels minus one), about 30 for ratio 10 and four levels.",
+          "via": "search",
+          "note": "A rough model, not a measurement; good for the dial but labelled as such.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "The LSM-tree paper by O'Neil, Cheng, Gawlick and O'Neil appeared in Acta Informatica, volume 33, pages 351 to 385, in 1996 (an earlier technical report of the same title dates from 1991).",
+          "sourceIndex": 1,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Per Cassandra's documentation, compaction reads several small sorted tables, merges them, processes updates and deletes, and writes a new table, which is a source of write amplification; reads use Bloom filters to avoid tables that cannot hold the key.",
+          "sourceIndex": 5,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "RocksDB's blog states leveled compaction typically has write amplification of 20 to 30 times user data; a second overview says 20x or more.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "In a B-tree, a single small record update rewrites the entire page holding it (typical page sizes 4, 8 or 16 KB), and a full page splits, writing several pages for one insert. Reported by a VLDB paper and secondary notes; not independently confirmed.",
+          "sourceIndex": 6,
+          "alsoIn": [
+            7
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Reported framing: an engine can optimise at most two of read, write and space amplification; B-trees favour reads and space, level-based LSM trees favour writes and space at a cost to reads that Bloom filters and caches soften. Seen only through secondary summaries of the TiKV page.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A rough model for leveled compaction puts write amplification near size ratio times (levels minus one); a blog's example gives about 30 for ratio 10 and four levels. A model, not a measurement.",
+          "sourceIndex": 9,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Kleppmann's storage and retrieval chapter",
+        "Interactive B-tree and LSM visualizers",
+        "RocksDB and Cassandra compaction documentation",
+        "Explorable explanations"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha: pick a workload, stream keys into both engines, watch the page-written and page-read counters, then predict the next number before pressing Compact or Look up. The loop stays interesting because each workload (random, sequential, hot overwrites) shifts which engine pays and where, and the visitor's guess is scored against the simulation.",
+      "sophisticationHooks": [
+        "Both engines are simulated in plain code with a fixed small page size (say 4 keys per page), so every count is exact and checkable by a script against hand-worked examples.",
+        "Animated pages: a rewritten page flashes, a split pulls apart, runs slide down levels and merge, with a reduced-motion twin that steps instead of animating.",
+        "A running 'write amplification' and 'read amplification' dial for each engine, plus a ledger chart over time that makes the compaction spikes visible.",
+        "Predict-then-reveal check questions and three workload presets that end in the aha: the counters cross."
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Build: a deterministic B-tree simulator (insert, split, lookup) and a leveled LSM simulator (memtable, flush, level merge, optional Bloom filter) with page counters; SVG rendering of both side by side; workload presets, play, step and compact buttons; intro paragraph, explainer and four check questions. Cut: deletes and tombstones, tiered compaction, concurrency, crash recovery, real timing or hardware claims, persistence.",
+      "risks": [
+        "The B-tree whole-page rewrite figure and the 'at most two of three amplifications' framing are unverified (search snippets only); the page defines its own simplified model and shows reported figures as 'as of 2026-10-14, per' their source, or drops them.",
+        "The TiKV page could not be opened (host lookup failed) and the Kleppmann text was not seen; only secondary notes were read.",
+        "The misconception 'a write happens once' is not documented as a widely held belief by any source I saw; the sources document the amplification facts that contradict it, so the page frames it as a common assumption to test, not as a survey finding.",
+        "Simulated counts depend on the chosen page size and size ratio and are not benchmark results; the page must say so plainly and never claim real database speeds.",
+        "Scope: two engines plus animation in one morning is tight; mitigate by cutting deletes and tiered compaction and by building the simulators first with scripted tests."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "engineer-1",
+    "title": "Inside Photo Metadata",
+    "plainSentence": "A lesson that lets you open a sample photo, see its hidden location and camera data, and remove it without touching the picture.",
+    "pitch": "Open a built-in sample photo and see its file laid out as a strip of labelled byte segments, then click the Exif segment to read the hidden location, camera, date and software fields in plain words. Delete segments with a switch and watch a SHA-256 fingerprint of the compressed picture data stay identical while the file shrinks, with the hash routine checked live against NIST example values. Then meet the traps: a stale thumbnail that still shows the uncropped scene, a rotation tag whose removal turns a photo sideways, and what no stripping can hide.",
+    "firstMinute": "The page opens with a sample photo already parsed: a coloured strip of file segments, a card reading 'taken at these coordinates with this camera on this date', and a Remove hidden data switch. Flipping the switch shows the card empty, the file size drop, and two matching SHA-256 fingerprints labelled 'picture data before' and 'after'. No reading is needed for that first success.",
+    "conceptsToLearn": [
+      "A photo file holds the picture and, separately, a block of notes about it"
+    ],
+    "whyNow": "Timeless. Photos are shared every day, and almost nobody has seen what is inside the file; the lesson shows it with a real parser instead of a diagram.",
+    "origin": {
+      "agent": "engineer",
+      "lens": "tool-exif-stripper"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "privacy-security",
+      "mechanic": "lesson",
+      "tone": [
+        "analytical",
+        "nerdy",
+        "playful"
+      ],
+      "tech": [
+        "dom-ui",
+        "svg",
+        "canvas2d",
+        "worker"
+      ],
+      "tags": [
+        "jpeg",
+        "exif",
+        "metadata",
+        "gps",
+        "sha-256",
+        "thumbnail",
+        "photo-privacy",
+        "file-format",
+        "byte-segments",
+        "lossless"
+      ],
+      "keywords": [
+        "exif",
+        "jpeg-segments",
+        "app1",
+        "gps-coordinates",
+        "sha-256",
+        "embedded-thumbnail",
+        "orientation-tag",
+        "metadata-removal",
+        "entropy-coded-data"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A JPEG file is a sequence of marker-delimited segments. The compressed picture data (the scan after the start-of-scan header, up to the end marker) is separate from the metadata segments, such as the Exif block in APP1 which holds a small TIFF-style directory of fields (camera, time, GPS sub-directory, thumbnail). Deleting metadata segments leaves the compressed picture bytes untouched, so it is lossless, and a hash of those bytes proves it.",
+      "whyNiche": "Most explanations either say 'photos contain EXIF, remove it' with no look inside, or dive into the raw specification. Free web tools hide the mechanism, and many re-save the picture, so people cannot tell whether quality was lost or what was actually removed.",
+      "audience": "Curious non-experts who share photos online, plus students and developers who have never opened a JPEG file's bytes.",
+      "prerequisites": [
+        "Know that a photo can be saved as a .jpg file",
+        "Know what a hash is only loosely: a short fingerprint of some bytes (the page defines it)"
+      ],
+      "misconceptions": [
+        "Cropping or blurring a photo also removes what was cut, because the file only holds the visible picture (an embedded thumbnail can still show the original)",
+        "Removing metadata is always harmless (dropping the orientation tag without rotating the pixels can make the photo display sideways)",
+        "Removing metadata means re-saving the picture, which must lower its quality (segment deletion leaves the compressed picture data byte-identical)"
+      ],
+      "misconceptionFactIndexes": [
+        4,
+        5,
+        6
+      ],
+      "ahaMoment": "The picture data hash is identical before and after, yet the location, camera and a hidden thumbnail are gone: the secrets and the picture were never the same bytes.",
+      "demos": [
+        "1. Byte strip: the sample file drawn as proportional coloured segments (start marker, JFIF header, Exif block, quantisation and Huffman tables, frame header, scan, end marker); click one to see its first bytes in hex and a plain-English label",
+        "2. Field reader: the Exif block decoded into a readable list (GPS, camera, date, software), with a worked example turning degrees-minutes-seconds and the N/S/E/W reference letters into decimal coordinates, and a pointer-following animation from the header to the GPS directory",
+        "3. Thumbnail trap: the sample photo is cropped but its embedded thumbnail still shows the uncropped scene; deleting the thumbnail makes it disappear",
+        "4. Strip and prove: switches per segment group (GPS only, camera and time, thumbnail, all Exif, comments), live byte count, SHA-256 of the whole file (changes) versus SHA-256 of the scan bytes (does not), plus a self-check panel that runs the SHA-256 routine on the NIST example messages",
+        "5. The rotation catch: a sample stored sideways with an orientation tag; removing the tag makes it appear turned, with the safe options explained",
+        "6. What stays: a picture whose street sign, shadow and window reflection give the place away without any metadata, so the visitor sees stripping is not anonymity",
+        "7. Try your own (behind a More toggle): drop JPEG files to read their fields and download cleaned copies made by deleting segments only; nothing leaves the browser"
+      ],
+      "checkQuestions": [
+        "You delete the GPS fields from a photo. Does the hash of the compressed picture data change, and why?",
+        "A friend crops a face out of a photo and posts the original file. What inside the file might still show the face?",
+        "Why can removing a rotation tag make a photo look sideways even though no pixel changed?",
+        "A cleaned photo still shows your house number on the door. Which part of the page's lesson does that illustrate?"
+      ]
+    },
+    "research": {
+      "summary": "The file layout is documented consistently: a JPEG is a chain of marker segments from the start marker to the end marker, with the compressed scan after the scan header, and Exif lives in an APP1 segment that holds a TIFF-style directory with a GPS sub-directory and a thumbnail directory. NIST publishes the SHA-256 example value for the three-letter message 'abc', and an independent test-vector page agrees, so the hash can be checked against a named oracle. Stale embedded thumbnails after cropping are documented by a security advisory and a Microsoft engineer's blog, and removing the orientation tag without rotating pixels is a documented cause of sideways images. Lossless metadata removal is what the jpegtran manual describes for metadata. Free web tools exist, so the page is a lesson that shows its working, not a competitor tool.",
+      "sources": [
+        {
+          "title": "The Metadata in JPEG files (Exiv2 wiki)",
+          "url": "https://dev.exiv2.org/projects/exiv2/wiki/The_Metadata_in_JPEG_files/12",
+          "date": "",
+          "snippet": "Describes the JPEG segment layout: start marker, header segments, baseline frame header, single scan, and where Exif sits; notes Exif is meant to come first but many files put a JFIF header first.",
+          "via": "search",
+          "note": "Segment structure and the Exif-after-JFIF ordering caveat",
+          "verified": true
+        },
+        {
+          "title": "Exif (Wikipedia)",
+          "url": "https://en.wikipedia.org/wiki/Exif",
+          "date": "",
+          "snippet": "Exif data sits in APP1 as a TIFF-like structure; the GPS directory is reached through tag 0x8825, the Exif sub-directory through 0x8769, and the thumbnail is in the second directory.",
+          "via": "search",
+          "note": "APP1 container, sub-directory pointer tags; agrees with the Exiv2 wiki on APP1",
+          "verified": true
+        },
+        {
+          "title": "NSRL test data (NIST)",
+          "url": "https://www.nist.gov/itl/ai/ai-standards-and-guidelines-group/nsrl-test-data",
+          "date": "",
+          "snippet": "NIST's own page lists the SHA-256 digest of the ASCII string abc as BA7816BF 8F01CFEA 414140DE 5DAE2223 B00361A3 96177A9C B410FF61 F20015AD, for informal checking; it notes the examples date from FIPS 180-2.",
+          "via": "search",
+          "note": "Primary-source SHA-256 example value (examples originate in the earlier FIPS 180-2)",
+          "verified": true
+        },
+        {
+          "title": "Test vectors for SHA-1, SHA-2 and SHA-3 (DI Management)",
+          "url": "https://di-mgt.com.au/sha_testvectors.html",
+          "date": "",
+          "snippet": "Independent page listing SHA-2 test vectors, including the digest for abc and the longer 448-bit message.",
+          "via": "search",
+          "note": "Independent agreement on the abc digest and source of further vectors",
+          "verified": true
+        },
+        {
+          "title": "FIPS 180-4: Secure Hash Standard (CSRC, NIST)",
+          "url": "https://csrc.nist.gov/pubs/fips/180-4/final",
+          "date": "2012-03",
+          "snippet": "NIST's official record of FIPS 180-4, which specifies SHA-1, SHA-224, SHA-256, SHA-384, SHA-512 and the truncated SHA-512 variants.",
+          "via": "search",
+          "note": "Names the standard that defines SHA-256; page lists March 2012, other copies show 2015",
+          "verified": true
+        },
+        {
+          "title": "Why does Explorer show a thumbnail for my image that's different from the image? (The Old New Thing)",
+          "url": "https://devblogs.microsoft.com/oldnewthing/20110517-00/?p=10653",
+          "date": "2011-05-17",
+          "snippet": "A Microsoft engineer explains that a preview stored inside an image can be left stale by editing software, so a cropped photo may still show the pre-crop content, which is an information-disclosure risk.",
+          "via": "search",
+          "note": "Documents the stale embedded thumbnail problem",
+          "verified": true
+        },
+        {
+          "title": "Editing JPEG photos, thumbnails and your privacy - edited out bits may still be visible",
+          "url": "https://consumingexperience.com/2007/06/editing-jpeg-photos-thumbnails-and-your.html",
+          "date": "2007-06",
+          "snippet": "Blog post warning that edited-out parts of a JPEG may remain visible in the embedded thumbnail.",
+          "via": "search",
+          "note": "Independent second source for the thumbnail trap (title and result summary only)",
+          "verified": true
+        },
+        {
+          "title": "RedTeam Pentesting advisory RT-SA-2005-008",
+          "url": "https://redteam-pentesting.de/en/advisories/rt-sa-2005-008",
+          "date": "2005",
+          "snippet": "Security advisory about image editors leaving the embedded thumbnail unchanged after cropping; a related CVE record treats it as a design flaw. The 20 percent and 2 percent figures in the result summary are not used.",
+          "via": "search",
+          "note": "Third source on the thumbnail trap; statistics left out because the summary was blended",
+          "verified": true
+        },
+        {
+          "title": "Drupal issue 3583882 (image orientation after sanitising)",
+          "url": "https://www.drupal.org/node/3583882",
+          "date": "",
+          "snippet": "A bug report where sanitising an image that had an orientation tag leaves it displayed in the wrong orientation; suggests rotating pixels first or keeping the tag.",
+          "via": "search",
+          "note": "Orientation tag removal causes sideways display",
+          "verified": true
+        },
+        {
+          "title": "image orientation wrong (CocoConvert blog)",
+          "url": "https://cococonvert.com/blog/image-orientation-wrong",
+          "date": "",
+          "snippet": "Explains that software ignoring the orientation tag shows raw unrotated pixel data, so photos appear turned.",
+          "via": "search",
+          "note": "Independent agreement on the orientation tag effect",
+          "verified": true
+        },
+        {
+          "title": "GPS Tags (ExifTool documentation)",
+          "url": "https://exiftool.org/TagNames/GPS.html",
+          "date": "",
+          "snippet": "Lists the GPS tags stored in a separate directory in Exif, such as latitude as three rational numbers with a N or S reference letter, and the longitude and altitude equivalents.",
+          "via": "search",
+          "note": "Field layout for the degrees-minutes-seconds worked example",
+          "verified": true
+        },
+        {
+          "title": "JPEGTRAN(1) manual page",
+          "url": "https://manpath.be/c8/1/jpegtran",
+          "date": "",
+          "snippet": "States that the tool cannot do lossy changes, yet while transforming image data losslessly it can drop metadata; a copy option controls what metadata is kept.",
+          "via": "search",
+          "note": "Documents that metadata can be removed without re-encoding the picture",
+          "verified": true
+        }
+      ],
+      "facts": [
+        {
+          "claim": "A JPEG file runs from a start marker (0xFFD8) to an end marker (0xFFD9); header segments start with a marker and a length, the scan header is followed directly by the compressed picture data, and Exif is stored in an APP1 segment (marker 0xFFE1) that contains a TIFF-style structure. Seen 2026-10-14.",
+          "sourceIndex": 0,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "In Exif, the GPS data is in its own sub-directory pointed to by tag 0x8825, the Exif sub-directory by tag 0x8769, and latitude is stored as three rational numbers plus an N or S reference letter. Seen 2026-10-14.",
+          "sourceIndex": 10,
+          "alsoIn": [
+            1
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "The SHA-256 digest of the ASCII text abc is ba7816bf 8f01cfea 414140de 5dae2223 b00361a3 96177a9c b410ff61 f20015ad, per NIST's NSRL test data page (examples carried over from FIPS 180-2) and an independent test-vector page. Seen 2026-10-14.",
+          "sourceIndex": 2,
+          "alsoIn": [
+            3
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "FIPS 180-4 is the NIST standard that specifies SHA-256 among the secure hash algorithms. Seen 2026-10-14 on NIST's CSRC page.",
+          "sourceIndex": 4,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Editing software can leave the embedded Exif thumbnail unchanged after a crop, so the thumbnail may still show the original, uncropped scene (documented in a 2011 Microsoft engineer's blog post, a 2007 blog post and a 2005 security advisory).",
+          "sourceIndex": 5,
+          "alsoIn": [
+            6,
+            7
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Removing the Exif orientation tag without first rotating the pixels can leave a photo displayed sideways, because the stored pixels are unrotated and only the tag tells viewers to turn them. Seen 2026-10-14.",
+          "sourceIndex": 8,
+          "alsoIn": [
+            9
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Metadata can be removed from a JPEG while the compressed picture data is passed through losslessly, according to the jpegtran manual page; no re-encoding of the picture is needed. Seen 2026-10-14.",
+          "sourceIndex": 11,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "Hex-dump file format explainers",
+        "Kaitai Struct format visualisers",
+        "Exiv2 and ExifTool tag listings",
+        "NIST example algorithm walk-throughs"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, question, aha: the visitor flips a switch on a parsed sample, sees the fields and the matching picture-data hash, answers a check question, then moves to the next rung (thumbnail trap, orientation catch, what stays). The optional drop-your-own step turns the same parser on their files, read-only unless they choose to download.",
+      "sophisticationHooks": [
+        "A real, hand-written JPEG segment parser and writer in plain JavaScript that copies picture bytes untouched, with a lossless-ness check: the scan bytes before and after are compared byte by byte and by SHA-256",
+        "A from-scratch SHA-256 implementation verified in-page against NIST example vectors (abc, the empty message, the 448-bit message) with a visible pass badge",
+        "A TIFF directory walker handling both byte orders, pointer-following into the GPS, Exif and thumbnail directories, with bounds checks and a refusal path for malformed files",
+        "A decoded-field view with the degrees-minutes-seconds to decimal worked example, drawn on a plain coordinate grid with no map tiles or network"
+      ],
+      "dataNeeds": "bundled",
+      "scopeForOneDay": "Built: the segment-strip view, Exif field reader (GPS, camera, date, software), thumbnail and orientation demos on one bundled hand-made sample JPEG (a tiny picture with an invented place, an imaginary camera name and a fake date, base64-embedded), segment switches, SHA-256 proof panel with self-check, four check questions, intro and explainer text, and the More-toggled drop-your-own with cleaned downloads for JPEG only. Cut: formats other than JPEG, XMP/IPTC field decoding (shown as raw segments only), maker-note decoding, editing field values, map display, and any pixel re-encoding.",
+      "risks": [
+        "Tag numbers 0x8825 and 0x8769 are seen only in search summaries of Wikipedia and ExifTool pages; the thumbnail tag numbers (0x0201, 0x0202) and compression value come from a page not recorded as a source, so the builder must check them against the Exif specification (CIPA DC-008) before coding.",
+        "Not confirmed by any opened page: no page was opened this run (WebFetch not attempted because the sandbox listed no working hosts); every source is search-only, so verified flags rest on two independent search results or on the standards body's own page.",
+        "NIST's page for the abc digest says its examples come from FIPS 180-2; the page will say 'NIST example value' and not claim they are printed in FIPS 180-4, and will list the other vectors as checked against the independent test-vector page.",
+        "The brief's claims that free web tools use batch caps or re-encode the picture were not checked; the page makes no claim about other tools or about paid products.",
+        "Maker notes are vendor-specific and may hold absolute offsets, so deleting or moving them is risky; the page deletes whole segments only and never rewrites inside the Exif block unless a rewrite path is built and tested, otherwise partial removal (GPS only) is shown as a rebuilt directory with a stated limit.",
+        "Partial removal (only GPS) requires rewriting the Exif block with fixed-up offsets; if that proves too risky in one morning, offer segment-level choices only (keep or drop all Exif, keep or drop comments) and keep the GPS-only view as a read-only highlight.",
+        "Canvas-made or user JPEGs vary: progressive files, multiple APP1 segments (XMP shares APP1), and files with trailing bytes must be handled by the parser or refused with a plain message.",
+        "Stripping the colour profile changes colour rendering and the orientation tag changes display; the page keeps both by default and explains why."
+      ]
+    },
+    "durable": true
+  },
+  {
+    "id": "critic-1",
+    "title": "How Reward Schedules Work",
+    "plainSentence": "A lesson that lets you run a simulated learner on four reward schedules and watch which ones keep it pressing after rewards stop.",
+    "pitch": "Four vending machines pay out by different rules: every fifth press, randomly about every fifth press, after a fixed wait, after a random wait. You watch a simulated learner press each one, read its cumulative record line, then cut the payouts mid-run and see which learner gives up first. The same engine then runs a 3-minute turn for you on a hidden machine, ends with a clean stopping point, and shows why 'it must be due' is wrong.",
+    "firstMinute": "The page opens with a drawn vending machine and a simulated learner already pressing its button, a line climbing in steps beside it with a pause after each snack. One tap on 'Pay randomly instead' turns the stepped line into a steady climb with no pauses, and the caption says what changed. No reading needed for that first success.",
+    "conceptsToLearn": [
+      "A reward schedule is the rule that decides which button presses pay out."
+    ],
+    "whyNow": "Timeless: the one-more-turn pull in games, apps and vending machines runs on these rules, and a visitor who sees the rules at work can recognize them anywhere. Not news-bound.",
+    "origin": {
+      "agent": "critic",
+      "lens": "craft-one-more-turn"
+    },
+    "fingerprint": {
+      "purpose": "lesson",
+      "category": "learning-memory",
+      "mechanic": "lesson",
+      "tone": [
+        "analytical",
+        "playful",
+        "nerdy"
+      ],
+      "tech": [
+        "canvas2d",
+        "svg",
+        "dom-ui",
+        "localstorage"
+      ],
+      "tags": [
+        "reinforcement-schedules",
+        "variable-ratio",
+        "operant-conditioning",
+        "extinction",
+        "vending-machine",
+        "cumulative-record",
+        "compulsion-loop",
+        "gambler-fallacy",
+        "habit-formation",
+        "game-design"
+      ],
+      "keywords": [
+        "reward-schedule",
+        "variable-ratio",
+        "fixed-ratio",
+        "extinction",
+        "cumulative-record",
+        "one-more-turn",
+        "habit",
+        "vending-machine",
+        "compulsion-loop",
+        "stopping-cue"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "concept": "A reward schedule is the rule that links behavior to payouts. Ratio schedules pay after a count of responses and interval schedules pay for the first response after a time; each can be fixed or variable. Fixed ratio gives a high rate with a pause after each payout, variable ratio gives a high steady rate with little pause, fixed interval gives a scalloped pattern of speeding up before the payout is due. Behavior kept up by occasional payouts usually lasts longer after payouts stop than behavi...",
+      "whyNiche": "Most pieces on this topic either name the schedules in a textbook table or wave at slot machines and call it addiction. Neither lets you see the four response shapes appear, or see what stopping the payouts does to each. Game design talks use the vocabulary without ever showing the mechanism.",
+      "audience": "Curious adults, game players and designers, students meeting operant conditioning for the first time, anyone who wonders why some loops are hard to put down.",
+      "prerequisites": [
+        "None beyond pressing a button and getting a snack."
+      ],
+      "misconceptions": [
+        "A payout is due after a long dry run, so one more press must be closer to winning.",
+        "Paying every single time builds the most durable habit, so occasional payouts must be weaker."
+      ],
+      "misconceptionFactIndexes": [
+        2,
+        1
+      ],
+      "ahaMoment": "After the payouts are switched off, the learner that was paid every time quits within a few presses while the learner paid randomly keeps going, because for it a long dry spell was already normal. The page then shows that chance of a payout after a long dry run is exactly the same as after a short one, which is why the pull to press once more feels like information but is not.",
+      "demos": [
+        "Rung 1, one machine: a fixed-ratio vending machine pays every fifth press; the learner's cumulative record shows steps and pauses.",
+        "Rung 2, same average, different rule: put a random-ratio machine (about every fifth press) beside it and compare the two lines.",
+        "Rung 3, rules based on time: fixed-interval and variable-interval machines; see the scallop and the steady line.",
+        "Rung 4, the pivot and the fallout: switch payouts off for every learner at once and race how long each keeps pressing; a note says this is a lab pattern and is less reliable in people.",
+        "Rung 5, dry-run check: run thousands of random presses and chart the chance of a payout after k misses in a row, which stays flat.",
+        "Rung 6, your turn: three minutes on a hidden machine, then guess its schedule from your own record, then a summary card that closes the session."
+      ],
+      "checkQuestions": [
+        "A machine pays about once every 10 presses at random. You have pressed 30 times with no payout. Is the next press more likely to pay than the first press was?",
+        "Which of two learners, one trained on payout every press and one on payout about every 5th press, keeps pressing longer when payouts stop, according to the textbook pattern?",
+        "Look at a cumulative record with long flat stretches after each step. Fixed ratio or variable ratio?",
+        "Name one natural stopping point you could add to a loop that otherwise runs on and on."
+      ]
+    },
+    "research": {
+      "summary": "Introductory psychology textbooks (several copies of one openly licensed chapter, plus course handouts) agree on the four schedules and their response shapes: variable ratio is high and steady and the most resistant to stopping, fixed ratio shows a pause after payout, fixed interval is scalloped. The partial-reinforcement extinction effect is a named, studied finding but is contested outside the lab and reverses under some conditions, so the page presents it as a lab pattern. Game-design writing on compulsion loops and behavioral design uses the same vocabulary, and one prominent design practitioner argues schedules are a useful tool whose ethics depend on intent, which shapes the 'way to end well' section. Independence of random trials is standard probability and documented by a university math page and a second site.",
+      "sources": [
+        {
+          "title": "Reinforcement Schedules (introductory psychology chapter)",
+          "url": "https://courses.lumenlearning.com/suny-fmcc-intropsych/chapter/reading-reinforcement-schedules/",
+          "date": "",
+          "snippet": "Textbook chapter: variable ratio gives very steady, high responding with no predictable pauses and is the most resistant to extinction; fixed ratio shows a pause after payout; fixed interval is scalloped and easiest to extinguish.",
+          "via": "search",
+          "note": "Names the four schedules and their response shapes. Several search hits are copies of one text, so it counts once.",
+          "verified": false
+        },
+        {
+          "title": "Reinforcement schedules handout (University of New Mexico)",
+          "url": "https://www.unm.edu/~susanrc/Site/SPC_ED_519_files/Hndouts_ReinforSchedules_10,pdf.pdf",
+          "date": "",
+          "snippet": "Course handout on reinforcement schedules; seen as a search hit about resistance to extinction on variable schedules. The search summary was blended, so the exact wording is not confirmed.",
+          "via": "search",
+          "note": "Possible second independent source for the schedule patterns; unconfirmed because the summary blended several hits.",
+          "verified": false
+        },
+        {
+          "title": "The partial-reinforcement extinction effect and the contingent-sampling hypothesis",
+          "url": "https://paperity.org/p/10305665/the-partial-reinforcement-extinction-effect-and-the-contingent-sampling-hypothesis",
+          "date": "2013",
+          "snippet": "Journal article (Hochman and Erev, 2013) on why behavior learned under partial reward lasts longer once rewards stop; reports the effect can reverse depending on how attractive the alternative is.",
+          "via": "search",
+          "note": "Names the effect and shows it is not uniform. Year taken from the citation text in the summary, page not opened.",
+          "verified": false
+        },
+        {
+          "title": "Compulsion loop (encyclopedia article)",
+          "url": "https://en.wikipedia.org/wiki/Compulsion_loop",
+          "date": "",
+          "snippet": "Defines a compulsion loop as a habitual chain of activities a user may feel compelled to repeat, distinguishes it from a core loop, and notes a variable ratio schedule can strengthen it.",
+          "via": "search",
+          "note": "Background definition and the link between loops and schedules; single search hit.",
+          "verified": false
+        },
+        {
+          "title": "Behavioral Game Design (Game Developer)",
+          "url": "https://www.gamedeveloper.com/design/behavioral-game-design",
+          "date": "2001",
+          "snippet": "Early design article treating the rules that decide when rewards are given as contingencies, the same thing as schedules of reinforcement. The full ratio and interval section was cut off in the search excerpt.",
+          "via": "search",
+          "note": "Shows game designers use the schedule vocabulary. Year is from the summary's attribution of the original article, not confirmed on the page.",
+          "verified": false
+        },
+        {
+          "title": "There is no Skinner box, says Bungie user research lead (Game Developer)",
+          "url": "https://gamedeveloper.com/design/there-is-no-skinner-box-says-bungie-user-research-lead",
+          "date": "",
+          "snippet": "Interview-style piece in which a design researcher argues the Skinner box is a lab tool, schedules are useful but not all of human psychology, and reward structures are fine when they make the game more fun rather than manipulate. The result's metadata title was mismatched.",
+          "via": "search",
+          "note": "Balancing view for the ethics section; speaker's name was inconsistent across the search summary so the page should not name anyone.",
+          "verified": false
+        },
+        {
+          "title": "Professor comments on differences between television and modern video games (NYU Stern)",
+          "url": "https://www.stern.nyu.edu/experience-stern/news/professor-adam-alter-comments-differences-between-television-and-modern-video-games",
+          "date": "",
+          "snippet": "Faculty news item quoting a researcher on digital addiction who says most entertainment has some stopping cue, while many video games do not.",
+          "via": "search",
+          "note": "Supports the idea of designing a stopping cue; a quoted opinion, not a controlled study. Do not quote or name anyone on the page.",
+          "verified": false
+        },
+        {
+          "title": "Gambler's Fallacy (Duke University math education)",
+          "url": "https://sites.math.duke.edu/education/postcalc/probability/fallacy.html",
+          "date": "",
+          "snippet": "University teaching page: a slot machine's last jackpot does not change the next one's probability; after five blacks on a roulette wheel the chance of black next is still 18/38.",
+          "via": "search",
+          "note": "Independence of random trials, with the 'due' belief named as a fallacy.",
+          "verified": true
+        },
+        {
+          "title": "The Gambler's Fallacy Explained: Why People Believe a Win Is Due",
+          "url": "https://casino.org/blog/gamblers-fallacy-explained",
+          "date": "",
+          "snippet": "Explainer saying each spin, hand or roll is independent, so a result that has not appeared recently does not become more likely.",
+          "via": "search",
+          "note": "Independent second site agreeing on independence and the widespread 'due' belief.",
+          "verified": true
+        },
+        {
+          "title": "Reward preference research report (Kao, 2012)",
+          "url": "https://people.csail.mit.edu/dkao/pdf/kao2012rewardpreference.pdf",
+          "date": "2012",
+          "snippet": "Report finding variable reward schedules preferred over fixed ones with the same mean, except when the variable schedule's range was extended.",
+          "via": "search",
+          "note": "Optional extra context; seen only through a summary.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "Per introductory psychology textbook chapters, variable ratio gives a high, steady response rate with little pause and is the most resistant to extinction; fixed ratio shows a pause after payout; fixed interval is scalloped and the easiest to extinguish.",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "The partial-reinforcement extinction effect is the finding that behavior rewarded only some of the time often lasts longer once rewards stop than behavior rewarded every time; it is contested in field settings and can reverse under some conditions (Hochman and Erev, 2013, per the search summary).",
+          "sourceIndex": 2,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Independent random trials have no memory: after a long dry run the chance of a payout on the next press is unchanged (for example, after five blacks on a roulette wheel the chance of black next is still 18/38).",
+          "sourceIndex": 7,
+          "alsoIn": [
+            8
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A compulsion loop is distinct from a core loop; designers can strengthen a loop with a variable ratio schedule, per the encyclopedia article.",
+          "sourceIndex": 3,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "Game design writing equates the rules that decide when rewards are given with schedules of reinforcement; one design practitioner argues such structures are acceptable when they serve player fun rather than manipulation.",
+          "sourceIndex": 4,
+          "alsoIn": [
+            5
+          ],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "One researcher on digital addiction is quoted saying many video games lack the stopping cues that other entertainment has; this is an opinion, not a controlled study.",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        },
+        {
+          "claim": "A report finds variable reward schedules are preferred over fixed ones with the same mean, unless the variable range is extended (Kao, 2012, per the search summary).",
+          "sourceIndex": 9,
+          "alsoIn": [],
+          "asOf": "2026-10-14"
+        }
+      ],
+      "inspirations": [
+        "cumulative recorder charts from operant-conditioning labs",
+        "incremental and roguelike games with run-based endings",
+        "vending machines",
+        "slot-machine dry-streak folklore",
+        "daily puzzle games with a single finishing point"
+      ]
+    },
+    "design": {
+      "coreLoop": "Demo, predict, reveal, question. Each rung shows a machine and a learner, asks the visitor to guess what the line will do or which learner quits first, then plays it and explains the shape, ending on a check question. The final rung turns the visitor into the learner for a timed turn and closes with a summary card.",
+      "sophisticationHooks": [
+        "One seeded engine drives every demo, so any run can be replayed exactly and the dry-run chart in rung 5 is computed from thousands of real simulated presses rather than drawn.",
+        "Side-by-side machines with equal average payout isolate the rule as the only difference, which is the whole lesson.",
+        "A pivot control switches payouts off mid-run for all learners at once, showing the fallout of each schedule in real time.",
+        "A designed ending: the visitor's own turn is capped at three minutes, a summary card shows their record and what they guessed, and the page names three stopping cues it itself uses (a fixed session length, no streak counter, nothing saved to bring them back)."
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: one simulation engine with four schedule types and a small learner model, a canvas cumulative-record chart, six rungs of demos with predict-then-reveal prompts, four check questions, the timed 'your turn' mode with a summary card, an intro paragraph and an explainer section. Cut: real animal data, accounts, sharing, saved history beyond a remembered tab, sound, a schedule-design sandbox.",
+      "risks": [
+        "The learner is an authored toy model whose rules are written to reproduce the textbook patterns, not recorded behavior. The page must say so plainly and never present its lines as experimental data.",
+        "Most key claims are verified:false (the schedule patterns come from textbook copies counted once, the extinction effect and design-article claims from single search hits). The page should show them as 'as of 2026-10-14, per introductory psychology textbooks' and the verifier should look for an independent second source.",
+        "The extinction effect is contested outside the lab and can reverse, so rung 4 must carry that caveat and not promise it will happen to a person.",
+        "The lens brief's 'Skinner box as a warning' framing is only partly supported: one design practitioner argues schedules are neutral tools, so the lesson teaches the mechanism and leaves the verdict to the visitor, with no claims about addiction or health.",
+        "Gambling adjacency: payouts are play-money snacks only, labelled simulated, no wagering, no real-money framing, and the page offers no advice.",
+        "Rung 6 could drift into a game; keep it three minutes, no scores, no leaderboard, no streaks, and make the summary card the finish.",
+        "A researcher is quoted in one source about stopping cues; the page does not name or quote anyone."
+      ]
+    },
+    "durable": true,
+    "sanitizer": {
+      "redacted": [],
+      "trimmed": 1
+    }
+  },
+  {
+    "id": "carry-1",
+    "title": "Nonogram Puzzle Checker",
+    "plainSentence": "A picture-by-numbers (nonogram) maker that lets you draw a picture, get its clues, and check whether it can be solved without guessing.",
+    "pitch": "Draw a picture on a small grid and the page writes the number clues around it, like a picture-by-numbers puzzle. It then solves the puzzle the way a person would, one row or column at a time, and reports whether the clues have exactly one answer and whether the whole grid falls out without guessing. If it does not, it shades the stuck squares and suggests a one-square change that repairs it; then you print the puzzle sheet and an answer page.",
+    "firstMinute": "A 10 by 10 sample picture is already drawn with its clues written around it, and a slow replay is solving it pass by pass in colour. A verdict card reads something like 'One answer, no guessing needed, 6 passes, easy'. Click a single square to flip it and watch the verdict change, perhaps to 'Two answers' with the ambiguous squares shaded.",
+    "conceptsToLearn": [
+      "A nonogram is a picture-by-numbers grid: each number says how long a run of filled squares is in that row or column."
+    ],
+    "whyNow": "Timeless: anyone who makes puzzles for a book, a class or a friend hits the same trap, a puzzle that has one answer on paper but forces guessing. The page makes that visible in seconds.",
+    "origin": {
+      "agent": "carryover",
+      "lens": "puzzle-forge",
+      "scoutId": "artisan-1",
+      "originalAgent": "artisan",
+      "carriedFrom": "2026-10-14"
+    },
+    "fingerprint": {
+      "purpose": "tool",
+      "category": "math-puzzle",
+      "mechanic": "checker",
+      "tone": [
+        "analytical",
+        "cozy",
+        "nerdy"
+      ],
+      "tech": [
+        "svg",
+        "dom-ui",
+        "pointer-events",
+        "worker",
+        "localstorage",
+        "web-animations"
+      ],
+      "tags": [
+        "nonogram",
+        "picture-logic",
+        "line-solver",
+        "unique-solution",
+        "puzzle-design",
+        "difficulty-rating",
+        "print-export",
+        "no-guess"
+      ],
+      "keywords": [
+        "nonogram",
+        "griddler",
+        "hanjie",
+        "picture-cross",
+        "puzzle-maker",
+        "solvability",
+        "line-solving",
+        "difficulty",
+        "printable-puzzle"
+      ],
+      "slot": "wildcard",
+      "political": false
+    },
+    "purposeDetail": {
+      "job": "Turn a drawn picture into nonogram clues and prove, with visible working, whether the puzzle has exactly one answer and can be finished by row-and-column logic alone.",
+      "audience": "Puzzle makers, teachers, parents and hobbyists who want to design nonograms that are fair to solve, and solvers curious why a puzzle got stuck.",
+      "paywallEvidence": [
+        {
+          "product": "A paid no-guess nonogram toolkit sold through a small-seller storefront",
+          "whatIsGated": "The check that every accepted puzzle can be finished by row-and-column logic alone, plus a print-ready puzzle-book PDF with answer pages; listed at 29 US dollars as of 2026-10-13, per the seller's own listing (never shown on the page).",
+          "factIndex": 0
+        }
+      ],
+      "freeGap": "Free options check uniqueness (a game's maker feature, open-source editors and solvers), so uniqueness alone is not the gap. I saw no free tool that tests the stricter no-guess property, shows each solving pass and proposes a one-square repair, but that is unconfirmed. The remaining gap: private, in the browser, shows its working, suggests the fix. The page names no product.",
+      "oracle": "OEIS A391619: the number of n by n grids with a unique solution reachable by row-and-column logic alone is 1, 2, 14, 384, 51234 for sizes 0 to 4 and 24976511 for size 5. The self-test enumerates every grid up to 4 by 4 and compares; the 5 by 5 count is an optional background run. The newsletter's stuck 5 by 5 puzzle is a further case.",
+      "oracleFactIndex": 2,
+      "inputs": "A picture drawn by clicking or dragging on a grid from 5 by 5 to 15 by 15 (20 by 20 under More), or pasted clue numbers; a sample picture is preloaded.",
+      "outputs": "Clue numbers, a verdict (no solution, several solutions, one solution needing guesses, or one solution reached by logic alone), a difficulty label from the pass count, the stuck squares, a suggested one-square repair, and exports: puzzle sheet and answer page as PNG, SVG and a print layout, plus a share link holding the grid.",
+      "limits": "Black-and-white nonograms only, 5 to 15 squares a side. Exhaustive checking of larger grids is capped and reported as 'could not decide' rather than guessed. Difficulty is a rough label from solving passes, not a verdict on how hard a person will find it. No photo import."
+    },
+    "research": {
+      "summary": "Uniqueness and no-guess solvability are different properties. A seller of a paid toolkit says most nonogram generators check nothing or only uniqueness, while its own accepted puzzles must be finished by working one row or column at a time (seller claim). OEIS A391619 counts n by n grids that are unique and line-solvable (1, 2, 14, 384, 51234, 24976511 for sizes 0 to 5), and the 5 by 5 value is also reported by a puzzle newsletter and a forum thread. A larger unique-solution count for 5 by 5 was relayed by a commenter and is unverified. Uniqueness checking is NP-hard in general, but a line solver is cheap, so an auditable in-browser checker with a capped search and a repair suggestion is realistic in one morning.",
+      "sources": [
+        {
+          "title": "No-Guess Nonogram Toolkit (seller listing)",
+          "url": "https://payhip.com/b/enbgi",
+          "date": "",
+          "snippet": "Seller listing at 29 US dollars (re-found as of 2026-10-13). Says puzzles are accepted only if row-by-row and column-by-column logic finishes the grid, and that most generators check nothing or only uniqueness. Outputs a print-ready PDF with answer pages.",
+          "via": "search",
+          "note": "Re-found by my search; the seller's own page for what it sells (price, what is gated, no-guess definition). Seller claims only, no independent reviews seen.",
+          "verified": true
+        },
+        {
+          "title": "Pixelogic Weekly issue 14",
+          "url": "https://weekly.pixelogic.app/p/pixelogic-weekly-14",
+          "date": "",
+          "snippet": "Defines logically solvable as unique solution plus line-solvable, gives a small 5 by 5 puzzle with one answer where row-by-row work gets stuck, and quotes a brute-force count of 24,976,511 for 5 by 5.",
+          "via": "search",
+          "note": "Re-found twice. Defines logically solvable as unique plus line-solvable, gives a 5 by 5 puzzle with one answer where line work gets stuck, and the brute-force count 24,976,511.",
+          "verified": true
+        },
+        {
+          "title": "Hacker News thread about a 5 by 5 nonogram game (mirror site)",
+          "url": "https://hn.matthewblode.com/item/44140918",
+          "date": "",
+          "snippet": "Discussion where 24,976,511 is given as the number of 5 by 5 grids solvable by logic, and a commenter points to a larger count of uniquely solvable grids from OEIS.",
+          "via": "search",
+          "note": "Re-found (a second mirror of the same thread also appeared, counted once). Gives 24,976,511 for 5 by 5; a commenter's larger unique count stays unverified.",
+          "verified": true
+        },
+        {
+          "title": "OEIS A391619",
+          "url": "https://oeis.org/A391619",
+          "date": "2026-01-17",
+          "snippet": "Entry counts n by n nonograms solvable by analysing each row and column in isolation with no guessing; terms 1, 2, 14, 384, 51234, 24976511, 48625108931 (offset 0); submitted 2026-01-17, a(6) added 2026-05-02.",
+          "via": "search",
+          "note": "Primary entry on its own domain, seen in a search result (not opened; oeis.org did not resolve for WebFetch). Named oracle for the self-test; agrees with two other sites on 24,976,511.",
+          "verified": true
+        },
+        {
+          "title": "OEIS A242876",
+          "url": "https://oeis.org/A242876",
+          "date": "",
+          "snippet": "Counts n by n nonograms (hanjie) that can be solved uniquely; about 75 percent of 5 by 5 grids; cites Ueda and Nagao for hardness of uniqueness.",
+          "via": "search",
+          "note": "Entry cites Ueda and Nagao for the hardness of uniqueness (seen in a result). The 5 by 5 value 25,309,575 was relayed by a forum commenter, never seen on the entry, so that number stays unverified.",
+          "verified": true
+        },
+        {
+          "title": "On Solving Simple Curved Nonograms (arXiv 2505.01554)",
+          "url": "https://arxiv.org/pdf/2505.01554",
+          "date": "2025",
+          "snippet": "Background on nonogram complexity: existence is NP-complete, uniqueness of a given solution is NP-hard, and 'simple' nonograms are those a polynomial method solves cell by cell.",
+          "via": "search",
+          "note": "Re-found by my search on NP-completeness; the paper credits Ueda and Nagao for NP-completeness of solvability and says uniqueness of a given solution is NP-hard; also describes polynomial methods for simple nonograms.",
+          "verified": true
+        },
+        {
+          "title": "Nonograms Katana wiki: My Nonograms",
+          "url": "https://nonograms-katana.fandom.com/wiki/My_Nonograms",
+          "date": "",
+          "snippet": "Describes a built-in checker that tries to solve a submitted puzzle and rejects ones with several solutions or only trivial lines.",
+          "via": "search",
+          "note": "Re-found: a fan-wiki page saying the game's maker feature has a solver bot that rejects puzzles with several solutions or trivial lines; uniqueness only. Single page.",
+          "verified": false
+        },
+        {
+          "title": "number loom (itch.io page)",
+          "url": "https://paul-stansifer.itch.io/number-loom",
+          "date": "",
+          "snippet": "Open-source HTML5 nonogram editor listed as in development that tracks solvability as you edit; MIT-licensed code.",
+          "via": "search",
+          "note": "Not re-found by my searches and itch.io cannot be fetched today; the claim about its solvability tracking is unverified and dropped from the facts.",
+          "verified": false
+        },
+        {
+          "title": "Solvability of nonograms (Patrick Stevens)",
+          "url": "https://www.patrickstevens.co.uk/posts/2014-07-13-solvability-of-nonograms/",
+          "date": "2014-07-13",
+          "snippet": "Blog post asking whether every nonogram is solvable and uniquely so; result snippet did not show its conclusions.",
+          "via": "search",
+          "note": "Re-found as a result, background only; no claim rests on it.",
+          "verified": false
+        }
+      ],
+      "facts": [
+        {
+          "claim": "As of 2026-10-13 a seller's own listing offers a no-guess nonogram toolkit for 29 US dollars. It says a puzzle is accepted only if working one row or column at a time, filling only forced squares, finishes the grid, and that most generators check nothing or only uniqueness (seller claim).",
+          "sourceIndex": 0,
+          "alsoIn": [],
+          "asOf": "2026-10-13"
+        },
+        {
+          "claim": "A nonogram can have exactly one solution and still not be solvable by row-and-column logic alone; a puzzle newsletter gives a small 5 by 5 example where line work gets stuck.",
+          "sourceIndex": 1,
+          "alsoIn": [
+            2
+          ],
+          "asOf": "2026-10-13"
+        },
+        {
+          "claim": "Of the 33,554,432 possible 5 by 5 grids, 24,976,511 give puzzles that are unique and solvable by line logic alone; OEIS A391619 lists 1, 2, 14, 384, 51234, 24976511 for sizes 0 to 5.",
+          "sourceIndex": 3,
+          "alsoIn": [
+            1,
+            2
+          ],
+          "asOf": "2026-10-13"
+        },
+        {
+          "claim": "Deciding whether a nonogram has a solution is NP-complete (Ueda and Nagao, 1996), and deciding uniqueness of a given solution is also hard, so an exhaustive answer count on large grids needs a work cap; simple nonograms are solved by cheap local line reasoning.",
+          "sourceIndex": 5,
+          "alsoIn": [
+            4
+          ],
+          "asOf": "2026-10-13"
+        },
+        {
+          "claim": "A free game's maker feature uses a solver that rejects puzzles with several solutions, and open-source nonogram editors and solvers exist; no free tool seen in my searches tests the stricter no-guess property with a repair suggestion (not confirmed for every tool).",
+          "sourceIndex": 6,
+          "alsoIn": [],
+          "asOf": "2026-10-13"
+        }
+      ],
+      "inspirations": [
+        "picture-by-numbers puzzles",
+        "puzzle-book proofreading",
+        "line solving",
+        "level editors with a built-in playtest"
+      ]
+    },
+    "design": {
+      "coreLoop": "Input, output, refine: draw or edit squares, see clues and the verdict update instantly, replay the solver pass by pass, apply the suggested repair or redraw, then export when the verdict is green.",
+      "sophisticationHooks": [
+        "Pass-coloured replay: each square is tinted by the pass in which logic fixed it, so the rating is visible, not just a number",
+        "Stuck squares shaded when logic stops, plus an exhaustive count of answers up to two with a node cap and an honest 'could not decide'",
+        "One-square repair search: try flipping each square and report flips that make the puzzle unique and line-solvable",
+        "Self-test panel that enumerates every grid up to 4 by 4 and checks the counts against published sequences"
+      ],
+      "dataNeeds": "none",
+      "scopeForOneDay": "Built: drawing grid (5, 10, 15), clue generator, line solver with pass replay, depth-first answer counter with a node cap, difficulty label, single-flip repair search in a worker, SVG and print-layout export, share link in the page address, self-test over all grids up to 4 by 4 plus the optional 5 by 5 run. Cut: 20 by 20 grids, PNG export, coloured nonograms, photo import, puzzle packs, accounts.",
+      "risks": [
+        "The paywall claim rests on one seller listing (its own page, so verified under the primary-source rule, but a marketing claim with no independent review); it never goes on the page and the page names no product.",
+        "The 5 by 5 unique-solution count 25,309,575 and the 333,064 gap are unverified (relayed by a commenter); the page leaves them out or shows them as 'as of 2026-10-13, per a forum commenter'.",
+        "The OEIS entry was seen in a search result and could not be opened; the self-test relies on terms for sizes 0 to 4, which the other two sources and a brute-force run check anyway.",
+        "The self-test must reach 8 known-answer cases from named sources: counts for sizes 1 to 4, the 5 by 5 count and the newsletter's stuck example are 6; the spec must add definition-based cases labelled as such, or report fewer named-source cases honestly.",
+        "The free-gap claim (no free tool tests no-guess solvability) is unconfirmed; the page states only what it does.",
+        "Brute-force over all 33 million 5 by 5 grids may be slow in a browser; keep sizes 0 to 4 automatic and make the 5 by 5 run an optional worker with a progress bar.",
+        "A drawn grid has many focusable squares; it must be one composite widget with a single tab stop and arrow-key movement so the first screen stays within 8 controls and the primary button stays visible at 1280x650.",
+        "Difficulty by pass count is a rough proxy; the page says so rather than claiming a human rating."
+      ]
+    },
+    "durable": true,
+    "verification": {
+      "by": "verifier",
+      "at": "2026-10-13",
+      "evidence": "search-only",
+      "confidence": 7,
+      "feasibleInOneDay": true,
+      "notes": "The key count (24,976,511) and the sequence are stated on the OEIS entry itself and agree with a puzzle newsletter and a forum thread; the seller price and claim are on its own listing. The 25,309,575 figure and the free-gap claim stay unverified; a line solver, capped counter and flip-repair search fit a morning if the 20 by 20 size and PNG export are cut."
+    }
+  }
+]

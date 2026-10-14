@@ -1,0 +1,435 @@
+{
+ "schema": 1,
+ "agent": "cards",
+ "lens": "anti-lens-constraint-roulette",
+ "candidates": [
+  {
+   "id": "cards-r1-1",
+   "title": "Two-Mirror Angle Lesson",
+   "plainSentence": "A lesson that lets you turn one mirror-angle dial and see how many images two mirrors make, and which angles give clean patterns.",
+   "pitch": "The whole first screen is one dial and one ink colour: two hinged mirrors, a lopsided hand-drawn mark between them and the ring of its reflections. Drag the dial and watch the ring grow, snap shut at 60 or 45 degrees, and tear open at 70. You leave knowing why a kaleidoscope uses certain angles, why the textbook count of 360 over the angle minus one is only part of the story, and why an odd number of slices leaves a seam.",
+   "firstMinute": "A page-sized picture already runs: the dial sweeps slowly from 90 to 45 degrees and the ring of reflections of a lopsided mark grows from 3 to 7 copies while a row of pips counts them. The visitor grabs the dial and drags it; at 60 degrees the ring closes with no gap and the dial clicks, which is the first success. No reading is needed, and the explanations sit below the picture.",
+   "conceptsToLearn": [
+    "a mirror flips left and right"
+   ],
+   "whyNow": "Timeless; the constraint of one dial and a single ink colour is felt at once, and the page respects it for the whole lesson (extra controls live behind a More toggle).",
+   "origin": {
+    "agent": "cards",
+    "lens": "anti-lens-constraint-roulette"
+   },
+   "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+     "serene",
+     "nerdy",
+     "playful"
+    ],
+    "tech": [
+     "svg",
+     "pointer-events",
+     "dom-ui"
+    ],
+    "tags": [
+     "kaleidoscope",
+     "mirrors",
+     "reflection",
+     "symmetry",
+     "dihedral-group",
+     "optics",
+     "angles",
+     "one-dial",
+     "single-colour"
+    ],
+    "keywords": [
+     "two-plane-mirrors",
+     "number-of-images",
+     "mirror-angle",
+     "reflection-symmetry",
+     "kaleidoscope-geometry",
+     "360-over-angle"
+    ],
+    "slot": "wildcard",
+    "political": false
+   },
+   "purposeDetail": {
+    "concept": "Two plane mirrors hinged at angle theta make a ring of reflections. When 360 divided by theta is a whole number n, the n copies of the object (the original plus n minus 1 images) tile the circle exactly, every copy alternately flipped. That is the dihedral symmetry of order 2n that two mirrors at 180 over n generate. Other angles leave overlaps or gaps, and an odd n leaves a seam where two same-handed copies meet.",
+    "whyNiche": "Most coverage is a single exam formula (360 over theta minus 1) with the edge cases glossed over or stated inconsistently, so learners never see why the angle matters or what goes wrong when it does not divide 360.",
+    "audience": "Curious teenagers and adults, physics and geometry students, and makers who build kaleidoscopes.",
+    "prerequisites": [
+     "knows what a mirror image is",
+     "can read an angle in degrees"
+    ],
+    "misconceptions": [
+     "Any mirror angle gives a pretty kaleidoscope pattern.",
+     "The formula 360 over theta minus 1 holds for every angle.",
+     "More mirrors always means more variety rather than a fixed set of tilings."
+    ],
+    "misconceptionFactIndexes": [
+     5,
+     4
+    ],
+    "ahaMoment": "Turning the dial from 60 to 70 degrees: the ring that closed perfectly tears open, because the angle no longer divides the full turn; then at 120 degrees the ring closes but a seam appears that flips handedness, so the angle must divide a half turn for a seamless view.",
+    "demos": [
+     "Hinge and glyph: drag the dial, see images appear and count them with pips",
+     "Snap angles: click through 90, 60, 45, 36, 30 and compare the count with 360 over theta minus 1",
+     "Off-divisor angles: set 70 or 100 degrees and see overlaps or a gap",
+     "Odd versus even slices: 120 and 72 degrees show the seam, 90 and 60 close; try a mirror-symmetric mark to heal the seam",
+     "More: move the object, then fold into the round tube view that makes the classic wedge pattern"
+    ],
+    "checkQuestions": [
+     "How many images do mirrors at 40 degrees make with the object centred?",
+     "Which angle gives exactly 11 images?",
+     "Why does 100 degrees not give a clean ring?",
+     "Why does a mirror-symmetric mark hide the seam at 120 degrees?"
+    ]
+   },
+   "research": {
+    "summary": "Two independent exam-prep pages state the image-count formula N = 360/theta - 1 with 60 degrees giving 5 and 45 degrees giving 7. University talk slides and a Rutgers article tie two hinged mirrors at pi/p to the dihedral group of order 2p. The edge cases (non-divisor angles, odd slice counts) are described inconsistently across sources, so the lesson derives them itself by exact unfolding geometry and tests the code against the verified values, labelling edge cases as the page's own derivation. The brief's constraint idea held up; the only thing I could not confirm is a strict even-only rule, which one patent contradicts (odd counts close if the mark is mirror-symmetric).",
+    "sources": [
+     {
+      "title": "If two mirrors are kept at 60 degree to each other then no.of images",
+      "url": "https://www.careers360.com/question-if-two-mirrors-are-kept-at-60-degree-to-each-other-then-noof-images",
+      "date": "",
+      "snippet": "Q&A page giving N = 360/theta - 1 and working out 5 images for mirrors at 60 degrees.",
+      "via": "search",
+      "note": "Formula and 60 degree example (independent of the Vedantu page)",
+      "verified": true
+     },
+     {
+      "title": "Number of Images Formed by Two Plane Mirrors: Explained",
+      "url": "https://www.vedantu.com/jee-main/physics-number-of-images-formed-by-two-plane-mirrors",
+      "date": "",
+      "snippet": "Exam-prep explainer: N = 360/theta - 1, with 60 degrees giving 5 and 45 degrees giving 7; also describes overlap when the angle does not divide 360.",
+      "via": "search",
+      "note": "Formula, 60 and 45 degree examples; edge cases only from this site",
+      "verified": true
+     },
+     {
+      "title": "Dihedral group slides (UNB)",
+      "url": "https://bmonson.ext.unb.ca/cuern/cuerpres.pdf",
+      "date": "",
+      "snippet": "Slides describing the dihedral group D_p generated by two reflections, realised by two hinged mirrors at angle pi/p, with 2p elements.",
+      "via": "search",
+      "note": "Mirror angle pi/p gives a group of order 2p",
+      "verified": true
+     },
+     {
+      "title": "Rutgers monthly article on kaleidoscopes",
+      "url": "https://sites.math.rutgers.edu/~goodman/pub/monthly.pdf",
+      "date": "",
+      "snippet": "Article describing Brewster's cylindrical kaleidoscope with mirror angle 180/m degrees and links to reflection groups.",
+      "via": "search",
+      "note": "Second source for the 180/m form",
+      "verified": true
+     },
+     {
+      "title": "System for creating video generated decorative images (patent)",
+      "url": "https://image-ppubs.uspto.gov/dirsearch-public/print/downloadPdf/6062698",
+      "date": "",
+      "snippet": "Patent text saying the mirror angle should divide 360 evenly, and that an odd count closes only if the primary image is mirror-symmetric, giving an odd number of segments.",
+      "via": "search",
+      "note": "Odd versus even slices; single source, an inventor's claim",
+      "verified": false
+     },
+     {
+      "title": "Number of Images Formed by Two Plane Mirrors (edge cases, same site)",
+      "url": "https://www.vedantu.com/question-answer/images-of-an-object-will-be-formed-when-the-class-10-physics-cbse-60a344a5d4529b28fc911d79",
+      "date": "",
+      "snippet": "Exam-prep answer stating that if the angle does not divide 360 some images overlap and the count is the integer part; sources disagree on odd cases.",
+      "via": "search",
+      "note": "Non-divisor behaviour; one site, inconsistent",
+      "verified": false
+     },
+     {
+      "title": "Wallpaper groups paper (Dunham, Bridges 2015)",
+      "url": "https://www.d.umn.edu/~ddunham/bridges15.pdf",
+      "date": "",
+      "snippet": "Paper listing the mirror-bounded planar groups p3m1, p4m and p6m; matching them to 60-60-60, 45-45-90 and 30-60-90 triangles is the searcher's inference.",
+      "via": "search",
+      "note": "Optional three-mirror extension; only one result",
+      "verified": false
+     },
+     {
+      "title": "Extended Analysis of the General Two-mirror Dihedral Angle Case (Brewster Society)",
+      "url": "https://brewstersociety.com/encyclopedia/angle-analysis-in-kaleidoscopes/",
+      "date": "",
+      "snippet": "Says the far images are ambiguous for a general angle and depend on which mirror is the exit mirror; page could not be opened here.",
+      "via": "search",
+      "note": "General-angle ambiguity; snippet only",
+      "verified": false
+     }
+    ],
+    "facts": [
+     {
+      "claim": "For two plane mirrors inclined at angle theta, textbooks and exam-prep pages give the number of images as 360/theta - 1 (as of 2026-10-14).",
+      "sourceIndex": 1,
+      "alsoIn": [
+       0
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "The same formula gives 5 images at 60 degrees and 7 at 45 degrees (as of 2026-10-14).",
+      "sourceIndex": 1,
+      "alsoIn": [
+       0
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Two hinged mirrors at angle pi/p (180/p degrees) generate the dihedral group of order 2p (as of 2026-10-14).",
+      "sourceIndex": 2,
+      "alsoIn": [
+       3
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Brewster Society analysis: for a general (non-divisor) angle the farthest images are ambiguous and depend on the exit mirror. Reported, not confirmed.",
+      "sourceIndex": 7,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "A patent says an odd segment count produces a clean ring only if the primary image is mirror-symmetric. Reported by one result, unconfirmed; the lesson derives this itself.",
+      "sourceIndex": 4,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "For angles that do not divide 360 some images overlap and the count is the integer part of 360/theta; sources are inconsistent on odd cases. Reported, unconfirmed.",
+      "sourceIndex": 5,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Mirror-bounded triangles correspond to wallpaper groups p3m1, p4m, p6m (Dunham). Reported, unconfirmed; optional extension only.",
+      "sourceIndex": 6,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     }
+    ],
+    "inspirations": [
+     "Brewster's variable two-mirror kaleidoscope",
+     "Mirror books in maths museums",
+     "Dihedral group visualisers",
+     "One-button and one-colour jam entries"
+    ]
+   },
+   "design": {
+    "coreLoop": "Drag the dial, see the ring and the image count change at once, predict the next snap angle, then answer a check question and see the page confirm it with the picture; the surprise at off-divisor and odd angles keeps pulling the visitor back to test one more angle.",
+    "sophisticationHooks": [
+     "Exact unfolding geometry (not just the formula) so non-divisor and odd cases are drawn truthfully",
+     "Handed mark that shows reflections as flipped copies in one ink colour using a hatched versus solid fill",
+     "Seam detector that highlights where two same-handed copies meet",
+     "Round tube view that turns the ring into the classic kaleidoscope wedge pattern behind More"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: SVG ring of reflections with one dial, snap points, image pips, odd/even seam demo, four check questions, intro and explainer text, pure tested geometry module. Cut: three-mirror wallpaper groups, sound, sharing.",
+    "risks": [
+     "Edge-case rules (non-divisor counts, odd slice counts) are not consistently stated by sources; the page must present them as its own derivation, checked by node tests against the verified values 60 -> 5 and 45 -> 7, and show unverified claims as 'as of 2026-10-14, per <source>' or omit them.",
+     "The Brewster Society page could not be opened (host not found), so its claims stay unverified.",
+     "The single-colour constraint limits showing handedness; the hatched versus solid fill and a flip-marked glyph must be tested for legibility and contrast.",
+     "Search summaries blended results, so the independent-agreement marks rest on the separate result entries only."
+    ]
+   },
+   "durable": true
+  },
+  {
+   "id": "cards-r1-2",
+   "title": "Constraint Writing Studio",
+   "plainSentence": "A writing workspace that lets you draw a writing rule, such as no letter E, then checks your text live and exports the finished piece.",
+   "pitch": "Spin for a rule from the French workshop tradition of constrained writing (no chosen letter, letters with no tails, words that grow one letter at a time, one vowel only) or pick your own, then write. Every letter or word that breaks the rule lights up as you type, so the constraint is felt in the first ten seconds. Finish and export your piece as a plain text file or an image card stamped with its rule.",
+   "firstMinute": "The page opens with a rule already drawn (no letter E) and a short sample line in the editor, with the one banned letter highlighted wherever it appears. The visitor deletes the highlighted word, types a replacement and watches the counter turn to 'rule kept', then presses Spin to try a different rule.",
+   "conceptsToLearn": [],
+   "whyNow": "Timeless creative workbench; also answers the brief's call for an experience where a ridiculous constraint governs the entire interaction.",
+   "origin": {
+    "agent": "cards",
+    "lens": "anti-lens-constraint-roulette"
+   },
+   "fingerprint": {
+    "purpose": "studio",
+    "category": "language-text",
+    "mechanic": "editor",
+    "tone": [
+     "playful",
+     "nerdy",
+     "cozy"
+    ],
+    "tech": [
+     "dom-ui",
+     "canvas2d",
+     "localstorage"
+    ],
+    "tags": [
+     "oulipo",
+     "constrained-writing",
+     "lipogram",
+     "snowball-poem",
+     "prisoners-constraint",
+     "writing-studio",
+     "poetry",
+     "word-play"
+    ],
+    "keywords": [
+     "no-letter-e",
+     "letter-ban",
+     "ascenders-descenders",
+     "univocalic",
+     "tautogram",
+     "export-poem-card"
+    ],
+    "slot": "humor",
+    "political": false
+   },
+   "purposeDetail": {
+    "output": "A short piece of text (poem, sentence or paragraph) that provably obeys one chosen writing rule, saved with the rule stamped on it.",
+    "exportFormats": [
+     "plain text (.txt)",
+     "PNG card with the text and its rule",
+     "copy to clipboard"
+    ]
+   },
+   "research": {
+    "summary": "Constrained writing is a documented tradition: a French workshop of writers and mathematicians founded in 1960 (Queneau and Le Lionnais) catalogued rules such as the lipogram, and the English novel Gadsby (1939) and Perec's La Disparition (1969) both avoid the letter e. Definitions of snowball and the so-called prisoner's constraint vary between sources (snowball can grow by a letter per word or a word per line; the banned letter list for prisoner's differs, and the status of i is unclear), so the studio states its own exact version of each rule and lets the visitor flip the contested choices. All checking is simple string logic that can be tested in node.",
+    "sources": [
+     {
+      "title": "Oulipo",
+      "url": "https://en.wikipedia.org/wiki/Oulipo",
+      "date": "",
+      "snippet": "Encyclopedia entry: founded 24 November 1960 by Raymond Queneau and Francois Le Lionnais; devises constrained-writing methods such as the lipogram; Queneau's ten-sonnet book allows 10^14 poems.",
+      "via": "search",
+      "note": "Founding and constraint catalogue",
+      "verified": true
+     },
+     {
+      "title": "A Brief Guide to OULIPO",
+      "url": "https://poets.org/text/brief-guide-oulipo",
+      "date": "",
+      "snippet": "Poetry organisation guide: group founded in 1960 by a mathematician and a writer; describes exercises such as the snowball poem.",
+      "via": "search",
+      "note": "Independent confirmation of 1960 and snowball description",
+      "verified": true
+     },
+     {
+      "title": "Gadsby (novel)",
+      "url": "https://en.wikipedia.org/wiki/Gadsby_(novel)",
+      "date": "",
+      "snippet": "Encyclopedia entry: a 1939 novel by Ernest Vincent Wright that avoids the letter e, with a handful of slips; inspired Perec's La Disparition.",
+      "via": "search",
+      "note": "Gadsby is a 1939 lipogram",
+      "verified": true
+     },
+     {
+      "title": "The Novel Gadsby has 50,110 Words, Yet None of them Contain the Letter E",
+      "url": "https://www.todayifoundout.com/index.php/2012/05/the-novel-gadsby-has-50110-words-yet-none-of-them-contain-the-letter-e/",
+      "date": "",
+      "snippet": "Popular article saying the 1939 novel runs about 50,000 words without the letter e.",
+      "via": "search",
+      "note": "Second source for Gadsby",
+      "verified": true
+     },
+     {
+      "title": "Constrained writing",
+      "url": "https://en.wikipedia.org/wiki/Constrained_writing",
+      "date": "",
+      "snippet": "Encyclopedia overview defining lipogram, pangram, univocalism, tautogram and the snowball (words growing by one letter).",
+      "via": "search",
+      "note": "Definitions of the rule family",
+      "verified": false
+     },
+     {
+      "title": "The Writhing Society: A Salon for Constrained Writing Techniques",
+      "url": "https://bklynlibrary.org/calendar/writhing-society-salon-virtual-20200509",
+      "date": "",
+      "snippet": "Library event page listing the prisoner's constraint (letters that rise above or fall below the line are banned) and noting that a short word fits it.",
+      "via": "search",
+      "note": "Prisoner's constraint letter list (b d f g h j k l p q t y); other sources differ",
+      "verified": false
+     },
+     {
+      "title": "oulipo gem documentation",
+      "url": "https://www.rubydoc.info/gems/oulipo/0.3.2",
+      "date": "",
+      "snippet": "Software documentation describing a prisoner's (Macao) constraint as a lipogram excluding letters with ascenders or descenders.",
+      "via": "search",
+      "note": "Second description of the prisoner's constraint",
+      "verified": false
+     }
+    ],
+    "facts": [
+     {
+      "claim": "The Oulipo workshop was founded on 24 November 1960 by Raymond Queneau and Francois Le Lionnais (as of 2026-10-14).",
+      "sourceIndex": 0,
+      "alsoIn": [
+       1
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Gadsby, published in 1939 by Ernest Vincent Wright, is a novel of roughly 50,000 words that avoids the letter e (a few slips are reported) (as of 2026-10-14).",
+      "sourceIndex": 2,
+      "alsoIn": [
+       3
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Perec's La Disparition (1969) is written without the vowel e. Reported on Wikipedia pages only, so shown as 'as of 2026-10-14, per Wikipedia'.",
+      "sourceIndex": 0,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Definitions of the snowball form differ: one reading grows each word by one letter, another grows each line by one word (as of 2026-10-14).",
+      "sourceIndex": 1,
+      "alsoIn": [
+       4
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "The prisoner's constraint bans letters with ascenders or descenders; one source lists b d f g h j k l p q t y, others classify some letters differently, and the status of i is unstated. Unconfirmed; the studio states its own set.",
+      "sourceIndex": 5,
+      "alsoIn": [
+       6
+      ],
+      "asOf": "2026-10-14"
+     },
+     {
+      "claim": "Ten sonnets of 14 lines with interchangeable lines allow 10 to the power 14 poems (Queneau). Reported by one source, and the arithmetic (10 choices for each of 14 lines) checks out.",
+      "sourceIndex": 0,
+      "alsoIn": [],
+      "asOf": "2026-10-14"
+     }
+    ],
+    "inspirations": [
+     "Georges Perec's lipogram novel",
+     "Queneau's hundred thousand billion poems",
+     "One-color and one-button jam entries",
+     "Oblique Strategies card deck"
+    ]
+   },
+   "design": {
+    "coreLoop": "Spin or pick a rule, write, watch violations light up and fix them, reach 'rule kept', then export; Spin again gives a new rule so each session produces a different small piece.",
+    "sophisticationHooks": [
+     "Pure rule functions (letter ban, tail-less letters, snowball growth, one vowel, same first letter) with edge cases for accents, hyphens and apostrophes shown in a rules panel",
+     "Starter examples written by the team and checked by the very same functions in node tests",
+     "A harder 'strict' toggle (for example ban a second letter) and a rule-stamped image card as the keepsake"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: five rules plus a spin, live highlighter and counter, text and image export, rules panel with plain definitions and a short history paragraph. Cut: dictionary-based rules (replace each noun with a later one in a dictionary), saved drafts across sessions, sharing.",
+    "risks": [
+     "Studio might be read as a tool: the keepsake export, the spin and the playful voice must carry it.",
+     "Rule definitions differ across sources; the page must state its exact version of each and mark the contested letter choices.",
+     "Perec and exact slip counts for Gadsby are reported by few sources; omit them or date them 'per Wikipedia'.",
+     "Another scout proposed an anagram lesson (Sealing Secrets With Anagrams); this candidate avoids anagram rules to keep the subjects apart.",
+     "Mostly encyclopedia sources; the brief's Are.na and itch.io pointers could not be searched there."
+    ]
+   },
+   "durable": true
+  }
+ ]
+}

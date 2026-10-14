@@ -1,0 +1,239 @@
+{
+  "id": "critic-1",
+  "title": "How Reward Schedules Work",
+  "plainSentence": "A lesson that lets you run a simulated learner on four reward schedules and watch which ones keep it pressing after rewards stop.",
+  "pitch": "Four vending machines pay out by different rules: every fifth press, randomly about every fifth press, after a fixed wait, after a random wait. You watch a simulated learner (a toy model that reproduces textbook patterns) press each one, read its cumulative record line, then cut the payouts mid-run and see which learner gives up first. A short turn on a hidden machine ends at a clean stopping point, and a chart shows why 'it must be due' is wrong for random payouts.",
+  "firstMinute": "The page opens with a drawn vending machine and a simulated learner already pressing its button, a line climbing in steps beside it with a pause after each snack. One tap on 'Pay randomly instead' turns the stepped line into a steady climb with no pauses, and the caption says what changed. No reading needed for that first success.",
+  "conceptsToLearn": [
+    "A reward schedule is the rule that decides which button presses pay out.",
+    "A cumulative record is a line that steps up with every press, so a steeper line means faster pressing and a flat stretch means a pause."
+  ],
+  "whyNow": "Timeless: the one-more-turn pull in games, apps and vending machines runs on these rules, and a visitor who sees the rules at work can recognize them anywhere. Not news-bound.",
+  "origin": {
+    "agent": "critic",
+    "lens": "craft-one-more-turn"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "learning-memory",
+    "mechanic": "lesson",
+    "tone": ["analytical", "playful", "nerdy"],
+    "tech": ["canvas2d", "svg", "dom-ui", "localstorage"],
+    "tags": [
+      "reinforcement-schedules",
+      "variable-ratio",
+      "operant-conditioning",
+      "extinction",
+      "vending-machine",
+      "cumulative-record",
+      "compulsion-loop",
+      "gambler-fallacy",
+      "habit-formation",
+      "game-design"
+    ],
+    "keywords": [
+      "reward-schedule",
+      "variable-ratio",
+      "fixed-ratio",
+      "extinction",
+      "cumulative-record",
+      "one-more-turn",
+      "habit",
+      "vending-machine",
+      "compulsion-loop",
+      "stopping-cue"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "A reward schedule is the rule that links behavior to payouts. Ratio schedules pay after a count of responses and interval schedules pay for the first response after a time; each can be fixed or variable. Per introductory textbooks, fixed ratio gives a high rate with a pause after each payout, variable ratio gives a high steady rate with little pause, and fixed interval gives a scalloped pattern that speeds up as the payout nears. Behavior kept up by occasional payouts often lasts longer after payouts stop than behavior paid every time (the partial-reinforcement extinction effect), a lab finding that is weaker in field settings and can reverse.",
+    "whyNiche": "Most pieces on this topic either name the schedules in a textbook table or wave at slot machines and call it addiction. Neither lets you see the four response shapes appear, or see what stopping the payouts does to each. Game design talks use the vocabulary without ever showing the mechanism.",
+    "audience": "Curious adults, game players and designers, students meeting operant conditioning for the first time, anyone who wonders why some loops are hard to put down.",
+    "prerequisites": ["None beyond pressing a button and getting a snack."],
+    "misconceptions": [
+      "A payout is due after a long dry run, so one more press must be closer to winning.",
+      "Paying every single time builds the most durable habit, so occasional payouts must be weaker."
+    ],
+    "misconceptionFactIndexes": [2, 1],
+    "ahaMoment": "After the payouts are switched off, the learner that was paid every time quits within a few presses while the learner paid randomly keeps going, because for it a long dry spell was already normal. The page then shows that on a random-ratio machine the chance of a payout after a long dry run is the same as after a short one, which is why the pull to press once more feels like information but is not.",
+    "demos": [
+      "Rung 1, one machine: a fixed-ratio vending machine pays every fifth press; the learner's cumulative record shows steps and pauses.",
+      "Rung 2, same average, different rule: put a random-ratio machine (about every fifth press) beside it and compare the two lines.",
+      "Rung 3, rules based on time: fixed-interval and variable-interval machines; see the scallop and the steady line.",
+      "Rung 4, the pivot and the fallout: switch payouts off for every learner at once and race how long each keeps pressing; a note says this is a lab pattern shown by a toy model and is less reliable in people.",
+      "Rung 5, dry-run check on the random-ratio machine only: run thousands of random presses and chart the chance of a payout after k misses in a row, which stays flat. A note says a time-based machine differs, since waiting longer does make a payout more likely there.",
+      "Rung 6, your turn: three minutes on a hidden machine, then a guess at its schedule from your own record, then a summary card that closes the session."
+    ],
+    "checkQuestions": [
+      "A machine pays about once every 10 presses at random. You have pressed 30 times with no payout. Is the next press more likely to pay than the first press was?",
+      "Which of two learners, one trained on payout every press and one on payout about every 5th press, keeps pressing longer when payouts stop, according to the textbook pattern?",
+      "Look at a cumulative record with long flat stretches after each step. Fixed ratio or variable ratio?",
+      "Name one natural stopping point you could add to a loop that otherwise runs on and on."
+    ]
+  },
+  "research": {
+    "summary": "Introductory psychology textbook chapters, in several copies of one openly licensed chapter plus an independent explainer, describe the four schedules and their response shapes: variable ratio high and steady and most resistant to stopping, fixed ratio with a pause after payout, fixed interval scalloped. These stay flagged as reported, since this check was search-only and the search summary blended its hits. The partial-reinforcement extinction effect is documented in a journal paper whose abstract, seen in several search entries, says it is well supported in the lab, not in field research, and can flip with how attractive the alternative is. Independence of random trials and the 'due' fallacy are agreed by several independent educational pages. A game design article uses the word contingency for schedule.",
+    "sources": [
+      {
+        "title": "Reinforcement Schedules (introductory psychology chapter)",
+        "url": "https://courses.lumenlearning.com/suny-fmcc-intropsych/chapter/reading-reinforcement-schedules/",
+        "date": "",
+        "snippet": "Textbook chapter on the four schedules: variable ratio steady and extinction-resistant, fixed ratio pauses after payout, fixed interval scalloped.",
+        "via": "search",
+        "note": "Found again by a claim search, but the search summary blended several hits and the page would not open (host lookup failed), so the exact wording is unconfirmed. Copies of one text count once.",
+        "verified": false
+      },
+      {
+        "title": "Schedules of Reinforcement in Psychology (Examples)",
+        "url": "https://www.simplypsychology.org/schedules-of-reinforcement.html",
+        "date": "",
+        "snippet": "Explainer on reinforcement schedules; listed in the claim search alongside the textbook chapter.",
+        "via": "search",
+        "note": "Independent site on the same topic, but the summary blended it with other hits, so it does not count as a confirmed second source.",
+        "verified": false
+      },
+      {
+        "title": "The partial-reinforcement extinction effect and the contingent-sampling hypothesis",
+        "url": "https://paperity.org/p/10305665/the-partial-reinforcement-extinction-effect-and-the-contingent-sampling-hypothesis",
+        "date": "2013",
+        "snippet": "Hochman and Erev, Psychonomic Bulletin and Review 2013. Abstract: partial reinforcement is well supported in lab studies but not in field research; the effect was negative with an attractive alternative and positive with an unattractive one.",
+        "via": "search",
+        "note": "Title, year and abstract content seen again in separate result entries (this aggregator, a DOI-linked listing and a university repository record).",
+        "verified": true
+      },
+      {
+        "title": "Warwick repository record for the Hochman and Erev paper",
+        "url": "https://wrap.warwick.ac.uk/id/eprint/68360",
+        "date": "",
+        "snippet": "Institutional repository entry listing the same paper.",
+        "via": "search",
+        "note": "Independent listing of the same paper by an institutional repository; full text not hosted there.",
+        "verified": true
+      },
+      {
+        "title": "High-frequency gamblers show increased resistance to extinction following partial reinforcement",
+        "url": "https://research.aber.ac.uk/en/publications/high-frequency-gamblers-show-increased-resistance-to-extinction-f/",
+        "date": "",
+        "snippet": "University research record for a study of resistance to extinction after partial reinforcement in gamblers.",
+        "via": "search",
+        "note": "Shows the effect is a named, studied topic; only the title and listing were seen, so the page makes no claim about its findings.",
+        "verified": true
+      },
+      {
+        "title": "Behavioral Game Design (Game Developer)",
+        "url": "https://www.gamedeveloper.com/design/behavioral-game-design",
+        "date": "",
+        "snippet": "Design article that calls the rule for when rewards arrive a contingency, also called a schedule of reinforcement, with RPG experience points and arcade power-ups as examples.",
+        "via": "search",
+        "note": "The article's own page appeared in the claim search with that definition. Original year (2001) not confirmed, so it is left out.",
+        "verified": true
+      },
+      {
+        "title": "A Behavioral Approach to Video Game Design",
+        "url": "https://demotivational.betabunny.com/behaviorism/Conditioning.html",
+        "date": "",
+        "snippet": "Essay sorting reward schedules into continuous, extinction and intermittent for game design.",
+        "via": "search",
+        "note": "Single hit with a blended summary; background only.",
+        "verified": false
+      },
+      {
+        "title": "The Gambler's Fallacy Explained: Why People Believe a Win Is Due",
+        "url": "https://casino.org/blog/gamblers-fallacy-explained",
+        "date": "",
+        "snippet": "Explainer saying each spin, hand or roll is independent, so a result that has not appeared recently does not become more likely.",
+        "via": "search",
+        "note": "Seen again as its own result entry for the claim; agrees with the other two independence pages.",
+        "verified": true
+      },
+      {
+        "title": "Gambler's fallacy (Vaia psychology explanation)",
+        "url": "https://vaia.com/en-us/explanations/psychology/cognitive-psychology/gamblers-fallacy",
+        "date": "",
+        "snippet": "Educational page defining the gambler's fallacy as the mistaken belief that past independent outcomes change the next one.",
+        "via": "search",
+        "note": "Independent second site for independence and the 'due' belief.",
+        "verified": true
+      },
+      {
+        "title": "The hot hand and the gambler's fallacy: why our brains struggle to believe in randomness (UNSW newsroom)",
+        "url": "https://www.unsw.edu.au/newsroom/news/2025/01/the-hot-hand-and-the-gamblers-fallacy-why-our-brains-struggle-to-believe-in-randomness",
+        "date": "2025-01",
+        "snippet": "University news piece on why people misjudge randomness, covering the gambler's fallacy.",
+        "via": "search",
+        "note": "Independent university source on the fallacy; month taken from the URL path.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "Per introductory psychology textbook chapters, variable ratio gives a high, steady response rate with little pause and is the most resistant to extinction; fixed ratio shows a pause after payout; fixed interval is scalloped and the easiest to extinguish. Reported, not opened: show as 'as of 2026-10-14, per introductory psychology textbooks'.",
+        "sourceIndex": 0,
+        "alsoIn": [1],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The partial-reinforcement extinction effect is the idea that learning under partial reward is more robust than under full reward. Per the abstract of Hochman and Erev (2013), it is well supported in laboratory studies but not in field research, and in one experiment its sign depended on how attractive the alternative was.",
+        "sourceIndex": 2,
+        "alsoIn": [3],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "For independent random trials such as a fair spin, each outcome is independent of earlier ones, so a result that has not come up lately is not more likely next time; the belief that a win is due is called the gambler's fallacy.",
+        "sourceIndex": 7,
+        "alsoIn": [8, 9],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A Game Developer design article says a contingency, the rule for when rewards arrive in a game, is also called a schedule of reinforcement.",
+        "sourceIndex": 5,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Resistance to extinction after partial reinforcement has been studied in gamblers (a university research record exists for such a study); this lesson makes no claim about its findings.",
+        "sourceIndex": 4,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "cumulative recorder charts from operant-conditioning labs",
+      "incremental and roguelike games with run-based endings",
+      "vending machines",
+      "slot-machine dry-streak folklore",
+      "daily puzzle games with a single finishing point"
+    ]
+  },
+  "design": {
+    "coreLoop": "Demo, predict, reveal, question. Each rung shows a machine and a learner, asks the visitor to guess what the line will do or which learner quits first, then plays it and explains the shape, ending on a check question. The final rung turns the visitor into the learner for a timed turn and closes with a summary card.",
+    "sophisticationHooks": [
+      "One seeded engine drives every demo, so any run can be replayed exactly and the dry-run chart in rung 5 is computed from thousands of real simulated presses rather than drawn.",
+      "Side-by-side machines with equal average payout isolate the rule as the only difference, which is the whole lesson.",
+      "A pivot control switches payouts off mid-run for all learners at once, showing the fallout of each schedule in real time.",
+      "A designed ending: the visitor's own turn is capped at three minutes, a summary card shows their record and what they guessed, and the page names three stopping cues it itself uses (a fixed session length, no streak counter, nothing saved to bring them back)."
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one seeded simulation engine with four schedule types and a small learner model, a canvas cumulative-record chart, rungs 1 to 5 as predict-then-reveal demos with four check questions, and a short timed turn on a hidden machine with a summary card. The guess-the-schedule step after the turn is a stretch item, cut first if time runs short. Cut: real animal data, accounts, sharing, saved history beyond a remembered tab, sound, a schedule-design sandbox.",
+    "risks": [
+      "The learner is an authored toy model whose rules are written to reproduce the textbook patterns, not recorded behavior. The page must say so plainly and never present its lines as experimental data.",
+      "The schedule patterns and the extinction ordering are unverified here: the textbook sources are copies of one text and the search summary blended its hits. The page shows them as 'as of 2026-10-14, per introductory psychology textbooks', never as confirmed fact.",
+      "The partial-reinforcement extinction effect is contested outside the lab and can reverse (per the Hochman and Erev abstract), so rung 4 carries that caveat and does not promise it will happen to a person.",
+      "The chance-after-a-dry-run chart holds only for random-ratio payouts. On interval machines waiting longer does raise the chance of a payout, so rung 5 must be labelled random-ratio only and not generalized.",
+      "Claims from the Bungie interview, the NYU researcher quote, the compulsion-loop encyclopedia article and the preference report could not be re-found and were removed. The page makes no claim that many games lack stopping cues and names or quotes no one; the stopping cues are shown only as this page's own design choices.",
+      "Ethics framing: the lesson teaches the mechanism and leaves the verdict to the visitor, with no claims about addiction or health and no advice.",
+      "Gambling adjacency: payouts are play-money snacks only, labelled simulated, no wagering, no real-money framing.",
+      "Rung 6 could drift into a game; keep it three minutes, no scores, no leaderboard, no streaks, and make the summary card the finish."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 6,
+    "feasibleInOneDay": true,
+    "notes": "The extinction-effect paper and the independence of random trials are agreed by separate search entries, but the core schedule patterns rest on textbook copies seen through a blended search summary and no page could be opened (host lookup failed), so they ship as reported. Buildable in a morning if rung 6 stays small."
+  }
+}

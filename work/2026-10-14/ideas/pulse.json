@@ -1,0 +1,281 @@
+{
+  "schema": 1,
+  "agent": "pulse",
+  "lens": "hn-front-page",
+  "candidates": [
+    {
+      "id": "pulse-1",
+      "title": "Browser Fingerprint Lesson",
+      "plainSentence": "A lesson that lets you narrow a simulated crowd of 1,000 browsers to one, showing how everyday settings add up to a fingerprint.",
+      "pitch": "A crowd of 1,000 simulated browsers sits on screen. You switch on one ordinary setting at a time (language, time zone, screen size, installed fonts, graphics card) and watch the group that looks like you shrink, while a meter counts the bits of identifying information gained. Then the lesson springs the twist that settings are correlated, so naive bit-adding overshoots, and shows why clearing cookies does not touch any of this.",
+      "firstMinute": "The first frame already shows 1,000 dots, one highlighted sample visitor, and a banner reading '1,000 people look like you'. One tap on a setting chip and the dots fade until a small group remains, with the bit meter ticking up. First success: the visitor sees a handful of dull settings narrow a crowd to a few dozen without reading anything.",
+      "conceptsToLearn": [
+        "Websites can see basic facts about your browser, such as its language and screen size"
+      ],
+      "whyNow": "A browser-fingerprinting demo titled 'Fingerprints are the new cookies' was discussed on Hacker News and Lobsters in October 2026, so many readers are asking how it works; the underlying maths (surprisal, anonymity sets) is timeless.",
+      "origin": {
+        "agent": "pulse",
+        "lens": "hn-front-page"
+      },
+      "fingerprint": {
+        "purpose": "lesson",
+        "category": "privacy-security",
+        "mechanic": "lesson",
+        "tone": [
+          "analytical",
+          "nerdy",
+          "playful"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg",
+          "dom-ui"
+        ],
+        "tags": [
+          "browser-fingerprinting",
+          "anonymity-set",
+          "entropy",
+          "surprisal",
+          "bits-of-information",
+          "cookies",
+          "tracking",
+          "correlated-attributes",
+          "crowd-simulation"
+        ],
+        "keywords": [
+          "fingerprint",
+          "bits",
+          "entropy",
+          "anonymity",
+          "tracking",
+          "privacy",
+          "cookies",
+          "uniqueness"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "purposeDetail": {
+        "concept": "A browser fingerprint is a bundle of ordinary settings; each value is shared by many people, but the combination can be rare. The rarity of a value is measured in bits (surprisal: minus the base-2 logarithm of the share of people who have it), and the bits of independent attributes add up, so a handful of common settings can narrow a crowd to a single browser. An anonymity set is the group of people who look identical to a tracker.",
+        "whyNiche": "Most explainers just say 'trackers can identify you' or show a scary single score. They skip the arithmetic that makes it understandable (rarity as bits, crowd size as anonymity set) and the subtlety that attributes are correlated, so bits cannot be simply added.",
+        "audience": "Curious web users and junior developers who have heard that clearing cookies or using private windows protects them, and want to see why fingerprinting is different.",
+        "prerequisites": [
+          "Knowing that a website can see some browser settings",
+          "Comfort with simple percentages"
+        ],
+        "misconceptions": [
+          "Clearing cookies or using a private window makes me untrackable",
+          "Each setting I have is unique, so that is what identifies me (in fact each is shared by many; the combination is what is rare)",
+          "Bits from every setting can be added up to a total (only true if the settings are independent; correlated ones overlap)"
+        ],
+        "misconceptionFactIndexes": [
+          4,
+          5
+        ],
+        "ahaMoment": "Four boring settings that each match a third of the crowd leave only a few people; then the visitor sees that two correlated settings (operating system and font list) shrink the crowd far less than their separate bits promise.",
+        "demos": [
+          "Crowd narrower: toggle one setting at a time and watch 1,000 dots shrink to an anonymity set, with a live count of people who look like you",
+          "Rarity as bits: drag the share of people having a value and see its bits (half the crowd is 1 bit, one in 1,024 is 10 bits)",
+          "Add the bits: stack independent settings and see that bits add while crowd size multiplies down",
+          "Correlation trap: switch on two linked settings and compare the naive bit total to the true joint bits from the actual crowd",
+          "Cookie versus fingerprint: clear a cookie and see the fingerprint unchanged, because it is derived each visit rather than stored",
+          "Defence trade-off: make everyone report the same values and watch the crowd merge, then see what breaks (a screen size no longer fits the window)"
+        ],
+        "checkQuestions": [
+          "A language setting is shared by 1 in 8 people. How many bits is that, and how many people in a crowd of 1,024 share it?",
+          "You stack time zone (3 bits) and screen size (2 bits), assumed independent. Roughly what share of the crowd remains?",
+          "Why is 'operating system plus font list' worth fewer bits than the two added separately?",
+          "You clear all cookies. Which of the settings on the screen changed?"
+        ]
+      },
+      "research": {
+        "summary": "Hook (as of 2026-10-14): search results show a demo titled 'Fingerprints are the new cookies' on royfish.dev (post dated 2026-10-06 in one snapshot) discussed on Hacker News and Lobsters, where it reached the front page around 2026-10-12; point counts differ between snapshots, so none is used. The science is old and solid: Eckersley's 2010 study (hosted by the EFF) found 83.6 percent of 470,161 fingerprints unique and at least 18.1 bits of entropy, from a self-selected, privacy-conscious sample. Surprisal (minus log2 of probability, additive for independent events) is the textbook measure; a 2020 study of fingerprint properties measures dependence between attributes with conditional entropy, which is why simply adding bits overstates identifiability. The lesson uses a seeded simulated crowd with hand-made, labelled attribute shares, never real measurements or a read of the visitor's browser.",
+        "sources": [
+          {
+            "title": "Fingerprints are the new cookies",
+            "url": "https://royfish.dev/fingerprints-are-the-new-cookies",
+            "date": "2026-10-06",
+            "snippet": "A demo page that gives each device a stable nickname derived from browser and network signals, said (in a search summary) to persist after clearing cookies, in private windows and over a VPN.",
+            "via": "search",
+            "note": "The October 2026 hook; the author's own page for the demo. Persistence claims come from a search summary only.",
+            "verified": true
+          },
+          {
+            "title": "Fingerprints are the new cookies (Hacker News item)",
+            "url": "https://news.ycombinator.com/item?id=50048642",
+            "date": "",
+            "snippet": "The discussion thread for the demo; commenters debated extensions that scramble fingerprint data and whether EU consent rules cover fingerprinting.",
+            "via": "search",
+            "note": "Shows the demo was discussed on Hacker News; exact date and point counts vary by snapshot, not opened.",
+            "verified": true
+          },
+          {
+            "title": "Fingerprints are the new cookies (Lobsters)",
+            "url": "https://lobste.rs/s/ml9xrb/fingerprints_are_new_cookies",
+            "date": "",
+            "snippet": "A Lobsters story page for the same demo, an independent community discussion of it.",
+            "via": "search",
+            "note": "Second independent community listing of the hook.",
+            "verified": true
+          },
+          {
+            "title": "How Unique Is Your Web Browser? (Eckersley, hosted by EFF)",
+            "url": "https://coveryourtracks.eff.org/static/browser-uniqueness.pdf",
+            "date": "2010",
+            "snippet": "The original study: of 470,161 fingerprints, 83.6 percent were unique; entropy at least 18.1 bits; sample self-selected from visitors to a publicised test site.",
+            "via": "search",
+            "note": "Primary source on the EFF domain for the 2010 figures and the sample caveat.",
+            "verified": true
+          },
+          {
+            "title": "How Unique Is Your Web Browser? (Springer, PETS 2010)",
+            "url": "https://link.springer.com/chapter/10.1007/978-3-642-14527-8_1",
+            "date": "2010",
+            "snippet": "The conference publication of the same study, listed as a chapter in the PETS 2010 proceedings.",
+            "via": "search",
+            "note": "Independent publisher listing of the same paper.",
+            "verified": true
+          },
+          {
+            "title": "Web Browsers Leave 'Fingerprints' Behind as You Surf the Net (EFF press release)",
+            "url": "https://www.eff.org/press/archives/2010/05/13",
+            "date": "2010-05-13",
+            "snippet": "EFF's own announcement of the results, with rounded figures of about 84 percent unique and about 94 percent for browsers with Flash or Java.",
+            "via": "search",
+            "note": "Primary source on the vendor's own domain; rounded figures agree with the paper.",
+            "verified": true
+          },
+          {
+            "title": "A Large-scale Empirical Analysis of Browser Fingerprints Properties for Web Authentication",
+            "url": "https://arxiv.org/pdf/2006.09511",
+            "date": "2020",
+            "snippet": "Measures how much one fingerprint attribute reveals about another using normalized conditional entropy, from zero (fully inferable) up to independence.",
+            "via": "search",
+            "note": "Supports the correlation trap: dependent attributes carry less joint information than their separate entropies suggest. Quoted definition came via a search summary.",
+            "verified": true
+          },
+          {
+            "title": "SimBins: An information-theoretic approach to link prediction (arXiv 1908.10053)",
+            "url": "https://arxiv.org/pdf/1908.10053",
+            "date": "2019",
+            "snippet": "Describes self-information (surprisal) of an event as minus log of its probability, a measure of surprise.",
+            "via": "search",
+            "note": "One of two independent papers agreeing on the surprisal definition.",
+            "verified": true
+          },
+          {
+            "title": "Eclectic Notes on Uncertainty, Information, and Classical Dynamics (arXiv 2404.13511)",
+            "url": "https://arxiv.org/pdf/2404.13511",
+            "date": "2024",
+            "snippet": "States base-2 gives bits and that for independent events the information values add, among the axioms for self-information.",
+            "via": "search",
+            "note": "Second independent source for surprisal and additivity.",
+            "verified": true
+          },
+          {
+            "title": "Why Incognito Mode Does Not Protect You From Fingerprinting (CyberInsider report)",
+            "url": "https://cyberinsider.com/?p=146132",
+            "date": "",
+            "snippet": "A report on one researcher who got the same visitor ID from a commercial demo after clearing data and in a private window; Tor produced a new ID each visit.",
+            "via": "search",
+            "note": "Documents the clear-cookies misconception, but a single researcher's experiment and a summary blended several results.",
+            "verified": false
+          },
+          {
+            "title": "Fingerprints Are the New Cookies (daily.dev summary)",
+            "url": "https://daily.dev/posts/fingerprints-are-the-new-cookies-fxtqozs0a",
+            "date": "",
+            "snippet": "A summary listing the signals used (IP, headers, canvas, WebGL, audio, time zone, CPU cores) and claiming per-browser defence levels.",
+            "via": "search",
+            "note": "Secondary summary; the per-browser defence ranking is unconfirmed and must not be presented as fact.",
+            "verified": false
+          },
+          {
+            "title": "An Improved Entropy Measure for Web Browser Fingerprinting Risk (PoPETs 2026)",
+            "url": "https://www.petsymposium.org/popets/2026/popets-2026-0102.php",
+            "date": "2026",
+            "snippet": "Argues that normalized entropy is a flawed way to compare datasets of different sizes and proposes another measure.",
+            "via": "search",
+            "note": "Context for the limits of entropy numbers; known only from a blended search summary.",
+            "verified": false
+          }
+        ],
+        "facts": [
+          {
+            "claim": "As of 2026-10-14, a demo titled 'Fingerprints are the new cookies' (royfish.dev) appears in search results as a Hacker News item and a Lobsters story; its post date is 2026-10-06 in one snapshot and HN point counts differ between snapshots, so no count is claimed.",
+            "sourceIndex": 0,
+            "alsoIn": [
+              1,
+              2
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Eckersley's 2010 study found 83.6 percent of 470,161 browser fingerprints were unique, with an entropy lower bound of 18.1 bits, from a self-selected sample of visitors to a publicised test site (so not representative of all browsers).",
+            "sourceIndex": 3,
+            "alsoIn": [
+              4,
+              5
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Self-information (surprisal) of an outcome with probability p is minus log2 of p in bits: a certain event carries zero bits, rarer events carry more, and the bits of independent events add.",
+            "sourceIndex": 7,
+            "alsoIn": [
+              8
+            ],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "A 2020 study of browser fingerprint properties measures dependence between attributes with normalized conditional entropy, so correlated attributes carry less joint information than their separate entropies added together suggest.",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Documented misconception (the third on the list): adding up per-attribute entropies overstates how identifying a fingerprint is when the attributes are correlated (same source as the previous fact).",
+            "sourceIndex": 6,
+            "alsoIn": [],
+            "asOf": "2026-10-14"
+          },
+          {
+            "claim": "Reported but unconfirmed as of 2026-10-14, per CyberInsider: one researcher got the same visitor ID from a commercial fingerprinting demo after clearing data and in a private window (Tor gave a new ID each visit). Clearing cookies and private windows therefore do not remove a fingerprint.",
+            "sourceIndex": 9,
+            "alsoIn": [
+              10
+            ],
+            "asOf": "2026-10-14"
+          }
+        ],
+        "inspirations": [
+          "Cover Your Tracks",
+          "AmIUnique",
+          "Panopticlick",
+          "Explorable Explanations",
+          "Fingerprints are the new cookies"
+        ]
+      },
+      "design": {
+        "coreLoop": "Demo, question, aha: toggle a setting and see the crowd shrink, answer a prediction question (how many people will remain?), then reveal the exact count from the seeded crowd; each rung adds one idea (bits, adding, correlation, cookies versus fingerprints, defences).",
+        "sophisticationHooks": [
+          "A seeded simulated population of 1,000 with hand-made, labelled attribute shares and deliberate correlations (operating system with fonts and screen size), so every worked example is exact and checkable by a script",
+          "A live meter comparing naive summed bits with true joint bits from the actual crowd, which exposes the correlation trap",
+          "A predict-then-reveal question at each rung with an instant result",
+          "A defence toggle that standardises values and shows the crowd merging, with the honest trade-off"
+        ],
+        "dataNeeds": "none",
+        "scopeForOneDay": "Built: one scrolling page with a canvas crowd of 1,000 dots, six setting chips (five on the first screen, the rest behind More), a bits meter, five short demo sections, check questions and a plain intro paragraph. The population is generated in code from a fixed seed. Cut: reading the visitor's real browser, any network request, canvas or audio probes, per-browser defence rankings.",
+        "risks": [
+          "Hook freshness: exact HN date and points differ across snapshots and the HN and Lobsters pages could not be opened; the page should cite only that the demo was discussed in October 2026, never a score.",
+          "The incognito and clear-cookies persistence claim rests on one researcher's report and a blended summary (unverified); the page must show it as 'as of 2026-10-14, per CyberInsider' or explain the mechanism by logic only.",
+          "Uniqueness figures vary a lot by study and sample (the 2010 sample was self-selected); the page must call 83.6 percent a 2010 figure from a self-selected sample and the simulated crowd must be labelled as made-up, not a measurement.",
+          "Safety red line 7 (no fingerprinting): the page deliberately does not read the visitor's own browser; any later 'show my browser' extra would need a spec decision and must stay local, unstored and unsent.",
+          "The brief's claim of front-page placement is only supported by a third-party mirror listing for 2026-10-12 (rank 12); not confirmed on the HN site itself.",
+          "Entropy numbers can mislead (a 2026 paper argues normalized entropy is flawed); keep to plain surprisal and crowd counts and avoid false precision."
+        ]
+      },
+      "durable": true
+    }
+  ]
+}

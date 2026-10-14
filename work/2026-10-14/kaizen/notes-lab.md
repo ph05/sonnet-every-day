@@ -1,0 +1,2 @@
+Lab: a letter-multiset claim from search could not be checked by opening a page, so I wrote a 5-line script to test both anagram readings; a shared tiny 'claim-check' helper for scouts would save that detour.
+Lab: search summaries blend several results, so I could not tell which link carried a claim and had to mark it unverified; a one-line hint to run a second narrow search per key claim would save re-reading.

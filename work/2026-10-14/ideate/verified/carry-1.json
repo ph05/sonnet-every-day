@@ -1,0 +1,265 @@
+{
+  "id": "carry-1",
+  "title": "Nonogram Puzzle Checker",
+  "plainSentence": "A picture-by-numbers (nonogram) maker that lets you draw a picture, get its clues, and check whether it can be solved without guessing.",
+  "pitch": "Draw a picture on a small grid and the page writes the number clues around it, like a picture-by-numbers puzzle. It then solves the puzzle the way a person would, one row or column at a time, and reports whether the clues have exactly one answer and whether the whole grid falls out without guessing. If it does not, it shades the stuck squares and suggests a one-square change that repairs it; then you print the puzzle sheet and an answer page.",
+  "firstMinute": "A 10 by 10 sample picture is already drawn with its clues written around it, and a slow replay is solving it pass by pass in colour. A verdict card reads something like 'One answer, no guessing needed, 6 passes, easy'. Click a single square to flip it and watch the verdict change, perhaps to 'Two answers' with the ambiguous squares shaded.",
+  "conceptsToLearn": [
+    "A nonogram is a picture-by-numbers grid: each number says how long a run of filled squares is in that row or column."
+  ],
+  "whyNow": "Timeless: anyone who makes puzzles for a book, a class or a friend hits the same trap, a puzzle that has one answer on paper but forces guessing. The page makes that visible in seconds.",
+  "origin": {
+    "agent": "carryover",
+    "lens": "puzzle-forge",
+    "scoutId": "artisan-1",
+    "originalAgent": "artisan",
+    "carriedFrom": "2026-10-14"
+  },
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "math-puzzle",
+    "mechanic": "checker",
+    "tone": [
+      "analytical",
+      "cozy",
+      "nerdy"
+    ],
+    "tech": [
+      "svg",
+      "dom-ui",
+      "pointer-events",
+      "worker",
+      "localstorage",
+      "web-animations"
+    ],
+    "tags": [
+      "nonogram",
+      "picture-logic",
+      "line-solver",
+      "unique-solution",
+      "puzzle-design",
+      "difficulty-rating",
+      "print-export",
+      "no-guess"
+    ],
+    "keywords": [
+      "nonogram",
+      "griddler",
+      "hanjie",
+      "picture-cross",
+      "puzzle-maker",
+      "solvability",
+      "line-solving",
+      "difficulty",
+      "printable-puzzle"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "job": "Turn a drawn picture into nonogram clues and prove, with visible working, whether the puzzle has exactly one answer and can be finished by row-and-column logic alone.",
+    "audience": "Puzzle makers, teachers, parents and hobbyists who want to design nonograms that are fair to solve, and solvers curious why a puzzle got stuck.",
+    "paywallEvidence": [
+      {
+        "product": "A paid no-guess nonogram toolkit sold through a small-seller storefront",
+        "whatIsGated": "The check that every accepted puzzle can be finished by row-and-column logic alone, plus a print-ready puzzle-book PDF with answer pages (seller claim; price not seen by the verifier and never shown on the page).",
+        "factIndex": 0
+      }
+    ],
+    "freeGap": "Free options already cover part of the job: a browser generator and an open-source library each verify line-solvability for puzzles they make, and a game's maker feature checks uniqueness. The remaining gap, not confirmed to be empty everywhere: a private in-browser checker for a picture you drew yourself that replays each solving pass, shades the stuck squares and proposes a one-square repair. The page names no product.",
+    "oracle": "OEIS A391619 (counts of n by n grids whose puzzle is unique and solvable by row-and-column logic alone): 1, 2, 14, 384, 51234 for sizes 0 to 4 and 24976511 for size 5. The self-test enumerates every grid up to 4 by 4 and compares; the 5 by 5 count is an optional background run. A small unique-but-stuck puzzle from a puzzle newsletter is a further case once its grid is copied correctly; its size was not confirmed.",
+    "oracleFactIndex": 2,
+    "inputs": "A picture drawn by clicking or dragging on a grid from 5 by 5 to 15 by 15 (20 by 20 under More), or pasted clue numbers; a sample picture is preloaded.",
+    "outputs": "Clue numbers, a verdict (no solution, several solutions, one solution needing guesses, or one solution reached by logic alone), a difficulty label from the pass count, the stuck squares, a suggested one-square repair, and exports: puzzle sheet and answer page as PNG, SVG and a print layout, plus a share link holding the grid.",
+    "limits": "Black-and-white nonograms only, 5 to 15 squares a side. Exhaustive checking of larger grids is capped and reported as 'could not decide' rather than guessed. Difficulty is a rough label from solving passes, not a verdict on how hard a person will find it. No photo import."
+  },
+  "research": {
+    "summary": "Uniqueness and no-guess solvability are different properties. OEIS A391619 (submitted January 2026, on oeis.org) counts n by n grids whose puzzle is unique and solvable by analysing each row and column in isolation: 1, 2, 14, 384, 51234, 24976511 for sizes 0 to 5. A puzzle newsletter (July 2025) and a forum thread agree on 24,976,511 for 5 by 5 and give the same definition. A seller's own listing says its paid toolkit accepts only puzzles finished by line logic and that most generators check nothing or only uniqueness (seller claim). Free line-solvability checks exist inside a browser generator and an open-source library, so the page must win on checking a hand-drawn picture, showing each pass and proposing a repair. A larger unique-solution count for 5 by 5 (25,309,575) is relayed by a newsletter and a commenter and stays unconfirmed. The verifier recomputed sizes 1 to 4 with an independent brute-force line solver and got 2, 14, 384 and 51234, matching OEIS (a regression check, not an oracle).",
+    "sources": [
+      {
+        "title": "No-Guess Nonogram Toolkit (seller listing)",
+        "url": "https://payhip.com/b/enbgi",
+        "date": "",
+        "snippet": "Seller's own listing for a paid toolkit that turns pictures into print-ready puzzle books. A puzzle is accepted only if line-by-line logic fills the grid. Says most generators check nothing or only uniqueness.",
+        "via": "search",
+        "note": "Re-found by the verifier's search on 2026-10-14; the seller's own page for what it sells and its acceptance rule. Seller claims only, no independent review seen; price not seen this run.",
+        "verified": true
+      },
+      {
+        "title": "Pixelogic Weekly issue 14",
+        "url": "https://weekly.pixelogic.app/p/pixelogic-weekly-14",
+        "date": "2025-07",
+        "snippet": "Defines logically solvable as unique solution plus line-solvable, gives a unique puzzle where line work gets stuck, quotes 24,976,511 for 5 by 5 and a 333,064 gap to another count.",
+        "via": "search",
+        "note": "Re-found by the verifier's search on 2026-10-14 (twice). Grid size of the stuck example not stated in the result text. The 25,309,575 figure is relayed there as reported by others.",
+        "verified": true
+      },
+      {
+        "title": "Hacker News thread about a 5 by 5 nonogram game (mirror site)",
+        "url": "https://hn.matthewblode.com/item/44140918",
+        "date": "",
+        "snippet": "Discussion where 24,976,511 is given as the 5 by 5 logically solvable count and a commenter cites OEIS A242876 for a larger uniquely-solvable count of 25,309,575.",
+        "via": "search",
+        "note": "Re-found by the verifier (mirror copies of one thread count once). Agrees with OEIS on 24,976,511.",
+        "verified": true
+      },
+      {
+        "title": "OEIS A391619",
+        "url": "https://oeis.org/A391619",
+        "date": "2026-01",
+        "snippet": "Entry counts n by n nonograms solvable by analysing each row and column in isolation with no guessing or backtracking; terms 1, 2, 14, 384, 51234, 24976511, 48625108931 (offset 0); credits Batenburg and Kosters; submitted January 2026.",
+        "via": "search",
+        "note": "Primary entry on its own domain, seen in two search results on 2026-10-14 (not opened). Named oracle. Offset 0 means 24976511 is the 5 by 5 value.",
+        "verified": true
+      },
+      {
+        "title": "OEIS A242876",
+        "url": "https://oeis.org/A242876",
+        "date": "",
+        "snippet": "Counts n by n nonograms that can be solved uniquely (guessing allowed); comments say about 75 percent of 5 by 5 grids; cross-referenced with A391619.",
+        "via": "search",
+        "note": "Re-found. The exact 5 by 5 value 25,309,575 was not seen on the entry itself, only relayed by a newsletter and a forum commenter, so it stays unconfirmed.",
+        "verified": true
+      },
+      {
+        "title": "On Solving Simple Curved Nonograms (arXiv 2505.01554)",
+        "url": "https://arxiv.org/pdf/2505.01554",
+        "date": "2025",
+        "snippet": "Background paper on nonogram complexity.",
+        "via": "search",
+        "note": "Result URL seen again but the supporting text on NP-completeness and uniqueness hardness was not seen by the verifier; no claim rests on it.",
+        "verified": false
+      },
+      {
+        "title": "Nonograms Katana wiki: My Nonograms",
+        "url": "https://nonograms-katana.fandom.com/wiki/My_Nonograms",
+        "date": "",
+        "snippet": "Fan wiki page about a game's maker feature with a solver bot.",
+        "via": "search",
+        "note": "Not re-found by the verifier; dropped from the facts.",
+        "verified": false
+      },
+      {
+        "title": "number loom (itch.io page)",
+        "url": "https://paul-stansifer.itch.io/number-loom",
+        "date": "",
+        "snippet": "Open-source nonogram editor listing.",
+        "via": "search",
+        "note": "Not re-found; itch.io cannot be fetched; claim dropped.",
+        "verified": false
+      },
+      {
+        "title": "Solvability of nonograms (Patrick Stevens)",
+        "url": "https://www.patrickstevens.co.uk/posts/2014-07-13-solvability-of-nonograms/",
+        "date": "2014-07-13",
+        "snippet": "Blog post asking whether every nonogram is solvable and uniquely so.",
+        "via": "search",
+        "note": "Seen again as a result; background only, no claim rests on it.",
+        "verified": false
+      },
+      {
+        "title": "Nonograms (mungomash browser generator)",
+        "url": "https://mungomash.com/games/nonograms/",
+        "date": "",
+        "snippet": "The site's own page: a browser nonogram generator that verifies each puzzle with a line-logic solver from a blank board and retries if it fails.",
+        "via": "search",
+        "note": "Seen in the verifier's search on 2026-10-14; the site's own page for what it does. Shows a free line-solvability check exists inside a generator.",
+        "verified": true
+      },
+      {
+        "title": "nonogram_dart (pub.dev package page)",
+        "url": "https://pub.dev/packages/nonogram_dart",
+        "date": "",
+        "snippet": "The package's own page: a Dart library that can generate puzzles and check whether a nonogram is line-solvable without guessing or backtracking.",
+        "via": "search",
+        "note": "Seen in the verifier's search on 2026-10-14; the package registry's own page. Second free option for the same check.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "A seller's own listing offers a paid no-guess nonogram toolkit that accepts a puzzle only if working one row or column at a time, filling only forced squares, finishes the grid, and says most generators check nothing or only uniqueness (seller claim, never shown on the page).",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "A nonogram can have exactly one solution and still not be solvable by row-and-column logic alone: a puzzle newsletter (July 2025) defines logically solvable as unique plus line-solvable and shows a unique puzzle where line work gets stuck; OEIS A391619 uses the same definition for the puzzles it counts.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2,
+          3
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "OEIS A391619 lists 1, 2, 14, 384, 51234, 24976511 for n by n grids with n from 0 to 5 whose puzzle is unique and solvable by analysing each row and column in isolation; of the 33,554,432 possible 5 by 5 grids, 24,976,511 qualify.",
+        "sourceIndex": 3,
+        "alsoIn": [
+          1,
+          2
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The OEIS entry defines the counted puzzles as solvable by iteratively analysing each row and column in isolation without guessing or backtracking, and credits Batenburg and Kosters, whose paper studies a subclass of nonograms solvable by sequences of local reasoning steps. Cheap line passes plus a capped search therefore suit an in-browser checker.",
+        "sourceIndex": 3,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Free line-solvability checks already exist for generated puzzles: a browser generator verifies each puzzle with a line-logic solver from a blank board, and an open-source Dart library offers a line-solvable check. Whether any free tool checks a hand-drawn picture with a replay and a repair suggestion is not confirmed.",
+        "sourceIndex": 9,
+        "alsoIn": [
+          10
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Reported, unconfirmed: a puzzle newsletter and a forum commenter give 25,309,575 as the number of uniquely solvable 5 by 5 grids (OEIS A242876), a gap of 333,064 above the line-solvable count; the A242876 entry itself was seen only with an approximate 75 percent figure.",
+        "sourceIndex": 1,
+        "alsoIn": [
+          2
+        ],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "picture-by-numbers puzzles",
+      "puzzle-book proofreading",
+      "line solving",
+      "level editors with a built-in playtest"
+    ]
+  },
+  "design": {
+    "coreLoop": "Input, output, refine: draw or edit squares, see clues and the verdict update instantly, replay the solver pass by pass, apply the suggested repair or redraw, then export when the verdict is green.",
+    "sophisticationHooks": [
+      "Pass-coloured replay: each square is tinted by the pass in which logic fixed it, so the rating is visible, not just a number",
+      "Stuck squares shaded when logic stops, plus an exhaustive count of answers up to two with a node cap and an honest 'could not decide'",
+      "One-square repair search: try flipping each square and report flips that make the puzzle unique and line-solvable",
+      "Self-test panel that enumerates every grid up to 4 by 4 and checks the counts against published sequences"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: drawing grid (5, 10, 15), clue generator, line solver with pass replay, depth-first answer counter with a node cap, difficulty label, single-flip repair search in a worker (default sizes up to 10, 15 on request), SVG and print-layout export, share link in the page address, self-test over all grids up to 4 by 4 plus the optional 5 by 5 run. Cut: 20 by 20 grids, PNG export, coloured nonograms, photo import, puzzle packs, accounts.",
+    "risks": [
+      "The paywall claim rests on one seller listing (its own page, so it passes the primary-source rule, but it is a marketing claim with no independent review and the price was not seen); it never goes on the page and the page names no product.",
+      "The 5 by 5 uniquely-solvable count 25,309,575 and the 333,064 gap are unconfirmed (relayed by a newsletter and a commenter); the page leaves them out or shows them as 'as of 2026-10-14, per a puzzle newsletter'.",
+      "The OEIS entry was seen in search results and not opened (oeis.org was not fetchable); sizes 1 to 4 were also recomputed by the verifier with an independent brute-force solver and match, and the 5 by 5 value agrees with a newsletter and a forum thread.",
+      "The self-test needs 8 known-answer cases from named sources: counts for sizes 0 to 5 give 6 and the newsletter's stuck example needs its grid copied exactly (its size was not confirmed); the spec must add definition-based cases labelled as such, or report fewer named-source cases honestly.",
+      "Free line-solvability checks exist inside a generator and a library, so the page must not claim to be the only no-guess check; it states only what it does (checks a drawn picture, shows each pass, proposes a repair, works offline and privately).",
+      "NP-hardness of nonogram solving is a widely cited background fact that was not re-seen this run; the page says only that exhaustive answer counting is capped and reports 'could not decide' when the cap is hit.",
+      "Brute-force over all 33 million 5 by 5 grids may be slow in a browser; keep sizes 0 to 4 automatic and make the 5 by 5 run an optional worker with a progress bar.",
+      "A drawn grid has many focusable squares; it must be one composite widget with a single tab stop and arrow-key movement so the first screen stays within 8 controls and the primary button stays visible at 1280x650.",
+      "Difficulty by pass count is a rough proxy; the page says so rather than claiming a human rating."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The key count and definition are on the OEIS entry itself and agree with a newsletter and a forum thread; sizes 1 to 4 were recomputed by an independent brute-force solver. The seller claim is its own page; the larger unique count and the free-gap claim stay unconfirmed, and two free line-solvability checks for generated puzzles exist."
+  }
+}

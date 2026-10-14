@@ -1,0 +1,194 @@
+{
+  "id": "cards-r1-2",
+  "title": "Constraint Writing Studio",
+  "plainSentence": "A writing workspace that lets you draw a writing rule, such as no letter E, then checks your text live and exports the finished piece.",
+  "pitch": "Spin for a rule from the French workshop tradition of constrained writing (no chosen letter, letters with no tails, words that grow one letter at a time, one vowel only) or pick your own, then write. Every letter or word that breaks the rule lights up as you type, so the constraint is felt in the first ten seconds. Finish and export your piece as a plain text file or an image card stamped with its rule.",
+  "firstMinute": "The page opens with a rule already drawn (no letter E) and a short sample line in the editor, with the one banned letter highlighted wherever it appears. The visitor deletes the highlighted word, types a replacement and watches the counter turn to 'rule kept', then presses Spin to try a different rule.",
+  "conceptsToLearn": [],
+  "whyNow": "Timeless creative workbench; also answers the brief's call for an experience where a ridiculous constraint governs the entire interaction.",
+  "origin": {
+    "agent": "cards",
+    "lens": "anti-lens-constraint-roulette"
+  },
+  "fingerprint": {
+    "purpose": "studio",
+    "category": "language-text",
+    "mechanic": "editor",
+    "tone": [
+      "playful",
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "dom-ui",
+      "canvas2d",
+      "localstorage"
+    ],
+    "tags": [
+      "oulipo",
+      "constrained-writing",
+      "lipogram",
+      "snowball-poem",
+      "prisoners-constraint",
+      "writing-studio",
+      "poetry",
+      "word-play"
+    ],
+    "keywords": [
+      "no-letter-e",
+      "letter-ban",
+      "ascenders-descenders",
+      "univocalic",
+      "tautogram",
+      "export-poem-card"
+    ],
+    "slot": "humor",
+    "political": false
+  },
+  "purposeDetail": {
+    "output": "A short piece of text (poem, sentence or paragraph) that provably obeys one chosen writing rule, saved with the rule stamped on it.",
+    "exportFormats": [
+      "plain text (.txt)",
+      "PNG card with the text and its rule",
+      "copy to clipboard"
+    ]
+  },
+  "research": {
+    "summary": "Constrained writing is a documented tradition: a French workshop of writers and mathematicians founded in 1960 (Queneau and Le Lionnais) catalogued rules such as the lipogram, and the English novel Gadsby (1939) and Perec's La Disparition (1969) both avoid the letter e. Definitions of snowball and the so-called prisoner's constraint vary between sources (snowball can grow by a letter per word or a word per line; the banned letter list for prisoner's differs, and the status of i is unclear), so the studio states its own exact version of each rule and lets the visitor flip the contested choices. All checking is simple string logic that can be tested in node.",
+    "sources": [
+      {
+        "title": "Oulipo",
+        "url": "https://en.wikipedia.org/wiki/Oulipo",
+        "date": "",
+        "snippet": "Encyclopedia entry: founded 24 November 1960 by Raymond Queneau and Francois Le Lionnais; devises constrained-writing methods such as the lipogram; Queneau's ten-sonnet book allows 10^14 poems.",
+        "via": "search",
+        "note": "Founding and constraint catalogue",
+        "verified": true
+      },
+      {
+        "title": "A Brief Guide to OULIPO",
+        "url": "https://poets.org/text/brief-guide-oulipo",
+        "date": "",
+        "snippet": "Poetry organisation guide: group founded in 1960 by a mathematician and a writer; describes exercises such as the snowball poem.",
+        "via": "search",
+        "note": "Independent confirmation of 1960 and snowball description",
+        "verified": true
+      },
+      {
+        "title": "Gadsby (novel)",
+        "url": "https://en.wikipedia.org/wiki/Gadsby_(novel)",
+        "date": "",
+        "snippet": "Encyclopedia entry: a 1939 novel by Ernest Vincent Wright that avoids the letter e, with a handful of slips; inspired Perec's La Disparition.",
+        "via": "search",
+        "note": "Gadsby is a 1939 lipogram",
+        "verified": true
+      },
+      {
+        "title": "The Novel Gadsby has 50,110 Words, Yet None of them Contain the Letter E",
+        "url": "https://www.todayifoundout.com/index.php/2012/05/the-novel-gadsby-has-50110-words-yet-none-of-them-contain-the-letter-e/",
+        "date": "",
+        "snippet": "Popular article saying the 1939 novel runs about 50,000 words without the letter e.",
+        "via": "search",
+        "note": "Second source for Gadsby",
+        "verified": true
+      },
+      {
+        "title": "Constrained writing",
+        "url": "https://en.wikipedia.org/wiki/Constrained_writing",
+        "date": "",
+        "snippet": "Encyclopedia overview defining lipogram, pangram, univocalism, tautogram and the snowball (words growing by one letter).",
+        "via": "search",
+        "note": "Definitions of the rule family",
+        "verified": false
+      },
+      {
+        "title": "The Writhing Society: A Salon for Constrained Writing Techniques",
+        "url": "https://bklynlibrary.org/calendar/writhing-society-salon-virtual-20200509",
+        "date": "",
+        "snippet": "Library event page listing the prisoner's constraint (letters that rise above or fall below the line are banned) and noting that a short word fits it.",
+        "via": "search",
+        "note": "Prisoner's constraint letter list (b d f g h j k l p q t y); other sources differ",
+        "verified": false
+      },
+      {
+        "title": "oulipo gem documentation",
+        "url": "https://www.rubydoc.info/gems/oulipo/0.3.2",
+        "date": "",
+        "snippet": "Software documentation describing a prisoner's (Macao) constraint as a lipogram excluding letters with ascenders or descenders.",
+        "via": "search",
+        "note": "Second description of the prisoner's constraint",
+        "verified": false
+      }
+    ],
+    "facts": [
+      {
+        "claim": "The Oulipo workshop was founded on 24 November 1960 by Raymond Queneau and Francois Le Lionnais (as of 2026-10-14).",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Gadsby, published in 1939 by Ernest Vincent Wright, is a novel of roughly 50,000 words that avoids the letter e (a few slips are reported) (as of 2026-10-14).",
+        "sourceIndex": 2,
+        "alsoIn": [
+          3
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Perec's La Disparition (1969) is written without the vowel e. Reported on Wikipedia pages only, so shown as 'as of 2026-10-14, per Wikipedia'.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Definitions of the snowball form differ: one reading grows each word by one letter, another grows each line by one word (as of 2026-10-14).",
+        "sourceIndex": 1,
+        "alsoIn": [
+          4
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The prisoner's constraint bans letters with ascenders or descenders; one source lists b d f g h j k l p q t y, others classify some letters differently, and the status of i is unstated. Unconfirmed; the studio states its own set.",
+        "sourceIndex": 5,
+        "alsoIn": [
+          6
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Ten sonnets of 14 lines with interchangeable lines allow 10 to the power 14 poems (Queneau). Reported by one source, and the arithmetic (10 choices for each of 14 lines) checks out.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Georges Perec's lipogram novel",
+      "Queneau's hundred thousand billion poems",
+      "One-color and one-button jam entries",
+      "Oblique Strategies card deck"
+    ]
+  },
+  "design": {
+    "coreLoop": "Spin or pick a rule, write, watch violations light up and fix them, reach 'rule kept', then export; Spin again gives a new rule so each session produces a different small piece.",
+    "sophisticationHooks": [
+      "Pure rule functions (letter ban, tail-less letters, snowball growth, one vowel, same first letter) with edge cases for accents, hyphens and apostrophes shown in a rules panel",
+      "Starter examples written by the team and checked by the very same functions in node tests",
+      "A harder 'strict' toggle (for example ban a second letter) and a rule-stamped image card as the keepsake"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: five rules plus a spin, live highlighter and counter, text and image export, rules panel with plain definitions and a short history paragraph. Cut: dictionary-based rules (replace each noun with a later one in a dictionary), saved drafts across sessions, sharing.",
+    "risks": [
+      "Studio might be read as a tool: the keepsake export, the spin and the playful voice must carry it.",
+      "Rule definitions differ across sources; the page must state its exact version of each and mark the contested letter choices.",
+      "Perec and exact slip counts for Gadsby are reported by few sources; omit them or date them 'per Wikipedia'.",
+      "Another scout proposed an anagram lesson (Sealing Secrets With Anagrams); this candidate avoids anagram rules to keep the subjects apart.",
+      "Mostly encyclopedia sources; the brief's Are.na and itch.io pointers could not be searched there."
+    ]
+  },
+  "durable": true
+}

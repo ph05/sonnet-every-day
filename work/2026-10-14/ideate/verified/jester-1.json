@@ -1,0 +1,310 @@
+{
+  "id": "jester-1",
+  "title": "Prime Number Grids",
+  "plainSentence": "A lesson that lets you change a number grid's width and see why prime numbers fall into columns and, in a spiral, diagonals.",
+  "pitch": "Drag one slider to change how wide a grid of whole numbers is, and watch the primes snap into a few straight columns. Then wind the same numbers into a square spiral and see why the primes pile onto diagonal lines, with every line explained by a small formula you can edit. You leave knowing why the pattern exists, what it does and does not say about primes, and why a formula that is prime 40 times in a row still fails on the 41st try.",
+  "firstMinute": "The first frame already shows numbers 1 to 300 laid out in rows of 6 with the primes lit up, and almost all of them sit in two columns. Dragging the width slider to 30 or 7 reshuffles the grid instantly and the lit columns move with it, so the first success (seeing the primes pick columns) needs no reading.",
+  "conceptsToLearn": [
+    "A prime is a whole number above 1 that only divides evenly by 1 and itself"
+  ],
+  "whyNow": "Timeless: it needs no news hook, and a fresh visual proof of a classic fact is as good in a month as today.",
+  "origin": {
+    "agent": "jester",
+    "lens": "math-visual"
+  },
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "math-concepts",
+    "mechanic": "lesson",
+    "tone": [
+      "analytical",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "svg",
+      "pointer-events"
+    ],
+    "tags": [
+      "prime-numbers",
+      "ulam-spiral",
+      "number-theory",
+      "modular-arithmetic",
+      "residues",
+      "quadratic-polynomials",
+      "visual-proof",
+      "euler-polynomial"
+    ],
+    "keywords": [
+      "primes",
+      "grid-width",
+      "columns",
+      "diagonals",
+      "spiral",
+      "mod-6",
+      "coprime",
+      "patchwork"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "purposeDetail": {
+    "concept": "When the whole numbers are written in rows of width w, each column holds one residue class mod w. A prime larger than w can only live in a column whose residue shares no factor with w, so the primes are confined to those columns. In the square Ulam spiral, every straight diagonal carries the values of one quadratic polynomial, and that polynomial decides which diagonals are barren (always even, or factorable) and which are rich in primes.",
+    "whyNiche": "The Ulam spiral is shown everywhere as a pretty picture or a mystery, so people think the diagonals are magic or that they predict primes. The simple reason (columns and diagonals are residue classes and quadratics, and some of them are ruled out by divisibility) is rarely shown with a control the visitor can move.",
+    "audience": "Curious adults and students aged 14 and up who know what a prime number is and want to see why a famous picture looks the way it does.",
+    "prerequisites": [
+      "Knowing what a prime number is",
+      "Dividing whole numbers with a remainder"
+    ],
+    "misconceptions": [
+      "If a number is of the form 6k plus or minus 1 it must be prime (it only can be: the form is necessary, not sufficient)",
+      "The diagonal lines in the Ulam spiral mean primes follow a simple formula that predicts them",
+      "A polynomial that gives primes many times in a row, such as n squared minus n plus 41, must give primes forever"
+    ],
+    "misconceptionFactIndexes": [
+      3,
+      5,
+      2
+    ],
+    "ahaMoment": "At width 6 the visitor sees only two columns can hold primes and realises it is just 'not even, not a multiple of 3'. Then they change the width to 30 and 8 columns survive, then wind the grid into a spiral and watch the columns bend into diagonals: the same rule, in a new shape.",
+    "demos": [
+      "Rows of 6: a width slider over numbers 1 to 300 with primes lit; click a column to see why its numbers are never prime",
+      "Any width: the surviving columns are highlighted, with a live count of how many columns are 'open' for primes at that width (7 gives 6, 10 gives 4, 30 gives 8)",
+      "Sieve by hand: strike multiples of 2 and 3 on the width-6 grid and watch only columns 1 and 5 remain",
+      "Wind it up: morph the same numbers from rows into a square spiral, then pick a diagonal to reveal its quadratic formula",
+      "Why some diagonals are empty: toggle parity colouring and a factoring check on each diagonal",
+      "Start anywhere: choose the number at the centre (include 41) and see a long rich diagonal appear, then step beyond 40 to find where the formula breaks"
+    ],
+    "checkQuestions": [
+      "At width 10, which columns can ever hold primes larger than 10, and how do you know?",
+      "A friend says 91 is prime because it is 6 times 15 plus 1. What is wrong with that argument?",
+      "On the spiral, why is every other diagonal empty of primes (apart from 2)?",
+      "The polynomial n squared minus n plus 41 gives primes for n from 1 to 40. What is n squared minus n plus 41 when n is 41, and why?"
+    ]
+  },
+  "research": {
+    "summary": "The Ulam spiral is well documented: lines in the spiral correspond to quadratic polynomials, no quadratic is proved to give infinitely many primes, and Euler's 41 polynomial gives a long run of primes (a diagonal of 40 when 41 sits at the centre, which the verifier recomputed). The 6k plus or minus 1 fact is a standard residue argument, necessary but not sufficient (25, 35, 49 and 91 are composite examples), and Dirichlet's theorem says primes spread evenly over the residue classes coprime to the width. Several interactive prime-spiral pages already exist, so the angle here is a ladder from grid width to residue columns to spiral diagonals, each step with a handle to move. The 41 polynomial is written two ways (n squared minus n plus 41, often credited to Euler or Legendre, and n squared plus n plus 41, which fails at n equal to 40), so the lesson states both forms and checks them by script. Search-only evidence.",
+    "sources": [
+      {
+        "title": "Ulam spiral",
+        "url": "https://en.wikipedia.org/wiki/Ulam_spiral",
+        "date": "",
+        "snippet": "Spiral built by writing integers outward on a square lattice and marking primes; lines correspond to quadratic polynomials; no quadratic is proved to give infinitely many primes; centre 41 gives a diagonal of 40 primes.",
+        "via": "search",
+        "note": "Re-found twice by the verifier's search (seen as a result, not opened; Wikipedia cannot be fetched today).",
+        "verified": true
+      },
+      {
+        "title": "Mathwords: prime spiral",
+        "url": "https://www.mathwords.com/p/prime_spiral.htm",
+        "date": "",
+        "snippet": "Short reference page on the prime spiral noting diagonal lines and prime-rich quadratics.",
+        "via": "search",
+        "note": "Re-found by the verifier; second independent description of the diagonal-quadratic link.",
+        "verified": true
+      },
+      {
+        "title": "Dictionary of Mathematical Eponymy: The Ulam Spiral",
+        "url": "https://blog.flyingcoloursmaths.co.uk/dictionary-of-mathematical-eponymy-the-ulam-spiral/",
+        "date": "",
+        "snippet": "Blog entry on the Ulam spiral with text on parity and factorable quadratics.",
+        "via": "search",
+        "note": "Not re-found by the verifier; may copy Wikipedia, so not independent.",
+        "verified": false
+      },
+      {
+        "title": "Lucky numbers of Euler",
+        "url": "https://en.wikipedia.org/wiki/Lucky_numbers_of_Euler",
+        "date": "",
+        "snippet": "When the input is 41 the polynomial gives 41 squared.",
+        "via": "search",
+        "note": "Not re-found by the verifier; the arithmetic was recomputed instead.",
+        "verified": false
+      },
+      {
+        "title": "Prime-Generating Polynomial (MathWorld)",
+        "url": "https://mathworld.wolfram.com/Prime-GeneratingPolynomial.html",
+        "date": "",
+        "snippet": "Entry attributing n squared minus n plus 41 to Legendre.",
+        "via": "search",
+        "note": "Not re-found by the verifier; MathWorld cannot be fetched today. Attribution of the polynomial is therefore left as 'often credited to Euler or Legendre'.",
+        "verified": false
+      },
+      {
+        "title": "An algorithmic implementation of the Pi function based on a new sieve (arXiv 0802.3770)",
+        "url": "https://arxiv.org/pdf/0802.3770",
+        "date": "",
+        "snippet": "Residues mod 6 argument for 6n plus or minus 1.",
+        "via": "search",
+        "note": "Not re-found by the verifier; other sources cover the argument.",
+        "verified": false
+      },
+      {
+        "title": "Purdue Problem of the Week, Fall 2017, problem 50",
+        "url": "https://math.purdue.edu/pow2/discussion/2017/fall/50.html",
+        "date": "2017",
+        "snippet": "Discussion of the 6k plus or minus 1 argument.",
+        "via": "search",
+        "note": "Not re-found by the verifier.",
+        "verified": false
+      },
+      {
+        "title": "Dirichlet's theorem on arithmetic progressions",
+        "url": "https://en.wikipedia.org/wiki/Dirichlet%27s_theorem_on_arithmetic_progressions",
+        "date": "",
+        "snippet": "For coprime a and d the progression a plus nd contains infinitely many primes, and primes are asymptotically evenly spread over the classes coprime to d; Dirichlet, 1837.",
+        "via": "search",
+        "note": "Re-found by the verifier's search (seen as a result, not opened).",
+        "verified": true
+      },
+      {
+        "title": "MIT 18.785 lecture notes 18 (analytic number theory)",
+        "url": "https://math.mit.edu/classes/18.785/2018fa/LectureNotes18.pdf",
+        "date": "2018",
+        "snippet": "University notes: for each fixed modulus the primes are equidistributed among the invertible residue classes.",
+        "via": "search",
+        "note": "Re-found by the verifier; independent university source.",
+        "verified": true
+      },
+      {
+        "title": "Primes around six (Trotter math)",
+        "url": "https://www.trottermath.net/numthry/sexyprim.html",
+        "date": "",
+        "snippet": "Teaching page on the rows-of-six layout.",
+        "via": "search",
+        "note": "Not re-found; no claim rests on it.",
+        "verified": false
+      },
+      {
+        "title": "Ulam's spiral (MacTutor, St Andrews)",
+        "url": "https://mathshistory.st-andrews.ac.uk/Extras/Ulam_spiral",
+        "date": "",
+        "snippet": "History page on the discovery.",
+        "via": "search",
+        "note": "Not re-found by the verifier; the doodling anecdote is therefore left out of the facts.",
+        "verified": false
+      },
+      {
+        "title": "Sacks spiral (numberspiral.com)",
+        "url": "https://numberspiral.com/p/p004",
+        "date": "",
+        "snippet": "Existing interactive prime-spiral take.",
+        "via": "search",
+        "note": "Not re-found; no claim rests on it.",
+        "verified": false
+      },
+      {
+        "title": "prime spiral (MathWorks blog)",
+        "url": "https://blogs.mathworks.com/cleve/2015/01/05/prime-spiral/",
+        "date": "2015",
+        "snippet": "Blog post on prime spirals that says the n squared minus n plus 41 polynomial gives primes for n from 1 through 40 but not for 41.",
+        "via": "search",
+        "note": "Seen in the verifier's search on 2026-10-14; the arithmetic was also recomputed (40 squared minus 40 plus 41 is 1601, a prime; 41 squared minus 41 plus 41 is 1681, which is 41 squared).",
+        "verified": true
+      },
+      {
+        "title": "Divisibility note: primes of the form 6n plus or minus 1 (University of Florida)",
+        "url": "https://web.mae.ufl.edu/uhk/sixnplusone.pdf",
+        "date": "",
+        "snippet": "University note: numbers of other forms are divisible by 2 or 3; 6n plus or minus 1 is necessary but not sufficient, with composites such as 25, 35, 49 and 91.",
+        "via": "search",
+        "note": "Seen in the verifier's search on 2026-10-14; a university note, independent of the other two.",
+        "verified": true
+      },
+      {
+        "title": "OEIS A091300 (composites of the form 6k+1)",
+        "url": "https://oeis.org/A091300",
+        "date": "",
+        "snippet": "Sequence listing composites of the form 6k plus 1, starting 25, 49, 55, 85, 91, 115 (the search summary also showed 1, by the entry's convention).",
+        "via": "search",
+        "note": "Seen in the verifier's search on 2026-10-14; the entry's own page, showing the converse fails.",
+        "verified": true
+      }
+    ],
+    "facts": [
+      {
+        "claim": "In the Ulam spiral (integers written outward on a square lattice, primes marked), straight lines of cells correspond to quadratic polynomials, which is why prime-rich quadratics such as the Euler polynomial show up as diagonals. Ulam and Gardner both noted this.",
+        "sourceIndex": 0,
+        "alsoIn": [
+          1,
+          12
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Along each diagonal of the Ulam spiral started at 1 the values are all odd or all even and the diagonals alternate (recomputed by the verifier over a 29 by 29 window), so alternate diagonals hold no primes beyond 2; some diagonals are also nearly empty because their quadratic factors. The page verifies each such diagonal by script. Not confirmed by an independent source.",
+        "sourceIndex": 2,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "The polynomial n squared minus n plus 41 gives primes for n from 1 to 40 and fails at n equal to 41 because the value is 41 squared; n squared plus n plus 41 fails one step earlier, at n equal to 40 (1681). With 41 at the centre of the spiral a diagonal holds a run of 40 primes (recomputed by the verifier; starting at 1 the longest run in a 41 by 41 spiral is 6).",
+        "sourceIndex": 12,
+        "alsoIn": [
+          0
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Every prime above 3 is congruent to 1 or 5 mod 6 (6k plus or minus 1) because the other residues are divisible by 2 or 3; the converse fails, since 25, 35, 49 and 91 have that form and are composite.",
+        "sourceIndex": 13,
+        "alsoIn": [
+          14
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "Dirichlet's theorem (1837): for coprime a and d the progression a plus nd contains infinitely many primes, and primes are asymptotically equally spread among the residue classes mod d that are coprime to d. The number of open columns at width w is Euler's totient of w (6 gives 2, 7 gives 6, 10 gives 4, 30 gives 8, recomputed by the verifier).",
+        "sourceIndex": 7,
+        "alsoIn": [
+          8
+        ],
+        "asOf": "2026-10-14"
+      },
+      {
+        "claim": "As of 2026-10-14, per Wikipedia (single source): no quadratic polynomial has been proved to produce infinitely many primes. Shown on the page only with that attribution. The spiral's naming for Stanislaw Ulam and its 1963 origin were not re-seen this run and are shown only as 'reported'.",
+        "sourceIndex": 0,
+        "alsoIn": [],
+        "asOf": "2026-10-14"
+      }
+    ],
+    "inspirations": [
+      "Ulam spiral",
+      "Sacks spiral",
+      "Gardner's prime-number column",
+      "rows-of-six prime classroom grid",
+      "Euler's lucky-number polynomial",
+      "patchwork quilts (several grids side by side)"
+    ]
+  },
+  "design": {
+    "coreLoop": "Move the width slider (or pick a start number), watch the primes regroup, answer a one-line prediction ('which columns survive at width 10?') and see the grid confirm it; each rung adds one idea, ending with the spiral and a diagonal's formula.",
+    "sophisticationHooks": [
+      "Prediction before reveal: the page asks which columns can hold primes, then lights them, so the visitor builds the rule themselves",
+      "Rows-to-spiral morph animation, so columns visibly bend into diagonals",
+      "Click any column or diagonal to see its formula and the divisor that kills it (a script-checked explanation, not a guess)",
+      "Patchwork view: up to four grids of different widths side by side on one screen, like a quilt, to compare at a glance"
+    ],
+    "dataNeeds": "none",
+    "scopeForOneDay": "Built: one canvas grid (numbers up to a few thousand, primes by a sieve in the page), width slider, column highlighting, spiral layout with morph, diagonal formula inspector, start-number picker, a prediction prompt per rung and 4 check questions with explanations, intro paragraph and glossary, keyboard-operable controls. Cut: Sacks spiral and zoom to millions, prime-gap or distribution-theory side lessons, saving progress, sound.",
+    "risks": [
+      "Search-only evidence: no page was opened (Wikipedia and MathWorld cannot be fetched). Facts 0, 2, 3 and 4 have two or more separate result entries; the parity fact is unconfirmed by an independent source and was recomputed by the verifier, and the page recomputes it by script; the open-problem fact is single-source and shown 'as of 2026-10-14, per Wikipedia'.",
+      "The Hardy and Littlewood Conjecture F claim from the scout was not re-seen and is dropped; the 1963 date and the doodling anecdote are left out or shown as 'reported, per Wikipedia'.",
+      "The 41 polynomial is written two ways and attributed to Euler or Legendre depending on the source; the page states both forms, says 'often credited to Euler', and the build checks by script where the values land for each start number and states the start number used (centre 41 gives a 40-prime diagonal; start 1 does not).",
+      "The 'diagonals predict primes' misconception is documented only weakly (Wikipedia's note that no quadratic is proved to give infinitely many primes, plus Mathwords); the lesson frames it as a common over-reading, not a measured belief.",
+      "Existing prime-spiral pages exist; the page must win on the width-to-spiral ladder and the predict-then-reveal teaching, not on the picture alone.",
+      "Dirichlet's equidistribution is asymptotic; the page says primes up to a few thousand look uneven and uses it only as background for 'which columns are open'."
+    ]
+  },
+  "durable": true,
+  "verification": {
+    "by": "verifier",
+    "at": "2026-10-14",
+    "evidence": "search-only",
+    "confidence": 7,
+    "feasibleInOneDay": true,
+    "notes": "The mathematics is standard and was found again in separate results (spiral lines as quadratics, the 41 polynomial, 6k plus or minus 1, Dirichlet); the verifier also recomputed the 41 runs, the open-column counts and diagonal parities. Only the parity and open-problem facts rest on a single source; the build is a small canvas lesson that fits one morning."
+  }
+}
