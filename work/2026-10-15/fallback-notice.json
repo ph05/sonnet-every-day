@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "updatedAt": "2026-10-15T17:52:29.781Z",
+  "reasons": [
+    {
+      "at": "2026-10-15T17:52:29.781Z",
+      "reason": "deadman published tier 4 (postcard) at 13:52"
+    }
+  ],
+  "ideasSource": null,
+  "intendedWinner": null,
+  "tiersAvailable": {
+    "3": false,
+    "4": true
+  },
+  "published": {
+    "tier": 4,
+    "slug": "postcard",
+    "path": "d/2026-10-15-postcard/"
+  }
+}

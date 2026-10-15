@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "slug": "postcard",
+  "title": "Postcard: Rink Lines",
+  "tagline": "No full build today, so here is a postcard: the ice, drawn as neon, with a few restless pucks.",
+  "description": "Today's full build did not finish, so this page is a generative postcard instead: rink lines, drawn from the date alone, animated, with a still SVG for reduced-motion and no-script visitors. Full builds resume tomorrow.",
+  "tier": 4,
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "generator",
+    "tone": [
+      "serene",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg"
+    ],
+    "tags": [
+      "postcard",
+      "generative-art",
+      "fallback-day",
+      "rink"
+    ],
+    "keywords": [
+      "seeded-by-date",
+      "procedural",
+      "animation"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#060813",
+    "#f2792b",
+    "#56f7fb"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [],
+  "makingOf": "A safety-net page. The composition (Rink Lines) and its palette (split, hue 23) are chosen from the date 2026-10-15 alone (seed a2e72708), so the same day always draws the same picture. One scene description feeds the animated canvas, the static SVG and the thumbnail. No research and no network.",
+  "stats": {
+    "files": 6,
+    "bytes": 268129,
+    "ownLoc": 1322
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}
