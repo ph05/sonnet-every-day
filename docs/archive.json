@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "generatedAt": "2026-10-15T17:52:29.781Z",
+  "generatedAt": "2026-10-16T13:58:41.558Z",
   "site": {
     "name": "Sonnet Every Day",
     "tagline": "A new tool, lesson, explorable or game every day, built by a team of Sonnet agents.",
@@ -8,12 +8,12 @@
     "startDate": "2026-10-10"
   },
   "stats": {
-    "days": 6,
-    "projects": 6,
-    "streak": 6,
+    "days": 7,
+    "projects": 7,
+    "streak": 7,
     "categories": {
       "data-viz": 1,
-      "generative-art": 1,
+      "generative-art": 2,
       "hockey-sports": 1,
       "modding-games": 1,
       "science-sim": 1,
@@ -26,10 +26,10 @@
     "tiers": {
       "2": 4,
       "3": 1,
-      "4": 1
+      "4": 2
     },
     "firstDate": "2026-10-10",
-    "lastDate": "2026-10-15",
+    "lastDate": "2026-10-16",
     "missingDates": []
   },
   "kaizen": {
@@ -41,6 +41,41 @@
     "count": 24
   },
   "days": [
+    {
+      "n": 7,
+      "date": "2026-10-16",
+      "slug": "postcard",
+      "path": "d/2026-10-16-postcard/",
+      "title": "Postcard: Ink Bloom",
+      "tagline": "No full build today, so here is a postcard: drops of colored ink finding their own edges.",
+      "description": "Today's full build did not finish, so this page is a generative postcard instead: ink bloom, drawn from the date alone, animated, with a still SVG for reduced-motion and no-script visitors. Full builds resume tomorrow.",
+      "tier": 4,
+      "category": "generative-art",
+      "mechanic": "generator",
+      "tone": [
+        "serene",
+        "playful"
+      ],
+      "tech": [
+        "canvas2d",
+        "svg"
+      ],
+      "tags": [
+        "postcard",
+        "generative-art",
+        "fallback-day",
+        "inkbloom"
+      ],
+      "palette": [
+        "#243d05",
+        "#5ea00e",
+        "#117ad0"
+      ],
+      "thumb": "d/2026-10-16-postcard/thumb.png",
+      "purpose": "",
+      "intro": "",
+      "concepts": []
+    },
     {
       "n": 6,
       "date": "2026-10-15",

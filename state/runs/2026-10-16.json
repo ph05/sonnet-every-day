@@ -1,22 +1,31 @@
 {
   "schema": 1,
   "date": "2026-10-16",
-  "status": "in_progress",
+  "status": "published",
   "targetTier": 4,
-  "tier": null,
-  "phase": "package",
+  "tier": 4,
+  "phase": "kaizen",
   "phasesDone": [],
   "attempts": {},
   "phaseStartedAt": {
-    "package": "2026-10-16T13:58:27.350Z"
+    "package": "2026-10-16T13:58:41.558Z",
+    "kaizen": "2026-10-16T13:58:41.558Z"
   },
   "lease": {
     "holder": "closer",
-    "session": "cse_01VWnvFvcvWLHoCGee3hqg18",
-    "acquiredAt": "2026-10-16T13:58:27.350Z",
-    "heartbeatAt": "2026-10-16T13:58:27.350Z"
+    "session": "deadman",
+    "acquiredAt": "2026-10-16T13:58:41.558Z",
+    "heartbeatAt": "2026-10-16T13:58:41.558Z"
   },
-  "directives": [],
+  "directives": [
+    {
+      "kind": "ship-now",
+      "tier": 4,
+      "by": "closer",
+      "at": "2026-10-16T13:58:41.558Z",
+      "ack": false
+    }
+  ],
   "chosen": null,
   "throttle": "lean",
   "spend": {
@@ -24,8 +33,8 @@
     "agentCalls": 0,
     "byPhase": {}
   },
-  "publishedAt": null,
-  "publishedUrl": null,
+  "publishedAt": "2026-10-16T13:58:41.558Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-16-postcard/",
   "createdAt": "2026-10-16T13:58:27.350Z",
   "events": [
     {
@@ -33,6 +42,30 @@
       "by": "closer",
       "kind": "note",
       "msg": "run created by closer (cse_01VWnvFvcvWLHoCGee3hqg18) targeting tier 4"
+    },
+    {
+      "at": "2026-10-16T13:58:41.558Z",
+      "by": "closer",
+      "kind": "degrade",
+      "msg": "closer forced tier 4 at 09:58 (past 09:30, the end of the grace period); took the lease from closer/cse_01VWnvFvcvWLHoCGee3hqg18"
+    },
+    {
+      "at": "2026-10-16T13:58:41.558Z",
+      "by": "closer",
+      "kind": "note",
+      "msg": "ship-now directive (tier 4) issued by closer"
+    },
+    {
+      "at": "2026-10-16T13:58:41.558Z",
+      "by": "deadman",
+      "kind": "note",
+      "msg": "published at tier 4"
+    },
+    {
+      "at": "2026-10-16T13:58:41.558Z",
+      "by": "deadman",
+      "kind": "degrade",
+      "msg": "deadman published tier 4 (postcard) at 09:58"
     }
   ]
 }

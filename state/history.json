@@ -286,6 +286,42 @@
       "path": "d/2026-10-15-postcard/",
       "publishedAt": "2026-10-15T17:52:29.781Z",
       "countsForNovelty": false
+    },
+    {
+      "n": 7,
+      "date": "2026-10-16",
+      "slug": "postcard",
+      "title": "Postcard: Ink Bloom",
+      "tagline": "No full build today, so here is a postcard: drops of colored ink finding their own edges.",
+      "tier": 4,
+      "fingerprint": {
+        "category": "generative-art",
+        "mechanic": "generator",
+        "tone": [
+          "serene",
+          "playful"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg"
+        ],
+        "tags": [
+          "postcard",
+          "generative-art",
+          "fallback-day",
+          "inkbloom"
+        ],
+        "keywords": [
+          "seeded-by-date",
+          "procedural",
+          "animation"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "path": "d/2026-10-16-postcard/",
+      "publishedAt": "2026-10-16T13:58:41.558Z",
+      "countsForNovelty": false
     }
   ]
 }
