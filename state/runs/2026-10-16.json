@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "date": "2026-10-16",
+  "status": "in_progress",
+  "targetTier": 4,
+  "tier": null,
+  "phase": "package",
+  "phasesDone": [],
+  "attempts": {},
+  "phaseStartedAt": {
+    "package": "2026-10-16T13:58:27.350Z"
+  },
+  "lease": {
+    "holder": "closer",
+    "session": "cse_01VWnvFvcvWLHoCGee3hqg18",
+    "acquiredAt": "2026-10-16T13:58:27.350Z",
+    "heartbeatAt": "2026-10-16T13:58:27.350Z"
+  },
+  "directives": [],
+  "chosen": null,
+  "throttle": "lean",
+  "spend": {
+    "outputTokens": 0,
+    "agentCalls": 0,
+    "byPhase": {}
+  },
+  "publishedAt": null,
+  "publishedUrl": null,
+  "createdAt": "2026-10-16T13:58:27.350Z",
+  "events": [
+    {
+      "at": "2026-10-16T13:58:27.350Z",
+      "by": "closer",
+      "kind": "note",
+      "msg": "run created by closer (cse_01VWnvFvcvWLHoCGee3hqg18) targeting tier 4"
+    }
+  ]
+}
