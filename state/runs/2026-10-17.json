@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "date": "2026-10-17",
+  "status": "published",
+  "targetTier": 4,
+  "tier": 4,
+  "phase": "kaizen",
+  "phasesDone": [],
+  "attempts": {},
+  "phaseStartedAt": {
+    "package": "2026-10-17T16:38:09.809Z",
+    "kaizen": "2026-10-17T16:38:09.809Z"
+  },
+  "lease": {
+    "holder": "closer",
+    "session": "deadman",
+    "acquiredAt": "2026-10-17T16:38:09.809Z",
+    "heartbeatAt": "2026-10-17T16:38:09.809Z"
+  },
+  "directives": [],
+  "chosen": null,
+  "throttle": "lean",
+  "spend": {
+    "outputTokens": 0,
+    "agentCalls": 0,
+    "byPhase": {}
+  },
+  "publishedAt": "2026-10-17T16:38:09.809Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-17-postcard/",
+  "createdAt": "2026-10-17T16:38:09.809Z",
+  "events": [
+    {
+      "at": "2026-10-17T16:38:09.809Z",
+      "by": "closer",
+      "kind": "note",
+      "msg": "run created by closer (deadman) targeting tier 4"
+    },
+    {
+      "at": "2026-10-17T16:38:09.809Z",
+      "by": "deadman",
+      "kind": "note",
+      "msg": "published at tier 4"
+    },
+    {
+      "at": "2026-10-17T16:38:09.809Z",
+      "by": "deadman",
+      "kind": "degrade",
+      "msg": "deadman published tier 4 (postcard) at 12:38"
+    }
+  ]
+}

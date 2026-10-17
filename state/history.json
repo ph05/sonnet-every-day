@@ -322,6 +322,42 @@
       "path": "d/2026-10-16-postcard/",
       "publishedAt": "2026-10-16T13:58:41.558Z",
       "countsForNovelty": false
+    },
+    {
+      "n": 8,
+      "date": "2026-10-17",
+      "slug": "postcard",
+      "title": "Postcard: Glitch Sunrise",
+      "tagline": "No full build today, so here is a postcard: a sun on a bad cable, over a grid that never ends.",
+      "tier": 4,
+      "fingerprint": {
+        "category": "generative-art",
+        "mechanic": "generator",
+        "tone": [
+          "serene",
+          "playful"
+        ],
+        "tech": [
+          "canvas2d",
+          "svg"
+        ],
+        "tags": [
+          "postcard",
+          "generative-art",
+          "fallback-day",
+          "sunrise"
+        ],
+        "keywords": [
+          "seeded-by-date",
+          "procedural",
+          "animation"
+        ],
+        "slot": "wildcard",
+        "political": false
+      },
+      "path": "d/2026-10-17-postcard/",
+      "publishedAt": "2026-10-17T16:38:09.809Z",
+      "countsForNovelty": false
     }
   ]
 }

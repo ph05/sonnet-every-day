@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "date": "2026-10-17",
+  "slug": "postcard",
+  "title": "Postcard: Glitch Sunrise",
+  "tagline": "No full build today, so here is a postcard: a sun on a bad cable, over a grid that never ends.",
+  "description": "Today's full build did not finish, so this page is a generative postcard instead: glitch sunrise, drawn from the date alone, animated, with a still SVG for reduced-motion and no-script visitors. Full builds resume tomorrow.",
+  "tier": 4,
+  "fingerprint": {
+    "category": "generative-art",
+    "mechanic": "generator",
+    "tone": [
+      "serene",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg"
+    ],
+    "tags": [
+      "postcard",
+      "generative-art",
+      "fallback-day",
+      "sunrise"
+    ],
+    "keywords": [
+      "seeded-by-date",
+      "procedural",
+      "animation"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#070814",
+    "#dc8541",
+    "#56effb"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [],
+  "makingOf": "A safety-net page. The composition (Glitch Sunrise) and its palette (split, hue 26) are chosen from the date 2026-10-17 alone (seed a4e72a2e), so the same day always draws the same picture. One scene description feeds the animated canvas, the static SVG and the thumbnail. No research and no network.",
+  "stats": {
+    "files": 6,
+    "bytes": 241125,
+    "ownLoc": 1322
+  },
+  "credits": "Built by the Sonnet Every Day team"
+}
