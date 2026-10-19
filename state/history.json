@@ -362,38 +362,56 @@
     {
       "n": 9,
       "date": "2026-10-18",
-      "slug": "postcard",
-      "title": "Postcard: Ink Bloom",
-      "tagline": "No full build today, so here is a postcard: drops of colored ink finding their own edges.",
-      "tier": 4,
+      "slug": "paint-out-a-cough",
+      "title": "Paint Out a Cough",
+      "tagline": "Paint over a noise in a picture of your recording, press Play, and hear the music carry on as if nobody coughed.",
+      "tier": 1,
       "fingerprint": {
-        "category": "generative-art",
-        "mechanic": "generator",
+        "purpose": "tool",
+        "category": "music-audio",
+        "mechanic": "editor",
         "tone": [
-          "serene",
-          "playful"
+          "analytical",
+          "nerdy",
+          "cozy"
         ],
         "tech": [
+          "webaudio",
+          "worker",
           "canvas2d",
+          "pointer-events",
+          "es-modules",
+          "procedural-audio",
           "svg"
         ],
         "tags": [
-          "postcard",
-          "generative-art",
-          "fallback-day",
-          "inkbloom"
+          "audio-repair",
+          "spectrogram",
+          "noise-removal",
+          "cough-removal",
+          "spectral-editing",
+          "fourier-transform",
+          "overlap-add",
+          "griffin-lim",
+          "wav-export",
+          "privacy"
         ],
         "keywords": [
-          "seeded-by-date",
-          "procedural",
-          "animation"
+          "remove-cough-from-audio",
+          "remove-beep",
+          "remove-click",
+          "spectral-fill",
+          "audio-inpainting",
+          "free-audio-tool",
+          "offline-audio-editor",
+          "voice-memo-cleanup"
         ],
         "slot": "wildcard",
         "political": false
       },
-      "path": "d/2026-10-18-postcard/",
-      "publishedAt": "2026-10-18T16:50:28.925Z",
-      "countsForNovelty": false
+      "path": "d/2026-10-18-paint-out-a-cough/",
+      "publishedAt": "2026-10-19T00:06:02.673Z",
+      "countsForNovelty": true
     }
   ]
 }

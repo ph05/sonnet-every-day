@@ -3,7 +3,7 @@
   "date": "2026-10-18",
   "status": "published",
   "targetTier": 4,
-  "tier": 4,
+  "tier": 1,
   "phase": "kaizen",
   "phasesDone": [],
   "attempts": {},
@@ -25,8 +25,8 @@
     "agentCalls": 0,
     "byPhase": {}
   },
-  "publishedAt": "2026-10-18T16:50:28.925Z",
-  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-18-postcard/",
+  "publishedAt": "2026-10-19T00:06:02.747Z",
+  "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-18-paint-out-a-cough/",
   "createdAt": "2026-10-18T16:50:28.925Z",
   "events": [
     {
@@ -46,6 +46,20 @@
       "by": "deadman",
       "kind": "degrade",
       "msg": "deadman published tier 4 (postcard) at 12:50"
+    },
+    {
+      "at": "2026-10-19T00:06:02.747Z",
+      "by": "manual",
+      "kind": "note",
+      "msg": "upgraded published tier 4 -> 1; removed docs/d/2026-10-18-postcard"
+    }
+  ],
+  "replaced": [
+    {
+      "tier": 4,
+      "publishedAt": "2026-10-18T16:50:28.925Z",
+      "publishedUrl": "https://ph05.github.io/sonnet-every-day/d/2026-10-18-postcard/",
+      "replacedAt": "2026-10-19T00:06:02.747Z"
     }
   ]
 }

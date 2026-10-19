@@ -1,0 +1,106 @@
+{
+  "schema": 1,
+  "date": "2026-10-18",
+  "slug": "paint-out-a-cough",
+  "title": "Paint Out a Cough",
+  "tagline": "Paint over a noise in a picture of your recording, press Play, and hear the music carry on as if nobody coughed.",
+  "description": "A free tool that removes a cough, beep, click or phone ping from a recording by painting over it in a spectrogram (a picture of sound), and fills the gap with the sound from either side so the music carries on. It runs entirely in your browser, flips between before and after at the same moment in the music, and saves the result as a WAV file.",
+  "intro": "A free tool that removes a cough, beep, click or phone ping from a recording and fills the gap with the sound from either side. It works best over music, room hiss and pauses in voice memos. Paint along the glowing ping below, then press Play. Nothing is uploaded.",
+  "concepts": [
+    "spectrogram",
+    "short-time Fourier transform",
+    "overlap-add",
+    "spectral fill-in",
+    "Griffin-Lim phase method",
+    "decibels"
+  ],
+  "tier": 1,
+  "fingerprint": {
+    "purpose": "tool",
+    "category": "music-audio",
+    "mechanic": "editor",
+    "tone": [
+      "analytical",
+      "nerdy",
+      "cozy"
+    ],
+    "tech": [
+      "webaudio",
+      "worker",
+      "canvas2d",
+      "pointer-events",
+      "es-modules",
+      "procedural-audio",
+      "svg"
+    ],
+    "tags": [
+      "audio-repair",
+      "spectrogram",
+      "noise-removal",
+      "cough-removal",
+      "spectral-editing",
+      "fourier-transform",
+      "overlap-add",
+      "griffin-lim",
+      "wav-export",
+      "privacy"
+    ],
+    "keywords": [
+      "remove-cough-from-audio",
+      "remove-beep",
+      "remove-click",
+      "spectral-fill",
+      "audio-inpainting",
+      "free-audio-tool",
+      "offline-audio-editor",
+      "voice-memo-cleanup"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#f6f5f1",
+    "#05060f",
+    "#4b32d6",
+    "#b4467d",
+    "#fa945c",
+    "#fff5c3",
+    "#5ce1e6"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "Overlap-Add (OLA) STFT Processing",
+      "url": "https://ccrma.stanford.edu/~jos/sasp/Overlap_Add_OLA_STFT_Processing.html"
+    },
+    {
+      "title": "Rayleigh Energy Theorem (Parseval's Theorem)",
+      "url": "https://ccrma.stanford.edu/~jos/dft/Rayleigh_Energy_Theorem_Parseval_s.html"
+    },
+    {
+      "title": "WAVE PCM soundfile format",
+      "url": "https://ccrma.stanford.edu/courses/422-winter-2014/projects/WaveFormat"
+    },
+    {
+      "title": "_WAVEFORMATEX structure",
+      "url": "https://learn.microsoft.com/en-us/windows/desktop/WMDM/-waveformatex"
+    },
+    {
+      "title": "Signal estimation from modified short-time Fourier transform",
+      "url": "https://ieeexplore.ieee.org/abstract/document/1164317"
+    },
+    {
+      "title": "Oklab color space",
+      "url": "https://en.wikipedia.org/wiki/Oklab_color_space"
+    }
+  ],
+  "makingOf": "This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Everything runs in your browser. A hand-written Fourier transform in a background worker turns the recording into a picture, your strokes become a soft-edged mask, and only the slices you painted are rebuilt and added back, so the rest of the file stays bit for bit the same. Fill in rebuilds each frequency band from about 46 ms of sound on each side, starts from the measured phase wherever the music is louder than the noise, adds matching flicker to steady hiss, and settles the result with up to 12 rounds of the Griffin-Lim method. The demo clip's tune, chord, cough, ping and click are synthesized from a fixed seed; no recordings are included. The quality numbers on this page were measured with the page's own engine against clean references on synthetic test cases. The colour map was designed for this page with evenly spaced steps in the Oklab colour space. As of October 2026, the free audio editors we checked can mute a marked area of the picture, and some can patch a click a few milliseconds long. Rebuilding a longer stretch, such as a cough, was a paid feature in every ready-to-use editor we found; the one free project we found that tries it must be installed and run from code. This page does both, in your browser, with nothing to install.",
+  "stats": {
+    "files": 14,
+    "bytes": 508103,
+    "ownLoc": 4514
+  },
+  "credits": "Built by Opus, a cameo on Sonnet Every Day"
+}

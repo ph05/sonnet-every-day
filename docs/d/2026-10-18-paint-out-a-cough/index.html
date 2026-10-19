@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Paint Out a Cough</title>
+<meta name="description" content="Remove a cough, beep, click or phone ping from a recording by painting over it, and fill the gap with the sound from either side. Free, in your browser, nothing uploaded.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="figures.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 9 &middot; 2026-10-18 <span class="cameo-badge">Opus cameo</span></p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Paint Out a Cough</h1>
+  <div class="sed-lede">
+    <p class="sed-tagline">Paint over a noise in a picture of your recording, press Play, and hear the music carry on as if nobody coughed.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+  <p class="sed-intro" data-sed-intro>A free tool that removes a cough, beep, click or phone ping from a recording and fills the gap with the sound from either side. It works best over music, room hiss and pauses in voice memos. Paint along the glowing ping below, then press Play. Nothing is uploaded.</p>
+
+  <section class="pos-app" id="app" aria-label="Sound painter">
+    <div class="pos-bar" role="toolbar" aria-label="Play and edit">
+      <button type="button" class="pos-btn pos-primary" id="pos-play" aria-label="Play">
+        <svg class="pos-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-ico-play" d="M8 5.2v13.6L19 12z"/><path class="pos-ico-pause" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+        <span class="pos-label" id="pos-play-label">Play</span>
+      </button>
+      <button type="button" class="pos-btn pos-ab" id="pos-ab" data-listen="after" aria-label="Listening to After, the cleaned recording. Press to switch Before and After; the arrow keys also reach Removed.">
+        <span class="pos-ab-track" aria-hidden="true"><span class="pos-ab-opt" data-v="before">Before</span><span class="pos-ab-opt" data-v="after">After</span><span class="pos-ab-opt" data-v="removed">Removed</span></span>
+      </button>
+      <button type="button" class="pos-btn" id="pos-undo" aria-label="Undo the last stroke">
+        <svg class="pos-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 14 4 9l5-5M4 9h10.5a5.5 5.5 0 0 1 0 11H11" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="pos-label">Undo</span>
+      </button>
+      <span class="pos-grow" aria-hidden="true"></span>
+      <button type="button" class="pos-btn" id="pos-open" aria-label="Open a recording or a video from this device">
+        <svg class="pos-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15V4m0 0-4 4m4-4 4 4M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="pos-label"><span class="pos-only-wide">Open a recording</span><span class="pos-only-phone">Open</span></span>
+      </button>
+      <button type="button" class="pos-btn" id="pos-save" aria-label="Save the cleaned recording as a WAV file">
+        <svg class="pos-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 4v11m0 0-4-4m4 4 4-4M4 14v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="pos-label"><span class="pos-only-wide">Save WAV</span><span class="pos-only-phone">Save</span></span>
+      </button>
+      <button type="button" class="pos-btn" id="pos-more" aria-expanded="false" aria-controls="pos-more-panel">
+        <svg class="pos-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="1.9"/><circle cx="12" cy="12" r="1.9"/><circle cx="18.5" cy="12" r="1.9"/></svg>
+        <span class="pos-label" id="pos-more-label">More</span>
+      </button>
+      <input type="file" id="pos-file" hidden accept="audio/*,video/*,.wav,.mp3,.ogg,.oga,.opus,.flac,.m4a,.aac,.webm,.mp4,.mov,.m4v">
+    </div>
+    <div class="pos-confirm" id="pos-confirm" hidden>
+      <p>Replace this recording? Your strokes will be lost unless you save first.</p>
+      <button type="button" class="pos-small pos-small-strong" id="pos-confirm-yes">Replace</button>
+      <button type="button" class="pos-small" id="pos-confirm-no">Keep it</button>
+    </div>
+    <figure class="pos-fig" data-sed-result>
+      <div class="pos-stage" id="pos-stage">
+        <canvas class="pos-layer" id="pos-base" aria-hidden="true"></canvas>
+        <canvas class="pos-layer pos-canvas" id="pos-canvas" tabindex="0" role="application" aria-roledescription="sound picture" aria-label="Picture of the sound (a spectrogram): paint over a noise to remove it" aria-describedby="pos-canvas-help pos-summary"></canvas>
+      </div>
+      <figcaption class="pos-strip">
+        <span class="pos-readout" id="pos-readout" aria-live="polite">Drawing the demo clip…</span>
+        <span class="pos-legend"><span>Time runs left to right ·</span> <span>Pitch goes up ·</span> <span>Brighter is louder ·</span> <span>dB is decibels: 20&nbsp;dB quieter is a tenth as strong</span></span>
+      </figcaption>
+    </figure>
+    <p class="sed-visually-hidden" id="pos-hint">Drawing the picture…</p>
+    <p class="pos-limits">Works best on short noises over music or room hiss. Over continuous speech Fill in usually leaves a cough in place; Erase turns it down but takes the words too. Up to 2&nbsp;minutes. Nothing leaves this device. <a href="#limits">Read the limits</a></p>
+    <p class="pos-jump-low"><a href="#explainer">Jump to the explanation</a></p>
+    <div class="pos-more" id="pos-more-panel" hidden>
+      <fieldset class="pos-group">
+        <legend>Brush</legend>
+        <label class="pos-choice"><input type="radio" name="pos-mode" value="fill" checked> <span><b>Fill in</b> Rebuild the painted part from the sound around it.</span></label>
+        <label class="pos-choice"><input type="radio" name="pos-mode" value="erase"> <span><b>Erase</b> Turn the painted part down by 60&nbsp;dB. Near words it often works better than Fill in.</span></label>
+        <label class="pos-range" for="pos-size">Brush size <input type="range" id="pos-size" min="6" max="48" step="1" value="18"> <output id="pos-size-out" for="pos-size">about 0.06 s wide</output></label>
+        <p class="pos-note">The <kbd>[</kbd> and <kbd>]</kbd> keys change it too.</p>
+      </fieldset>
+      <fieldset class="pos-group">
+        <legend>Picture</legend>
+        <div class="pos-seg" role="radiogroup" aria-label="Slice length">
+          <label class="pos-choice"><input type="radio" name="pos-window" value="short"> <span><b>Sharper timing</b> short slices</span></label>
+          <label class="pos-choice"><input type="radio" name="pos-window" value="balanced" checked> <span><b>Balanced</b></span></label>
+          <label class="pos-choice"><input type="radio" name="pos-window" value="long"> <span><b>Sharper pitch</b> long slices</span></label>
+        </div>
+        <p class="pos-note">Short slices make clicks sharp and notes blurry; long slices do the reverse. Your strokes are rebuilt with the new slices.</p>
+        <div class="pos-row">
+          <button type="button" class="pos-small" id="pos-zoom-out">Zoom out</button>
+          <button type="button" class="pos-small" id="pos-zoom-in">Zoom in</button>
+          <button type="button" class="pos-small" id="pos-zoom-fit">Fit</button>
+        </div>
+      </fieldset>
+      <div class="pos-group">
+        <div class="pos-row">
+          <button type="button" class="pos-small" id="pos-sample">Load the demo clip again</button>
+        </div>
+        <p class="pos-note"><span class="pos-fine-only">Or drop a recording onto the picture. </span>Files stay in this tab and are never uploaded. From a video only the sound is opened, and Save WAV saves only the sound.</p>
+      </div>
+      <div class="pos-group">
+        <button type="button" class="pos-small pos-run-selftest">Check against known answers</button>
+        <div class="pos-selftest-out" aria-live="polite"></div>
+      </div>
+      <p class="pos-keys">Keyboard: <kbd>Space</kbd> play or pause (on the picture) · <kbd>B</kbd> before/after · <kbd>R</kbd> removed · <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> redo (on a Mac, <kbd>⌘</kbd> instead of <kbd>Ctrl</kbd>) · <kbd>[</kbd> <kbd>]</kbd> brush size · <kbd>F</kbd> fill in · <kbd>E</kbd> erase · <kbd>+</kbd> <kbd>−</kbd> <kbd>0</kbd> zoom · <kbd>Page&nbsp;Up</kbd> <kbd>Page&nbsp;Down</kbd> move along (on the picture). On the picture: arrows move the brush, <kbd>Enter</kbd> starts and ends a stroke, <kbd>Esc</kbd> cancels.</p>
+    </div>
+    <p class="sed-visually-hidden" id="pos-canvas-help">Arrow keys move the brush. Enter starts and finishes a stroke. Escape cancels. Space plays or pauses.</p>
+    <p class="sed-visually-hidden" id="pos-summary">The 10-second demo clip: a held chord from 2.4 to 7.6 seconds; a cough at 4.6 seconds; a phone ping at 8.6 seconds; a click at 1.5 seconds.</p>
+    <div class="sed-visually-hidden" id="pos-status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How painting out a sound works</h2>
+    <h3>Reading the picture</h3>
+    <p>A spectrogram is a picture of sound. Time runs from left to right, pitch rises from bottom to top, and the brighter a spot, the louder that pitch is at that moment. A played note shows up as a stack of short lines: the lowest is the pitch you hear, and the fainter lines above it are its overtones, which give each instrument its colour. In the demo clip, the music-box notes are short fading dashes and the held chord is a band of steady lines near the bottom.</p>
+    <p>Noises have shapes of their own. A cough is a bright cloud that covers most pitches for about a third of a second. A click is a thin upright line, because it is very short and contains every pitch at once. A beep or a phone ping is one bright line, or two. That is why painting works: in the picture, the noise and the music usually sit in different places, even when you hear them at the same moment.</p>
+    <figure class="pos-xfig pos-xfig-shapes" data-fig="shapes">
+      <div class="pos-xfig-panels">
+        <div class="pos-xfig-panel" data-show="original" data-t0="0" data-t1="0.72" data-marks="note">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="The demo clip's first note: five short lines stacked one above another. The lowest, brightest and longest is labelled the pitch you hear; the four fainter ones above it are labelled overtones."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the note, 0 to 0.72 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>A note</b> is a stack of lines: the pitch you hear, and its overtones above it.</p>
+        </div>
+        <div class="pos-xfig-panel" data-show="original" data-t0="1.24" data-t1="1.8">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="The click at 1.5 seconds: one thin, bright, upright line from the bottom of the picture to the top, crossing the notes' lines."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the click, 1.24 to 1.8 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>A click</b> is one thin upright line through every pitch.</p>
+        </div>
+        <div class="pos-xfig-panel" data-show="original" data-t0="4.41" data-t1="5.13">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="The cough at 4.6 seconds: a bright cloud over most pitches, about a third of a second wide, in front of the chord's steady lines."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the cough, 4.41 to 5.13 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>A cough</b> is a cloud over most pitches.</p>
+        </div>
+      </div>
+      <figcaption>Three moments of the demo clip on the same scale, drawn by this page: the first note of the tune, the click at 1.5 seconds and the cough at 4.6 seconds. The note's overtones sit at 2, 3, 4.2 and 5.4 times the pitch you hear, and the higher ones fade first. The click lasts a few thousandths of a second, yet it shows as a narrow bar, because each slice of the picture is 46 milliseconds long.</figcaption>
+    </figure>
+    <h3>Erase or Fill in</h3>
+    <p>Erase turns the painted part down by 60 decibels, which leaves a thousandth of its strength. (Decibels, dB for short, measure sound level: every 20 dB makes the wave ten times smaller.) Erase suits a noise that nothing you want shares, such as a ping over room tone, the faint hiss of a quiet room. Over music it leaves a hole: on the demo clip's cough, Erase also takes away the chord underneath, and that stretch goes silent.</p>
+    <p>Fill in rebuilds the painted part instead. In every pitch band it looks at about 46 milliseconds of sound just before and just after the painted area and blends from one side to the other. Where the music under the noise was louder than the noise, it starts from that sound's own timing (its phase, explained below) instead of guessing; where a band held only steady hiss, it adds a matching flicker so the patch does not sound frozen.</p>
+    <figure class="pos-xfig pos-xfig-three" data-fig="erase-fill">
+      <div class="pos-xfig-panels">
+        <div class="pos-xfig-panel" data-show="original" data-t0="4.2" data-t1="5.3">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="The original, 4.2 to 5.3 seconds: a bright cloud, the cough, in front of the steady lines of the held chord."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the original, 4.2 to 5.3 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>The original</b> has the cough: a bright cloud over the chord's steady lines.</p>
+        </div>
+        <div class="pos-xfig-panel" data-show="erase" data-t0="4.2" data-t1="5.3">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="Erase, the same stretch: inside the dashed outline a dark gap, where the cough and the chord were both removed."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the erased version, 4.2 to 5.3 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>Erase</b> leaves a dark hole: the cough is gone, and the chord with it.</p>
+        </div>
+        <div class="pos-xfig-panel" data-show="fill" data-t0="4.2" data-t1="5.3">
+          <div class="pos-xfig-stage">
+            <div class="pos-xfig-pic" role="img" aria-label="Fill in, the same stretch: inside the dashed outline the chord's lines run straight through, and the cough is gone."><canvas class="pos-layer" aria-hidden="true"></canvas><canvas class="pos-layer" aria-hidden="true"></canvas></div>
+            <button type="button" class="pos-xfig-play" aria-label="Play the filled-in version, 4.2 to 5.3 seconds" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pos-xfig-i-play" d="M8 5.5v13L18.5 12z"/><path class="pos-xfig-i-stop" d="M7 7h10v10H7z"/></svg></button>
+          </div>
+          <p class="pos-xfig-cap"><b>Fill in</b> grows the chord back across the gap, from both sides.</p>
+        </div>
+      </div>
+      <figcaption>The cough's stretch of the demo clip, 4.2 to 5.3 seconds, drawn by this page's engine; the dashed outline is the brush stroke. Play the erased version and the music drops out for about 0.4 seconds. Play the filled-in one and the chord carries on as if nobody had coughed.</figcaption>
+    </figure>
+    <p>On the demo clip, the difference between the filled-in recording and a version that never had the cough is 20.7 dB quieter than the music itself; with Erase, the difference is as loud as the music. The number under the picture after a Fill in stroke is a different measure: how much quieter the sound became where the noise was. On the demo clip the page knows exactly where each noise was, because it made them; elsewhere it counts the painted spots that changed by at least 3 dB. The 20.7 dB check needs a copy of the recording without the noise, which only the demo clip has, so it appears here and in the checks at the end.</p>
+    <h3>From picture back to sound</h3>
+    <p>A digital recording is a long list of numbers, 44,100 for every second of sound in the demo clip; each number, called a sample, says how far the air was pushed at that instant. To draw the picture, the page cuts this list into overlapping slices of 2,048 samples (46 milliseconds), each starting 512 samples after the one before. Each slice is shaped by a smooth hump called a Hann window and measured with the Fourier transform, which says how much of each of 1,025 frequency bands the slice contains, 21.5 hertz apart. (Frequency is how fast the air vibrates, which you hear as pitch; one hertz, Hz, is one vibration per second, and 1 kHz is a thousand.) This slicing is called the short-time Fourier transform, and adding the slices back up is called overlap-add.</p>
+    <figure class="pos-xfig pos-xfig-hann" data-fig="hann">
+      <div class="pos-xfig-svgwrap">
+        <svg class="pos-xfig-svg pos-xfig-svg-wide" viewBox="0 0 640 302" role="img" aria-labelledby="pos-xfig-hann-t">
+        <title id="pos-xfig-hann-t">Top: Hann windows, one smooth hump per slice, each slice starting a quarter of a slice after the one before, so four overlap at every moment. Bottom: the same humps squared; added up they make a flat line at 1.5. Where one slice peaks at 1, the two beside it are at 0.25 and the fourth is at 0.</title>
+        <defs><clipPath id="pos-xfig-hann-clip"><rect x="44" y="0" width="576" height="302"/></clipPath><path id="pos-xfig-hann-w" vector-effect="non-scaling-stroke" d="M0,0 8,-0.6 16,-2.3 24,-5.1 32,-8.8 40,-13.3 48,-18.5 56,-24.1 64,-30 72,-35.9 80,-41.5 88,-46.7 96,-51.2 104,-54.9 112,-57.7 120,-59.4 128,-60 136,-59.4 144,-57.7 152,-54.9 160,-51.2 168,-46.7 176,-41.5 184,-35.9 192,-30 200,-24.1 208,-18.5 216,-13.3 224,-8.8 232,-5.1 240,-2.3 248,-0.6 256,0"/><path id="pos-xfig-hann-w2" vector-effect="non-scaling-stroke" d="M0,0 8,0 16,-0.1 24,-0.5 32,-1.5 40,-3.6 48,-6.9 56,-11.7 64,-18 72,-25.7 80,-34.4 88,-43.6 96,-52.5 104,-60.4 112,-66.6 120,-70.6 128,-72 136,-70.6 144,-66.6 152,-60.4 160,-52.5 168,-43.6 176,-34.4 184,-25.7 192,-18 200,-11.7 208,-6.9 216,-3.6 224,-1.5 232,-0.5 240,-0.1 248,0 256,0"/></defs>
+        <text x="44" y="24" class="pos-xfig-svg-h">One hump per slice: the Hann window</text>
+        <text x="44" y="140" class="pos-xfig-svg-h">The same humps squared, and their sum</text>
+        <path vector-effect="non-scaling-stroke" d="M44 104.5H620M44 288.5H620" stroke="#b8b4cc" stroke-opacity="0.45"/>
+        <path vector-effect="non-scaling-stroke" d="M44 216.5H620" stroke="#b8b4cc" stroke-opacity="0.32" stroke-dasharray="3 4"/>
+        <g clip-path="url(#pos-xfig-hann-clip)" stroke-linejoin="round">
+        <g fill="none" stroke="#f4f1ff" stroke-opacity="0.26" stroke-width="1.25">
+        <use href="#pos-xfig-hann-w" x="-160" y="104"/><use href="#pos-xfig-hann-w" x="-96" y="104"/><use href="#pos-xfig-hann-w" x="-32" y="104"/><use href="#pos-xfig-hann-w" x="32" y="104"/><use href="#pos-xfig-hann-w" x="96" y="104"/><use href="#pos-xfig-hann-w" x="416" y="104"/><use href="#pos-xfig-hann-w" x="480" y="104"/><use href="#pos-xfig-hann-w" x="544" y="104"/><use href="#pos-xfig-hann-w" x="608" y="104"/>
+        <use href="#pos-xfig-hann-w2" x="-160" y="288"/><use href="#pos-xfig-hann-w2" x="-96" y="288"/><use href="#pos-xfig-hann-w2" x="-32" y="288"/><use href="#pos-xfig-hann-w2" x="32" y="288"/><use href="#pos-xfig-hann-w2" x="96" y="288"/><use href="#pos-xfig-hann-w2" x="416" y="288"/><use href="#pos-xfig-hann-w2" x="480" y="288"/><use href="#pos-xfig-hann-w2" x="544" y="288"/><use href="#pos-xfig-hann-w2" x="608" y="288"/>
+        </g><g fill-opacity="0.14" stroke-width="2.25">
+        <use href="#pos-xfig-hann-w" x="160" y="104" fill="#b4467d" stroke="#b4467d"/>
+        <use href="#pos-xfig-hann-w" x="224" y="104" fill="#fa945c" stroke="#fa945c"/>
+        <use href="#pos-xfig-hann-w" x="288" y="104" fill="#de6668" stroke="#de6668"/>
+        <use href="#pos-xfig-hann-w" x="352" y="104" fill="#9a3a84" stroke="#9a3a84"/>
+        <use href="#pos-xfig-hann-w2" x="160" y="288" fill="#b4467d" stroke="#b4467d"/>
+        <use href="#pos-xfig-hann-w2" x="224" y="288" fill="#fa945c" stroke="#fa945c"/>
+        <use href="#pos-xfig-hann-w2" x="288" y="288" fill="#de6668" stroke="#de6668"/>
+        <use href="#pos-xfig-hann-w2" x="352" y="288" fill="#9a3a84" stroke="#9a3a84"/>
+        </g></g>
+        <path vector-effect="non-scaling-stroke" d="M44 180H620" stroke="#fff5c3" stroke-width="3" stroke-linecap="round"/>
+        <text x="620" y="171" text-anchor="end" class="pos-xfig-svg-v">added up: 1.5 at every moment</text>
+        <text x="37" y="184.5" text-anchor="end" class="pos-xfig-svg-t">1.5</text>
+        <text x="37" y="220.5" text-anchor="end" class="pos-xfig-svg-t">1</text>
+        <text x="37" y="292.5" text-anchor="end" class="pos-xfig-svg-t">0</text>
+        <path vector-effect="non-scaling-stroke" d="M352 34V288" stroke="#f4f1ff" stroke-opacity="0.6" stroke-dasharray="2 3"/>
+        <circle cx="352" cy="270" r="4.5" fill="#b4467d" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="352" cy="216" r="4.5" fill="#fa945c" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="352" cy="270" r="4.5" fill="#de6668" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="352" cy="288" r="4.5" fill="#9a3a84" stroke="#05060f" stroke-width="1.5"/>
+        <text x="361" y="210" class="pos-xfig-svg-v">1</text>
+        <text x="361" y="275" class="pos-xfig-svg-v">0.25, twice</text>
+        <text x="343" y="202" text-anchor="end" class="pos-xfig-svg-v">1 + 0.25 + 0.25 + 0 = 1.5</text>
+        </svg>
+        <svg class="pos-xfig-svg pos-xfig-svg-narrow" viewBox="0 0 360 300" role="img" aria-labelledby="pos-xfig-hann-n-t">
+        <title id="pos-xfig-hann-n-t">Top: Hann windows, one smooth hump per slice, each slice starting a quarter of a slice after the one before, so four overlap at every moment. Bottom: the same humps squared; added up they make a flat line at 1.5. Where one slice peaks at 1, the two beside it are at 0.25 and the fourth is at 0.</title>
+        <defs><clipPath id="pos-xfig-hann-n-clip"><rect x="32" y="0" width="320" height="300"/></clipPath><path id="pos-xfig-hann-n-w" vector-effect="non-scaling-stroke" d="M0,0 5,-0.6 10,-2.2 15,-4.9 20,-8.5 25,-12.9 30,-17.9 35,-23.3 40,-29 45,-34.7 50,-40.1 55,-45.1 60,-49.5 65,-53.1 70,-55.8 75,-57.4 80,-58 85,-57.4 90,-55.8 95,-53.1 100,-49.5 105,-45.1 110,-40.1 115,-34.7 120,-29 125,-23.3 130,-17.9 135,-12.9 140,-8.5 145,-4.9 150,-2.2 155,-0.6 160,0"/><path id="pos-xfig-hann-n-w2" vector-effect="non-scaling-stroke" d="M0,0 5,0 10,-0.1 15,-0.5 20,-1.5 25,-3.6 30,-6.9 35,-11.7 40,-18 45,-25.7 50,-34.4 55,-43.6 60,-52.5 65,-60.4 70,-66.6 75,-70.6 80,-72 85,-70.6 90,-66.6 95,-60.4 100,-52.5 105,-43.6 110,-34.4 115,-25.7 120,-18 125,-11.7 130,-6.9 135,-3.6 140,-1.5 145,-0.5 150,-0.1 155,0 160,0"/></defs>
+        <text x="32" y="19" class="pos-xfig-svg-h">One hump per slice: the Hann window</text>
+        <text x="32" y="134" class="pos-xfig-svg-h">The same humps squared, and their sum</text>
+        <path vector-effect="non-scaling-stroke" d="M32 98.5H352M32 284.5H352" stroke="#b8b4cc" stroke-opacity="0.45"/>
+        <path vector-effect="non-scaling-stroke" d="M32 212.5H352" stroke="#b8b4cc" stroke-opacity="0.32" stroke-dasharray="3 4"/>
+        <g clip-path="url(#pos-xfig-hann-n-clip)" stroke-linejoin="round">
+        <g fill="none" stroke="#f4f1ff" stroke-opacity="0.26" stroke-width="1.25">
+        <use href="#pos-xfig-hann-n-w" x="-94" y="98"/><use href="#pos-xfig-hann-n-w" x="-54" y="98"/><use href="#pos-xfig-hann-n-w" x="-14" y="98"/><use href="#pos-xfig-hann-n-w" x="26" y="98"/><use href="#pos-xfig-hann-n-w" x="66" y="98"/><use href="#pos-xfig-hann-n-w" x="266" y="98"/><use href="#pos-xfig-hann-n-w" x="306" y="98"/><use href="#pos-xfig-hann-n-w" x="346" y="98"/>
+        <use href="#pos-xfig-hann-n-w2" x="-94" y="284"/><use href="#pos-xfig-hann-n-w2" x="-54" y="284"/><use href="#pos-xfig-hann-n-w2" x="-14" y="284"/><use href="#pos-xfig-hann-n-w2" x="26" y="284"/><use href="#pos-xfig-hann-n-w2" x="66" y="284"/><use href="#pos-xfig-hann-n-w2" x="266" y="284"/><use href="#pos-xfig-hann-n-w2" x="306" y="284"/><use href="#pos-xfig-hann-n-w2" x="346" y="284"/>
+        </g><g fill-opacity="0.14" stroke-width="2.25">
+        <use href="#pos-xfig-hann-n-w" x="106" y="98" fill="#b4467d" stroke="#b4467d"/>
+        <use href="#pos-xfig-hann-n-w" x="146" y="98" fill="#fa945c" stroke="#fa945c"/>
+        <use href="#pos-xfig-hann-n-w" x="186" y="98" fill="#de6668" stroke="#de6668"/>
+        <use href="#pos-xfig-hann-n-w" x="226" y="98" fill="#9a3a84" stroke="#9a3a84"/>
+        <use href="#pos-xfig-hann-n-w2" x="106" y="284" fill="#b4467d" stroke="#b4467d"/>
+        <use href="#pos-xfig-hann-n-w2" x="146" y="284" fill="#fa945c" stroke="#fa945c"/>
+        <use href="#pos-xfig-hann-n-w2" x="186" y="284" fill="#de6668" stroke="#de6668"/>
+        <use href="#pos-xfig-hann-n-w2" x="226" y="284" fill="#9a3a84" stroke="#9a3a84"/>
+        </g></g>
+        <path vector-effect="non-scaling-stroke" d="M32 176H352" stroke="#fff5c3" stroke-width="3" stroke-linecap="round"/>
+        <text x="352" y="167" text-anchor="end" class="pos-xfig-svg-v">added up: 1.5 at every moment</text>
+        <text x="25" y="180.5" text-anchor="end" class="pos-xfig-svg-t">1.5</text>
+        <text x="25" y="216.5" text-anchor="end" class="pos-xfig-svg-t">1</text>
+        <text x="25" y="288.5" text-anchor="end" class="pos-xfig-svg-t">0</text>
+        <path vector-effect="non-scaling-stroke" d="M226 30V284" stroke="#f4f1ff" stroke-opacity="0.6" stroke-dasharray="2 3"/>
+        <circle cx="226" cy="266" r="4.5" fill="#b4467d" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="226" cy="212" r="4.5" fill="#fa945c" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="226" cy="266" r="4.5" fill="#de6668" stroke="#05060f" stroke-width="1.5"/>
+        <circle cx="226" cy="284" r="4.5" fill="#9a3a84" stroke="#05060f" stroke-width="1.5"/>
+        <text x="235" y="206" class="pos-xfig-svg-v">1</text>
+        <text x="235" y="271" class="pos-xfig-svg-v">0.25, twice</text>
+        <text x="217" y="198" text-anchor="end" class="pos-xfig-svg-v">1 + 0.25 + 0.25 + 0 = 1.5</text>
+        </svg>
+      </div>
+      <figcaption>Each slice is shaped by its hump twice: once when the picture is measured, and once more when the sound is rebuilt from it, so what adds up in the end is the hump squared. A new slice starts every quarter of a slice, so four overlap at every moment. Where one slice peaks at 1, the two beside it are at 0.25 and the fourth is at 0, which makes 1.5; at any other moment the four squares come to 1.5 as well.</figcaption>
+    </figure>
+    <p>The humps are shaped so that the overlapping slices, squared and added, total exactly 1.5 everywhere; dividing by 1.5 then returns an untouched recording within one part in a billion. The page rebuilds only the slices you painted and leaves every other sample alone, so a stroke on a two-minute file takes about as long as one on ten seconds.</p>
+    <p>Each frequency in a slice also has a phase (where its wave is in its cycle), and invented phases can clash where slices overlap. The page carries each phase on from its neighbours, then runs up to 12 rounds of a method Daniel Griffin and Jae Lim published in 1984, which nudges the rebuilt slices until they agree.</p>
+    <h3 id="limits">Where it struggles</h3>
+    <p>Fill in only knows what came just before and just after the painted area. It works best on short noises over steady sound: a cough over a held chord, a click between notes, a ping over room tone. Some cases it cannot fix:</p>
+    <ul>
+      <li>Over continuous speech, Fill in usually leaves a cough in place, because the words carry on past it, and the page says so; Erase turns the cough down but takes the words under it too. When the engine is made to fill anyway, the words come back blurred and about 14 dB too quiet, because nothing at the edges says what was said. A cough between words works (next point).</li>
+      <li>A cough between words needs a moment of quiet on each side, about a sixth of a second. Closer to the words, Fill in smears the word endings into the gap, and Erase is the better choice: in our test with 75 milliseconds of quiet, Erase took the cough 32 dB down and Fill in about 16.</li>
+      <li>Long fills over changing notes smear. Across 0.7 seconds of a moving melody, the notes inside the painted area turn into a blur of the ones on either side.</li>
+      <li>A beep that crosses a melody can leave a duller, quieter stretch (about 3 dB quieter in that pitch band in our test), because when a note starts or stops under the paint, the page has to guess the moment from the noisy sound there.</li>
+      <li>A sound that carries on past your stroke is rebuilt, not removed. When a stroke up to 0.8 seconds wide would clearly take it all out, as with a cough, the page widens the stroke and says so; otherwise paint over all of it, or use Erase. The page warns you when it can tell.</li>
+    </ul>
+    <p>This is classic signal processing, not machine learning. It cannot make up new words or a new tune; at worst it smears the sound from either side across the gap. When a fill sounds wrong, press Undo, or choose Removed on the switch to hear exactly what went.</p>
+    <p>The practical limits: recordings up to 2 minutes long (a longer file is cut to its first 2 minutes); one or two channels (extra channels are dropped); WAV files (standard uncompressed sound files) keep their own sample rate, the number of samples per second, while MP3, Ogg, FLAC and other formats are converted to 48,000 samples per second; M4A opens in most browsers but not all; from a video only the sound is used; one painted area applies to both channels of a stereo file; and the result is saved as a WAV file with 16-bit samples, the precision of a CD.</p>
+    <h3>Why this is free here</h3>
+    <p>As of October 2026, the free audio editors we checked can mute a marked area of the picture, and some can patch a click a few milliseconds long. Rebuilding a longer stretch, such as a cough, was a paid feature in every ready-to-use editor we found; the one free project we found that tries it must be installed and run from code. This page does both, in your browser, with nothing to install. Your recording is never uploaded, and the page keeps working offline once it has loaded.</p>
+    <h3>Checks this page runs on itself</h3>
+    <p>The button below (also under More) runs the page's own code against known answers. Some come from textbooks: a single click spreads equally over every pitch, a pure tone lands in one frequency band, the Fourier transform keeps the energy and matches a slow, direct calculation, and Hann windows add up to exactly 1 and 1.5. Others come from the WAV format, such as one second of mono 16-bit sound at 44,100 samples per second making an 88,244-byte file. The rest measure this page and say so, such as Erase making a tone 60 dB quieter and Fill in bringing back a steady tone within 1 dB, even at the very start of a file. In the list, DFT and FFT are the Fourier transform, STFT is its sliced form, a bin is one frequency band, N is the slice length and the hop is the step from one slice to the next; PCM is the plain number format inside a WAV file, and ByteRate and BlockAlign are two fields of its header.</p>
+    <div class="pos-selftest-box">
+      <button type="button" class="sed-btn is-quiet pos-run-selftest">Check against known answers</button>
+      <div class="pos-selftest-out" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <script type="module" src="selftest.js"></script>
+  <script type="module" src="app.js"></script>
+  <script type="module" src="figures.js"></script>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Everything runs in your browser. A hand-written Fourier transform in a background worker turns the recording into a picture, your strokes become a soft-edged mask, and only the slices you painted are rebuilt and added back, so the rest of the file stays bit for bit the same. Fill in rebuilds each frequency band from about 46 ms of sound on each side, starts from the measured phase wherever the music is louder than the noise, adds matching flicker to steady hiss, and settles the result with up to 12 rounds of the Griffin-Lim method. The demo clip's tune, chord, cough, ping and click are synthesized from a fixed seed; no recordings are included. The quality numbers on this page were measured with the page's own engine against clean references on synthetic test cases. The colour map was designed for this page with evenly spaced steps in the Oklab colour space. As of October 2026, the free audio editors we checked can mute a marked area of the picture, and some can patch a click a few milliseconds long. Rebuilding a longer stretch, such as a cough, was a paid feature in every ready-to-use editor we found; the one free project we found that tries it must be installed and run from code. This page does both, in your browser, with nothing to install.</p>
+      <h2>Sources</h2>
+      <p>Found and checked through search results on 18 October 2026.</p>
+      <ul class="sed-sources">
+        <li><a href="https://ccrma.stanford.edu/~jos/sasp/Overlap_Add_OLA_STFT_Processing.html" rel="noopener noreferrer">Overlap-Add (OLA) STFT Processing</a>, J. O. Smith III, Spectral Audio Signal Processing (CCRMA, Stanford): Hann windows add to a constant at hops of (M/2)/k.</li>
+        <li><a href="https://ccrma.stanford.edu/~jos/dft/Rayleigh_Energy_Theorem_Parseval_s.html" rel="noopener noreferrer">Rayleigh Energy Theorem (Parseval's Theorem)</a>, J. O. Smith III, Mathematics of the DFT (CCRMA, Stanford): the energy is the same before and after the DFT, in the 1/N form the self-test uses.</li>
+        <li><a href="https://ccrma.stanford.edu/courses/422-winter-2014/projects/WaveFormat" rel="noopener noreferrer">WAVE PCM soundfile format</a> (CCRMA, Stanford): the canonical 44-byte WAV header.</li>
+        <li><a href="https://learn.microsoft.com/en-us/windows/desktop/WMDM/-waveformatex" rel="noopener noreferrer">_WAVEFORMATEX structure</a> (Microsoft Learn): the byte rate is the sample rate times the block alignment, and the block alignment is channels times bits per sample over 8.</li>
+        <li><a href="https://ieeexplore.ieee.org/abstract/document/1164317" rel="noopener noreferrer">Signal estimation from modified short-time Fourier transform</a>, D. W. Griffin and J. S. Lim, IEEE Transactions on Acoustics, Speech, and Signal Processing 32(2), 1984: the iterative phase method.</li>
+        <li><a href="https://en.wikipedia.org/wiki/Oklab_color_space" rel="noopener noreferrer">Oklab color space</a> (Wikipedia): the perceptual colour space the colour map was built in, introduced by Björn Ottosson in December 2020.</li>
+      </ul>
+      <h2>What is simulated</h2>
+      <p>The demo clip is synthesized, and the quality figures in the explanation come from synthetic test sounds with known clean versions, not from real recordings. Your own files are processed in this tab only.</p>
+    </div>
+  </details>
+  <p class="sed-credits">Built by Opus, a cameo on Sonnet Every Day</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>

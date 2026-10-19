@@ -1,0 +1,90 @@
+/* Paint Out a Cough: the explainer's live figures (figures.js). Same language as the picture at the top: a dark
+   studio panel in both colour schemes, the page's colour map for sound, cyan for your edits. The words around
+   the panels use the shell's tokens, so they follow the light and dark themes. */
+.pos-xfig { --pos-xfig-h: 212px; margin: 1.35rem 0 1.6rem; }
+.pos-xfig-panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+/* noises have shapes: panel widths follow their stretches of time, so all three share one time scale */
+.pos-xfig-shapes .pos-xfig-panels { grid-template-columns: 0.72fr 0.56fr 0.72fr; }
+.pos-xfig-panel { min-width: 0; }
+.pos-xfig-stage {
+  position: relative;
+  height: var(--pos-xfig-h);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--pos-panel, #05060f);
+  overflow: hidden;
+}
+.pos-xfig-pic { position: absolute; inset: 0; }
+/* while the engine works (about half a second), a panel says so, as the picture at the top does */
+.pos-xfig[data-drawn="loading"] .pos-xfig-stage::after,
+.pos-xfig[data-drawn="pending"] .pos-xfig-panel:not([data-drawn]) .pos-xfig-stage::after {
+  content: "Drawing\2026";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0.2rem 0.6rem;
+  border-radius: 7px;
+  background: rgb(5 6 15 / 80%);
+  color: #f4f1ff;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.pos-xfig-pic canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.sed-explainer .pos-xfig-cap { margin: 0.45rem 0.15rem 0; color: var(--muted); font-size: 0.9rem; line-height: 1.42; }
+.pos-xfig-cap b { color: var(--fg); }
+.sed-explainer .pos-xfig figcaption { margin: 0.75rem 0.15rem 0; color: var(--muted); font-size: 0.93rem; line-height: 1.5; }
+
+/* play a panel's stretch: a round button on the dark panel, its focus ring cyan like the picture's */
+.pos-xfig-play {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--pos-ink, #f4f1ff);
+  cursor: pointer;
+}
+.pos-xfig-play[hidden] { display: none; }
+.pos-xfig-play::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgb(244 241 255 / 34%);
+  border-radius: 50%;
+  background: rgb(5 6 15 / 74%);
+  transition: border-color 0.15s, background-color 0.15s;
+}
+.pos-xfig-play:hover::before { border-color: var(--pos-brush, #5ce1e6); }
+.pos-xfig-play[data-playing="true"]::before { border-color: var(--pos-brush, #5ce1e6); background: rgb(92 225 230 / 22%); }
+.pos-xfig-stage:has(.pos-xfig-play[data-playing="true"]) { border-color: var(--pos-brush, #5ce1e6); }
+.pos-xfig-play:focus-visible { outline: 3px solid var(--pos-brush, #5ce1e6); outline-offset: -1px; border-radius: 50%; }
+.pos-xfig-play svg { position: relative; width: 16px; height: 16px; fill: currentColor; }
+.pos-xfig-play .pos-xfig-i-stop { display: none; }
+.pos-xfig-play[data-playing="true"] .pos-xfig-i-play { display: none; }
+.pos-xfig-play[data-playing="true"] .pos-xfig-i-stop { display: inline; }
+
+/* the Hann windows: a static drawing on the same dark panel, one layout for wide screens and one for phones */
+.pos-xfig-svgwrap { padding: 4px 6px 2px; border: 1px solid var(--border); border-radius: 12px; background: var(--pos-panel, #05060f); }
+.pos-xfig-svg { display: block; width: 100%; height: auto; }
+.pos-xfig-svg-narrow { display: none; }
+.pos-xfig-svg text { color: #f4f1ff; fill: currentColor; font: 600 13px/1 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+.pos-xfig-svg-narrow text { font-size: 14px; }
+.pos-xfig-svg .pos-xfig-svg-h { color: #b8b4cc; }
+.pos-xfig-svg .pos-xfig-svg-t { color: #b8b4cc; font-weight: 500; font-variant-numeric: tabular-nums; }
+.pos-xfig-svg .pos-xfig-svg-v { font-variant-numeric: tabular-nums; paint-order: stroke; stroke: #05060f; stroke-width: 3px; stroke-linejoin: round; }
+
+/* phones: the panels stack, one stretch per row, still on one time scale; the Hann drawing switches to its
+   narrow layout, whose words stay 11 to 14 px tall */
+@media (max-width: 560px) {
+  .pos-xfig { --pos-xfig-h: 168px; }
+  .pos-xfig-panels, .pos-xfig-shapes .pos-xfig-panels { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .pos-xfig-svg-wide { display: none; }
+  .pos-xfig-svg-narrow { display: block; }
+}
