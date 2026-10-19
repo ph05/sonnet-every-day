@@ -1,0 +1,194 @@
+{
+  "schema": 1,
+  "date": "2026-10-19",
+  "slug": "colors-that-stop-matching",
+  "title": "Colors That Stop Matching",
+  "tagline": "Two paints match in the shop, then clash under the lamps at home. Here is why.",
+  "description": "An interactive lesson on why two paints that match under one lamp can clash under another, an effect called metamerism. Switch lamps, wiggle a paint's curve without changing its color, make your own matching pair and try lamps from a shop light to a sodium street lamp. Every color is computed in your browser from the international standard tables for light and color vision.",
+  "intro": "An interactive lesson on why two paints that match under one lamp can clash under another, for anyone who has chosen paint or matched socks. Change the lamp over Pebble and Fog, then wiggle Fog's curve (the share of each color of light it sends back): its color will not budge.",
+  "concepts": [
+    "metamerism",
+    "reflectance curve",
+    "cone cells",
+    "color difference (CIEDE2000)",
+    "chromatic adaptation",
+    "light spectrum"
+  ],
+  "tier": 1,
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "education-explainer",
+    "mechanic": "lesson",
+    "tone": [
+      "cozy",
+      "nerdy",
+      "playful"
+    ],
+    "tech": [
+      "canvas2d",
+      "dom-ui",
+      "pointer-events",
+      "es-modules",
+      "svg",
+      "url-hash"
+    ],
+    "tags": [
+      "metamerism",
+      "color-science",
+      "paint",
+      "lighting",
+      "cie-1931",
+      "spectra",
+      "ciede2000",
+      "color-vision",
+      "led-lighting",
+      "sodium-lamp"
+    ],
+    "keywords": [
+      "paint-matching",
+      "light-booth",
+      "reflectance-curve",
+      "cone-cells",
+      "lamp-spectrum",
+      "color-difference",
+      "screen-pixels",
+      "why-colors-change"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#f4efe7",
+    "#a99488",
+    "#a89273",
+    "#ab7d7b",
+    "#a3af9c",
+    "#af90a6",
+    "#2f5a8a",
+    "#2a2420"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "CIE 1931 colour-matching functions, 2 degree observer (CIE data table)",
+      "url": "https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer"
+    },
+    {
+      "title": "CIE 1964 colour-matching functions, 10 degree observer (CIE data table)",
+      "url": "https://cie.co.at/datatable/cie-1964-colour-matching-functions-10-degree-observer"
+    },
+    {
+      "title": "CIE cone-fundamental-based spectral tristimulus values for 2 degree field size (CIE data table, from CIE 170-2:2015)",
+      "url": "https://cie.co.at/datatable/cie-cone-fundamental-based-spectral-tristimulus-values-2-degree-field-size"
+    },
+    {
+      "title": "Colorimetry, Part 1: CIE standard colorimetric observers (ISO/CIE 11664-1)",
+      "url": "https://cie.co.at/publications/colorimetry-part-1-cie-standard-colorimetric-observers-0"
+    },
+    {
+      "title": "CIE open access datasets",
+      "url": "https://cie.co.at/publications/open-access-datasets"
+    },
+    {
+      "title": "CIE: illuminants representing typical fluorescent lamps",
+      "url": "https://www.cie.co.at/datatable/relative-spectral-power-distributions-illuminants-representing-typical-fluorescent-lamps"
+    },
+    {
+      "title": "CIE: illuminants representing typical LED lamps",
+      "url": "https://cie.co.at/datatable/relative-spectral-power-distributions-illuminants-representing-typical-led-lamps"
+    },
+    {
+      "title": "A colour graphic for real complex scenes: application to LED illuminants (CIE x046:2019 proceedings, paper OP27)",
+      "url": "https://files.cie.co.at/x046_2019/x046-OP27.pdf"
+    },
+    {
+      "title": "LED Basics (U.S. Department of Energy)",
+      "url": "https://www.energy.gov/cmei/ssl/led-basics"
+    },
+    {
+      "title": "LED Color Characteristics, a fact sheet (U.S. Department of Energy)",
+      "url": "https://www.energy.gov/sites/prod/files/2016/08/f33/led-color-characteristics-factsheet.pdf"
+    },
+    {
+      "title": "CIE: colorimetric illuminants",
+      "url": "https://cie.co.at/publications/colorimetric-illuminants"
+    },
+    {
+      "title": "CIE International Lighting Vocabulary, term 17-23-006, metamerism",
+      "url": "https://cie.co.at/eilvterm/17-23-006"
+    },
+    {
+      "title": "term 17-23-008, metameric colour stimuli",
+      "url": "https://cie.co.at/eilvterm/17-23-008"
+    },
+    {
+      "title": "Sharma, Wu and Dalal (2005), The CIEDE2000 color-difference formula: implementation notes, supplementary test data, and mathematical observations",
+      "url": "https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/"
+    },
+    {
+      "title": "A Just Noticeable Color Difference (Strolls with my Dog)",
+      "url": "https://www.strollswithmydog.com/just-noticeable-difference-color/"
+    },
+    {
+      "title": "Haagen-Schützenhöfer (2017), A hands-on to teach colour perception: the Colour Vision Tube, Scientia in Educatione 8",
+      "url": "https://ojs.cuni.cz/scied/article/view/743"
+    },
+    {
+      "title": "Haagen-Schützenhöfer (2017), Students' conceptions on white light and implications for teaching and learning about colour, Physics Education 52 044003",
+      "url": "https://dx.doi.org/10.1088/1361-6552/aa6d9c"
+    },
+    {
+      "title": "Sodium-vapor lamp (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/Sodium-vapor_lamp"
+    },
+    {
+      "title": "Sodium spectrum (HyperPhysics, Georgia State University)",
+      "url": "https://hyperphysics.gsu.edu/hbase/phyopt/Na.html"
+    },
+    {
+      "title": "Wonder of Orange Light, exhibit S407 (Nagoya City Science Museum)",
+      "url": "https://www.ncsm.city.nagoya.jp/cgi-bin/en/exhibition_guide/exhibit.cgi?id=S407"
+    },
+    {
+      "title": "ASTM D1729-22, Standard practice for visual appraisal of colors and color differences of diffusely-illuminated opaque materials",
+      "url": "https://store.astm.org/d1729-22.html"
+    },
+    {
+      "title": "CIECAM02 (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/CIECAM02"
+    },
+    {
+      "title": "LMS color space (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/LMS_color_space"
+    },
+    {
+      "title": "The RGB-XYZ Matrix Calculator",
+      "url": "https://russellcottrell.com/photo/matrixCalculator.htm"
+    },
+    {
+      "title": "sRGB (Wikipedia)",
+      "url": "https://en.wikipedia.org/wiki/SRGB"
+    },
+    {
+      "title": "sRGB, in the registry of the International Color Consortium",
+      "url": "https://registry.color.org/rgb-registry/srgb"
+    },
+    {
+      "title": "Lecture 21: Introduction to Color Science (UC Berkeley CS184/284A, spring 2021)",
+      "url": "https://cs184.eecs.berkeley.edu/public/sp21/lectures/lec-21-intro-to-color-science/lec-21-intro-to-color-science.pdf"
+    },
+    {
+      "title": "Get Wet, spring 2011: water droplets acting as lenses over a screen (Flow Visualization course gallery)",
+      "url": "https://flowvis.org/OldGalleries/2011/Get-Wet/FV_popup1-4.htm"
+    }
+  ],
+  "makingOf": "This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Every color on it is computed in your browser from CIE tables: the 1931 standard observer and the CIE illuminants A, D65, FL11 and LED-B2. The sodium street lamp (one line at 589 nm), the smooth 3999 K glow and the screen's three color bands are modeled, and the page says so wherever they appear. Pebble and Fog were designed by a script that searched for the smoothest pair of curves that match exactly under the shop light for the CIE's 1931 and 1964 standard observers and its 2015 cone-based observer alike, and split by about 19 under the warm bulb, with a change in lightness and in yellow against blue, so that the split also shows for most color-blind visitors. Color differences use CIEDE2000, checked against the 34 published test pairs of Sharma, Wu and Dalal; the page re-checks its numbers each time it loads.",
+  "stats": {
+    "files": 0,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by Opus, a cameo on Sonnet Every Day"
+}

@@ -1,0 +1,103 @@
+{
+  "reviewer": "owner-proxy",
+  "page": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/2026-10-19-colors-that-stop-matching",
+  "firstReaction": {
+    "laptop": "OK, I get it in five seconds: two paint chips under a lamp, one block of color, then the lamp goes warm and the block splits into tan and pink. That's the paint-sample-looks-different-at-home thing, I've lived it. Wiggle is the cool bit: the line goes nuts, the color doesn't move, and the little 'now' square flips to green under the warm bulb. That's the screenshot. But the picture is a lot of beige, and the little graphs under the chips have orange spikes and white dots that nobody explains. The figures further down are gorgeous (the one with the three cone curves especially). The text is long; I skimmed after step 3.",
+    "phone": "On my phone in Safari I see the title, a paragraph, three lamp buttons and a hanging lamp. It says the lamp changes by itself, but nothing changes and I can't see any paint until I scroll. After a scroll it comes alive and looks good. Wiggle works nicely on the phone too."
+  },
+  "socksOff": 7,
+  "verdict": "A polished, honest and genuinely surprising lesson that already follows the day-3 recipe on a laptop: a familiar hook (paint that matched in the shop clashes at home), one picture with the demo running, plain words first, instant feedback, and a real whoa in Wiggle (the curve thrashes over a frozen block while the 'now' swatch under the warm bulb flips to green). The science checks out (both validators clean, 21/21 self-tests, I re-derived the 17x-at-680 nm and more-than-half-in-three-lines claims from the CIE tables). What keeps it at a 7 rather than a share-it-today 9: on a real phone with browser toolbars (390x664, 393x659, 375x667) the first screen shows almost no paint and the lamp cycle is asleep for as long as you don't scroll, while the hint claims the lamp is changing; the first reveal is the weaker of the two splits (tan vs dusty rose, 18 on screen, while daylight's sage vs mauve is 31), and the thumbnail uses it too; the hero's mini-charts show orange spikes and white rings that are never labelled, under a legend ('light it sends back') that invites the wrong reading; and the explainer runs 2,811 visible words against the spec's 1,300 to 1,700, which the owner, who found day 1 too complex, will skim. All four are cheap to fix and none touches the engine.",
+  "findings": [
+    {
+      "id": "OP-01",
+      "severity": "S1",
+      "area": "phone first screen / running demo",
+      "title": "On a phone with its browser toolbars showing, the first screen shows no paint and the lamp cycle never starts, while the hint says it is changing",
+      "evidence": "Measured with Playwright (isMobile, dpr 2), lamp name sampled every second for 12 s with no input: 390x664 (a 390 px iPhone's usual Safari/Chrome viewport with toolbars), 375x667 (iPhone SE/8) and 320x568 all stayed 'Shop light' for 12 s; 393x659 also stuck at 5.2 s. The scene is only 30 to 33% on screen (scene top 483 to 508 px, height 523 to 531 px), below the cycle's 0.4 visibility threshold (hero.js line 716: vis = e.isIntersecting && e.intersectionRatio >= 0.4). The color block (#color-a) shows 25 to 44 px of its 137 to 145 px; the hint below the switch reads 'The lamp changes by itself until you pick one.' After a 200 px scroll the cycle starts (Warm bulb at +4 s). At 393x700 it runs (41%) but only 85 of 145 px of the block are visible. browser-check misses this because it tests 390x844, a phone with no browser chrome. Screenshot: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/se-390x664-12s.png; scripts se.mjs and se2.mjs in the same folder.",
+      "fix": "(1) hero.js ~line 714: observe the chips (#chips) instead of the whole scene and wake the cycle when at least 50% of #chips' color area is visible, or keep observing #scene with a 0.15 threshold; never let the hint promise motion while the cycle sleeps (if asleep, say 'Scroll down a little to watch the lamps change' or keep cycling). (2) Win back about 130 px above the picture at max-width 640px so the whole split block fits a 390x664 viewport: put the back link and the 'Day 10 · 2026-10-19 OPUS CAMEO' label on one row (smaller back pill, label right-aligned; now two rows, about 45 px); shrink the scene's lamp drawing and put its caption on the verdict line (about 40 px); tighten the h1/tagline margins (about 20 px); optionally trim the intro by one line while keeping what it is, who it is for and what to do first. Target: at 390x664, #color-a bottom <= 650 px and lamp-name reads 'Warm bulb' (or 'Daylight', see OP-03) by t=4.5 s. Add 390x664 and 375x667 to the regression scripts."
+    },
+    {
+      "id": "OP-02",
+      "severity": "S2",
+      "area": "hero picture clarity",
+      "title": "The hero mini-charts' orange spikes (the lamp) and white rings (where the curves meet the lamp's lines) are never labelled, and the only legend reads as if the spikes were the paint's light",
+      "evidence": "Zoomed hero strip under the shop light: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/strip-shop.png. The tallest, brightest shapes in each chart are the shop light's orange spikes; the label printed right under the chart is 'light it sends back' (index.html lines 259 and 270), which describes the black curve (a share, not light) and invites a newcomer to read the spikes as the paint's light. The two white rings (hero.js line 84, 'Where the two curves cross close to the lamp's strongest lines') are not mentioned anywhere in the page copy (no 'ring', 'circle' or 'dot' in index.html). The caption under the chips (#chips-cap) explains only the wavelength axis and the L/M/S bars, and on desktop it starts at y=790, below the 800 px fold. These marks are the picture's answer to 'why do they match?', so leaving them unexplained repeats day 2's 'I have no clue what it is'.",
+      "fix": "Turn each strip's legend into a two-item key with tiny swatches: a black line 'Pebble's curve' / 'Fog's curve' and an orange spike 'the lamp's light'. Under the shop light, replace the first sentence of #chips-cap with one plain line that names the marks: 'Orange: the lamp's light. The shop light shines in three thin spikes, and where they land Pebble and Fog send back almost the same share (the white rings), so your eye gets the same three numbers.' Give each ring a title tooltip with the same words. Move #chips-cap above the fold on desktop (shorten the paper strip by 10 px or put the cap beside the strip) or put the key line inside the paper strip."
+    },
+    {
+      "id": "OP-03",
+      "severity": "S2",
+      "area": "the whoa / first reveal and thumbnail",
+      "title": "The first split the visitor sees, and the thumbnail, is the weaker one: tan vs dusty rose (18 on screen) instead of sage vs mauve (31)",
+      "evidence": "On-screen CIEDE2000 between the hex colors the page paints (computed with colour-science from sRGB, script screen_de.py): warm bulb Pebble #A89273 vs Fog #AB7D7B = 18.1, two mid browns; daylight #A3AF9C vs #AF90A6 = 31.3, opposite hues (green vs purple). The cycle runs Shop light (3.5 s) -> Warm bulb -> Daylight, so the first reveal at about 4 s is the muted one (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/desk-t04500.png) and the striking one waits until about 7.5 s (desk-t08500.png). thumb.png (the gallery card) captures the warm-bulb frame, and 40% of it is intro text. REVISE-1 also records the color-blind split as larger in daylight (deutan 13.2 vs 7.0).",
+      "fix": "Reorder the cycle to Shop light -> Daylight -> Warm bulb and the segmented control to 'Shop light | Daylight | Warm bulb' so the cycle still walks left to right; shorten the first shop-light phase from 3.5 s to about 2 s so the first reveal lands within 3 s of load; resolve window.__sedThumbReady 150 ms after the crossfade into daylight and regenerate thumb.png with --thumb --seconds 10. Keep the warm bulb as the editor's goal lamp (the 'living room at night' story) and keep figure 1's order. Update the 'Found it' hint for daylight-first ('Found it: in daylight they are 30.0 apart')."
+    },
+    {
+      "id": "OP-04",
+      "severity": "S2",
+      "area": "wordiness / explainer length",
+      "title": "The explainer runs 2,811 visible words (plus 712 in the answers), well over the spec's 1,300 to 1,700, with the densest numbers where readers tire",
+      "evidence": "Measured in Chromium (p, li, figcaption inside #explainer, closed details excluded; sections.mjs): step 5 'The lamp lab' 560 words, 'What this page simplifies' 413, step 4 367, step 3 343, step 2 263. SPEC.md section 9 targets 1,300 to 1,700. Examples a curious non-expert will skim: 'Half of what your eye gets from a white sheet under it comes from two thin slivers of the spectrum near 545 and 610 nm, 20 nm wide in all; under the warm bulb the same half is spread over 60 nm.' (step 3); the kelvin/Planck/illuminant paragraph in step 5; 'for the large-field version of that 2015 observer they differ by 0.1' (limits). OWNER.md: 'Day 1 is too complex'; rule 3, one core idea.",
+      "fix": "Cut to about 1,800 visible words without losing a figure or a sourced fact: step 5 to <= 300 (fold the kelvin and Planck definitions into one sentence on the smooth glow, the LED paragraph into one line, drop '(they differ only in the fourth decimal)'); step 4 to <= 250 (keep the 13-handles/10-hidden-directions idea, drop the four-lock paragraph's last two sentences, which repeat More); step 3 to <= 250 (keep the gem 'two paints can match for you and not for the friend beside you', drop the slivers sentence and point to the figure instead); limits to <= 220 (observer bullet in two sentences, the 1964/2015 details stay in the About). Keep every number a figure displays."
+    },
+    {
+      "id": "OP-05",
+      "severity": "S3",
+      "area": "first-screen jargon",
+      "title": "The first screen names lamps by CIE table codes the visitor has not met yet",
+      "evidence": "Desktop lamp caption: 'Three-band fluorescent tube · CIE table FL11', 'Filament bulb · CIE table A', 'Average daylight · CIE table D65' (desk-t00300.png, desk-t04500.png, desk-t08500.png); phone: 'Shop light · Fluorescent tube · CIE FL11'. 'CIE' is first defined in step 1 of the explainer, far below. The readout also prints hex codes ('On your screen both chips are #A99488, rosy taupe'), which only a designer will value.",
+      "fix": "Make the caption's second line plain and evocative ('Three-band fluorescent tube, as in many shops', 'Filament bulb, a cozy living room at night', 'Average daylight, by a window') and keep the provenance as a small 'CIE data' tag with a title tooltip naming the table (figure 5 and the About already list FL11, A, D65). On phones keep just the color name in the screen line ('both chips: rosy taupe') and show the hex in the tooltip."
+    },
+    {
+      "id": "OP-06",
+      "severity": "S3",
+      "area": "craft / crossfade",
+      "title": "Mid-crossfade, the lamp label and the readout contradict each other",
+      "evidence": "At t=11.0 s on desktop the switch and caption say 'Shop light' while the verdict reads 'Clearly different', 'Color difference 6.6' (9.0 in a second run), and the screen line still says 'On your screen: Pebble #A3AF9C, sage · Fog #AF90A6, mauve' (the daylight colors): /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/desk-t11000.png. It lasts the 600 ms fade, three times per 10.5 s cycle, so a glance often lands on it.",
+      "fix": "During a fade, fade the screen line out and back in with the new hexes, and switch the caption's lamp name at the fade's midpoint (when the mixed light is half each) rather than at its start; or label the in-between frames 'Shop light + daylight' the way the More dimmer already does."
+    },
+    {
+      "id": "OP-07",
+      "severity": "S3",
+      "area": "craft / guidance",
+      "title": "While Fog wiggles, the hint still says 'Now press Wiggle'",
+      "evidence": "During the wiggle the left column reads 'Daylight gives them away too: 30.0 apart. Now press Wiggle, or make your own pair.' (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/desk-c-wiggle-1600.png).",
+      "fix": "While a wiggle runs, set #hint to a line that points at the proof: 'Watch: the curve thrashes, the color stays. The now square shows the same Fog under the warm bulb.' Restore the normal hint when it ends."
+    },
+    {
+      "id": "OP-08",
+      "severity": "S3",
+      "area": "the payoff of Make my own pair",
+      "title": "Reaching the editor goal is announced in small paragraph text",
+      "evidence": "After three natural strokes (675 nm up, 450 nm down, 625 nm up) the warm-bulb split reached 18.4 with the shop light held at 0.0, and the success message replaced the goal paragraph in 13 px body text below the inset (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/ed-2.png); the 'Copy a link to my pair' button appears in the left column, away from the picture.",
+      "fix": "On success, put 'You made a metamer' in the verdict slot for about 2 s (large serif, as 'Clearly different' is), and place 'Copy a link to my pair' next to the held-match inset so the share action sits where the eye is."
+    }
+  ],
+  "threeBiggestRaises": [
+    "OP-01: make the phone's first screen show the split block and keep the lamp cycle running on real phone viewports (390x664, 375x667). The owner will most likely open it on a phone first.",
+    "OP-03: lead with the strongest split (daylight: sage vs mauve, 31 on screen) about 2 s after load, and use that frame for the thumbnail. The block tearing into two opposite hues is the share-it moment.",
+    "OP-02: label the orange spikes and the white rings in the hero so the first picture explains itself ('the shop light shines in three thin spikes; where they land, the two paints send back the same share'). That turns a pretty picture into the 'aha' without scrolling."
+  ],
+  "wouldMakeOwnerWince": [
+    "The phone's first screen is mostly text and it claims the lamp is changing when it is not (OP-01).",
+    "Beige-on-beige: the first frame is a taupe block on a peach wall on a cream page, and the first split is two browns (OP-03).",
+    "Unexplained orange spikes and white dots under the chips (OP-02).",
+    "2,800 words of explainer, with paragraphs of nanometer arithmetic (OP-04).",
+    "'CIE table FL11' and hex codes in the first frame (OP-05)."
+  ],
+  "praise": [
+    "The desktop first frame follows the day-3 recipe exactly: a literal title, tagline and intro, one picture, a demo already running (the lamp cycles by itself), 7 first-screen controls, and a block that visibly tears into two colors when the lamp changes.",
+    "Wiggle is a real, honest whoa: a large white curve thrashes over Fog's frozen block (recomputed every frame), the readout says 'Fog under the shop light: unchanged (0.0)' and 'Under the warm bulb: 34.2 from the original', and the was/now swatch flips from dusty rose to green. It works on the phone too, with the block and the readout kept on screen.",
+    "Explainer figures 2, 3 and 6 are explorable-explanation quality: lamp times curve equals light, with the color square live; the cone curves over the light, with three bars that stay put when you switch Pebble and Fog; the screen's three bands giving the same cone numbers as the paint.",
+    "Make my own pair reaches its goal in three natural strokes, proves the held match with the shop-light inset, and ends with a shareable link.",
+    "Honesty and correctness: real CIE tables, 21 of 21 self-tests, every lamp labelled CIE or modeled, a 'What this page simplifies' section and a 'Bigger than life' disclosure. I re-derived the warm bulb's 17x more 680 nm light per unit white (17.2) and the shop light's more-than-half-in-three-lines (51% within 5 nm of 435, 545 and 610 nm) from the CIE tables.",
+    "Both validators are clean (validate ok with 0 warnings; browser-check ok with 0 errors, 0 warnings, 0 console errors, contrast min 5.3, no long tasks, FCP 120 ms).",
+    "The More dimmer (shop light to warm bulb at equal brightness, the block tearing near 6%) is a lovely hidden toy for minute ten."
+  ],
+  "checksRun": {
+    "validate": "node scripts/validate.mjs project <SITE> --contract: ok true, 0 errors, 0 warnings",
+    "browserCheck": "node scripts/qa/browser-check.mjs <SITE> --out .../qa2-owner-proxy/bc --contract: ok true, 0 errors, 0 warnings; shots in .../qa2-owner-proxy/bc/shots",
+    "scripts": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/ (tour.mjs, phones.mjs, se.mjs, se2.mjs, strip.mjs, more.mjs, figs.mjs, editor.mjs, sections.mjs, text.mjs, check17.py, screen_de.py)",
+    "screenshots": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-owner-proxy/shots/"
+  }
+}

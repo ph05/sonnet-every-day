@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "date": "2026-10-20",
+  "slug": "scratch-a-qr-code",
+  "title": "Scratch a QR Code",
+  "tagline": "Scratch a working QR code and it keeps scanning. Find the one scratch that finally breaks it.",
+  "description": "An interactive lesson on why a QR code still scans after it is scratched: scratch a live code, watch its decoder find and fix the broken bytes, then scan it with a phone. Six small demos lead from squares and bytes to lines, curves and the 256-value number system behind Reed-Solomon error correction.",
+  "intro": "A lesson on why a QR code still scans after a big chunk of it is scratched off. The code carries extra check bytes (numbers worked out from the message) that rebuild what is missing. For anyone who has scanned a scuffed code on a menu or a parcel: scratch the one below, then scan it with a phone.",
+  "concepts": [
+    "error correction",
+    "Reed-Solomon codes",
+    "QR code structure",
+    "interleaving",
+    "erasures",
+    "finite fields"
+  ],
+  "tier": 1,
+  "fingerprint": {
+    "purpose": "lesson",
+    "category": "algorithms-cs",
+    "mechanic": "lesson",
+    "tone": [
+      "playful",
+      "nerdy"
+    ],
+    "tech": [
+      "canvas2d",
+      "svg",
+      "pointer-events",
+      "touch-events",
+      "es-modules",
+      "dom-ui"
+    ],
+    "tags": [
+      "qr-code",
+      "error-correction",
+      "reed-solomon",
+      "barcodes",
+      "finite-fields",
+      "interleaving",
+      "erasure-coding",
+      "polynomials",
+      "decoding",
+      "check-bytes"
+    ],
+    "keywords": [
+      "scratched-qr-code",
+      "why-damaged-qr-codes-scan",
+      "qr-error-correction-levels",
+      "reed-solomon-explained",
+      "galois-field",
+      "byte-blocks",
+      "finder-patterns",
+      "scan-with-phone"
+    ],
+    "slot": "wildcard",
+    "political": false
+  },
+  "palette": [
+    "#f6f5f1",
+    "#ffffff",
+    "#111214",
+    "#1d5fd1",
+    "#b35a00",
+    "#13703c",
+    "#b3122e",
+    "#4b32d6"
+  ],
+  "entry": "index.html",
+  "thumb": "thumb.png",
+  "network": [],
+  "sources": [
+    {
+      "title": "ISO/IEC 18004:2024, QR code bar code symbology specification (ISO)",
+      "url": "https://www.iso.org/standard/83389.html"
+    },
+    {
+      "title": "Denso Wave: Error correction feature (qrcode.com)",
+      "url": "https://www.qrcode.com/en/about/error_correction.html"
+    },
+    {
+      "title": "Denso Wave: History of QR Code (qrcode.com)",
+      "url": "https://www.qrcode.com/en/history/"
+    },
+    {
+      "title": "Denso Wave: QR Code development story",
+      "url": "https://www.denso-wave.com/en/technology/vol1.html"
+    },
+    {
+      "title": "Denso: Believing in a Faint Light (Masahiro Hara)",
+      "url": "https://www.denso.com/global/en/driven-base/career-life/qr-hara_2408/"
+    },
+    {
+      "title": "Denso Wave: FAQ (qrcode.com)",
+      "url": "https://www.qrcode.com/en/faq.html"
+    },
+    {
+      "title": "Denso Wave: About the patent (qrcode.com)",
+      "url": "https://www.qrcode.com/en/patent.html"
+    },
+    {
+      "title": "Irving Reed and Gustave Solomon (1960), Polynomial Codes Over Certain Finite Fields, J. SIAM 8(2), 300-304",
+      "url": "https://www.jstor.org/stable/2098968"
+    },
+    {
+      "title": "MIT Lincoln Laboratory: Empowering digital communications",
+      "url": "https://www.ll.mit.edu/impact/empowering-digital-communications"
+    },
+    {
+      "title": "An Introduction to Reed-Solomon Codes (ECEN 604 course notes)",
+      "url": "https://pfister.ee.duke.edu/courses/ecen604/rspoly.pdf"
+    },
+    {
+      "title": "ZXing, an open-source barcode library: Reed-Solomon decoder",
+      "url": "https://github.com/zxing/zxing/blob/master/core/src/main/java/com/google/zxing/common/reedsolomon/ReedSolomonDecoder.java"
+    },
+    {
+      "title": "Project Nayuki: QR Code generator library",
+      "url": "https://github.com/nayuki/QR-Code-generator/blob/master/python/qrcodegen.py"
+    },
+    {
+      "title": "ZBar, an open-source scanner: QR decoder (qrdec.c)",
+      "url": "https://github.com/mchehab/zbar/blob/master/zbar/qrcode/qrdec.c"
+    },
+    {
+      "title": "JPL: Two Voyagers Taught Us How to Listen to Space",
+      "url": "https://www.jpl.nasa.gov/news/two-voyagers-taught-us-how-to-listen-to-space/"
+    },
+    {
+      "title": "Linux kernel: RAID 6 recovery (lib/raid/raid6/recov.c)",
+      "url": "https://github.com/torvalds/linux/blob/master/lib/raid/raid6/recov.c"
+    }
+  ],
+  "makingOf": "This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Everything runs in your browser and nothing you type leaves your device. The code is drawn by the page’s own hand-written encoder (versions 1 to 6, levels L, M, Q and H) and read back after every scratch by its own decoder, which repairs bytes with Reed-Solomon error correction over the 256-value number system QR codes use. Before publishing, the page’s codes were checked against the standard’s worked example and against two independent open-source QR decoders reading screenshots of this page. QR Code is a registered trademark of DENSO WAVE INCORPORATED.",
+  "stats": {
+    "files": 0,
+    "bytes": 0,
+    "ownLoc": 0
+  },
+  "credits": "Built by Opus, a cameo on Sonnet Every Day"
+}

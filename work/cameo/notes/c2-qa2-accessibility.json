@@ -1,0 +1,102 @@
+{
+ "reviewer": "accessibility",
+ "verdict": "As accessibility goes, this is one of the strongest explorable pages I have audited. Everything works from the keyboard, including the curve editor, and the goal can be reached with arrow keys. Lamp changes are announced in plain words, the auto-cycle stays silent and stops on first use, and reduced motion gets a real alternative. The figures have live, meaningful labels. Nothing is S1. The gaps are concentrated and cheap to fix (mostly CSS and a few announcement strings). Windows High Contrast erases the paint chips and every selected lamp, so the page shows nothing to compare. The editor's progress line (3.6:1, 2.9:1 under sodium) and its focus ring (1.04:1 in dark theme) fail on the lit wall. The one-line readout cuts off the proof number at 400% zoom and the gloss under text spacing. A blind visitor gets the lamp story but not the hero's three numbers or the wiggle's evidence, unless they happen to have reduced motion on. Fix the five S2 items and the page is accessible as well as beautiful, which is part of what would knock the owner's socks off. As a whole the page is close: 7 out of 10 from this seat.",
+ "socksOff": 7,
+ "findings": [
+  {
+   "id": "A11Y-01",
+   "severity": "S2",
+   "area": "forced colors (Windows High Contrast)",
+   "title": "High Contrast mode erases the paint chips and every selected lamp",
+   "evidence": "Playwright forcedColors:'active' (forced.mjs). In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/forced-hero.png the hero shows a black void where Pebble and Fog should be: computed background of #color-a and #color-b is rgb(0, 0, 0), and the wall gradient is none. The cone bars are gone too; only the letters L M S remain. The lamp switch has no visible selected segment: all three look the same. In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/forced-fig1.png figure 1's three walls are empty. In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/forced-fig5.png figure 5's six lamp rows look identical (the selection was a border colour plus an inset box-shadow, both removed) and the Pebble/Fog wall is blank. style.css has no @media (forced-colors) rule and no forced-color-adjust. For a High Contrast user the page has nothing to compare and no way to see which lamp is on.",
+   "fix": "In style.css add: @media (forced-colors: active) { .chip-color, .mini-chips i, #fig5-a, #fig5-b, .swatch, .fig4-swatches i, .ex-sw, .held-sw i, .wo i, .bar i, .bigbar i { forced-color-adjust: none; } .chips, .mini-chips, .held-sw, .swatch { outline: 1px solid CanvasText; } .seg-opt input:checked + .seg-face, .chipset input:checked + span { forced-color-adjust: none; background: Highlight; color: HighlightText; } .lamplist label:has(input:checked) { outline: 3px solid Highlight; outline-offset: -3px; } .ex-choice[aria-pressed='true'] { outline: 3px solid Highlight; } }. The swatches are the lesson's data, so they must opt out of forced colours. Re-check with page.emulateMedia({forcedColors:'active'})."
+  },
+  {
+   "id": "A11Y-02",
+   "severity": "S2",
+   "area": "contrast (editor)",
+   "title": "The editor's progress line fails contrast on the lit wall",
+   "evidence": "I measured #editor-status (13.76px, normal weight) against the real wall pixels behind it, with the text made transparent. Data: contrast.mjs and tools/contrast.py, results in /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/contrast-light-1280-ratios.json, backgrounds in /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/cshots/light-1280-editor_A-bg.png. The waiting state #7a4b12 scores 3.59:1 under the warm bulb (wall #cfb099). The editor switches to that lamp itself, so this is the default view. It scores 2.91:1 under sodium (#cf967b) and 4.69:1 in daylight. The success state #1f6b33 scores 3.18:1, 2.58:1 and 4.16:1. Both themes are affected, because the scene keeps its physical colours. This line carries the goal progress ('Shop light 0.0 (held) · warm bulb 5.1 (goal: above 10)') and the success signal.",
+   "fix": "Use ink for both states: .editor-status { color: var(--ink) } (#2a2420: 7.5:1 under the warm bulb, 6.0:1 under sodium, 9.8:1 in daylight). Show success with a check icon, bold weight and a light pill like .held (background rgb(255 255 255 / 72%), padding 2px 8px, border-radius 999px). Inside that pill the green #1f6b33 also passes (6.5:1). Keep the goal text change, so success is never signalled by colour alone."
+  },
+  {
+   "id": "A11Y-03",
+   "severity": "S2",
+   "area": "focus visible (scene)",
+   "title": "Focus ring on the editor curve is almost invisible on the lit wall, worst in dark theme",
+   "evidence": "After 'Make my own pair', keyboard focus lands on #editor-canvas, the only focusable element inside the lit scene. Its ring is var(--ring). In dark theme that is #79b8ff, which measures 1.04:1 against the wall just outside it (#d1b19b) and 1.63:1 against the canvas fill. In light theme #1f6feb measures 2.31:1 against the wall and 3.64:1 against the canvas. Screenshot comparison: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/sheet-editor-focus.png (from /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/flow-light-editor-focus.png and /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/flow-dark-editor-focus.png). The page's dark theme switches to a pale ring, but the scene stays a light room.",
+   "fix": "Give focus inside the scene a two-tone ring that does not follow the page theme: .scene :focus-visible { outline: 3px solid #12325e; outline-offset: 2px; box-shadow: 0 0 0 5px #fffaf2; }. #12325e measures 6.3:1 on the warm-bulb wall, 5.1:1 on sodium and 10:1 on the canvas fill, and the cream halo separates the ring from any lamp colour."
+  },
+  {
+   "id": "A11Y-04",
+   "severity": "S2",
+   "area": "reflow / text spacing (WCAG 1.4.10, 1.4.12)",
+   "title": "One-line readouts cut off the proof number at 400% zoom and the gloss under text spacing",
+   "evidence": ".verdict-sub is white-space: nowrap; overflow: hidden; text-overflow: ellipsis in every state (style.css lines 217 and 219). reflow.mjs results are in /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/reflow.json, with a side-by-side image in /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/sheet-trunc.png. At 400% zoom (320 CSS px), during a wiggle, the hero shows 'Fog under the warm bulb: unchanged…': the '(0.0)' that proves the colour held is cut (264 of 285 px shown, /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/reflow-zoom400-wiggle.png). With the WCAG text-spacing overrides on a 390 px phone, it shows 'Color difference 19.4 · about 1 is just…' (334/412 px, /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/reflow-spacing-phone-warm.png), 'Fog under the warm bulb: unchanged (0.0)' loses its tail (334/364), and both chip legends read 'light it sends b…' (87/127 px). There is no horizontal scroll anywhere, so only these clipped lines fail.",
+   "fix": "Let the readout wrap, and keep the zero-layout-shift goal by reserving height instead of truncating. Remove nowrap and ellipsis from .verdict-sub, .verdict-sub.live and .verdict-hex.live, then add @container (max-width: 560px) { .verdict-sub, .verdict-hex { min-height: 2.9em; text-wrap: balance; } }. Put the number first in the live line ('Unchanged (0.0): Fog under the warm bulb'), so the proof is never the part that wraps away. Give .lg white-space: normal, or use a shorter legend such as 'light out' and 'eye'. Re-run reflow.mjs: there should be no TRUNC lines other than the visually hidden ones."
+  },
+  {
+   "id": "A11Y-05",
+   "severity": "S2",
+   "area": "screen reader (hero result)",
+   "title": "A blind visitor never gets the 'three numbers your eye keeps' in the hero",
+   "evidence": "The hero's ARIA snapshot (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/kbd-light-1280.json, ariaHero) exposes each chip's cone bars only as 'text: L M S light it sends back your eye'. The values are missing, and views.js setBars() only sets CSS transforms. The bars are the hero's proof that both paints give the same three numbers. Under a wiggle, Fog's paper reads 'was now L M S warm bulb your eye'. The values exist only in More > 'Numbers under this lamp', which is collapsed. The figure is named by the verdict alone ('figure \"Identical to the eye\"'), with no lamp or paints. Figure 3 already does this right: role and aria-label 'Cone signals: long 0.312, medium 0.306, short 0.300'.",
+   "fix": "In views.js setBars(el, v), also set el.setAttribute('role','img') and el.setAttribute('aria-label', `Cone signals: long ${v[0].toFixed(3)}, medium ${v[1].toFixed(3)}, short ${v[2].toFixed(3)}`). Throttle the label update to once a second during a wiggle. Add aria-hidden='true' to the .lg legends and the .wo 'was/now' tags; they are visual captions only. Name the figure aria-labelledby='lamp-name verdict', so it reads 'Shop light, Identical to the eye'."
+  },
+  {
+   "id": "A11Y-06",
+   "severity": "S2",
+   "area": "screen reader (hero demos)",
+   "title": "The Wiggle and 'Make my own pair' demos are silent unless reduced motion is on",
+   "evidence": "Live-region log (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/flow-light.json). Pressing W or Wiggle announces nothing, and the status still holds the previous lamp sentence. After 6 s the only announcement is 'Fog is back to its original curve. Every shape it passed through gave the same three numbers in daylight.' It does not say how far the curve moved or how far the same shapes split under the other lamp (the 'Under the warm bulb: 4.9 from the original' line is not live). Entering 'Make my own pair' moves focus to the slider ('Your paint's curve: Left and Right choose a point, Up and Down move it', valuetext '550 nanometers, your paint sends back 25 percent'). It silently switches the scene to the warm bulb, the stale 'Fog is back…' sentence stays in the status, and the goal paragraph is not tied to the slider. The reduced-motion path already says it well (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/flow-light-reduce.json): 'Fog has a new curve. In daylight its color is unchanged; under the warm bulb it is 3.9 from the original.' Figure 4's Wiggle is also silent (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/figs.json, fig4_wiggle).",
+   "fix": "hero.js: in startWiggle, set el.desc.textContent = `${bName()}'s curve is changing shape for 6 seconds; ${LAMPS[lamp].under} its color is held.`. In tickWiggle, track the largest handle movement and the largest other-lamp difference. In finishWiggle, announce `${bName()}'s curve moved by up to ${pts} points and came back. ${cap(under)} its color never changed (0.0); ${other.under} the same shapes were up to ${x} from the original.`. In enterEditor, announce 'Make my own pair: your paint starts as a copy of Pebble. The scene now shows the warm bulb; the match under the shop light is held.', and add aria-describedby='goal editor-status' to #editor-canvas. In noteFind, append the hint ('Now press Wiggle, or make your own pair.') to the lamp sentence. In figures.js, give fig4 a one-line polite status at the end of its wiggle."
+  },
+  {
+   "id": "A11Y-07",
+   "severity": "S3",
+   "area": "screen reader (verbosity)",
+   "title": "Each editor keystroke is announced twice; 'Check the numbers' reads out all 21 results",
+   "evidence": "In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/flow-light.json, 5 arrow keys write 5 status lines on top of 5 aria-valuetext changes ('editor keys'). In the 'keyboard strokes' step, 16 status writes land within 170 ms. 'Check the numbers' makes the whole #check-out region live, so the summary and all 21 sentences ('Passed: White point of CIE standard illuminant A is (0.4476, 0.4074) (CIE 15). Got 0.44758, 0.40745. …') are read in one go. The same applies to #check-out-2.",
+   "fix": "Put the result into the slider's aria-valuetext ('650 nanometers, 85 percent; warm bulb 5.1, shop light held at 0.0') and debounce the onDone status write to 800 ms after the last key, or write it only when success starts or ends. For the checks, make only a one-line summary live, e.g. <p aria-live='polite'>21 of 21 checks passed.</p>, and render the list outside the live region."
+  },
+  {
+   "id": "A11Y-08",
+   "severity": "S3",
+   "area": "keyboard (WCAG 2.1.4)",
+   "title": "The single-key shortcut W fires from any hero control and cannot be turned off",
+   "evidence": "more.mjs: with focus on the More toggle, pressing w starts the wiggle (#wiggle then reads 'Stop wiggling'). The same happens on the lamp radios, checkboxes, the dimmer and the editor slider (hero.js lines 701-705 exclude only select and text inputs). WCAG 2.1.4 (Level A) requires a way to turn a single-character shortcut off or remap it, or that it works only while its own component has focus. Speech-input users can trigger it by accident.",
+   "fix": "Scope W to the components it belongs to: act only when the keydown target is a lamp radio or the editor slider. Alternatively, drop it (the Wiggle button is one Tab away), or add a 'Press W to wiggle' checkbox in More that turns it off. Keep the tip text next to whichever control remains."
+  },
+  {
+   "id": "A11Y-09",
+   "severity": "S3",
+   "area": "focus management",
+   "title": "Focus drops to the page body after Escape on the editor and after 'Test 300 random pairs'",
+   "evidence": "In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/flow-light.json ('Escape on editor'), the active element is body, because views.js line 223 calls canvas.blur(). In /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/figs.json (fig5_run), document.activeElement.id is empty after the run, because figures.js sets runBtn.disabled = true while the button has focus and focus never returns. Screen-reader users then hear 'document' and lose their place.",
+   "fix": "Remove the Escape → blur() branch in curveEditor; Tab already leaves the canvas and nothing traps. If Escape stays, move focus to #reset-paint. In fig5, keep the button focusable during the run: use aria-disabled='true' and a running flag, ignore clicks while running, and clear the flag afterwards."
+  },
+  {
+   "id": "A11Y-10",
+   "severity": "S3",
+   "area": "ARIA semantics",
+   "title": "The Pause toggle reads 'Play the lamp cycle, toggle button, pressed'",
+   "evidence": "hero.js lines 655-661 flip both aria-pressed and aria-label. When paused, the button is announced as 'Play the lamp cycle', pressed, which tells a screen-reader user the opposite of the state. (Keyboard users never reach Pause, because focusing the lamp radios stops the cycle first. That is fine; it matters for screen-reader browse mode.)",
+   "fix": "Keep aria-pressed and a constant aria-label 'Pause the lamp cycle', swapping only the icon. Or remove aria-pressed and flip only the label between 'Pause the lamp cycle' and 'Play the lamp cycle'."
+  },
+  {
+   "id": "A11Y-11",
+   "severity": "S3",
+   "area": "color as the only signal (WCAG 1.4.1)",
+   "title": "Figure 3's three cone curves are told apart by colour alone",
+   "evidence": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-accessibility/out/shots/light-fig3.png: the S, M and L sensitivity curves are unlabelled 2 px lines in blue, green and orange. A Machado 2009 full-deuteranope simulation (colour-science) puts the L (#c8743c) and M (#6f9a45) curve colours only ΔE00 3.5 apart in light theme and 2.7 apart in dark (#e0925c vs #94bf68), at almost equal lightness (L* 59.8 vs 58.3). Their peaks overlap, so a deuteranope cannot tell which curve feeds which bar.",
+   "fix": "Label each curve at its peak on the canvas in ink ('S', 'M', 'L', 600 12px, the same letters as the bars), and/or draw M dashed and S dotted. Mention the labels in the figure's aria-label."
+  }
+ ],
+ "praise": [
+  "Keyboard support is complete and well ordered: 38 tab stops in reading order, a 3 px ring with 2 px offset on every one (all ten focus states screenshotted in light theme), no traps, More opens and closes from the keyboard and Escape returns focus to its toggle. The editor curve is a real role=slider (Left/Right pick a point, Up/Down/Shift move it, Home/End jump) with valuetext such as '600 nanometers, your paint sends back 57 percent'. I reached the editor goal (warm bulb 12.9, shop light 0.0 held) with arrow keys alone.",
+  "Lamp changes are announced well and only when the visitor chooses them: 'Under the warm bulb: clearly different, color difference 19.4. Pebble looks tan and Fog looks dusty rose.' The auto-cycle wrote 0 live updates in 8 s, stops on the first focus or click on a hero control, and never runs under reduced motion.",
+  "Reduced motion is a designed alternative, not just a switched-off animation: one new shape per press, a 'Back to Fog' button and an excellent sentence ('Fog has a new curve. In daylight its color is unchanged; under the warm bulb it is 3.9 from the original.'). Smooth scrolling and pulses respect the setting too.",
+  "The explainer figures carry the point for screen readers: figure 2's slider label names the resulting colour, figure 3's bars have a live aria-label with the three values, figure 6's label gives the band shares and cone signals, figure 5's result is announced, and figure 1's swap uses aria-pressed. The exercises use aria-pressed choices plus polite 'Right.' / 'Not quite.' feedback in words, never colour alone.",
+  "Text contrast in the lit scene holds under all six lamps (worst 5.5:1, the caption under sodium; verdict 7:1 or better). The page outside the scene measures at least 5.3:1 in light and 7.2:1 in dark. Every control is at least 44 px, with no horizontal scroll at 320 px or 400% zoom. The 'On your screen both chips are #A99488, rosy taupe' line is a fine text alternative for a colour swatch: keep it."
+ ]
+}

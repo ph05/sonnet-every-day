@@ -1,0 +1,73 @@
+{
+ "reviewer": "correctness",
+ "verdict": "The science on this page is now exact, and I could not find a false sentence. Every embedded CIE table matches colour-science bit for bit. An independent oracle re-derives every number the page prints, using its own spline, CIELAB, CIEDE2000 and display pipeline, and the round-1 S1 items are all fixed. The pair is now observer-robust: Pebble and Fog differ by 0.000 under the shop light for the 1931 and 1964 observers, by 0.007 for the 2015 2-degree observer and by 0.107 for the 2015 10-degree observer (the page says 0.1). The wiggle is a real measurement: Fog's block keeps one hex over more than 400 frames, with a same-lamp error of at most 2e-13. Under hard use (rapid lamp clicks, resizing mid-fade, extreme curves, four locks, reduced motion) the hero gave the right final state, and no run logged a console error. It also holds 60 fps with 4x CPU throttling. One real bug remains, and it shows on phones. After the first wiggle the page says 'Now drag across Fog to try it by hand', but on any touch screen that drag does nothing, because the start check reads the button of a pointermove event, which is always -1. The fix is one line. The rest is S3 polish: a hint that contradicts the scene when Wiggle is pressed mid-cycle, a 'same three numbers' claim that survives turning the lock off, a four-lock wiggle that reports the one lamp that cannot see the change, some colour names at the extremes, and two screen sentences that still overstate slightly. Fix the touch bug and this is the most rigorous lesson on the site and ready to publish.",
+ "socksOff": 8,
+ "findings": [
+  {
+   "id": "CR2-1",
+   "severity": "S1",
+   "area": "touch / hero hand wiggle",
+   "title": "'Drag across Fog to try it by hand' never starts on phones or tablets: the start check rejects every pointermove (button = -1)",
+   "evidence": "Reproduction: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/touch2.mjs, output in touch2.txt. At 390x844 with touch, a drag across Fog's block that starts sideways produced 22 pointer events (pointerdown button=0, then pointermove button=-1 ...). The hero did not move: 'Color difference 0.0 | On your screen both chips are #A99488', no 'Color unchanged' badge, and the cycle kept running (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/shots/hand-touch-phone.png). The same drag with a mouse on desktop started at once: 'Fog under the shop light: unchanged (0.0) | Under the warm bulb: 23.6 from the original'. Cause: hero.js line 672 calls startHandWiggle(ev) from the pointermove branch for touch. Line 432 then returns early because `ev.button !== undefined && ev.button !== 0` is true for every pointermove (the Pointer Events spec sets button to -1 when no button changed). After every first wiggle the page invites exactly this gesture ('Now drag across Fog to try it by hand.', hero.js line 423), and Fog's title says the same, so every phone visitor who tries it gets a dead gesture. It is not a scroll either, because #color-b has touch-action: pan-y.",
+   "fix": "In hero.js startHandWiggle, check the button only on pointerdown: `if (st.mode !== 'pair' || st.wiggle || (ev.type === 'pointerdown' && ev.button !== 0)) return;`. Or pass a flag from the touch branch (`startHandWiggle(ev, true)`) and skip the check when it is set. Re-run touch2.mjs: the touch case must show frozen=true and the two live lines, and a vertical swipe must still scroll (touch.mjs: 86 px today)."
+  },
+  {
+   "id": "CR2-2",
+   "severity": "S3",
+   "area": "hero first minute / hint",
+   "title": "Pressing Wiggle while the cycle shows the warm bulb or daylight hides the wiggle from that lamp, and the hint then contradicts the scene",
+   "evidence": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/hero1.txt and /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/shots/desk-wiggle.png: Wiggle pressed 4.4 s after load, as a visitor who reads the intro first would. The cycle was on the warm bulb, so the scene showed two different blocks with 'Clearly different', 'Fog under the warm bulb: unchanged (0.0)' and 'In daylight: 9.6 from the original'. Because Wiggle was the first touch, the hint switched to 'This pair matches in the shop. Find the lamp that gives it away.' beside a pair that is plainly split. Two of the three cycle phases give this state, so most first wiggles miss the planned one-block moment under the shop light (brief item 4).",
+   "fix": "If Wiggle or W is the visitor's first touch while the cycle runs, first switch to the shop light (setLamp('FL11') with a 300 ms fade, or instant), then start the wiggle. Alternatively keep the lamp and call noteFind(st.lamp) on that first touch, so the hint reads 'Found it: under the warm bulb they are 19.4 apart...' instead of asking for a lamp the visitor is already looking at."
+  },
+  {
+   "id": "CR2-3",
+   "severity": "S3",
+   "area": "Make my own pair / success text",
+   "title": "With the lock off, the success line still says 'gives the same three numbers under the shop light' while the status shows 0.5",
+   "evidence": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/lockoff.mjs and lockoff.txt: make a metamer with the lock on (status 'Shop light 0.0 (held) · warm bulb 22.0'), untick 'Hold the match under the shop light', then press ArrowUp once on a handle. The status reads 'Shop light 0.5 · warm bulb 22.1', but the goal line still says 'You made a metamer of Pebble: a different curve that gives the same three numbers under the shop light...'. The hint still says '...the small pair shows the shop light, where the match is held', while the inset reads 'Under the shop light 0.5' with no '(held)'. Cause: hero.js line 537 accepts any shop-light difference below 1 as success, and line 309 does not depend on the lock. By the page's own definition (step 3, exercise 2) a metamer gives the same three numbers, so 0.5 apart is not one.",
+   "fix": "Use the metamer sentence only for an exact match: `const exact = E.diff(Rp, Rm, 'FL11') < 0.05;` and `ok = exact && E.diff(Rp, Rm, 'A') >= 10`. When the shop-light difference is between 0.05 and 1 and the warm bulb is at least 10, say 'Your paint looks identical to Pebble under the shop light (0.5 apart) and splits under the warm bulb. Tick Hold the match to make it an exact metamer.' Make the hint's 'where the match is held' depend on st.locks.has('FL11')."
+  },
+  {
+   "id": "CR2-4",
+   "severity": "S3",
+   "area": "Make my own pair / four locks + wiggle",
+   "title": "With four lamps held, the wiggle reports the smooth glow (always 0.0) instead of the sodium lamp, the only lamp that can still see the change",
+   "evidence": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/fourwig.mjs and fourwig.txt (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/shots/fourlock-wiggle.png): open #mine=...&lock=FL11,A,D65,LED-B2&lamp=A and press Wiggle. Every sampled frame reads 'Your paint under the warm bulb: unchanged (0.0) | Under the smooth glow: 0.0 from the original'. The independent oracle (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/oracle3.txt) shows that along the one free direction the smooth glow never exceeds 0.006, while the sodium lamp reaches 3.38. That is the step-4 punchline ('only the sodium street lamp, by at most about 3.4'), and the demo hides it. Cause: hero.js line 328 takes the first lamp that is not held from [OTHER[lamp], 'A', 'D65', 'LED-B2', 'P3999', 'sodium', 'FL11'], which is P3999.",
+   "fix": "Pick the comparison lamp by what the wiggle actually does. After wiggleBumps, compute E.diff(R0, E.curve(E.wiggleAt(w, t, 1)), id) at t = 0.9, 1.8 and 2.7 for every lamp that is not held, and take the largest. A smaller fix is to try 'sodium' before 'P3999' whenever three or more table lamps are held."
+  },
+  {
+   "id": "CR2-5",
+   "severity": "S3",
+   "area": "color names",
+   "title": "Color names are misleading at the extremes: a near-white cream is called 'tan' and a vivid leaf green 'olive green'",
+   "evidence": "/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/editor2.txt (editor, lock off): every handle at 97% gives 'Your paint #FFE7CB, tan'; a spike at 550 nm gives '#3AB400, olive green'; a near-black sweep gives '#164724, olive green'. engine.js colorName (lines 303-316) uses lightness only for grays and for 'deep terracotta', and calls every chroma above 15 between hue 100 and 170 'olive green'. The names also feed the screen-reader description.",
+   "fix": "Add lightness and vividness words before the hue word: L* above 85 'pale', 70 to 85 'light', below 40 'dark', and C above 45 'bright'. Use 'green' instead of 'olive green' when C is above 35 or L* is above 55. Test the names for a flat 3% curve, a flat 97% curve and a 550 nm spike."
+  },
+  {
+   "id": "CR2-6",
+   "severity": "S3",
+   "area": "explainer wording (screens)",
+   "title": "Two screen sentences still overstate slightly: 'three narrow bands', and 'when a photo looks right, the mix is a metamer'",
+   "evidence": "index.html line 472: 'It mixes three narrow bands of red, green and blue light'. On many LCDs (a white LED backlight behind colour filters) the green band in particular is broad; only OLED, quantum-dot and laser screens come close to narrow. index.html line 551: 'When a photo looks right, the mix is a metamer of the real thing'. A photo that looks right has been white-balanced and tone-mapped for your room and screen brightness. It matches the scene's appearance (corresponding colours), not its cone signals. The page itself says (line 472) that it reproduces cone signals only in daylight.",
+   "fix": "Line 472: 'It mixes three bands of red, green and blue light (quite narrow on many newer screens), and a well-set-up screen...'. Line 551: 'When a photo looks right, the screen's mix comes close to a metamer of the real thing, adjusted for your room's light; ...'."
+  },
+  {
+   "id": "CR2-7",
+   "severity": "S3",
+   "area": "exercise 2 precision",
+   "title": "Exercise 2's 'smallest difference was 3.2' reads like a lower bound, but a single violet line brings it down to 2.8",
+   "evidence": "index.html line 499: '...over 2,000 random lamps, smooth and spiky, the smallest difference was 3.2'. This is literally true; the page computes 3.21 and the independent oracle gives 3.37 over 3,000 lamps from its own generator. But single-line lamps go lower: 2.78 for a line at 400 nm (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/oracle2.txt, 'E2 single line lamps'). A reader can easily take 3.2 as the floor for any lamp. The sodium line on this very page is a single-line lamp, so the case is not far-fetched.",
+   "fix": "Append: '(a single line of violet light brings it down to 2.8, but never to 0)'. Optionally add that case to exerciseChecks so the page computes it too."
+  }
+ ],
+ "praise": [
+  "Every embedded CIE table is exact against colour-science 0.4.7: the 1931 and 1964 CMFs to 2e-15, the A, D65, FL11 and LED-B2 tables with 0 difference, and the 1 nm CMF at 589 nm with 0 difference (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-correctness/oracle1.txt).",
+  "Every number the page states re-derives in an independent oracle, written from the page's description and not its code. Pair splits: 0.0, 19.4, 30.0, 18.8, 24.6 and 3.5. Observer robustness: 0.000 (1964), 0.007 (2015, 2 degrees) and 0.107 (2015, 10 degrees). Cone signals 0.312, 0.306 and 0.300. White points (0.4476, 0.4074), (0.3127, 0.3290), (0.3805, 0.3769), (0.4357, 0.4012) and (0.3805, 0.3768). CCTs 2856, 6503, 3999 and 2998 K. All twelve chip hexes. In the text: 52%/20% at 680 nm, the 17x red ratio, 20 nm against 60 nm for half the luminance, 51% of FL11's power in its three lines, 5.7/3.9/1.2-point gaps at the lines, seven crossings with one at 543 nm, 62/11% and 14/45%. Every exercise answer: 47.1; 4.0 to 4.7; 0.4; 0.9/3.1/5.7/4.5; 8% against 44%; 17 points, 30% and 32%, 28; 46/35/19 and 33/40/27 power shares. The four-lock bound: 3.38 for sodium, 0.006 for the glow.",
+  "The page's CIEDE2000 matches colour-science to 2e-13 on 60,000 pairs, including achromatic and near-achromatic ones. At the formula's built-in 180-degree hue discontinuity it follows Sharma, Wu and Dalal's published convention, and it meets all 34 test pairs within their 4-decimal rounding.",
+  "The wiggle's stillness is a measurement, not a trick: Fog's block is recomputed every frame and keeps one hex (and its bars) through 415 frames on desktop and on phones, with a same-lamp error of at most 2e-13. The 'What this page simplifies' claim about the 1964 observer is also accurate: 68 to 89% of frames break the match, and one press out of six exceeds 10.",
+  "The colour-blind claim holds (Machado 2009 simulations of the on-screen colours): under the warm bulb the split stays 10.4 for protans, 7.0 for deutans and 8.1 for tritans, and in daylight 17.6, 13.2 and 22.8.",
+  "Robust under abuse. Twelve lamp clicks 0 to 400 ms apart land on the exact expected colours and number, with 0 word/number disagreements in 153 frames. A lamp change mid-wiggle and resizes mid-fade and mid-wiggle leave a correct state. In the editor, curves at 3% and 97%, spikes, lock toggles and four locks give no NaN; the clip note appears when a colour leaves sRGB. Reduced motion shows one shape per press. browser-check and validate pass with 0 warnings, and no run logged a console error.",
+  "Fast and smooth: first contentful paint 84 to 156 ms, and the lamp fades and the wiggle hold a 16.7 ms p95 even with 4x CPU throttling. On a 6x-throttled DPR-3 phone the fade's p95 is 33 ms.",
+  "Honest teaching: the observer-metamerism paragraph, the sodium model against the real lamp, 'Bigger than life', the four-lock sentence with its 3.4 bound, and the lamp lab's claim (81 to 86% across 12 seeds, about twice the median split) are all exactly true."
+ ]
+}

@@ -1,0 +1,120 @@
+{
+ "reviewer": "first-impression",
+ "socksOff": 7,
+ "verdict": "Ten-second read (cold, 1280x800 and 390x844, light, dark and reduced motion): 'a lesson on why two paints that match in the shop look different under the lamps at home; for anyone who has picked paint; first I would click Warm bulb or just watch the lamps change'. That read is right: the title, tagline and intro say it literally, and the first frame is one picture with the demo already running. One seamless taupe block (#A99488) splits into tan and rose at about 4 s and into sage and mauve at about 7.5 s. The first screen has 7 controls on desktop and 4 on the phone. The first 30 seconds succeed. The big blue Wiggle shows the whoa within 0.6 s: Fog's curve thrashes over a block that stays exactly rgb(169,148,136), while the 'was/now' swatches under the warm bulb drift 30 points apart. 'Make my own pair' reaches 'You made a metamer' in two drags, with a mouse and with touch. There are 0 console errors, the layout shift is about 0 and frames hold at 16.7 ms. What stands between this page and socks-off is mostly how legible the magic is, not correctness. The hero picture is beige on beige: the chips are only 1.6 to 2.0 times as bright as the wall. The bars for 'the three numbers your eye keeps' never visibly differ: 1 to 5 px of 62 even when the paints are 30 apart. The hero wiggle hides the WHY that figure 4 shows beautifully (the lamp's spikes behind the curve). On a phone the Wiggle button is 209 px below the fold. There are also two real bugs. The More panel's dimmer keeps describing the old lamp after another lamp is chosen. At the exact moment of success, the editor chart jumps 20 px under the finger. Fix the six S2 items and this is an 8.5 to 9. The science, the honest About panel, the exercises and explainer figures 3 to 5 are already at the level of the best explorable explanations.",
+ "findings": [
+  {
+   "id": "FI2-01",
+   "severity": "S2",
+   "area": "hero teaching: cone bars",
+   "title": "The 'three numbers your eye keeps' bars look identical under every lamp, even when the paints are 19 to 30 apart",
+   "evidence": "Measured bar heights in px, each bar 62 px tall (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/bars.mjs).<br>* Shop light, 0.0 apart: both chips 19.3/19.0/18.6.<br>* Warm bulb, 19.4 apart ('Clearly different'): Pebble L/M/S 21.1/21.2/18.1, Fog 18.1/17.0/19.1. The values behind them are 0.340/0.342/0.293 against 0.291/0.275/0.308.<br>* Daylight, 30.0 apart: Pebble 21.2/21.5/18.0, Fog 17.3/16.3/19.3.<br>So the largest visible difference is 5 px of 62, and every bar sits near 30% of its track. Screenshot under daylight: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/bars-day.png. The chips are sage and mauve while the six bars look the same.<br>The page's core sentence is 'same three numbers, same color'. A newcomer comparing the bars sees the same numbers with different colors, which reads as the opposite lesson.",
+   "fix": "1. Rescale the hero's bars (views.setBars) to a zoomed track from 0.15 to 0.45 of white, with a small break mark at the base. The warm-bulb gaps become L 10 px, M 14 px and S 3 px; under daylight they become 13, 17.5 and 4.4 px.<br>2. Draw the partner chip's height as a 2 px ink tick across each bar. Under the shop light the tick sits exactly on the bar top ('same three numbers'). Under other lamps the gap is obvious at a glance.<br>3. Put the three values (for example 0.340 · 0.342 · 0.293) in each bar group's aria-label and in a title tooltip.<br>4. Keep figure 3's full-scale bars as they are; there the full scale is the point."
+  },
+  {
+   "id": "FI2-02",
+   "severity": "S2",
+   "area": "phone first screen",
+   "title": "On a 390x844 phone the hero's second action (Wiggle) and both curves are below the fold",
+   "evidence": "Measured cold at 390x844: data-sed-result top 508; chips 639 to 892, so the curves and L/M/S bars are cut off at 844; Wiggle button top 1053 px.<br>The first screen has 4 controls: the 3 lamp segments and Pause. Screenshot: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/cold/phone-light-t250.png.<br>The intro tells the visitor to 'wiggle Fog's curve', but neither the control nor the curve is on screen. On a phone the whoa needs a 209 px scroll with no cue that something is down there.",
+   "fix": "1. On viewports up to 600 px wide, add a compact 44 px pill button, 'Wiggle Fog', pinned inside Fog's color block at the top right. That is the spot where the 'Color unchanged' badge appears while wiggling. Wire it to the same startWiggle and keep the full button below.<br>2. Also move the one-line hint under the switch into the scene's status line on phones. That saves about 40 px, so the top of the paper strip (the names and the curves' peaks) shows above 844.<br>3. Re-run cold.mjs: the phone's first screen should then show the switch, the block and a wiggle control, for 5 controls."
+  },
+  {
+   "id": "FI2-03",
+   "severity": "S2",
+   "area": "hero whoa: the wiggle",
+   "title": "The hero wiggle shows motion without meaning: no lamp lines behind the big curve, and the consequence is a tiny swatch",
+   "evidence": "During the wiggle the hero draws a white curve and a dashed ghost on a flat taupe block, with no axis and no lamp spectrum (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/thirty/desk-wiggle-02200.png).<br>The same engine in figure 4 draws the lamp's spikes behind the curve. There you can SEE the curve swing freely where the lamp gives no light and stay close to the original near the 545 and 610 nm lines (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/figs/fig4-wiggle-1500.png). But that figure is about 3,100 px further down.<br>The most striking evidence is the 'was/now' pair under the other lamp: dusty rose becomes sage, 30.6 apart. It is only about 180x70 px, tucked into the paper strip where Fog's curve was.",
+   "fix": "1. In hero.js drawWiggleOverlay, before stroking the white curve, fill the current lamp's spectrum across Fog's block. Use figure 4's normalization and views.lampInk in light mode or the pale glow in dark mode, at about 30% opacity, as thin spikes or an area. Add a 10 px label 'the lamp's light' beside the tallest spike.<br>2. Promote the consequence: during the wiggle, show 'Under the warm bulb: was / now' as a full-width band along the bottom 56 px of Fog's block (two halves, live colors) instead of only inside the paper strip. The flicker then reads in the screenshot.<br>3. Keep the frozen block, the 'Color unchanged' badge and the one-line readouts exactly as they are."
+  },
+  {
+   "id": "FI2-04",
+   "severity": "S2",
+   "area": "Make my own pair: editor",
+   "title": "At the moment of success the editor chart jumps 20 px under the pointer mid-drag",
+   "evidence": "One continuous drag tracked per pointermove (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/editshift.mjs):<br>* Desktop: the editor canvas top is 494 px through step 14 (warm bulb 9.7). At step 15 (10.3, success) it moves to 514 px, and the next value leaps to 11.5.<br>* Phone 390x844: 457 to 477 px at 10.1, and the next value leaps to 12.5.<br>Cause: #goal swaps the 3-line goal for the 4-line (desktop) or 5-line (phone) success copy above the chart. The celebration lands as a glitch under the finger. Compare /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/next3/desk-2-stroke1.png with /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/next3/desk-2-stroke2.png.",
+   "fix": "Reserve the goal's height for its longest variant. One way: make #goal a grid with every message variant stacked in one cell (grid-area 1/1), toggling visibility instead of textContent. Another: give .goal a min-height of 5lh on phones and 4lh on desktop, measured on the success copy.<br>Alternatively, move the success copy below the chart, next to #editor-status.<br>Re-run editshift.mjs: canvasTop must stay constant through the success step at 1280 and 390 px."
+  },
+  {
+   "id": "FI2-05",
+   "severity": "S2",
+   "area": "More panel state",
+   "title": "The dimmer keeps showing a shop/warm mix after another lamp is chosen, and the hint keeps naming the previous lamp",
+   "evidence": "Reproduction (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/dimmer.mjs): open More, set the dimmer to 60, then choose 'Sodium street lamp (modeled)'. The scene shows the sodium lamp at 3.5 apart, but the dimmer still reads '40% shop light, 60% warm bulb' with its thumb at 60. After clicking Daylight it still reads '40% shop light, 60% warm bulb'.<br>In the newcomer walk, the dimmer read 'all warm bulb' with its thumb at 100 while the sodium lamp was on (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/next3/desk-3-sodium.png).<br>After moving the dimmer to 10% (shop + warm, 1.8, 'Nearly identical'), the hint still says 'The smooth glow gives them away too: 24.6 apart' (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/next3/desk-3-dimmer10.png).",
+   "fix": "In setLamp (radios, the Other lamps select, the lamp click and the cycle), sync the dimmer: value 0 and 'all shop light' for FL11, value 100 and 'all warm bulb' for A. For any other lamp, show 'not in use: Daylight is on' and add a .is-idle class that greys the row until it is moved again (moving it switches to the mix).<br>When the dimmer moves, rewrite the hint for the mix, for example 'Dimmer: 90% shop light, 10% warm bulb: nearly identical (1.8)', or restore the default goal line."
+  },
+  {
+   "id": "FI2-06",
+   "severity": "S2",
+   "area": "visual design: the hero picture",
+   "title": "The hero picture is beige on beige: the chips do not pop, and the first frame's dominant element is a flat taupe rectangle",
+   "evidence": "Luminance contrast of the chips against the wall, sampled from the first frames (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/cold/desk-light-t250.png, -t4800.png, -t8300.png):<br>* shop light 1.77:1;<br>* warm bulb 1.62:1 and 1.92:1;<br>* daylight 1.62:1 and 2.02:1.<br>The block is a 520x208 flat rectangle with a soft shadow, inside a tan gradient card with a dark pendant shade. The chips do not read as paint chips: there is no card edge, no printed name on the chip and no sheen.<br>Under the shop light there is no hint that two separate paints are there. When they split, the halves just change color, with no edge opening.<br>Next to Ciechanowski or Nicky Case it is tidy but quiet. A thumbnail or first glance does not stop the scroll.",
+   "fix": "Keep every computed color. Change only the room and the chips:<br>1. Render the wall as a deeper paint through the same lamp pipeline (wall reflectance about 0.18 to 0.25), so it stays honest about the lamp's tint. Add a radial light pool under the lamp, centred on the chips, and a soft vignette. Target at least 3:1 between the chips and the wall edge.<br>2. Give each chip a paint-card identity: an off-white 6 to 8 px card border, the name in small caps printed on the card, and a faint top sheen (linear-gradient rgba(255,255,255,.06) to 0).<br>3. Make the match breaking literal: when the shown difference crosses 1, open a 3 px seam between the halves (200 ms, 0 under reduced motion), with a faint inner shadow. Close it again when they match.<br>Re-check the chips and text against the wall (contrast.mjs) and the colour-blind split after the change."
+  },
+  {
+   "id": "FI2-07",
+   "severity": "S3",
+   "area": "gallery thumbnail",
+   "title": "The thumbnail is half body text; at gallery size the text is noise and the picture is cropped",
+   "evidence": "browser-check --thumb --seconds 10 on a copy of the site gives /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/sitecopy/2026-10-19-colors-that-stop-matching/thumb.png (253 KB, scrollY 196, warm-bulb frame).<br>The left 40% is the intro paragraph and buttons. The scene's bottom (the caption) is cut at 630.<br>Scaled to a 400 px card (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/thumb-400.png), the text is unreadable gray and the two swatches are about 90x55 px each. The split is tan against dusty rose, the lowest-contrast of the two splits.",
+   "fix": "1. Give the picture more of the 1200 px frame: from 1100 to 1300 px wide, narrow the intro column to about 22rem and let the scene take at least 60%.<br>2. Resolve __sedThumbReady on the daylight split, sage against mauve at 30.0, which reads better at card size. Keep it within browser-check's wait cap.<br>3. Optionally capture a mid-wiggle frame. Re-run --thumb and look at it at 400 px wide."
+  },
+  {
+   "id": "FI2-08",
+   "severity": "S3",
+   "area": "readout during the lamp crossfade",
+   "title": "For about 600 ms after every lamp change the hex line still says the chips are the same color",
+   "evidence": "Clicked Warm bulb, frame at +600 ms (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/thirty/desk-warm-00600.png): the readout says 'Clearly different · Color difference 19.2' and 'On your screen both chips are #A99488, rosy taupe' while the chips are visibly tan and rose.<br>At +150 ms the readout shows 5.3 with the same stale hex line.",
+   "fix": "During the crossfade, show the target hexes from the start, or fade the hex line to 35% opacity and swap it at the end of the fade. Never leave 'both chips are' visible while the verdict says 'different'."
+  },
+  {
+   "id": "FI2-09",
+   "severity": "S3",
+   "area": "figure 5: empty state",
+   "title": "Figure 5's chart is an empty frame with axes until 'Test 300 random pairs' is pressed",
+   "evidence": "Before the run: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/figs/d-05-fig5.png, a 260 px tall empty chart with a legend and axis but no bars and no prompt.<br>After the run: /tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/figs/fig5-after-run.png, a lovely histogram ('83 of every 100, typical split 4.0 against 1.9') that took under 2.5 s.",
+   "fix": "Run one 300-pair batch automatically the first time figure 5 scrolls into view (IntersectionObserver, chunked work, not under reduced motion if it animates), then label the button 'Test 300 new random pairs'. Or at least print an empty-state line inside the chart: 'Press Test 300 random pairs to fill this chart'."
+  },
+  {
+   "id": "FI2-10",
+   "severity": "S3",
+   "area": "phone wiggle scroll",
+   "title": "On a phone, the keep-the-proof-on-screen scroll leaves the frozen verdict half-clipped at the top",
+   "evidence": "Tapped Wiggle at 390x844: the page scrolls to y=599, with the readout sub-line at 8 px. The verdict 'Identical to the eye', the part that proves nothing changed, is cut in half at the top edge (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/thirty/phone-wiggle-02200.png).",
+   "fix": "In hero.js revealChips(), measure from el.verdict instead of el.sub (scroll to the verdict top minus 8 px) when the verdict, the chips and the Wiggle button fit in innerHeight. Otherwise prefer the verdict plus chips, and let the button sit below."
+  },
+  {
+   "id": "FI2-11",
+   "severity": "S3",
+   "area": "contrast of the wiggle curve",
+   "title": "The white wiggle curve on Fog's block is below 3:1 under the shop light and daylight",
+   "evidence": "Computed against the block colors in the DOM (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/contrast.mjs): white on rgb(169,148,136) (shop light) 2.89:1; on rgb(175,144,166) (daylight) 2.85:1; on rgb(171,125,123) (warm bulb) 3.53:1. Meaningful graphics should reach 3:1 (WCAG 1.4.11). The soft shadow helps but is diffuse.",
+   "fix": "Stroke a crisp 2 px dark halo (rgba(20,16,12,.45)) under the 3 px white line, or draw the line in ink with a thin white halo. Keep the dashed ghost in a lighter tone so the two stay distinct."
+  },
+  {
+   "id": "FI2-12",
+   "severity": "S3",
+   "area": "small phones",
+   "title": "On a 320x640 phone the first screen holds no picture",
+   "evidence": "At 320x640 (/tmp/claude-0/-home-user/f017b37b-956c-5936-ade0-801c06b2aa0a/scratchpad/cameo/c2/qa2-first-impression/layout/w320.png) the scene starts at y=587, so only its top 53 px shows. The first screen is the header (2 lines), the title (2 lines), the tagline (3 lines), the intro (8 lines) and the switch. At 390x844 it is fine.",
+   "fix": "At widths of 360 px and below:<br>* make the back link a compact pill so the header is one line;<br>* move the hint line into the scene's status;<br>* tighten the h1 and tagline margins.<br>That lifts the scene by about 90 px. Accept the rest: the intro is required by the contract."
+  },
+  {
+   "id": "FI2-13",
+   "severity": "S3",
+   "area": "copy",
+   "title": "The tagline and the intro's first sentence say the same thing back to back; 'Wiggle Fog' is cryptic as a button",
+   "evidence": "Tagline: 'Two paints match in the shop, then clash under the lamps at home. Here is why.' Intro, 40 px below: 'An interactive lesson on why two paints that match under one lamp can clash under another...'. The first ten seconds read the same idea twice. The primary button 'Wiggle Fog without changing its color' assumes the visitor already knows Fog has a curve.",
+   "fix": "Keep the intro, which the contract needs. Make the tagline carry the hook and the goal instead, for example: 'They matched on the paint-shop shelf. Under your lamps at home, they don't. Find the lamp that gives them away.' Label the button 'Wiggle Fog's curve (its color stays)', and keep 'Stop wiggling'."
+  }
+ ],
+ "praise": [
+  "The first frame really is one picture with the phenomenon running: a seamless #A99488 block that splits into tan and dusty rose (19.4) and then sage and mauve (30.0) with no click. The cycle stops only on a deliberate hero action. Layout shift is about 0 and the crossfade and wiggle hold 16.7 ms frames (motion.mjs).",
+  "The wiggle is honest: Fog's block is recomputed from the moving curve every frame and stays exactly rgb(169,148,136), while the warm-bulb 'was/now' pair drifts 30 points apart. The one-line readouts ('Fog under the shop light: unchanged (0.0)' and 'Under the warm bulb: 30.6 from the original') never shift the layout.",
+  "'Make my own pair' is a real goal with instant feedback. The scene flips to the warm bulb and an inset proves the held shop-light match. Two natural drags reach 'You made a metamer of Pebble' on desktop and with touch, and the success copy stays true as you keep dragging.",
+  "The explainer figures are top-tier teaching: figure 3 (light from the paint times the three cone curves, with bar totals 0.312/0.306/0.300), figure 4 (the wiggle drawn over the lamp's spikes) and figure 5 (300 random pairs: 'the shop light split them more in 83 of every 100').",
+  "The exercises give specific, warm feedback on wrong answers ('Not quite. Under that lamp there is only one wavelength to send back: see step 5') and keep the numbers behind a disclosure.",
+  "Contract and robustness are clean. validate --contract is ok with 0 warnings. browser-check --contract is ok with 0 warnings, 0 console errors, 21 of 21 self-tests and 7 first-screen controls. There is no horizontal scroll from 320 to 1920 px, text contrast is at least 5.3:1 (scene text 11 to 14.5:1), focus rings are 3 px, and reduced motion gets 'Show another shape' instead of animation.",
+  "The About panel is a model of honesty: one plain sentence for the Opus cameo, 'what is computed and what is modeled', and dated, labelled sources with no vendors."
+ ]
+}

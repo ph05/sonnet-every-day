@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Scratch a QR Code</title>
+<meta name="description" content="A hands-on lesson on why a scratched QR code still scans: scratch a live code, scan it with your phone, and see the check bytes repair what you broke.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* SLOT: your project's CSS may go here, or in a style.css next to index.html */
+</style>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="ladder.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 11 &middot; 2026-10-20 <span class="cameo-badge">Opus cameo</span></p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Scratch a QR Code</h1>
+  <div class="sed-lede">
+    <p class="sed-tagline">Scratch a working QR code and it keeps scanning. Find the one scratch that finally breaks it.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+  <p class="sed-intro" data-sed-intro>A lesson on why a QR code still scans after a big chunk of it is scratched off. The code carries extra check bytes (numbers worked out from the message) that rebuild what is missing. For anyone who has scanned a scuffed code on a menu or a parcel: scratch the one below, then scan it with a phone.</p>
+
+  <section class="qr-app" id="app" aria-label="The QR code you can scratch" data-sed-result>
+    <div class="qr-stage">
+      <div class="qr-card" id="qr-card">
+        <canvas id="qr-canvas" class="qr-canvas" width="444" height="444" tabindex="0" aria-describedby="qr-readout" aria-label="QR code you can scratch. Drag across it to scratch. With the keyboard: arrow keys move the brush, Space starts and ends a scratch, Control and Z undoes."></canvas>
+        <div class="qr-hold" id="qr-hold" aria-hidden="true"></div>
+      </div>
+      <p class="qr-legend" id="qr-legend" hidden><span class="qr-keys" id="qr-keys"><span class="qr-key-item"><span class="qr-key" data-b="0"></span> Block 1</span> <span class="qr-key-item"><span class="qr-key" data-b="1"></span> Block 2</span></span> <span class="qr-legend-text">Each outline is one byte (8 squares): solid for message bytes, dashed for check bytes. Turn Show bytes off before scanning.</span></p>
+    </div>
+    <div class="qr-panel">
+      <div class="qr-readout" id="qr-readout" data-state="fixed">
+        <p class="qr-label" id="qr-label">Still reads</p>
+        <p class="qr-message" id="qr-message">SCRATCHED BUT STILL READABLE</p>
+        <p class="qr-summary" id="qr-summary">9 broken bytes found and fixed</p>
+        <div class="qr-meters" id="qr-meters">
+          <div class="qr-meter" data-block="0"><span class="qr-meter-name">Block 1</span><span class="qr-cells" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="qr-meter-count">4 of 11</span></div>
+          <div class="qr-meter" data-block="1"><span class="qr-meter-name">Block 2</span><span class="qr-cells" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="qr-meter-count">5 of 11</span></div>
+        </div>
+        <p class="qr-note" id="qr-note">Scratch it. Then scan it with your phone.</p>
+      </div>
+      <p class="qr-live sed-visually-hidden" id="qr-live" aria-live="polite"></p>
+      <div class="qr-toolbar" role="group" aria-label="Scratch tools">
+        <button type="button" class="qr-btn qr-switch" id="qr-tool" role="switch" aria-checked="false" aria-label="Marker: paint dark squares instead of scratching" title="Scratch removes ink. Marker adds ink."><span class="qr-switch-a">Scratch</span><span class="qr-switch-knob" aria-hidden="true"></span><span class="qr-switch-b">Marker</span></button>
+        <button type="button" class="qr-btn" id="qr-undo" aria-keyshortcuts="Control+Z">Undo</button>
+        <button type="button" class="qr-btn" id="qr-clean">Clean code</button>
+        <button type="button" class="qr-btn" id="qr-bytes" aria-pressed="false">Show bytes</button>
+        <label class="qr-msg" for="qr-text"><span class="qr-msg-label">Your message</span><input id="qr-text" type="text" value="SCRATCHED BUT STILL READABLE" maxlength="84" autocomplete="off" spellcheck="false" aria-describedby="qr-msg-help"></label>
+        <button type="button" class="qr-btn" id="qr-more-btn" aria-expanded="false" aria-controls="qr-more">More</button>
+      </div>
+      <p class="qr-msg-help" id="qr-msg-help">28 characters, fits a 29 × 29 code at level H.</p>
+      <p class="qr-phone-line" id="qr-phone-line">A phone can&#39;t photograph its own screen: show this page on a computer or another phone and scan that.</p>
+      <a class="qr-jump-phone" href="#explainer">Jump to the explanation</a>
+      <div class="qr-more" id="qr-more" hidden>
+        <fieldset class="qr-field">
+          <legend>Correction level</legend>
+          <div class="qr-levels">
+            <label><input type="radio" name="qr-level" value="L"> <b>L</b> <span>about 7% of bytes</span></label>
+            <label><input type="radio" name="qr-level" value="M"> <b>M</b> <span>about 15%</span></label>
+            <label><input type="radio" name="qr-level" value="Q"> <b>Q</b> <span>about 25%</span></label>
+            <label><input type="radio" name="qr-level" value="H" checked> <b>H</b> <span>about 30%</span></label>
+          </div>
+        </fieldset>
+        <div class="qr-field">
+          <button type="button" class="qr-btn qr-switch qr-switch-wide" id="qr-erase" role="switch" aria-checked="false"><span class="qr-switch-knob" aria-hidden="true"></span><span>Tell the decoder where the scratches are</span></button>
+          <p class="qr-gloss">A camera usually has to find the damage itself. Told where you scratched, the decoder pays 1 check byte for each scratched byte instead of 2, so it can fill twice as many. Every byte under the brush counts, even one that did not change.</p>
+        </div>
+        <fieldset class="qr-field">
+          <legend>Brush</legend>
+          <div class="qr-brushes">
+            <label><input type="radio" name="qr-brush" value="fine"> Fine</label>
+            <label><input type="radio" name="qr-brush" value="medium" checked> Medium</label>
+            <label><input type="radio" name="qr-brush" value="wide"> Wide</label>
+          </div>
+        </fieldset>
+        <div class="qr-field">
+          <p class="qr-field-title">Same scratch, every level <span class="qr-field-note">as a camera reads it, with no known gaps</span></p>
+          <table class="qr-compare" id="qr-compare"><tbody><tr><td>Scratch the code to compare the four levels.</td></tr></tbody></table>
+        </div>
+        <div class="qr-field">
+          <button type="button" class="qr-btn" id="qr-check">Check the decoder</button>
+          <ul class="qr-check-list" id="qr-check-list"></ul>
+        </div>
+        <p class="qr-gloss">Real cameras also fight glare, blur and tilt, so a phone may give up a little before this page does. Turn the screen brightness up and hold the phone 20 to 40 cm away.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">How a scratched code still reads</h2>
+    <p>The code above is not just a picture of its message. It holds the message plus extra check bytes: numbers worked out from the whole message by a recipe called Reed-Solomon error correction. A scanner reads every byte it can, uses the check bytes to find the ones that do not fit, and puts them right. The six steps below take that apart, from the squares you scratched to the arithmetic that makes the repair possible. Each step has a small live demo, and most have an exercise.</p>
+
+    <h3 id="step-1">1. What the squares are</h3>
+    <p>Each small square is a <dfn>module</dfn>: dark means 1, light means 0. Not all of them carry the message. The three big squares in the corners, the <dfn>corner squares</dfn> (finder patterns in the standard), hold no part of your message: they let a camera spot the code and tell which way up it is. Two dotted lines, the <dfn>timing lines</dfn>, run between them and help a scanner count rows and columns. From the second size up there is also a small <dfn>alignment square</dfn> near the bottom right corner that helps straighten a tilted photo. Beside the corner squares runs a label of 15 modules, the <dfn>format strip</dfn>, which records the correction level and the mask (one of eight fixed patterns laid over the data so it never forms big blotches or stray look-alikes of the corner squares). It is stored twice and has its own small error correction. Around everything sits a white margin four modules wide, the quiet zone, which scanners need.</p>
+    <p>Everything else is data, read 8 modules at a time. Each group of 8 is a <dfn>byte</dfn>, a number from 0 to 255, which the standard calls a codeword. In the sample code, 560 of the 841 modules hold bytes: 70 bytes in all, 26 for the message and 44 check bytes. The rest tell a camera where the code is and how to read it.</p>
+    <p>Three challenges for the code above: break block 1 without touching block 2 (Show bytes helps), break nearly a third of the bytes and still read it, or make it unreadable with the smallest scratch you can. <a href="#app">Back to the code</a>.</p>
+
+    <h3 id="step-2">2. Bytes, not squares</h3>
+    <figure class="qr-fig" id="fig-bytes">
+      <div class="qr-mini-wrap"><canvas id="qr-mini" class="qr-mini" width="222" height="222" aria-label="The sample code with every byte outlined in its block's colour"></canvas></div>
+      <div class="qr-mini-tools">
+        <button type="button" class="qr-btn" id="qr-mini-across">Scratch across</button>
+        <button type="button" class="qr-btn" id="qr-mini-down">Scratch down</button>
+        <button type="button" class="qr-btn" id="qr-mini-clear">Clean</button>
+        <p class="qr-mini-out" id="qr-mini-out" aria-live="polite">Pick a scratch.</p>
+      </div>
+      <figcaption>The sample code with its bytes outlined, block 1 in blue and block 2 in amber. A scratch 20 squares long across one row changes 12 squares and breaks 8 bytes, 5 in block 1 and 3 in block 2. The same scratch down a column breaks only 5 bytes, 2 and 3: the bytes are laid along a path two squares wide that runs up and down the code, and a scratch down a column stays on that path.</figcaption>
+    </figure>
+    <p>The repair budget counts bytes, not squares. One changed square spoils the whole byte it belongs to, while a scratch over squares that were already light changes nothing at all (and so does the Marker over dark ones). Each byte is 8 squares along a zigzag path two squares wide: where the path runs straight a byte is a neat 2 by 4 block, and where it turns or meets a pattern it bends. In the sample code only 15 of the 70 bytes are neat blocks.</p>
+    <p>The code also splits its bytes into <dfn>blocks</dfn>, and each block is repaired on its own. The sample code has two blocks of 35 bytes, 13 message bytes and 22 check bytes each, and each block can repair 11 broken bytes. The blocks are <dfn>interleaved</dfn>: the code stores the first byte of block 1, then the first byte of block 2, then the second byte of block 1, and so on, dealing them out in turn like cards, so bytes that sit next to each other usually belong to different blocks. A long scratch then shares its damage out instead of using up one block's budget. That is why the readout counts each block separately: the code fails as soon as any one block has more broken bytes than it can fix, however healthy the others are.</p>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e4" data-qw-ex="interleave">
+    <h3>Exercise: Shared out</h3>
+    <p>This page's code alternates its two blocks byte by byte: block 1, block 2, block 1, block 2, and so on. Each block can fix 11 broken bytes. A long scratch breaks 14 bytes that sit one after another in the code's byte order.</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-e4a"><span>(a) How many of the 14 land in each block?</span> <input id="qw-ex-e4a" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="7" data-hint="Deal 14 cards to 2 players in turn."></label>
+      <label class="qw-ex-field" for="qw-ex-e4b"><span>(b) Does the code still read?</span>
+        <select id="qw-ex-e4b" data-answer="yes" data-hint="Compare each block's share with the 11 it can fix.">
+          <option value="">choose</option>
+          <option value="yes">yes, it still reads</option>
+          <option value="no">no, it fails</option>
+        </select></label>
+      <label class="qw-ex-field" for="qw-ex-e4c"><span>(c) What if all 14 broken bytes were in one block?</span>
+        <select id="qw-ex-e4c" data-answer="no" data-hint="One block would have to fix all 14 alone.">
+          <option value="">choose</option>
+          <option value="yes">it still reads</option>
+          <option value="no">it fails</option>
+        </select></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="Right. Dealing the bytes out turns one long scratch into two small problems."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(a) 7 in each block, because bytes next to each other belong to different blocks. (b) Yes: 7 is within each block's 11. (c) No: 14 is more than the 11 one block can fix. That is why the code deals its bytes out between the blocks.</p>
+      <p class="qw-ex-calc" data-qw-calc="interleave">Computed by this page as it loads.</p>
+    </details>
+  </div>
+
+    <h3 id="step-3">3. Check bytes are not copies</h3>
+    <p>The obvious way to protect a message is to send it twice. But when the two copies disagree, which one is right? Copies show that something changed, not which one to trust, and they double the size. Irving Reed and Gustave Solomon, two researchers at MIT Lincoln Laboratory, published a better idea in 1960, in a five-page paper called “Polynomial Codes Over Certain Finite Fields”.</p>
+    <p>Here it is at its smallest: a message of two numbers, 3 and 5. Draw them as the points (1, 3) and (2, 5). Two points fix exactly one straight line, here the line that climbs 2 at every step. Now send two more points from the same line: (3, 7) and (4, 9). Those are the check numbers. They are not copies of anything; they are what the message&#39;s line says at 3 and at 4.</p>
+    <figure class="qr-fig qw-fig">
+      <div class="qw-mount" id="w-line"></div>
+      <figcaption>Drag any point up or down, or focus it and use the arrow keys. The decoder looks for one line through at least three of the four points.</figcaption>
+    </figure>
+    <p>Say point 3 arrives as 11 instead of 7. Points 1, 2 and 4 (3, 5 and 9) still sit on the line that climbs 2 at every step, and no other line passes through three of the four points, so the decoder names point 3 as the liar and puts it back to 7. In general, if one point is damaged on the way, the other three still sit on one line, and no other line passes through three of the four. The decoder finds that line, names the odd one out and puts it back. So two extra points can fix one wrong point. With two wrong points the decoder can usually only tell that something is wrong: each pair of points now has a line of its own, and none fits better than the others. And now and then two wrong points line up with an honest one, and the decoder confidently picks the wrong line.</p>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e2" data-qw-ex="liar">
+    <h3>Exercise: Find the liar</h3>
+    <p>These four points should lie on one straight line, but one was damaged on the way: (1, 5), (2, 7), (3, 10), (4, 11). Which point is wrong, and what should it be?</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-e2a"><span>The wrong point is</span>
+        <select id="qw-ex-e2a" data-name="the wrong point" data-answer="3" data-hint="Look for three points that go up by the same amount at every step. The one left over is the liar.">
+          <option value="">choose</option>
+          <option value="1">point 1, at x = 1</option>
+          <option value="2">point 2, at x = 2</option>
+          <option value="3">point 3, at x = 3</option>
+          <option value="4">point 4, at x = 4</option>
+        </select></label>
+      <label class="qw-ex-field" for="qw-ex-e2b"><span>It should be</span> <input id="qw-ex-e2b" data-name="its value" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="9" data-hint="Points 1, 2 and 4 go up 2 at every step. Where does that line pass at x = 3?"></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="Yes: the only line through three of the points puts the liar back at 9."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>The third point is wrong: it should be (3, 9). Points 1, 2 and 4, at 5, 7 and 11, all sit on the line that goes up 2 at every step (y = 2x + 3), and that line passes x = 3 at 9, not 10. No other three of the points share a line, so the answer is certain.</p>
+      <p class="qw-ex-calc" data-qw-calc="liar">Computed by this page as it loads.</p>
+    </details>
+  </div>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-x1" data-qw-ex="fooled">
+    <h3>Exercise: When liars agree</h3>
+    <p>Four points were sent on a straight line: 2, 4, 6, 8, so the message was 2, 4. Two of them were damaged, and the receiver got 2, 4, 5, 6. The decoder looks for one line through at least three of the four points. What message does it report?</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-x1a"><span>First number</span> <input id="qw-ex-x1a" data-name="the first number" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="3" data-hint="Which three of the received points go up by the same amount at every step? Follow that line back to x = 1."></label>
+      <label class="qw-ex-field" for="qw-ex-x1b"><span>Second number</span> <input id="qw-ex-x1b" data-name="the second number" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="4" data-hint="Point 2 sits on the line the decoder finds, so the decoder keeps it as it is."></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="That is the trap: the decoder is sure, and wrong."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>It reports 3, 4. Points 2, 3 and 4 (4, 5 and 6) happen to sit on the line that goes up 1 at every step, so the decoder "fixes" point 1 from 2 to 3, although point 1 was honest. Two liars are more than two extra points can handle, and here they lined up with an honest point. Small QR codes keep a few check bytes in reserve so that a decoder can catch tricks like this and refuse rather than misread.</p>
+      <p class="qw-ex-calc" data-qw-calc="fooled">Computed by this page as it loads.</p>
+    </details>
+  </div>
+
+    <h3 id="step-4">4. Bendier curves, more extra points</h3>
+    <p>A message of three numbers fixes a parabola, a curve with one bend; more numbers make bendier curves, and a curve made from k numbers is pinned down by any k of its points. In the demo the message 1, 5, 8 becomes the parabola through (1, 1), (2, 5) and (3, 8), and seven points on it are sent: 1, 5, 8, 10, 11, 11, 10. The four extra points are the budget.</p>
+    <figure class="qr-fig qw-fig">
+      <div class="qw-mount" id="w-curve"></div>
+      <figcaption>Drag points off the curve. Mark a point as a known gap to tell the decoder it is missing.</figcaption>
+    </figure>
+    <p>Drag any two points off and the decoder still finds the one parabola through the other five. The rule behind it: every unknown error costs two extra points, while a known gap (a point the decoder has been told is missing, called an <dfn>erasure</dfn>) costs only one. So 2 × errors + gaps must be at most the number of extra points. Four extra points pay for two unknown errors, or one error and two gaps, or four known gaps, with nothing left over to catch a mistake.</p>
+    <p>The code above works on the same idea with bigger numbers. Think of each block&#39;s 13 message bytes as fixing a curve and its 22 check bytes as 22 more points on it: a block can then repair 11 unknown errors, or fill 22 known gaps. A QR encoder actually works out its check bytes by dividing one polynomial by another, which builds the same kind of code: the curve picture is exact once each position is scaled by a fixed number. Real scanners do not try every curve either; some clever algebra finds the broken bytes directly. A camera usually can&#39;t tell where the scratches are, because a scratched square just looks light: the open-source scanners we checked treat every scratch as an unknown error and pay two check bytes for each one. Open More and switch on “Tell the decoder where the scratches are” to watch the budget double.</p>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e3" data-qw-ex="budget">
+    <h3>Exercise: A block's budget</h3>
+    <p>A block of a bigger code has 15 message bytes and 28 check bytes. Each unknown error costs 2 check bytes and each known gap costs 1, and together they may cost at most 28.</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-e3a"><span>(a) How many bytes can be damaged anywhere, unknown to the decoder, and still be fixed?</span> <input id="qw-ex-e3a" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="14" data-hint="Each unknown error costs 2 of the 28 check bytes."></label>
+      <label class="qw-ex-field" for="qw-ex-e3b"><span>(b) If the decoder is told where 6 damaged bytes are, how many more unknown ones can it fix on top?</span> <input id="qw-ex-e3b" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="11" data-hint="The 6 known gaps cost 1 each, which leaves 22. Each unknown error costs 2."></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="Exactly: 2 × 11 + 6 = 28, every check byte spent."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(a) 14, because 2 × 14 = 28. (b) 11, because the 6 known gaps cost 6, and 2 × 11 + 6 = 28 uses the rest; a twelfth unknown error would need 30. The rule is 2 × errors + gaps ≤ check bytes, so knowing where damage is makes it half the price.</p>
+      <p class="qw-ex-calc" data-qw-calc="budget">Computed by this page as it loads.</p>
+    </details>
+  </div>
+
+    <h3 id="step-5">5. Arithmetic on a clock</h3>
+    <p>There is a snag. With ordinary numbers, even a whole-number message gives curves full of fractions: the parabola through (1, 1), (2, 5) and (3, 8) is y = −x²/2 + 11x/2 − 4, and further along its values run off without limit. A byte can only hold the whole numbers 0 to 255.</p>
+    <p>The fix is to count on a clock. On a 13-hour clock every sum and product wraps round: 9 + 6 lands on 2, and 4 × 10 = 40 is three full turns and 1 more, so it lands on 1. That makes 4 and 10 <dfn>partners</dfn>: their product lands on 1. On a clock with a prime number of hours, such as 7, 11 or 13, every number except 0 has a partner, so division always works (dividing by 4 is multiplying by 10), and lines and curves behave exactly as before, using whole numbers only.</p>
+    <figure class="qr-fig qw-fig">
+      <div class="qw-mount" id="w-clock"></div>
+      <figcaption>The line game on a 13-hour clock, each number&#39;s partner, and the trap waiting on a 256-hour clock.</figcaption>
+    </figure>
+    <p>A clock whose number of hours is not prime breaks this. On a 12-hour clock 2 × 6 lands on 0, so 2 has no partner, and two different lines can pass through the same two points: y = 2 + 2x and y = 8 + 8x both pass through (1, 4) and (3, 8), so check points could no longer pin down a message. A 256-hour clock, the obvious choice for bytes, fails the same way: 2 × 128 = 256 lands on 0, and 127 of the 255 numbers other than 0 have no partner.</p>
+    <p>So QR codes use a different number system with exactly 256 values, one per byte. To add two bytes, compare their bits and keep a 1 wherever they differ (this is called XOR): nothing carries, so 87 + 131 = 212 (in hexadecimal, 0x57 + 0x83 = 0xD4), and every number plus itself is 0. Multiplying follows a fixed rule from the standard, built on x⁸ + x⁴ + x³ + x² + 1, and in this system every byte except 0 has a partner: 2 × 142 = 1, and 2 × 128 is 29, not 0. It is not clock arithmetic with 256 hours; mathematicians call it the finite field GF(256). Everything from step 4 works in it unchanged.</p>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e1" data-qw-ex="clock7">
+    <h3>Exercise: A 7-hour clock</h3>
+    <p>On a clock with 7 hours, numbered 0 to 6, a sum or a product that passes 6 goes round and starts again at 0. Work these out on that clock.</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-e1a"><span>(a) 5 + 4 =</span> <input id="qw-ex-e1a" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="2" data-hint="Start at 5 and count on 4 hours: 6, then 0, 1, ... Where do you stop?"></label>
+      <label class="qw-ex-field" for="qw-ex-e1b"><span>(b) 3 × 4 =</span> <input id="qw-ex-e1b" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="5" data-hint="3 × 4 is 12 hours. Take away one whole turn of 7."></label>
+      <label class="qw-ex-field" for="qw-ex-e1c"><span>(c) Which number times 4 gives 1?</span> <input id="qw-ex-e1c" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="2" data-hint="Try 4 × 1, 4 × 2, 4 × 3, ... and go round the clock each time. Which lands on 1?"></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="All three. 2 is 4's partner on this clock, so dividing by 4 means multiplying by 2."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(a) 2, because 5 + 4 = 9 is one full turn of 7 and 2 more. (b) 5, because 3 × 4 = 12 is one turn and 5 more. (c) 2, because 4 × 2 = 8 is one turn and 1 more. So 2 is 4's partner: on a 7-hour clock, dividing by 4 is the same as multiplying by 2, and no fractions are ever needed.</p>
+      <p class="qw-ex-calc" data-qw-calc="clock7">Computed by this page as it loads.</p>
+    </details>
+  </div>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e5" data-qw-ex="trap">
+    <h3>Exercise: The 256-hour clock</h3>
+    <fieldset class="qw-ex-choices" data-answer="b" data-name="your choice" data-hint="Think about dividing: does every number except 0 have a partner on a 256-hour clock? Try 2.">
+      <legend>Why can't bytes use ordinary clock arithmetic with 256 hours?</legend>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e5" value="a"> <span>(a) 256 is too big.</span></label>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e5" value="b"> <span>(b) 2 × 128 lands on 0, so you could never divide by 2.</span></label>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e5" value="c"> <span>(c) Bytes cannot be added.</span></label>
+    </fieldset>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="That is the trap, and the reason QR builds its own 256-value number system."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(b). On a 256-hour clock, 2 × 128 = 256 is exactly one turn, so it lands on 0. Two numbers that are not 0 multiply to 0, so 2 has no partner, and neither has any even number: 127 of the 255 non-zero values. Size is not the problem, and bytes can be added. QR instead uses its own number system with 256 values, where adding is XOR and every value except 0 has a partner.</p>
+      <p class="qw-ex-calc" data-qw-calc="trap">Computed by this page as it loads.</p>
+    </details>
+  </div>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-x3" data-qw-ex="xor">
+    <h3>Exercise: Adding bytes</h3>
+    <p>In QR's own number system with 256 values, adding two bytes is XOR: write both in binary and add each column on its own, where 1 + 1 gives 0 and nothing carries.</p>
+    <div class="qw-ex-fields">
+      <label class="qw-ex-field" for="qw-ex-x3a"><span>(a) 7 + 7 =</span> <input id="qw-ex-x3a" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="0" data-hint="7 is 0111. In every column the two bits are the same."></label>
+      <label class="qw-ex-field" for="qw-ex-x3b"><span>(b) 12 + 10 = (12 is 1100, 10 is 1010)</span> <input id="qw-ex-x3b" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" maxlength="12" data-answer="6" data-hint="Column by column: 1 + 1, 1 + 0, 0 + 1, 0 + 0. Then read the result as a number."></label>
+    </div>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="Spot on. Nothing ever carries, so a byte plus a byte is always another byte."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(a) 0: every value plus itself is 0 in this system, so adding and taking away are the same thing. (b) 6: column by column, 1100 + 1010 gives 0110 (1 + 1 = 0, 1 + 0 = 1, 0 + 1 = 1, 0 + 0 = 0), which is 6.</p>
+      <p class="qw-ex-calc" data-qw-calc="xor">Computed by this page as it loads.</p>
+    </details>
+  </div>
+
+    <h3 id="step-6">6. The real budget</h3>
+    <p>QR codes come in 40 sizes, called versions, from 21 by 21 modules up to 177 by 177, and four correction levels: L, M, Q and H repair roughly 7, 15, 25 and 30 percent of the bytes. Those shares count bytes, not area, and they are rounded: the sample code can repair 22 of its 70 bytes, about 31 percent, as long as no block gets more than its share. A scratch over a third of the picture can break far more than a third of the bytes, or far fewer. This page makes versions 1 to 6. The table, computed by the page&#39;s own encoder, shows each code&#39;s blocks and how many broken bytes each block can repair.</p>
+    <figure class="qr-fig qr-table-fig">
+      <div class="qr-table-wrap">
+      <table class="qr-table" id="qr-table">
+        <thead><tr><th scope="col">Version</th><th scope="col">L</th><th scope="col">M</th><th scope="col">Q</th><th scope="col">H</th></tr></thead>
+        <tbody>
+        <tr><th scope="row">1 <span class="qr-t-size">(21 × 21)</span></th><td><span class="qr-t-b">1 block</span> 3 of 26<sup>*</sup></td><td><span class="qr-t-b">1 block</span> 5 of 26<sup>*</sup></td><td><span class="qr-t-b">1 block</span> 6 of 26</td><td><span class="qr-t-b">1 block</span> 8 of 26</td></tr>
+        <tr><th scope="row">2 <span class="qr-t-size">(25 × 25)</span></th><td><span class="qr-t-b">1 block</span> 5 of 44<sup>*</sup></td><td><span class="qr-t-b">1 block</span> 8 of 44</td><td><span class="qr-t-b">1 block</span> 11 of 44</td><td><span class="qr-t-b">1 block</span> 14 of 44</td></tr>
+        <tr><th scope="row">3 <span class="qr-t-size">(29 × 29)</span></th><td><span class="qr-t-b">1 block</span> 7 of 70</td><td><span class="qr-t-b">1 block</span> 13 of 70</td><td><span class="qr-t-b">2 blocks</span> 9 of 35 each</td><td><span class="qr-t-b">2 blocks</span> 11 of 35 each</td></tr>
+        <tr><th scope="row">4 <span class="qr-t-size">(33 × 33)</span></th><td><span class="qr-t-b">1 block</span> 10 of 100</td><td><span class="qr-t-b">2 blocks</span> 9 of 50 each</td><td><span class="qr-t-b">2 blocks</span> 13 of 50 each</td><td><span class="qr-t-b">4 blocks</span> 8 of 25 each</td></tr>
+        <tr><th scope="row">5 <span class="qr-t-size">(37 × 37)</span></th><td><span class="qr-t-b">1 block</span> 13 of 134</td><td><span class="qr-t-b">2 blocks</span> 12 of 67 each</td><td><span class="qr-t-b">4 blocks</span> 9 of 33 or 34 each</td><td><span class="qr-t-b">4 blocks</span> 11 of 33 or 34 each</td></tr>
+        <tr><th scope="row">6 <span class="qr-t-size">(41 × 41)</span></th><td><span class="qr-t-b">2 blocks</span> 9 of 86 each</td><td><span class="qr-t-b">4 blocks</span> 8 of 43 each</td><td><span class="qr-t-b">4 blocks</span> 12 of 43 each</td><td><span class="qr-t-b">4 blocks</span> 14 of 43 each</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <figcaption>Blocks per code, and how many broken bytes each block can repair out of its size. The sample code is version 3 at level H: two blocks of 35, each repairing 11. <sup>*</sup>The standard promises one fewer here (2, 4 and 4): see below.</figcaption>
+    </figure>
+    <p>Three things the table hides. First, the smallest codes keep a few check bytes back to catch mistakes, so the standard promises fewer repairs there: 2 instead of 3 at version 1, level L, and 4 instead of 5 at 1-M and 2-L, so that a scanner refuses more often instead of guessing wrong. Many scanners still fix the last byte anyway (a few stop at the promise), and so does this page, which marks the promise on its meters. Second, the corner squares hold no data, so no check byte can repair them, and even a small scratch on one can stop a camera from finding the code. That is why the page warns you when you scratch them, even though its own decoder, which already knows where every square is, can still read the code. Third, the format strip has its own small error correction (up to 3 wrong squares in each copy) and a spare copy, but if both copies are badly damaged a scanner usually cannot tell how to read the code.</p>
+    <p class="qr-impostor">Here is the first of those in action. <button type="button" class="qr-btn" id="qr-impostor">Load a code that lies</button> It turns the code above into a small one at level L that says FLOOR 26 and colours in seven squares with the Marker. That breaks five bytes, two more than the three this code can fix, and the damaged code now sits closer to the code for FLOOR 17 than to its own, so the decoder confidently “repairs” it into FLOOR 17. The open-source scanners we checked read FLOOR 17 too. This is the mistake the reserve bytes guard against: a decoder that keeps them fixes at most 2 bytes here, finds no valid code that close, and refuses the code instead of reading the wrong message.</p>
+    <p>The same arithmetic explains the logos pasted over the middle of some QR codes: a logo is damage like any scratch, and the scanner repairs those bytes from the check bytes, which leaves less budget for real wear.</p>
+    <p class="qr-challenge">Final challenge: type your own message, set level H, and find the biggest scratch it survives. Then try the same scratch at another level: <span class="qr-try"><button type="button" class="qr-btn qr-try-btn" data-level="L">Level L</button> <button type="button" class="qr-btn qr-try-btn" data-level="M">Level M</button> <button type="button" class="qr-btn qr-try-btn" data-level="Q">Level Q</button> <button type="button" class="qr-btn qr-try-btn" data-level="H">Level H</button></span></p>
+  <div class="sed-check qw-ex" data-sed-check id="qw-ex-e6" data-qw-ex="corner">
+    <h3>Exercise: A sticker on the corner</h3>
+    <fieldset class="qw-ex-choices" data-answer="b" data-name="your choice" data-hint="What are the three big corner squares for? Are they bytes?">
+      <legend>A sticker covers one corner square completely but no byte. Will a phone most likely read the code?</legend>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e6" value="a"> <span>(a) Yes, error correction repairs it.</span></label>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e6" value="b"> <span>(b) Probably not: cameras find the code by its corner squares, and those are not bytes, so there is nothing to repair.</span></label>
+      <label class="qw-ex-choice"><input type="radio" name="qw-ex-e6" value="c"> <span>(c) Only at level H.</span></label>
+    </fieldset>
+    <div class="qw-ex-actions"><button type="button" class="qw-ex-check sed-btn is-quiet">Check</button></div>
+    <p class="qw-ex-feedback" aria-live="polite" data-right="Yes. Error correction protects bytes; it cannot rebuild the marks a camera uses to find the code."></p>
+    <details class="qw-ex-answer">
+      <summary>Show the answer</summary>
+      <p>(b) Probably not: every open-source scanner we checked gave up when one corner square was covered completely, in white or in black, at every level. The three corner squares tell a camera where the code is, how big it is and which way up it sits. They are not bytes, so the check bytes cannot repair them, at any level. Some phone scanners may still find a code from two corner squares, but error correction is no help either way. The page's own decoder, which already knows where the grid is, still reads the bytes.</p>
+    </details>
+  </div>
+
+    <h3 id="phones">Why your phone might give up sooner</h3>
+    <p>This page&#39;s decoder reads the squares straight from memory. A phone has to photograph them first, through glare, blur, tilt and the fine pattern of the screen&#39;s own pixels, so a phone may give up a little before this page does. Turn the screen brightness up, try holding the phone 20 to 40 centimetres away, and keep the whole code in view, white margin included. When the camera reads a code, a small notice appears; tap it to see what it found. A phone cannot photograph its own screen: on a phone, show this page on a computer or a second phone and scan that.</p>
+
+    <h3 id="history">Where QR codes come from</h3>
+    <p>QR stands for Quick Response: the code was designed to be read fast. Denso Wave, then a division of the Japanese company Denso, released it in 1994; Masahiro Hara and his team designed it to keep track of parts in car factories. Denso Wave chose not to enforce its patent on codes that follow the standard, so anyone may make them. The rules are set by the international standard ISO/IEC 18004, whose fourth edition was published in 2024. QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+    <p>Reed-Solomon codes are older and far more widespread than QR codes. CDs and DVDs use them. NASA&#39;s two Voyager probes were the first spacecraft to use a Reed-Solomon code, added to their radio link after launch. And disk arrays called RAID 6 keep two check disks so that they can rebuild any two dead disks: a dead disk is a known gap, so two check disks cover two, and Linux works one of them out with a Reed-Solomon sum in the same 256-value number system that QR codes use.</p>
+  </section>
+
+
+  <script type="module" src="app.js"></script>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Everything runs in your browser and nothing you type leaves your device. The code is drawn by the page’s own hand-written encoder (versions 1 to 6, levels L, M, Q and H) and read back after every scratch by its own decoder, which repairs bytes with Reed-Solomon error correction over the 256-value number system QR codes use. Before publishing, the page’s codes were checked against the standard’s worked example and against two independent open-source QR decoders reading screenshots of this page. QR Code is a registered trademark of DENSO WAVE INCORPORATED.</p>
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://www.iso.org/standard/83389.html">ISO/IEC 18004:2024, QR code bar code symbology specification (ISO)</a>: the standard and its fourth edition, 2024.</li>
+        <li><a href="https://www.qrcode.com/en/about/error_correction.html">Denso Wave: Error correction feature (qrcode.com)</a>: the four levels, as shares of codewords.</li>
+        <li><a href="https://www.qrcode.com/en/history/">Denso Wave: History of QR Code (qrcode.com)</a>: released in 1994 by Denso Wave, then a division of Denso.</li>
+        <li><a href="https://www.denso-wave.com/en/technology/vol1.html">Denso Wave: QR Code development story</a>: Quick Response, and why the corner squares look the way they do.</li>
+        <li><a href="https://www.denso.com/global/en/driven-base/career-life/qr-hara_2408/">Denso: Believing in a Faint Light (Masahiro Hara)</a>: Masahiro Hara and his team, and the car-parts origin.</li>
+        <li><a href="https://www.qrcode.com/en/faq.html">Denso Wave: FAQ (qrcode.com)</a>: the trademark notice.</li>
+        <li><a href="https://www.qrcode.com/en/patent.html">Denso Wave: About the patent (qrcode.com)</a>: the patent is not enforced for codes that follow the standard.</li>
+        <li><a href="https://www.jstor.org/stable/2098968">Irving Reed and Gustave Solomon (1960), Polynomial Codes Over Certain Finite Fields, J. SIAM 8(2), 300-304</a>: the original paper.</li>
+        <li><a href="https://www.ll.mit.edu/impact/empowering-digital-communications">MIT Lincoln Laboratory: Empowering digital communications</a>: Reed and Solomon at Lincoln Laboratory; CDs, DVDs and deep space.</li>
+        <li><a href="https://pfister.ee.duke.edu/courses/ecen604/rspoly.pdf">An Introduction to Reed-Solomon Codes (ECEN 604 course notes)</a>: the rule 2 × errors + gaps ≤ check bytes.</li>
+        <li><a href="https://github.com/zxing/zxing/blob/master/core/src/main/java/com/google/zxing/common/reedsolomon/ReedSolomonDecoder.java">ZXing, an open-source barcode library: Reed-Solomon decoder</a>: how an open-source scanner corrects errors; its tests quote the standard’s worked example.</li>
+        <li><a href="https://github.com/nayuki/QR-Code-generator/blob/master/python/qrcodegen.py">Project Nayuki: QR Code generator library</a>: block tables, placement, masks and format bits.</li>
+        <li><a href="https://github.com/mchehab/zbar/blob/master/zbar/qrcode/qrdec.c">ZBar, an open-source scanner: QR decoder (qrdec.c)</a>: the reserve check bytes of the smallest codes.</li>
+        <li><a href="https://www.jpl.nasa.gov/news/two-voyagers-taught-us-how-to-listen-to-space/">JPL: Two Voyagers Taught Us How to Listen to Space</a>: the first spacecraft to use a Reed-Solomon code.</li>
+        <li><a href="https://github.com/torvalds/linux/blob/master/lib/raid/raid6/recov.c">Linux kernel: RAID 6 recovery (lib/raid/raid6/recov.c)</a>: rebuilding two failed disks.</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by Opus, a cameo on Sonnet Every Day</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>

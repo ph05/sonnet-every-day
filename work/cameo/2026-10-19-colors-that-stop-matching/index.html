@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Colors That Stop Matching</title>
+<meta name="description" content="An interactive lesson on why two paints that match under one lamp can clash under another, an effect called metamerism. Switch lamps, wiggle a paint's curve without changing its color, make your own matching pair and try lamps from a shop light to a sodium street lamp. Every color is computed in your browser from the international standard tables for light and color vision.">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --fg: #16181d;
+    --muted: #565a64;
+    --border: #d9d8d1;
+    --accent: #4b32d6;
+    --accent-fg: #ffffff;
+    --ring: #1f6feb;
+    --shadow: 0 1px 2px rgb(20 22 30 / 8%), 0 8px 24px rgb(20 22 30 / 8%);
+    --radius: 14px;
+    --gutter: clamp(16px, 4vw, 40px);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1016;
+      --surface: #171a22;
+      --fg: #eceef4;
+      --muted: #a2a8b6;
+      --border: #2b303c;
+      --accent: #a99cff;
+      --accent-fg: #11131a;
+      --ring: #79b8ff;
+      --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 35%);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    color: var(--fg);
+    font: 400 1rem/1.6 var(--font);
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  img, svg, canvas, video { max-width: 100%; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -0.01em; }
+  a { color: var(--accent); text-underline-offset: 0.2em; }
+  a:hover { text-decoration-thickness: 2px; }
+  code, kbd, pre { font-family: var(--font-mono); font-size: 0.92em; }
+  kbd {
+    padding: 0.1em 0.45em;
+    border: 1px solid var(--border);
+    border-bottom-width: 2px;
+    border-radius: 6px;
+    background: var(--surface);
+  }
+
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 4px; }
+  main:focus { outline: none; }
+
+  .sed-skip {
+    position: absolute;
+    left: var(--gutter);
+    top: -4rem;
+    z-index: 100;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .sed-skip:focus { top: 0.75rem; }
+
+  .sed-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.85rem var(--gutter);
+  }
+  .sed-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 0.15s, transform 0.15s;
+  }
+  .sed-back:hover { border-color: var(--accent); transform: translateX(-2px); }
+  .sed-day { margin: 0; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+
+  .sed-main { flex: 1 0 auto; width: 100%; padding: 0.5rem var(--gutter) 2rem; }
+  .sed-title { margin: 0.25rem 0 0.35rem; font-size: clamp(1.7rem, 1.2rem + 2.4vw, 2.8rem); }
+  .sed-lede { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 1.25rem; margin: 0 0 1rem; }
+  .sed-tagline { margin: 0 0 1.5rem; max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); }
+  .sed-lede .sed-tagline { margin: 0; }
+  .sed-jump { flex: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; }
+  .sed-intro { max-width: 68ch; margin: 0 0 1.5rem; font-size: clamp(1.02rem, 0.98rem + 0.25vw, 1.12rem); line-height: 1.6; }
+  .sed-prose { max-width: 68ch; }
+  .sed-explainer { max-width: 68ch; margin: 3rem 0 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); scroll-margin-top: 1rem; }
+  .sed-explainer h2 { margin: 0 0 0.75rem; font-size: clamp(1.35rem, 1.1rem + 1vw, 1.8rem); }
+  .sed-explainer h3 { margin: 1.75rem 0 0.5rem; font-size: 1.15rem; }
+  .sed-explainer p, .sed-explainer ul, .sed-explainer ol { margin: 0 0 1rem; }
+  .sed-explainer li { margin: 0.3rem 0; }
+  .sed-check {
+    margin: 1.25rem 0;
+    padding: clamp(14px, 3vw, 20px);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .sed-check > :first-child { margin-top: 0; }
+  .sed-check > :last-child { margin-bottom: 0; }
+  .sed-card {
+    padding: clamp(14px, 3vw, 24px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+  }
+  .sed-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s, filter 0.12s;
+  }
+  .sed-btn:hover { filter: brightness(1.08); }
+  .sed-btn:active { transform: translateY(1px); }
+  .sed-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .sed-btn.is-quiet { background: var(--surface); border-color: var(--border); color: var(--fg); }
+  .sed-visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0; border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sed-placeholder {
+    padding: 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+
+  .sed-footer { padding: 1rem var(--gutter) 2rem; border-top: 1px solid var(--border); }
+  .sed-about { max-width: 68ch; }
+  .sed-about > summary {
+    padding: 0.7rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .sed-about[open] > summary { margin-bottom: 0.25rem; }
+  .sed-about-body { padding: 0.25rem 0 0.5rem; color: var(--muted); }
+  .sed-about-body h2 { margin: 1.1rem 0 0.4rem; color: var(--fg); font-size: 1.05rem; }
+  .sed-about-body p { margin: 0 0 0.75rem; }
+  .sed-sources { margin: 0; padding-left: 1.2rem; }
+  .sed-sources li { margin: 0.25rem 0; }
+  .sed-credits { margin: 0.75rem 0 0; color: var(--muted); font-size: 0.85rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* the project's own CSS is in style.css */
+</style>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="sed-skip" href="#main">Skip to content</a>
+
+<header class="sed-header">
+  <a class="sed-back" href="../../">&larr; Sonnet Every Day</a>
+  <p class="sed-day">Day 10 &middot; 2026-10-19 <span class="cameo-badge">Opus cameo</span></p>
+</header>
+
+<main id="main" class="sed-main" tabindex="-1">
+  <h1 class="sed-title">Colors That Stop Matching</h1>
+  <div class="sed-lede">
+    <p class="sed-tagline">Two paints match in the shop, then clash under the lamps at home. Here is why.</p>
+    <a class="sed-jump" href="#explainer">Jump to the explanation</a>
+  </div>
+
+  <div class="hero" id="hero">
+    <p class="sed-intro" data-sed-intro>An interactive lesson on why two paints that match under one lamp can clash under another, for anyone who has chosen paint or matched socks. Change the lamp over Pebble and Fog, then wiggle Fog's curve (the share of each color of light it sends back): its color will not budge.</p>
+
+    <div class="hero-switch">
+      <div class="switch-row">
+        <fieldset class="seg" id="lamp-switch">
+          <legend class="seg-legend">Lamp</legend>
+          <label class="seg-opt"><input type="radio" name="lamp" value="FL11" checked><span class="seg-face"><svg class="seg-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Shop light</span><span class="seg-progress" aria-hidden="true"></span></label>
+          <label class="seg-opt"><input type="radio" name="lamp" value="A"><span class="seg-face"><svg class="seg-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.3 1 2.1h5c0-.8.4-1.6 1-2.1A6 6 0 0 0 12 3z"/><path d="M10.5 12.5c.5-1 1-1 1.5 0s1 1 1.5 0"/></svg>Warm bulb</span><span class="seg-progress" aria-hidden="true"></span></label>
+          <label class="seg-opt"><input type="radio" name="lamp" value="D65"><span class="seg-face"><svg class="seg-ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>Daylight</span><span class="seg-progress" aria-hidden="true"></span></label>
+        </fieldset>
+        <button type="button" class="pause" id="pause" aria-pressed="false" aria-label="Pause the lamp cycle"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="pause-bars" d="M9 6v12M15 6v12"/><path class="pause-play" d="M8 5.5v13l11-6.5z"/></svg></button>
+      </div>
+      <p class="hint" id="hint">The lamp changes by itself until you pick one.</p>
+    </div>
+
+    <figure class="scene" id="scene" data-sed-result aria-labelledby="verdict" aria-describedby="scene-desc">
+      <div class="scene-glow" aria-hidden="true"></div>
+      <div class="scene-light" aria-hidden="true"></div>
+      <div class="lamp-btn" id="lamp-btn" title="Click the lamp to change it"><svg class="scene-lamp" viewBox="0 0 160 104" aria-hidden="true" focusable="false">
+        <line class="lamp-cord" x1="80" y1="0" x2="80" y2="30"/>
+        <path class="lamp-cap" d="M72 30h16v7H72z"/>
+        <path class="lamp-shade" d="M60 37h40l26 42c1.6 2.6-.3 5-3 5H37c-2.7 0-4.6-2.4-3-5z"/>
+        <path class="lamp-rim" d="M37 84h86"/>
+        <ellipse class="lamp-inner" cx="80" cy="84" rx="40" ry="5"/>
+        <ellipse class="lamp-bulb" cx="80" cy="88" rx="12" ry="8"/>
+      </svg></div>
+      <p class="lampcap"><b id="lamp-name">Shop light</b><span class="lc-long" id="lamp-detail">Three-band fluorescent tube · CIE table FL11</span><span class="lc-short" id="lamp-brief">Fluorescent tube · CIE FL11</span></p>
+      <div class="readout">
+        <p class="verdict" id="verdict">Identical to the eye</p>
+        <p class="verdict-sub" id="verdict-sub"><abbr title="CIEDE2000, computed against a white sheet under the same lamp">Color difference</abbr> <b id="dE">0.0</b><span class="sub-tail"> · about 1 is just noticeable</span></p>
+        <p class="verdict-hex" id="verdict-hex">On your screen both chips are #A99488, rosy taupe</p>
+      </div>
+      <div class="chips" id="chips">
+        <div class="chip" id="chip-a">
+          <div class="chip-color" id="color-a"></div>
+          <div class="chip-paper">
+            <p class="chip-name" id="name-a">Pebble</p>
+            <div class="chip-data">
+              <canvas class="chip-curve" id="curve-a" role="img" aria-label="Pebble's reflectance curve"></canvas>
+              <div class="bars" id="bars-a"><span class="bar bar-l"><i></i></span><span class="bar bar-m"><i></i></span><span class="bar bar-s"><i></i></span></div>
+              <span class="lg">light it sends back</span><span class="lg lg-bars">your eye</span>
+            </div>
+          </div>
+        </div>
+        <div class="chip" id="chip-b">
+          <div class="chip-color" id="color-b" title="Drag across Fog to reshape its curve: its color stays"><canvas class="wig-canvas" id="wig-canvas" aria-hidden="true" hidden></canvas><span class="frozen" id="frozen" hidden><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Color unchanged</span></div>
+          <div class="chip-paper">
+            <p class="chip-name" id="name-b">Fog</p>
+            <div class="chip-data">
+              <div class="curve-cell"><canvas class="chip-curve" id="curve-b" role="img" aria-label="Fog's reflectance curve"></canvas><span class="wo" id="wig-other" hidden><i id="wo-was"><b>was</b></i><i id="wo-now"><b>now</b></i></span></div>
+              <div class="bars" id="bars-b"><span class="bar bar-l"><i></i></span><span class="bar bar-m"><i></i></span><span class="bar bar-s"><i></i></span></div>
+              <span class="lg" id="lg-b">light it sends back</span><span class="lg lg-bars">your eye</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="held" id="held" hidden><span class="held-label" id="held-label">Under the shop light (held)</span><span class="held-sw"><i id="held-a"></i><i id="held-b"></i></span><span class="held-d" id="held-d">0.0</span></p>
+      <p class="chips-cap" id="chips-cap">Each curve runs from violet light (wavelength 400 nanometers, nm) to red (700 nm). The bars are the three numbers your eye keeps, one for each kind of cone: <span class="k-l">L</span>ong, <span class="k-m">M</span>edium and <span class="k-s">S</span>hort wavelengths.</p>
+      <div class="editor" id="editor" hidden>
+        <p class="goal" id="goal">Goal: fool the shop light but not your living room. Drag your paint's curve until the warm bulb shows a difference above 10, while the shop light still sees a match.</p>
+        <canvas class="editor-canvas" id="editor-canvas" tabindex="0" role="slider" aria-label="Your paint's curve: Left and Right choose a point, Up and Down move it" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></canvas>
+        <p class="editor-status" id="editor-status"></p>
+      </div>
+      <p class="sed-visually-hidden" id="scene-desc" role="status"></p>
+    </figure>
+
+    <div class="hero-actions" id="actions">
+      <button type="button" class="sed-btn btn-wiggle" id="wiggle">Wiggle Fog without changing its color</button>
+      <div class="actions-row">
+        <button type="button" class="sed-btn is-quiet" id="back-fog" hidden>Back to Fog</button>
+        <button type="button" class="sed-btn is-quiet" id="make">Make my own pair</button>
+        <button type="button" class="sed-btn is-quiet" id="reset-paint" hidden>Reset my paint</button>
+        <button type="button" class="sed-btn is-quiet" id="back" hidden>Back to Pebble and Fog</button>
+        <button type="button" class="sed-btn is-quiet more-toggle" id="more-toggle" aria-expanded="false" aria-controls="more">More<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6"/></svg></button>
+      </div>
+      <label class="lock" id="lock-wrap" hidden><input type="checkbox" id="lock" checked><span>Hold the match under the shop light</span></label>
+      <p class="lock-help" id="lock-help" hidden>When on, the rest of the curve moves to keep your paint's color under the shop light exactly the same as Pebble's.</p>
+      <p class="share-row" id="share-row" hidden><button type="button" class="sed-btn is-quiet" id="share">Copy a link to my pair</button> <span id="share-status" aria-live="polite"></span></p>
+    </div>
+
+    <div class="hero-more" id="more" hidden>
+      <div class="more-grid">
+        <label class="field"><span>Other lamps</span>
+          <select id="other-lamp">
+            <option value="">Choose another lamp…</option>
+            <option value="LED-B2">Warm LED (CIE table LED-B2)</option>
+            <option value="sodium">Sodium street lamp (modeled)</option>
+            <option value="P3999">Smooth glow, shop-light color (modeled)</option>
+          </select>
+        </label>
+        <label class="field dimmer"><span>Dimmer, from the shop light to the warm bulb: <output id="dimmer-out" for="dimmer">all shop light</output></span>
+          <input type="range" id="dimmer" min="0" max="100" step="1" value="0">
+        </label>
+        <label class="check"><input type="checkbox" id="show-light"><span>Show the light that reaches your eye</span></label>
+      </div>
+      <fieldset class="locks" id="locks" hidden>
+        <legend>Hold the match under</legend>
+        <label class="check"><input type="checkbox" value="FL11" checked><span>Shop light</span></label>
+        <label class="check"><input type="checkbox" value="A"><span>Warm bulb</span></label>
+        <label class="check"><input type="checkbox" value="D65"><span>Daylight</span></label>
+        <label class="check"><input type="checkbox" value="LED-B2"><span>Warm LED</span></label>
+        <p class="lock-note">Each lamp you hold takes away three of the 13 directions your curve can move in. Hold four and only one is left.</p>
+      </fieldset>
+      <details class="numbers">
+        <summary>Numbers under this lamp</summary>
+        <table class="num-table" id="num-table">
+          <thead><tr><th scope="col">Chip</th><th scope="col">L cone</th><th scope="col">M cone</th><th scope="col">S cone</th><th scope="col">L*</th><th scope="col">a*</th><th scope="col">b*</th><th scope="col">Screen</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p class="note">Cone signals are relative to a white sheet under the same lamp; L*, a* and b* are CIELAB against that white.</p>
+      </details>
+      <p class="note">How the colors are shown: this page keeps 40 percent of each lamp's tint (your eye would remove more of it) and lights every room equally brightly. The numbers never depend on this; they compare each paint with a white sheet under the same lamp.</p>
+      <p class="note">Tip: press W to wiggle Fog.</p>
+      <p><button type="button" class="sed-btn is-quiet" id="check-numbers">Check the numbers</button></p>
+      <div class="check-out" id="check-out" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <section class="sed-explainer" id="explainer" data-sed-explainer aria-labelledby="explainer-title">
+    <h2 id="explainer-title">Why the match breaks</h2>
+    <p>It is natural to think that a paint simply has a color, the way it has a weight, and that light only shows it. Physics-education research finds that students keep this idea even after lessons on light (Haagen-Schützenhöfer, 2017). Pebble and Fog show why it cannot be the whole story: nothing about either paint changes when the lamp does, yet under one lamp they match and under the next they do not. Five small steps explain it, each with a demo you can play with.</p>
+
+    <h3 id="step1">1. Flip the lamp</h3>
+    <figure class="fig" id="fig1">
+      <div class="fig1-walls" id="fig1-walls">
+        <div class="mini" data-lamp="FL11"><div class="mini-wall"><div class="mini-chips"><i class="mini-a"></i><i class="mini-b"></i></div></div><p class="mini-name">Shop light</p><p class="mini-d">0.0</p></div>
+        <div class="mini" data-lamp="A"><div class="mini-wall"><div class="mini-chips"><i class="mini-a"></i><i class="mini-b"></i></div></div><p class="mini-name">Warm bulb</p><p class="mini-d">19.4</p></div>
+        <div class="mini" data-lamp="D65"><div class="mini-wall"><div class="mini-chips"><i class="mini-a"></i><i class="mini-b"></i></div></div><p class="mini-name">Daylight</p><p class="mini-d">30.0</p></div>
+      </div>
+      <div class="fig-controls"><button type="button" class="sed-btn is-quiet" id="fig1-swap" aria-pressed="false">Replace Fog with a second can of Pebble</button></div>
+      <figcaption>Preset “Pebble and Fog, three lamps”: the same two paints under three lamps. Only the shop light makes them match. The number under each wall is the color difference.</figcaption>
+    </figure>
+    <p>Under the shop light the difference between Pebble and Fog is 0.0. Under the warm bulb it is 19.4, and in daylight 30.0. This page measures differences with CIEDE2000, a color-difference formula from the International Commission on Illumination (CIE). By a widely used rule of thumb, a difference of about 1 on its scale is just noticeable when two colors sit side by side, and a difference of 2 is plain to a careful eye, so 19 is hard to miss.</p>
+    <p>Two cans of the same paint would match under every lamp: press the button under the walls to try it. Only paints with different recipes can match under one lamp and split under another. To see why, we need to know what a paint's recipe is.</p>
+
+    <h3 id="step2">2. A color is a recipe of light</h3>
+    <p>A paint gives out no light of its own. It sends back a share of the light that falls on it, and that share depends on the wavelength of the light, measured in nanometers (nm, billionths of a meter). One wavelength on its own looks like one color of the rainbow: violet at 400 nm, green near 530 nm, deep red at 700 nm. Most light mixes many wavelengths, and what you see depends on the whole mix. Plot the share against wavelength and you get the paint's reflectance curve: 0% means the paint swallows that light, 100% means it sends all of it back.</p>
+    <figure class="fig" id="fig2">
+      <fieldset class="chipset" id="fig2-lamps">
+        <legend>Lamp</legend>
+        <label><input type="radio" name="fig2-lamp" value="FL11"><span>Shop light</span></label>
+        <label><input type="radio" name="fig2-lamp" value="A" checked><span>Warm bulb</span></label>
+        <label><input type="radio" name="fig2-lamp" value="D65"><span>Daylight</span></label>
+      </fieldset>
+      <div class="fig2-body">
+        <div class="fig2-plot"><canvas class="fig-canvas fig2-canvas" id="fig2-canvas" tabindex="0" role="slider" aria-label="Pebble's curve, middle row: Left and Right choose a point, Up and Down move it" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></canvas><div class="fig2-drag" id="fig2-drag" aria-hidden="true"></div></div>
+        <div class="fig2-swatch"><div class="swatch" id="fig2-color"></div><p>Color of the light that reaches you</p></div>
+      </div>
+      <div class="fig-controls"><button type="button" class="sed-btn is-quiet" id="fig2-reset">Reset to Pebble under the warm bulb</button></div>
+      <figcaption>Preset “Pebble under the warm bulb”. Top: the lamp's light. Middle: Pebble's reflectance curve; drag it. Bottom: their product, the light that leaves the paint and reaches your eye. The rainbow colors are approximate.</figcaption>
+    </figure>
+    <p>What reaches your eye is the lamp's light multiplied, wavelength by wavelength, by that curve. In the figure the top row is the lamp, the middle row is Pebble's curve, and the bottom row is their product: the light that actually leaves the paint. Drag the curve and the product and its color change at once.</p>
+    <p>Take one wavelength, 680 nm, a deep red. Pebble sends back 52% of it and Fog only 20%. For the same brightness on a white sheet, the warm bulb gives out about 17 times as much of that light as the shop light, so the same gap between Pebble and Fog counts about 17 times as much under the warm bulb.</p>
+
+    <h3 id="step3">3. Your eye keeps only three numbers</h3>
+    <p>Color vision starts with three kinds of cone cell in your retina. Each kind adds up all the light that reaches it, favoring some wavelengths over others: one kind favors long wavelengths, one medium and one short. A whole curve of light becomes just three numbers, drawn here as three bars, each compared with what a white sheet under the same lamp would give.</p>
+    <figure class="fig" id="fig3">
+      <div class="fig-row">
+        <fieldset class="chipset" id="fig3-paints">
+          <legend>Paint</legend>
+          <label><input type="radio" name="fig3-paint" value="a" checked><span>Pebble</span></label>
+          <label><input type="radio" name="fig3-paint" value="b"><span>Fog</span></label>
+        </fieldset>
+        <fieldset class="chipset" id="fig3-lamps">
+          <legend>Lamp</legend>
+          <label><input type="radio" name="fig3-lamp" value="FL11" checked><span>Shop light</span></label>
+          <label><input type="radio" name="fig3-lamp" value="A"><span>Warm bulb</span></label>
+        </fieldset>
+      </div>
+      <div class="fig3-body">
+        <canvas class="fig-canvas fig3-canvas" id="fig3-canvas" role="img" aria-label="The light from the chosen paint with the three cone sensitivity curves drawn over it"></canvas>
+        <div class="bigbars" id="fig3-bars" aria-live="polite"></div>
+      </div>
+      <figcaption>Preset “Pebble and Fog under the shop light”. The filled curve is the light leaving the paint; the three lines show how strongly each kind of cone responds to each wavelength. The bars are the three totals. Switch between Pebble and Fog under the shop light: the curves change, the bars do not.</figcaption>
+    </figure>
+    <p>So very different curves can produce the same three numbers. Color scientists call such look-alikes metamers, and the effect metamerism. Pebble and Fog are metamers under the shop light. At 700 nm Pebble sends back 62% of the light and Fog 11%; at 400 nm it is the other way round, 14% and 45%. Yet under the shop light both give 0.312, 0.306 and 0.300.</p>
+    <p>Strictly, a match holds for one particular eye. Everyone's cones differ a little, so two paints can match for you and not for the friend beside you; color scientists call this observer metamerism. Pebble and Fog were designed to match under the shop light for three of the CIE's model eyes at once (it calls them observers): What this page simplifies says which.</p>
+    <p>The shop light makes this easy. It gives out more than half of its light in three narrow lines, near 435, 545 and 610 nm. Half of what your eye gets from a white sheet under it comes from two thin slivers of the spectrum near 545 and 610 nm, 20 nm wide in all; under the warm bulb the same half is spread over 60 nm. Pebble and Fog come close at all three lines, never more than 6 points apart, and their curves cross seven times, once right beside the green line, at about 543 nm.</p>
+
+    <h3 id="step4">4. The invisible wiggle</h3>
+    <figure class="fig" id="fig4">
+      <div class="fig-row">
+        <fieldset class="chipset" id="fig4-lamps">
+          <legend>The wiggle hides from</legend>
+          <label><input type="radio" name="fig4-lamp" value="FL11" checked><span>Shop light</span></label>
+          <label><input type="radio" name="fig4-lamp" value="A"><span>Warm bulb</span></label>
+          <label><input type="radio" name="fig4-lamp" value="D65"><span>Daylight</span></label>
+          <label><input type="radio" name="fig4-lamp" value="sodium"><span>Sodium lamp (modeled)</span></label>
+        </fieldset>
+        <button type="button" class="sed-btn" id="fig4-wiggle">Wiggle Fog</button>
+      </div>
+      <canvas class="fig-canvas fig4-canvas" id="fig4-canvas" role="img" aria-label="Fog's curve, with the original drawn dashed"></canvas>
+      <div class="fig4-out">
+        <p><span class="fig4-swatches"><i id="fig4-sw0"></i><i id="fig4-sw1"></i></span><span id="fig4-same">Under the shop light (the lamp it hides from): difference from the original Fog 0.0</span></p>
+        <p><span class="fig4-swatches"><i id="fig4-sw2"></i><i id="fig4-sw3"></i></span><span id="fig4-other">Under the warm bulb: 0.0</span></p>
+      </div>
+      <figcaption>Preset “Wiggle Fog under the shop light”. Fog's curve wiggles only in directions the chosen lamp cannot show. The dashed line is the original Fog. Each pair of squares shows the original and the wiggled Fog under one lamp.</figcaption>
+    </figure>
+    <p>Press Wiggle and Fog's curve thrashes while its color holds still. Every shape it passes through gives exactly the same three numbers under the chosen lamp, so to the standard eye this page uses they are all the same color.</p>
+    <p>Here is how. This page draws each curve through 13 handles, the dots you can drag in Make my own pair. Under the shop light no single handle can move unseen: lift any one of them and the numbers change. But the handles can move together, some up and some down, so that every kind of cone gains exactly as much light as it loses. Because the eye keeps three numbers, the handles can move together in 10 independent directions that stay hidden under one lamp, and only 3 directions show. At every frame the page takes a random change, removes the part the lamp would let you see, and keeps the rest; mathematicians call this a projection. Under the sodium street lamp your eye receives a single wavelength, so only one thing about the curve shows, its height at 589 nm, and 12 of the 13 directions stay hidden: choose Sodium lamp in the figure and watch that one point stay pinned.</p>
+    <p>Watch the second number while Fog wiggles: the same change that the shop light cannot see is plain under the warm bulb. The hidden directions belong to the lamp, not to the paint. In Make my own pair you can hold a match under several lamps at once. Each lamp you hold takes away three directions; hold the shop light, the warm bulb, daylight and the warm LED, and only one direction is left. Then only the two lamps this page models can still tell your paint from Pebble: the sodium street lamp, by at most about 3.4, and the smooth glow, by almost nothing.</p>
+
+    <h3 id="step5">5. The lamp lab: spiky lamps are harsher judges</h3>
+    <p>A lamp that gives out its light in a few narrow peaks looks at a curve in only a few places. Pairs that differ elsewhere can match under it, and a match made under a smooth lamp can fall apart under it.</p>
+    <p>Four of the lamps here are what the CIE calls illuminants: standard tables of how much light a typical lamp gives out at each wavelength. A stands for a filament bulb, D65 for average daylight, FL11 for a three-band fluorescent tube and LED-B2 for a warm white LED. The other two are models made by this page. The number in kelvin (K) beside a lamp is its color temperature: an object heated to that temperature glows with light of about the same color, and the lower the number, the warmer the light. Planck's law gives the light of such a glowing object, so the smooth glow is the light of an object at 3999 K: smooth, and the same color as the shop light.</p>
+    <figure class="fig" id="fig5">
+      <div class="fig5-grid">
+        <fieldset class="lamplist" id="fig5-lamps">
+          <legend>Lamp</legend>
+          <label><input type="radio" name="fig5-lamp" value="FL11" checked><canvas class="lamp-spark" data-lamp="FL11" aria-hidden="true"></canvas><span><b>Shop light</b><small>CIE illuminant FL11 · 4000 K</small></span></label>
+          <label><input type="radio" name="fig5-lamp" value="P3999"><canvas class="lamp-spark" data-lamp="P3999" aria-hidden="true"></canvas><span><b>Smooth glow, same color</b><small>Modeled: Planck's law at 3999 K</small></span></label>
+          <label><input type="radio" name="fig5-lamp" value="A"><canvas class="lamp-spark" data-lamp="A" aria-hidden="true"></canvas><span><b>Warm bulb</b><small>CIE standard illuminant A · 2856 K</small></span></label>
+          <label><input type="radio" name="fig5-lamp" value="D65"><canvas class="lamp-spark" data-lamp="D65" aria-hidden="true"></canvas><span><b>Daylight</b><small>CIE standard illuminant D65 · 6504 K</small></span></label>
+          <label><input type="radio" name="fig5-lamp" value="LED-B2"><canvas class="lamp-spark" data-lamp="LED-B2" aria-hidden="true"></canvas><span><b>Warm LED</b><small>CIE illuminant LED-B2 · 3000 K</small></span></label>
+          <label><input type="radio" name="fig5-lamp" value="sodium"><canvas class="lamp-spark" data-lamp="sodium" aria-hidden="true"></canvas><span><b>Sodium street lamp</b><small>Modeled: one line at 589 nm</small></span></label>
+        </fieldset>
+        <div class="fig5-pair">
+          <div class="fig5-wall" id="fig5-wall"><div class="mini-chips"><i id="fig5-a"></i><i id="fig5-b"></i></div></div>
+          <p class="fig5-d" id="fig5-d">Pebble and Fog under the shop light: 0.0, identical to the eye</p>
+          <p class="fig5-note" id="fig5-note">The shop light and the smooth glow give light of the same color: the CIE's two numbers for the color of a light, x and y, are (0.3805, 0.3769) and (0.3805, 0.3768). Their shapes are nothing alike.</p>
+        </div>
+      </div>
+      <div class="fig5-test">
+        <p class="fig5-q">Which lamp is the harsher judge? Make random pairs that match exactly under the warm bulb, then judge each pair under the shop light and under the smooth glow of the same color.</p>
+        <button type="button" class="sed-btn" id="fig5-run">Test 300 random pairs</button>
+        <canvas class="fig-canvas fig5-hist" id="fig5-hist" role="img" aria-label="Histogram of the splits under the two lamps"></canvas>
+        <p class="fig5-result" id="fig5-result" aria-live="polite"></p>
+      </div>
+      <figcaption>Preset “Shop light vs a smooth glow of the same color”. Each lamp is labeled: a CIE standard illuminant, a CIE illuminant for a typical lamp, or modeled by this page.</figcaption>
+    </figure>
+    <p>The lab tests this fairly. It makes 300 random pairs that match exactly under the warm bulb, then judges each pair under two lamps of the same color (they differ only in the fourth decimal): the shop light, with its three spiky lines, and the smooth glow. The shop light splits them more in about four pairs out of five, typically by about twice as much. Pebble and Fog themselves differ by 24.6 under the smooth glow, although it has the same color as the shop light that makes them match.</p>
+    <p>A low-pressure sodium street lamp is the extreme case. It puts nearly all of its light at 589 nm, in two lines 0.6 nm apart. Under it every paint can only send back its share of that one light, so colors all but vanish and little more than lightness is left. This page models the lamp as a single line; in that model two paints that send back the same share at 589 nm match exactly, however different they look by day. Under a real lamp they are very hard to tell apart.</p>
+    <p>Most white LED bulbs make their light with a blue chip under a yellow phosphor, a coating that glows yellow when blue light hits it; the CIE describes typical ones with illuminants named LED-B1 to LED-B5. Under LED-B2, a warm white, Pebble and Fog differ by 18.8.</p>
+    <p>Because every lamp judges differently, makers of paint, plastics and textiles check color matches in viewing booths that switch between simulated daylight, an incandescent lamp and a store lamp. A standard practice for judging colors by eye says that a match is usually confirmed under a very different light source.</p>
+
+    <h3 id="step6">Your screen is a metamer machine</h3>
+    <figure class="fig" id="fig6">
+      <div class="fig-row">
+        <fieldset class="chipset" id="fig6-lamps">
+          <legend>Lamp</legend>
+          <label><input type="radio" name="fig6-lamp" value="D65" checked><span>Daylight</span></label>
+          <label><input type="radio" name="fig6-lamp" value="A"><span>Warm bulb</span></label>
+          <label><input type="radio" name="fig6-lamp" value="FL11"><span>Shop light</span></label>
+        </fieldset>
+        <fieldset class="chipset" id="fig6-paints">
+          <legend>Paint</legend>
+          <label><input type="radio" name="fig6-paint" value="a" checked><span>Pebble</span></label>
+          <label><input type="radio" name="fig6-paint" value="b"><span>Fog</span></label>
+        </fieldset>
+      </div>
+      <canvas class="fig-canvas fig6-canvas" id="fig6-canvas" role="img" aria-label="The light from the real paint and the light from three screen bands, with the same three cone signals"></canvas>
+      <figcaption>Preset “Pebble in daylight, on your screen”. First panel: the light coming off the real chip. Second panel: three narrow bands (a modeled screen) mixed to give your cones the same three numbers. The bars under each panel are the cone signals, and they agree.</figcaption>
+    </figure>
+    <p>Every swatch on this page is a fake. Your screen cannot copy Pebble's broad curve. It mixes three narrow bands of red, green and blue light, and a well-set-up screen chooses the amounts so that your three cone numbers come out as the paint's would. A swatch made that way is a metamer of the paint, not a copy of its light. This page aims for that in daylight; under the other lamps it keeps only part of each lamp's tint and gives every room the same brightness, as What this page simplifies explains.</p>
+    <p>You can see the trick for yourself. Look at a white patch with a magnifying glass or your phone camera's zoom, or put a tiny drop of water on a phone screen: you can see the red, green and blue dots that fake every color here. The figure's screen is a model with bands at 460, 532 and 618 nm; real screens differ in detail but work the same way.</p>
+
+    <h2 id="exercises">Try it on new cases</h2>
+    <p>Each question applies the idea to something the demos above did not show. Pick an answer, then open the numbers, which this page computes as it loads.</p>
+
+    <div class="sed-check ex" data-sed-check id="ex1">
+      <h3>Exercise 1: The street lamp</h3>
+      <p>A low-pressure sodium street lamp gives out nearly all of its light at one wavelength, 589 nm. Paint P looks light blue by day and sends back 40% of 589 nm light. Paint Q looks mustard yellow by day and also sends back 40% at 589 nm. Under the street lamp, do they match?</p>
+      <div class="ex-choices"><button type="button" class="ex-choice" data-right="yes">They match</button><button type="button" class="ex-choice">They look different</button></div>
+      <p class="ex-feedback" aria-live="polite" data-right="Right. Under that lamp each paint can only send back its share of 589 nm light, and both send back 40%." data-wrong="Not quite. Under that lamp there is only one wavelength to send back: see step 5."></p>
+      <details class="ex-answer">
+        <summary>Show the answer and the numbers</summary>
+        <p>They match, in this page's model of the lamp: a single line at 589 nm. Each paint can only return its share of that one light, and both return 40% of it, so all three cone signals are equal. The difference is 0.0 under the street lamp, where both show as the same shade of orange, and 47.1 in daylight. A real lamp also gives out a little light at other wavelengths, so under it the two would be very hard, rather than impossible, to tell apart.</p>
+        <div class="ex-demo" data-ex="1"><i class="ex-sw"></i><i class="ex-sw"></i><span class="ex-live">Daylight</span><i class="ex-sw"></i><i class="ex-sw"></i><span class="ex-live">Street lamp</span></div>
+        <p class="ex-calc" data-ex="1">Computed by this page as it loads.</p>
+      </details>
+    </div>
+
+    <div class="sed-check ex" data-sed-check id="ex2">
+      <h3>Exercise 2: Curves that never cross</h3>
+      <p>Fabric R sends back more light than fabric S at every wavelength: R's curve lies above S's everywhere. Is there any lamp under which they match exactly, giving your eye the same three numbers?</p>
+      <div class="ex-choices"><button type="button" class="ex-choice">Yes, some lamp</button><button type="button" class="ex-choice" data-right="yes">No lamp can</button></div>
+      <p class="ex-feedback" aria-live="polite" data-right="Right: none can. Whatever the lamp, R returns more of its light, so some cone always gets more light from R." data-wrong="Not quite. Think of what R returns at every wavelength the lamp gives out: see step 3."></p>
+      <details class="ex-answer">
+        <summary>Show the answer and the numbers</summary>
+        <p>No lamp can. Whatever the lamp, R returns more of its light at every wavelength the lamp gives out, and the long- and medium-wavelength cones respond, if only a little, at every visible wavelength, so they always get more light from R. That is why two paints that match exactly must have curves that cross, or at least touch, somewhere the lamp shines.</p>
+        <p>For R we raised Fog's curve by 6 points everywhere and kept Fog as S. Under the page's six lamps they differ by 4.0 to 4.7, and over 2,000 random lamps, smooth and spiky, the smallest difference was 3.2.</p>
+        <p>Looking identical is another matter. Raise Fog by half a point instead and the two differ by at most 0.4 under the page's six lamps, too little to see, yet no lamp can make them match exactly.</p>
+        <p class="ex-calc" data-ex="2">Computed by this page as it loads.</p>
+      </details>
+    </div>
+
+    <div class="sed-check ex" data-sed-check id="ex3">
+      <h3>Exercise 3: Deep red on the shop shelf</h3>
+      <p>Imagine that a touch of deep red only raises Pebble's curve: a smooth bump, 25 points high at 650 nm and about 20 nm wide, with the curve unchanged everywhere else. Under which lamp does the change show least?</p>
+      <div class="ex-choices"><button type="button" class="ex-choice" data-right="yes">Shop light</button><button type="button" class="ex-choice">Warm bulb</button><button type="button" class="ex-choice">Daylight</button></div>
+      <p class="ex-feedback" aria-live="polite" data-right="Right. The shop light gives out little light near 650 nm, so the extra red has little to send back." data-wrong="Not quite. Look at where each lamp puts its light: see step 2."></p>
+      <details class="ex-answer">
+        <summary>Show the answer and the numbers</summary>
+        <p>The shop light. Only 8% of its light between 400 and 700 nm lies between 630 and 700 nm, against 44% for the warm bulb, so there is little light near 650 nm for the extra red to send back. The change makes a difference of 0.9 under the shop light, below the 1 that is just noticeable side by side, against 3.1 in daylight and 5.7 under the warm bulb.</p>
+        <p>A twist: the smooth glow, with the same color as the shop light, shows the change clearly, at 4.5. The shop light misses it because of the shape of its light, not its color.</p>
+        <p class="ex-calc" data-ex="3">Computed by this page as it loads.</p>
+      </details>
+    </div>
+
+    <div class="sed-check ex" data-sed-check id="ex4">
+      <h3>Exercise 4: A lamp with two lines</h3>
+      <p>Imagine a lamp that gives out light at only two wavelengths: a blue line at 450 nm and an orange line at 600 nm. You wiggle Fog while it hides from this lamp, as in step 4. Which part of Fog's curve can never move?</p>
+      <div class="ex-choices"><button type="button" class="ex-choice" data-right="yes">Its heights at 450 and 600 nm</button><button type="button" class="ex-choice">Everything between 450 and 600 nm</button><button type="button" class="ex-choice">Nothing: all of it can move</button></div>
+      <p class="ex-feedback" aria-live="polite" data-right="Right. Under that lamp your eye learns only how much 450 nm and 600 nm light comes back, so those two heights must stay put." data-wrong="Not quite. The wiggle keeps exactly what the lamp lets your eye see: see step 4."></p>
+      <details class="ex-answer">
+        <summary>Show the answer and the numbers</summary>
+        <p>Its heights at 450 and 600 nm, and nothing else. All of this lamp's light is at those two wavelengths, so all your eye can learn about Fog under it is how much of each comes back: the height of Fog's curve at 450 nm and at 600 nm. Blue and orange light stir your three kinds of cone in different proportions, so no trade between the two can keep all three numbers. Both heights are pinned, and everything else is free.</p>
+        <p>This page tried 200 random wiggles that hide from this lamp. They moved Fog's curve by up to 17 points, while its heights at 450 and 600 nm stayed at 30% and 32%; under the warm bulb the same wiggles changed Fog's color by up to 28. Step 4's figure shows the one-line case: choose Sodium lamp, press Wiggle Fog, and the curve stays pinned at 589&nbsp;nm.</p>
+        <p>A twist: give the lamp a third line, of a third color, and every height is still pinned; give it a fourth and they come loose. Your eye keeps only three numbers, so with four lines the curve can trade light between them without changing its color.</p>
+        <p class="ex-calc" data-ex="4">Computed by this page as it loads.</p>
+      </details>
+    </div>
+
+    <div class="sed-check ex" data-sed-check id="ex5">
+      <h3>Exercise 5: One block on your screen</h3>
+      <p>Under the shop light this page paints Pebble and Fog as one block of color. Is the light leaving your screen from the Pebble half the same as the light from the Fog half?</p>
+      <div class="ex-choices"><button type="button" class="ex-choice" data-right="yes">Yes, exactly the same light</button><button type="button" class="ex-choice">No, only the same three numbers</button></div>
+      <p class="ex-feedback" aria-live="polite" data-right="Right. A screen works from three numbers only, and Pebble and Fog give the same three, so it sends the same light for both." data-wrong="Not quite. Your screen makes each color from three lights, set by three numbers: see the last step."></p>
+      <details class="ex-answer">
+        <summary>Show the answer and the numbers</summary>
+        <p>Yes, exactly the same light, although the paints themselves send back very different light. Under the shop light Pebble and Fog give your eye the same three numbers, and three numbers are all your screen works from, so it makes both halves from the same mix of its three lights. In the model screen of the last step, which gives your cones exactly the paints' three numbers, that mix is 46% red, 35% green and 19% blue, as shares of the light's power.</p>
+        <p>So a screen can copy what your eye gets from two matching paints, but never the difference between their lights. To make Pebble and Fog split, this page has to change the lamp. See it in the last step's figure: choose Shop light and switch between Pebble and Fog. The light off the paint changes shape, while the screen's three bands do not move at all.</p>
+        <p class="ex-calc" data-ex="5">Computed by this page as it loads.</p>
+      </details>
+    </div>
+
+    <h2 id="meet">Where you meet it</h2>
+    <ul>
+      <li>Paint: a chip judged under a shop's lamps can look different on your wall under your own. Look at samples at home, by day and at night.</li>
+      <li>Clothes and furnishings: fabrics dyed with different dyes can match on the shop floor and split by the window. The textile trade's viewing booths exist largely for this.</li>
+      <li>Lighting: filament bulbs and daylight have smooth spectra, while fluorescent tubes and white LEDs give their light in peaks and bumps, so they judge colors differently.</li>
+      <li>Streets: under low-pressure sodium lamps, the deep orange-yellow kind, cars of different colors turn into lighter and darker shades of one orange. The pinker high-pressure sodium lamps spread their light wider and leave some color.</li>
+      <li>Screens: every color on a screen is a mix of three lights. When a photo looks right, the mix is a metamer of the real thing; when it does not, one reason is that a camera's three color filters are not your three cones, and colors more vivid than the screen's three lights cannot be matched at all.</li>
+    </ul>
+
+    <h2 id="limits">What this page simplifies</h2>
+    <ul>
+      <li>One average eye. The page computes with the CIE 1931 standard observer, an agreed average. Real eyes differ a little, so a match can also break from one person to the next (observer metamerism). Pebble and Fog were designed to match under the shop light for three of the CIE's model eyes at once: the 1931 and 1964 standard observers and the 2015 observer, built on the CIE's estimates of how each kind of cone responds; for the large-field version of that 2015 observer they differ by 0.1. The wiggle holds the match only for the 1931 observer: for the 1964 one most of its shapes would no longer match, at times by more than 10.</li>
+      <li>Cone signals. The bars are an estimate made from that observer with the Hunt-Pointer-Estévez transform, not measurements of your cones.</li>
+      <li>Curves. Real paints are measured with instruments at more wavelengths. Here every curve passes through 13 handles and is held level below 400 and above 700 nm. Gloss and fluorescence are ignored.</li>
+      <li>Lamps. A and D65 are CIE standard illuminants, FL11 and LED-B2 are CIE illuminants for typical lamps, and none is a particular product. The sodium street lamp (one line at 589 nm), the smooth glow (Planck's law at 3999 K) and the screen (three bands) are models.</li>
+      <li>What you see. Your eye adjusts to the color of a lamp. This page keeps 40% of each lamp's tint, so a warm room still looks warm, and it lights every room equally brightly. Your own screen and room change the colors again; the numbers, which compare each paint with a white sheet under the same lamp, are the reference.</li>
+      <li>Bigger than life. Pebble and Fog were designed to differ by about 19 under the warm bulb and 30 in daylight, so the change shows on almost any screen and to almost every eye. On a real wall, a difference of 2 is already visible side by side.</li>
+      <li>Color vision differs. If yours differs from the average, the splits may look smaller to you. The numbers and the bars still show them, and Pebble and Fog also differ in lightness under the warm bulb and in daylight.</li>
+    </ul>
+    <p class="selfcheck-line">This page checks its own numbers each time it loads: the white points of its four CIE lamps, the 34 published test pairs of the CIEDE2000 formula, the match of Pebble and Fog for two of the CIE's observers and their splits, the wiggle, and every exercise answer. <button type="button" class="sed-btn is-quiet" id="check-numbers-2">Check the numbers</button></p>
+    <div class="check-out" id="check-out-2" aria-live="polite"></div>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</main>
+
+<footer class="sed-footer">
+  <details class="sed-about">
+    <summary>About &amp; making of</summary>
+    <div class="sed-about-body">
+      <p class="sed-making-of">This page is an Opus cameo: it was built by a team of Claude Opus agents instead of the usual Sonnet team. Every color on it is computed in your browser from CIE tables: the 1931 standard observer and the CIE illuminants A, D65, FL11 and LED-B2. The sodium street lamp (one line at 589 nm), the smooth 3999 K glow and the screen's three color bands are modeled, and the page says so wherever they appear. Pebble and Fog were designed by a script that searched for the smoothest pair of curves that match exactly under the shop light for the CIE's 1931 and 1964 standard observers and its 2015 cone-based observer alike, and split by about 19 under the warm bulb, with a change in lightness and in yellow against blue, so that the split also shows for most color-blind visitors. Color differences use CIEDE2000, checked against the 34 published test pairs of Sharma, Wu and Dalal; the page re-checks its numbers each time it loads.</p>
+      <h2>What is computed and what is modeled</h2>
+      <p>Computed from CIE data, in your browser: every lamp's white point, every color, every difference and every cone signal, all with the 1931 observer, and what the page says about its lamps, such as the shop light's three narrow lines near 435, 545 and 610 nm and the fact that a smooth glow at 3999 K has its color (figure 5 shows both); the 1964 observer is used only to check that the match holds for it too. Modeled by this page: the sodium line, the smooth glow, the screen's three bands, the 13-handle paint curves, and how colors are shown (40% of each lamp's tint kept, equal brightness for every room, sRGB). CIE data are published by the CIE; this page embeds their 5 nm tables from 380 to 780 nm.</p>
+      <h2>Sources</h2>
+      <ul class="sed-sources">
+        <li><a href="https://cie.co.at/datatable/cie-1931-colour-matching-functions-2-degree-observer" rel="noopener noreferrer">CIE 1931 colour-matching functions, 2 degree observer (CIE data table)</a>: the eye model behind every number. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/datatable/cie-1964-colour-matching-functions-10-degree-observer" rel="noopener noreferrer">CIE 1964 colour-matching functions, 10 degree observer (CIE data table)</a>: the observer for larger patches of color, which this page uses to check that Pebble and Fog also match for it. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/datatable/cie-cone-fundamental-based-spectral-tristimulus-values-2-degree-field-size" rel="noopener noreferrer">CIE cone-fundamental-based spectral tristimulus values for 2 degree field size (CIE data table, from CIE 170-2:2015)</a>: the 2015 observer, built on the CIE's estimates of how each kind of cone responds, used when Pebble and Fog were designed. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/publications/colorimetry-part-1-cie-standard-colorimetric-observers-0" rel="noopener noreferrer">Colorimetry, Part 1: CIE standard colorimetric observers (ISO/CIE 11664-1)</a>: the standard that defines the CIE's two standard observers, the 1931 and the 1964 one. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/publications/open-access-datasets" rel="noopener noreferrer">CIE open access datasets</a>: the tables of CIE standard illuminants A and D65. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://www.cie.co.at/datatable/relative-spectral-power-distributions-illuminants-representing-typical-fluorescent-lamps" rel="noopener noreferrer">CIE: illuminants representing typical fluorescent lamps</a>: the FL11 table (the shop light); its three narrow lines and its color are computed by this page from the table. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/datatable/relative-spectral-power-distributions-illuminants-representing-typical-led-lamps" rel="noopener noreferrer">CIE: illuminants representing typical LED lamps</a>: the LED-B2 table (the warm LED), from CIE 15:2018. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://files.cie.co.at/x046_2019/x046-OP27.pdf" rel="noopener noreferrer">A colour graphic for real complex scenes: application to LED illuminants (CIE x046:2019 proceedings, paper OP27)</a>: the CIE illuminants LED-B1 to LED-B5 represent the widespread blue-chip phosphor LEDs. A paper on the CIE's own site, as of 2026-10-18.</li>
+        <li><a href="https://www.energy.gov/cmei/ssl/led-basics" rel="noopener noreferrer">LED Basics (U.S. Department of Energy)</a> and <a href="https://www.energy.gov/sites/prod/files/2016/08/f33/led-color-characteristics-factsheet.pdf" rel="noopener noreferrer">LED Color Characteristics, a fact sheet (U.S. Department of Energy)</a>: white LED light is most often made with a phosphor, typically a blue chip under a broad yellow-glowing phosphor. A government agency's own pages, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/publications/colorimetric-illuminants" rel="noopener noreferrer">CIE: colorimetric illuminants</a>: illuminant A represents domestic tungsten lighting near 2856 K and D65 average daylight. The CIE's own page, as of 2026-10-18.</li>
+        <li><a href="https://cie.co.at/eilvterm/17-23-006" rel="noopener noreferrer">CIE International Lighting Vocabulary, term 17-23-006, metamerism</a> and <a href="https://cie.co.at/eilvterm/17-23-008" rel="noopener noreferrer">term 17-23-008, metameric colour stimuli</a>: the CIE's definitions of metamerism and of metamers: a match always holds in a stated colorimetric system, such as one standard observer. The CIE's own pages, as of 2026-10-18.</li>
+        <li><a href="https://hajim.rochester.edu/ece/sites/gsharma/ciede2000/" rel="noopener noreferrer">Sharma, Wu and Dalal (2005), The CIEDE2000 color-difference formula: implementation notes, supplementary test data, and mathematical observations</a>: the formula's details and the 34 test pairs this page checks itself against. The authors' own page, as of 2026-10-18.</li>
+        <li><a href="https://www.strollswithmydog.com/just-noticeable-difference-color/" rel="noopener noreferrer">A Just Noticeable Color Difference (Strolls with my Dog)</a>: a CIEDE2000 difference of about 1 is widely taken as just noticeable; the page uses this as a rule of thumb, since measured thresholds vary with the colors and the viewing. As of 2026-10-18.</li>
+        <li><a href="https://ojs.cuni.cz/scied/article/view/743" rel="noopener noreferrer">Haagen-Schützenhöfer (2017), A hands-on to teach colour perception: the Colour Vision Tube, Scientia in Educatione 8</a>: after basic optics lessons, students still believe an object's color is a fixed property of it. The journal's own page, as of 2026-10-18.</li>
+        <li><a href="https://dx.doi.org/10.1088/1361-6552/aa6d9c" rel="noopener noreferrer">Haagen-Schützenhöfer (2017), Students' conceptions on white light and implications for teaching and learning about colour, Physics Education 52 044003</a>: related research on how students think about light and color. The publisher's page (open access), as of 2026-10-18.</li>
+        <li><a href="https://en.wikipedia.org/wiki/Sodium-vapor_lamp" rel="noopener noreferrer">Sodium-vapor lamp (Wikipedia)</a>, <a href="https://hyperphysics.gsu.edu/hbase/phyopt/Na.html" rel="noopener noreferrer">Sodium spectrum (HyperPhysics, Georgia State University)</a> and <a href="https://www.ncsm.city.nagoya.jp/cgi-bin/en/exhibition_guide/exhibit.cgi?id=S407" rel="noopener noreferrer">Wonder of Orange Light, exhibit S407 (Nagoya City Science Museum)</a>: sodium light comes almost entirely from two lines at 589.0 and 589.6 nm; under a low-pressure sodium lamp colors are very hard to tell apart, while high-pressure lamps spread their light wider. As of 2026-10-18.</li>
+        <li><a href="https://store.astm.org/d1729-22.html" rel="noopener noreferrer">ASTM D1729-22, Standard practice for visual appraisal of colors and color differences of diffusely-illuminated opaque materials</a>: colors are judged by eye under controlled light, and a match made under one source is usually confirmed under a very different one. The standard's own page, as of 2026-10-18.</li>
+        <li><a href="https://en.wikipedia.org/wiki/CIECAM02" rel="noopener noreferrer">CIECAM02 (Wikipedia)</a>: the degree of adaptation runs from 0 (none) to 1 (complete), in practice 0.65 to 1; this page uses 0.6 on purpose. As of 2026-10-18.</li>
+        <li><a href="https://en.wikipedia.org/wiki/LMS_color_space" rel="noopener noreferrer">LMS color space (Wikipedia)</a> and <a href="https://russellcottrell.com/photo/matrixCalculator.htm" rel="noopener noreferrer">The RGB-XYZ Matrix Calculator</a>: the Hunt-Pointer-Estévez and Bradford matrices. As of 2026-10-18.</li>
+        <li><a href="https://en.wikipedia.org/wiki/SRGB" rel="noopener noreferrer">sRGB (Wikipedia)</a> and <a href="https://registry.color.org/rgb-registry/srgb" rel="noopener noreferrer">sRGB, in the registry of the International Color Consortium</a>: the IEC 61966-2-1 color space used to show colors: its primaries, white and transfer curve. As of 2026-10-18.</li>
+        <li><a href="https://cs184.eecs.berkeley.edu/public/sp21/lectures/lec-21-intro-to-color-science/lec-21-intro-to-color-science.pdf" rel="noopener noreferrer">Lecture 21: Introduction to Color Science (UC Berkeley CS184/284A, spring 2021)</a> and <a href="https://flowvis.org/OldGalleries/2011/Get-Wet/FV_popup1-4.htm" rel="noopener noreferrer">Get Wet, spring 2011: water droplets acting as lenses over a screen (Flow Visualization course gallery)</a>: a screen's red, green and blue subpixels are three lights at each point, and a drop of water magnifies them. As of 2026-10-18.</li>
+      </ul>
+    </div>
+  </details>
+  <p class="sed-credits">Built by Opus, a cameo on Sonnet Every Day</p>
+</footer>
+
+<noscript>
+  <p class="sed-prose" style="padding: 0 var(--gutter) 1.5rem;">This page is interactive and needs JavaScript. Everything runs locally in your browser; nothing is sent anywhere.</p>
+</noscript>
+</body>
+</html>
